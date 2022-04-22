@@ -48,7 +48,7 @@
       <div class="primary-title not-first-child">触发器与通知</div>
       <div class="trigger">
         <el-form-item>
-          <template slot="label">Webhook 触发</template>
+          <template slot="label">代码变更触发</template>
           <el-button @click="addTrigger" type="primary" size="small" plain>添加</el-button>
         </el-form-item>
         <TestTrigger

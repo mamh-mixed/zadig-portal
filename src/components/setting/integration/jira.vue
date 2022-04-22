@@ -8,11 +8,12 @@
                :visible.sync="dialogJiraEditFormVisible">
       <el-form :model="jiraEdit"
                @submit.native.prevent
-               label-position="top"
+               label-position="right"
                :rules="jiraRules"
+               label-width="100px"
+               class="mg-t32"
                ref="jiraEditForm">
         <el-form-item label="Jira 地址"
-                      label-width="80px"
                       prop="host">
           <el-input v-model="jiraEdit.host"
                     placeholder="企业 Jira 地址"
@@ -20,7 +21,6 @@
                     auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="用户名"
-                      label-width="80px"
                       prop="user">
           <el-input v-model="jiraEdit.user"
                     placeholder="有读写 Issue 权限的用户"
@@ -28,7 +28,6 @@
                     auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="密码"
-                      label-width="180px"
                       prop="access_token">
           <el-input v-model="jiraEdit.access_token"
                     placeholder="用户密码"
@@ -62,10 +61,11 @@
       <el-form :model="jiraAdd"
                @submit.native.prevent
                :rules="jiraRules"
-               label-position="top"
+               label-position="right"
+               label-width="100px"
+               class="mg-t32"
                ref="jiraAddForm">
         <el-form-item label="Jira 地址"
-                      label-width="80px"
                       prop="host">
           <el-input v-model="jiraAdd.host"
                     placeholder="企业 Jira 地址"
@@ -73,7 +73,6 @@
                     auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="用户名"
-                      label-width="80px"
                       prop="user">
           <el-input v-model="jiraAdd.user"
                     placeholder="有读写 Issue 权限的用户"

@@ -8,11 +8,12 @@
                :visible.sync="dialogGithubEditFormVisible">
       <el-form :model="githubAppEdit"
                @submit.native.prevent
-               label-position="top"
+               label-position="right"
                :rules="githubAppRules"
+               label-width="100px"
+               class="mg-t32"
                ref="githubAppEditForm">
         <el-form-item label="App ID"
-                      label-width="80px"
                       prop="app_id">
           <el-input v-model.number="githubAppEdit.app_id"
                     placeholder="App ID"
@@ -20,7 +21,6 @@
                     auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="App Key"
-                      label-width="80px"
                       prop="app_key">
           <el-input v-model="githubAppEdit.app_key"
                     type="textarea"
@@ -53,10 +53,11 @@
       <el-form :model="githubAppAdd"
                @submit.native.prevent
                :rules="githubAppRules"
-               label-position="top"
+               label-position="right"
+               label-width="100px"
+               class="mg-t32"
                ref="githubAppAddForm">
         <el-form-item label="App ID"
-                      label-width="80px"
                       prop="app_id">
           <el-input v-model.number="githubAppAdd.app_id"
                     placeholder="创建的 GitHub App ID"
@@ -64,7 +65,6 @@
                     auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="App Key"
-                      label-width="80px"
                       prop="app_key">
           <el-input v-model="githubAppAdd.app_key"
                     placeholder="创建的 GitHub App Key"

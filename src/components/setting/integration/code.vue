@@ -101,6 +101,8 @@
       <el-form :model="codeEdit"
                :rules="codeRules"
                status-icon
+               class="mg-t32"
+               label-width="160px"
                ref="codeUpdateForm">
         <el-form-item label="代码源"
                       prop="type">
