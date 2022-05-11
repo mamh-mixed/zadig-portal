@@ -346,7 +346,9 @@ export default {
         this.$set(repo, 'branchPRsMap', repoInfo && repoInfo.branchPRsMap)
         this.$set(repo, 'tags', (repoInfo && repoInfo.tags) ? repoInfo.tags : [])
         this.$set(repo, 'prNumberPropName', 'pr')
-        this.$set(repo, 'errorMsg', repoInfo.error_msg || '')
+        if (repoInfo) {
+          this.$set(repo, 'errorMsg', repoInfo.error_msg || '')
+        }
         this.$set(repo, 'branch', repo.branch || '')
         this.$set(repo, repo.prNumberPropName, repo[repo.prNumberPropName] || null)
         this.$set(repo, 'tag', repo.tag || '')
@@ -489,7 +491,9 @@ export default {
             repo.pr = repo.pr ? repo.pr : 0
             repo.branch = ''
             repo.tag = ''
-            repo[repo.branchOrTag.type] = repo.branchOrTag.name
+            if (repo.branchOrTag) {
+              repo[repo.branchOrTag.type] = repo.branchOrTag.name
+            }
             for (const key of repoKeysToDelete) {
               delete repo[key]
             }

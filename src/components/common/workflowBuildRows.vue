@@ -21,9 +21,12 @@
                   </el-tooltip>
                 </div>
               </el-col>
-
-              <el-col :span="7">
+              <el-col :span="7" >
+                <div v-if="build.branchOrTag">
+                  <el-input v-if="build.source==='other'"  v-model="build.branchOrTag.name" size="small"  placeholder="请填写分支"></el-input>
+                </div>
                 <el-select
+                  v-if="build.source!=='other'"
                   v-model="build.branchOrTag"
                   remote
                   :remote-method="(query)=>{searchRepoInfo(build,query)}"
@@ -40,9 +43,16 @@
                   </el-option-group>
                 </el-select>
               </el-col>
-
+              <el-col :span="7" v-if="build.source==='other'">
+                 <el-tooltip
+                            :content="build.other_address"
+                            placement="top"
+                            popper-class="gray-popper">
+                  <span class="other">{{build.other_address}}</span>
+                </el-tooltip>
+              </el-col>
               <el-col :span="7"
-                      :offset="1">
+                      :offset="1" v-if="build.source!=='other'">
                 <el-select v-if="!$utils.isEmpty(build.branchPRsMap)"
                             v-model.number="build[build.prNumberPropName]"
                             size="small"
@@ -92,7 +102,6 @@
           </el-row>
         </template>
       </el-table-column>
-
       <el-table-column   width="250px">
         <template slot="header">
           部署

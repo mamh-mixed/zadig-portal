@@ -14,7 +14,7 @@
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.tag}`"
           target="_blank"
         >{{showIcon ? '' : "Tag-"}}{{build.tag }}</a>
-        <span v-if="build.source==='gerrit'">{{ showIcon ? '' : "Tag-"}}{{build.tag}}</span>
+        <span v-if="build.source==='gerrit' || build.source==='other'">{{ showIcon ? '' : "Tag-"}}{{build.tag}}</span>
       </span>
     </el-tooltip>
     <el-tooltip
