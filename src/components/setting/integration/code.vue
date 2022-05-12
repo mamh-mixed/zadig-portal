@@ -106,7 +106,7 @@
             <span class="tips">- 更多配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
-                       :href="`https://docs.koderover.com/zadig/settings/codehost/other/`"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/others/`"
                        :underline="false"
                        target="_blank">帮助文档</el-link>
             </span>
@@ -409,7 +409,7 @@
             <span class="tips">- 更多配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
-                       :href="`https://docs.koderover.com/zadig/settings/codehost/other/`"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/others/`"
                        :underline="false"
                        target="_blank">帮助文档</el-link>
             </span>
@@ -592,7 +592,7 @@
                    size="small"
                    class="start-create"
                    @click="createCodeConfig">
-          {{(codeAdd.type==='gerrit'||codeAdd.type==='codehub'||codeEdit.type==='other')?'确定':'前往授权'}}</el-button>
+          {{(codeAdd.type==='gerrit'||codeAdd.type==='codehub'||codeAdd.type==='other')?'确定':'前往授权'}}</el-button>
         <el-button plain
                    native-type="submit"
                    size="small"
