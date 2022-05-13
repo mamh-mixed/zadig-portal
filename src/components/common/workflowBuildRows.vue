@@ -43,14 +43,6 @@
                   </el-option-group>
                 </el-select>
               </el-col>
-              <el-col :span="7" v-if="build.source==='other'">
-                 <el-tooltip
-                            :content="build.other_address"
-                            placement="top"
-                            popper-class="gray-popper">
-                  <span class="other">{{build.other_address}}</span>
-                </el-tooltip>
-              </el-col>
               <el-col :span="7"
                       :offset="1" v-if="build.source!=='other'">
                 <el-select v-if="!$utils.isEmpty(build.branchPRsMap)"
