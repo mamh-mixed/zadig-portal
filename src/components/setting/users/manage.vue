@@ -27,7 +27,7 @@
           <el-input size="small" v-model="addUser.phone"></el-input>
         </el-form-item>
         <el-form-item label="角色" prop="isAdmin">
-          <el-select v-model="addUser.isAdmin" multiple placeholder="请选择">
+          <el-select size="small" v-model="addUser.isAdmin" multiple placeholder="请选择角色">
             <el-option :label="item.name" :value="item.name"  v-for="item in roleList" :key="item.desc">
           </el-option>
         </el-select>
