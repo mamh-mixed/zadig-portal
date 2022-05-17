@@ -101,7 +101,7 @@
                   type="info"
                   :closable="false">
           <slot>
-            <span class="tips">- 支持任何标准的 Git 协议的代码元</span>
+            <span class="tips">- 支持标准 Git 协议的代码源</span>
             <span class="tips">- 集成后，构建/测试模版可从该代码源拉取代码</span>
             <span class="tips">- 更多配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
@@ -404,7 +404,7 @@
                   type="info"
                   :closable="false">
           <slot>
-            <span class="tips">- 支持任何标准的 Git 协议的代码元</span>
+            <span class="tips">- 支持标准 Git 协议的代码源</span>
             <span class="tips">- 集成后，构建/测试模版可从该代码源拉取代码</span>
             <span class="tips">- 更多配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
