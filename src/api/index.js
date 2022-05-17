@@ -1014,8 +1014,8 @@ export function queryJenkinsParams (id, jobName) {
   return http.get(`/api/aslan/system/jenkins/buildArgs/${id}/${jobName}`)
 }
 // Sonar
-export function querySonarAPI (key) {
-  return http.get(`/api/aslan/system/sonar/integration?encryptedKey=${key}`)
+export function querySonarAPI (key, projectName = '') {
+  return http.get(`/api/aslan/system/sonar/integration?encryptedKey=${key}&projectName=${projectName}`)
 }
 
 export function addSonarAPI (payload) {
@@ -1642,8 +1642,8 @@ export function saveHelmTemplateVariableAPI (name, payload) {
 }
 
 // Template Dockerfile
-export function getDockerfileTemplatesAPI () {
-  return http.get(`/api/aslan/template/dockerfile?page_num=1&page_size=9999`)
+export function getDockerfileTemplatesAPI (projectName = '') {
+  return http.get(`/api/aslan/template/dockerfile?page_num=1&page_size=9999&projectName=${projectName}`)
 }
 
 export function createDockerfileTemplateAPI (payload) {
@@ -1711,8 +1711,8 @@ export function reloadServiceFromKubernetesTemplateAPI (payload) {
 }
 
 // Template Build
-export function getBuildTemplatesAPI () {
-  return http.get(`/api/aslan/template/build?page_num=1&page_size=9999`)
+export function getBuildTemplatesAPI (projectName = '') {
+  return http.get(`/api/aslan/template/build?page_num=1&page_size=9999&projectName=${projectName}`)
 }
 
 export function createBuildTemplateAPI (payload) {

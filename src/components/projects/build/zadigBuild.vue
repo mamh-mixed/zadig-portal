@@ -277,10 +277,11 @@ export default {
     initGlobalData () {
       // be used on Repo
       const key = this.$utils.rsaEncrypt()
+      const projectName = this.projectName
       getCodeSourceMaskedAPI(key).then(response => {
         this.allCodeHosts = response
       })
-      getBuildTemplatesAPI().then(response => {
+      getBuildTemplatesAPI(projectName).then(response => {
         this.templates = response.build_templates
       })
     }

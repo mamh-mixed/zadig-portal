@@ -307,13 +307,14 @@ export default {
     this.scannerConfig.project_name = this.projectName
 
     const key = this.$utils.rsaEncrypt()
+    const projectName = this.projectName
     getCodeSourceMaskedAPI(key).then(response => {
       this.allCodeHosts = response
     })
 
     this.getImageList(this.scannerConfig.scanner_type, !this.isEdit)
 
-    querySonarAPI(key).then(res => {
+    querySonarAPI(key, projectName).then(res => {
       this.sonarList = res
       if (!this.isEdit && res.length) {
         this.scannerConfig.sonar_id = res[0].id
