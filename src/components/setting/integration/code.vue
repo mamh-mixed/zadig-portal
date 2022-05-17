@@ -566,7 +566,7 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="codeAdd.auth_type === 'SSH'"
-                        label="ssh_key"
+                        label="SSH Key"
                         prop="ssh_key">
             <el-input v-model="codeAdd.ssh_key"
                       placeholder="SSH Key"
@@ -575,7 +575,7 @@
                       auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item v-if="codeAdd.auth_type === 'PrivateAccessToken'"
-                        label="private_access_token"
+                        label="Access Token"
                         prop="private_access_token">
             <el-input v-model="codeAdd.private_access_token"
                       placeholder="Access Token"
