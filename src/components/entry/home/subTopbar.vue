@@ -87,7 +87,7 @@
         >创建环境</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/builds`">
-        <el-button           v-hasPermi="{projectName: projectName, action: 'create_build'}" @click="bindComp(comp,'build')" icon="el-icon-plus" plain>新建构建</el-button>
+        <el-button v-hasPermi="{projectName: projectName, action: 'create_build'}" @click="bindComp(comp,'build')" icon="el-icon-plus" plain>新建构建</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/test`">
         <el-button

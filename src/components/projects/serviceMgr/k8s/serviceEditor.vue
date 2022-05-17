@@ -34,7 +34,7 @@
       </div>
       <div class="controls__wrap">
         <div class="controls__right">
-          <el-button v-if="!hideSave" type="primary" size="small" :disabled="disabledSave || !yamlChange" @click="updateService">保存</el-button>
+          <el-button  v-hasPermi="{projectName: projectName, actions:['edit_service','create_service'],operator:'or'}" v-if="!hideSave" type="primary" size="small" :disabled="disabledSave || !yamlChange" @click="updateService">保存</el-button>
           <el-button v-if="!isOnboarding" type="primary" size="small" :disabled="!showJoinToEnvBtn" @click="showJoinToEnvDialog">加入环境</el-button>
         </div>
       </div>

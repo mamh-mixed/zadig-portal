@@ -13,14 +13,14 @@
                     </el-radio-button>
                   </el-tooltip>
                   <el-tooltip effect="dark" content="服务编排" placement="top">
-                    <el-radio-button label="arrange">
+                    <el-radio-button v-hasPermi="{projectName: projectName, action: 'edit_service'}" label="arrange">
                       <i class="iconfont iconvery-sort"></i>
                     </el-radio-button>
                   </el-tooltip>
                 </el-radio-group>
               </div>
             </el-col>
-            <el-col :span="14" class="text-right">
+            <el-col v-hasPermi="{type:'project', projectName: projectName, action: 'create_service'}" :span="14" class="text-right">
               <div style="line-height: 32px;">
                 <el-tooltip effect="dark" content="从代码库同步" placement="top">
                   <el-button size="mini" icon="iconfont icon icongit" @click="openRepoModal('git')" plain circle></el-button>

@@ -136,10 +136,12 @@ export async function permissionCheckingLogic (opts) {
     }
     if (!isEmpty(currentProjectPermissions) && (action || actions)) {
       const projectVerbs = currentProjectPermissions.project_verbs ? currentProjectPermissions.project_verbs : []
-      console.log(projectVerbs)
-      console.log(action)
       if (projectVerbs.length > 0) {
         if (operator && actions) {
+          console.log(actions || action)
+          if (operator) {
+            console.log(operator)
+          }
           if (operator === 'and') {
             for (const action of actions) {
               if (!projectVerbs.includes(action)) {
@@ -150,6 +152,7 @@ export async function permissionCheckingLogic (opts) {
           if (operator === 'or') {
             for (const action of actions) {
               if (projectVerbs.includes(action)) {
+                console.log(projectVerbs.includes(action))
                 return true
               }
             }
