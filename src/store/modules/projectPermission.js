@@ -1,6 +1,5 @@
 import * as types from '../mutations'
 import { getProjectPermissionAPI } from '@api'
-import store from 'storejs'
 import { isEmpty } from 'lodash'
 const state = {}
 
@@ -18,10 +17,8 @@ const mutations = {
 
 const actions = {
   async getProjectPermission ({ commit, getters, state, rootGetters }, payload) {
-    const userInfo = store.get('userInfo')
-    const uid = userInfo.uid
     const projectName = payload
-    return await getProjectPermissionAPI(projectName, uid).then(
+    return await getProjectPermissionAPI(projectName).then(
       (res) => {
         commit(types.SET_PROJECT_PERMISSION, { projectName, permission: res })
       },

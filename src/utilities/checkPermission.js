@@ -50,48 +50,46 @@ export function checkPermissionSync (opts) {
     }
     // 项目角色权限判断
   } else if (type === 'project' || projectName) {
-    console.log(projectName)
-    console.log(logic)
-    return true
+    const currentProject = store.getters.projectList.find(item => item.name === projectName)
+    const currentProjectPermissions = store.getters.projectPermissions[projectName] ? store.getters.projectPermissions[projectName] : {}
+    if (currentProject && currentProject.public) {
+      return true
+    }
+    if (!isEmpty(currentProjectPermissions) && (action || actions)) {
+      const projectVerbs = currentProjectPermissions.project_verbs ? currentProjectPermissions.project_verbs : []
+      console.log(projectVerbs)
+      console.log(action)
+      if (projectVerbs.length > 0) {
+        if (operator && actions) {
+          if (operator === 'and') {
+            for (const action of actions) {
+              if (!projectVerbs.includes(action)) {
+                return false
+              }
+            }
+          }
+          if (operator === 'or') {
+            for (const action of actions) {
+              if (projectVerbs.includes(action)) {
+                return true
+              }
+            }
+          }
+        } else {
+          return projectVerbs.includes(action)
+        }
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
   } else {
     return false
   }
-  // const currentProjectPermissions = permissions[projectName] ? permissions[projectName] : {}
-  // if (!isEmpty(currentProjectPermissions)) {
-  //   let permissionActions = []
-  //   for (const resource in currentProjectPermissions) {
-  //     if (Object.hasOwnProperty.call(currentProjectPermissions, resource)) {
-  //       permissionActions = permissionActions.concat(currentProjectPermissions[resource])
-  //     }
-  //   }
-  //   // * means all actions
-  //   if (permissionActions.includes('*')) {
-  //     return true
-  //   }
-  //   if (action) {
-  //     return permissionActions.includes(action)
-  //   }
-  //   if (logic) {
-  //     const { actions, operator } = logic
-  //     if (operator === 'and') {
-  //       for (const action of actions) {
-  //         if (!permissionActions.includes(action)) {
-  //           return false
-  //         }
-  //       }
-  //     }
-  //     if (operator === 'or') {
-  //       for (const action of actions) {
-  //         if (permissionActions.includes(action)) {
-  //           return true
-  //         }
-  //       }
-  //     }
-  //   }
 }
 
 export async function permissionCheckingLogic (opts) {
-  console.log(opts)
   let globalPermission = store.getters.globalPermission
   // 不存在时获取数据
   if (isEmpty(globalPermission)) {
@@ -131,65 +129,41 @@ export async function permissionCheckingLogic (opts) {
     }
     // 项目角色权限判断
   } else if (type === 'project' || projectName) {
-    console.log(projectName)
-    return true
+    const currentProject = store.getters.projectList.find(item => item.name === projectName)
+    const currentProjectPermissions = store.getters.projectPermissions[projectName] ? store.getters.projectPermissions[projectName] : {}
+    if (currentProject && currentProject.public) {
+      return true
+    }
+    if (!isEmpty(currentProjectPermissions) && (action || actions)) {
+      const projectVerbs = currentProjectPermissions.project_verbs ? currentProjectPermissions.project_verbs : []
+      console.log(projectVerbs)
+      console.log(action)
+      if (projectVerbs.length > 0) {
+        if (operator && actions) {
+          if (operator === 'and') {
+            for (const action of actions) {
+              if (!projectVerbs.includes(action)) {
+                return false
+              }
+            }
+          }
+          if (operator === 'or') {
+            for (const action of actions) {
+              if (projectVerbs.includes(action)) {
+                return true
+              }
+            }
+          }
+        } else {
+          return projectVerbs.includes(action)
+        }
+      } else {
+        return false
+      }
+    } else {
+      return false
+    }
   } else {
     return false
   }
-  // const currentProjectPermissions = permissions[projectName] ? permissions[projectName] : {}
-  // if (!isEmpty(currentProjectPermissions)) {
-  //   let permissionActions = []
-  //   for (const resource in currentProjectPermissions) {
-  //     if (Object.hasOwnProperty.call(currentProjectPermissions, resource)) {
-  //       permissionActions = permissionActions.concat(currentProjectPermissions[resource])
-  //     }
-  //   }
-  //   // * means all actions
-  //   if (permissionActions.includes('*')) {
-  //     return true
-  //   }
-  //   if (action) {
-  //     return permissionActions.includes(action)
-  //   }
-  //   if (logic) {
-  //     const { actions, operator } = logic
-  //     if (operator === 'and') {
-  //       for (const action of actions) {
-  //         if (!permissionActions.includes(action)) {
-  //           return false
-  //         }
-  //       }
-  //     }
-  //     if (operator === 'or') {
-  //       for (const action of actions) {
-  //         if (permissionActions.includes(action)) {
-  //           return true
-  //         }
-  //       }
-  //     }
-  //   }
-}
-
-export function projectRoleCheckingLogic (opts) {
-  const { projectName, role } = opts
-
-  const templates = store.state.project_templates.templates
-
-  if (templates.length === 0) {
-    return true
-  }
-
-  const projectTemplate = templates.find(item => item.product_name === projectName) // 使用唯一字段product_name，project_name是alias，不唯一
-
-  if (projectTemplate) {
-    if (projectTemplate.role === 'admin') {
-      return true
-    }
-
-    if (role) {
-      return projectTemplate.role === role
-    }
-  }
-
-  return false
 }
