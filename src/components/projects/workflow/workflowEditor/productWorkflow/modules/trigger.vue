@@ -278,7 +278,7 @@
                   <span>{{ row.main_repo.description?row.main_repo.description:'N/A' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="代码库拥有者/代码库" min-width="160px">
+              <el-table-column label="组织名/用户名/代码库" min-width="160px">
                 <template slot-scope="{ row }">
                   <span>{{ row.main_repo.repo_owner }}/{{ row.main_repo.repo_name }}</span>
                 </template>

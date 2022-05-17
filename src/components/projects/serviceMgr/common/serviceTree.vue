@@ -49,7 +49,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="拥有者" prop="repoOwner" :rules="{required: true, message: '代码库拥有者不能为空', trigger: 'change'}">
+          <el-form-item label="组织名/用户名" prop="repoOwner" :rules="{required: true, message: '组织名/用户名不能为空', trigger: 'change'}">
             <el-select
               v-model.trim="source.repoOwner"
               size="small"
@@ -61,7 +61,7 @@
               :loading="searchRepoOwnerLoading"
               allow-create
               clearable
-              placeholder="请选择拥有者"
+              placeholder="请选择组织名/用户名"
               filterable
             >
               <el-option v-for="(repo,index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path"></el-option>

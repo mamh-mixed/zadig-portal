@@ -40,9 +40,9 @@
         </el-col>
         <el-col :span="showAdvanced || showTrigger ?4:5">
           <el-form-item
-            :label="repo_index === 0 ?(shortDescription?'拥有者':'代码库拥有者') : ''"
+            :label="repo_index === 0 ?'组织名/用户名' : ''"
             :prop="'repos.' + repo_index + '.repo_owner'"
-            :rules="{required: true, message: '拥有者不能为空', trigger: ['blur', 'change']}"
+            :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur', 'change']}"
           >
             <el-select
               @change="getRepoNameById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index]['repo_owner'])"
@@ -54,7 +54,7 @@
               allow-create
               clearable
               size="small"
-              placeholder="代码库拥有者"
+              placeholder="组织名/用户名"
               :loading="codeInfo[repo_index].loading.owner"
               filterable
             >

@@ -42,11 +42,11 @@
         </el-select>
       </el-form-item>
       <el-form-item
-        label="拥有者"
+        label="组织名/用户名"
         prop="repoOwner"
         :rules="{
               required: true,
-              message: '拥有者不能为空',
+              message: '组织名/用户名不能为空',
               trigger: 'change',
             }"
       >
@@ -55,7 +55,7 @@
           size="small"
           style="width: 100%;"
           @change="getRepoNameById(source.codehostId, source.repoOwner)"
-          placeholder="请选择拥有者"
+          placeholder="请选择组织名/用户名"
           filterable
           :disabled="isUpdate"
         >

@@ -36,13 +36,13 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="owner" label="拥有者">
+      <el-form-item prop="owner" label="组织名/用户名">
         <el-select
           v-model="source.owner"
           size="small"
           style="width: 100%;"
           @change="getRepoNameById(source.codehostID, source.owner)"
-          placeholder="请选择拥有者"
+          placeholder="请选择组织名/用户名"
           filterable
           clearable
         >

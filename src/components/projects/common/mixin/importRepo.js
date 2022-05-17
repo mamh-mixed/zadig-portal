@@ -12,7 +12,7 @@ const sourceRules = {
   }],
   owner: [{
     required: true,
-    message: '代码库拥有者不能为空',
+    message: '组织名/用户名不能为空',
     trigger: 'change'
   }],
   repo: [{
