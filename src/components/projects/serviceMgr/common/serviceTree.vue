@@ -257,7 +257,7 @@
                 ></el-button>
                 <el-button
                   v-hasPermi="{projectName: projectName, action: 'edit_service'}"
-                  v-if="data.source && (data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='codehub' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
+                  v-if="data.source && (data.source === 'gitee' || data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='codehub' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
                   type="text"
                   size="mini"
                   icon="el-icon-refresh"
