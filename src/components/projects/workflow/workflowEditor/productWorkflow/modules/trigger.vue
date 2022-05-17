@@ -518,7 +518,8 @@ export default {
         repo_owner: re.repo_owner,
         repo: re.repo_name,
         default_branch: re.branch,
-        codehost_id: re.codehost_id
+        codehost_id: re.codehost_id,
+        repo_namespace: re.repo_namespace
       }))
       return new Promise((resolve, reject) => {
         getAllBranchInfoAPI({ infos: testReposForQuery })
@@ -814,6 +815,12 @@ export default {
       })
     },
     getBranchInfoById (id, repo_owner, repo_name) {
+      const repoItem = this.webhookRepos.find(item => {
+        return item.name === repo_owner
+      })
+      if (repoItem) {
+        this.source.namespace = repoItem.namespace
+      }
       getBranchInfoByIdAPI(id, repo_owner, repo_name).then(res => {
         this.$set(this.webhookBranches, repo_name, res)
       })

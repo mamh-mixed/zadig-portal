@@ -10,6 +10,7 @@
         :repoOwner="source.repoOwner"
         :branchName="source.branchName"
         :remoteName="source.remoteName"
+        :namespace="source.namespace"
         :gitType="source.gitType"
         @getPreloadServices="getPreloadServices"
         :showTree="workSpaceModalVisible"
@@ -69,7 +70,7 @@
           <template>
             <el-form-item label="代码库" prop="repoName" :rules="{required: true, message: '名称不能为空', trigger: 'change'}">
               <el-select
-                @change="getBranchInfoById(source.codehostId,source.repoOwner,source.repoName)"
+                @change="getBranchInfoById(source.codehostId,source.namespace,source.repoName,source)"
                 @clear="clearRepoName"
                 v-model.trim="source.repoName"
                 remote
@@ -642,6 +643,7 @@ export default {
       const remoteName = this.source.remoteName
       const path = this.source.path
       const isDir = this.source.isDir
+      const namespace = this.source.namespace
       const payload = {
         product_name: this.projectName,
         visibility: 'private',
@@ -660,6 +662,7 @@ export default {
             branchName,
             remoteName,
             repoUUID,
+            namespace,
             payload
           )
             .then(res => {
@@ -941,6 +944,7 @@ export default {
       this.source.repoName = ''
       this.source.branchName = ''
       this.source.path = ''
+      this.source.namespace = ''
       this.source.services = []
       this.$set(this.codeInfo, 'repos', [])
       this.$set(this.codeInfo, 'branches', [])
@@ -962,14 +966,16 @@ export default {
       this.source.repoName = ''
       this.source.branchName = ''
       this.source.path = ''
+      this.source.namespace = ''
       this.source.services = []
     },
-    getBranchInfoById (id, repoOwner, repoName) {
+    getBranchInfoById (id, repoOwner, repoName, row) {
       const repoItem = this.codeInfo.repos.find(item => {
         return item.name === repoName
       })
       const repoUUID = repoItem.repo_uuid ? repoItem.repo_uuid : ''
       this.source.repoUUID = repoUUID
+      this.source.namespace = repoItem.namespace || ''
       if (repoName && repoOwner) {
         getBranchInfoByIdAPI(id, repoOwner, repoName, repoUUID).then(res => {
           this.$set(this.codeInfo, 'branches', res)
@@ -1152,7 +1158,6 @@ export default {
       this.$emit('update:showNext', true)
       this.$emit('onShowJoinToEnvBtn', true)
       this.$emit('onRefreshService')
-      this.$emit('getServiceModules')
       this.$router.replace({
         query: { service_name: serviceName, rightbar: 'var' }
       })

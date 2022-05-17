@@ -156,12 +156,12 @@ export default {
       debounce(() => this.checkRegular(regular, row), 500)()
     },
     checkRegular: function (regular, row) {
-      const { codehost_id, repo_owner, repo_name, branches, tags } = row
+      const { codehost_id, repo_namespace, repo_name, branches, tags } = row
       if ((branches && branches.length) > 0 || (tags && tags.length) > 0) {
         this.setRow(regular, row)
       } else {
         if (!branches) {
-          getBranchInfoByIdAPI(codehost_id, repo_owner, repo_name).then(res => {
+          getBranchInfoByIdAPI(codehost_id, repo_namespace, repo_name).then(res => {
             const branches = []
             res.forEach(item => {
               branches.push(item.name)
@@ -171,7 +171,7 @@ export default {
           })
         }
         if (!tags) {
-          getTagsInfoByIdAPI(codehost_id, repo_owner, repo_name).then(res => {
+          getTagsInfoByIdAPI(codehost_id, repo_namespace, repo_name).then(res => {
             const tags = []
             res.forEach(item => {
               tags.push(item.name)

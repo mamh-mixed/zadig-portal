@@ -86,6 +86,7 @@ export default {
         repoOwner: this.gitRepoConfig.owner,
         repoName: this.gitRepoConfig.repo,
         branchName: this.gitRepoConfig.branch,
+        namespace: this.gitRepoConfig.namespace,
         path,
         type: this.getGitSource(this.gitRepoConfig.codehostID) || 'helm'
       }

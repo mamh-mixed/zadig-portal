@@ -74,7 +74,7 @@
             :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
           >
             <el-select
-              @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name)"
+              @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name,'',config.repos[repo_index])"
               v-model.trim="config.repos[repo_index].repo_name"
               remote
               :remote-method="(query)=>{searchProject(repo_index,query)}"
@@ -416,7 +416,7 @@ export default {
       this.config.repos[index].repo_name = ''
       this.config.repos[index].branch = ''
     },
-    getBranchInfoById (index, id, repo_owner, repo_name, key = '') {
+    getBranchInfoById (index, id, repo_owner, repo_name, key = '', row) {
       if (!repo_name) {
         return
       }
@@ -425,16 +425,19 @@ export default {
       })
       let repoId = ''
       let repoUUID = ''
+      let namespace = ''
       if (repoItem) {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
+        namespace = repoItem.namespace
       }
+      row.repo_namespace = namespace
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
         this.setLoadingState(index, 'branch', true)
         getBranchInfoByIdAPI(
           id,
-          repo_owner,
+          namespace,
           repo_name,
           repoUUID,
           1,
@@ -477,7 +480,7 @@ export default {
     getInitRepoInfo (repos) {
       repos.forEach((element, index) => {
         const codehostId = element.codehost_id
-        const repoOwner = element.repo_owner
+        const repoOwner = element.repo_namespace
         const repoName = element.repo_name
         const uuid = element.repo_uuid
         this.$set(this.codeInfo, index, {

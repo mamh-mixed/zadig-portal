@@ -397,7 +397,7 @@ export default {
     },
     repoChange (currentRepo) {
       this.webhookSwap.events = []
-      this.getBranchInfoById(currentRepo.codehost_id, currentRepo.repo_owner, currentRepo.repo_name)
+      this.getBranchInfoById(currentRepo.codehost_id, currentRepo.repo_namespace, currentRepo.repo_name)
     }
   },
   computed: {

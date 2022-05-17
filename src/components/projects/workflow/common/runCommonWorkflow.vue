@@ -109,7 +109,8 @@ export default {
                 codehost_id: build.codehost_id,
                 default_branch: build.branch,
                 repo: build.repo_name,
-                repo_owner: build.repo_owner
+                repo_owner: build.repo_owner,
+                repo_namespace: build.repo_namespace
               })
 
               builds.push({

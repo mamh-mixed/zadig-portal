@@ -125,7 +125,7 @@
 <script>
 import RepoMixin from '../mixin/importRepo'
 import TreeFile from './treeFile.vue'
-
+import { getBranchInfoByIdAPI } from '@api'
 export default {
   props: {
     repoSource: Object,
@@ -215,6 +215,18 @@ export default {
       }
       valid.push(this.$refs.repoForm.validate())
       return Promise.all(valid)
+    },
+    getBranchInfoById (id, owner, repo, row) {
+      this.source.branch = ''
+      const repoItem = this.codeInfo.repos.find(item => {
+        return item.name === repo
+      })
+      this.source.namespace = repoItem.namespace || ''
+      if (repo && owner) {
+        getBranchInfoByIdAPI(id, this.source.namespace, repo).then(res => {
+          this.$set(this.codeInfo, 'branches', res)
+        })
+      }
     }
   },
   components: {

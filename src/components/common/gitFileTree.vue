@@ -77,6 +77,11 @@ export default {
       default: '',
       required: true
     },
+    namespace: {
+      type: String,
+      default: '',
+      required: true
+    },
     gitType: {
       type: String,
       default: 'gitlab',
@@ -110,6 +115,7 @@ export default {
       const repoName = this.gitType === 'codehub' ? this.repoUUID : this.repoName
       const branchName = this.branchName
       const type = this.gitType
+      const namespace = this.namespace
       let path = ''
       if (type === 'gerrit') {
         path = node.data ? (node.data.parent + '/' + node.data.name) : ''
@@ -120,7 +126,7 @@ export default {
         this.loading = true
       }
       this.selectPath = ''
-      getRepoFilesAPI({ codehostId, repoOwner, repoName, branchName, path, type }).then((res) => {
+      getRepoFilesAPI({ codehostId, repoOwner, repoName, branchName, path, type, namespace }).then((res) => {
         if (path === '') {
           this.loading = false
         }
@@ -152,6 +158,7 @@ export default {
       const isDir = this.isDir
       const remoteName = this.remoteName
       const repoUUID = this.repoUUID
+      const namespace = this.namespace
       if (this.gitType === 'codehub') {
         getCodehubRepoFileServiceAPI(codehostId, repoUUID, repoName, branchName, path, isDir, remoteName).then((res) => {
           this.$emit('getPreloadServices', {
@@ -161,7 +168,7 @@ export default {
           })
         })
       } else {
-        getRepoFileServiceAPI(codehostId, repoOwner, repoName, branchName, path, isDir, remoteName).then((res) => {
+        getRepoFileServiceAPI(codehostId, repoOwner, repoName, branchName, path, isDir, remoteName, namespace).then((res) => {
           this.$emit('getPreloadServices', {
             path: path,
             services: res,

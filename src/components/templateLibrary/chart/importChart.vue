@@ -74,7 +74,8 @@ export default {
           repoName: this.tempData.repo,
           branchName: this.tempData.branch,
           path: this.tempData.path,
-          type: 'gerrit'
+          type: 'gerrit',
+          namespace: this.tempData.namespace
         }
         await getRepoFilesAPI(params)
       }

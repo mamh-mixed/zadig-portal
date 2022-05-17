@@ -307,6 +307,7 @@ export default {
             repo: row.repo_name,
             default_branch: row.branch,
             codehost_id: row.codehost_id,
+            repo_namespace: row.repo_namespace,
             key: query
           }
         ]

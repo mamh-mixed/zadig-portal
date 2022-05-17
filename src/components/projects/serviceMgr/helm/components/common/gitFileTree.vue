@@ -74,6 +74,11 @@ export default {
       default: '',
       required: true
     },
+    namespace: {
+      type: String,
+      default: '',
+      required: true
+    },
     showTree: {
       type: Boolean,
       default: false,
@@ -115,6 +120,7 @@ export default {
       const repoOwner = this.repoOwner
       const repoName = this.repoName
       const branchName = this.branchName
+      const namespace = this.namespace
       const url = this.url
       let path = ''
       let params = {}
@@ -129,7 +135,8 @@ export default {
             repoName,
             branchName,
             path,
-            type: 'gerrit'
+            type: 'gerrit',
+            namespace
           }
         } else {
           params = {
@@ -138,7 +145,8 @@ export default {
             repoName,
             branchName,
             path,
-            type: 'helm'
+            type: 'helm',
+            namespace
           }
         }
       } else if (this.type === 'public') {
