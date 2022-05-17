@@ -143,6 +143,11 @@
       :dialogImportFromYamlVisible.sync="openImportYamlDialog"
       @importYamlSuccess="importYamlSuccess"
     />
+    <ImportFromNamespace
+      :projectName="projectName"
+      :dialogImportFromNamespaceVisible.sync="openImportNamespaceDialog"
+      :importServiceFromNamespaceSuccess="importServiceFromNamespaceSuccess"
+    ></ImportFromNamespace>
     <div class="menu-container">
       <el-row>
         <el-col :span="10">
@@ -169,9 +174,13 @@
             <el-tooltip effect="dark" content="从代码库同步" placement="top">
               <el-button v-if="deployType==='k8s'" size="mini" @click="createService('repo')" icon="iconfont icon icongit" plain circle></el-button>
             </el-tooltip>
-            <el-tooltip effect="dark" content="使用模板新建" placement="top">
-              <el-button size="mini" @click="createService('template')" icon="iconfont icon iconvery-template" plain circle></el-button>
-            </el-tooltip>
+            <el-dropdown placement="bottom" style="margin-left: 10px;">
+              <el-button size="mini" icon="iconfont icon iconvery-template" plain circle></el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="createService('template')">使用模板新建</el-dropdown-item>
+                <el-dropdown-item @click.native="createService('namespace')">从 Kubernetes 导入</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </div>
         </el-col>
       </el-row>
@@ -356,6 +365,7 @@
 <script>
 import GitFileTree from '@/components/common/gitFileTree.vue'
 import ImportFromTemplate from './importFromTemplate.vue'
+import ImportFromNamespace from './importFromNamespace.vue'
 import {
   deleteServiceTemplateAPI,
   getSingleProjectAPI,
@@ -413,6 +423,7 @@ export default {
       serviceGroup: [],
       allCodeHosts: [],
       openImportYamlDialog: false,
+      openImportNamespaceDialog: false,
       dialogImportFromRepoLoading: false,
       searchRepoNameLoading: false,
       searchRepoOwnerLoading: false,
@@ -783,6 +794,8 @@ export default {
         } else if (cmd === 'template') {
           this.currentUpdatedServiceName = ''
           this.openImportYamlDialog = true
+        } else if (cmd === 'namespace') {
+          this.openImportNamespaceDialog = true
         }
       }
     },
@@ -1129,7 +1142,9 @@ export default {
           this.$router.replace({
             query: {
               service_name: parentService.service_name,
-              rightbar: (this.$route.query.rightbar ? this.$route.query.rightbar : 'var'),
+              rightbar: this.$route.query.rightbar
+                ? this.$route.query.rightbar
+                : 'var',
               kind: data.kind
             }
           })
@@ -1138,7 +1153,12 @@ export default {
         this.$emit('onJumpToKind', data)
       } else {
         this.$router.replace({
-          query: { service_name: data.service_name, rightbar: (this.$route.query.rightbar ? this.$route.query.rightbar : 'var') }
+          query: {
+            service_name: data.service_name,
+            rightbar: this.$route.query.rightbar
+              ? this.$route.query.rightbar
+              : 'var'
+          }
         })
         this.$emit('onSelectServiceChange', data)
       }
@@ -1156,6 +1176,10 @@ export default {
       this.$router.replace({
         query: { service_name: serviceName, rightbar: 'var' }
       })
+    },
+    importServiceFromNamespaceSuccess () {
+      this.$emit('update:showNext', true)
+      this.$emit('onRefreshService')
     },
     listenResize () {
       window.screenHeight = document.body.clientHeight
@@ -1241,7 +1265,12 @@ export default {
             this.setServiceSelected(data.service_name)
             const query = {
               service_name: data.service_name,
-              rightbar: data.status === 'named' ? 'help' : (this.$route.query.rightbar ? this.$route.query.rightbar : 'var')
+              rightbar:
+                data.status === 'named'
+                  ? 'help'
+                  : this.$route.query.rightbar
+                    ? this.$route.query.rightbar
+                    : 'var'
             }
             this.$router.replace({
               query: query
@@ -1295,7 +1324,8 @@ export default {
   },
   components: {
     GitFileTree,
-    ImportFromTemplate
+    ImportFromTemplate,
+    ImportFromNamespace
   }
 }
 </script>

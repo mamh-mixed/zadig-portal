@@ -394,6 +394,14 @@ export function initProjectEnvAPI (projectName, isStcov, envType = 'general', is
   return http.get(`/api/aslan/environment/init_info/${projectName}${isStcov ? '?stcov=true' : '?'}envType=${envType}&isBaseEnv=${isBaseEnv}&baseEnv=${baseEnvName}&projectName=${projectName}`)
 }
 
+export function getConfigFromNamespaceAPI (clusterId, namespace) {
+  return http.get(`/api/aslan/service/kube/workloads?cluster_id=${clusterId}&namespace=${namespace}`)
+}
+
+export function createServiceFromK8sNamespaceAPI (projectName, payload) {
+  return http.post(`/api/aslan/service/yaml?projectName=${projectName}`, payload)
+}
+
 // Build
 export function getImgListAPI (from = '', imageFrom = '') {
   return http.get(`/api/aslan/system/basicImages?image_from=${from}&image_type=${imageFrom}`)
@@ -741,10 +749,10 @@ export function getTestReportAPI (projectName, workflowName, taskID, testJobName
 
 // Code Scanner
 export function createCodeScannerAPI (payload) {
-  return http.post(`/api/aslan/testing/scanning?projectName=${payload.product_name}`, payload)
+  return http.post(`/api/aslan/testing/scanning?projectName=${payload.project_name}`, payload)
 }
 export function updateCodeScannerAPI (id, payload) {
-  return http.put(`/api/aslan/testing/scanning/${id}?projectName=${payload.product_name}`, payload)
+  return http.put(`/api/aslan/testing/scanning/${id}?projectName=${payload.project_name}`, payload)
 }
 
 export function getCodeScannerDetailAPI (id, projectName) {

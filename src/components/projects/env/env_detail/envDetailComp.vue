@@ -404,6 +404,21 @@
       @statusChange="shareEnvCallback"
       ref="shareEnvRef"
     />
+    <el-dialog :title="`确定要删除 ${projectName} 项目的 ${envName} 环境?`" :visible.sync="envDeleteInfo.deleteDialogVisible" width="40%">
+      <div style="padding: 0 10px;">
+        <el-checkbox v-model="envDeleteInfo.is_delete">同时删除环境对应的 K8s 命名空间和服务</el-checkbox>
+        <div style="margin: 12px 0 4px;">请输入环境名称以确认</div>
+        <el-form ref="deleteForm" :model="envDeleteInfo" :rules="deleteRules" label-width="80px">
+          <el-form-item label-width="0" prop="env_name">
+            <el-input v-model="envDeleteInfo.env_name" placeholder="输入环境名称" size="small"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div slot="footer">
+        <el-button @click="envDeleteInfo.deleteDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="identifyDeleteProduct()" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -513,7 +528,31 @@ export default {
       imageRegistry: [],
       shareEnvStatus: null,
       shareEnvStatusId: null,
-      filterChartName: '*'
+      filterChartName: '*',
+      envDeleteInfo: {
+        deleteDialogVisible: false,
+        is_delete: true,
+        project_name: '',
+        env_name: '',
+        envType: ''
+      },
+      deleteRules: {
+        env_name: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback(new Error('请输入环境名称'))
+              } else if (value !== this.envName) {
+                callback(new Error('环境名称不相符'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'change'
+          }
+        ]
+      }
     }
   },
   computed: {
@@ -1151,63 +1190,60 @@ export default {
         }
       )
     },
-    deleteProduct (project_name, env_name) {
+    deleteProduct (project_name) {
       if (this.usedInPolicy.length) {
         this.cantDelete()
         return
       }
-      const envType = this.isProd ? 'prod' : ''
-      this.$prompt(
-        '请输入环境名称以确认',
-        `确定要删除 ${project_name} 项目的 ${env_name} 环境?`,
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          confirmButtonClass: 'el-button el-button--danger',
-          inputValidator: input => {
-            if (input === env_name) {
-              return true
-            } else if (input === '') {
-              return '请输入环境名称'
-            } else {
-              return '环境名称不相符'
-            }
+      this.envDeleteInfo = {
+        deleteDialogVisible: true,
+        is_delete: true,
+        project_name: project_name,
+        env_name: '',
+        envType: this.isProd ? 'prod' : ''
+      }
+    },
+    identifyDeleteProduct () {
+      this.$refs.deleteForm.validate(() => {
+        const envDeleteInfo = this.envDeleteInfo
+        deleteProductEnvAPI(
+          envDeleteInfo.project_name,
+          envDeleteInfo.env_name,
+          envDeleteInfo.envType,
+          envDeleteInfo.is_delete
+        ).then(res => {
+          this.envDeleteInfo = {
+            deleteDialogVisible: false,
+            is_delete: true,
+            project_name: envDeleteInfo.project_name,
+            env_name: '',
+            envType: this.isProd ? 'prod' : ''
           }
-        }
-      )
-        .then(({ value }) => {
-          deleteProductEnvAPI(project_name, env_name, envType).then(res => {
-            this.$notify({
-              title: `环境正在删除中，请稍后查看环境状态`,
-              message: '操作成功',
-              type: 'success',
-              offset: 50
+          this.$notify({
+            title: `环境正在删除中，请稍后查看环境状态`,
+            message: '操作成功',
+            type: 'success',
+            offset: 50
+          })
+          const position = this.envNameList
+            .map(e => {
+              return e.envName
             })
-            const position = this.envNameList
-              .map(e => {
-                return e.envName
-              })
-              .indexOf(env_name)
-            this.envNameList.splice(position, 1)
-            if (this.envNameList.length > 0) {
-              this.$router.push(
-                `${this.envBasePath}?envName=${
-                  this.envNameList[this.envNameList.length - 1].envName
-                }`
-              )
-            } else {
-              this.$router.push(
-                `/v1/projects/detail/${this.projectName}/envs/create`
-              )
-            }
-          })
+            .indexOf(envDeleteInfo.env_name)
+          this.envNameList.splice(position, 1)
+          if (this.envNameList.length > 0) {
+            this.$router.push(
+              `${this.envBasePath}?envName=${
+                this.envNameList[this.envNameList.length - 1].envName
+              }`
+            )
+          } else {
+            this.$router.push(
+              `/v1/projects/detail/${this.projectName}/envs/create`
+            )
+          }
         })
-        .catch(() => {
-          this.$message({
-            type: 'warning',
-            message: '取消删除'
-          })
-        })
+      })
     },
     restartService (projectName, serviceName, envName) {
       const envType = this.isProd ? 'prod' : ''
