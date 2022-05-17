@@ -150,7 +150,8 @@ export default {
         branch_name: data.branch,
         repo_name: data.repo,
         repo_owner: data.owner,
-        load_path: data.path
+        load_path: data.path,
+        namespace: data.namespace
       }
     },
     chartTemplateUpdate ({ deleteFlag, update, create, name }) {

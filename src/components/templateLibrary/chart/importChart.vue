@@ -126,7 +126,8 @@ export default {
             owner: current.repo_owner,
             repo: current.repo_name,
             branch: current.branch_name,
-            path: current.load_path
+            path: current.load_path,
+            namespace: current.namespace
           }
           this.isUpdate = true
           this.disabled = false

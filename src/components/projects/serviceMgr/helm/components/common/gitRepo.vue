@@ -469,6 +469,7 @@ export default {
               this.source.branchName = gitRepoConfig.branch
               this.source.repoName = gitRepoConfig.repo
               this.source.repoOwner = gitRepoConfig.owner
+              this.source.namespace = value.repo_namespace
             }
             this.selectPath = [createFrom.load_path]
           } else {
@@ -484,6 +485,7 @@ export default {
             this.source.repoOwner = value.repo_owner
             this.source.url = value.src_path
             this.selectPath = [value.load_path]
+            this.source.namespace = value.repo_namespace
           }
           this.isUpdate = true
         } else {
