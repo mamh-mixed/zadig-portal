@@ -406,8 +406,8 @@
     />
     <el-dialog :title="`确定要删除 ${projectName} 项目的 ${envName} 环境?`" :visible.sync="envDeleteInfo.deleteDialogVisible" width="40%">
       <div style="padding: 0 10px;">
-        <el-checkbox v-model="envDeleteInfo.is_delete">同时删除环境对应的 K8s 命名空间和服务</el-checkbox>
-        <div style="margin: 12px 0 4px;">请输入环境名称以确认</div>
+        <el-checkbox v-if="envSource !== 'pm'" v-model="envDeleteInfo.is_delete">同时删除环境对应的 K8s 命名空间和服务</el-checkbox>
+        <div style="margin: 16px 0 6px;">请输入环境名称以确认</div>
         <el-form ref="deleteForm" :model="envDeleteInfo" :rules="deleteRules" label-width="80px">
           <el-form-item label-width="0" prop="env_name">
             <el-input v-model="envDeleteInfo.env_name" placeholder="输入环境名称" size="small"></el-input>
@@ -416,7 +416,7 @@
       </div>
       <div slot="footer">
         <el-button @click="envDeleteInfo.deleteDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="identifyDeleteProduct()" size="small">确 定</el-button>
+        <el-button type="danger" @click="identifyDeleteProduct()" size="small">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -1382,6 +1382,11 @@ export default {
         }
       },
       immediate: true
+    },
+    'envDeleteInfo.deleteDialogVisible' (val) {
+      if (!val) {
+        this.$refs.deleteForm.resetFields()
+      }
     }
   },
   components: {

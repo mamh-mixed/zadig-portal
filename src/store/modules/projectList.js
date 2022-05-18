@@ -9,6 +9,10 @@ const getters = {
   projectList: (state) => {
     return state.projectList
   },
+  projectDeployType: (state) => (projectName) => {
+    const project = state.projectList.find(project => project.name === projectName)
+    return project ? project.deployType : ''
+  },
   getOnboardingTemplates: (state) => {
     return state.projectList
       .filter((temp) => {
