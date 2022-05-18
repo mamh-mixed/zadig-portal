@@ -271,7 +271,6 @@
                         prop="ssh_key">
             <el-input v-model="codeEdit.ssh_key"
                       placeholder="SSH Key"
-                      v-if='dialogCodeEditFormVisible'
                       type="textarea"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -570,8 +569,7 @@
                         prop="ssh_key">
             <el-input v-model="codeAdd.ssh_key"
                       placeholder="SSH Key"
-                      show-password v-if='dialogCodeAddFormVisible'
-                      type="password"
+                      type="textarea"
                       auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item v-if="codeAdd.auth_type === 'PrivateAccessToken'"
