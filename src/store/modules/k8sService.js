@@ -6,7 +6,6 @@ export default {
   mutations: {
     [Mutation.QUERY_K8S_SERVICE] (state, payload) {
       state.k8sServiceInfo = payload
-      console.log(state.k8sServiceInfo)
     }
   },
   actions: {

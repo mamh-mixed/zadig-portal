@@ -340,6 +340,18 @@ export default {
         branches.options = []
         tags.options = []
       }
+      if (query) {
+        branches.options.unshift({
+          id: 'addBranch-' + query,
+          name: query,
+          type: 'branch'
+        })
+        tags.options.unshift({
+          id: 'addTag-' + query,
+          name: query,
+          type: 'tag'
+        })
+      }
     },
     // 如果是勾选的不需要展示当前行 这里不处理数据  通过样式隐藏当前行
     rowStyle ({ row, rowIndex }) {

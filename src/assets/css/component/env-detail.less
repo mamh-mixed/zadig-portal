@@ -144,6 +144,21 @@
     margin-top: 20px;
     margin-bottom: 20px;
 
+    .env-service-list-content {
+      display: flex;
+
+      .left,
+      .right {
+        background: white;
+        transition: width 0.3s;
+      }
+
+      .right {
+        flex: 1;
+        overflow: auto;
+      }
+    }
+
     .service-count {
       display: inline-block;
       margin-left: 14px;

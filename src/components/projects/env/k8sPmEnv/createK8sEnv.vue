@@ -109,7 +109,9 @@
         v-if="variables.length && !$utils.isEmpty(containerMap) && projectConfig.source==='system'"
         class="common-parcel-block box-card-service"
       >
-        <div class="primary-title">变量列表</div>
+        <div class="primary-title">变量列表
+         <VariablePreviewEditor :services="previewServices" :projectName="projectConfig.product_name" :variables="variables" />
+        </div>
         <VarList :variables="variables" :rollbackMode="rollbackMode"></VarList>
       </div>
       <div v-if="projectConfig.source==='system'" class="common-parcel-block">
@@ -222,6 +224,22 @@ const validateEnvName = (rule, value, callback) => {
     }
   }
 }
+
+const projectConfig = {
+  product_name: '',
+  cluster_id: '',
+  env_name: '',
+  source: 'system',
+  namespace: '',
+  defaultNamespace: '',
+  vars: [],
+  revision: null,
+  isPublic: true,
+  roleIds: [],
+  registry_id: '',
+  services: [],
+  selectedService: [] // will be deleted when created
+}
 export default {
   data () {
     return {
@@ -229,21 +247,7 @@ export default {
       selection: '',
       editButtonDisabled: true,
       currentProductDeliveryVersions: [],
-      projectConfig: {
-        product_name: '',
-        cluster_id: '',
-        env_name: '',
-        source: 'system',
-        namespace: '',
-        defaultNamespace: '',
-        vars: [],
-        revision: null,
-        isPublic: true,
-        roleIds: [],
-        registry_id: '',
-        services: [],
-        selectedService: [] // will be deleted when created
-      },
+      projectConfig: cloneDeep(projectConfig),
       hostingNamespace: [],
       allCluster: [],
       startDeployLoading: false,
@@ -278,6 +282,10 @@ export default {
         keeps: 20,
         size: 34,
         start: 0
+      },
+      defaultResource: {
+        clusterId: '',
+        registryId: ''
       }
     }
   },
@@ -294,6 +302,9 @@ export default {
     },
     serviceNames () {
       return Object.keys(this.containerMap)
+    },
+    previewServices () {
+      return this.serviceNames.map(item => { return { service_name: item } })
     },
     variables () {
       const services = this.projectConfig.selectedService
@@ -341,6 +352,11 @@ export default {
     async getCluster () {
       const projectName = this.projectName
       const res = await getClusterListAPI(projectName)
+      res.forEach(element => {
+        if (element.local) {
+          this.defaultResource.clusterId = element.id
+        }
+      })
       const cluster_id = this.projectConfig.cluster_id
       if (!this.rollbackMode) {
         this.allCluster = res.filter(element => {
@@ -348,20 +364,16 @@ export default {
         })
         if (this.createShare && this.clusterId) {
           this.projectConfig.cluster_id = this.clusterId
-        } else {
-          res.forEach(element => {
-            if (element.local && !cluster_id) {
-              this.projectConfig.cluster_id = element.id
-            }
-          })
+        } else if (!cluster_id) {
+          this.projectConfig.cluster_id = this.defaultResource.clusterId
         }
       } else if (this.rollbackMode) {
         this.allCluster = res.filter(element => {
-          if (element.local && !cluster_id) {
-            this.projectConfig.cluster_id = element.id
-          }
           return element.status === 'normal' && !element.production
         })
+        if (!cluster_id) {
+          this.projectConfig.cluster_id = this.defaultResource.clusterId
+        }
       }
       if (this.projectConfig.cluster_id) {
         this.changeCluster(this.projectConfig.cluster_id)
@@ -371,7 +383,10 @@ export default {
       const template = versionInfo.productEnvInfo
       const source = this.projectConfig.source
       const env_name = this.projectConfig.env_name
-      this.projectConfig = cloneDeep(template)
+      this.projectConfig = {
+        ...cloneDeep(projectConfig),
+        ...cloneDeep(template)
+      }
 
       for (const group of template.services) {
         group.sort((a, b) => {
@@ -412,7 +427,8 @@ export default {
         this.projectConfig.source = 'versionBack'
       }
       this.projectConfig.env_name = env_name
-      this.projectConfig.cluster_id = ''
+      this.projectConfig.cluster_id = this.defaultResource.clusterId
+      this.projectConfig.registry_id = this.defaultResource.registryId
       this.containerMap = map
     },
     getVersionList () {
@@ -428,10 +444,16 @@ export default {
       const isBaseEnv = this.isBaseEnv
       const baseEnvName = this.baseEnvName
       this.loading = true
-      const template = await initProjectEnvAPI(projectName, isStcov, createEnvType, isBaseEnv, baseEnvName)
+      const template = await initProjectEnvAPI(
+        projectName,
+        isStcov,
+        createEnvType,
+        isBaseEnv,
+        baseEnvName
+      )
       this.loading = false
       this.projectConfig.revision = template.revision
-      this.projectConfig.vars = template.vars
+      this.projectConfig.vars = template.vars || []
       if (template.source === '' || template.source === 'spock') {
         this.projectConfig.source = 'system'
       }
@@ -519,9 +541,6 @@ export default {
       this.selection = ''
     },
     deployK8sEnv () {
-      if (this.projectConfig.source === 'versionBack') {
-        this.projectConfig.source = 'system'
-      }
       this.$refs.createEnvRef.validate(valid => {
         if (valid) {
           // 同名至少要选一个
@@ -563,7 +582,10 @@ export default {
           }
           const payload = this.$utils.cloneObj(this.projectConfig)
 
-          payload.services = cloneDeep(selectedServices) // full service to partial service
+          if (this.projectConfig.source !== 'versionBack') {
+            payload.services = cloneDeep(selectedServices) // full service to partial service
+          }
+
           this.variables.forEach(item => {
             item.services = item.allServices
             delete item.allServices
@@ -661,9 +683,10 @@ export default {
       this.imageRegistry = res
       if (!this.projectConfig.registry_id) {
         const defaultRegistry = res.find(reg => reg.is_default)
-        this.projectConfig.registry_id = defaultRegistry
+        this.defaultResource.registryId = defaultRegistry
           ? defaultRegistry.id
           : ''
+        this.projectConfig.registry_id = this.defaultResource.registryId
       }
       this.getTemplateAndImg()
     })

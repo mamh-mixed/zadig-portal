@@ -4,14 +4,7 @@
       <el-table-column label="键" prop="key"></el-table-column>
       <el-table-column label="值">
         <template slot-scope="{ row }">
-          <el-input
-            size="small"
-            v-model="row.value"
-            type="textarea"
-            :disabled="rollbackMode"
-            :autosize="{ minRows: 1, maxRows: 4}"
-            placeholder="请输入内容"
-          ></el-input>
+          <VariableEditor :varKey="row.key" :value.sync="row.value" :diabled="rollbackMode" />
         </template>
       </el-table-column>
       <el-table-column label="关联服务">

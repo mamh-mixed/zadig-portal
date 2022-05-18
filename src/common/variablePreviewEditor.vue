@@ -93,12 +93,12 @@ export default {
           const validatePayload = {
             yaml: res
           }
-          const errors = validateYamlAPI(projectName, validatePayload).catch(
+          const errors = await validateYamlAPI(projectName, validatePayload).catch(
             error => {
               console.log(error)
             }
           )
-          if (errors) {
+          if (errors && errors.length > 0) {
             this.errors = errors
           } else {
             this.errors = []

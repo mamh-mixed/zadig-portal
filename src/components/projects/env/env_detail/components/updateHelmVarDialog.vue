@@ -1,40 +1,33 @@
 <template>
-  <el-dialog title="更新环境变量" :visible.sync="updateHelmEnvVarDialogVisible" width="80%">
-    <div v-loading="getHelmEnvVarLoading" class="kv-container">
-      <HelmEnvTemplate
-        v-if="updateHelmEnvVarDialogVisible"
-        class="chart-value"
-        ref="helmEnvTemplateRef"
-        :envNames="[envName]"
-        :handledEnv="envName"
-        :envScene="`updateRenderSet`"
-      ></HelmEnvTemplate>
+  <el-dialog title="更新全局服务变量" :visible.sync="updateHelmEnvVarDialogVisible" width="60%" :before-close="cancelUpdateHelmEnvVar">
+    <div class="env-container">
+      <EnvValues v-if="updateHelmEnvVarDialogVisible" ref="envValuesRef" :envName="envName" :defaultEnvsValues="defaultEnvsValues" />
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button size="small" type="primary" :loading="updataHelmEnvVarLoading" @click="updateHelmEnvVar">更新</el-button>
-      <el-button size="small" @click="cancelUpdateHelmEnvVar">取 消</el-button>
+      <el-button size="small" type="primary" :loading="updateHelmEnvVarLoading" @click="updateHelmEnvVar()">更新</el-button>
+      <el-button size="small" @click="cancelUpdateHelmEnvVar()">取 消</el-button>
     </span>
   </el-dialog>
 </template>
+
 <script>
-import HelmEnvTemplate from './updateHelmEnvTemp.vue'
+import EnvValues from '../common/updateHelmEnvVariable.vue'
 import { updateHelmEnvVarAPI } from '@/api'
 export default {
   name: 'updateHelmVarDialog',
   props: {
-    productInfo: Object,
     fetchAllData: Function,
     projectName: String,
     envName: String
   },
   components: {
-    HelmEnvTemplate
+    EnvValues
   },
   data () {
     return {
       updateHelmEnvVarDialogVisible: false,
-      updataHelmEnvVarLoading: false,
-      getHelmEnvVarLoading: false
+      updateHelmEnvVarLoading: false,
+      defaultEnvsValues: {}
     }
   },
   methods: {
@@ -42,36 +35,34 @@ export default {
       this.updateHelmEnvVarDialogVisible = true
     },
     async updateHelmEnvVar () {
-      const res = await this.$refs.helmEnvTemplateRef.validate().catch(err => {
+      const res = await this.$refs.envValuesRef.validate().catch(err => {
         console.log(err)
       })
       if (!res) {
         return
       }
-      const projectName = this.productInfo.product_name
-      const valueInfo = this.$refs.helmEnvTemplateRef.getAllInfo()
       const payload = {
-        chartValues: valueInfo.chartInfo,
-        defaultValues: valueInfo.envInfo[this.envName],
-        valuesData: { yamlSource: 'repo', autoSync: valueInfo.gitInfo.autoSync, gitRepoConfig: valueInfo.gitInfo }
+        defaultValues: this.defaultEnvsValues[this.envName]
       }
-      this.updataHelmEnvVarLoading = true
-      updateHelmEnvVarAPI(projectName, this.productInfo.env_name, payload)
-        .then(response => {
-          this.updataHelmEnvVarLoading = false
+      this.updateHelmEnvVarLoading = true
+      updateHelmEnvVarAPI(this.projectName, this.envName, payload)
+        .then(() => {
+          this.updateHelmEnvVarLoading = false
           this.updateHelmEnvVarDialogVisible = false
           this.fetchAllData()
           this.$message({
-            message: '更新环境变量成功，请等待服务升级',
+            message: '更新全局服务变量成功，请等待服务升级',
             type: 'success'
           })
         })
         .catch(() => {
-          this.updataHelmEnvVarLoading = false
+          this.updateHelmEnvVarLoading = false
         })
     },
-    cancelUpdateHelmEnvVar () {
+    cancelUpdateHelmEnvVar (done) {
       this.updateHelmEnvVarDialogVisible = false
+      this.defaultEnvsValues = {}
+      done && done()
     }
   }
 }
@@ -82,8 +73,8 @@ export default {
   .el-dialog__body {
     padding: 0 10px 20px;
 
-    .kv-container {
-      margin: 5px 0;
+    .env-container {
+      margin: 5px 30px;
     }
   }
 }

@@ -140,7 +140,7 @@
                   </el-table-column>
                   <el-table-column label="Value">
                     <template slot-scope="scope">
-                      <VariableEditor :disabled="!editEnvIndex[scope.$index]" @onSave="saveRenderKey(scope.$index,scope.row.state)" :varKey="scope.row.key" :value.sync="scope.row.value" />
+                      <VariableEditor :disabled="!editEnvIndex[scope.$index]" :varKey="scope.row.key" :value.sync="scope.row.value" />
                     </template>
                   </el-table-column>
                   <el-table-column v-hasPermi="{projectName: projectName, action: 'edit_service'}" label="操作" width="150">
@@ -184,8 +184,7 @@
                           <el-form-item label="Key" prop="key" inline-message>
                             <el-input
                               size="small"
-                              type="textarea"
-                              :autosize="{ minRows: 1, maxRows: 4}"
+                              type="text"
                               v-model="row.key"
                               placeholder="Key"
                             ></el-input>
@@ -197,13 +196,7 @@
                       <template slot-scope="{ row }">
                         <el-form :model="row" :rules="keyCheckRule" ref="addValueForm" hide-required-asterisk>
                           <el-form-item label="Value" prop="value" inline-message>
-                            <el-input
-                              size="small"
-                              type="textarea"
-                              :autosize="{ minRows: 1, maxRows: 4}"
-                              v-model="row.value"
-                              placeholder="Value"
-                            ></el-input>
+                            <VariableEditor style="line-height: 22px;" :varKey="row.key" :value.sync="row.value" />
                           </el-form-item>
                         </el-form>
                       </template>
