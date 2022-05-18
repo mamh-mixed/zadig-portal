@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="更新全局服务变量" :visible.sync="updateHelmEnvVarDialogVisible" width="60%" :before-close="cancelUpdateHelmEnvVar">
     <div class="env-container">
-      <EnvValues v-if="updateHelmEnvVarDialogVisible" ref="envValuesRef" :envName="envName" :defaultEnvsValues="defaultEnvsValues" />
+      <EnvValues v-if="updateHelmEnvVarDialogVisible" ref="envValuesRef" :envName="envName" :defaultEnvsValues.sync="defaultEnvsValues"/>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button size="small" type="primary" :loading="updateHelmEnvVarLoading" @click="updateHelmEnvVar()">更新</el-button>
@@ -42,7 +42,8 @@ export default {
         return
       }
       const payload = {
-        defaultValues: this.defaultEnvsValues[this.envName]
+        defaultValues: this.defaultEnvsValues[this.envName],
+        yaml_data: this.defaultEnvsValues.yaml_data
       }
       this.updateHelmEnvVarLoading = true
       updateHelmEnvVarAPI(this.projectName, this.envName, payload)
