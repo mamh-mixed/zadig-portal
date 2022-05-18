@@ -51,11 +51,10 @@
                     <el-option
                       v-for="(host,index) in allCodeHosts"
                       :key="index"
-                      :label="`${host.address} ${host.type==='github'||host.type==='gitee'?'('+host.namespace+')':''}`"
+                      :label="host.type === 'other' ? '其他 ('+host.alias+')' : host.address + ' ' + (host.type==='github'||host.type==='gitee' ? '('+host.namespace+')':'')"
                       :value="host.id"
                     >
-                      {{`${host.address}
-                      ${host.type==='github'||host.type==='gitee'?'('+host.namespace+')':''}`}}
+                    {{host.type === 'other' ? '其他 ('+host.alias+')' : host.address + ' ' + (host.type==='github'||host.type==='gitee' ? '('+host.namespace+')':'')}}
                     </el-option>
                   </el-select>
                 </el-form-item>

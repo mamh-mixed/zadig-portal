@@ -2,7 +2,7 @@
   <div class="repo-jump-container">
     <slot></slot>
     <el-tooltip :content="build.source==='gerrit' ?`暂不支持在该类型上查看 Release`:`在 ${build.source} 上查看 Release`" placement="top" effect="dark">
-      <span v-if="build.tag" class="link">
+      <span v-if="build.tag && build.source!=='other'" class="link">
         <i v-if="showIcon && build.tag" class="iconfont icontag1 repo-icon"></i>
         <a
           v-if="build.source==='github'||build.source==='gitlab'"

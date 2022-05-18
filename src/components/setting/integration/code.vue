@@ -627,7 +627,7 @@
                     v-if="scope.row.type==='gitlab'||scope.row.type==='gerrit'||scope.row.type==='codehub'">{{scope.row.type}}</span>
               <span
                     v-if="scope.row.type==='github'||scope.row.type==='gitee'">{{scope.row.type}}({{scope.row.namespace}})</span>
-              <span v-if="scope.row.type==='other'">{{scope.row.type}}({{scope.row.alias}})</span>
+              <span v-if="scope.row.type==='other'">其他({{scope.row.alias}})</span>
             </template>
           </el-table-column>
           <el-table-column label="URL">
