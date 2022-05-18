@@ -22,11 +22,7 @@
                 </div>
               </el-col>
               <el-col :span="7" >
-                <div v-if="build.branchOrTag">
-                  <el-input v-if="build.source==='other'"  v-model="build.branchOrTag.name" size="small"  placeholder="请填写分支"></el-input>
-                </div>
                 <el-select
-                  v-if="build.source!=='other'"
                   v-model="build.branchOrTag"
                   remote
                   :remote-method="(query)=>{searchRepoInfo(build,query)}"
@@ -277,6 +273,18 @@ export default {
         this.jenkinsBuild = value.filter(item => item.jenkins_build_args)
       },
       immediate: true
+    },
+    zadigBuild: {
+      handler (value) {
+        value.forEach((item) => {
+          item.build.repos.forEach(build => {
+            // source:other  init options data
+            if (build.branchOrTag.name && build.source === 'other') {
+              this.searchRepoInfo(build, '')
+            }
+          })
+        })
+      }
     }
   },
   methods: {
@@ -320,6 +328,18 @@ export default {
         item => item.label === 'Branches'
       )
       const tags = build.branchAndTagList.find(item => item.label === 'Tags')
+      if (build.source === 'other' && res.length === 0) {
+        this.$set(res, 0, {
+          branches: [build.branchOrTag],
+          tags: []
+        })
+        if (query) {
+          this.$set(res, 0, {
+            branches: [],
+            tags: []
+          })
+        }
+      }
       if (res && res.length > 0) {
         build.loading = false
         branches.options = res[0].branches.map(item => {
