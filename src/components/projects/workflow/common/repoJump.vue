@@ -68,7 +68,7 @@
     </el-tooltip>
     <i v-if="showIcon && build.commit_id" class="iconfont iconicon_git-commit repo-icon"></i>
     <el-tooltip
-      :content="(build.source==='gerrit'&& (!build.pr || build.pr===0))||build.source==='codehub'|| build.source==='other'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
+      :content="(build.source==='gerrit'&& (!build.pr || build.pr===0))||build.source==='codehub'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
       placement="top"
       effect="dark"
     >
