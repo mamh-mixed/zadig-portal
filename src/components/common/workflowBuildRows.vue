@@ -331,7 +331,7 @@ export default {
       if (build.source === 'other' && res.length === 0) {
         this.$set(res, 0, {
           branches: [build.branchOrTag],
-          tags: []
+          tags: [build.branchOrTag]
         })
         if (query) {
           this.$set(res, 0, {
