@@ -168,7 +168,7 @@ export default {
           })
         })
       } else {
-        getRepoFileServiceAPI(codehostId, repoOwner, repoName, branchName, path, isDir, remoteName, namespace).then((res) => {
+        getRepoFileServiceAPI(codehostId, namespace, repoName, branchName, path, isDir, remoteName, namespace).then((res) => {
           this.$emit('getPreloadServices', {
             path: path,
             services: res,
