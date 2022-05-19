@@ -104,7 +104,8 @@ export default {
           用户名: '',
           标签: '',
           'SSH 私钥': '',
-          '是否生产机器(y/n)': ''
+          '是否生产机器(y/n)': '',
+          主机探活: ''
         }
       ],
       host: { provider: '', option: 'increment', msg: '只能上传 xls/xlsx 文件' },
@@ -177,7 +178,8 @@ export default {
             port: item.PORT ? parseInt(item.PORT) : 22,
             is_prod: item['是否生产机器(y/n)'] === 'y',
             user_name: item['用户名'],
-            private_key: window.btoa(item['SSH 私钥'])
+            private_key: window.btoa(item['SSH 私钥']),
+            probe: JSON.parse(item['主机探活'])
           }
         })
         const payload = {
