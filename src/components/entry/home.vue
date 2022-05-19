@@ -92,6 +92,7 @@ export default {
   created () {
     this.$store.dispatch('GETUSERINFO')
     this.$store.dispatch('getProjectList')
+    this.$store.dispatch('getGlobalPermission')
     this.getAnnouncements()
     this.getPublicKey()
   }

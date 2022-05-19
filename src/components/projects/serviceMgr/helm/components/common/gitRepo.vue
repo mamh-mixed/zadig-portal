@@ -281,7 +281,7 @@ export default {
         console.log(error)
       )
       if (res) {
-        this.allCodeHosts = res
+        this.allCodeHosts = res.filter(item => item.type !== 'other')
       }
     },
     async queryRepoOwnerById (id, key = '') {

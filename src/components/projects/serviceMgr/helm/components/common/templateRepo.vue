@@ -140,7 +140,14 @@ export default {
                 namespace: createFrom.yaml_data.source_detail.git_repo_config.namespace
               }
             } else {
-              this.importRepoInfo.gitRepoConfig = {}
+              this.importRepoInfo.gitRepoConfig = {
+                branch: '',
+                codehostID: null,
+                owner: '',
+                repo: '',
+                autoSync: false,
+                valuesPaths: []
+              }
             }
           }
           this.variables = createFrom.variables || []

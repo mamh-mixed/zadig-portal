@@ -45,22 +45,21 @@
                     v-model="target.repos[repoIndex].codehost_id"
                     size="small"
                     placeholder="请选择代码源"
-                    @change="getRepoOwnerById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id)"
+                    @change="getRepoOwnerById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,'',repo)"
                     filterable
                   >
                     <el-option
                       v-for="(host,index) in allCodeHosts"
                       :key="index"
-                      :label="`${host.address} ${host.type==='github'||host.type==='gitee'?'('+host.namespace+')':''}`"
+                      :label="host.type === 'other' ? '其他 ('+host.alias+')' : host.address + ' ' + (host.type==='github'||host.type==='gitee' ? '('+host.namespace+')':'')"
                       :value="host.id"
                     >
-                      {{`${host.address}
-                      ${host.type==='github'||host.type==='gitee'?'('+host.namespace+')':''}`}}
+                    {{host.type === 'other' ? '其他 ('+host.alias+')' : host.address + ' ' + (host.type==='github'||host.type==='gitee' ? '('+host.namespace+')':'')}}
                     </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5">
+              <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
                 <el-form-item
                   :label="repoIndex === 0 ?'组织名/用户名' : ''"
                   :prop="'repos.' + repoIndex + '.repo_owner'"
@@ -89,7 +88,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5">
+              <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
                 <el-form-item
                   :label="repoIndex === 0 ? (shortDescription?'名称':'代码库名称') : ''"
                   :prop="'repos.' + repoIndex + '.repo_name'"
@@ -118,7 +117,17 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5 ">
+              <el-col :span="showAdvanced || showTrigger ?8:10" v-if="repo.source === 'other'||repo.type === 'other'" >
+                <el-form-item
+                  style="width: 90%;"
+                  :label="repoIndex === 0 ? '代码库地址' : ''"
+                  :prop="'repos.' + repoIndex + '.other_address'"
+                  :rules="{required: true, message: '代码库地址不能为空', trigger: ['blur', 'change']}"
+                >
+                <el-input v-model="repo.other_address" size="small" :placeholder="repo.auth_type === 'SSH'?'SSH 协议地址':' HTTPS 协议地址'"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source !== 'other'&&repo.type !== 'other'">
                 <el-form-item
                   :label="repoIndex === 0 ? (shortDescription?'分支':'默认分支') : ''"
                   :prop="'repos.' + repoIndex + '.branch'"
@@ -146,6 +155,15 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+              <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source === 'other'||repo.type === 'other'">
+              <el-form-item
+                :label="repoIndex === 0 ? (shortDescription?'分支':'默认分支') : ''"
+                :prop="'repos.' + repoIndex + '.branch'"
+                :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
+              >
+              <el-input v-model="repo.branch" size="small" placeholder="请输入"></el-input>
+              </el-form-item>
+            </el-col>
               <el-col v-if="showAdvanced" :span="3">
                 <el-form-item :label="repoIndex === 0 ? '高级':''">
                   <div class="app-operation">
@@ -535,7 +553,12 @@ export default {
       this.$set(this.targets[targetIndex].repos[repoIndex], 'repo_id', repoId)
       this.targets[targetIndex].repos[repoIndex].branch = ''
     },
-    getRepoOwnerById (targetIndex, repoIndex, id, key = '') {
+    getRepoOwnerById (targetIndex, repoIndex, id, key = '', row) {
+      const res = this.allCodeHosts.find(item => {
+        return item.id === id
+      })
+      row.type = res.type
+      row.auth_type = res.auth_type
       if (!key) {
         if (this.codeInfo[targetIndex][repoIndex]) {
           this.codeInfo[targetIndex][repoIndex].repo_owners = []
@@ -568,8 +591,8 @@ export default {
         this.$set(this.codeInfo, targetIndex, {})
         target.repos.forEach((repo, repoIndex) => {
           const codehostId = repo.codehost_id
-          const repoOwner = repo.repo_owner
-          const repoName = repo.repo_name
+          const repoOwner = repo.source === 'other' ? 'other' : repo.repo_owner
+          const repoName = repo.source === 'other' ? 'other' : repo.repo_name
           const uuid = repo.repo_uuid
           this.$set(this.codeInfo[targetIndex], repoIndex, {
             repo_owners: [],

@@ -155,14 +155,14 @@
                 </el-radio-button>
               </el-tooltip>
               <el-tooltip effect="dark" content="服务编排" placement="top">
-                <el-radio-button label="arrange">
+                <el-radio-button v-hasPermi="{projectName: projectName, action: 'edit_service'}" label="arrange">
                   <i class="iconfont iconvery-sort"></i>
                 </el-radio-button>
               </el-tooltip>
             </el-radio-group>
           </div>
         </el-col>
-        <el-col v-hasPermi="{projectName: projectName, action: 'create_service'}" :span="14" class="text-right">
+        <el-col v-hasPermi="{type:'project',projectName: projectName, action: 'create_service'}" :span="14" class="text-right">
           <div style="line-height: 32px;">
             <el-tooltip effect="dark" content="手工输入" placement="top">
               <el-button v-if="deployType==='k8s'" size="mini" icon="el-icon-plus" @click="createService('platform')" plain circle></el-button>
@@ -231,6 +231,7 @@
                 <el-tooltip effect="dark" placement="top">
                   <div slot="content">共享服务可在其他项目的服务编排中使用</div>
                   <el-tag
+                    v-hasPermi="{projectName: projectName, action: 'edit_service'}"
                     v-if="data.type === 'k8s'"
                     :type="data.visibility==='public'?'primary':'info'"
                     :effect="data.visibility==='public'?'dark':'plain'"
@@ -777,7 +778,7 @@ export default {
             const key = this.$utils.rsaEncrypt()
             getCodeSourceMaskedAPI(key).then(res => {
               this.allCodeHosts = res.filter(element => {
-                return element
+                return element.type !== 'other'
               })
             })
           } else {

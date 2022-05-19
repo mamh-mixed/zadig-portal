@@ -97,6 +97,21 @@
             </span>
           </slot>
         </el-alert>
+        <el-alert v-else-if="codeEdit.type === 'other'"
+                  type="info"
+                  :closable="false">
+          <slot>
+            <span class="tips">- 支持标准 Git 协议的代码源</span>
+            <span class="tips">- 集成后，构建/测试模版可从该代码源拉取代码</span>
+            <span class="tips">- 更多配置可参考
+              <el-link style="font-size: 14px; vertical-align: baseline;"
+                       type="primary"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/others/`"
+                       :underline="false"
+                       target="_blank">帮助文档</el-link>
+            </span>
+          </slot>
+        </el-alert>
       </template>
       <el-form :model="codeEdit"
                :rules="codeRules"
@@ -238,6 +253,38 @@
           </el-form-item>
 
         </template>
+        <template v-else-if="codeEdit.type==='other'">
+          <el-form-item label="代码源标识"
+                        prop="alias">
+            <el-input v-model="codeEdit.alias"
+                      placeholder="代码源标识"
+                      auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="鉴权方式" prop="auth_type">
+            <el-select v-model="codeEdit.auth_type" filterable allow-create>
+              <el-option label="SSH" value="SSH"></el-option>
+              <el-option label="Access Token" value="PrivateAccessToken"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="codeEdit.auth_type === 'SSH'"
+                        label="SSH Key"
+                        prop="ssh_key">
+            <el-input v-model="codeEdit.ssh_key"
+                      placeholder="SSH Key"
+                      type="textarea"
+                      auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item v-if="codeEdit.auth_type === 'PrivateAccessToken'"
+                        label="Access Token"
+                        prop="private_access_token">
+            <el-input v-model="codeEdit.private_access_token"
+                      placeholder="Access Token"
+                      show-password
+                      v-if='dialogCodeEditFormVisible'
+                      type="password"
+                      auto-complete="off"></el-input>
+          </el-form-item>
+        </template>
       </el-form>
       <div slot="footer"
            class="dialog-footer">
@@ -246,7 +293,7 @@
                    size="small"
                    class="start-create"
                    @click="updateCodeConfig">
-          {{(codeEdit.type==='gerrit'||codeEdit.type==='codehub')?'确定':'前往授权'}}</el-button>
+          {{(codeEdit.type==='gerrit'||codeEdit.type==='codehub'||codeEdit.type==='other')?'确定':'前往授权'}}</el-button>
         <el-button plain
                    native-type="submit"
                    size="small"
@@ -352,6 +399,21 @@
             </span>
           </slot>
         </el-alert>
+        <el-alert v-else-if="codeAdd.type === 'other'"
+                  type="info"
+                  :closable="false">
+          <slot>
+            <span class="tips">- 支持标准 Git 协议的代码源</span>
+            <span class="tips">- 集成后，构建/测试模版可从该代码源拉取代码</span>
+            <span class="tips">- 更多配置可参考
+              <el-link style="font-size: 14px; vertical-align: baseline;"
+                       type="primary"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/others/`"
+                       :underline="false"
+                       target="_blank">帮助文档</el-link>
+            </span>
+          </slot>
+        </el-alert>
       </template>
       <el-form :model="codeAdd"
                :rules="codeRules"
@@ -370,6 +432,8 @@
                        value="gerrit"></el-option>
             <el-option label="Gitee"
                        value="gitee"></el-option>
+            <el-option label="其他"
+                       value="other"></el-option>
           </el-select>
         </el-form-item>
         <template v-if="codeAdd.type==='gitlab' || codeAdd.type ==='github'">
@@ -487,6 +551,37 @@
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
+        <template v-else-if="codeAdd.type==='other'">
+          <el-form-item label="代码源标识"
+                        prop="alias">
+            <el-input v-model="codeAdd.alias"
+                      placeholder="代码源标识"
+                      auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="鉴权方式" prop="auth_type">
+            <el-select v-model="codeAdd.auth_type" filterable allow-create>
+              <el-option label="SSH" value="SSH"></el-option>
+              <el-option label="Access Token" value="PrivateAccessToken"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="codeAdd.auth_type === 'SSH'"
+                        label="SSH Key"
+                        prop="ssh_key">
+            <el-input v-model="codeAdd.ssh_key"
+                      placeholder="SSH Key"
+                      type="textarea"
+                      auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item v-if="codeAdd.auth_type === 'PrivateAccessToken'"
+                        label="Access Token"
+                        prop="private_access_token">
+            <el-input v-model="codeAdd.private_access_token"
+                      placeholder="Access Token"
+                      show-password v-if='dialogCodeAddFormVisible'
+                      type="password"
+                      auto-complete="off"></el-input>
+          </el-form-item>
+        </template>
       </el-form>
       <div slot="footer"
            class="dialog-footer">
@@ -495,7 +590,7 @@
                    size="small"
                    class="start-create"
                    @click="createCodeConfig">
-          {{(codeAdd.type==='gerrit'||codeAdd.type==='codehub')?'确定':'前往授权'}}</el-button>
+          {{(codeAdd.type==='gerrit'||codeAdd.type==='codehub'||codeAdd.type==='other')?'确定':'前往授权'}}</el-button>
         <el-button plain
                    native-type="submit"
                    size="small"
@@ -509,7 +604,7 @@
           <el-alert type="info"
                     :closable="false">
             <template>
-              支持集成代码源，支持 GitLab、GitHub、CodeHub、Gerrit、Gitee 集成，详情可参考
+              支持集成代码源，支持 GitLab、GitHub、Gerrit、Gitee 集成，详情可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitlab/`"
@@ -532,6 +627,7 @@
                     v-if="scope.row.type==='gitlab'||scope.row.type==='gerrit'||scope.row.type==='codehub'">{{scope.row.type}}</span>
               <span
                     v-if="scope.row.type==='github'||scope.row.type==='gitee'">{{scope.row.type}}({{scope.row.namespace}})</span>
+              <span v-if="scope.row.type==='other'">其他({{scope.row.alias}})</span>
             </template>
           </el-table-column>
           <el-table-column label="URL">
@@ -615,7 +711,9 @@ export default {
         access_token: '',
         application_id: '',
         client_secret: '',
-        enable_proxy: false
+        enable_proxy: false,
+        alias: '',
+        auth_type: ''
       },
       codeAdd: {
         name: '',
@@ -625,7 +723,9 @@ export default {
         address: '',
         access_token: '',
         application_id: '',
-        client_secret: ''
+        client_secret: '',
+        alias: '',
+        auth_type: ''
       },
       codeRules: {
         type: {
@@ -676,6 +776,16 @@ export default {
           required: true,
           message: '请填写 Password',
           trigger: ['blur']
+        },
+        alias: {
+          required: true,
+          message: '请填写代码源标识',
+          trigger: ['blur']
+        },
+        auth_type: {
+          required: true,
+          message: '请选择鉴权方式',
+          trigger: ['blur', 'change']
         }
       }
     }
@@ -800,6 +910,12 @@ export default {
           item.client_secret = this.$utils.aesDecrypt(item.client_secret)
           if (item.password) {
             item.password = this.$utils.aesDecrypt(item.password)
+          }
+          if (item.private_access_token) {
+            item.private_access_token = this.$utils.aesDecrypt(item.private_access_token)
+          }
+          if (item.ssh_key) {
+            item.ssh_key = this.$utils.aesDecrypt(item.ssh_key)
           }
         })
         this.code = res

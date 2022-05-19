@@ -6,16 +6,6 @@
     class="version-list-container"
   >
     <div class="operation">
-      <!-- <el-select
-        style="width: 160px;"
-        v-model="selectedService"
-        @change="searchVersionByService"
-        placeholder="请选择服务名称"
-        clearable
-        size="medium"
-      >
-        <el-option v-for="(item,index) in serviceList" :key="index" :label="item" :value="item"></el-option>
-      </el-select> -->
       <div v-if="showHookConfig" class="hook-config">
         <span class="hook-switch">
           <span>
@@ -91,7 +81,7 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="deleteVersion(scope.row.versionInfo)" type="danger" plain>删除</el-button>
+          <el-button v-hasPermi="{type:'project',projectName: projectName, action: 'delete_delivery'}" size="mini" @click="deleteVersion(scope.row.versionInfo)" type="danger" plain>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
