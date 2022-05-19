@@ -34,7 +34,7 @@
             <i class="el-icon-question common-icon"></i>
           </el-tooltip>
           <el-tooltip effect="dark" content="更新服务" placement="top">
-            <i
+            <i v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
               class="iconfont icongengxin common-icon pointer"
               :class="[chart.status === 'pending' ? 'disabled' : '']"
               @click="updateChartService(chart, 'update', chart.status === 'pending')"

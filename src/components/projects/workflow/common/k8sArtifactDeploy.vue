@@ -79,7 +79,7 @@
       </el-table-column>
     </el-table>
     <div v-if="showCreateVersion" class="create-version">
-      <div class="create-checkbox">
+      <div v-hasPermi="{projectName: projectName, action: 'create_delivery'}" class="create-checkbox">
         <el-checkbox v-model="versionInfo.enabled">创建版本</el-checkbox>
       </div>
       <el-form v-if="versionInfo.enabled" :model="versionInfo" label-width="90px" ref="versionForm" :rules="versionRules">
