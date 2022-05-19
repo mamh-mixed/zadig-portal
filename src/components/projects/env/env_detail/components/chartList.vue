@@ -265,7 +265,8 @@ export default {
             overrideValues: chart.overrideValues
           }
         }),
-        updateServiceTmpl: this.currentChart.updateServiceTmpl
+        updateServiceTmpl: this.currentChart.updateServiceTmpl,
+        valuesData: {}
       }
       updateHelmServiceVarAPI(this.projectName, this.envName, payload).then(
         () => {

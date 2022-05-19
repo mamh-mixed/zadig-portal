@@ -43,7 +43,7 @@ export default {
       }
       const payload = {
         defaultValues: this.defaultEnvsValues[this.envName],
-        yaml_data: this.defaultEnvsValues.yaml_data
+        valuesData: this.defaultEnvsValues.yaml_data
       }
       this.updateHelmEnvVarLoading = true
       updateHelmEnvVarAPI(this.projectName, this.envName, payload)

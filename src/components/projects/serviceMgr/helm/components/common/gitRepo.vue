@@ -376,7 +376,8 @@ export default {
         codeHostID: this.source.codehostId,
         owner: this.source.repoOwner,
         repo: this.source.repoName,
-        branch: this.source.branchName
+        branch: this.source.branchName,
+        namespace: this.source.namespace
       }
       this.$emit('selectPath', emitParams)
     },
