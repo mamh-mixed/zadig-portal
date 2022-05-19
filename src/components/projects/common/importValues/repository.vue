@@ -216,6 +216,7 @@ export default {
       valid.push(this.$refs.repoForm.validate())
       return Promise.all(valid)
     },
+    // select set namespace
     getBranchInfoById (id, owner, repo, row) {
       this.source.branch = ''
       const repoItem = this.codeInfo.repos.find(item => {

@@ -816,10 +816,10 @@ export default {
     },
     getBranchInfoById (id, repo_owner, repo_name) {
       const repoItem = this.webhookRepos.find(item => {
-        return item.name === repo_owner
+        return item.repo_owner === repo_owner
       })
       if (repoItem) {
-        this.source.namespace = repoItem.namespace
+        this.source.namespace = repoItem.repo_namespace
       }
       getBranchInfoByIdAPI(id, repo_owner, repo_name).then(res => {
         this.$set(this.webhookBranches, repo_name, res)

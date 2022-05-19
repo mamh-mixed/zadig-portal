@@ -133,7 +133,8 @@ export default {
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
             pr: repo.pr,
-            branch: repo.branch
+            branch: repo.branch,
+            repo_namespace: repo.repo_namespace
           }
         } else {
           return {
@@ -141,7 +142,8 @@ export default {
             source: repo.source,
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
-            tag: repo.tag
+            tag: repo.tag,
+            repo_namespace: repo.repo_namespace
           }
         }
       })

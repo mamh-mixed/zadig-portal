@@ -137,7 +137,7 @@ export default {
           getRepoNameByIdAPI(codehostId, type, encodeURI(repoOwner)).then(res => {
             this.$set(this.codeInfo, 'repos', res)
           })
-          getBranchInfoByIdAPI(codehostId, repoOwner, repoName).then(res => {
+          getBranchInfoByIdAPI(codehostId, this.source.namespace, repoName).then(res => {
             if (res) {
               this.$set(this.codeInfo, 'branches', res)
             }

@@ -1,6 +1,6 @@
 <template>
   <div class="values-outer">
-    <h4 style="padding-left: 40px;">values 文件11</h4>
+    <h4 style="padding-left: 40px;">values 文件</h4>
     <el-form-item label-width="0px">
       <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" substantial></Repository>
     </el-form-item>
