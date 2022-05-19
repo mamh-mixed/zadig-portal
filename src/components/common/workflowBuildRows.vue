@@ -330,8 +330,8 @@ export default {
       const tags = build.branchAndTagList.find(item => item.label === 'Tags')
       if (build.source === 'other' && res.length === 0) {
         this.$set(res, 0, {
-          branches: [build.branchOrTag],
-          tags: [build.branchOrTag]
+          branches: build.branchOrTag.type === 'branch' ? [build.branchOrTag] : [],
+          tags: build.branchOrTag.type === 'tag' ? [build.branchOrTag] : []
         })
         if (query) {
           this.$set(res, 0, {
