@@ -28,7 +28,7 @@
       :visible.sync="dialogImportFromRepoVisible"
     >
       <div class="from-code-container">
-        <el-form :model="source" :rules="sourceRules" label-position="left" ref="sourceForm" label-width="120px">
+        <el-form :model="source" :rules="sourceRules" label-position="left" ref="sourceForm" label-width="130px">
           <el-form-item label="代码源" prop="codehostId" :rules="{required: true, message: '代码源不能为空', trigger: 'change'}">
             <el-select
               v-model="source.codehostId"
@@ -70,7 +70,7 @@
           <template>
             <el-form-item label="代码库" prop="repoName" :rules="{required: true, message: '名称不能为空', trigger: 'change'}">
               <el-select
-                @change="getBranchInfoById(source.codehostId,source.namespace,source.repoName,source)"
+                @change="getBranchInfoById(source.codehostId,source.repoOwner,source.repoName,source)"
                 @clear="clearRepoName"
                 v-model.trim="source.repoName"
                 remote
@@ -978,7 +978,7 @@ export default {
       this.source.repoUUID = repoUUID
       this.source.namespace = repoItem.namespace || ''
       if (repoName && repoOwner) {
-        getBranchInfoByIdAPI(id, repoOwner, repoName, repoUUID).then(res => {
+        getBranchInfoByIdAPI(id, this.source.namespace, repoName, repoUUID).then(res => {
           this.$set(this.codeInfo, 'branches', res)
         })
         this.source.branchName = ''
