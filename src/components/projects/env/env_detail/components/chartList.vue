@@ -110,7 +110,7 @@ export default {
       lineNumbers: false
     }
     return {
-      leftShow: false,
+      leftShow: true,
       filteredItems: [
         {
           value: 'serviceName',
