@@ -17,6 +17,14 @@
         <span v-if="build.source==='gerrit'">{{ showIcon ? '' : "Tag-"}}{{build.tag}}</span>
       </span>
     </el-tooltip>
+    <span v-if="build.tag && build.source==='other'" class="normal">
+      <i v-if="showIcon && build.tag" class="iconfont icontag1 repo-icon"></i>
+      <span>{{ showIcon ? '' : "Tag-"}}{{build.tag}}</span>
+    </span>
+    <span v-if="build.branch && !build.tag && build.source==='other'" class="normal">
+      <i v-if="showIcon && build.branch" class="iconfont iconicon_git-branch repo-icon"></i>
+      <span class="normal" v-if="build.source ==='other'">{{showIcon ? '' : "Branch-" }}{{build.branch}}</span>
+    </span>
     <el-tooltip
       :content="build.source==='gerrit'||build.source==='codehub'?`暂不支持在该类型上查看 Branch`:`在 ${build.source} 上查看 Branch`"
       placement="top"
@@ -90,7 +98,6 @@
         <span v-else-if="build.source==='codehub'">{{build.commit_id.substring(0, 8)}}</span>
       </span>
     </el-tooltip>
-    <span class="normal" v-if="build.source ==='other'">{{showIcon ? '' : "Branch-" }}{{ build.branch}}</span>
   </div>
 </template>
 
