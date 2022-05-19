@@ -841,7 +841,6 @@ export default {
       const key = this.$utils.rsaEncrypt()
       getCodeSourceMaskedAPI(key).then(res => {
         this.allCodeHosts = res.filter(element => {
-          console.log(element)
           return element
         })
       })
