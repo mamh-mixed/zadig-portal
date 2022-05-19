@@ -266,7 +266,7 @@ export default {
           }
         }),
         updateServiceTmpl: this.currentChart.updateServiceTmpl,
-        valuesData: {}
+        valuesData: chartValues[0].valuesData
       }
       updateHelmServiceVarAPI(this.projectName, this.envName, payload).then(
         () => {
