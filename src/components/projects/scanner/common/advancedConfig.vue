@@ -35,7 +35,7 @@
           ref="timer"
           timerType="test"
           :projectName="projectName"
-          :testName="isEdit ? name : scannerConfig.name"
+          :testName="isEdit ? scannerName : scannerConfig.name"
           :schedules="scannerConfig.schedules"
           :class="[scannerConfig.schedules.items.length === 0 ? 'hidden-table' : 'margin-bottom']"
         >
