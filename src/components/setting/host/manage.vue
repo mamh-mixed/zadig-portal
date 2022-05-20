@@ -134,7 +134,7 @@ const initHost = {
     probe_type: 'tcp',
     http_probe: {
       path: '',
-      port: 22, // 1~65335
+      port: 22, // 1~65535
       timeout_second: 1, // 1~10
       response_flag: false, // delete
       response_success_flag: '',

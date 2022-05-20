@@ -87,7 +87,7 @@
         </el-form-item>
         <div v-show="host.probe.probe_type !== 'tcp'">
           <el-form-item label="端口" prop="probe.http_probe.port">
-            <el-input v-model.number="host.probe.http_probe.port" size="small" placeholder="1 ~ 65335"></el-input>
+            <el-input v-model.number="host.probe.http_probe.port" size="small" placeholder="1 ~ 65535"></el-input>
           </el-form-item>
           <el-form-item label="路径">
             <el-input v-model="host.probe.http_probe.path" placeholder="example.com/healthz" size="small"></el-input>
@@ -223,7 +223,7 @@ export default {
             probe_type: 'tcp',
             http_probe: {
               path: '',
-              port: 22, // 1~65335
+              port: 22, // 1~65535
               timeout_second: 1, // 1~10
               response_flag: false, // delete
               response_success_flag: '',
@@ -305,8 +305,8 @@ export default {
           validator: (rule, value, callback) => {
             if (!value) {
               callback(new Error('请输入端口'))
-            } else if (isNaN(value) || value > 65335 || value < 1) {
-              callback(new Error('端口范围 1 ~ 65335'))
+            } else if (isNaN(value) || value > 65535 || value < 1) {
+              callback(new Error('端口范围 1 ~ 65535'))
             } else {
               callback()
             }
