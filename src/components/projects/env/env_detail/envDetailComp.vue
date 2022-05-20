@@ -238,7 +238,7 @@
         </div>
       </div>
       <div v-loading="serviceLoading" element-loading-text="正在获取服务信息" element-loading-spinner="el-icon-loading" class="service-container">
-        <div style="margin-bottom: 10px;">
+        <div class="service-title">
           <el-input
             size="mini"
             class="search-input"
@@ -250,10 +250,11 @@
           >
             <i class="el-icon-search el-input__icon" slot="prefix"></i>
           </el-input>
-          <span v-show="!serviceLoading" class="service-count">
+          <span v-show="!serviceLoading" class="service-count middle">
             服务总数
             <span class="service-number">{{ envTotal }}</span> 个
           </span>
+          <el-button type="text" @click="refreshServiceList">刷新</el-button>
         </div>
         <div class="env-service-list-content">
           <ChartList
@@ -691,7 +692,8 @@ export default {
     },
     refreshServiceList () {
       this.initPageInfo()
-      this.getEnvServices()
+      this.getEnvServices('search')
+      this.fetchEnvRevision()
     },
     initPageInfo () {
       this.removeListener()
