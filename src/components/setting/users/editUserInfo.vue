@@ -6,7 +6,7 @@
     :close-on-click-modal="false"
     :visible.sync="dialogEditRoleVisible"
   >
-    <el-form :model="clonedUserInfo" @submit.native.prevent :rules="editUserRule" ref="addUserForm">
+    <el-form :model="clonedUserInfo" @submit.native.prevent :rules="editUserRule" ref="addUserForm" label-position="top">
       <el-form-item label="邮箱" prop="email">
         <el-input size="small" v-model="clonedUserInfo.email"></el-input>
       </el-form-item>
@@ -17,7 +17,7 @@
         <el-input size="small" v-model="clonedUserInfo.phone"></el-input>
       </el-form-item>
       <el-form-item label="角色" prop="isAdmin">
-        <el-select v-model="clonedUserInfo.isAdmin" multiple placeholder="请选择">
+        <el-select style="width: 100%;" size="small" v-model="clonedUserInfo.isAdmin" multiple placeholder="请选择角色">
           <el-option
             v-for="item in roleList"
             :key="item.name"
