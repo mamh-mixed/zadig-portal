@@ -606,18 +606,18 @@ export default {
       this.source.services = val.services
       this.workSpaceModalVisible = false
       const codehostId = this.source.codehostId
-      const repoOwner = this.source.repoOwner
       const repoName = this.source.repoName
       const repoUUID = this.source.repoUUID
       const branchName = this.source.branchName
       const remoteName = this.source.remoteName
       const serviceName = this.source.serviceName
+      const namespace = this.source.namespace
       const path = val.path
       const isDir = this.source.isDir
       if (serviceName) {
         validPreloadService(
           codehostId,
-          repoOwner,
+          namespace,
           repoName,
           branchName,
           path,
@@ -858,7 +858,7 @@ export default {
           this.$set(this.codeInfo, 'repos', res)
         })
       })
-      getBranchInfoByIdAPI(codehostId, repoOwner, repoName).then(res => {
+      getBranchInfoByIdAPI(codehostId, source.namespace, repoName).then(res => {
         this.$set(this.codeInfo, 'branches', res)
       })
     },
@@ -1002,10 +1002,11 @@ export default {
         this.source.gitType = data.source
         this.source.isDir = data.is_dir
         this.source.serviceName = data.service_name
+        this.source.namespace = data.repo_namespace
         this.getInitRepoInfo(this.source)
         validPreloadService(
           data.codehost_id,
-          data.repo_owner,
+          data.repo_namespace,
           data.repo_name,
           data.branch_name,
           data.load_path,

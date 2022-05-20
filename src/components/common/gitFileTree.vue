@@ -151,7 +151,6 @@ export default {
     },
     selectFile () {
       const codehostId = this.codehostId
-      const repoOwner = this.repoOwner
       const repoName = this.repoName
       const branchName = this.branchName
       const path = this.selectPath
