@@ -117,12 +117,12 @@ export default {
       const type = this.gitType
       const namespace = this.namespace
       let path = ''
-      if (type === 'gerrit') {
+      if (type === 'gerrit' || type === 'gitee') {
         path = node.data ? (node.data.parent + '/' + node.data.name) : ''
       } else {
         path = node.data ? node.data.full_path : ''
       }
-      if (path === '' && type !== 'gerrit') {
+      if (path === '' && type !== 'gerrit' && type !== 'gitee') {
         this.loading = true
       }
       this.selectPath = ''
@@ -142,7 +142,7 @@ export default {
     },
     clickNode (data, node) {
       const type = this.gitType
-      if (type === 'gerrit') {
+      if (type === 'gerrit' || type === 'gitee') {
         this.selectPath = (data.parent + '/' + data.name).substr(2)
       } else {
         this.selectPath = node.data.full_path

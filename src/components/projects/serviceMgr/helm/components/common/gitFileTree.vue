@@ -128,15 +128,15 @@ export default {
       this.selectPath = ''
       this.loading = true
       if (this.type === 'private') {
-        if (this.codehostSource === 'gerrit') {
+        if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee') {
           params = {
             codehostId,
             repoOwner,
             repoName,
             branchName,
             path,
-            type: 'gerrit',
-            namespace
+            namespace,
+            type: this.codehostSource
           }
         } else {
           params = {
