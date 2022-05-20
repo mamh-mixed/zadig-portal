@@ -45,6 +45,7 @@ export default {
         defaultValues: this.defaultEnvsValues[this.envName],
         valuesData: this.defaultEnvsValues.valuesData
       }
+      payload.valuesData.autoSync = payload.valuesData.gitRepoConfig.autoSync
       this.updateHelmEnvVarLoading = true
       updateHelmEnvVarAPI(this.projectName, this.envName, payload)
         .then(() => {
