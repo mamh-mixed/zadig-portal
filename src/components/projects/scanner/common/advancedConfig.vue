@@ -85,7 +85,7 @@ export default {
       return this.$route.params.project_name
     },
     name () {
-      return this.$route.params.test_name
+      return this.$route.params.scanner_name
     },
     isEdit () {
       return !!this.name
