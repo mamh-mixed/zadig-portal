@@ -18,9 +18,13 @@ export function checkPermissionSync (opts) {
     globalPermission = store.getters.globalPermission
   }
   const isSystemAdmin = globalPermission.is_system_admin
+  const projectAdminList = globalPermission.project_admin_list ? globalPermission.project_admin_list : []
   const { type, projectName, action, actions, operator } = opts
   // 系统管理员放行
   if (isSystemAdmin) {
+    return true
+  }
+  if (projectAdminList.includes(projectName)) {
     return true
   }
   // 系统角色权限判断
@@ -95,9 +99,13 @@ export async function permissionCheckingLogic (opts) {
     globalPermission = store.getters.globalPermission
   }
   const isSystemAdmin = globalPermission.is_system_admin
+  const projectAdminList = globalPermission.project_admin_list ? globalPermission.project_admin_list : []
   const { type, projectName, action, actions, operator } = opts
   // 系统管理员放行
   if (isSystemAdmin) {
+    return true
+  }
+  if (projectAdminList.includes(projectName)) {
     return true
   }
   // 系统角色权限判断
