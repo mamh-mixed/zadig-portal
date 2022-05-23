@@ -40,11 +40,11 @@
           </el-form-item>
           <el-form-item v-if="showOperation()"
                         label="操作">
-            <el-button v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
+            <el-button v-hasPermi="{projectName: projectName, action: 'run_test',isBtn:true}" v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
                        @click="rerun"
                        type="text"
                        size="medium">失败重试</el-button>
-            <el-button v-if="taskDetail.status==='running'||taskDetail.status==='created'"
+            <el-button v-hasPermi="{projectName: projectName, action: 'run_test',isBtn:true}" v-if="taskDetail.status==='running'||taskDetail.status==='created'"
                        @click="cancel"
                        type="text"
                        size="medium">取消任务</el-button>
