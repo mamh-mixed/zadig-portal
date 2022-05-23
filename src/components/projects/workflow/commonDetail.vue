@@ -11,12 +11,17 @@
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
       <router-link
-        v-hasPermi="{projectName: workflow.projectName, action: 'edit_workflow',isBtn: true}"
+        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow'})"
         :to="`/workflows/common/edit/${workflowName}?projectName=${projectName}&id=${workflowID}`"
         class="middle"
       >
         <span class="iconfont icondeploy edit-setting"></span>
       </router-link>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <span class="middle">
+          <span class="permission-disabled iconfont icondeploy edit-setting"></span>
+        </span>
+      </el-tooltip>
       <div class="right">
         <CusTags :values="stages" class="item"></CusTags>
         <span class="item">

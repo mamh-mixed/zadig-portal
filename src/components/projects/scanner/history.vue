@@ -1,12 +1,27 @@
 <template>
   <div class="code-scanner-detail">
     <el-card class="scanner-basic-info">
-      <el-button type="primary" effect="dark" @click="runTask" class="left">
+      <el-button
+        v-hasPermi="{projectName: projectName, action: 'run_scan',isBtn:true}"
+        type="primary"
+        effect="dark"
+        @click="runTask"
+        class="left"
+      >
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
-      <router-link :to="`/v1/projects/detail/${projectName}/scanner/edit/${scannerName}?id=${scannerID}`" class="middle">
+      <router-link
+        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_scan'})"
+        :to="`/v1/projects/detail/${projectName}/scanner/edit/${scannerName}?id=${scannerID}`"
+        class="middle"
+      >
         <span class="iconfont icondeploy edit-setting"></span>
       </router-link>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <span class="middle">
+          <span class="permission-disabled iconfont icondeploy edit-setting"></span>
+        </span>
+      </el-tooltip>
       <div class="right">
         <span class="item">
           <span class="item left">修改人</span>
