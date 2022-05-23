@@ -252,7 +252,7 @@
             服务总数
             <span class="service-number">{{ envTotal }}</span> 个
           </span>
-          <el-button type="text" @click="refreshServiceList">刷新</el-button>
+          <el-button icon="el-icon-refresh" type="text" @click="refreshServiceList">刷新</el-button>
         </div>
         <div class="env-service-list-content">
           <ChartList
