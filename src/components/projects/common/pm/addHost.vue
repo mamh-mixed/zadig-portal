@@ -124,8 +124,8 @@
                 v-model="host.probe.http_probe.response_flag"
                 @change="(value) => { if(!value){host.probe.http_probe.response_success_flag = ''}}"
               ></el-checkbox>
-              <span style="display: inline-block; margin-left: 5px;">响应结构体包含 “字符串”</span>
-              <el-input v-model="host.probe.http_probe.response_success_flag" size="small" :disabled="!host.probe.http_probe.response_flag"></el-input>
+              <span style="display: inline-block; margin-left: 5px;">响应结构体包含</span>
+              <el-input v-model="host.probe.http_probe.response_success_flag" size="small" :disabled="!host.probe.http_probe.response_flag" placeholder="字符串"></el-input>
             </div>
           </el-form-item>
         </div>
