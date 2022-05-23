@@ -10,6 +10,9 @@ export const SET_PROJECT_LIST = 'SET_PROJECT_LIST'
 // Project Permission
 export const SET_PROJECT_PERMISSION = 'SET_PROJECT_PERMISSION'
 
+// Global Permission
+export const SET_GLOBAL_PERMISSION = 'SET_GLOBAL_PERMISSION'
+
 // Install Status
 export const SET_SIGNUP_STATUS = 'SET_SIGNUP_STATUS'
 

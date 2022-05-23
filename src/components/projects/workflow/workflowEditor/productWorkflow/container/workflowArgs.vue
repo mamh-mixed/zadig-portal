@@ -241,32 +241,25 @@ export default {
               }
             }
             this.$set(repo, 'branchOrTag', branchOrTag)
-            const branchAndTagList = []
-            if (repo.branchNames && repo.branchNames.length) {
-              branchAndTagList.push({
-                label: 'Branches',
-                options: (repo.branchNames || []).map(name => {
-                  return {
-                    type: 'branch',
-                    id: `branch-${name}`,
-                    name
-                  }
-                })
+            this.$set(repo, 'branchAndTagList', [{
+              label: 'Branches',
+              options: (repo.branchNames || []).map(name => {
+                return {
+                  type: 'branch',
+                  id: `branch-${name}`,
+                  name
+                }
               })
-            }
-            if (repo.tags && repo.tags.length) {
-              branchAndTagList.push({
-                label: 'Tags',
-                options: repo.tags.map(tag => {
-                  return {
-                    type: 'tag',
-                    id: `tag-${tag.name}`,
-                    name: tag.name
-                  }
-                })
+            }, {
+              label: 'Tags',
+              options: (repo.tags || []).map(tag => {
+                return {
+                  type: 'tag',
+                  id: `tag-${tag.name}`,
+                  name: tag.name
+                }
               })
-            }
-            this.$set(repo, 'branchAndTagList', branchAndTagList)
+            }])
           }
         }).catch(() => {
           this.precreateLoading = false

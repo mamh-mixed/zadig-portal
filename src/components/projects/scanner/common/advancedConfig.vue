@@ -8,7 +8,7 @@
         :isCreate="!isEdit"
         @validateFailed="$emit('validateFailed')"
         hiddenCache
-      ></BuildAdvancedConfig>
+      />
 
       <div class="primary-title not-first-child">触发器与通知</div>
       <div class="trigger">
@@ -19,12 +19,12 @@
         <TestTrigger
           ref="trigger"
           :projectName="projectName"
-          :testName="isEdit ? name : scannerConfig.name"
+          :testName="isEdit ? scannerName : scannerConfig.name"
           :webhook="scannerConfig.advanced_settings.hook_ctl"
           :avaliableRepos="scannerConfig.repos"
           :canSwitchBranch="false"
           :class="{ 'margin-bottom': scannerConfig.advanced_settings.hook_ctl.items.length }"
-        ></TestTrigger>
+        />
       </div>
       <!-- <div class="timer">
         <el-form-item>
@@ -35,7 +35,7 @@
           ref="timer"
           timerType="test"
           :projectName="projectName"
-          :testName="isEdit ? name : scannerConfig.name"
+          :testName="isEdit ? scannerName : scannerConfig.name"
           :schedules="scannerConfig.schedules"
           :class="[scannerConfig.schedules.items.length === 0 ? 'hidden-table' : 'margin-bottom']"
         >
@@ -84,11 +84,11 @@ export default {
     projectName () {
       return this.$route.params.project_name
     },
-    name () {
-      return this.$route.params.test_name
+    scannerName () {
+      return this.$route.params.scanner_name
     },
     isEdit () {
-      return !!this.name
+      return !!this.scannerName
     }
   },
   methods: {

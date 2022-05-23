@@ -9,7 +9,7 @@
       </el-tree>
     </div>
     <div class="right">
-      <ServiceModule :openBuild="openBuild" v-show="!build.showModal" :serviceModules="serviceModules" />
+      <ServiceModule :openBuild="openBuild" v-show="!build.showModal" :serviceModules="serviceModules" :projectName="projectName" />
       <div v-show="build.showModal" class="right-build">
         <CommonBuild
           ref="build"

@@ -182,7 +182,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column v-hasPermi="{projectName: projectName, action: 'manage_environment'}" props="replicas"
+            <el-table-column v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment'})" props="replicas"
                              width="125px"
                              label="副本数量">
               <template slot-scope="scope">
@@ -192,7 +192,7 @@
                                  v-model="scope.row.replicas"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-hasPermi="{projectName: projectName, action: 'manage_environment'}" label="操作"
+            <el-table-column v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment'})" label="操作"
                              width="220px">
               <template slot-scope="scope">
                 <el-button @click="restartService(scope.row.name,scope.row.type)"
@@ -273,7 +273,7 @@
                         </el-col>
                         <el-col :span="5"
                                 class="op-buttons">
-                          <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment'}" @click="showContainerExec(activePod[scope.$index].name,container.name)"
+                          <el-button v-hasPermi="{projectName: projectName, action: 'debug_pod'}" @click="showContainerExec(activePod[scope.$index].name,container.name)"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      icon="iconfont iconTerminal"
                                      size="small"> 调试</el-button>

@@ -21,8 +21,7 @@
                   </el-tooltip>
                 </div>
               </el-col>
-
-              <el-col :span="7">
+              <el-col :span="7" >
                 <el-select
                   v-model="build.branchOrTag"
                   remote
@@ -40,9 +39,8 @@
                   </el-option-group>
                 </el-select>
               </el-col>
-
               <el-col :span="7"
-                      :offset="1">
+                      :offset="1" v-if="build.source!=='other'">
                 <el-select v-if="!$utils.isEmpty(build.branchPRsMap)"
                             v-model.number="build[build.prNumberPropName]"
                             size="small"
@@ -92,7 +90,6 @@
           </el-row>
         </template>
       </el-table-column>
-
       <el-table-column   width="250px">
         <template slot="header">
           部署
@@ -276,6 +273,18 @@ export default {
         this.jenkinsBuild = value.filter(item => item.jenkins_build_args)
       },
       immediate: true
+    },
+    zadigBuild: {
+      handler (value) {
+        value.forEach((item) => {
+          item.build.repos.forEach(build => {
+            // source:other  init options data
+            if (build.branchOrTag.name && build.source === 'other') {
+              this.searchRepoInfo(build, '')
+            }
+          })
+        })
+      }
     }
   },
   methods: {
@@ -319,6 +328,18 @@ export default {
         item => item.label === 'Branches'
       )
       const tags = build.branchAndTagList.find(item => item.label === 'Tags')
+      if (build.source === 'other' && res.length === 0) {
+        this.$set(res, 0, {
+          branches: build.branchOrTag.type === 'branch' ? [build.branchOrTag] : [],
+          tags: build.branchOrTag.type === 'tag' ? [build.branchOrTag] : []
+        })
+        if (query) {
+          this.$set(res, 0, {
+            branches: [],
+            tags: []
+          })
+        }
+      }
       if (res && res.length > 0) {
         build.loading = false
         branches.options = res[0].branches.map(item => {
@@ -338,6 +359,18 @@ export default {
       } else {
         branches.options = []
         tags.options = []
+      }
+      if (query) {
+        branches.options.unshift({
+          id: 'addBranch-' + query,
+          name: query,
+          type: 'branch'
+        })
+        tags.options.unshift({
+          id: 'addTag-' + query,
+          name: query,
+          type: 'tag'
+        })
       }
     },
     // 如果是勾选的不需要展示当前行 这里不处理数据  通过样式隐藏当前行

@@ -28,7 +28,7 @@
             <el-option v-for="(sys,index) in systems" :key="index" :label="sys.label" :value="sys.id">
               {{sys.label}}
             </el-option>
-            <el-option disabled value="NEWCUSTOM">
+            <el-option disabled value="NEWCUSTOM" v-if="scannerConfig.scanner_type !== 'sonarQube'">
               <router-link to="/v1/system/imgs" class="env-link">
                 <i class="el-icon-circle-plus-outline" style="margin-right: 3px;"></i>
                 新建扫描环境

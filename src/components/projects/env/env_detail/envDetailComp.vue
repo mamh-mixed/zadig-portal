@@ -83,7 +83,7 @@
             <div class="grid-content image-registry">
               <div v-if="editImageRegistry === false">
                 <span>{{imageRegistryDesc}}</span>
-                <i class="icon el-icon-edit icon-primary" @click="editImageRegistry = true"></i>
+                <i v-hasPermi="{projectName: projectName, action: 'config_environment'}" class="icon el-icon-edit icon-primary" @click="editImageRegistry = true"></i>
               </div>
               <div v-else>
                 <el-select v-model="productInfo.editRegistryID" size="mini">
@@ -111,6 +111,7 @@
               >
                 <el-button
                   v-if="productInfo.status!=='Creating'"
+                  v-hasPermi="{projectName: projectName, action: 'config_environment'}"
                   type="primary"
                   @click="envSource==='helm' ? openUpdateHelmVar() : openUpdateK8sVar()"
                   size="mini"
@@ -121,12 +122,12 @@
                 <router-link
                   :to="`/v1/projects/detail/${projectName}/envs/create?createShare=true&baseEnvName=${productInfo.env_name}&clusterId=${productInfo.cluster_id}`"
                 >
-                  <el-button type="primary" size="mini" plain>创建子环境</el-button>
+                  <el-button v-hasPermi="{projectName: projectName, action: 'create_environment'}" type="primary" size="mini" plain>创建子环境</el-button>
                 </router-link>
               </template>
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
                 <el-dropdown v-if="envSource===''||envSource==='spock' || envSource==='helm'" trigger="click">
-                  <el-button type="primary" plain>
+                  <el-button v-hasPermi="{projectName: projectName, action: 'config_environment'}" type="primary" plain>
                     管理服务
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
@@ -143,12 +144,12 @@
                   effect="dark"
                   placement="top"
                 >
-                  <el-button type="primary" @click="updateK8sEnv(productInfo)" size="mini" plain>更新环境</el-button>
+                  <el-button v-hasPermi="{projectName: projectName, action: 'config_environment'}" type="primary" @click="updateK8sEnv(productInfo)" size="mini" plain>更新环境</el-button>
                 </el-tooltip>
               </template>
               <template v-if="envSource==='' || envSource==='spock' || envSource === 'helm'">
                 <el-dropdown trigger="click">
-                  <el-button type="primary" plain>
+                  <el-button v-hasPermi="{projectName: projectName, action: 'config_environment'}" type="primary" plain>
                     环境配置
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
@@ -162,17 +163,19 @@
               </template>
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
                 <el-dropdown v-if="envSource===''||envSource==='spock'||envSource==='helm'" trigger="click">
-                  <el-button type="primary" plain>
+                  <el-button v-hasPermi="{projectName: projectName, actions: ['config_environment','delete_environment'],operator:'or'}" type="primary" plain>
                     更多
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-if="!productInfo.share_env_enable" @click.native="shareEnv('enable')">开启自测模式</el-dropdown-item>
+                    <el-dropdown-item v-hasPermi="{projectName: projectName, action: 'config_environment'}" v-if="!productInfo.share_env_enable" @click.native="shareEnv('enable')">开启自测模式</el-dropdown-item>
                     <el-dropdown-item
+                      v-hasPermi="{projectName: projectName, action: 'config_environment'}"
                       v-if="productInfo.share_env_enable && productInfo.share_env_is_base"
                       @click.native="shareEnv('disable')"
                     >关闭自测模式</el-dropdown-item>
                     <el-dropdown-item
+                      v-hasPermi="{projectName: projectName, action: 'delete_environment'}"
                       v-if="isShowDeleteEnv"
                       @click.native="deleteProduct(productInfo.product_name,productInfo.env_name)"
                     >删除环境</el-dropdown-item>
@@ -196,7 +199,7 @@
                   plain
                 >配置托管</el-button>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'config_environment'}"
+                  v-hasPermi="{projectName: projectName, action: 'delete_environment'}"
                   type="primary"
                   @click="deleteHostingEnv(productInfo.product_name,productInfo.env_name)"
                   size="mini"
@@ -235,7 +238,7 @@
         </div>
       </div>
       <div v-loading="serviceLoading" element-loading-text="正在获取服务信息" element-loading-spinner="el-icon-loading" class="service-container">
-        <div style="margin-bottom: 10px;">
+        <div class="service-title">
           <el-input
             size="mini"
             class="search-input"
@@ -247,10 +250,11 @@
           >
             <i class="el-icon-search el-input__icon" slot="prefix"></i>
           </el-input>
-          <span v-show="!serviceLoading" class="service-count">
+          <span v-show="!serviceLoading" class="service-count middle">
             服务总数
             <span class="service-number">{{ envTotal }}</span> 个
           </span>
+          <el-button type="text" @click="refreshServiceList">刷新</el-button>
         </div>
         <div class="env-service-list-content">
           <ChartList
@@ -727,7 +731,8 @@ export default {
     },
     refreshServiceList () {
       this.initPageInfo()
-      this.getEnvServices()
+      this.getEnvServices('search')
+      this.fetchEnvRevision()
     },
     initPageInfo () {
       this.removeListener()

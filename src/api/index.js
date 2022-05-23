@@ -244,6 +244,16 @@ export function taskPendingSSEAPI () {
   return makeEventSource('/api/aslan/workflow/sse/tasks/pending')
 }
 
+// Permission
+
+export function getGlobalPermissionAPI () {
+  return http.get(`/api/v1/policy/permission`)
+}
+
+export function getProjectPermissionAPI (projectName) {
+  return http.get(`/api/v1/policy/permission/project/${projectName}`)
+}
+
 //  Env
 export function listProductAPI (projectName = '', envType = '') {
   if (envType) {
@@ -445,7 +455,7 @@ export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '
       }
     }
     return http.get(`/api/aslan/code/workspace/tree`, { params })
-  } else if (type === 'gerrit') {
+  } else if (type === 'gerrit' || type === 'gitee') {
     const params = {
       repoOwner: repoOwner,
       repoName: repoName,
@@ -1884,9 +1894,9 @@ export function queryUserBindingsAPI (uid, projectName = '') { // Query all bind
   return http.get(`/api/v1/userbindings?uid=${uid}&projectName=${projectName}`)
 }
 
-export function getProjectPermissionAPI (projectName = '', uid) {
-  return http.get(`/api/v1/policy/permission/${uid}?projectName=${projectName}`)
-}
+// export function getProjectPermissionAPI (projectName = '', uid) {
+//   return http.get(`/api/v1/policy/permission/${uid}?projectName=${projectName}`)
+// }
 
 export function getArtifactFileAPI (payload, id) {
   return http.post(`/api/aslan/system/s3storage/${id}/releases/search?kind=file`, payload)

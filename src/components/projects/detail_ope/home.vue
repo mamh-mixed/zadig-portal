@@ -15,7 +15,7 @@
           <i class="el-icon-plus"></i>&nbsp;&nbsp;&nbsp;&nbsp;新建项目&nbsp;&nbsp;
         </el-button>
         <template>
-          <el-dropdown placement="bottom" trigger="click">
+          <el-dropdown placement="bottom" trigger="click" v-hasPermi="{type: 'system', action: 'get_template'}">
             <button type="button" class="display-btn el-button">
               <i class="iconfont iconvery-template el-icon--left"></i>
               &nbsp;&nbsp;模板库&nbsp;&nbsp;

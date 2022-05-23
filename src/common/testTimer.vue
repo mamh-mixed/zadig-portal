@@ -243,7 +243,7 @@ export default {
       default: '50%'
     },
     whichSave: {
-      typeof: String,
+      type: String,
       default: 'inside'
     }
   },

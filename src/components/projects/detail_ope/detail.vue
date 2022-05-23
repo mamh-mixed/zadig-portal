@@ -173,13 +173,27 @@ export default {
       } else {
         return false
       }
+    },
+    showWorkflow () {
+      const showWorkflow = this.checkPermissionSyncMixin({
+        type: 'project',
+        projectName: this.projectName,
+        action: 'get_workflow'
+      })
+      return showWorkflow
+    },
+    showEnv () {
+      const showEnv = this.checkPermissionSyncMixin({
+        type: 'project',
+        projectName: this.projectName,
+        action: 'get_environment'
+      })
+      return showEnv
     }
   },
   watch: {
     projectName () {
       this.getProject(this.projectName)
-      this.getWorkflows(this.projectName)
-      this.getEnvList()
       bus.$emit(`show-sidebar`, false)
       bus.$emit('set-topbar-title', {
         title: '',
@@ -188,12 +202,26 @@ export default {
           { title: this.projectName, isProjectName: true, url: '' }
         ]
       })
+    },
+    showWorkflow: {
+      handler (val) {
+        if (val) {
+          this.getWorkflows(this.projectName)
+        }
+      },
+      immediate: true
+    },
+    showEnv: {
+      handler (val) {
+        if (val) {
+          this.getEnvList()
+        }
+      },
+      immediate: true
     }
   },
   mounted () {
     this.getProject(this.projectName)
-    this.getWorkflows(this.projectName)
-    this.getEnvList()
     this.$emit('injectComp', this)
     bus.$emit(`show-sidebar`, false)
     bus.$emit('set-topbar-title', {

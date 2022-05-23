@@ -1,8 +1,8 @@
 <template>
   <div class="repo-jump-container">
     <slot></slot>
-    <el-tooltip :content="build.source==='gerrit'?`暂不支持在该类型上查看 Release`:`在 ${build.source} 上查看 Release`" placement="top" effect="dark">
-      <span v-if="build.tag" class="link">
+    <el-tooltip :content="build.source==='gerrit' ?`暂不支持在该类型上查看 Release`:`在 ${build.source} 上查看 Release`" placement="top" effect="dark">
+      <span v-if="build.tag && build.source!=='other'" class="link">
         <i v-if="showIcon && build.tag" class="iconfont icontag1 repo-icon"></i>
         <a
           v-if="build.source==='github'||build.source==='gitlab'"
@@ -17,12 +17,20 @@
         <span v-if="build.source==='gerrit'">{{ showIcon ? '' : "Tag-"}}{{build.tag}}</span>
       </span>
     </el-tooltip>
+    <span v-if="build.tag && build.source==='other'" class="normal">
+      <i v-if="showIcon && build.tag" class="iconfont icontag1 repo-icon"></i>
+      <span>{{ showIcon ? '' : "Tag-"}}{{build.tag}}</span>
+    </span>
+    <span v-if="build.branch && !build.tag && build.source==='other'" class="normal">
+      <i v-if="showIcon && build.branch" class="iconfont iconicon_git-branch repo-icon"></i>
+      <span class="normal" v-if="build.source ==='other'">{{showIcon ? '' : "Branch-" }}{{build.branch}}</span>
+    </span>
     <el-tooltip
       :content="build.source==='gerrit'||build.source==='codehub'?`暂不支持在该类型上查看 Branch`:`在 ${build.source} 上查看 Branch`"
       placement="top"
       effect="dark"
     >
-      <span v-if="build.branch && !build.tag" class="link">
+      <span v-if="build.branch && !build.tag && build.source!=='other'" class="link">
         <i v-if="showIcon && build.branch" class="iconfont iconicon_git-branch repo-icon"></i>
         <a
           v-if="build.source==='github'||build.source==='gitee'||build.source==='gitlab'"
@@ -124,6 +132,10 @@ export default {
 
   a {
     color: @themeColor;
+  }
+
+  .normal {
+    color: #4a4a4a;
   }
 }
 </style>
