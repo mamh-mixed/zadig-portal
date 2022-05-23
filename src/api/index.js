@@ -772,28 +772,28 @@ export function getCodeScannerHistoryAPI (id, projectName, page_num, page_size) 
   return http.get(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}&page_num=${page_num}&page_size=${page_size}`)
 }
 
-export function runCodeScannerTaskAPI (id, payload) {
-  return http.post(`/api/aslan/testing/scanning/${id}/task`, payload)
+export function runCodeScannerTaskAPI (id, payload, projectName) {
+  return http.post(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}`, payload)
 }
 
-export function scannerTaskDetailAPI (scannerId, taskId) {
-  return http.get(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}`)
+export function scannerTaskDetailAPI (scannerId, taskId, projectName) {
+  return http.get(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
-export function scannerTaskDetailSSEAPI (scannerId, taskId) {
-  return makeEventSource(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}/sse`)
+export function scannerTaskDetailSSEAPI (scannerId, taskId, projectName) {
+  return makeEventSource(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}/sse?projectName=${projectName}`)
 }
 
-export function restartScannerTaskAPI (scannerId, taskId, payload) {
-  return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}`, payload)
+export function restartScannerTaskAPI (scannerId, taskId, payload, projectName) {
+  return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`, payload)
 }
 
-export function cancelScannerTaskAPI (scannerId, taskId, payload) {
-  return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}`, payload)
+export function cancelScannerTaskAPI (scannerId, taskId, payload, projectName) {
+  return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`, payload)
 }
 
-export function getScannerTaskLogAPI (scannerId, taskId) {
-  return http.get(`/api/aslan/logs/log/scanning/${scannerId}/task/${taskId}`)
+export function getScannerTaskLogAPI (scannerId, taskId, projectName) {
+  return http.get(`/api/aslan/logs/log/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
 // User Management
