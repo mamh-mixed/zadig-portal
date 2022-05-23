@@ -32,7 +32,7 @@
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
-      <el-dropdown v-hasPermi="{projectName: workflow.projectName, action:'delete_workflow',isBtn: true}">
+      <el-dropdown v-hasPermi="{projectName: workflow.project_name, action:'delete_workflow',isBtn: true}">
         <span class="el-dropdown-link">
           <i class="iconfont iconmorelist more-operation"></i>
         </span>
