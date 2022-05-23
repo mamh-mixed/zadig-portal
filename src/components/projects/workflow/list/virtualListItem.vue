@@ -20,7 +20,7 @@
     <template v-if="workflow.type === 'common'" slot="operations">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: workflow.projectName, action: 'run_workflow',isBtn: true}"
+        v-hasPermi="{projectName: workflow.project_name, action: 'run_workflow',isBtn: true}"
         class="button-exec"
         @click="startCommonWorkflowBuild(workflow)"
       >
