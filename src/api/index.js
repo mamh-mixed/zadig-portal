@@ -405,11 +405,11 @@ export function initProjectEnvAPI (projectName, isStcov, envType = 'general', is
 }
 
 export function getConfigFromNamespaceAPI (clusterId, namespace) {
-  return http.get(`/api/aslan/service/kube/workloads?cluster_id=${clusterId}&namespace=${namespace}`)
+  return http.get(`/api/aslan/service/services/kube/workloads?cluster_id=${clusterId}&namespace=${namespace}`)
 }
 
 export function createServiceFromK8sNamespaceAPI (projectName, payload) {
-  return http.post(`/api/aslan/service/yaml?projectName=${projectName}`, payload)
+  return http.post(`/api/aslan/service/services/yaml?projectName=${projectName}`, payload)
 }
 
 // Build
