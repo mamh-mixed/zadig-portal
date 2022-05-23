@@ -195,7 +195,7 @@ export default {
 
       const namespace = this.importNamespace.namespace
       const clusterId = this.importNamespace.cluster_id
-      getConfigFromNamespaceAPI(clusterId, namespace)
+      getConfigFromNamespaceAPI(this.projectName, clusterId, namespace)
         .then(res => {
           this.workloadsMap = {
             ...cloneDeep(workloadsMapInfo),

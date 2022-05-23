@@ -404,8 +404,8 @@ export function initProjectEnvAPI (projectName, isStcov, envType = 'general', is
   return http.get(`/api/aslan/environment/init_info/${projectName}${isStcov ? '?stcov=true' : '?'}envType=${envType}&isBaseEnv=${isBaseEnv}&baseEnv=${baseEnvName}&projectName=${projectName}`)
 }
 
-export function getConfigFromNamespaceAPI (clusterId, namespace) {
-  return http.get(`/api/aslan/service/services/kube/workloads?cluster_id=${clusterId}&namespace=${namespace}`)
+export function getConfigFromNamespaceAPI (projectName, clusterId, namespace) {
+  return http.get(`/api/aslan/service/services/kube/workloads?projectName=${projectName}&cluster_id=${clusterId}&namespace=${namespace}`)
 }
 
 export function createServiceFromK8sNamespaceAPI (projectName, payload) {
