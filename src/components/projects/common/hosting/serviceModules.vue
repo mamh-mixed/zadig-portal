@@ -20,7 +20,7 @@
           <div v-for="(buildName, index) in scope.row.build_names" :key="index">
             <span class="build-name" @click="openBuild(scope.row, buildName)">{{ buildName }}</span>
           </div>
-          <el-button v-hasPermi="{projectName: projectName, action: 'create_build'}" size="small" type="text" @click="openBuild(scope.row)">添加构建</el-button>
+          <el-button v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" size="small" type="text" @click="openBuild(scope.row)">添加构建</el-button>
         </template>
       </el-table-column>
     </el-table>

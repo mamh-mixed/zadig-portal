@@ -20,16 +20,16 @@
                 </el-radio-group>
               </div>
             </el-col>
-            <el-col v-hasPermi="{type:'project', projectName: projectName, action: 'create_service'}" :span="14" class="text-right">
+            <el-col :span="14" class="text-right">
               <div style="line-height: 32px;">
                 <el-tooltip effect="dark" content="从代码库同步" placement="top">
-                  <el-button size="mini" icon="iconfont icon icongit" @click="openRepoModal('git')" plain circle></el-button>
+                  <el-button v-hasPermi="{type:'project', projectName: projectName, action: 'create_service',isBtn:true}" size="mini" icon="iconfont icon icongit" @click="openRepoModal('git')" plain circle></el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="从 Chart 仓库同步" placement="top">
-                  <el-button @click="openRepoModal('chart')" size="mini" icon="iconfont icon iconhelmrepo" plain circle></el-button>
+                  <el-button v-hasPermi="{type:'project', projectName: projectName, action: 'create_service',isBtn:true}" @click="openRepoModal('chart')" size="mini" icon="iconfont icon iconhelmrepo" plain circle></el-button>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="使用模板新建" placement="top">
-                  <el-button @click="openRepoModal('chartTemplate')" size="mini" icon="iconfont icon iconvery-template" plain circle></el-button>
+                  <el-button v-hasPermi="{type:'project', projectName: projectName, action: 'create_service',isBtn:true}" @click="openRepoModal('chartTemplate')" size="mini" icon="iconfont icon iconvery-template" plain circle></el-button>
                 </el-tooltip>
               </div>
             </el-col>
@@ -93,7 +93,7 @@
         </div>
         <div class="footer" v-if="!isCreate">
           <!-- <el-button size="small" type="primary" @click="commit" :disabled="!commitCache.length">保存</el-button> -->
-          <el-button size="small" type="primary" :disabled="!updateEnv.length || !envNameList.length" @click="update()">加入环境</el-button>
+          <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" size="small" type="primary" :disabled="!updateEnv.length || !envNameList.length" @click="update()">加入环境</el-button>
         </div>
       </div>
       <MultipaneResizer class="multipane-resizer" v-if="service && service.length" />

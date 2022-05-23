@@ -3,7 +3,7 @@
     <el-card class="workflow-basic-info">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: projectName, action: 'run_workflow'}"
+        v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
         effect="dark"
         @click="startTask"
         class="left"
@@ -11,7 +11,7 @@
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
       <router-link
-        v-hasPermi="{projectName: workflow.projectName, action: 'edit_workflow'}"
+        v-hasPermi="{projectName: workflow.projectName, action: 'edit_workflow',isBtn: true}"
         :to="`/workflows/common/edit/${workflowName}?projectName=${projectName}&id=${workflowID}`"
         class="middle"
       >

@@ -31,18 +31,24 @@
         <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <router-link
-              v-hasPermi="{projectName: projectName, action: 'edit_build'}"
+              v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_build'})"
               :to="`/v1/projects/detail/${scope.row.productName}/builds/detail/${scope.row.name}`"
             >
               <el-button type="primary" size="mini" plain>编辑</el-button>
             </router-link>
+            <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+              <el-button type="primary" class="permission-disabled" size="mini" plain>编辑</el-button>
+            </el-tooltip>
             <el-button
-              v-hasPermi="{projectName: projectName, action: 'delete_build'}"
+              v-if="checkPermissionSyncMixin({projectName: projectName, action: 'delete_build'})"
               @click="removeBuildConfig(scope.row)"
               type="danger"
               size="mini"
               plain
             >删除</el-button>
+            <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+              <el-button type="primary" class="permission-disabled" size="mini" plain>删除</el-button>
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
@@ -55,10 +61,7 @@
 </template>
 
 <script>
-import {
-  getBuildConfigsAPI,
-  deleteBuildConfigAPI
-} from '@api'
+import { getBuildConfigsAPI, deleteBuildConfigAPI } from '@api'
 import bus from '@utils/eventBus'
 export default {
   data () {

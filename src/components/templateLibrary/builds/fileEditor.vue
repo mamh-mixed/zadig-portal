@@ -4,6 +4,7 @@
     <slot name="footer">
       <footer class="create-footer">
         <el-button
+          v-hasPermi="{type: 'system', action: isEdit?'edit_template':'create_template',isBtn:true }"
           class="save-btn"
           type="primary"
           size="small"

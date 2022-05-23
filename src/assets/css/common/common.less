@@ -225,3 +225,80 @@
     color: @secondaryColor;
   }
 }
+
+.permission-disabled {
+  cursor: not-allowed;
+
+  &:hover,
+  &:active,
+  &:focus {
+    cursor: not-allowed;
+  }
+}
+
+i.permission-disabled,
+span.permission-disabled {
+  color: #c0c4cc;
+  cursor: not-allowed;
+
+  &:hover,
+  &:active,
+  &:focus {
+    cursor: not-allowed;
+  }
+}
+
+.permission-disabled:hover::after {
+  display: inline-block;
+  transform: translate(0, -50%);
+  opacity: 0.8;
+  transition: all 0.3s;
+}
+
+.el-button--text.permission-disabled,
+.el-button--text.permission-disabled:focus,
+.el-button--text.permission-disabled:hover {
+  position: relative;
+  color: #c0c4cc;
+  background-image: none;
+  border: none;
+  cursor: not-allowed;
+}
+
+.el-button.permission-disabled,
+.el-button.permission-disabled:focus,
+.el-button.permission-disabled:hover {
+  position: relative;
+  color: #c0c4cc !important;
+  background-color: transparent;
+  background-image: none;
+  border-color: #ebeef5 !important;
+  cursor: not-allowed;
+}
+
+[tips]::after {
+  /* 实现垂直居中 */
+  position: absolute;
+  top: -50%;
+  left: 0%;
+  z-index: 1000;
+  display: none;
+  padding: 4px 4px;
+  color: #fff;
+  font-size: 12px;
+
+  /* 空白问题 */
+  white-space: pre;
+  background-color: rgba(18, 26, 44, 0.8);
+  border-radius: 4px;
+  box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
+  transform: translate(0, -50%);
+  opacity: 0;
+  transition: all 0.3s;
+  content: attr(tips);
+}
+
+[tips]:hover {
+  /* ie兼容 */
+  overflow: visible;
+}

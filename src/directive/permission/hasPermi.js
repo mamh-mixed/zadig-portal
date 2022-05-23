@@ -1,7 +1,7 @@
 import { permissionCheckingLogic } from '@utils/checkPermission'
 
 async function checkPermission (el, binding) {
-  const { type, projectName, action, actions, operator } = binding.value
+  const { type, projectName, action, actions, operator, isBtn } = binding.value
   const hasPermission = await permissionCheckingLogic({
     type,
     projectName,
@@ -9,8 +9,23 @@ async function checkPermission (el, binding) {
     actions,
     operator
   })
+  const disableClickFn = (event) => {
+    event && event.stopImmediatePropagation()
+  }
   if (!hasPermission) {
-    el.parentNode && el.parentNode.removeChild(el)
+    if (isBtn) {
+      if (!el.classList.contains('permission-disabled')) {
+        el.classList.add('permission-disabled')
+        el.setAttribute('disabled', 'disabled')
+        el.setAttribute('tips', '无权限操作')
+        el.addEventListener('click', disableClickFn, true)
+      }
+    } else {
+      el.parentNode && el.parentNode.removeChild(el)
+    }
+  } else {
+    el.classList.remove('permission-disabled')
+    el.removeAttribute('disabled')
   }
 }
 

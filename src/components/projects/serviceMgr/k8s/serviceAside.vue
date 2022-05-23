@@ -93,7 +93,7 @@
                         <span class="build-name">{{ buildName }}</span>
                       </router-link>
                     </div>
-                    <el-button size="small" v-hasPermi="{projectName: projectName, action: 'create_build'}" :disabled="projectName !== projectNameOfService" @click="addBuild(scope.row)" type="text">添加构建</el-button>
+                    <el-button size="small" v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" :disabled="projectName !== projectNameOfService" @click="addBuild(scope.row)" type="text">添加构建</el-button>
                   </template>
                 </el-table-column>
               </el-table>
