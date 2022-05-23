@@ -124,6 +124,9 @@ export default {
       importNamespace: {
         cluster_id: '',
         namespace: '',
+        product_name: '',
+        visibility: 'private',
+        type: 'k8s',
         services: [] // {name: '', workloads_map: [{ type: '', configs: []}]}
       },
       workloadsMap: cloneDeep(workloadsMapInfo),
@@ -148,6 +151,9 @@ export default {
       this.importNamespace = {
         cluster_id: '',
         namespace: '',
+        product_name: this.projectName,
+        visibility: 'private',
+        type: 'k8s',
         services: []
       }
       this.$emit('update:dialogImportFromNamespaceVisible', false)
@@ -316,6 +322,7 @@ export default {
     }
   },
   mounted () {
+    this.importNamespace.product_name = this.projectName
     this.getCluster()
   }
 }
