@@ -27,11 +27,14 @@
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
       <router-link
-        v-hasPermi="{projectName: workflow.project_name, action: 'edit_workflow',isBtn: true}"
+        v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'edit_workflow',isBtn: true})"
         :to="`/workflows/common/edit/${workflow.name}?projectName=${workflow.project_name}&id=${workflow.id}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <span class="permission-disabled menu-item iconfont icondeploy"></span>
+      </el-tooltip>
       <el-dropdown v-hasPermi="{projectName: workflow.project_name, action:'delete_workflow',isBtn: true}">
         <span class="el-dropdown-link">
           <i class="iconfont iconmorelist more-operation"></i>
