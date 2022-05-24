@@ -819,6 +819,7 @@ export default {
         return item.repo_owner === repo_owner
       })
       const namespace = repoItem.repo_namespace || ''
+      if (!namespace) return
       getBranchInfoByIdAPI(id, namespace, repo_name).then(res => {
         this.$set(this.webhookBranches, repo_name, res)
       })
