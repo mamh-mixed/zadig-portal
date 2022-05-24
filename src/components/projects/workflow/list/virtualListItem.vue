@@ -20,12 +20,17 @@
     <template v-if="workflow.type === 'common'" slot="operations">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: workflow.project_name, action: 'run_workflow',isBtn: true}"
+        v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'run_workflow'})"
         class="button-exec"
         @click="startCommonWorkflowBuild(workflow)"
       >
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <el-button type="primary" class="button-exec permission-disabled">
+          <span class="iconfont iconzhixing">&nbsp;执行</span>
+        </el-button>
+      </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'edit_workflow',isBtn: true})"
         :to="`/workflows/common/edit/${workflow.name}?projectName=${workflow.project_name}&id=${workflow.id}`"
@@ -47,12 +52,17 @@
     <template v-else slot="operations">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: workflow.projectName, action: 'run_workflow',isBtn:true}"
+        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'run_workflow'})"
         class="button-exec"
         @click="startProductWorkflowBuild(workflow)"
       >
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <el-button type="primary" class="button-exec permission-disabled">
+          <span class="iconfont iconzhixing">&nbsp;执行</span>
+        </el-button>
+      </el-tooltip>
 
       <router-link
         v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow',isBtn: true})"
