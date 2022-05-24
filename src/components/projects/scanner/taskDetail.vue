@@ -143,9 +143,9 @@ export default {
     rerun () {
       const taskUrl = `/v1/projects/detail/${this.projectName}/test/detail/function/${this.scannerName}/${this.taskID}`
       restartScannerTaskAPI(
-        this.projectName,
-        this.scannerName,
-        this.taskID
+        this.scannerId,
+        this.taskID,
+        this.projectName
       ).then(res => {
         this.$message.success('任务已重新启动')
         this.$router.push(taskUrl)
@@ -154,7 +154,8 @@ export default {
     cancel () {
       const scannerName = this.scannerName
       const taskID = this.taskID
-      cancelScannerTaskAPI(scannerName, taskID).then(res => {
+      const projectName = this.projectName
+      cancelScannerTaskAPI(scannerName, taskID, projectName).then(res => {
         if (this.$refs && this.$refs.taskDetailScanner) {
           this.$refs.taskDetailScanner.killLog('test')
         }
@@ -164,7 +165,8 @@ export default {
     fetchRunningTaskDetail () {
       const scannerId = this.scannerId
       const taskID = this.taskID
-      return scannerTaskDetailSSEAPI(scannerId, taskID)
+      const projectName = this.projectName
+      return scannerTaskDetailSSEAPI(scannerId, taskID, projectName)
         .then(res => {
           this.adaptTaskDetail(res.data)
           this.taskDetail = res.data
@@ -174,7 +176,8 @@ export default {
     fetchHistoryTaskDetail () {
       const scannerId = this.scannerId
       const taskID = this.taskID
-      scannerTaskDetailAPI(scannerId, taskID).then(res => {
+      const projectName = this.projectName
+      scannerTaskDetailAPI(scannerId, taskID, projectName).then(res => {
         this.adaptTaskDetail(res)
         this.taskDetail = res
       })

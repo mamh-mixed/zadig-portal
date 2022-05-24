@@ -38,7 +38,7 @@
             <VariableEditor :varKey="scope.row.key" :value.sync="scope.row.value" />
           </template>
         </el-table-column>
-        <el-table-column label="关联服务">
+        <el-table-column label="关联服务" :filters="serviceFilters" :filter-method="filterMethods">
           <template slot-scope="scope">
             <span>{{
               scope.row.services ? scope.row.services.join(',') : '-'
@@ -80,7 +80,7 @@
         size="small"
         type="primary"
         :disabled="remainingVars.length === 0"
-        :loading="updataK8sEnvVarLoading"
+        :loading="updateK8sEnvVarLoading"
         @click="updateK8sEnvVar"
         >更新</el-button
       >
@@ -102,10 +102,11 @@ export default {
   data () {
     return {
       updateK8sEnvVarDialogVisible: false,
-      updataK8sEnvVarLoading: false,
+      updateK8sEnvVarLoading: false,
       vars: [],
       services: [],
-      varSearch: ''
+      varSearch: '',
+      serviceFilters: []
     }
   },
   computed: {
@@ -118,6 +119,9 @@ export default {
     }
   },
   methods: {
+    filterMethods (value, row) {
+      return row.services.includes(value)
+    },
     openDialog () {
       this.updateK8sEnvVarDialogVisible = true
     },
@@ -130,10 +134,10 @@ export default {
         vars: this.vars
       }
       const force = false
-      this.updataK8sEnvVarLoading = true
+      this.updateK8sEnvVarLoading = true
       updateK8sEnvAPI(projectName, envName, payload, envType, force).then(
         (response) => {
-          this.updataK8sEnvVarLoading = false
+          this.updateK8sEnvVarLoading = false
           this.updateK8sEnvVarDialogVisible = false
           this.fetchAllData()
           this.$message({
@@ -163,7 +167,7 @@ export default {
         updateK8sEnvAPI(projectName, envName, payload, envType, force).then(
           response => {
             this.fetchAllData()
-            this.updataK8sEnvVarLoading = false
+            this.updateK8sEnvVarLoading = false
             this.updateK8sEnvVarDialogVisible = false
             this.$message({
               message: '更新环境成功，请等待服务升级',
@@ -184,6 +188,12 @@ export default {
           item => intersection(item.services, services).length
         )
         this.services = services
+        this.serviceFilters = services.map(service => {
+          return {
+            text: service,
+            value: service
+          }
+        })
         this.vars = cloneDeep(vars)
       }
     }
@@ -204,6 +214,13 @@ export default {
 
   .kv-container {
     margin-top: 14px;
+
+    /deep/.el-table {
+      .el-table__column-filter-trigger i {
+        margin-left: 5px;
+        color: black;
+      }
+    }
   }
 }
 </style>

@@ -59,17 +59,20 @@
                 </el-col>
                 <el-col :span="10">
                   <div class="item-desc">
-                    <el-tooltip
-                      v-if="(taskDetail.status!=='running' && taskDetail.status !=='created') && taskDetail.status!=='passed'"
-                      effect="dark"
-                      content="失败重试"
-                      placement="top"
-                    >
-                      <span @click="taskOperation('restart',taskDetail.task_id,taskDetail.pipeline_name)" class="start-build">失败重试</span>
-                    </el-tooltip>
-                    <el-tooltip v-if="taskDetail.status==='running' || taskDetail.status ==='created'" effect="dark" content="取消任务" placement="top">
-                      <span @click="taskOperation('cancel',taskDetail.task_id,taskDetail.pipeline_name)" class="start-build">取消任务</span>
-                    </el-tooltip>
+                    <el-button
+                        v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                        v-if="(taskDetail.status!=='running' && taskDetail.status !=='created') && taskDetail.status!=='passed'"
+                        @click="taskOperation('restart',taskDetail.task_id,taskDetail.pipeline_name)"
+                        type="text"
+                        size="medium"
+                      >失败重试</el-button>
+                      <el-button
+                        v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                        v-if="taskDetail.status==='running' || taskDetail.status ==='created'"
+                        @click="taskOperation('cancel',taskDetail.task_id,taskDetail.pipeline_name)"
+                        type="text"
+                        size="medium"
+                      >取消任务</el-button>
                   </div>
                 </el-col>
               </el-row>

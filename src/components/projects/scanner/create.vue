@@ -107,7 +107,7 @@
       <router-link :to="`/v1/projects/detail/${projectName}/scanner`">
         <el-button style="margin-right: 15px;" type="primary" :disabled="saveLoading" plain>取消</el-button>
       </router-link>
-      <el-button @click="saveScanner" type="primary" :loading="saveLoading">{{ isEdit ? '确认修改' : '立即新建' }}</el-button>
+      <el-button v-hasPermi="{projectName: projectName, action: isEdit?'edit_scan':'create_scan',isBtn:true}" @click="saveScanner" type="primary" :loading="saveLoading">{{ isEdit ? '确认修改' : '立即新建' }}</el-button>
     </footer>
   </div>
 </template>

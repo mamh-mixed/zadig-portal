@@ -41,11 +41,10 @@
               <el-option
                 v-for="(host,index) in allCodeHosts"
                 :key="index"
-                :label="`${host.address} ${host.type==='github'?'('+host.namespace+')':''}`"
+                :label="(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'"
                 :value="host.id"
               >
-                {{`${host.address}
-                ${host.type==='github'?'('+host.namespace+')':''}`}}
+               {{(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'}}
               </el-option>
             </el-select>
           </el-form-item>
@@ -162,16 +161,16 @@
             </el-radio-group>
           </div>
         </el-col>
-        <el-col v-hasPermi="{type:'project',projectName: projectName, action: 'create_service'}" :span="14" class="text-right">
+        <el-col :span="14" class="text-right">
           <div style="line-height: 32px;">
             <el-tooltip effect="dark" content="手工输入" placement="top">
-              <el-button v-if="deployType==='k8s'" size="mini" icon="el-icon-plus" @click="createService('platform')" plain circle></el-button>
+              <el-button v-if="deployType==='k8s'" v-hasPermi="{type:'project',projectName: projectName, action: 'create_service',isBtn:true}" size="mini" icon="el-icon-plus" @click="createService('platform')" plain circle></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="从代码库同步" placement="top">
-              <el-button v-if="deployType==='k8s'" size="mini" @click="createService('repo')" icon="iconfont icon icongit" plain circle></el-button>
+              <el-button v-if="deployType==='k8s'" v-hasPermi="{type:'project',projectName: projectName, action: 'create_service',isBtn:true}" size="mini" @click="createService('repo')" icon="iconfont icon icongit" plain circle></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="使用模板新建" placement="top">
-              <el-button size="mini" @click="createService('template')" icon="iconfont icon iconvery-template" plain circle></el-button>
+              <el-button v-hasPermi="{type:'project',projectName: projectName, action: 'create_service',isBtn:true}" size="mini" @click="createService('template')" icon="iconfont icon iconvery-template" plain circle></el-button>
             </el-tooltip>
           </div>
         </el-col>
@@ -231,7 +230,7 @@
                 <el-tooltip effect="dark" placement="top">
                   <div slot="content">共享服务可在其他项目的服务编排中使用</div>
                   <el-tag
-                    v-hasPermi="{projectName: projectName, action: 'edit_service'}"
+                    v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
                     v-if="data.type === 'k8s'"
                     :type="data.visibility==='public'?'primary':'info'"
                     :effect="data.visibility==='public'?'dark':'plain'"
@@ -242,7 +241,7 @@
               </span>
               <span :style="{'visibility': showHover[data.service_name] ? 'visible': 'hidden'}" class="operation-container">
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'delete_service'}"
+                  v-hasPermi="{projectName: projectName, action: 'delete_service',isBtn:true}"
                   v-if="(data.product_name===projectName||data.status === 'named')"
                   type="text"
                   size="mini"
@@ -250,7 +249,7 @@
                   @click.stop="() => deleteService(node, data)"
                 ></el-button>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'delete_service'}"
+                  v-hasPermi="{projectName: projectName, action: 'delete_service',isBtn:true}"
                   v-else-if="data.product_name!==projectName && data.type ==='k8s'"
                   type="text"
                   size="mini"
@@ -258,7 +257,7 @@
                   @click.stop="() => deleteSharedService(node, data)"
                 ></el-button>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'edit_service'}"
+                  v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
                   v-if="data.source && (data.source === 'gitee' || data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='codehub' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
                   type="text"
                   size="mini"
@@ -338,7 +337,7 @@
           <span v-else class="tree-service-name shared-list">{{`${node.label}`}}</span>
           <span v-if="data.label!=='共享服务列表' && showHover[data.service_name] " class="operation-container">
             <el-button
-              v-hasPermi="{projectName: projectName, action: 'edit_service'}"
+              v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
               v-if="data.product_name!==projectName"
               type="text"
               size="mini"

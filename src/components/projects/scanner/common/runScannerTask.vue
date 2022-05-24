@@ -125,6 +125,7 @@ export default {
     },
     async runTask () {
       const id = this.scannerInfo.id
+      const projectName = this.projectName
       const payload = this.scannerInfoDetail.repos.map(repo => {
         if (repo.branchOrTag.type === 'branch') {
           return {
@@ -142,13 +143,13 @@ export default {
             source: repo.source,
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
-            tag: repo.tag,
-            repo_namespace: repo.repo_namespace
+            repo_namespace: repo.repo_namespace,
+            tag: repo.branchOrTag.name
           }
         }
       })
       this.startTaskLoading = true
-      const res = await runCodeScannerTaskAPI(id, payload).catch(error => {
+      const res = await runCodeScannerTaskAPI(id, payload, projectName).catch(error => {
         this.startTaskLoading = false
         console.log(error)
       })
