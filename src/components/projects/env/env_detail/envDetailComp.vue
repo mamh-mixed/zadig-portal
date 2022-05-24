@@ -121,7 +121,7 @@
                 <router-link
                   :to="`/v1/projects/detail/${projectName}/envs/create?createShare=true&baseEnvName=${productInfo.env_name}&clusterId=${productInfo.cluster_id}`"
                 >
-                  <el-button v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}" type="primary" size="mini" plain>创建子环境</el-button>
+                  <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:create_environment':'create_environment',isBtn:true}" type="primary" size="mini" plain>创建子环境</el-button>
                 </router-link>
               </template>
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
