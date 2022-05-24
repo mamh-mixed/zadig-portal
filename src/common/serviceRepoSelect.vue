@@ -342,11 +342,21 @@ export default {
   },
   methods: {
     addService () {
-      this.targets.push({
-        service: {},
-        repos: []
-      })
-      this.addFirstRepo(this.targets.length - 1)
+      if (this.targets.length === 0) {
+        this.targets.push({
+          service: {},
+          repos: []
+        })
+        this.addFirstRepo(this.targets.length - 1)
+      } else {
+        this.validateForm(this.targets.length - 1).then(res => {
+          this.targets.push({
+            service: {},
+            repos: []
+          })
+          this.addFirstRepo(this.targets.length - 1)
+        })
+      }
     },
     deleteService (index) {
       this.targets.splice(index, 1)

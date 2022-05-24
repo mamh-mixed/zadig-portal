@@ -17,7 +17,7 @@
                     clearable
                     value-key="id"
                     size="small"
-                    placeholder="请选择分支或标签"
+                    :placeholder="row.source==='other'?'请输入分支或标签':'请选择分支或标签'"
                     @change="changeBranchOrTag(row)"
                   >
                     <el-option-group v-for="group in row.branchAndTagList" :key="group.label" :label="group.label">
