@@ -3,13 +3,22 @@
     <el-card class="workflow-basic-info">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'run_workflow'})"
         effect="dark"
         @click="startTask(workflow)"
         class="left"
       >
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <el-button
+          type="primary"
+          effect="dark"
+          class="left permission-disabled"
+        >
+          <span class="iconfont iconzhixing">&nbsp;执行</span>
+        </el-button>
+      </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow'})"
         :to="`/workflows/product/edit/${workflowName}?projectName=${projectName}`"
