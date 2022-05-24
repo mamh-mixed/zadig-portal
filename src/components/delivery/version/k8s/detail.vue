@@ -546,7 +546,7 @@ export default {
       }
     },
     projectName () {
-      return this.currentVersionDetail.versionInfo.productName
+      return this.$route.params.project_name
     }
   },
   created () {
