@@ -100,7 +100,7 @@
           </el-table-column>
         </el-table>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div class="dialog-footer">
         <el-button plain native-type="submit" @click="closeDialog()" size="small" :disabled="importLoading">取消</el-button>
         <el-button
           type="primary"
@@ -313,7 +313,12 @@ export default {
   }
 
   .el-dialog__body {
-    padding: 30px 70px 0;
+    padding: 30px 70px;
+
+    .dialog-footer {
+      margin-top: 18px;
+      text-align: right;
+    }
   }
 }
 </style>
