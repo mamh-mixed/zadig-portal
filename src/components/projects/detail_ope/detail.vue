@@ -7,7 +7,7 @@
   >
     <div class="project-header"></div>
     <section class="projects-detail">
-      <div v-hasPermi="{projectName: projectName, action: 'get_environment'}" class="env">
+      <div v-hasPermi="{projectName: projectName, actions: ['get_environment','production:get_environment'],operator:'or'}" class="env">
         <h4 class="section-title">
           <i class="icon iconfont iconhuanjing"></i>
           环境信息
@@ -274,7 +274,8 @@ export default {
       const showEnv = this.checkPermissionSyncMixin({
         type: 'project',
         projectName: this.projectName,
-        action: 'get_environment'
+        actions: ['get_environment', 'production:get_environment'],
+        operator: 'or'
       })
       return showEnv
     }
