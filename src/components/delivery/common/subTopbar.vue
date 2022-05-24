@@ -3,7 +3,7 @@
     <div class="nav-container">
       <div class="nav-content">
         <ul class="nav-item-list">
-          <router-link v-hasPermi="{type: 'system', action: 'realase_get'}" active-class="active" to="/v1/delivery/version">
+          <router-link v-hasPermi="{type: 'system', action: 'release_get'}" active-class="active" to="/v1/delivery/version">
             <li class="nav-item">
               <i class="icon iconfont iconvery-versionmana"></i>
               <span class="name">版本管理</span>

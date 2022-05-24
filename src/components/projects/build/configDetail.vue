@@ -6,12 +6,14 @@
           <el-button style="margin-right: 15px;" type="primary" plain>取消</el-button>
         </router-link>
         <el-button
+          v-hasPermi="{type: 'system', action: compBind.isEdit?'edit_template':'create_template',isBtn:true }"
           @click="$refs.buildRef.handleBuildConfig()"
           @updateBtnLoading="saveLoading = $event"
           :loading="saveLoading"
           type="primary"
         >{{ compBind.isEdit ? '确认修改' : '立即新建' }}</el-button>
         <el-button v-if="showSaveToTemplate"
+          v-hasPermi="{type: 'system', action: compBind.isEdit?'edit_template':'create_template',isBtn:true }"
           @click="$refs.buildRef.saveBuildConfigToTemplate()"
           @updateBtnLoading="saveLoading = $event"
           :loading="saveLoading"
