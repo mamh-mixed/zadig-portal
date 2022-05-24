@@ -421,7 +421,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="代码源标识" prop="alias">
-          <el-input v-model="codeEdit.alias" placeholder="代码源标识"></el-input>
+          <el-input v-model="codeAdd.alias" placeholder="代码源标识"></el-input>
         </el-form-item>
         <template v-if="codeAdd.type==='gitlab' || codeAdd.type ==='github'">
           <el-form-item v-if="codeAdd.type==='gitlab'"
