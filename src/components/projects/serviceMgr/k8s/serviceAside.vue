@@ -326,7 +326,7 @@ export default {
       const res = await getCodeProviderAPI(key)
       if (res && res.length > 0) {
         this.$router.push(
-          `${this.buildBaseUrl}?rightbar=build&service_name=${item.name}&build_add=true`
+          `${this.buildBaseUrl}?rightbar=build&service_name=${item.image_name}&build_add=true`
         )
       } else {
         this.integrationCodeDrawer = true
