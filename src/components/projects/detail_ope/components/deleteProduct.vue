@@ -153,18 +153,20 @@ export default {
       })
     },
     identifyDeleteProduct () {
-      this.$refs.deleteForm.validate(() => {
-        deleteProjectAPI(
-          this.projectName,
-          this.productDeleteInfo.is_delete
-        ).then(() => {
-          this.$message({
-            type: 'success',
-            message: '项目删除成功'
+      this.$refs.deleteForm.validate((valid) => {
+        if (valid) {
+          deleteProjectAPI(
+            this.projectName,
+            this.productDeleteInfo.is_delete
+          ).then(() => {
+            this.$message({
+              type: 'success',
+              message: '项目删除成功'
+            })
+            this.deleteDialogVisible = false
+            this.followUpFn && this.followUpFn()
           })
-          this.deleteDialogVisible = false
-          this.followUpFn && this.followUpFn()
-        })
+        }
       })
     }
   }

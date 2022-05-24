@@ -20,56 +20,86 @@
         label-position="left"
         class="primary-form"
       >
-        <el-form-item label="选择集群" prop="cluster_id">
+        <el-form-item label="选择集群" prop="cluster_id" :show-message="false">
           <el-select filterable v-model="importNamespace.cluster_id" placeholder="请选择集群" @change="changeCluster" size="small">
             <el-option v-for="cluster in allCluster" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择命名空间" prop="namespace">
+        <el-form-item label="选择命名空间" prop="namespace" :show-message="false">
           <el-select filterable v-model="importNamespace.namespace" placeholder="请选择命名空间" @change="changeNamespace" size="small">
             <el-option v-for="(ns,index) in hostingNamespace" :key="index" :label="ns.name" :value="ns.name"></el-option>
           </el-select>
         </el-form-item>
-      </el-form>
-      <el-table :data="importNamespace.services" style="width: 100%;">
-        <el-table-column width="200px">
-          <template slot="header">
-            <span>服务名称</span>
-            <el-button type="text" icon="el-icon-plus" style="margin-left: 5px; padding: 0;" @click="operateService('add')"></el-button>
-          </template>
-          <template slot-scope="{ row, $index }">
-            <el-input v-model="row.name" placeholder="输入服务名称" size="small" style="width: 85%;"></el-input>
-            <el-button type="text" icon="el-icon-minus" style="margin-left: 5px;" @click="operateService('delete', $index)"></el-button>
-          </template>
-        </el-table-column>
-        <el-table-column label="选择配置">
-          <template slot-scope="{ row }">
-            <div v-for="(workload, index) in row.workloads_map" :key="index">
-              <div style=" display: inline-block; width: 30%;">
-                <span v-if="workload.type" style=" display: inline-block; width: 100%;">{{ workload.type }}</span>
-                <el-select v-else v-model="workload.type" placeholder="选择资源" size="small">
-                  <el-option
-                    v-for="item in difference(Object.keys(workloadsMap), row.workloads_map.map(work => work.type))"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                  ></el-option>
-                </el-select>
+
+        <el-table :data="importNamespace.services" style="width: 100%;">
+          <el-table-column width="200px">
+            <template slot="header">
+              <span>服务名称</span>
+              <el-button type="text" icon="el-icon-plus" style="margin-left: 5px; padding: 0;" @click="operateService('add')"></el-button>
+            </template>
+            <template slot-scope="{ row, $index }">
+              <el-form-item
+                label-width="0"
+                :prop="`services[${$index}].name`"
+                :rules="{ required: true, type: 'string', message: '请输入服务名称', trigger: 'change'}"
+                :show-message="false"
+              >
+                <el-input v-model="row.name" placeholder="输入服务名称" size="small" style="width: 85%;"></el-input>
+                <el-button type="text" icon="el-icon-minus" style="margin-left: 5px;" @click="operateService('delete', $index)"></el-button>
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column label="选择配置">
+            <template slot-scope="{ row, $index }">
+              <div v-for="(workload, index) in row.workloads_map" :key="index">
+                <el-form-item
+                  label-width="0"
+                  :prop="`services[${$index}].workloads_map[${index}].type`"
+                  :rules="{ required: true, message: '请选择资源', trigger: 'change'}"
+                  style=" display: inline-block; width: 30%;"
+                  :show-message="false"
+                >
+                  <span v-show="workload.type" style=" display: inline-block; width: 100%;">{{ workload.type }}</span>
+                  <el-select v-show="!workload.type" v-model="workload.type" placeholder="选择资源" size="small">
+                    <el-option
+                      v-for="item in difference(Object.keys(workloadsMap), row.workloads_map.map(work => work.type))"
+                      :key="item"
+                      :label="item"
+                      :value="item"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item
+                  label-width="0"
+                  :prop="`services[${$index}].workloads_map[${index}].configs`"
+                  :rules="{ required: true, type: 'array', message: '请选择配置', trigger: 'change'}"
+                  style=" display: inline-block; width: 55%;"
+                  :show-message="false"
+                >
+                  <el-select v-model="workload.configs" placeholder="选择配置" multiple collapse-tags filterable size="small">
+                    <el-option v-for="item in workload.configs" :key="item" :label="item" :value="item"></el-option>
+                    <el-option v-for="item in (remainingConfig[workload.type] || [])" :key="item" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-button
+                  v-if="row.workloads_map.length > 1"
+                  type="text"
+                  icon="el-icon-minus"
+                  style="margin-left: 5px;"
+                  @click="operateConfig('delete', row.workloads_map, index)"
+                ></el-button>
+                <el-button
+                  v-if="index === row.workloads_map.length-1"
+                  type="text"
+                  icon="el-icon-plus"
+                  style="margin-left: 5px;"
+                  @click="operateConfig('add', row.workloads_map, index)"
+                ></el-button>
               </div>
-              <el-select v-model="workload.configs" placeholder="选择配置" multiple collapse-tags filterable size="small">
-                <el-option v-for="item in workload.configs" :key="item" :label="item" :value="item"></el-option>
-                <el-option v-for="item in (remainingConfig[workload.type] || [])" :key="item" :label="item" :value="item"></el-option>
-              </el-select>
-              <el-button
-                type="text"
-                :icon="index < row.workloads_map.length-1 ? 'el-icon-minus' : 'el-icon-plus'"
-                style="margin-left: 5px;"
-                @click="operateConfig(index < row.workloads_map.length-1 ? 'delete' : 'add', row.workloads_map, index)"
-              ></el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button plain native-type="submit" @click="closeDialog()" size="small" :disabled="importLoading">取消</el-button>
         <el-button
@@ -84,6 +114,7 @@
     </el-dialog>
   </div>
 </template>
+
 <script>
 import {
   getClusterListAPI,
@@ -201,79 +232,21 @@ export default {
 
       const namespace = this.importNamespace.namespace
       const clusterId = this.importNamespace.cluster_id
-      getConfigFromNamespaceAPI(this.projectName, clusterId, namespace)
-        .then(res => {
+      getConfigFromNamespaceAPI(this.projectName, clusterId, namespace).then(
+        res => {
           this.workloadsMap = {
             ...cloneDeep(workloadsMapInfo),
             ...res.workloads_map
           }
-        })
-        .catch(() => {
-          // todo: delete
-          this.workloadsMap = {
-            ...cloneDeep(workloadsMapInfo),
-            ...{
-              configmap: [
-                'configmap1',
-                'configmap2',
-                'configmap3',
-                'configmap4',
-                'configmap5',
-                'configmap6',
-                'configmap7'
-              ],
-              deployment: [
-                'deployment1',
-                'deployment2',
-                'deployment3',
-                'deployment4',
-                'deployment5',
-                'deployment6',
-                'deployment7'
-              ],
-              statefulset: [
-                'statefulset1',
-                'statefulset2',
-                'statefulset3',
-                'statefulset4',
-                'statefulset5',
-                'statefulset6',
-                'statefulset7'
-              ],
-              ingress: [
-                'ingress1',
-                'ingress2',
-                'ingress3',
-                'ingress4',
-                'ingress5',
-                'ingress6',
-                'ingress7'
-              ],
-              secret: [
-                'secret1',
-                'secret2',
-                'secret3',
-                'secret4',
-                'secret5',
-                'secret6',
-                'secret7'
-              ],
-              pvc: ['pvc1', 'pvc2', 'pvc3', 'pvc4', 'pvc5', 'pvc6', 'pvc7'],
-              service: [
-                'service1',
-                'service2',
-                'service3',
-                'service4',
-                'service5',
-                'service6',
-                'service7'
-              ]
-            }
-          }
-        })
+        }
+      )
     },
     loadServiceFromKubernetesNamespace () {
-      this.$refs.importK8sNamespaceRefRef.validate(() => {
+      this.$refs.importK8sNamespaceRefRef.validate().then(() => {
+        if (!this.importNamespace.services.length) {
+          this.$message.info('请添加服务')
+          return
+        }
         const payload = cloneDeep(this.importNamespace)
         payload.services = payload.services.map(service => {
           const workloads_map = {}
@@ -285,7 +258,6 @@ export default {
             workloads_map
           }
         })
-        console.log('import:', this.importNamespace, payload)
         this.importLoading = true
         createServiceFromK8sNamespaceAPI(this.projectName, payload)
           .then(() => {

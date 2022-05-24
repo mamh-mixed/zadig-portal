@@ -83,7 +83,11 @@
             <div class="grid-content image-registry">
               <div v-if="editImageRegistry === false">
                 <span>{{imageRegistryDesc}}</span>
-                <i v-hasPermi="{projectName: projectName, action: 'config_environment'}" class="icon el-icon-edit icon-primary" @click="editImageRegistry = true"></i>
+                <i
+                  v-hasPermi="{projectName: projectName, action: 'config_environment'}"
+                  class="icon el-icon-edit icon-primary"
+                  @click="editImageRegistry = true"
+                ></i>
               </div>
               <div v-else>
                 <el-select v-model="productInfo.editRegistryID" size="mini">
@@ -144,7 +148,13 @@
                   effect="dark"
                   placement="top"
                 >
-                  <el-button v-hasPermi="{projectName: projectName, action: 'config_environment'}" type="primary" @click="updateK8sEnv(productInfo)" size="mini" plain>更新环境</el-button>
+                  <el-button
+                    v-hasPermi="{projectName: projectName, action: 'config_environment'}"
+                    type="primary"
+                    @click="updateK8sEnv(productInfo)"
+                    size="mini"
+                    plain
+                  >更新环境</el-button>
                 </el-tooltip>
               </template>
               <template v-if="envSource==='' || envSource==='spock' || envSource === 'helm'">
@@ -163,12 +173,20 @@
               </template>
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
                 <el-dropdown v-if="envSource===''||envSource==='spock'||envSource==='helm'" trigger="click">
-                  <el-button v-hasPermi="{projectName: projectName, actions: ['config_environment','delete_environment'],operator:'or'}" type="primary" plain>
+                  <el-button
+                    v-hasPermi="{projectName: projectName, actions: ['config_environment','delete_environment'],operator:'or'}"
+                    type="primary"
+                    plain
+                  >
                     更多
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-hasPermi="{projectName: projectName, action: 'config_environment'}" v-if="!productInfo.share_env_enable" @click.native="shareEnv('enable')">开启自测模式</el-dropdown-item>
+                    <el-dropdown-item
+                      v-hasPermi="{projectName: projectName, action: 'config_environment'}"
+                      v-if="!productInfo.share_env_enable"
+                      @click.native="shareEnv('enable')"
+                    >开启自测模式</el-dropdown-item>
                     <el-dropdown-item
                       v-hasPermi="{projectName: projectName, action: 'config_environment'}"
                       v-if="productInfo.share_env_enable && productInfo.share_env_is_base"
@@ -1209,7 +1227,7 @@ export default {
       }
     },
     identifyDeleteProduct () {
-      this.$refs.deleteForm.validate(() => {
+      this.$refs.deleteForm.validate().then(() => {
         const envDeleteInfo = this.envDeleteInfo
         deleteProductEnvAPI(
           envDeleteInfo.project_name,
