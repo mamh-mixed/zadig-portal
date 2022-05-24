@@ -276,7 +276,7 @@ export default {
       const showDeliveryCenter = this.checkPermissionSyncMixin({
         type: 'system',
         operator: 'or',
-        actions: ['realase_get', 'delivery_get']
+        actions: ['release_get', 'delivery_get']
       })
       return showDeliveryCenter
     },
