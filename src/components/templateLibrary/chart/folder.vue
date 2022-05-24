@@ -14,8 +14,8 @@
         <i class="icon el-icon-folder" v-else></i>
         {{ data.name }}
         <span class="display-none" :class="{folder: data.is_chart}">
-          <i class="icon el-icon-close" @click.stop="deleteChart(data)"></i>
-          <i class="icon el-icon-refresh" @click.stop="updateChart(data)"></i>
+          <el-button icon="el-icon-close" v-hasPermi="{type: 'system', action: 'delete_template',isBtn:true}" @click.stop="deleteChart(data)" size="mini" type="text"></el-button>
+          <el-button icon="el-icon-refresh" v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}" @click.stop="updateChart(data)" size="mini" type="text"></el-button>
         </span>
       </span>
     </el-tree>

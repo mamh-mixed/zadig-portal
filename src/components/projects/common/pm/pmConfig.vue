@@ -246,7 +246,7 @@
       </template>
     </div>
     <div class="save-btn">
-      <el-button size="small" type="primary" @click="savePmService">保存</el-button>
+      <el-button v-hasPermi="{projectName: projectName, action: isEdit?'edit_service':'create_service',isBtn:true}"  size="small" type="primary" @click="savePmService">保存</el-button>
     </div>
   </div>
 </template>

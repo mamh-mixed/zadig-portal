@@ -32,10 +32,10 @@
         <div
              class="controls__wrap">
           <div class="controls__right">
-            <el-button type="primary"
+            <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true}" type="primary"
                        size="small"
                        @click="updateFile">保存</el-button>
-                       <el-button type="default"
+            <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true}" type="default"
                        size="small"
                        @click="multiUpdate">批量更新</el-button>
           </div>
