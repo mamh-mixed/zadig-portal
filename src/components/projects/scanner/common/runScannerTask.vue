@@ -141,7 +141,7 @@ export default {
             source: repo.source,
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
-            tag: repo.tag
+            tag: repo.branchOrTag.name
           }
         }
       })
