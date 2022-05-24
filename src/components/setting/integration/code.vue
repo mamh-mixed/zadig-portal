@@ -131,6 +131,9 @@
                        value="gerrit"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="代码源标识" prop="alias">
+          <el-input v-model="codeEdit.alias" placeholder="代码源标识"></el-input>
+        </el-form-item>
         <template v-if="codeEdit.type==='gitlab'||codeEdit.type==='github'">
           <el-form-item v-if="codeEdit.type==='gitlab'"
                         label="GitLab 服务 URL"
@@ -266,9 +269,6 @@
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
-        <el-form-item label="代码源标识" prop="alias">
-          <el-input v-model="codeEdit.alias" placeholder="代码源标识"></el-input>
-        </el-form-item>
       </el-form>
       <div slot="footer"
            class="dialog-footer">
@@ -420,6 +420,9 @@
                        value="other"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="代码源标识" prop="alias">
+          <el-input v-model="codeAdd.alias" placeholder="代码源标识"></el-input>
+        </el-form-item>
         <template v-if="codeAdd.type==='gitlab' || codeAdd.type ==='github'">
           <el-form-item v-if="codeAdd.type==='gitlab'"
                         :label="codeAdd.type==='gitlab'?'GitLab 服务 URL':'服务 URL'"
@@ -547,9 +550,6 @@
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
-        <el-form-item label="代码源标识" prop="alias">
-          <el-input v-model="codeAdd.alias" placeholder="代码源标识"></el-input>
-        </el-form-item>
       </el-form>
       <div slot="footer"
            class="dialog-footer">

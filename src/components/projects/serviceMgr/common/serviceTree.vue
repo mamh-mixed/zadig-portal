@@ -40,11 +40,10 @@
               <el-option
                 v-for="(host,index) in allCodeHosts"
                 :key="index"
-                :label="`${host.address} ${host.type==='github'?'('+host.namespace+')':''}`"
+                :label="(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'"
                 :value="host.id"
               >
-                {{`${host.address}
-                ${host.type==='github'?'('+host.namespace+')':''}`}}
+               {{(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'}}
               </el-option>
             </el-select>
           </el-form-item>
