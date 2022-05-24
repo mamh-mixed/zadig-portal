@@ -126,11 +126,15 @@
               </template>
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
                 <el-dropdown v-if="envSource===''||envSource==='spock' || envSource==='helm'" trigger="click">
-                  <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',isBtn:true}" type="primary" plain>
+                  <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})" type="primary" plain>
                     管理服务
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-button v-else class="permission-disabled" type="primary" plain>
+                    管理服务
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})" slot="dropdown">
                     <el-dropdown-item @click.native="manageServices('add')">添加服务</el-dropdown-item>
                     <el-dropdown-item @click.native="manageServices('update')">更新服务</el-dropdown-item>
                     <el-dropdown-item @click.native="manageServices('delete')">删除服务</el-dropdown-item>
@@ -147,11 +151,15 @@
               </template>
               <template v-if="envSource==='' || envSource==='spock' || envSource === 'helm'">
                 <el-dropdown trigger="click">
-                  <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',isBtn:true}" type="primary" plain>
+                  <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})" type="primary" plain>
                     环境配置
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-button v-else class="permission-disabled" type="primary" plain>
+                    环境配置
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})"  slot="dropdown">
                     <el-dropdown-item @click.native="jumpEnvConfigPage('Ingress')">Ingress</el-dropdown-item>
                     <el-dropdown-item @click.native="jumpEnvConfigPage('ConfigMap')">ConfigMap</el-dropdown-item>
                     <el-dropdown-item @click.native="jumpEnvConfigPage('Secret')">Secret</el-dropdown-item>
