@@ -18,7 +18,7 @@ async function checkPermission (el, binding) {
         el.classList.add('permission-disabled')
         el.setAttribute('disabled', 'disabled')
         el.setAttribute('tips', '无权限操作')
-        el.addEventListener('click', disableClickFn, true)
+        // el.addEventListener('click', disableClickFn, true)
       }
     } else {
       el.parentNode && el.parentNode.removeChild(el)

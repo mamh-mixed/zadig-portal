@@ -6,7 +6,7 @@
           <el-button style="margin-right: 15px;" type="primary" plain>取消</el-button>
         </router-link>
         <el-button
-          v-hasPermi="{type: 'system', action: compBind.isEdit?'edit_template':'create_template',isBtn:true }"
+          v-hasPermi="{type: 'project', projectName:projectName, action: compBind.isEdit?'edit_build':'create_build',isBtn:true }"
           @click="$refs.buildRef.handleBuildConfig()"
           @updateBtnLoading="saveLoading = $event"
           :loading="saveLoading"
