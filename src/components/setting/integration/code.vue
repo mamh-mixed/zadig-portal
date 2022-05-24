@@ -154,13 +154,6 @@
                       :placeholder="codeEdit.type==='gitlab'?'Secret':'Client Secret'"
                       auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item v-if="codeEdit.type==='github'"
-                        label="Organization(Or GitHub Username)"
-                        prop="namespace">
-            <el-input v-model="codeEdit.namespace"
-                      placeholder="Organization(Or GitHub Username)"
-                      auto-complete="off"></el-input>
-          </el-form-item>
         </template>
         <template v-else-if="codeEdit.type==='gerrit'">
           <el-form-item label="Gerrit 服务 URL"
@@ -198,12 +191,6 @@
                       show-password v-if='dialogCodeEditFormVisible'
                       type="password"
                       placeholder="Client Secret"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="组织/用户名称"
-                        prop="namespace">
-            <el-input v-model="codeEdit.namespace"
-                      placeholder="组织/用户名称"
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
@@ -254,12 +241,6 @@
 
         </template>
         <template v-else-if="codeEdit.type==='other'">
-          <el-form-item label="代码源标识"
-                        prop="alias">
-            <el-input v-model="codeEdit.alias"
-                      placeholder="代码源标识"
-                      auto-complete="off"></el-input>
-          </el-form-item>
           <el-form-item label="鉴权方式" prop="auth_type">
             <el-select v-model="codeEdit.auth_type" filterable allow-create>
               <el-option label="SSH" value="SSH"></el-option>
@@ -285,6 +266,9 @@
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
+        <el-form-item label="代码源标识" prop="alias">
+          <el-input v-model="codeEdit.alias" placeholder="代码源标识"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer"
            class="dialog-footer">
@@ -457,13 +441,6 @@
                       :placeholder="codeAdd.type==='gitlab'?'Secret':'Client Secret'"
                       auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item v-if="codeAdd.type==='github'"
-                        label="Organization(Or GitHub Username)"
-                        prop="namespace">
-            <el-input v-model="codeAdd.namespace"
-                      placeholder="Organization(Or GitHub Username)"
-                      auto-complete="off"></el-input>
-          </el-form-item>
         </template>
         <template v-else-if="codeAdd.type==='gerrit'">
           <el-form-item label="Gerrit 服务 URL"
@@ -498,12 +475,6 @@
                       placeholder="Client Secret"
                       show-password v-if='dialogCodeAddFormVisible'
                       type="password"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="组织/用户名称"
-                        prop="namespace">
-            <el-input v-model="codeAdd.namespace"
-                      placeholder="组织/用户名称"
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
@@ -552,12 +523,6 @@
           </el-form-item>
         </template>
         <template v-else-if="codeAdd.type==='other'">
-          <el-form-item label="代码源标识"
-                        prop="alias">
-            <el-input v-model="codeAdd.alias"
-                      placeholder="代码源标识"
-                      auto-complete="off"></el-input>
-          </el-form-item>
           <el-form-item label="鉴权方式" prop="auth_type">
             <el-select v-model="codeAdd.auth_type" filterable allow-create>
               <el-option label="SSH" value="SSH"></el-option>
@@ -582,6 +547,9 @@
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
+        <el-form-item label="代码源标识" prop="alias">
+          <el-input v-model="codeAdd.alias" placeholder="代码源标识"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer"
            class="dialog-footer">
@@ -623,11 +591,7 @@
                   style="width: 100%;">
           <el-table-column label="代码源">
             <template slot-scope="scope">
-              <span
-                    v-if="scope.row.type==='gitlab'||scope.row.type==='gerrit'||scope.row.type==='codehub'">{{scope.row.type}}</span>
-              <span
-                    v-if="scope.row.type==='github'||scope.row.type==='gitee'">{{scope.row.type}}({{scope.row.namespace}})</span>
-              <span v-if="scope.row.type==='other'">其他({{scope.row.alias}})</span>
+              <span>{{scope.row.type==='other'?'其他':scope.row.type}}({{scope.row.alias}})</span>
             </template>
           </el-table-column>
           <el-table-column label="URL">
@@ -704,7 +668,6 @@ export default {
       dialogCodeEditFormVisible: false,
       codeEdit: {
         name: '',
-        namespace: '',
         region: '',
         type: '',
         address: '',
@@ -717,7 +680,6 @@ export default {
       },
       codeAdd: {
         name: '',
-        namespace: '',
         region: '',
         type: 'gitlab',
         address: '',
@@ -760,11 +722,6 @@ export default {
         client_secret: {
           required: true,
           message: '请填写 Secret',
-          trigger: ['blur']
-        },
-        namespace: {
-          required: true,
-          message: '请填写 Org',
           trigger: ['blur']
         },
         username: {
