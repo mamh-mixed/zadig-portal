@@ -29,11 +29,11 @@
           <el-option
             v-for="(host, index) in allCodeHosts"
             :key="index"
-            :label="(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'"
+            :label="host.address + '('+host.alias+')'"
             :value="host.id"
           >
             {{
-           (host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'
+           host.address + '('+host.alias+')'
             }}
           </el-option>
         </el-select>

@@ -29,15 +29,15 @@
               <el-option
                 v-for="(host,index) in allCodeHosts"
                 :key="index"
-                :label="(host.type === 'other' ? '其他': host.address) + '('+host.alias+')'"
+                :label="host.address + '('+host.alias+')'"
                 :value="host.id"
               >
-              {{ (host.type === 'other' ? '其他': host.address) + '('+host.alias+')'}}
+              {{ host.address + '('+host.alias+')'}}
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5" >
           <el-form-item
             :label="repo_index === 0 ?(shortDescription?'拥有者':'代码库拥有者') : ''"
             :prop="'repos.' + repo_index + '.repo_owner'"
@@ -53,7 +53,7 @@
               allow-create
               clearable
               size="small"
-              placeholder="代码库拥有者"
+              :placeholder="(repo.type === 'other' || repo.source==='other')?'请输入':'代码库拥有者'"
               :loading="codeInfo[repo_index].loading.owner"
               filterable
             >
@@ -66,7 +66,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5" >
           <el-form-item
             :label="repo_index === 0 ? (shortDescription?'名称':'代码库名称') : ''"
             :prop="'repos.' + repo_index + '.repo_name'"
@@ -82,7 +82,7 @@
               allow-create
               clearable
               size="small"
-              placeholder="请选择代码库"
+              :placeholder="(repo.type === 'other' || repo.source==='other')?'请输入':'请选择代码库'"
               :loading="codeInfo[repo_index].loading.repo"
               filterable
             >
@@ -95,17 +95,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?8:10" v-if="repo.source === 'other'||repo.type === 'other'" >
-          <el-form-item
-            style="width: 90%;"
-            :label="repo_index === 0 ? '代码库地址' : ''"
-            :prop="'repos.' + repo_index + '.other_address'"
-            :rules="{required: true, message: '代码库地址不能为空', trigger: ['blur', 'change']}"
-          >
-           <el-input v-model="repo.other_address" size="small" :placeholder="repo.auth_type === 'SSH'?'SSH 协议地址':' HTTPS 协议地址'"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5 " >
           <el-form-item
             :label="repo_index === 0 ? (shortDescription?'分支':'默认分支') : ''"
             :prop="'repos.' + repo_index + '.branch'"
@@ -113,7 +103,7 @@
           >
            <el-select
               v-model.trim="config.repos[repo_index].branch"
-              placeholder="请选择"
+              :placeholder="(repo.type === 'other' || repo.source==='other')?'请输入':'请选择'"
               size="small"
               loading-text="加载中，支持手动创建"
               filterable
@@ -131,15 +121,6 @@
                 :value="branch.name"
               ></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-         <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source === 'other'||repo.type === 'other'">
-          <el-form-item
-            :label="repo_index === 0 ? (shortDescription?'分支':'默认分支') : ''"
-            :prop="'repos.' + repo_index + '.branch'"
-            :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
-          >
-          <el-input v-model="repo.branch" size="small" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col v-if="showAdvanced" :span="3">

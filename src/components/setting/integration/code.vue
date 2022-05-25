@@ -250,6 +250,9 @@
               <el-option label="Access Token" value="PrivateAccessToken"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="代码源 URL" prop="address" :rules="{ validator: (codeEdit.auth_type === 'SSH' ? validateSSH : validateGitURL), trigger: ['change', 'blur'] }">
+            <el-input v-model="codeEdit.address" :placeholder="codeEdit.auth_type === 'SSH' ? 'git@example.com' : 'http(s)://example.com'"></el-input>
+          </el-form-item>
           <el-form-item v-if="codeEdit.auth_type === 'SSH'"
                         label="SSH Key"
                         prop="ssh_key">
@@ -532,6 +535,9 @@
               <el-option label="Access Token" value="PrivateAccessToken"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item v-if="codeAdd.auth_type" label="代码源 URL" prop="address" :rules="{ validator: (codeAdd.auth_type === 'SSH' ? validateSSH : validateGitURL), trigger: ['change', 'blur'] }">
+            <el-input v-model="codeAdd.address" :placeholder="codeAdd.auth_type === 'SSH' ? 'git@example.com' : 'http(s)://example.com'"></el-input>
+          </el-form-item>
           <el-form-item v-if="codeAdd.auth_type === 'SSH'"
                         label="SSH Key"
                         prop="ssh_key">
@@ -591,7 +597,7 @@
                   style="width: 100%;">
           <el-table-column label="代码源">
             <template slot-scope="scope">
-              <span>{{scope.row.type==='other'?'其他':scope.row.type}}({{scope.row.alias}})</span>
+              <span>{{scope.row.type}}({{scope.row.alias}})</span>
             </template>
           </el-table-column>
           <el-table-column label="URL">
@@ -643,8 +649,21 @@ const validateGitURL = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入服务 URL'))
   } else {
-    if (value.endsWith('/')) {
-      callback(new Error('URL 末尾不能包含 /'))
+    const reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/
+    if (!reg.test(value)) {
+      callback(new Error('请输入正确的 URL，包含协议'))
+    } else {
+      callback()
+    }
+  }
+}
+const validateSSH = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入服务 URL'))
+  } else {
+    const reg = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}(:[1-9]\d{0,4})?/
+    if (!reg.test(value)) {
+      callback(new Error('请输入正确的格式'))
     } else {
       callback()
     }
@@ -744,7 +763,9 @@ export default {
           message: '请选择鉴权方式',
           trigger: ['blur', 'change']
         }
-      }
+      },
+      validateSSH,
+      validateGitURL
     }
   },
   methods: {
