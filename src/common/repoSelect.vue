@@ -43,7 +43,9 @@
             :prop="'repos.' + repo_index + '.repo_owner'"
             :rules="{required: true, message: '拥有者不能为空', trigger: ['blur', 'change']}"
           >
+            <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_owner']" placeholder="请输入" size="small"></el-input>
             <el-select
+              v-else
               @change="getRepoNameById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index]['repo_owner'])"
               v-model.trim="config.repos[repo_index]['repo_owner']"
               remote
@@ -53,7 +55,7 @@
               allow-create
               clearable
               size="small"
-              :placeholder="(repo.type === 'other' || repo.source==='other')?'请输入':'代码库拥有者'"
+              placeholder="代码库拥有者"
               :loading="codeInfo[repo_index].loading.owner"
               filterable
             >
@@ -72,7 +74,9 @@
             :prop="'repos.' + repo_index + '.repo_name'"
             :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
           >
+            <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_name']" placeholder="请输入" size="small"></el-input>
             <el-select
+              v-else
               @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name)"
               v-model.trim="config.repos[repo_index].repo_name"
               remote
@@ -82,7 +86,7 @@
               allow-create
               clearable
               size="small"
-              :placeholder="(repo.type === 'other' || repo.source==='other')?'请输入':'请选择代码库'"
+              placeholder="请选择代码库"
               :loading="codeInfo[repo_index].loading.repo"
               filterable
             >
@@ -101,9 +105,11 @@
             :prop="'repos.' + repo_index + '.branch'"
             :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
           >
+          <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['branch']" placeholder="请输入" size="small"></el-input>
            <el-select
+              v-else
               v-model.trim="config.repos[repo_index].branch"
-              :placeholder="(repo.type === 'other' || repo.source==='other')?'请输入':'请选择'"
+              placeholder="请选择"
               size="small"
               loading-text="加载中，支持手动创建"
               filterable
