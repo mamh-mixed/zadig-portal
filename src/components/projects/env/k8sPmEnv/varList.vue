@@ -1,10 +1,10 @@
 <template>
   <div class="variable-list">
-    <el-table :data="variables" style="width: 90%; max-width: 800px;">
-      <el-table-column label="键" prop="key"></el-table-column>
+    <el-table :data="variables" style="width: 90%; max-width: 1000px;">
+      <el-table-column label="键" prop="key" width="270px"></el-table-column>
       <el-table-column label="值">
         <template slot-scope="{ row }">
-          <VariableEditor :varKey="row.key" :value.sync="row.value" :diabled="rollbackMode" />
+          <VariableEditor style="margin-right: 10px;" :varKey="row.key" :value.sync="row.value" :diabled="rollbackMode" />
         </template>
       </el-table-column>
       <el-table-column label="关联服务">
