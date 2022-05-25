@@ -1257,18 +1257,29 @@ export default {
         })
     },
     restartService (projectName, serviceName, envName) {
-      const envType = this.isProd ? 'prod' : ''
-      restartServiceOriginAPI(projectName, serviceName, envName, envType).then(
-        res => {
-          this.$message({
-            message: '重启服务成功',
-            type: 'success'
-          })
-          this.initPageInfo()
-          this.getEnvServices()
-          this.fetchEnvRevision()
-        }
-      )
+      this.$confirm('确定重启服务吗?', '重启', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const envType = this.isProd ? 'prod' : ''
+        restartServiceOriginAPI(projectName, serviceName, envName, envType).then(
+          res => {
+            this.$message({
+              message: '重启服务成功',
+              type: 'success'
+            })
+            this.initPageInfo()
+            this.getEnvServices()
+            this.fetchEnvRevision()
+          }
+        )
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消重启'
+        })
+      })
     },
     restartPmService (service, revisionMeta) {
       const payload = {

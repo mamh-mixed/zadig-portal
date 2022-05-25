@@ -682,15 +682,26 @@ export default {
       })
     },
     restartService (scaleName, type) {
-      const projectName = this.projectName
-      const serviceName = this.serviceName
-      const envName = this.envName ? this.envName : ''
-      const envType = this.isProd ? 'prod' : ''
-      restartServiceAPI(projectName, serviceName, envName, scaleName, type, envType).then((res) => {
-        this.fetchServiceData()
+      this.$confirm('确定重启实例吗?', '重启', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const projectName = this.projectName
+        const serviceName = this.serviceName
+        const envName = this.envName ? this.envName : ''
+        const envType = this.isProd ? 'prod' : ''
+        restartServiceAPI(projectName, serviceName, envName, scaleName, type, envType).then((res) => {
+          this.fetchServiceData()
+          this.$message({
+            message: '重启实例成功',
+            type: 'success'
+          })
+        })
+      }).catch(() => {
         this.$message({
-          message: '重启实例成功',
-          type: 'success'
+          type: 'info',
+          message: '已取消重启'
         })
       })
     },
