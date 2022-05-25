@@ -130,20 +130,24 @@
       </div>
     </div>
     <div class="info-card">
-      <div class="info-header">
+      <div class="info-header display-flex">
         <span>服务实例</span>
         <el-popover placement="top"
-                    trigger="hover">
+                    trigger="hover"
+                    class="middle">
           <div v-for="(color, status) in statusColorMap"
                :key="status"
                class="stat-tooltip-row">
             <span :class="['tooltip', color]"></span> {{ status }}
           </div>
-          <i class="el-icon-question pointer"
+          <i class="el-icon-question pointer middle"
              slot="reference"></i>
         </el-popover>
+        <el-tooltip effect="dark" content="刷新服务实例" placement="top">
+          <el-button icon="el-icon-refresh" type="text" @click="fetchServiceData">刷新</el-button>
+        </el-tooltip>
       </div>
-      <div class="info-body">
+      <div class="info-body" v-loading="servicesLoading">
         <template>
           <el-table :data="currentService.scales"
                     row-key="name"
@@ -513,7 +517,8 @@ export default {
         unknown: 'purple',
         terminating: 'gray'
       },
-      registryId: ''
+      registryId: '',
+      servicesLoading: true
     }
   },
 
@@ -596,6 +601,7 @@ export default {
       }
     },
     fetchServiceData () {
+      this.servicesLoading = true
       const projectName = this.projectName
       const serviceName = this.serviceName
       const workLoadType = this.workLoadType
@@ -631,6 +637,7 @@ export default {
           res.scales = []
         }
         this.currentService = res
+        this.servicesLoading = false
       })
     },
     expandScale (row, rows) {
@@ -867,5 +874,18 @@ export default {
 /deep/.el-dialog__headerbtn {
   top: 18px;
   font-size: 20px;
+}
+
+.display-flex {
+  display: flex;
+  align-items: center;
+
+  .middle {
+    flex: 1 1 auto;
+  }
+
+  /deep/.el-button {
+    padding: 0;
+  }
 }
 </style>
