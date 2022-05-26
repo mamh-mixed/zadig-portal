@@ -2,7 +2,7 @@
   <el-dialog
     title
     :visible.sync="dialogVisible"
-    width="700px"
+    width="80%"
     custom-class="manage-service-dialog"
     :close-on-click-modal="false"
     :before-close="closeDialog"

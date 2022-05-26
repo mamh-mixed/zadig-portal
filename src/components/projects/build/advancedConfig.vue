@@ -31,7 +31,7 @@
             <el-input
               :style=" {width: mini? '100%' : '298px', 'margin-left': mini ? '0' : '5px'}"
               v-model="buildConfig.cache_user_dir"
-              placeholder="请手动输入"
+              placeholder="请输入绝对路径例如 $WORKSPACE/.m2"
               size="mini"
             ></el-input>
           </el-radio>

@@ -278,7 +278,7 @@
                   <span>{{ row.main_repo.description?row.main_repo.description:'N/A' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="代码库拥有者/代码库" min-width="160px">
+              <el-table-column label="组织名/用户名/代码库" min-width="160px">
                 <template slot-scope="{ row }">
                   <span>{{ row.main_repo.repo_owner }}/{{ row.main_repo.repo_name }}</span>
                 </template>
@@ -518,7 +518,8 @@ export default {
         repo_owner: re.repo_owner,
         repo: re.repo_name,
         default_branch: re.branch,
-        codehost_id: re.codehost_id
+        codehost_id: re.codehost_id,
+        repo_namespace: re.repo_namespace
       }))
       return new Promise((resolve, reject) => {
         getAllBranchInfoAPI({ infos: testReposForQuery })
@@ -814,7 +815,12 @@ export default {
       })
     },
     getBranchInfoById (id, repo_owner, repo_name) {
-      getBranchInfoByIdAPI(id, repo_owner, repo_name).then(res => {
+      const repoItem = this.webhookRepos.find(item => {
+        return item.repo_owner === repo_owner
+      })
+      const namespace = repoItem.repo_namespace || ''
+      if (!namespace) return
+      getBranchInfoByIdAPI(id, namespace, repo_name).then(res => {
         this.$set(this.webhookBranches, repo_name, res)
       })
     },

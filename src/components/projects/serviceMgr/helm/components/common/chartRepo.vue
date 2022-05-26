@@ -15,9 +15,17 @@
               message: '请选择 Chart ',
               trigger: 'change',
             }">
-            <el-select v-model="chartForm.createFrom.chartName" @change="getHelmChartVersion" placeholder="请选择 Chart"  :disabled="isUpdate" size="small">
-              <el-option v-for="(item,key) in chartWithVersion" :key="key" :label="key" :value="key"></el-option>
-            </el-select>
+            <el-tooltip :disabled="chartForm.createFrom.chartName.length < 10" effect="dark" :content="chartForm.createFrom.chartName" placement="top-start">
+              <el-select
+                v-model="chartForm.createFrom.chartName"
+                @change="getHelmChartVersion"
+                placeholder="请选择 Chart"
+                :disabled="isUpdate"
+                size="small"
+              >
+                <el-option v-for="(item,key) in chartWithVersion" :key="key" :label="key" :value="key"></el-option>
+              </el-select>
+            </el-tooltip>
         </el-form-item>
         <el-form-item prop="chartVersion" class="chart-select last" :rules="{
               required: true,

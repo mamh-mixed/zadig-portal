@@ -36,7 +36,8 @@ const valueInfo = {
     repo: '',
     branch: '',
     valuesPaths: [],
-    autoSync: false
+    autoSync: false,
+    namespace: ''
   }
 }
 

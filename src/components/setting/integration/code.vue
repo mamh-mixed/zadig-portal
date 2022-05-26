@@ -116,6 +116,9 @@
       <el-form :model="codeEdit"
                :rules="codeRules"
                status-icon
+               class="mg-t32"
+               label-width="140px"
+               label-position="left"
                ref="codeUpdateForm">
         <el-form-item label="代码源"
                       prop="type">
@@ -405,6 +408,9 @@
       <el-form :model="codeAdd"
                :rules="codeRules"
                status-icon
+               label-width="140px"
+               label-position="left"
+               class="mg-t32"
                ref="codeForm">
         <el-form-item label="代码源"
                       prop="type">

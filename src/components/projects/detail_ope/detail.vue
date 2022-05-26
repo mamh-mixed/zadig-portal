@@ -87,6 +87,7 @@
         </el-table>
       </div>
     </section>
+    <DeleteProject ref="deleteProject" :followUpFn="followUpFn"></DeleteProject>
   </div>
 </template>
 <script>
@@ -94,22 +95,18 @@ import {
   getProjectInfoAPI,
   productEnvInfoAPI,
   queryUserBindingsAPI,
-  deleteProjectAPI,
   getProductWorkflowsInProjectAPI,
-  listProductAPI,
-  getServiceTemplatesAPI,
-  getBuildConfigsAPI
+  listProductAPI
 } from '@api'
+import DeleteProject from './components/deleteProject.vue'
 import { translateEnvStatus } from '@utils/wordTranslate'
 import { wordTranslate } from '@utils/wordTranslate.js'
 import { whetherOnboarding } from '@utils/onboardingRoute'
-import { get } from 'lodash'
 import bus from '@utils/eventBus'
 import store from 'storejs'
 export default {
   data () {
     return {
-      currentProject: {},
       envList: [],
       workflows: [],
       userBindings: [],
@@ -137,95 +134,11 @@ export default {
         })
       })
     },
-    async deleteProject () {
-      const projectName = this.projectName
-      const externalFlag = get(
-        this.currentProject,
-        'product_feature.create_env_type',
-        ''
-      )
-      const workflows = this.workflows.map(element => {
-        return element.name
-      })
-      const envNames = this.envList.map(element => {
-        return element.name
-      })
-      const result = await Promise.all([
-        getServiceTemplatesAPI(projectName),
-        getBuildConfigsAPI(projectName)
-      ])
-      const services = result[0].data
-        .filter(element => element.product_name === projectName)
-        .map(element => {
-          return element.service_name
-        })
-      const buildConfigs = result[1].map(element => {
-        return element.name
-      })
-      const htmlTemplate =
-        externalFlag === 'external'
-          ? `
-        <p>该项目下的以下资源会被取消托管，<span style="color:red">请谨慎操作！！</span></p>
-        <span><b>服务：</b>${
-  services.length > 0 ? services.join(', ') : '无'
-}</span><br>
-        <span><b>环境：</b>${
-  envNames.length > 0 ? envNames.join(', ') : '无'
-}</span><br>
-        <p>该项目下的以下资源会同时被删除，<span style="color:red">请谨慎操作！！</span></p>
-        <span><b>构建：</b>${
-  buildConfigs.length > 0 ? buildConfigs.join(', ') : '无'
-}</span><br>
-        <span><b>工作流：</b>${
-  workflows.length > 0 ? workflows.join(', ') : '无'
-}</span>
-      `
-          : `
-        该项目下的资源会同时被删除<span style="color:red">请谨慎操作！！</span><br>
-        <span><b>服务：</b>${
-  services.length > 0 ? services.join(', ') : '无'
-}</span><br>
-        <span><b>构建：</b>${
-  buildConfigs.length > 0 ? buildConfigs.join(', ') : '无'
-}</span><br>
-        <span><b>环境：</b>${
-  envNames.length > 0 ? envNames.join(', ') : '无'
-}</span><br>
-        <span><b>工作流：</b>${
-  workflows.length > 0 ? workflows.join(', ') : '无'
-}</span>
-        `
-      this.$prompt(htmlTemplate, `请输入项目名 ${projectName} 确认删除`, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        dangerouslyUseHTMLString: true,
-        customClass: 'product-prompt',
-        confirmButtonClass: 'el-button el-button--danger',
-        inputValidator: project_name => {
-          if (project_name === projectName) {
-            return true
-          } else if (project_name === '') {
-            return '请输入项目名'
-          } else {
-            return '项目名不相符'
-          }
-        }
-      })
-        .then(({ value }) => {
-          deleteProjectAPI(projectName).then(response => {
-            this.$message({
-              type: 'success',
-              message: '项目删除成功'
-            })
-            this.$router.push('/v1/projects')
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消删除'
-          })
-        })
+    followUpFn () {
+      this.$router.push('/v1/projects')
+    },
+    deleteProject () {
+      this.$refs.deleteProject.openDialog(this.projectName)
     },
     wordTranslation (word, category, subitem) {
       return wordTranslate(word, category, subitem)
@@ -240,7 +153,6 @@ export default {
         projectName
       ).catch(error => console.log(error))
       if (projectInfo && userBindings) {
-        this.currentProject = projectInfo
         this.userBindings = userBindings
         if (projectInfo.onboarding_status) {
           this.$router.push(whetherOnboarding(projectInfo))
@@ -320,6 +232,9 @@ export default {
         { title: this.projectName, isProjectName: true, url: '' }
       ]
     })
+  },
+  components: {
+    DeleteProject
   }
 }
 </script>

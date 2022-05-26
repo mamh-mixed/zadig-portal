@@ -214,7 +214,8 @@ export default {
         repo_owner: re.repo_owner,
         repo: re.repo_name,
         default_branch: re.branch,
-        codehost_id: re.codehost_id
+        codehost_id: re.codehost_id,
+        repo_namespace: re.repo_namespace
       }))
     },
 

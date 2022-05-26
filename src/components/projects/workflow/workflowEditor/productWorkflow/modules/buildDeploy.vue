@@ -21,17 +21,24 @@
           </div>
         </el-col>
 
-        <el-col :span="7">
+        <el-col :span="6">
           <div class="build-item deploy">
             部署
           </div>
         </el-col>
 
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="build-item view">
             是否显示
             <el-tooltip effect="dark" content="执行工作流任务时是否在服务列表中显示，供用户选择。" placement="top">
               <i class="el-icon-question"></i>
+            </el-tooltip>
+            <el-tooltip effect="dark" :content="hiddenAllDisplay ? '全部显示' : '全部隐藏'" placement="top">
+              <i class="iconfont icon"
+                 :class="{'iconview-off1': hiddenAllDisplay, iconview: !hiddenAllDisplay}"
+                 :style="{ color: hiddenAllDisplay ? '#99a9bf': '#0066ff' }"
+                 @click="actionDisplay"
+              ></i>
             </el-tooltip>
           </div>
         </el-col>
@@ -96,14 +103,14 @@
               <buildOperate ref="buildOPerateRef"  :buildName="config.target.build_name"  v-model="serviceConfigs[_idx]"/>
             </div>
           </el-col>
-          <el-col :span="7">
+          <el-col :span="6">
             <div class="build-item deploy">
               <div>
                 {{ `${config.target.service_name}/${config.target.service_module}`}}
               </div>
             </div>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="4">
             <div class="build-item view">
               <i class="iconfont icon"
                  :class="{'iconview-off1': config.hide_service_module, iconview: !config.hide_service_module}"
@@ -127,8 +134,8 @@ export default {
   data () {
     return {
       configs: {},
-      associatedBuilds: {}
-
+      associatedBuilds: {},
+      hiddenAllDisplay: false
     }
   },
   components: { buildOperate },
@@ -211,8 +218,14 @@ export default {
       this.$nextTick(() => {
         this.$refs.buildOPerateRef[_idx].showCurBuildOpeDialog()
       })
+    },
+    actionDisplay () {
+      const currentDisplay = !this.hiddenAllDisplay
+      this.hiddenAllDisplay = currentDisplay
+      this.serviceConfigs.forEach(config => {
+        config.hide_service_module = currentDisplay
+      })
     }
-
   },
   created () {
     bus.$on('check-tab:buildDeploy', () => {

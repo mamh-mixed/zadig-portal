@@ -142,7 +142,6 @@ export default {
 .update-template-container {
   .template-block {
     width: 100%;
-    max-width: 1000px;
 
     .template-title {
       cursor: pointer;

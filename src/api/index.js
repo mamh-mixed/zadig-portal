@@ -404,6 +404,14 @@ export function initProjectEnvAPI (projectName, isStcov, envType = 'general', is
   return http.get(`/api/aslan/environment/init_info/${projectName}${isStcov ? '?stcov=true' : '?'}envType=${envType}&isBaseEnv=${isBaseEnv}&baseEnv=${baseEnvName}&projectName=${projectName}`)
 }
 
+export function getConfigFromNamespaceAPI (projectName, clusterId, namespace) {
+  return http.get(`/api/aslan/service/services/kube/workloads?projectName=${projectName}&cluster_id=${clusterId}&namespace=${namespace}`)
+}
+
+export function createServiceFromK8sNamespaceAPI (projectName, payload) {
+  return http.post(`/api/aslan/service/services/yaml?projectName=${projectName}`, payload)
+}
+
 // Build
 export function getImgListAPI (from = '', imageFrom = '') {
   return http.get(`/api/aslan/system/basicImages?image_from=${from}&image_type=${imageFrom}`)
@@ -429,7 +437,7 @@ export function getBuildConfigDetailAPI (name, projectName = '') {
   return http.get(`/api/aslan/build/build/${name}?projectName=${projectName}`)
 }
 
-export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '', branchName = '', path = '', type = '', repoLink = '', remoteName = 'origin' }) {
+export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '', branchName = '', path = '', type = '', repoLink = '', remoteName = 'origin', namespace = '' }) {
   if (type === 'github' || type === 'gitlab' || type === 'helm' || type === 'githubPublic') {
     let params = {}
     if (type === 'githubPublic') {
@@ -443,7 +451,8 @@ export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '
         path: path,
         branch: branchName,
         owner: repoOwner,
-        codehost_id: codehostId
+        codehost_id: codehostId,
+        namespace: namespace
       }
     }
     return http.get(`/api/aslan/code/workspace/tree`, { params })
@@ -489,14 +498,15 @@ export function getCodehubRepoFileServiceAPI (codehostId, repoUUID, repoName, br
   return http.get(`/api/aslan/service/loader/preload/${codehostId}`, { params })
 }
 
-export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', payload) {
+export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', namespace = '', payload) {
   const params = {
     projectName: projectName,
     repoOwner: repoOwner,
     repoName: repoName,
     branchName: branchName,
     remoteName: remoteName,
-    repoUUID: repoUUID
+    repoUUID: repoUUID,
+    namespace: namespace
   }
   return http.post(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
 }
@@ -900,7 +910,7 @@ export function getRepoNameByIdAPI (id, type, repoOwner, key = '', projectUUID =
     return http.get(`/api/aslan/code/codehost/${id}/projects`, { params })
   }
 }
-
+// repoOwner from namespace
 export function getBranchInfoByIdAPI (id, repoOwner, repoName, repoUUID = '', page = 1, perPage = 200, key = '') {
   if (repoUUID) {
     const params = {
@@ -1356,8 +1366,8 @@ export function createProjectAPI (payload) {
   return http.post('/api/v1/picket/projects', payload)
 }
 
-export function deleteProjectAPI (projectName) {
-  return http.delete(`/api/v1/picket/projects/${projectName}?projectName=${projectName}`)
+export function deleteProjectAPI (projectName, is_delete = '') {
+  return http.delete(`/api/v1/picket/projects/${projectName}?projectName=${projectName}&is_delete=${is_delete}`)
 }
 
 export function downloadDevelopCLIAPI (os) {
@@ -1401,8 +1411,8 @@ export function rollbackConfigmapAPI (envType = '', payload) {
   return http.post(`/api/aslan/environment/configmaps?projectName=${payload.product_name}&envType=${envType}`, payload)
 }
 
-export function deleteProductEnvAPI (projectName, envName, envType = '') {
-  return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}`)
+export function deleteProjectEnvAPI (projectName, envName, envType = '', is_delete = '') {
+  return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}&is_delete=${is_delete}`)
 }
 
 export function restartPodAPI (podName, projectName, envName, envType = '') {
@@ -1792,14 +1802,15 @@ export function getCalculatedValuesYamlAPI ({ projectName, serviceName, envName,
   return http.post(`/api/aslan/environment/environments/${envName}/estimated-values?projectName=${projectName}&format=${format}&serviceName=${serviceName}&scene=${scene}`, payload)
 }
 
-export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valuesPaths }) {
+export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valuesPaths, namespace }) {
   return http.get(`/api/aslan/environment/rendersets/yamlContent`, {
     params: {
       codehostID,
       owner,
       repo,
       branch,
-      valuesPaths: valuesPaths.join(',')
+      valuesPaths: valuesPaths.join(','),
+      namespace
     }
   })
 }

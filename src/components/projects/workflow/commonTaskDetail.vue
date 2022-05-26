@@ -631,9 +631,11 @@ export default {
 .task-detail-container {
   position: relative;
   flex: 1;
+  margin-top: 20px;
   padding: 0 20px;
   overflow: auto;
   font-size: 13px;
+  background: #fff;
 
   .el-breadcrumb {
     font-size: 16px;

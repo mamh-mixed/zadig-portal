@@ -136,7 +136,8 @@ export default {
                 codehostID: createFrom.yaml_data.source_detail.git_repo_config.codehost_id,
                 owner: createFrom.yaml_data.source_detail.git_repo_config.owner,
                 repo: createFrom.yaml_data.source_detail.git_repo_config.repo,
-                valuesPaths: [createFrom.yaml_data.source_detail.load_path]
+                valuesPaths: [createFrom.yaml_data.source_detail.load_path],
+                namespace: createFrom.yaml_data.source_detail.git_repo_config.namespace
               }
             } else {
               this.importRepoInfo.gitRepoConfig = {

@@ -1,0 +1,59 @@
+
+.mg-t(@var) {
+  margin-top: @var;
+}
+.mg-b(@var) {
+  margin-bottom: @var;
+}
+.mg-l(@var) {
+  margin-left: @var;
+}
+.mg-r(@var) {
+  margin-right: @var;
+}
+.mg(@var) {
+  margin: @var;
+}
+.pd(@var) {
+  padding: @var;
+}
+.pd-l(@var) {
+  padding-left: @var;
+}
+.pd-r(@var) {
+  padding-right: @var;
+}
+
+@gutters: 0, 4, 6, 8, 12, 16, 20, 24, 32, 36, 40, 48, 56, 64;
+.generate-spaces();
+.generate-spaces(@i: 1) when (@i =< length(@gutters)) {
+  @n: extract(@gutters, @i);
+
+  body {
+    .mg-t@{n} {
+      .mg-t(1px * @n);
+    }
+    .mg-b@{n} {
+      .mg-b(1px * @n);
+    }
+    .mg-l@{n} {
+      .mg-l(1px * @n);
+    }
+    .mg-r@{n} {
+      .mg-r(1px * @n);
+    }
+    .mg-@{n} {
+      .mg(1px * @n);
+    }
+    .pd-@{n} {
+      .pd(1px * @n);
+    }
+    .pd-l@{n} {
+      .pd-l(1px * @n);
+    }
+    .pd-r@{n} {
+      .pd-r(1px * @n);
+    }
+  }
+  .generate-spaces(@i + 1);
+}
