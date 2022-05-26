@@ -404,6 +404,14 @@ export function initProjectEnvAPI (projectName, isStcov, envType = 'general', is
   return http.get(`/api/aslan/environment/init_info/${projectName}${isStcov ? '?stcov=true' : '?'}envType=${envType}&isBaseEnv=${isBaseEnv}&baseEnv=${baseEnvName}&projectName=${projectName}`)
 }
 
+export function getConfigFromNamespaceAPI (projectName, clusterId, namespace) {
+  return http.get(`/api/aslan/service/services/kube/workloads?projectName=${projectName}&cluster_id=${clusterId}&namespace=${namespace}`)
+}
+
+export function createServiceFromK8sNamespaceAPI (projectName, payload) {
+  return http.post(`/api/aslan/service/services/yaml?projectName=${projectName}`, payload)
+}
+
 // Build
 export function getImgListAPI (from = '', imageFrom = '') {
   return http.get(`/api/aslan/system/basicImages?image_from=${from}&image_type=${imageFrom}`)
@@ -1356,8 +1364,8 @@ export function createProjectAPI (payload) {
   return http.post('/api/v1/picket/projects', payload)
 }
 
-export function deleteProjectAPI (projectName) {
-  return http.delete(`/api/v1/picket/projects/${projectName}?projectName=${projectName}`)
+export function deleteProjectAPI (projectName, is_delete = '') {
+  return http.delete(`/api/v1/picket/projects/${projectName}?projectName=${projectName}&is_delete=${is_delete}`)
 }
 
 export function downloadDevelopCLIAPI (os) {
@@ -1401,8 +1409,8 @@ export function rollbackConfigmapAPI (envType = '', payload) {
   return http.post(`/api/aslan/environment/configmaps?projectName=${payload.product_name}&envType=${envType}`, payload)
 }
 
-export function deleteProductEnvAPI (projectName, envName, envType = '') {
-  return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}`)
+export function deleteProjectEnvAPI (projectName, envName, envType = '', is_delete = '') {
+  return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}&is_delete=${is_delete}`)
 }
 
 export function restartPodAPI (podName, projectName, envName, envType = '') {

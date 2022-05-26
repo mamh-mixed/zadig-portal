@@ -6,7 +6,12 @@
         <i class="el-icon-s-fold display-btn" @click="currentTab = 'list'" :class="{'active':currentTab==='list'}"></i>
       </div>
       <div class="header-end">
-        <el-button v-if="$utils.roleCheck('admin')" @click="$router.push(`/v1/projects/create`)" style="width: 132px; margin-right: 10px;" plain>
+        <el-button
+          v-if="$utils.roleCheck('admin')"
+          @click="$router.push(`/v1/projects/create`)"
+          style="width: 132px; margin-right: 10px;"
+          plain
+        >
           <i class="el-icon-plus"></i>&nbsp;&nbsp;&nbsp;&nbsp;新建项目&nbsp;&nbsp;
         </el-button>
         <template>
@@ -128,19 +133,13 @@
         <p>暂无可展示的项目，请手动添加项目</p>
       </div>
     </div>
+    <DeleteProject ref="deleteProject" :followUpFn="followUpFn"></DeleteProject>
   </div>
 </template>
 <script>
+import DeleteProject from './components/deleteProject.vue'
 import bus from '@utils/eventBus'
-import {
-  getProductWorkflowsInProjectAPI,
-  getBuildConfigsAPI,
-  getSingleProjectAPI,
-  getServiceTemplatesAPI,
-  deleteProjectAPI
-} from '@api'
 import { mapGetters } from 'vuex'
-import { get } from 'lodash'
 
 export default {
   data () {
@@ -166,94 +165,11 @@ export default {
         this.$router.push(`/v1/projects/edit/${command.projectName}`)
       }
     },
-    async deleteProject (projectName) {
-      const result = await Promise.all([
-        getSingleProjectAPI(projectName),
-        getProductWorkflowsInProjectAPI(projectName),
-        getServiceTemplatesAPI(projectName),
-        getBuildConfigsAPI(projectName)
-      ])
-      const externalFlag = get(result[0], 'product_feature.create_env_type', '')
-      const workflows = result[1]
-        .filter(w => w.product_tmpl_name === projectName)
-        .map(element => {
-          return element.name
-        })
-      const services = result[2].data
-        .filter(element => element.product_name === projectName)
-        .map(element => {
-          return element.service_name
-        })
-      const buildConfigs = result[3].map(element => {
-        return element.name
-      })
-      const envNames = this.projectList.filter(
-        elemnet => elemnet.name === projectName
-      )[0].envs
-      const htmlTemplate =
-        externalFlag === 'external'
-          ? `
-        <p>该项目下的以下资源会被取消托管，<span style="color:red">请谨慎操作！！</span></p>
-        <span><b>服务：</b>${
-  services.length > 0 ? services.join(', ') : '无'
-}</span><br>
-        <span><b>环境：</b>${
-  envNames.length > 0 ? envNames.join(', ') : '无'
-}</span><br>
-        <p>该项目下的以下资源会同时被删除，<span style="color:red">请谨慎操作！！</span></p>
-        <span><b>构建：</b>${
-  buildConfigs.length > 0 ? buildConfigs.join(', ') : '无'
-}</span><br>
-        <span><b>工作流：</b>${
-  workflows.length > 0 ? workflows.join(', ') : '无'
-}</span>
-      `
-          : `
-        该项目下的资源会同时被删除<span style="color:red">请谨慎操作！！</span><br>
-        <span><b>服务：</b>${
-  services.length > 0 ? services.join(', ') : '无'
-}</span><br>
-        <span><b>构建：</b>${
-  buildConfigs.length > 0 ? buildConfigs.join(', ') : '无'
-}</span><br>
-        <span><b>环境：</b>${
-  envNames.length > 0 ? envNames.join(', ') : '无'
-}</span><br>
-        <span><b>工作流：</b>${
-  workflows.length > 0 ? workflows.join(', ') : '无'
-}</span>
-        `
-      this.$prompt(htmlTemplate, `请输入项目名 ${projectName} 确认删除`, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        dangerouslyUseHTMLString: true,
-        customClass: 'product-prompt',
-        confirmButtonClass: 'el-button el-button--danger',
-        inputValidator: input => {
-          if (input === projectName) {
-            return true
-          } else if (input === '') {
-            return '请输入项目名'
-          } else {
-            return '项目名不相符'
-          }
-        }
-      })
-        .then(({ value }) => {
-          deleteProjectAPI(projectName).then(response => {
-            this.$message({
-              type: 'success',
-              message: '项目删除成功'
-            })
-            this.$store.dispatch('getProjectList')
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消删除'
-          })
-        })
+    followUpFn () {
+      this.$store.dispatch('getProjectList')
+    },
+    deleteProject (projectName) {
+      this.$refs.deleteProject.openDialog(projectName)
     }
   },
   computed: {
@@ -262,6 +178,9 @@ export default {
   mounted () {
     this.$store.dispatch('getProjectList')
     bus.$emit('set-topbar-title', { title: '项目', breadcrumb: [] })
+  },
+  components: {
+    DeleteProject
   }
 }
 </script>
