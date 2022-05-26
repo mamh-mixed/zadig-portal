@@ -12,6 +12,13 @@
     >
     <div class="trigger-mode">
       <el-button type="text" @click="switchMode">{{ webhookSwap.is_yaml ? 'GUI 方式' : 'YAML 方式' }}</el-button>
+      <a
+        href="https://docs.koderover.com/zadig/project/workflow/#yaml-方式"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <el-tag size="mini" type="success" effect="dark" class="help-tag">帮助文档</el-tag>
+      </a>
     </div>
       <el-form :model="webhookSwap" ref="triggerForm" label-position="left" label-width="125px" :rules="rules">
         <el-form-item label="名称" prop="name" class="bottom-22">
