@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="`请输入项目名 ${projectName} 确认删除`" :visible.sync="deleteDialogVisible" width="40%">
-    <div class="delete-product-content">
-      <template v-if="productDeleteInfo.deploy_type === 'external'">
+    <div class="delete-project-content">
+      <template v-if="projectDeleteInfo.deploy_type === 'external'">
         <div style="margin-bottom: 4px;">
           该项目下的以下资源会被取消托管，
           <span style="color: red;">请谨慎操作！！</span>
@@ -51,19 +51,19 @@
       </template>
       <div style="margin: 16px 0 6px;">
         <el-checkbox
-          v-if="['k8s', 'helm'].includes(productDeleteInfo.deploy_type)"
-          v-model="productDeleteInfo.is_delete"
+          v-if="['k8s', 'helm'].includes(projectDeleteInfo.deploy_type)"
+          v-model="projectDeleteInfo.is_delete"
         >同时删除环境对应的 K8s 命名空间和服务</el-checkbox>
       </div>
-      <el-form ref="deleteForm" :model="productDeleteInfo" :rules="deleteRules" label-width="80px">
-        <el-form-item label-width="0" prop="product_name">
-          <el-input v-model="productDeleteInfo.product_name" placeholder="输入项目名称" size="small"></el-input>
+      <el-form ref="deleteForm" :model="projectDeleteInfo" :rules="deleteRules" label-width="80px">
+        <el-form-item label-width="0" prop="project_name">
+          <el-input v-model="projectDeleteInfo.project_name" placeholder="输入项目名称" size="small"></el-input>
         </el-form-item>
       </el-form>
     </div>
     <div slot="footer">
       <el-button @click="deleteDialogVisible = false" size="small">取 消</el-button>
-      <el-button type="danger" @click="identifyDeleteProduct" size="small">确 定</el-button>
+      <el-button type="danger" @click="identifyDeleteProject" size="small">确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -89,13 +89,13 @@ export default {
       envNames: [],
       buildConfigs: [],
       workflows: [],
-      productDeleteInfo: {
+      projectDeleteInfo: {
         is_delete: true,
-        product_name: '',
+        project_name: '',
         deploy_type: ''
       },
       deleteRules: {
-        product_name: [
+        project_name: [
           {
             required: true,
             validator: (rule, value, callback) => {
@@ -121,9 +121,9 @@ export default {
       this.envNames = []
       this.buildConfigs = []
       this.workflows = []
-      this.productDeleteInfo = {
+      this.projectDeleteInfo = {
         is_delete: true,
-        product_name: '',
+        project_name: '',
         deploy_type: this.$store.getters.projectDeployType(projectName)
       }
       this.$nextTick(() => {
@@ -152,12 +152,12 @@ export default {
         return element.name
       })
     },
-    identifyDeleteProduct () {
+    identifyDeleteProject () {
       this.$refs.deleteForm.validate((valid) => {
         if (valid) {
           deleteProjectAPI(
             this.projectName,
-            this.productDeleteInfo.is_delete
+            this.projectDeleteInfo.is_delete
           ).then(() => {
             this.$message({
               type: 'success',
@@ -174,7 +174,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.delete-product-content {
+.delete-project-content {
   margin: -10px 10px;
   line-height: 22px;
 }

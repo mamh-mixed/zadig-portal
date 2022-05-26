@@ -133,11 +133,11 @@
         <p>暂无可展示的项目，请手动添加项目</p>
       </div>
     </div>
-    <DeleteProduct ref="deleteProduct" :followUpFn="followUpFn"></DeleteProduct>
+    <DeleteProject ref="deleteProject" :followUpFn="followUpFn"></DeleteProject>
   </div>
 </template>
 <script>
-import DeleteProduct from './components/deleteProduct.vue'
+import DeleteProject from './components/deleteProject.vue'
 import bus from '@utils/eventBus'
 import { mapGetters } from 'vuex'
 
@@ -169,7 +169,7 @@ export default {
       this.$store.dispatch('getProjectList')
     },
     deleteProject (projectName) {
-      this.$refs.deleteProduct.openDialog(projectName)
+      this.$refs.deleteProject.openDialog(projectName)
     }
   },
   computed: {
@@ -180,7 +180,7 @@ export default {
     bus.$emit('set-topbar-title', { title: '项目', breadcrumb: [] })
   },
   components: {
-    DeleteProduct
+    DeleteProject
   }
 }
 </script>

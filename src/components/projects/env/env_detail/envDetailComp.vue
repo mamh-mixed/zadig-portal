@@ -183,7 +183,7 @@
                     <el-dropdown-item
                       v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',isBtn:true}"
                       v-if="isShowDeleteEnv"
-                      @click.native="deleteProduct(productInfo.product_name,productInfo.env_name)"
+                      @click.native="deleteEnv(productInfo.product_name,productInfo.env_name)"
                     >删除环境</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -191,7 +191,7 @@
                   v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',isBtn:true}"
                   v-else-if="isShowDeleteEnv && (envSource==='helm'||envSource==='pm') "
                   type="primary"
-                  @click="deleteProduct(productInfo.product_name,productInfo.env_name)"
+                  @click="deleteEnv(productInfo.product_name,productInfo.env_name)"
                   size="mini"
                   plain
                 >删除环境</el-button>
@@ -462,7 +462,7 @@
       </div>
       <div slot="footer">
         <el-button @click="envDeleteInfo.deleteDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="danger" @click="identifyDeleteProduct()" size="small">确 定</el-button>
+        <el-button type="danger" @click="identifyDeleteEnv()" size="small">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -479,7 +479,7 @@ import {
   updateK8sEnvAPI,
   restartPmServiceAPI,
   restartServiceOriginAPI,
-  deleteProductEnvAPI,
+  deleteProjectEnvAPI,
   getSingleProjectAPI,
   getServicePipelineAPI,
   initSource,
@@ -1190,7 +1190,7 @@ export default {
         }
       )
         .then(({ value }) => {
-          deleteProductEnvAPI(project_name, env_name, envType).then(res => {
+          deleteProjectEnvAPI(project_name, env_name, envType).then(res => {
             this.$notify({
               title: `托管环境正在断开连接中，请稍后查看环境状态`,
               message: '操作成功',
@@ -1237,7 +1237,7 @@ export default {
         }
       )
     },
-    deleteProduct (project_name) {
+    deleteEnv (project_name) {
       if (this.usedInPolicy.length) {
         this.cantDelete()
         return
@@ -1250,10 +1250,10 @@ export default {
         envType: this.isProd ? 'prod' : ''
       }
     },
-    identifyDeleteProduct () {
+    identifyDeleteEnv () {
       this.$refs.deleteForm.validate().then(() => {
         const envDeleteInfo = this.envDeleteInfo
-        deleteProductEnvAPI(
+        deleteProjectEnvAPI(
           envDeleteInfo.project_name,
           envDeleteInfo.env_name,
           envDeleteInfo.envType,

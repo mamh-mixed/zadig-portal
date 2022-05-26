@@ -87,7 +87,7 @@
         </el-table>
       </div>
     </section>
-    <DeleteProduct ref="deleteProduct" :followUpFn="followUpFn"></DeleteProduct>
+    <DeleteProject ref="deleteProject" :followUpFn="followUpFn"></DeleteProject>
   </div>
 </template>
 <script>
@@ -98,7 +98,7 @@ import {
   getProductWorkflowsInProjectAPI,
   listProductAPI
 } from '@api'
-import DeleteProduct from './components/deleteProduct.vue'
+import DeleteProject from './components/deleteProject.vue'
 import { translateEnvStatus } from '@utils/wordTranslate'
 import { wordTranslate } from '@utils/wordTranslate.js'
 import { whetherOnboarding } from '@utils/onboardingRoute'
@@ -138,7 +138,7 @@ export default {
       this.$router.push('/v1/projects')
     },
     deleteProject () {
-      this.$refs.deleteProduct.openDialog(this.projectName)
+      this.$refs.deleteProject.openDialog(this.projectName)
     },
     wordTranslation (word, category, subitem) {
       return wordTranslate(word, category, subitem)
@@ -234,7 +234,7 @@ export default {
     })
   },
   components: {
-    DeleteProduct
+    DeleteProject
   }
 }
 </script>

@@ -1409,7 +1409,7 @@ export function rollbackConfigmapAPI (envType = '', payload) {
   return http.post(`/api/aslan/environment/configmaps?projectName=${payload.product_name}&envType=${envType}`, payload)
 }
 
-export function deleteProductEnvAPI (projectName, envName, envType = '', is_delete = '') {
+export function deleteProjectEnvAPI (projectName, envName, envType = '', is_delete = '') {
   return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}&is_delete=${is_delete}`)
 }
 
