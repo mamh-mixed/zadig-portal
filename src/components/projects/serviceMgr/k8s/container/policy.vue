@@ -181,6 +181,13 @@ export default {
 
     .el-form {
       width: 100%;
+
+      /deep/.el-popper.tip {
+        .tooltip-key {
+          display: inline-block;
+          width: 280px !important;
+        }
+      }
     }
   }
 
