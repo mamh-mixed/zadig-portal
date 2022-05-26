@@ -25,25 +25,26 @@
                 <i class="el-icon-warning" style="color: red;"></i>
               </el-tooltip>
             </el-form-item>
-            <el-form-item v-if="versionList.length > 0 && taskDetail.status==='passed'" label="交付清单">
+            <el-form-item v-if="taskDetail.releases.length > 0 && taskDetail.status==='passed'" label="交付清单">
               <router-link
-                :to="`/v1/delivery/version/detail/${projectName}/${versionList[0].versionInfo.id}?version=${versionList[0].versionInfo.version}&type=k8s`"
+                :to="`/v1/delivery/version/detail/${projectName}/${taskDetail.releases[0].id}?version=${taskDetail.releases[0].version}&type=k8s`"
               >
                 <span class="version-link">
-                  {{ $utils.tailCut(versionList[0].versionInfo.id,8,'#')+
-                  versionList[0].versionInfo.version }}
+                  {{ $utils.tailCut(taskDetail.releases[0].id,8,'#')+
+                  taskDetail.releases[0].version }}
                 </span>
               </router-link>
             </el-form-item>
-            <el-form-item v-hasPermi="{projectName: projectName, action: 'run_workflow'}" v-if="showOperation()" label="操作">
+            <el-form-item v-if="showOperation()" label="操作">
               <el-button
+                v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
                 v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
                 @click="rerun"
                 type="text"
                 size="medium"
               >失败重试</el-button>
               <el-button
-                v-hasPermi="{projectName: projectName, action: 'run_workflow'}"
+                v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
                 v-if="taskDetail.status==='running'||taskDetail.status==='created'"
                 @click="cancel"
                 type="text"
@@ -408,8 +409,7 @@ import {
   workflowTaskDetailAPI,
   workflowTaskDetailSSEAPI,
   restartWorkflowAPI,
-  cancelWorkflowAPI,
-  getVersionListAPI
+  cancelWorkflowAPI
 } from '@api'
 import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
 import DeployIcons from '@/components/common/deployIcons'
@@ -484,7 +484,6 @@ export default {
       inputTagVisible: false,
       inputValue: '',
       artifactModalVisible: false,
-      versionList: [],
       expandedBuildDeploys: [],
       expandedArtifactDeploys: [],
       expandedDistributeDeploys: [],
@@ -784,13 +783,6 @@ export default {
         }
       )
     },
-    checkDeliveryList () {
-      const workflowName = this.workflowName
-      const taskId = this.taskID
-      getVersionListAPI(workflowName, this.projectName, taskId).then(res => {
-        this.versionList = res
-      })
-    },
     collectSubTask (map, typeName) {
       const stage = this.taskDetail.stages.find(
         stage => stage.type === typeName
@@ -960,7 +952,6 @@ export default {
   },
   watch: {
     $route (to, from) {
-      this.checkDeliveryList()
       this.setTitleBar()
       if (
         this.$route.query.status === 'passed' ||
@@ -975,7 +966,6 @@ export default {
     }
   },
   created () {
-    this.checkDeliveryList()
     this.setTitleBar()
     if (
       this.$route.query.status === 'passed' ||

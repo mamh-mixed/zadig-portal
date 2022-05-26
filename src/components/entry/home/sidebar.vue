@@ -24,7 +24,7 @@
     </div>
     <div class="nav grow-all main-menu">
       <div v-for="(item,index) in navList" :key="index" class="category-wrapper">
-        <h4 class="category-name" :class="{ opened: !showSidebar }">
+        <h4 v-if="navList[index].items.length > 0" class="category-name" :class="{ opened: !showSidebar }">
           {{item.category_name}}
           <span v-if="item.new_feature" class="new-feature">New</span>
         </h4>
@@ -251,6 +251,35 @@ export default {
         return false
       }
     },
+    showEfficiencyInsight () {
+      const showEfficiencyInsight = this.checkPermissionSyncMixin({
+        type: 'system',
+        action: 'efficiency_over'
+      })
+      return showEfficiencyInsight
+    },
+    showDataOverview () {
+      const showDataOverview = this.checkPermissionSyncMixin({
+        type: 'system',
+        action: 'data_over'
+      })
+      return showDataOverview
+    },
+    showTestCenter () {
+      const showTestCenter = this.checkPermissionSyncMixin({
+        type: 'system',
+        action: 'get_test'
+      })
+      return showTestCenter
+    },
+    showDeliveryCenter () {
+      const showDeliveryCenter = this.checkPermissionSyncMixin({
+        type: 'system',
+        operator: 'or',
+        actions: ['release_get', 'delivery_get']
+      })
+      return showDeliveryCenter
+    },
     navList () {
       const path = this.$route.path
       if (path.includes('/v1/system')) {
@@ -258,7 +287,28 @@ export default {
       } else if (this.isAdmin) {
         return this.defaultMenu.concat(this.adminMenu)
       } else {
-        return this.defaultMenu
+        const cloneMenu = _.cloneDeep(this.defaultMenu)
+        if (!this.showTestCenter) {
+          _.remove(cloneMenu[0].items, (item) => {
+            return item.name === '测试中心'
+          })
+        }
+        if (!this.showDataOverview) {
+          _.remove(cloneMenu[1].items, (item) => {
+            return item.name === '数据概览'
+          })
+        }
+        if (!this.showEfficiencyInsight) {
+          _.remove(cloneMenu[1].items, (item) => {
+            return item.name === '效能洞察'
+          })
+        }
+        if (!this.showDeliveryCenter) {
+          _.remove(cloneMenu[0].items, (item) => {
+            return item.name === '交付中心'
+          })
+        }
+        return cloneMenu
       }
     }
   },

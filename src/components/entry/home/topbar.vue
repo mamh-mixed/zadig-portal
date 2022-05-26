@@ -410,7 +410,6 @@ export default {
   top: 0;
   right: 0;
   left: 66px;
-  z-index: 1010;
   height: 40px;
   padding: 0 30px;
   font-size: 14px;

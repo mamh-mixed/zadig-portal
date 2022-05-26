@@ -94,31 +94,7 @@ export default {
 }
 </script>
 
-<style lang="less">
-.no-content {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-
-  img {
-    width: 200px;
-    height: 200px;
-  }
-
-  p {
-    color: #606266;
-    font-size: 15px;
-  }
-}
-
-.highlight {
-  background: #0066ff57;
-}
-
+<style lang="less" scoped>
 .projects-pm-service-container {
   position: relative;
   flex: 1;
@@ -172,6 +148,26 @@ export default {
     height: calc(~'100% - 225px') !important;
     margin-bottom: 0;
     padding: 5px 0 10px 0;
+
+    .no-content {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: 200px;
+        height: 200px;
+      }
+
+      p {
+        color: #606266;
+        font-size: 15px;
+      }
+    }
   }
 
   .controls__wrap {

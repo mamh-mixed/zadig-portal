@@ -312,7 +312,8 @@ export default {
             repo_owner: re.repo_owner,
             repo: re.repo_name,
             default_branch: re.branch,
-            codehost_id: re.codehost_id
+            codehost_id: re.codehost_id,
+            filter_regexp: re.filter_regexp
           }
         }
       })
@@ -346,7 +347,9 @@ export default {
         this.$set(repo, 'branchPRsMap', repoInfo && repoInfo.branchPRsMap)
         this.$set(repo, 'tags', (repoInfo && repoInfo.tags) ? repoInfo.tags : [])
         this.$set(repo, 'prNumberPropName', 'pr')
-        this.$set(repo, 'errorMsg', repoInfo.error_msg || '')
+        if (repoInfo) {
+          this.$set(repo, 'errorMsg', repoInfo.error_msg || '')
+        }
         this.$set(repo, 'branch', repo.branch || '')
         this.$set(repo, repo.prNumberPropName, repo[repo.prNumberPropName] || null)
         this.$set(repo, 'tag', repo.tag || '')
@@ -365,32 +368,25 @@ export default {
           }
         }
         this.$set(repo, 'branchOrTag', branchOrTag)
-        const branchAndTagList = []
-        if (repo.branchNames && repo.branchNames.length) {
-          branchAndTagList.push({
-            label: 'Branches',
-            options: (repo.branchNames || []).map(name => {
-              return {
-                type: 'branch',
-                id: `branch-${name}`,
-                name
-              }
-            })
+        this.$set(repo, 'branchAndTagList', [{
+          label: 'Branches',
+          options: (repo.branchNames || []).map(name => {
+            return {
+              type: 'branch',
+              id: `branch-${name}`,
+              name
+            }
           })
-        }
-        if (repo.tags && repo.tags.length) {
-          branchAndTagList.push({
-            label: 'Tags',
-            options: repo.tags.map(tag => {
-              return {
-                type: 'tag',
-                id: `tag-${tag.name}`,
-                name: tag.name
-              }
-            })
+        }, {
+          label: 'Tags',
+          options: (repo.tags || []).map(tag => {
+            return {
+              type: 'tag',
+              id: `tag-${tag.name}`,
+              name: tag.name
+            }
           })
-        }
-        this.$set(repo, 'branchAndTagList', branchAndTagList)
+        }])
       }
     },
     getPresetInfo (projectNameAndEnvName) {
@@ -489,7 +485,9 @@ export default {
             repo.pr = repo.pr ? repo.pr : 0
             repo.branch = ''
             repo.tag = ''
-            repo[repo.branchOrTag.type] = repo.branchOrTag.name
+            if (repo.branchOrTag) {
+              repo[repo.branchOrTag.type] = repo.branchOrTag.name
+            }
             for (const key of repoKeysToDelete) {
               delete repo[key]
             }

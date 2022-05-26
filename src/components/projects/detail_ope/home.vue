@@ -10,7 +10,7 @@
           <i class="el-icon-plus"></i>&nbsp;&nbsp;&nbsp;&nbsp;新建项目&nbsp;&nbsp;
         </el-button>
         <template>
-          <el-dropdown placement="bottom" trigger="hover">
+          <el-dropdown placement="bottom" trigger="click" v-hasPermi="{type: 'system', action: 'get_template'}">
             <button type="button" class="display-btn el-button">
               <i class="iconfont iconvery-template el-icon--left"></i>
               &nbsp;&nbsp;模板库&nbsp;&nbsp;
@@ -20,6 +20,7 @@
               <el-dropdown-item icon="iconfont iconvery-k8s" @click.native="$router.push(`/v1/template/k8s-yamls`)">K8s YAML</el-dropdown-item>
               <el-dropdown-item icon="iconfont iconhelmrepo" @click.native="$router.push(`/v1/template/charts`)">Helm Chart</el-dropdown-item>
               <el-dropdown-item icon="iconfont icondocker" @click.native="$router.push(`/v1/template/dockerfiles`)">Dockerfile</el-dropdown-item>
+              <el-dropdown-item icon="iconfont iconvery-build" @click.native="$router.push(`/v1/template/builds`)">构建</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>

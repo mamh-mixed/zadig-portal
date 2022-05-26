@@ -31,7 +31,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="目标分支" prop="repo.branch"
-          v-if="checkGitRepo"
+          v-if="checkGitRepo && canSwitchBranch"
           :rules="[
           { required: true, message: webhookSwap.repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
         ]">
@@ -129,11 +129,11 @@
       </el-form>
       <div slot="footer"
            class="dialog-footer">
-        <el-button size="small"
+        <el-button size="mini"
                    round
                    @click="webhookAddMode?webhookAddMode=false:webhookEditMode=false">取 消
         </el-button>
-        <el-button size="small"
+        <el-button size="mini"
                    round
                    type="primary"
                    @click="webhookAddMode?addWebhook():saveWebhook()">确定</el-button>
@@ -183,7 +183,7 @@
                 <span v-else-if="scope.row.main_repo.source==='gerrit'"> N/A </span>
               </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="150">
               <template slot-scope="scope">
                 <el-button @click.native.prevent="editWebhook(scope.$index)"
                            type="primary"
@@ -291,6 +291,10 @@ export default {
     avaliableRepos: {
       required: true,
       type: Array
+    },
+    canSwitchBranch: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {

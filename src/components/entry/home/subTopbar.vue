@@ -2,11 +2,73 @@
   <div class="subtopbar-container">
     <div class="nav-container">
       <div class="nav-content">
-        <ul v-if="routerList.length > 0" class="nav-item-list">
-          <router-link v-for="(item,index) in routerList" :key="index" active-class="active" :to="item.url">
+        <ul class="nav-item-list">
+          <router-link
+            v-hasPermi="{projectName: projectName, action: 'get_workflow'}"
+            active-class="active"
+            :to="`/v1/projects/detail/${this.projectName}/pipelines`"
+          >
             <li class="nav-item">
-              <i v-if="item.icon" class="icon" :class="[item.icon]"></i>
-              <span class="name">{{item.name}}</span>
+              <i class="icon iconfont icongongzuoliucheng"></i>
+              <span class="name">工作流</span>
+            </li>
+          </router-link>
+          <router-link
+            v-hasPermi="{projectName: projectName, actions: ['get_environment','production:get_environment'],operator:'or'}"
+            active-class="active"
+            :to="`/v1/projects/detail/${this.projectName}/envs`"
+          >
+            <li class="nav-item">
+              <i class="icon iconfont iconvery-environ"></i>
+              <span class="name">环境</span>
+            </li>
+          </router-link>
+
+          <router-link
+            v-hasPermi="{projectName: projectName, action: 'get_service'}"
+            active-class="active"
+            :to="`/v1/projects/detail/${this.projectName}/services`"
+          >
+            <li class="nav-item">
+              <i class="icon iconfont iconvery-service"></i>
+              <span class="name">服务</span>
+            </li>
+          </router-link>
+          <router-link
+            v-hasPermi="{projectName: projectName, action: 'get_build'}"
+            active-class="active"
+            :to="`/v1/projects/detail/${this.projectName}/builds`"
+          >
+            <li class="nav-item">
+              <i class="icon iconfont iconvery-build"></i>
+              <span class="name">构建</span>
+            </li>
+          </router-link>
+          <router-link
+            v-hasPermi="{projectName: projectName, action: 'get_test'}"
+            active-class="active"
+            :to="`/v1/projects/detail/${this.projectName}/test`"
+          >
+            <li class="nav-item">
+              <i class="icon iconfont iconvery-testing"></i>
+              <span class="name">测试</span>
+            </li>
+          </router-link>
+          <router-link v-hasPermi="{projectName: projectName, action: 'get_scan'}" active-class="active" :to="`/v1/projects/detail/${this.projectName}/scanner`">
+            <li class="nav-item">
+              <i class="icon iconfont iconvery-scanner"></i>
+              <span class="name">代码扫描</span>
+            </li>
+          </router-link>
+          <router-link
+            v-if="deployType === 'helm' ||deployType === 'k8s' "
+            v-hasPermi="{projectName: projectName, action: 'get_delivery'}"
+            active-class="active"
+            :to="`/v1/projects/detail/${this.projectName}/version`"
+          >
+            <li class="nav-item">
+              <i class="icon iconfont iconvery-versionmana"></i>
+              <span class="name">版本管理</span>
             </li>
           </router-link>
         </ul>
@@ -14,24 +76,42 @@
     </div>
     <div class="operation">
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/pipelines`">
-        <el-button @click="bindComp(comp,'workflow')" icon="el-icon-plus" plain>新建工作流</el-button>
+        <el-button v-hasPermi="{projectName: projectName, action: 'create_workflow',isBtn:true}"  @click="bindComp(comp,'workflow')" icon="el-icon-plus" plain>新建工作流</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail`">
         <el-button
-          v-hasPermi="{projectName: projectName, action: 'create_environment'}"
+          v-hasPermi="{projectName: projectName, actions: ['create_environment','production:create_environment'],operator:'or',isBtn:true}"
           @click="bindComp(comp,'env')"
           icon="el-icon-plus"
           plain
         >创建环境</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/builds`">
-        <el-button @click="bindComp(comp,'build')" icon="el-icon-plus" plain>新建构建</el-button>
+        <el-button v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" @click="bindComp(comp,'build')" icon="el-icon-plus" plain>新建构建</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/test`">
-        <el-button v-hasPermi="{projectName: projectName, action: 'create_test'}" @click="bindComp(comp,'test')" icon="el-icon-plus" plain>新建测试</el-button>
+        <el-button
+          v-hasPermi="{projectName: projectName, action: 'create_test',isBtn:true}"
+          @click="bindComp(comp,'test')"
+          icon="el-icon-plus"
+          plain
+        >新建测试</el-button>
+      </template>
+      <template v-if="$route.path === `/v1/projects/detail/${projectName}/scanner`">
+        <el-button
+          v-hasPermi="{projectName: projectName, action: 'create_scan',isBtn:true}"
+          @click="bindComp(comp,'scanner')"
+          icon="el-icon-plus"
+          plain
+        >新建代码扫描</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/version` && deployType === 'helm'">
-        <el-button v-hasPermi="{projectName: projectName, action: 'create_delivery'}" @click="bindComp(comp,'version')" icon="el-icon-plus" plain>创建版本</el-button>
+        <el-button
+          v-hasPermi="{projectName: projectName, action: 'create_delivery',isBtn:true}"
+          @click="bindComp(comp,'version')"
+          icon="el-icon-plus"
+          plain
+        >创建版本</el-button>
       </template>
       <template>
         <el-dropdown
@@ -47,7 +127,11 @@
           <el-dropdown-menu slot="dropdown" class="project-config">
             <el-dropdown-item icon="el-icon-edit-outline" @click.native="$router.push(`/v1/projects/edit/${projectName}`)">修改</el-dropdown-item>
             <el-dropdown-item icon="el-icon-lock" @click.native="$router.push(`/v1/projects/detail/${projectName}/rbac`)">权限</el-dropdown-item>
-            <el-dropdown-item v-if="deployType === 'k8s' || deployType === 'helm'" icon="item-icon iconfont iconvery-collaboratiom" @click.native="$router.push(`/v1/projects/detail/${projectName}/policy`)">协作模式</el-dropdown-item>
+            <el-dropdown-item
+              v-if="deployType === 'k8s' || deployType === 'helm'"
+              icon="item-icon iconfont iconvery-collaboratiom"
+              @click.native="$router.push(`/v1/projects/detail/${projectName}/policy`)"
+            >协作模式</el-dropdown-item>
             <el-dropdown-item icon="el-icon-delete" @click.native="comp.deleteProject">删除</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -71,41 +155,10 @@ export default {
   },
   computed: {
     deployType () {
-      const project = this.$store.getters.projectList.find(project => project.name === this.projectName)
+      const project = this.$store.getters.projectList.find(
+        project => project.name === this.projectName
+      )
       return project ? project.deployType : ''
-    },
-    routerList () {
-      const commonRoute = [{
-        name: '工作流',
-        icon: 'iconfont icongongzuoliucheng',
-        url: `/v1/projects/detail/${this.projectName}/pipelines`
-      },
-      {
-        name: '环境',
-        icon: 'iconfont iconvery-environ',
-        url: `/v1/projects/detail/${this.projectName}/envs`
-      },
-      {
-        name: '服务',
-        icon: 'iconfont iconvery-service',
-        url: `/v1/projects/detail/${this.projectName}/services`
-      },
-      {
-        name: '构建',
-        icon: 'iconfont iconvery-build',
-        url: `/v1/projects/detail/${this.projectName}/builds`
-      },
-      {
-        name: '测试',
-        icon: 'iconfont iconvery-testing',
-        url: `/v1/projects/detail/${this.projectName}/test`
-      }]
-      const versionRoute = {
-        name: '版本管理',
-        icon: 'iconfont iconvery-versionmana',
-        url: `/v1/projects/detail/${this.projectName}/version`
-      }
-      return ['k8s', 'helm'].includes(this.deployType) ? commonRoute.concat(versionRoute) : commonRoute
     }
   },
   methods: {
@@ -121,6 +174,10 @@ export default {
       } else if (type === 'test') {
         this.$router.push(
           `/v1/projects/detail/${this.projectName}/test/add/function`
+        )
+      } else if (type === 'scanner') {
+        this.$router.push(
+          `/v1/projects/detail/${this.projectName}/scanner/create`
         )
       } else if (type === 'version') {
         this.$router.push(

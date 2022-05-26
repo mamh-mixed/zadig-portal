@@ -83,7 +83,7 @@
             <div class="grid-content image-registry">
               <div v-if="editImageRegistry === false">
                 <span>{{imageRegistryDesc}}</span>
-                <i class="icon el-icon-edit icon-primary" @click="editImageRegistry = true"></i>
+                <i v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment'}" class="icon el-icon-edit icon-primary" @click="editImageRegistry = true"></i>
               </div>
               <div v-else>
                 <el-select v-model="productInfo.editRegistryID" size="mini">
@@ -103,7 +103,6 @@
             <div class="grid-title">基本操作</div>
             <div class="grid-content operation">
               <el-tooltip
-                v-hasPermi="{projectName: projectName, action: 'config_environment'}"
                 v-if="checkEnvUpdate(productInfo.status) && productInfo.status!=='Disconnected' && (envSource===''||envSource==='spock'|| envSource==='helm')"
                 content="更新环境中引用的变量"
                 effect="dark"
@@ -111,26 +110,31 @@
               >
                 <el-button
                   v-if="productInfo.status!=='Creating'"
+                  v-hasPermi="{projectName: projectName,action: isProd?'production:config_environment':'config_environment',isBtn:true}"
                   type="primary"
                   @click="envSource==='helm' ? openUpdateHelmVar() : openUpdateK8sVar()"
                   size="mini"
                   plain
-                >更新环境变量</el-button>
+                >{{ envSource==='helm' ? '更新全局变量' : '更新环境变量' }}</el-button>
               </el-tooltip>
               <template v-if="productInfo.share_env_enable && productInfo.share_env_is_base">
                 <router-link
                   :to="`/v1/projects/detail/${projectName}/envs/create?createShare=true&baseEnvName=${productInfo.env_name}&clusterId=${productInfo.cluster_id}`"
                 >
-                  <el-button type="primary" size="mini" plain>创建子环境</el-button>
+                  <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:create_environment':'create_environment',isBtn:true}" type="primary" size="mini" plain>创建子环境</el-button>
                 </router-link>
               </template>
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
                 <el-dropdown v-if="envSource===''||envSource==='spock' || envSource==='helm'" trigger="click">
-                  <el-button type="primary" plain>
+                  <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})" type="primary" plain>
                     管理服务
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-button v-else class="permission-disabled" type="primary" plain>
+                    管理服务
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})" slot="dropdown">
                     <el-dropdown-item @click.native="manageServices('add')">添加服务</el-dropdown-item>
                     <el-dropdown-item @click.native="manageServices('update')">更新服务</el-dropdown-item>
                     <el-dropdown-item @click.native="manageServices('delete')">删除服务</el-dropdown-item>
@@ -138,21 +142,24 @@
                 </el-dropdown>
                 <el-tooltip
                   v-else-if="showUpdate(productInfo,productStatus) && (!productInfo.is_prod && envSource==='pm')"
-                  v-hasPermi="{projectName: projectName, action: 'config_environment'}"
                   content="根据最新环境配置更新，包括服务编排和服务配置的改动"
                   effect="dark"
                   placement="top"
                 >
-                  <el-button type="primary" @click="updateK8sEnv(productInfo)" size="mini" plain>更新环境</el-button>
+                  <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',isBtn:true}" type="primary" @click="updateK8sEnv(productInfo)" size="mini" plain>更新环境</el-button>
                 </el-tooltip>
               </template>
               <template v-if="envSource==='' || envSource==='spock' || envSource === 'helm'">
                 <el-dropdown trigger="click">
-                  <el-button type="primary" plain>
+                  <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})" type="primary" plain>
                     环境配置
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
-                  <el-dropdown-menu slot="dropdown">
+                  <el-button v-else class="permission-disabled" type="primary" plain>
+                    环境配置
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment'})"  slot="dropdown">
                     <el-dropdown-item @click.native="jumpEnvConfigPage('Ingress')">Ingress</el-dropdown-item>
                     <el-dropdown-item @click.native="jumpEnvConfigPage('ConfigMap')">ConfigMap</el-dropdown-item>
                     <el-dropdown-item @click.native="jumpEnvConfigPage('Secret')">Secret</el-dropdown-item>
@@ -161,25 +168,27 @@
                 </el-dropdown>
               </template>
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
-                <el-dropdown v-if="envSource===''||envSource==='spock'" trigger="click">
-                  <el-button type="primary" plain>
+                <el-dropdown v-if="envSource===''||envSource==='spock'||envSource==='helm'" trigger="click">
+                  <el-button v-hasPermi="{projectName: projectName, actions: ['config_environment','delete_environment','production:config_environment','production:delete_environment'],operator:'or',isBtn:true}" type="primary" plain>
                     更多
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-if="!productInfo.share_env_enable" @click.native="shareEnv('enable')">开启自测模式</el-dropdown-item>
+                    <el-dropdown-item v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',isBtn:true}" v-if="!productInfo.share_env_enable" @click.native="shareEnv('enable')">开启自测模式</el-dropdown-item>
                     <el-dropdown-item
+                      v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',isBtn:true}"
                       v-if="productInfo.share_env_enable && productInfo.share_env_is_base"
                       @click.native="shareEnv('disable')"
                     >关闭自测模式</el-dropdown-item>
                     <el-dropdown-item
+                      v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',isBtn:true}"
                       v-if="isShowDeleteEnv"
                       @click.native="deleteProduct(productInfo.product_name,productInfo.env_name)"
                     >删除环境</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'delete_environment'}"
+                  v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',isBtn:true}"
                   v-else-if="isShowDeleteEnv && (envSource==='helm'||envSource==='pm') "
                   type="primary"
                   @click="deleteProduct(productInfo.product_name,productInfo.env_name)"
@@ -189,14 +198,14 @@
               </template>
               <template v-if="envSource==='external'">
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'config_environment'}"
+                  v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',isBtn:true}"
                   @click="editExternalConfig(productInfo)"
                   type="primary"
                   size="mini"
                   plain
                 >配置托管</el-button>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'config_environment'}"
+                  v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',isBtn:true}"
                   type="primary"
                   @click="deleteHostingEnv(productInfo.product_name,productInfo.env_name)"
                   size="mini"
@@ -235,7 +244,7 @@
         </div>
       </div>
       <div v-loading="serviceLoading" element-loading-text="正在获取服务信息" element-loading-spinner="el-icon-loading" class="service-container">
-        <div style="margin-bottom: 10px;">
+        <div class="service-title">
           <el-input
             size="mini"
             class="search-input"
@@ -247,143 +256,36 @@
           >
             <i class="el-icon-search el-input__icon" slot="prefix"></i>
           </el-input>
-          <span v-show="!serviceLoading" class="service-count">
+          <span v-show="!serviceLoading" class="service-count middle">
             服务总数
             <span class="service-number">{{ envTotal }}</span> 个
           </span>
+          <el-button icon="el-icon-refresh" type="text" @click="refreshServiceList">刷新</el-button>
         </div>
-        <el-table v-if="containerServiceList.length > 0" :data="containerServiceList">
-          <el-table-column label="服务名" width="250px">
-            <template slot-scope="scope">
-              <router-link :to="setRoute(scope)">
-                <span :class="$utils._getStatusColor(scope.row.status)" class="service-name">
-                  <i v-if="scope.row.type==='k8s'" class="iconfont service-icon iconrongqifuwu"></i>
-                  {{ scope.row.service_display_name || scope.row.service_name }}
-                </span>
-              </router-link>
-              <template
-                v-if="serviceStatus[scope.row.service_name] && serviceStatus[scope.row.service_name]['tpl_updatable'] && envSource!=='helm'"
-              >
-                <el-popover placement="right" popper-class="diff-popper" width="600" trigger="click">
-                  <el-tabs v-model="activeDiffTab" type="card">
-                    <el-tab-pane name="template">
-                      <span slot="label">
-                        <i class="el-icon-tickets"></i> 模板对比
-                      </span>
-                      <div class="diff-container">
-                        <div class="diff-content">
-                          <pre
-                            :class="{ 'added': section.added, 'removed': section.removed }"
-                            v-for="(section,index) in combineTemplate"
-                            :key="index"
-                          >{{section.value}}</pre>
-                        </div>
-                      </div>
-                    </el-tab-pane>
-                  </el-tabs>
-                  <span slot="reference" class="service-updateable">
-                    <el-tooltip effect="dark" content="配置变更" placement="top">
-                      <i @click="openPopper(scope.row)" class="el-icon-question icon operation"></i>
-                    </el-tooltip>
-                  </span>
-                </el-popover>
-                <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
-                  effect="dark"
-                  content="更新服务"
-                  placement="top"
-                >
-                  <i @click="updateService(scope.row)" class="iconfont icongengxin operation"></i>
-                </el-tooltip>
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column v-if="!isPmService" align="left" label="READY" width="130px">
-            <template slot-scope="scope">
-              <span>{{ scope.row.ready?scope.row.ready:'N/A' }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="left" label="状态" width="130px">
-            <template slot="header" slot-scope="{}">
-              状态{{`(${runningContainerService}/${containerServiceList.length})`}}
-              <el-tooltip effect="dark" placement="top">
-                <div slot="content">实际正常的服务/预期的正常服务数量</div>
-                <i class="status-icon el-icon-question"></i>
-              </el-tooltip>
-            </template>
-            <template slot-scope="scope">
-              <el-tag size="small" :type="statusIndicator[scope.row.status]">{{scope.row.status}}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column align="left" label="镜像信息" min-width="150px">
-            <template slot-scope="scope">
-              <template>
-                <div v-for="(image,index) in scope.row.images" :key="index">
-                  <el-tooltip effect="dark" :content="image" placement="top">
-                    <span>{{ imageNameSplit(image) }}</span>
-                  </el-tooltip>
-                </div>
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column align="left" width="150px" label="服务入口">
-            <template slot-scope="scope">
-              <template v-if="scope.row.ingress && scope.row.ingress.host_info && scope.row.ingress.host_info.length>0">
-                <el-tooltip
-                  v-for="(ingress,index) in scope.row.ingress.host_info"
-                  :key="index"
-                  effect="dark"
-                  :content="ingress.host"
-                  placement="top"
-                >
-                  <span class="ingress-url">
-                    <a :href="`http://${ingress.host}`" target="_blank">{{ingress.host}}</a>
-                  </span>
-                </el-tooltip>
-              </template>
-              <span v-else>N/A</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="操作" width="150px">
-            <template slot-scope="scope">
-              <span v-if="envSource !=='external' && envSource !=='helm'" class="operation">
-                <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
-                  effect="dark"
-                  content="通过工作流升级服务"
-                  placement="top"
-                >
-                  <i
-                    @click="upgradeServiceByWorkflow(projectName,envName,scope.row.service_name,scope.row.type)"
-                    class="iconfont iconshengji"
-                  ></i>
-                </el-tooltip>
-              </span>
-              <span class="operation">
-                <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
-                  effect="dark"
-                  content="重启服务"
-                  placement="top"
-                >
-                  <i @click="restartService(projectName,scope.row.service_name,$route.query.envName)" class="el-icon-refresh"></i>
-                </el-tooltip>
-              </span>
-              <span v-if="(envSource===''||envSource ==='spock'||envSource ==='external')" class="operation">
-                <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
-                  effect="dark"
-                  content="查看服务配置"
-                  placement="top"
-                >
-                  <router-link :to="setServiceConfigRoute(scope)">
-                    <i class="iconfont iconfuwupeizhi"></i>
-                  </router-link>
-                </el-tooltip>
-              </span>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="env-service-list-content">
+          <ChartList
+            ref="chartListRef"
+            class="left"
+            v-if="envSource === 'helm'"
+            :envSource="envSource"
+            :fetchAllData="fetchAllData"
+            :searchServicesByChart="searchServicesByChart"
+            :isProd="isProd"
+          />
+          <ServiceList
+            class="right"
+            :containerServiceList="containerServiceList"
+            :setRoute="setRoute"
+            :serviceStatus="serviceStatus"
+            :envSource="envSource"
+            :updateService="updateService"
+            :isPmService="isPmService"
+            :upgradeServiceByWorkflow="upgradeServiceByWorkflow"
+            :restartService="restartService"
+            :setServiceConfigRoute="setServiceConfigRoute"
+            :isProd="isProd"
+          />
+        </div>
         <el-table v-if="pmServiceList.length > 0" class="pm-service-container" :data="pmServiceList">
           <el-table-column label="服务名" width="250px">
             <template slot-scope="scope">
@@ -395,7 +297,7 @@
               </router-link>
               <template v-if=" serviceStatus[scope.row.service_name] && serviceStatus[scope.row.service_name]['tpl_updatable']">
                 <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
+                  v-hasPermi="{projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment'}"
                   effect="dark"
                   content="更新主机资源和探活配置"
                   placement="top"
@@ -445,7 +347,15 @@
                 </el-popover>
               </template>
               <div>
-                <span class="add-host el-icon-edit-outline" @click="editHost(scope.row)"></span>
+                <span v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment'})" class="add-host el-icon-edit-outline" @click="editHost(scope.row)"></span>
+                <el-tooltip
+                  v-else
+                  effect="dark"
+                  content="无权限操作"
+                  placement="top"
+                >
+                <span class="add-host el-icon-edit-outline permission-disabled"></span>
+                </el-tooltip>
               </div>
             </template>
           </el-table-column>
@@ -454,7 +364,7 @@
             <template slot-scope="scope">
               <span class="operation">
                 <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
+                 v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment'})"
                   effect="dark"
                   content="通过工作流升级服务"
                   placement="top"
@@ -464,20 +374,38 @@
                     class="iconfont iconshengji"
                   ></i>
                 </el-tooltip>
+                <el-tooltip
+                 v-else
+                  effect="dark"
+                  content="无权限操作"
+                  placement="top"
+                >
+                  <i
+                    class="iconfont iconshengji permission-disabled"
+                  ></i>
+                </el-tooltip>
               </span>
               <span v-if="scope.row.status!=='Succeeded'" class="operation">
                 <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
+                 v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment',isBtn:true})"
                   effect="dark"
                   content="查看服务升级日志"
                   placement="top"
                 >
                   <i @click="openPmServiceLog(envName,scope.row.service_name)" class="iconfont iconiconlog"></i>
                 </el-tooltip>
+                <el-tooltip
+                  v-else
+                  effect="dark"
+                  content="无权限操作"
+                  placement="top"
+                >
+                  <i  class="iconfont iconiconlog permission-disabled"></i>
+                </el-tooltip>
               </span>
               <span class="operation">
                 <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
+                 v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment'})"
                   effect="dark"
                   content="查看服务配置"
                   placement="top"
@@ -485,6 +413,14 @@
                   <router-link :to="setPmServiceConfigRoute(scope)">
                     <i class="iconfont iconfuwupeizhi"></i>
                   </router-link>
+                </el-tooltip>
+                <el-tooltip
+                  v-else
+                  effect="dark"
+                  content="无权限操作"
+                  placement="top"
+                >
+                <span ><i class="iconfont iconfuwupeizhi permission-disabled"></i></span>
                 </el-tooltip>
               </span>
             </template>
@@ -496,17 +432,16 @@
         <p v-if="scrollFinish && page > 2" class="scroll-finish-class">数据已加载完毕 ~</p>
       </div>
     </div>
-    <UpdateHelmVarDialog
-      :fetchAllData="fetchAllData"
-      :productInfo="productInfo"
-      ref="updateHelmVarDialog"
-      :projectName="projectName"
-      :envName="envName"
-    />
+    <UpdateHelmVarDialog :fetchAllData="fetchAllData" ref="updateHelmVarDialog" :projectName="projectName" :envName="envName" />
     <UpdateK8sVarDialog :fetchAllData="fetchAllData" :productInfo="productInfo" ref="updateK8sVarDialog" />
     <PmServiceLog ref="pmServiceLog" />
     <ManageK8sServicesDialog :fetchAllData="fetchAllData" :productInfo="productInfo" ref="manageK8sServicesRef" />
-    <ManageHelmServicesDialog :fetchAllData="fetchAllData" :productInfo="productInfo" ref="manageHelmServicesRef" :productStatus="productStatus" />
+    <ManageHelmServicesDialog
+      :fetchAllData="fetchAllData"
+      :productInfo="productInfo"
+      ref="manageHelmServicesRef"
+      :productStatus="productStatus"
+    />
     <ShareEnvDialog
       :mode="shareEnvDialog.mode"
       :projectName="productInfo.product_name"
@@ -524,7 +459,6 @@ import {
   envRevisionsAPI,
   productEnvInfoAPI,
   productServicesAPI,
-  serviceTemplateAfterRenderAPI,
   listProductAPI,
   updateServiceAPI,
   updateK8sEnvAPI,
@@ -548,8 +482,8 @@ import UpdateHelmVarDialog from './components/updateHelmVarDialog'
 import UpdateK8sVarDialog from './components/updateK8sVarDialog'
 import ManageK8sServicesDialog from './components/manageK8sServicesDialog.vue'
 import ManageHelmServicesDialog from './components/manageHelmServicesDialog.vue'
-
-const jsdiff = require('diff')
+import ChartList from './components/chartList.vue'
+import ServiceList from './components/serviceList.vue'
 
 const validateKey = (rule, value, callback) => {
   if (typeof value === 'undefined' || value === '') {
@@ -572,11 +506,9 @@ export default {
       containerServiceList: [],
       pmServiceList: [],
       ingressList: [],
-      combineTemplate: [],
       currentServiceWorkflows: [],
       currentPmServiceData: {},
       selectVersion: '',
-      activeDiffTab: 'template',
       selectVersionDialogVisible: false,
       updataK8sEnvVarLoading: false,
       updateK8sEnvVarDialogVisible: false,
@@ -617,13 +549,6 @@ export default {
         ]
       },
       serviceTypeMap: serviceTypeMap,
-      statusIndicator: {
-        Running: 'success',
-        Succeeded: 'success',
-        Error: 'danger',
-        Unstable: 'warning',
-        Unstart: 'info'
-      },
       serviceSearch: '',
       page: 1,
       perPage: 20,
@@ -633,7 +558,8 @@ export default {
       editImageRegistry: false,
       imageRegistry: [],
       shareEnvStatus: null,
-      shareEnvStatusId: null
+      shareEnvStatusId: null,
+      filterChartName: '*'
     }
   },
   computed: {
@@ -660,11 +586,6 @@ export default {
         _.orderBy(this.projectList, ['product_name', 'is_prod']),
         'product_name'
       )
-    },
-    runningContainerService () {
-      return this.containerServiceList.filter(
-        s => s.status === 'Running' || s.status === 'Succeeded'
-      ).length
     },
     envText () {
       return this.productInfo.namespace
@@ -794,6 +715,11 @@ export default {
       this.initPageInfo()
       this.getEnvServices('search')
     },
+    searchServicesByChart (serviceName) {
+      this.initPageInfo()
+      this.filterChartName = serviceName
+      this.getEnvServices('search')
+    },
     onScroll (event) {
       if (!this.scrollGetFlag) {
         return
@@ -808,7 +734,8 @@ export default {
     },
     refreshServiceList () {
       this.initPageInfo()
-      this.getEnvServices()
+      this.getEnvServices('search')
+      this.fetchEnvRevision()
     },
     initPageInfo () {
       this.removeListener()
@@ -950,16 +877,25 @@ export default {
         let serviceGroup = []
         if (this.page === 1 && flag !== 'search') {
           await this.getProductEnvInfo(projectName, envName)
+          if (this.envSource === 'helm') {
+            this.filterChartName = '*'
+            this.$refs.chartListRef.getChartNames(envName)
+          }
         }
         this.scrollGetFlag = false
         if (this.page === 1) {
           this.addListener()
         }
+
+        const serviceSearch =
+          this.envSource === 'helm'
+            ? `serviceName=${this.filterChartName},name=${this.serviceSearch}`
+            : this.serviceSearch
         const res = await productServicesAPI(
           projectName,
           envName,
           this.envSource,
-          this.serviceSearch,
+          serviceSearch,
           this.perPage,
           this.page
         )
@@ -1092,25 +1028,12 @@ export default {
         pmServiceList
       }
     },
-
-    openPopper (service) {
-      const projectName = this.projectName
-      const envName = this.envName
-      serviceTemplateAfterRenderAPI(
-        projectName,
-        service.service_name,
-        envName
-      ).then(res => {
-        this.combineTemplate = jsdiff.diffLines(
-          res.current.yaml,
-          res.latest.yaml
-        )
-      })
-    },
     getProdStatus (status, updatable) {
       // k8s and helm don't show updatable status
       const hiddenUpdatable =
-        this.envSource === '' || this.envSource === 'spock' || this.envSource === 'helm'
+        this.envSource === '' ||
+        this.envSource === 'spock' ||
+        this.envSource === 'helm'
       return translateEnvStatus(status, hiddenUpdatable ? false : updatable)
     },
     rollbackToVersion () {
@@ -1364,13 +1287,6 @@ export default {
         this.fetchEnvRevision()
       })
     },
-    imageNameSplit (name) {
-      if (name.includes(':')) {
-        return name.split('/')[name.split('/').length - 1]
-      } else {
-        return name
-      }
-    },
     checkEnvUpdate (status) {
       if (status === 'Deleting' || status === 'Creating') {
         return false
@@ -1487,7 +1403,9 @@ export default {
     UpdateK8sVarDialog,
     ManageK8sServicesDialog,
     ManageHelmServicesDialog,
-    ShareEnvDialog
+    ShareEnvDialog,
+    ChartList,
+    ServiceList
   },
   props: {
     envBasePath: {

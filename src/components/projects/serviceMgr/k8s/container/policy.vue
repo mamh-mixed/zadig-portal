@@ -5,16 +5,31 @@
         <el-form-item label="服务部署超时设置（分钟）" prop="timeout">
           <el-input v-model.number="projectForm.timeout"></el-input>
         </el-form-item>
+        <el-form-item prop="auto_deploy.enable" v-if="showAutoUpdate">
+          <span slot="label">
+            <span>服务自动更新</span>
+            <el-tooltip effect="dark" content="开启自动更新后，服务配置变更时，Zadig 会自动将其部署到项目中所有环境中" placement="top">
+              <i class="pointer el-icon-warning"></i>
+            </el-tooltip>
+          </span>
+          <span>开启自动更新</span>
+          <el-switch v-model="projectForm.auto_deploy.enable" />
+        </el-form-item>
         <el-form-item label="交付物命名规则设置">
           <span slot="label">
             交付物命名规则设置
             <el-tooltip effect="dark" placement="top">
               <div slot="content">
                 镜像和 TAR 包规则可以通过变量和常量组装生成：
+                <br />
                 <div v-for="item in tipList" :key="item.key" >
                   <span v-html="item.key" style="display: inline-block; width: 140px;"></span> <span>{{item.label}}</span>
                 </div>
-                注意：常量字符只能是大小写字母、数字、中划线、下划线和点，即 [a-zA-Z0-9_.-]，首个字符不能是&nbsp;.&nbsp;或&nbsp;-。不能超过 127 个字符
+                <br />
+                <div>注意：</div>
+                <div>- 常量字符只能是大小写字母、数字、中划线、下划线和点，即 [a-zA-Z0-9_.-]</div>
+                <div>- 常量字符的首个字符以大小写字母或数字开头，最大长度为 127 个字符</div>
+                <div>- 如使用 其他 代码源， <span v-html="'{{.REPO_PR}}、{{.REPO_COMMIT_ID}}'"></span> 变量不支持</div>
               </div>
               <i class="el-icon-question"></i>
             </el-tooltip>
@@ -63,7 +78,10 @@ export default {
     return {
       projectForm: {
         timeout: null,
-        custom_image_rule: {}
+        custom_image_rule: {},
+        auto_deploy: {
+          enable: false
+        }
       },
       rules: {
         timeout: [
@@ -91,6 +109,18 @@ export default {
   computed: {
     projectName () {
       return this.$route.params.project_name
+    },
+    showAutoUpdate () {
+      const project = this.$store.getters.projectList.find(
+        project => project.name === this.projectName
+      )
+      if (!this.projectName) {
+        return false
+      } else if (project && (project.deployType === 'helm' || project.deployType === 'k8s')) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -99,6 +129,9 @@ export default {
         this.projectForm = res
         if (!res.timeout) {
           this.$set(this.projectForm, 'timeout', 10)
+        }
+        if (!res.auto_deploy) {
+          this.$set(this.projectForm, 'auto_deploy', { enable: false })
         }
       })
     },

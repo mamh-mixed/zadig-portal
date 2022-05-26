@@ -144,6 +144,35 @@
     margin-top: 20px;
     margin-bottom: 20px;
 
+    .service-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      .middle {
+        flex: 1 1 auto;
+      }
+
+      .el-button.el-button--text {
+        padding: 0;
+      }
+    }
+
+    .env-service-list-content {
+      display: flex;
+
+      .left,
+      .right {
+        background: white;
+        transition: width 0.3s;
+      }
+
+      .right {
+        flex: 1;
+        overflow: auto;
+      }
+    }
+
     .service-count {
       display: inline-block;
       margin-left: 14px;

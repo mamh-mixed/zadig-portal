@@ -8,6 +8,7 @@
       <ProductWorkflowStatus :productWorkflowTasks="productWorkflowTasks" :expandId="productExpandId" />
       <CommonWorkflowStatus :commonWorkflowTasks="commonWorkflowTasks" />
       <TestStatus :testTasks="testTasks" />
+      <ScannerStatus :scannerTasks="scannerTasks" />
     </section>
   </div>
 </template>
@@ -18,6 +19,7 @@ import bus from '@utils/eventBus'
 import ProductWorkflowStatus from './container/productWorkflowStatus'
 import CommonWorkflowStatus from './container/commonWorkflowStatus'
 import TestStatus from './container/testStatus'
+import ScannerStatus from './container/scannerStatus'
 export default {
   data () {
     return {
@@ -37,6 +39,10 @@ export default {
         pending: [],
         running: []
       },
+      scannerTasks: {
+        pending: [],
+        running: []
+      },
       taskDetailExpand: {},
       productExpandId: 0
     }
@@ -51,6 +57,9 @@ export default {
             )
             this.testTasks.running = res.data.filter(
               task => task.type === 'test'
+            )
+            this.scannerTasks.running = res.data.filter(
+              task => task.type === 'scanning'
             )
             this.commonWorkflowTasks.running = res.data.filter(
               task => task.type === 'workflow_v3'
@@ -69,6 +78,9 @@ export default {
             )
             this.testTasks.pending = res.data.filter(
               task => task.type === 'test'
+            )
+            this.scannerTasks.pending = res.data.filter(
+              task => task.type === 'scanning'
             )
             this.commonWorkflowTasks.pending = res.data.filter(
               task => task.type === 'workflow_v3'
@@ -95,6 +107,7 @@ export default {
   components: {
     ProductWorkflowStatus,
     TestStatus,
+    ScannerStatus,
     CommonWorkflowStatus
   }
 }

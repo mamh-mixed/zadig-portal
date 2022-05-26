@@ -6,11 +6,19 @@
           <el-button style="margin-right: 15px;" type="primary" plain>取消</el-button>
         </router-link>
         <el-button
+          v-hasPermi="{type: 'project', projectName:projectName, action: compBind.isEdit?'edit_build':'create_build',isBtn:true }"
           @click="$refs.buildRef.handleBuildConfig()"
           @updateBtnLoading="saveLoading = $event"
           :loading="saveLoading"
           type="primary"
         >{{ compBind.isEdit ? '确认修改' : '立即新建' }}</el-button>
+        <el-button v-if="showSaveToTemplate"
+          v-hasPermi="{type: 'system', action: compBind.isEdit?'edit_template':'create_template',isBtn:true }"
+          @click="$refs.buildRef.saveBuildConfigToTemplate()"
+          @updateBtnLoading="saveLoading = $event"
+          :loading="saveLoading"
+          type="text"
+        >保存为模板</el-button>
       </footer>
     </template>
   </CommonBuild>
@@ -18,7 +26,6 @@
 
 <script>
 import bus from '@utils/eventBus'
-
 import CommonBuild from './commonBuild.vue'
 export default {
   data () {
@@ -44,6 +51,13 @@ export default {
         this.$route.path ===
         `/v1/projects/detail/${this.projectName}/builds/create`
       )
+    },
+    showSaveToTemplate () {
+      if (this.$refs.buildRef.source) {
+        return this.compBind.isEdit && this.$refs.buildRef.source === 'zadig' && !this.$refs.buildRef.useTemplate
+      } else {
+        return false
+      }
     }
   },
   methods: {

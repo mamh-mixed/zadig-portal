@@ -40,11 +40,10 @@
               <el-option
                 v-for="(host,index) in allCodeHosts"
                 :key="index"
-                :label="`${host.address} ${host.type==='github'?'('+host.namespace+')':''}`"
+                :label="(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'"
                 :value="host.id"
               >
-                {{`${host.address}
-                ${host.type==='github'?'('+host.namespace+')':''}`}}
+               {{(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'}}
               </el-option>
             </el-select>
           </el-form-item>
@@ -138,6 +137,8 @@
     </el-dialog>
     <ImportFromTemplate
       :projectName="projectName"
+      :currentUpdatedServiceName="currentUpdatedServiceName"
+      :currentUpdatedServiceTemplateId="currentUpdatedServiceTemplateId"
       :dialogImportFromYamlVisible.sync="openImportYamlDialog"
       @importYamlSuccess="importYamlSuccess"
     />
@@ -152,23 +153,23 @@
                 </el-radio-button>
               </el-tooltip>
               <el-tooltip effect="dark" content="服务编排" placement="top">
-                <el-radio-button label="arrange">
+                <el-radio-button v-hasPermi="{projectName: projectName, action: 'edit_service'}" label="arrange">
                   <i class="iconfont iconvery-sort"></i>
                 </el-radio-button>
               </el-tooltip>
             </el-radio-group>
           </div>
         </el-col>
-        <el-col v-hasPermi="{projectName: projectName, action: 'create_service'}" :span="14" class="text-right">
+        <el-col :span="14" class="text-right">
           <div style="line-height: 32px;">
             <el-tooltip effect="dark" content="手工输入" placement="top">
-              <el-button v-if="deployType==='k8s'" size="mini" icon="el-icon-plus" @click="createService('platform')" plain circle></el-button>
+              <el-button v-if="deployType==='k8s'" v-hasPermi="{type:'project',projectName: projectName, action: 'create_service',isBtn:true}" size="mini" icon="el-icon-plus" @click="createService('platform')" plain circle></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="从代码库同步" placement="top">
-              <el-button v-if="deployType==='k8s'" size="mini" @click="createService('repo')" icon="iconfont icon icongit" plain circle></el-button>
+              <el-button v-if="deployType==='k8s'" v-hasPermi="{type:'project',projectName: projectName, action: 'create_service',isBtn:true}" size="mini" @click="createService('repo')" icon="iconfont icon icongit" plain circle></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="使用模板新建" placement="top">
-              <el-button size="mini" @click="openImportYamlDialog = true" icon="iconfont icon iconvery-template" plain circle></el-button>
+              <el-button v-hasPermi="{type:'project',projectName: projectName, action: 'create_service',isBtn:true}" size="mini" @click="createService('template')" icon="iconfont icon iconvery-template" plain circle></el-button>
             </el-tooltip>
           </div>
         </el-col>
@@ -228,6 +229,7 @@
                 <el-tooltip effect="dark" placement="top">
                   <div slot="content">共享服务可在其他项目的服务编排中使用</div>
                   <el-tag
+                    v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
                     v-if="data.type === 'k8s'"
                     :type="data.visibility==='public'?'primary':'info'"
                     :effect="data.visibility==='public'?'dark':'plain'"
@@ -238,7 +240,7 @@
               </span>
               <span :style="{'visibility': showHover[data.service_name] ? 'visible': 'hidden'}" class="operation-container">
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'delete_service'}"
+                  v-hasPermi="{projectName: projectName, action: 'delete_service',isBtn:true}"
                   v-if="(data.product_name===projectName||data.status === 'named')"
                   type="text"
                   size="mini"
@@ -246,7 +248,7 @@
                   @click.stop="() => deleteService(node, data)"
                 ></el-button>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'delete_service'}"
+                  v-hasPermi="{projectName: projectName, action: 'delete_service',isBtn:true}"
                   v-else-if="data.product_name!==projectName && data.type ==='k8s'"
                   type="text"
                   size="mini"
@@ -254,8 +256,8 @@
                   @click.stop="() => deleteSharedService(node, data)"
                 ></el-button>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: 'edit_service'}"
-                  v-if="data.source && (data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='codehub' ) && data.type==='k8s' && data.product_name=== projectName "
+                  v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
+                  v-if="data.source && (data.source === 'gitee' || data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='codehub' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
                   type="text"
                   size="mini"
                   icon="el-icon-refresh"
@@ -334,7 +336,7 @@
           <span v-else class="tree-service-name shared-list">{{`${node.label}`}}</span>
           <span v-if="data.label!=='共享服务列表' && showHover[data.service_name] " class="operation-container">
             <el-button
-              v-hasPermi="{projectName: projectName, action: 'edit_service'}"
+              v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
               v-if="data.product_name!==projectName"
               type="text"
               size="mini"
@@ -393,11 +395,6 @@ export default {
       type: String,
       required: true
     },
-    guideMode: {
-      type: Boolean,
-      default: false,
-      required: false
-    },
     yamlChange: {
       type: Boolean,
       required: true
@@ -411,6 +408,8 @@ export default {
       },
       showHover: {},
       searchService: '',
+      currentUpdatedServiceName: '',
+      currentUpdatedServiceTemplateId: '',
       serviceGroup: [],
       allCodeHosts: [],
       openImportYamlDialog: false,
@@ -569,9 +568,7 @@ export default {
           this.$emit('onRefreshService')
           this.$emit('update:showNext', true)
           this.$message.success('共享服务移除成功')
-          if (!this.guideMode) {
-            this.$emit('onDeleteService', data.service_name)
-          }
+          this.$emit('onDeleteService', data.service_name)
         })
       })
     },
@@ -777,12 +774,15 @@ export default {
             const key = this.$utils.rsaEncrypt()
             getCodeSourceMaskedAPI(key).then(res => {
               this.allCodeHosts = res.filter(element => {
-                return element
+                return element.type !== 'other'
               })
             })
           } else {
             this.$emit('onAddCodeSource', true)
           }
+        } else if (cmd === 'template') {
+          this.currentUpdatedServiceName = ''
+          this.openImportYamlDialog = true
         }
       }
     },
@@ -980,35 +980,41 @@ export default {
       }
     },
     refreshService (node, data) {
-      this.dialogImportFromRepoVisible = true
-      this.source.codehostId = data.codehost_id
-      this.source.repoOwner = data.repo_owner
-      this.source.repoName = data.repo_name
-      this.source.repoUUID = data.repo_uuid
-      this.source.branchName = data.branch_name
-      this.source.path = data.load_path
-      this.source.gitType = data.source
-      this.source.isDir = data.is_dir
-      this.source.serviceName = data.service_name
-      this.getInitRepoInfo(this.source)
-      validPreloadService(
-        data.codehost_id,
-        data.repo_owner,
-        data.repo_name,
-        data.branch_name,
-        data.load_path,
-        data.service_name,
-        data.is_dir,
-        data.remote_name,
-        data.repo_uuid
-      ).then(
-        res => {
-          this.disabledReload = false
-        },
-        () => {
-          this.disabledReload = true
-        }
-      )
+      if (data.source === 'template') {
+        this.currentUpdatedServiceName = data.service_name
+        this.currentUpdatedServiceTemplateId = data.template_id
+        this.openImportYamlDialog = true
+      } else {
+        this.dialogImportFromRepoVisible = true
+        this.source.codehostId = data.codehost_id
+        this.source.repoOwner = data.repo_owner
+        this.source.repoName = data.repo_name
+        this.source.repoUUID = data.repo_uuid
+        this.source.branchName = data.branch_name
+        this.source.path = data.load_path
+        this.source.gitType = data.source
+        this.source.isDir = data.is_dir
+        this.source.serviceName = data.service_name
+        this.getInitRepoInfo(this.source)
+        validPreloadService(
+          data.codehost_id,
+          data.repo_owner,
+          data.repo_name,
+          data.branch_name,
+          data.load_path,
+          data.service_name,
+          data.is_dir,
+          data.remote_name,
+          data.repo_uuid
+        ).then(
+          res => {
+            this.disabledReload = false
+          },
+          () => {
+            this.disabledReload = true
+          }
+        )
+      }
     },
     deleteService (node, data) {
       this.previousNodeKey = ''
@@ -1033,10 +1039,8 @@ export default {
             data.visibility
           ).then(() => {
             this.$message.success('删除成功')
-            if (!this.guideMode) {
-              this.$emit('update:showNext', true)
-              this.$emit('onDeleteService', data.service_name)
-            }
+            this.$emit('update:showNext', true)
+            this.$emit('onDeleteService', data.service_name)
             this.$emit('onRefreshService')
             this.$emit('onRefreshSharedService')
             this.getServiceGroup()
@@ -1148,6 +1152,7 @@ export default {
       this.$emit('update:showNext', true)
       this.$emit('onShowJoinToEnvBtn', true)
       this.$emit('onRefreshService')
+      this.$emit('getServiceModules')
       this.$router.replace({
         query: { service_name: serviceName, rightbar: 'var' }
       })
@@ -1156,9 +1161,7 @@ export default {
       window.screenHeight = document.body.clientHeight
       const serviceTree = this.$refs.serviceTree
       const serviceSharedTree = this.$refs.serviceSharedTree
-      const screenHeight = this.guideMode
-        ? window.screenHeight - 560
-        : window.screenHeight - 400
+      const screenHeight = window.screenHeight - 400
       this.$nextTick(() => {
         if (serviceSharedTree) {
           serviceSharedTree.$el.style.maxHeight = 150 + 'px'

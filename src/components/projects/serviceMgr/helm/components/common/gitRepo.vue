@@ -29,14 +29,11 @@
           <el-option
             v-for="(host, index) in allCodeHosts"
             :key="index"
-            :label="`${host.address} ${
-                  host.type === 'github' ? '(' + host.namespace + ')' : ''
-                }`"
+            :label="(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'"
             :value="host.id"
           >
             {{
-            `${host.address}
-            ${host.type === 'github' ? '(' + host.namespace + ')' : ''}`
+           (host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'
             }}
           </el-option>
         </el-select>
@@ -146,7 +143,7 @@
       </el-form-item>
     </el-form>
 
-    <el-dialog v-if="codehostSource === 'gerrit'" :append-to-body="true"
+    <el-dialog v-if="codehostSource === 'gerrit' || codehostSource === 'gitee'" :append-to-body="true"
                :visible.sync="workSpaceModalVisible"
                width="60%"
                title="请选择要同步的文件或文件目录"
@@ -277,7 +274,7 @@ export default {
         console.log(error)
       )
       if (res) {
-        this.allCodeHosts = res
+        this.allCodeHosts = res.filter(item => item.type !== 'other')
       }
     },
     async queryRepoOwnerById (id, key = '') {
@@ -385,14 +382,14 @@ export default {
       this.loading = true
       const projectName = this.$route.params.project_name
       this.getGitSource(this.source.codehostId)
-      if (this.codehostSource === 'gerrit') {
+      if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee') {
         const params = {
           codehostId: this.source.codehostId,
           repoOwner: this.source.repoOwner,
           repoName: this.source.repoName,
           branchName: this.source.branchName,
           path: this.selectPath,
-          type: 'gerrit'
+          type: this.codehostSource
         }
         await getRepoFilesAPI(params)
       }
@@ -406,8 +403,9 @@ export default {
           }
         }
       } else {
+        const source = this.codehostSource
         payload = {
-          source: this.codehostSource === 'gerrit' ? 'gerrit' : 'repo',
+          source: (source === 'gerrit' || source === 'gitee') ? source : 'repo',
           createFrom: {
             codehostID: this.source.codehostId,
             owner: this.source.repoOwner,

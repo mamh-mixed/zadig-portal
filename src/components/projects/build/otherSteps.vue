@@ -387,7 +387,7 @@ export default {
           this.allRegistry = res
         })
       }
-      getDockerfileTemplatesAPI().then(res => {
+      getDockerfileTemplatesAPI(projectName).then(res => {
         this.dockerfileTemplates = res.dockerfile_template
       })
       const key = this.$utils.rsaEncrypt()

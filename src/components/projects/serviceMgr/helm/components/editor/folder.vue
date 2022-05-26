@@ -64,12 +64,14 @@ export default {
               <span style={this.showColor(data)} >
                 <i class={iconConfig[data.type] + ' iconColor'}></i> {node.label}
                 {data.type === 'service' && <span><el-button
+                  v-hasPermi={{ projectName: this.$route.params.project_name, action: 'delete_service', isBtn: true }}
                   type="text"
                   size="mini"
                   style={this.showHover[data.id] ? 'visibility: visible' : 'visibility: hidden'}
                   class="el-icon-close icon"
                   onClick = {() => this.deleteServer(data)}
                 ></el-button><el-button
+                  v-hasPermi={{ projectName: this.$route.params.project_name, action: 'edit_service', isBtn: true }}
                   type="text"
                   size="mini"
                   style={this.showHover[data.id] ? 'visibility: visible' : 'visibility: hidden'}

@@ -32,14 +32,15 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" @click="saveCustomVariables" size="small" :loading="saveLoading">保存</el-button>
+        <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}"  type="primary" @click="saveCustomVariables" size="small" :loading="saveLoading">保存</el-button>
+        <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}" type="default" size="small" @click="multiUpdate">批量更新</el-button>
       </article>
     </section>
   </div>
 </template>
 
 <script>
-import { saveHelmTemplateVariableAPI } from '@api'
+import { saveHelmTemplateVariableAPI, updateHelmTemplateAPI } from '@api'
 export default {
   data () {
     return {
@@ -77,6 +78,21 @@ export default {
         })
         .then(() => {
           this.saveLoading = false
+        })
+    },
+    multiUpdate () {
+      this.$confirm(`确认后，所有开启「自动同步」的服务配置会应用最新的模板。`, '确定批量更新？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          updateHelmTemplateAPI(this.serviceName).then(res => {
+            this.$message({
+              type: 'success',
+              message: `批量更新成功`
+            })
+          })
         })
     }
   }

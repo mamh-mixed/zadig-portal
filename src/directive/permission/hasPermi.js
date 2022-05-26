@@ -1,23 +1,39 @@
-// import store from '@/store'
-// import { permissionCheckingLogic } from '@utils/checkPermission'
+import { permissionCheckingLogic } from '@utils/checkPermission'
+
+async function checkPermission (el, binding) {
+  const { type, projectName, action, actions, operator, isBtn } = binding.value
+  const hasPermission = await permissionCheckingLogic({
+    type,
+    projectName,
+    action,
+    actions,
+    operator
+  })
+  const disableClickFn = (event) => {
+    event && event.stopImmediatePropagation()
+  }
+  if (!hasPermission) {
+    if (isBtn) {
+      if (!el.classList.contains('permission-disabled')) {
+        el.classList.add('permission-disabled')
+        el.setAttribute('disabled', 'disabled')
+        el.setAttribute('tips', '无权限操作')
+        // el.addEventListener('click', disableClickFn, true)
+      }
+    } else {
+      el.parentNode && el.parentNode.removeChild(el)
+    }
+  } else {
+    el.classList.remove('permission-disabled')
+    el.removeAttribute('disabled')
+  }
+}
+
 export default {
   async inserted (el, binding) {
-    // ToDo: disable this checkPermission function
-    // const { projectName, action, logic, isPublic } = binding.value
-    // let hasPermission
-    // if (isPublic) {
-    //   hasPermission = true
-    // } else {
-    //   hasPermission = await permissionCheckingLogic({
-    //     permissions: store.state.projectPermission,
-    //     projectName,
-    //     isPublic,
-    //     action,
-    //     logic
-    //   })
-    // }
-    // if (!hasPermission) {
-    //   el.parentNode && el.parentNode.removeChild(el)
-    // }
+    await checkPermission(el, binding)
+  },
+  async update (el, binding) {
+    await checkPermission(el, binding)
   }
 }

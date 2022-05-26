@@ -34,8 +34,8 @@
       </div>
       <div class="controls__wrap">
         <div class="controls__right">
-          <el-button v-if="!hideSave" type="primary" size="small" :disabled="disabledSave || !yamlChange" @click="updateService">保存</el-button>
-          <el-button v-if="!isOnboarding" type="primary" size="small" :disabled="!showJoinToEnvBtn" @click="showJoinToEnvDialog">加入环境</el-button>
+          <el-button v-hasPermi="{projectName: projectName, actions:['edit_service','create_service'],operator:'or',isBtn:true}" v-if="!hideSave" type="primary" size="small" :disabled="disabledSave || !yamlChange" @click="updateService">保存</el-button>
+          <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" v-if="!isOnboarding" type="primary" size="small" :disabled="!showJoinToEnvBtn" @click="showJoinToEnvDialog">加入环境</el-button>
         </div>
       </div>
     </div>
@@ -61,9 +61,7 @@ import 'codemirror/addon/search/search.js'
 import {
   validateYamlAPI,
   serviceTemplateAPI,
-  saveServiceTemplateAPI,
-  loadServiceFromKubernetesTemplateAPI,
-  reloadServiceFromKubernetesTemplateAPI
+  saveServiceTemplateAPI
 } from '@api'
 export default {
   props: {
@@ -111,13 +109,7 @@ export default {
       initYaml: '',
       dialogImportYamlVisible: false,
       previewYamlFile: false,
-      showModal: true,
-      importYaml: {
-        id: '',
-        yamls: [],
-        variables: [],
-        content: ''
-      }
+      showModal: true
     }
   },
   methods: {
@@ -133,6 +125,10 @@ export default {
       if (val && serviceType) {
         serviceTemplateAPI(serviceName, serviceType, projectName).then(res => {
           this.service = res
+          // emit template id to tree
+          if (res.template_id) {
+            this.$emit('onGetTemplateId', { service_name: res.service_name, template_id: res.template_id })
+          }
           this.keepInitYaml(res.yaml)
           if (this.$route.query.kind) {
             this.jumpToWord(`kind: ${this.$route.query.kind}`)
@@ -169,8 +165,8 @@ export default {
         })
         this.keepInitYaml(payload.yaml)
         this.$emit('onUpdateService', {
-          service_name: serviceName,
-          service_status: this.service.status,
+          serviceName: serviceName,
+          serviceStatus: this.service.status,
           res
         })
         this.$emit('update:showJoinToEnvBtn', true)
@@ -229,49 +225,6 @@ export default {
     },
     editorFocus () {
       this.codemirror.focus()
-    },
-    async loadServiceFromKubernetesTemplate () {
-      const serviceName = this.serviceName
-      const projectName = this.projectName
-      const templateId = this.importYaml.id
-      const variables = this.importYaml.variables
-      const status = this.serviceInTree.status
-      const payload = {
-        service_name: serviceName,
-        project_name: projectName,
-        template_id: templateId,
-        variables: variables
-      }
-      if (status === 'named') {
-        const res = await loadServiceFromKubernetesTemplateAPI(payload).catch(
-          err => {
-            console.log(err)
-          }
-        )
-        if (res) {
-          this.dialogImportYamlVisible = false
-          this.$message({
-            type: 'success',
-            message: `服务模板 ${payload.service_name} 导入成功`
-          })
-        }
-      } else if (status === 'added') {
-        const res = await reloadServiceFromKubernetesTemplateAPI(payload).catch(
-          err => {
-            console.log(err)
-          }
-        )
-        if (res) {
-          this.dialogImportYamlVisible = false
-          this.$message({
-            type: 'success',
-            message: `服务模板 ${payload.service_name} 更新成功`
-          })
-        }
-      }
-      this.showJoinToEnvBtn = true
-      this.$emit('update:showNext', true)
-      this.$emit('onRefreshService')
     }
   },
   computed: {

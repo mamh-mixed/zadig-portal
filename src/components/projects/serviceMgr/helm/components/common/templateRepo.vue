@@ -35,6 +35,15 @@
         <CommonImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo" :resize="{height: '188px'}" showDelete></CommonImportValues>
       </div>
       <ImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo"></ImportValues>
+      <el-form-item prop="auto_sync">
+        <span slot="label">
+          <span>自动同步</span>
+           <el-tooltip effect="dark" content="开启后，模板库-批量更新时，该服务配置自动应用最新的服务模板。" placement="top">
+              <i class="pointer el-icon-question"></i>
+           </el-tooltip>
+        </span>
+        <el-switch v-model="tempData.auto_sync" />
+      </el-form-item>
       <el-form-item style="text-align: right;">
         <el-button size="small" @click="commitDialogVisible(false)">取消</el-button>
         <el-button type="primary" size="small" @click="importTempRepo" :loading="importLoading">导入</el-button>
@@ -81,7 +90,8 @@ export default {
       tempCharts: [],
       tempData: {
         serviceName: '',
-        moduleName: ''
+        moduleName: '',
+        auto_sync: false
       },
       importRepoInfo: {
         yamlSource: 'default',
@@ -110,21 +120,32 @@ export default {
           const createFrom = val.create_from
           this.tempData = {
             serviceName: createFrom.service_name,
-            moduleName: createFrom.template_name
+            moduleName: createFrom.template_name,
+            auto_sync: val.auto_sync
           }
           if (createFrom.yaml_data) {
             this.importRepoInfo = {
               yamlSource: createFrom.yaml_data.yaml_content
                 ? 'freeEdit'
                 : 'default',
-              overrideYaml: createFrom.yaml_data.yaml_content,
-              gitRepoConfig: {
+              overrideYaml: createFrom.yaml_data.yaml_content
+            }
+            if (createFrom.yaml_data.source_detail) {
+              this.importRepoInfo.gitRepoConfig = {
                 branch: createFrom.yaml_data.source_detail.git_repo_config.branch,
                 codehostID: createFrom.yaml_data.source_detail.git_repo_config.codehost_id,
                 owner: createFrom.yaml_data.source_detail.git_repo_config.owner,
                 repo: createFrom.yaml_data.source_detail.git_repo_config.repo,
-                autoSync: createFrom.yaml_data.auto_sync,
                 valuesPaths: [createFrom.yaml_data.source_detail.load_path]
+              }
+            } else {
+              this.importRepoInfo.gitRepoConfig = {
+                branch: '',
+                codehostID: null,
+                owner: '',
+                repo: '',
+                autoSync: false,
+                valuesPaths: []
               }
             }
           }
@@ -158,7 +179,8 @@ export default {
     closeSelectRepo () {
       this.tempData = {
         serviceName: '',
-        moduleName: ''
+        moduleName: '',
+        auto_sync: false
       }
       this.variables = []
       this.importRepoInfo = {
@@ -179,6 +201,7 @@ export default {
       const payload = {
         source: 'chartTemplate',
         name: this.tempData.serviceName,
+        auto_sync: this.tempData.auto_sync,
         createFrom: {
           templateName: this.tempData.moduleName,
           valuesYAML:
@@ -228,6 +251,7 @@ export default {
       const projectName = this.$route.params.project_name
       const payload = {
         source: 'chartTemplate',
+        auto_sync: this.tempData.auto_sync,
         createFrom: { templateName: this.tempData.moduleName },
         valuesData: {
           yamlSource: 'repo',

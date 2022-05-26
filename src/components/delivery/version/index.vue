@@ -6,16 +6,6 @@
     class="version-list-container"
   >
     <div class="operation">
-      <!-- <el-select
-        style="width: 160px;"
-        v-model="selectedService"
-        @change="searchVersionByService"
-        placeholder="请选择服务名称"
-        clearable
-        size="medium"
-      >
-        <el-option v-for="(item,index) in serviceList" :key="index" :label="item" :value="item"></el-option>
-      </el-select> -->
       <div v-if="showHookConfig" class="hook-config">
         <span class="hook-switch">
           <span>
@@ -91,7 +81,16 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="deleteVersion(scope.row.versionInfo)" type="danger" plain>删除</el-button>
+          <el-button
+            v-if="checkPermissionSyncMixin({type:'project',projectName: projectName, action: 'delete_delivery'})"
+            size="mini"
+            @click="deleteVersion(scope.row.versionInfo)"
+            type="danger"
+            plain
+          >删除</el-button>
+          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-button class="permission-disabled" size="mini" type="danger" plain>删除</el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -158,11 +157,12 @@ export default {
       this.loading = true
       const selectedService = this.selectedService
       const projectName = this.projectName ? this.projectName : ''
-      getVersionListAPI('', projectName, '', selectedService, 'brief')
-        .then(res => {
+      getVersionListAPI('', projectName, '', selectedService, 'brief').then(
+        res => {
           this.versionList = res
           this.loading = false
-        })
+        }
+      )
     },
     getVersionServiceList () {
       const projectName = this.projectName ? this.projectName : ''

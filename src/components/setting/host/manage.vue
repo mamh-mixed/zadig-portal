@@ -119,22 +119,35 @@ import AddHost from '@/components/projects/common/pm/addHost.vue'
 import ImportHosts from './importHosts.vue'
 import { getHostListAPI, deleteHostAPI } from '@api'
 import bus from '@utils/eventBus'
+import { cloneDeep } from 'lodash'
+
+const initHost = {
+  name: '',
+  provider: null,
+  label: '',
+  ip: '',
+  port: 22,
+  is_prod: false,
+  user_name: '',
+  private_key: '',
+  probe: {
+    probe_type: 'tcp',
+    http_probe: {
+      path: '',
+      port: 22, // 1~65535
+      timeout_second: 1, // 1~10
+      response_flag: false, // delete
+      response_success_flag: '',
+      http_headers: [] // { name, value}
+    }
+  }
+}
 export default {
   data () {
     return {
       allHost: [],
       host: null,
       addHostData: null,
-      initHost: {
-        name: '',
-        provider: null,
-        label: '',
-        ip: '',
-        port: 22,
-        is_prod: false,
-        user_name: '',
-        private_key: ''
-      },
       providerMap: {
         0: {
           icon: 'iconfont logo iconwuliji',
@@ -244,6 +257,12 @@ export default {
         }
         this.$refs['add-host'].resetFields()
         this.host = this.$utils.cloneObj(this.addHostData)
+      } else {
+        if (this.host.probe.probe_type === 'tcp') {
+          this.$set(this.host.probe, 'http_probe', cloneDeep(initHost.probe.http_probe))
+        } else if (this.host.probe.http_probe) {
+          this.$set(this.host.probe.http_probe, 'response_flag', !!this.host.probe.http_probe.response_success_flag)
+        }
       }
     }
   },
@@ -251,7 +270,7 @@ export default {
     this.getHost()
     bus.$emit(`set-topbar-title`, { title: '主机管理', breadcrumb: [] })
 
-    this.addHostData = this.host = this.$utils.cloneObj(this.initHost)
+    this.addHostData = this.host = this.$utils.cloneObj(initHost)
   },
   components: {
     AddHost,

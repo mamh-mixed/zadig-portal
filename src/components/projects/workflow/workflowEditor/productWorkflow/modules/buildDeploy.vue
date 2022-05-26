@@ -9,13 +9,19 @@
             序号
           </div>
         </el-col>
-        <el-col :span="9">
+        <el-col :span="6">
           <div class="build-item service">
             服务
           </div>
         </el-col>
 
-        <el-col :span="10">
+        <el-col :span="6">
+          <div class="build-item build">
+            构建名称
+          </div>
+        </el-col>
+
+        <el-col :span="7">
           <div class="build-item deploy">
             部署
           </div>
@@ -58,7 +64,7 @@
               {{ _idx+1 }}
             </div>
           </el-col>
-          <el-col :span="9">
+          <el-col :span="6">
             <div class="build-item service">
               <span class="service-link">
                 <template>
@@ -70,7 +76,27 @@
               </span>
             </div>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="6">
+            <div class="build-item build">
+              <el-select
+                style="width: 60%;"
+                v-model="config.target.build_name"
+                size="mini"
+                :disabled="!associatedBuilds[`${config.target.service_name}/${config.target.service_module}`]"
+                :placeholder="!associatedBuilds[`${config.target.service_name}/${config.target.service_module}`] ? '无' : '请选择'"
+              >
+                <el-option
+                  v-for="(build, index) in associatedBuilds[`${config.target.service_name}/${config.target.service_module}`]"
+                  :key="index"
+                  :label="build.name"
+                  :value="build.name"
+                ></el-option>
+              </el-select>
+              <el-button type="text" @click="showBuildOpeDialog(config,_idx)">设置</el-button>
+              <buildOperate ref="buildOPerateRef"  :buildName="config.target.build_name"  v-model="serviceConfigs[_idx]"/>
+            </div>
+          </el-col>
+          <el-col :span="7">
             <div class="build-item deploy">
               <div>
                 {{ `${config.target.service_name}/${config.target.service_module}`}}
@@ -93,9 +119,19 @@
 </template>
 
 <script type="text/javascript">
+import { getAssociatedBuildsAPI } from '@api'
+import buildOperate from './components/buildOperate.vue'
 import bus from '@utils/eventBus'
 
 export default {
+  data () {
+    return {
+      configs: {},
+      associatedBuilds: {}
+
+    }
+  },
+  components: { buildOperate },
   computed: {
     presetMap () {
       return _.keyBy(this.presets, (i) => {
@@ -107,6 +143,9 @@ export default {
         return this.build_stage.modules.map(config => {
           if (typeof config.hide_service_module === 'undefined') {
             this.$set(config, 'hide_service_module', false)
+          }
+          if (!config.branch_filter) {
+            this.$set(config, 'branch_filter', [])
           }
           return config
         })
@@ -142,6 +181,9 @@ export default {
       if (oldVal) {
         this.serviceConfigs = []
       }
+      if (newVal !== oldVal) {
+        this.getAssociatedBuilds(newVal)
+      }
     },
     allTargets (newVal, oldVal) {
       if (!this.serviceConfigs.length) {
@@ -153,6 +195,24 @@ export default {
         })
       }
     }
+  },
+  methods: {
+    getAssociatedBuilds (projectName) {
+      this.associatedBuilds = {}
+      getAssociatedBuildsAPI(projectName).then(res => {
+        const associatedBuilds = {}
+        res.forEach(re => {
+          associatedBuilds[`${re.service_name}/${re.service_module}`] = re.module_builds
+        })
+        this.associatedBuilds = associatedBuilds
+      })
+    },
+    showBuildOpeDialog (row, _idx) {
+      this.$nextTick(() => {
+        this.$refs.buildOPerateRef[_idx].showCurBuildOpeDialog()
+      })
+    }
+
   },
   created () {
     bus.$on('check-tab:buildDeploy', () => {
@@ -174,31 +234,58 @@ export default {
       height: 42px;
       line-height: 42px;
       vertical-align: top;
-    }
 
-    .view {
-      display: block;
-      text-align: center;
+      &.view {
+        display: block;
+        text-align: center;
 
-      .icon {
-        font-size: 18px;
-        cursor: pointer;
-      }
-    }
-
-    .service {
-      word-break: break-all;
-
-      .service-link {
-        a {
-          color: @themeColor;
+        .icon {
+          font-size: 18px;
+          cursor: pointer;
         }
       }
-    }
 
-    .deploy {
-      vertical-align: initial;
-      word-break: break-all;
+      &.service {
+        word-break: break-all;
+
+        .service-link {
+          a {
+            color: @themeColor;
+          }
+        }
+      }
+
+      &.deploy {
+        vertical-align: initial;
+        word-break: break-all;
+      }
+
+      &.build {
+        display: block;
+        width: 90%;
+
+        .el-select {
+          width: 100%;
+        }
+
+        .icon {
+          margin-left: 3px;
+          cursor: pointer;
+
+          &.icon-primary {
+            color: @themeColor;
+          }
+
+          &.icon-disabled {
+            color: #9ea3a9;
+            cursor: not-allowed;
+          }
+
+          &.icon-gray {
+            color: #9ea3a9;
+          }
+        }
+      }
     }
   }
 

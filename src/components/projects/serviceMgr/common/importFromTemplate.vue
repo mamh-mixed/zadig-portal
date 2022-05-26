@@ -1,7 +1,7 @@
 <template>
   <div class="import-from-template-container">
     <el-dialog
-      title="新建服务 - 使用模板新建"
+      :title="currentUpdatedServiceName?'更新服务':'新建服务 - 使用模板新建'"
       :close-on-click-modal="false"
       append-to-body
       center
@@ -12,7 +12,7 @@
     >
       <el-form :model="importYaml" @submit.native.prevent ref="importYamlForm">
         <el-form-item label="服务名称" prop="serviceName" :rules="{ required: true, message: '服务名称不能为空', trigger: ['change','blur'] }">
-          <el-input style="width: 400px;" v-model.trim="importYaml.serviceName" size="small" placeholder="请输入服务名称" clearable></el-input>
+          <el-input style="width: 400px;" v-model.trim="importYaml.serviceName" size="small" :disabled="currentUpdatedServiceName!==''?true:false" placeholder="请输入服务名称" clearable></el-input>
         </el-form-item>
         <el-form-item label="选择模板" prop="id" :rules="{ required: true, message: '请选择模板', trigger: ['change','blur'] }">
           <el-select style="width: 400px;" size="small" v-model="importYaml.id" placeholder="请选择模板" @change="getKubernetesTemplate">
@@ -26,7 +26,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="变量配置">
-        <template v-if="importYaml.variables.length > 0">
+        <template v-if="importYaml.id && importYaml.variables.length > 0">
         <el-table :data="importYaml.variables" style="width: auto;">
           <el-table-column label="键">
             <template slot-scope="scope">
@@ -47,6 +47,15 @@
         </el-table>
       </template>
         </el-form-item>
+        <el-form-item prop="auto_sync">
+          <span style="margin-right: 16px;">
+            <span>自动同步</span>
+            <el-tooltip  content="开启后，模板库-批量更新时，该服务配置自动应用最新的服务模板。" placement="top">
+              <i  class="pointer el-icon-question"></i>
+            </el-tooltip>
+          </span>
+          <el-switch v-model="importYaml.auto_sync" />
+        </el-form-item>
         <el-form-item>
           <el-button :disabled="!importYaml.id" style="margin-left: 5px;" type="text" :icon="previewYamlFile?'el-icon-arrow-up':'el-icon-arrow-down'" @click="previewYamlFile = !previewYamlFile">
             {{
@@ -57,8 +66,8 @@
       </el-form>
       <codemirror v-if="previewYamlFile" v-model="renderedYaml" :options="importTemplateEditorOption"></codemirror>
       <div slot="footer" class="dialog-footer">
-        <el-button plain native-type="submit" @click="$emit('update:dialogImportFromYamlVisible',false)" size="small">取消</el-button>
-        <el-button type="primary" native-type="submit" size="small" class="start-create" @click="loadServiceFromKubernetesTemplate">新建</el-button>
+        <el-button plain native-type="submit" @click="$emit('update:dialogImportFromYamlVisible', false)" size="small">取消</el-button>
+        <el-button type="primary" native-type="submit" size="small" class="start-create" @click="loadServiceFromKubernetesTemplate">{{currentUpdatedServiceName?'更新':'新建'}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -69,6 +78,7 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/yaml/yaml.js'
 import {
   loadServiceFromKubernetesTemplateAPI,
+  reloadServiceFromKubernetesTemplateAPI,
   getKubernetesTemplatesAPI,
   getKubernetesTemplateDetailAPI
 } from '@api'
@@ -81,7 +91,8 @@ export default {
         id: '',
         yamls: [],
         variables: [],
-        content: ''
+        content: '',
+        auto_sync: false
       },
       importTemplateEditorOption: {
         tabSize: 2,
@@ -105,6 +116,14 @@ export default {
     dialogImportFromYamlVisible: {
       type: Boolean,
       default: false
+    },
+    currentUpdatedServiceName: {
+      type: String,
+      required: false
+    },
+    currentUpdatedServiceTemplateId: {
+      type: String,
+      required: false
     }
   },
   methods: {
@@ -121,29 +140,41 @@ export default {
       }
     },
     async openImportYamlDialog () {
-      const res = await getKubernetesTemplatesAPI()
+      this.importYaml.serviceName = ''
+      this.importYaml.id = ''
+      this.importYaml.auto_sync = false
+      const res = await getKubernetesTemplatesAPI(this.projectName)
       if (res) {
         this.importYaml.yamls = res.yaml_template
       }
     },
     async loadServiceFromKubernetesTemplate () {
-      const serviceName = this.importYaml.serviceName
+      const serviceName = this.currentUpdatedServiceName ? this.currentUpdatedServiceName : this.importYaml.serviceName
       const projectName = this.projectName
       const templateId = this.importYaml.id
       const variables = this.importYaml.variables
+      const autoSync = this.importYaml.auto_sync
       const payload = {
         service_name: serviceName,
         project_name: projectName,
         template_id: templateId,
-        variables: variables
+        variables: variables,
+        auto_sync: autoSync
       }
       const valid = await this.$refs.importYamlForm.validate().catch((err) => { return err })
       if (valid) {
-        const res = await loadServiceFromKubernetesTemplateAPI(payload).catch(
-          err => {
-            console.log(err)
-          }
-        )
+        const res = this.currentUpdatedServiceName
+          ? await reloadServiceFromKubernetesTemplateAPI(payload).catch(
+            err => {
+              console.log(err)
+            }
+          )
+          : await loadServiceFromKubernetesTemplateAPI(payload).catch(
+            err => {
+              console.log(err)
+            }
+          )
+
         if (res) {
           this.$refs.importYamlForm.resetFields()
           this.importYaml.variables = []
@@ -151,7 +182,7 @@ export default {
           this.$emit('update:dialogImportFromYamlVisible', false)
           this.$message({
             type: 'success',
-            message: `服务模板 ${payload.service_name} 导入成功`
+            message: `服务模板 ${payload.service_name} ${this.currentUpdatedServiceName ? '更新' : '导入'}成功`
           })
           this.$emit('importYamlSuccess', serviceName)
         }
@@ -180,6 +211,33 @@ export default {
         }
       })
       return originYaml
+    },
+    serviceInfo () {
+      return this.$store.state.k8sService.k8sServiceInfo
+    }
+  },
+  watch: {
+    currentUpdatedServiceName (val) {
+      if (val) {
+        this.importYaml.serviceName = val
+      } else {
+        this.importYaml.serviceName = ''
+      }
+    },
+    currentUpdatedServiceTemplateId (val) {
+      if (val) {
+        this.importYaml.id = val
+      } else {
+        this.importYaml.id = ''
+      }
+    },
+    serviceInfo: {
+      handler (val) {
+        // update from k8s service
+        this.importYaml.auto_sync = val.service.auto_sync
+        this.importYaml.variables = val.template_variable
+      },
+      deep: true
     }
   },
   mounted () {

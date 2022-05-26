@@ -5,11 +5,9 @@
     element-loading-text="加载中..."
     element-loading-spinner="iconfont iconfont-loading iconxiangmu"
   >
-    <div class="project-header">
-
-    </div>
+    <div class="project-header"></div>
     <section class="projects-detail">
-      <div v-hasPermi="{projectName: projectName, action: 'get_environment'}" class="env">
+      <div v-hasPermi="{projectName: projectName, actions: ['get_environment','production:get_environment'],operator:'or'}" class="env">
         <h4 class="section-title">
           <i class="icon iconfont iconhuanjing"></i>
           环境信息
@@ -263,13 +261,28 @@ export default {
       } else {
         return false
       }
+    },
+    showWorkflow () {
+      const showWorkflow = this.checkPermissionSyncMixin({
+        type: 'project',
+        projectName: this.projectName,
+        action: 'get_workflow'
+      })
+      return showWorkflow
+    },
+    showEnv () {
+      const showEnv = this.checkPermissionSyncMixin({
+        type: 'project',
+        projectName: this.projectName,
+        actions: ['get_environment', 'production:get_environment'],
+        operator: 'or'
+      })
+      return showEnv
     }
   },
   watch: {
     projectName () {
       this.getProject(this.projectName)
-      this.getWorkflows(this.projectName)
-      this.getEnvList()
       bus.$emit(`show-sidebar`, false)
       bus.$emit('set-topbar-title', {
         title: '',
@@ -278,12 +291,26 @@ export default {
           { title: this.projectName, isProjectName: true, url: '' }
         ]
       })
+    },
+    showWorkflow: {
+      handler (val) {
+        if (val) {
+          this.getWorkflows(this.projectName)
+        }
+      },
+      immediate: true
+    },
+    showEnv: {
+      handler (val) {
+        if (val) {
+          this.getEnvList()
+        }
+      },
+      immediate: true
     }
   },
   mounted () {
     this.getProject(this.projectName)
-    this.getWorkflows(this.projectName)
-    this.getEnvList()
     this.$emit('injectComp', this)
     bus.$emit(`show-sidebar`, false)
     bus.$emit('set-topbar-title', {
@@ -298,7 +325,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
 .projects-detail-container {
   position: relative;
   height: 100%;

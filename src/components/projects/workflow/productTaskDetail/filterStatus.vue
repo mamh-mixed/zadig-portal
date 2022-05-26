@@ -6,15 +6,20 @@
           <el-radio-group v-model="filterInfo.type" @change="updateFilter">
             <el-radio v-for="item in filteredItems" :key="item.value" :label="item.value">{{ item.text }}</el-radio>
           </el-radio-group>
-          <div style="text-align: center;">
-            <el-button type="text" @click="clearFilter">清空</el-button>
+          <div class="bottom" style="text-align: center;">
+            <el-button type="text" size="mini" @click="clearFilter">清空</el-button>
           </div>
         </div>
         <div class="content right" v-show="filterInfo.type">
           <el-input v-model="filterInfo.search" size="mini" placeholder="搜索" suffix-icon="el-icon-search"></el-input>
           <div class="middle">
             <el-checkbox-group v-model="filterInfo.selectList">
-              <el-checkbox class="filter-item" v-for="(value, index) in filteredList" :key="index" :label="value">{{ value.text || $utils.showServiceName(value) }}</el-checkbox>
+              <el-checkbox
+                class="filter-item"
+                v-for="(value, index) in filteredList"
+                :key="index"
+                :label="value"
+              >{{ value.text || $utils.showServiceName(value) }}</el-checkbox>
             </el-checkbox-group>
           </div>
           <div class="bottom">
@@ -37,7 +42,7 @@
       <el-button type="primary" size="mini" plain style=" margin-left: 10px; padding: 3px;" @click="clearFilter">
         <i class="el-icon-close" style="font-size: 16px;"></i>
       </el-button>
-      <span class="filter-list">
+      <span class="filter-list" v-if="showFilterRes">
         {{ filteredItems.find(item => item.value === filterInfo.type).text || '过滤' }}:
         {{ filterInfo.searchList.map(li =>li.text || li).join(',') }}
       </span>
@@ -55,7 +60,11 @@ export default {
       default: () => [] // {value, text}
     },
     defaultFilterList: Object,
-    getFilterList: Function
+    getFilterList: Function,
+    showFilterRes: {
+      default: true,
+      type: Boolean
+    }
   },
   data () {
     return {
@@ -82,6 +91,16 @@ export default {
     }
   },
   methods: {
+    init () {
+      this.filterInfo = {
+        type: '',
+        search: '',
+        list: [],
+        selectList: [],
+        searchList: []
+      }
+      this.filterList = { ...this.defaultFilterList }
+    },
     async updateFilter (value) {
       if (!this.filterList[value]) {
         const res = await this.getFilterList({ type: value })
@@ -116,7 +135,7 @@ export default {
     }
   },
   created () {
-    this.filterList = { ...this.defaultFilterList }
+    this.init()
   }
 }
 </script>
@@ -142,20 +161,32 @@ export default {
   margin: auto;
 
   .content {
+    position: relative;
     flex: 1 0 auto;
     min-width: 150px;
 
+    .bottom {
+      position: absolute;
+      right: 0;
+      bottom: 3px;
+    }
+
     &.left {
       /deep/.el-radio-group {
+        margin-bottom: 28px;
+
         .el-radio {
           display: block;
           line-height: 2;
         }
       }
+
+      .bottom {
+        left: 0;
+      }
     }
 
     &.right {
-      position: relative;
       padding-left: 12px;
       border-left: 1px solid #ebedef;
 
@@ -176,9 +207,6 @@ export default {
       }
 
       .bottom {
-        position: absolute;
-        right: 0;
-        bottom: 3px;
         left: 12px;
       }
     }
