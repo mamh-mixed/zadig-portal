@@ -1185,6 +1185,7 @@ export default {
     },
     importServiceFromNamespaceSuccess () {
       this.$emit('update:showNext', true)
+      this.$emit('onShowJoinToEnvBtn', true)
       this.$emit('onRefreshService')
     },
     listenResize () {
