@@ -121,6 +121,7 @@
       v-if="isPm"
       v-loading="precreateLoading"
       :forcedUserInput="forcedUserInput"
+      :projectName = "projectName"
       :allServices="allServiceNames"
       :pmArtifactDeployData.sync="pmArtifactDeployData"  />
     </template>

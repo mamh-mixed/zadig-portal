@@ -373,7 +373,8 @@ export default {
       this.buildConfig.post_build.object_storage_upload.upload_detail.splice(index, 1)
     },
     async getDockerfileTemplate (id) {
-      const res = await getDockerfileAPI(id).catch(err => {
+      const projectName = this.$route.params.project_name
+      const res = await getDockerfileAPI(id, projectName).catch(err => {
         console.log(err)
       })
       if (res) {
