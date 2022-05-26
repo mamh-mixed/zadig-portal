@@ -8,7 +8,7 @@
                :visible.sync="dialogGithubEditFormVisible">
       <el-form :model="githubAppEdit"
                @submit.native.prevent
-               label-position="right"
+               label-position="left"
                :rules="githubAppRules"
                label-width="100px"
                class="mg-t32"
@@ -53,7 +53,7 @@
       <el-form :model="githubAppAdd"
                @submit.native.prevent
                :rules="githubAppRules"
-               label-position="right"
+               label-position="left"
                label-width="100px"
                class="mg-t32"
                ref="githubAppAddForm">

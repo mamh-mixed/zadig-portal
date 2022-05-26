@@ -8,7 +8,7 @@
                :visible.sync="dialogJiraEditFormVisible">
       <el-form :model="jiraEdit"
                @submit.native.prevent
-               label-position="right"
+               label-position="left"
                :rules="jiraRules"
                label-width="100px"
                class="mg-t32"
@@ -61,7 +61,7 @@
       <el-form :model="jiraAdd"
                @submit.native.prevent
                :rules="jiraRules"
-               label-position="right"
+               label-position="left"
                label-width="100px"
                class="mg-t32"
                ref="jiraAddForm">
