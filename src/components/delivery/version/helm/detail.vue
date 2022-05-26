@@ -98,11 +98,11 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane disabled>
+      <!-- <el-tab-pane disabled>
         <span slot="label" class="version-push" @click="upgradeVersion">
           <i class="el-icon-upload2"></i> 版本升级
         </span>
-      </el-tab-pane>
+      </el-tab-pane> -->
     </el-tabs>
   </div>
 </template>

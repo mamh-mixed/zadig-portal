@@ -2,6 +2,7 @@
   <div class="content">
     <div class="menu">
       <el-button
+        v-hasPermi="{projectName: projectName, action: 'create_service',isBtn:true}"
         @click="newService()"
         size="mini"
         icon="el-icon-plus"
@@ -20,6 +21,7 @@
         <i class="iconfont iconwuliji"></i>
         <span class="label">{{ data.service_name }}</span>
           <el-button
+            v-hasPermi="{projectName: projectName, action: 'delete_service',isBtn:true}"
             @click="removeTemplate(data)"
             type="text"
             size="mini"

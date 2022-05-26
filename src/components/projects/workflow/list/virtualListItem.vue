@@ -20,19 +20,27 @@
     <template v-if="workflow.type === 'common'" slot="operations">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: workflow.projectName, action: 'run_workflow'}"
+        v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'run_workflow'})"
         class="button-exec"
         @click="startCommonWorkflowBuild(workflow)"
       >
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <el-button type="primary" class="button-exec permission-disabled">
+          <span class="iconfont iconzhixing">&nbsp;执行</span>
+        </el-button>
+      </el-tooltip>
       <router-link
-        v-hasPermi="{projectName: workflow.project_name, action: 'edit_workflow'}"
+        v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'edit_workflow',isBtn: true})"
         :to="`/workflows/common/edit/${workflow.name}?projectName=${workflow.project_name}&id=${workflow.id}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
-      <el-dropdown v-hasPermi="{projectName: workflow.projectName, action:'delete_workflow'}">
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <span class="permission-disabled menu-item iconfont icondeploy"></span>
+      </el-tooltip>
+      <el-dropdown v-hasPermi="{projectName: workflow.project_name, action:'delete_workflow',isBtn: true}">
         <span class="el-dropdown-link">
           <i class="iconfont iconmorelist more-operation"></i>
         </span>
@@ -44,20 +52,29 @@
     <template v-else slot="operations">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: workflow.projectName, action: 'run_workflow'}"
+        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'run_workflow'})"
         class="button-exec"
         @click="startProductWorkflowBuild(workflow)"
       >
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <el-button type="primary" class="button-exec permission-disabled">
+          <span class="iconfont iconzhixing">&nbsp;执行</span>
+        </el-button>
+      </el-tooltip>
+
       <router-link
-        v-hasPermi="{projectName: workflow.projectName, action: 'edit_workflow'}"
+        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow',isBtn: true})"
         :to="`/workflows/product/edit/${workflow.name}?projectName=${workflow.projectName}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
+      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+        <span class="permission-disabled menu-item iconfont icondeploy"></span>
+      </el-tooltip>
       <el-dropdown
-        v-hasPermi="{projectName: workflow.projectName, logic:{operator: 'or', actions: ['create_workflow','delete_workflow', 'edit_workflow']}}"
+        v-hasPermi="{projectName: workflow.projectName, operator: 'or', actions: ['create_workflow','delete_workflow', 'edit_workflow'],isBtn: true}"
         @visible-change="(status) => fnShowTimer(status, index, workflow)"
       >
         <span class="el-dropdown-link">
@@ -65,19 +82,19 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item
-            v-hasPermi="{projectName: workflow.projectName, action: 'edit_workflow'}"
+            v-hasPermi="{projectName: workflow.projectName, action: 'edit_workflow',isBtn:true}"
             @click.native="changeSchedule(workflow.projectName)"
           >
             <span>{{workflow.schedulerEnabled ? '关闭': '打开'}}定时器</span>
           </el-dropdown-item>
           <el-dropdown-item
-            v-hasPermi="{projectName: workflow.projectName, action: 'create_workflow'}"
+            v-hasPermi="{projectName: workflow.projectName, action: 'create_workflow',isBtn:true}"
             @click.native="copyWorkflow(workflow)"
           >
             <span>复制</span>
           </el-dropdown-item>
           <el-dropdown-item
-            v-hasPermi="{projectName: workflow.projectName, action: 'delete_workflow'}"
+            v-hasPermi="{projectName: workflow.projectName, action: 'delete_workflow',isBtn:true}"
             @click.native="deleteProductWorkflow(workflow)"
           >
             <span>删除</span>

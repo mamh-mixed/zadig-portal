@@ -8,7 +8,7 @@
             <el-tooltip effect="dark"
                         content="创建模板"
                         placement="top">
-              <el-button
+              <el-button v-hasPermi="{type: 'system', action: 'create_template',isBtn:true}"
                          size="mini"
                          icon="el-icon-plus"
                          @click="createFile"
@@ -53,7 +53,7 @@
               </el-button>
               <span :style="{'visibility': showHover[data.name] ? 'visible': 'hidden'}"
                     class="operation-container">
-                <el-button
+                <el-button v-hasPermi="{type: 'system', action: data.status==='added'?'delete_template':'create_template',isBtn:true}"
                            type="text"
                            size="mini"
                            icon="el-icon-close"

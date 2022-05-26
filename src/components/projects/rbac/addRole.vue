@@ -148,8 +148,14 @@ export default {
     },
     async getPolicyDefinitions () {
       const projectName = this.projectName
+      const projectTypeMap = {
+        cloud_host: 'pm',
+        k8s: 'k8s',
+        external: 'trusteeship',
+        helm: 'k8s'
+      }
       const currentProject = this.$store.getters.projectList.find(project => project.name === projectName)
-      const projectType = currentProject && currentProject.deployType === 'cloud_host' ? 'pm' : 'k8s'
+      const projectType = currentProject && projectTypeMap[currentProject.deployType]
       const res = await queryPolicyDefinitionsAPI(projectName, 'project', projectType).catch(error => console.log(error))
       if (res) {
         res.forEach(group => {

@@ -174,7 +174,8 @@ export default {
     if (this.taskDone) {
       const taskId = this.taskID
       const scannerId = this.scannerId
-      getScannerTaskLogAPI(scannerId, taskId).then(response => {
+      const projectName = this.projectName
+      getScannerTaskLogAPI(scannerId, taskId, projectName).then(response => {
         this.scannerTaskLogs = response.split('\n').map(element => {
           return element + '\n'
         })

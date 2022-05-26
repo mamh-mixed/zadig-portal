@@ -33,12 +33,15 @@
           <el-tooltip v-if="chart.updatable" effect="dark" content="服务配置有变更" placement="top">
             <i class="el-icon-question common-icon"></i>
           </el-tooltip>
-          <el-tooltip effect="dark" content="更新服务" placement="top">
-            <i v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
+          <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment'})" effect="dark" content="更新服务" placement="top">
+            <i
               class="iconfont icongengxin common-icon pointer"
               :class="[chart.status === 'pending' ? 'disabled' : '']"
               @click="updateChartService(chart, 'update', chart.status === 'pending')"
             ></i>
+          </el-tooltip>
+          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <i class="iconfont icongengxin common-icon pointer disabled"></i>
           </el-tooltip>
           <i class="el-icon-document common-icon pointer" @click="updateChartService(chart, 'value')"></i>
         </span>
@@ -61,7 +64,7 @@
         :chartNames="currentChart.chartNames"
         :showServicesTab="false"
         :envScene="`updateRenderSet`"
-      ></ChartValues>
+      />
       <div v-if="currentChart.showSync" style="margin: 12px 20px;">
         <el-checkbox v-model="currentChart.updateServiceTmpl">同时更新服务配置</el-checkbox>
       </div>
@@ -102,6 +105,7 @@ export default {
   props: {
     envSource: String,
     fetchAllData: Function,
+    isProd: Boolean,
     searchServicesByChart: Function
   },
   data () {

@@ -17,7 +17,7 @@
                     clearable
                     value-key="id"
                     size="small"
-                    placeholder="请选择分支或标签"
+                    :placeholder="row.source==='other'?'请输入分支或标签':'请选择分支或标签'"
                     @change="changeBranchOrTag(row)"
                   >
                     <el-option-group v-for="group in row.branchAndTagList" :key="group.label" :label="group.label">
@@ -125,6 +125,7 @@ export default {
     },
     async runTask () {
       const id = this.scannerInfo.id
+      const projectName = this.projectName
       const payload = this.scannerInfoDetail.repos.map(repo => {
         if (repo.branchOrTag.type === 'branch') {
           return {
@@ -141,12 +142,12 @@ export default {
             source: repo.source,
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
-            tag: repo.tag
+            tag: repo.branchOrTag.name
           }
         }
       })
       this.startTaskLoading = true
-      const res = await runCodeScannerTaskAPI(id, payload).catch(error => {
+      const res = await runCodeScannerTaskAPI(id, payload, projectName).catch(error => {
         this.startTaskLoading = false
         console.log(error)
       })

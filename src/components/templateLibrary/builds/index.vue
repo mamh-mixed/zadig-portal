@@ -32,7 +32,7 @@
             <img src="@assets/icons/illustration/editorNoService.svg" alt />
             <p v-if="templates.length === 0">
               暂无模板，点击
-              <el-button size="mini" icon="el-icon-plus" @click="createFile()" plain circle></el-button>创建模板
+              <el-button v-hasPermi="{type: 'system', action: 'create_template'}" size="mini" icon="el-icon-plus" @click="createFile()" plain circle></el-button>创建模板
             </p>
             <p v-else-if="file.name==='模板列表' && templates.length >0">请在左侧选择需要编辑的模板</p>
             <p v-else-if="!file.name && templates.length >0">请在左侧选择需要编辑的模板</p>

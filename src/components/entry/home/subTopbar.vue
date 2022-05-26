@@ -14,7 +14,7 @@
             </li>
           </router-link>
           <router-link
-            v-hasPermi="{projectName: projectName, action: 'get_environment'}"
+            v-hasPermi="{projectName: projectName, actions: ['get_environment','production:get_environment'],operator:'or'}"
             active-class="active"
             :to="`/v1/projects/detail/${this.projectName}/envs`"
           >
@@ -54,7 +54,7 @@
               <span class="name">测试</span>
             </li>
           </router-link>
-          <router-link active-class="active" :to="`/v1/projects/detail/${this.projectName}/scanner`">
+          <router-link v-hasPermi="{projectName: projectName, action: 'get_scan'}" active-class="active" :to="`/v1/projects/detail/${this.projectName}/scanner`">
             <li class="nav-item">
               <i class="icon iconfont iconvery-scanner"></i>
               <span class="name">代码扫描</span>
@@ -76,22 +76,22 @@
     </div>
     <div class="operation">
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/pipelines`">
-        <el-button v-hasPermi="{projectName: projectName, action: 'create_workflow'}"  @click="bindComp(comp,'workflow')" icon="el-icon-plus" plain>新建工作流</el-button>
+        <el-button v-hasPermi="{projectName: projectName, action: 'create_workflow',isBtn:true}"  @click="bindComp(comp,'workflow')" icon="el-icon-plus" plain>新建工作流</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail`">
         <el-button
-          v-hasPermi="{projectName: projectName, action: 'create_environment'}"
+          v-hasPermi="{projectName: projectName, actions: ['create_environment','production:create_environment'],operator:'or',isBtn:true}"
           @click="bindComp(comp,'env')"
           icon="el-icon-plus"
           plain
         >创建环境</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/builds`">
-        <el-button v-hasPermi="{projectName: projectName, action: 'create_build'}" @click="bindComp(comp,'build')" icon="el-icon-plus" plain>新建构建</el-button>
+        <el-button v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" @click="bindComp(comp,'build')" icon="el-icon-plus" plain>新建构建</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/test`">
         <el-button
-          v-hasPermi="{projectName: projectName, action: 'create_test'}"
+          v-hasPermi="{projectName: projectName, action: 'create_test',isBtn:true}"
           @click="bindComp(comp,'test')"
           icon="el-icon-plus"
           plain
@@ -99,6 +99,7 @@
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/scanner`">
         <el-button
+          v-hasPermi="{projectName: projectName, action: 'create_scan',isBtn:true}"
           @click="bindComp(comp,'scanner')"
           icon="el-icon-plus"
           plain
@@ -106,7 +107,7 @@
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/version` && deployType === 'helm'">
         <el-button
-          v-hasPermi="{projectName: projectName, action: 'create_delivery'}"
+          v-hasPermi="{projectName: projectName, action: 'create_delivery',isBtn:true}"
           @click="bindComp(comp,'version')"
           icon="el-icon-plus"
           plain

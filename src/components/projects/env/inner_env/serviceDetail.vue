@@ -74,7 +74,7 @@
       </div>
       <div class="info-body fundamental-ops">
         <template>
-          <router-link v-hasPermi="{projectName: projectName, action: 'manage_environment'}"
+          <router-link v-if="checkPermissionSyncMixin({projectName: projectName, actions: ['manage_environment','production:manage_environment'],operator:'or'})"
                        :to="`/v1/projects/detail/${projectName}/envs/detail/${serviceName}/config${window.location.search}`">
             <el-button icon="iconfont iconshare1"
                        type="primary"
@@ -83,14 +83,32 @@
               配置管理
             </el-button>
           </router-link>
-          <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment'}" @click="showExport"
+          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-button icon="iconfont iconshare1"
+                       class="permission-disabled"
+                       type="primary"
+                       size="small"
+                       plain>
+              配置管理
+            </el-button>
+          </el-tooltip>
+          <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment'})" @click="showExport"
                      icon="iconfont iconcloud icon-bold"
                      type="primary"
                      size="small"
                      plain>
             Yaml 导出
           </el-button>
-          <router-link v-hasPermi="{projectName: projectName, action: 'get_service'}"
+          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-button icon="iconfont iconcloud icon-bold"
+                       class="permission-disabled"
+                       type="primary"
+                       size="small"
+                       plain>
+               Yaml 导出
+            </el-button>
+          </el-tooltip>
+          <router-link v-if="checkPermissionSyncMixin({projectName: projectName, action: 'get_service'})"
                        :to="`/v1/projects/detail/${originProjectName}/services?service_name=${serviceName}&rightbar=var`">
             <el-button icon="iconfont iconlink1 icon-bold"
                        type="primary"
@@ -99,6 +117,15 @@
               服务管理
             </el-button>
           </router-link>
+          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-button icon="iconfont iconlink1 icon-bold"
+                       class="permission-disabled"
+                       type="primary"
+                       size="small"
+                       plain>
+              服务管理
+            </el-button>
+          </el-tooltip>
         </template>
       </div>
     </div>
@@ -143,7 +170,7 @@
                                 placement="top">
                       <span class="service-image">{{splitImg(item.image) }}</span>
                     </el-tooltip>
-                    <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment'}" @click="showEditImage(item)"
+                    <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',isBtn:true}" @click="showEditImage(item)"
                                type="primary"
                                plain
                                size="mini"
@@ -182,22 +209,26 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment'})" props="replicas"
+            <el-table-column props="replicas"
                              width="125px"
                              label="副本数量">
               <template slot-scope="scope">
-                <el-input-number size="mini"
+                <el-input-number v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment'})" size="mini"
+                                 :min="0"
+                                 @change="(currentValue)=>{scaleService(scope.row.name,scope.row.type,currentValue)}"
+                                 v-model="scope.row.replicas"></el-input-number>
+                <el-input-number v-else :disabled="true" size="mini"
                                  :min="0"
                                  @change="(currentValue)=>{scaleService(scope.row.name,scope.row.type,currentValue)}"
                                  v-model="scope.row.replicas"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment'})" label="操作"
+            <el-table-column  label="操作"
                              width="220px">
               <template slot-scope="scope">
-                <el-button @click="restartService(scope.row.name,scope.row.type)"
+                <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',isBtn:true}" @click="restartService(scope.row.name,scope.row.type)"
                            size="mini">重启实例</el-button>
-                <el-button @click="showScaleEvents(scope.row.name,scope.row.type)"
+                <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',isBtn:true}" @click="showScaleEvents(scope.row.name,scope.row.type)"
                            size="mini">查看事件</el-button>
               </template>
             </el-table-column>
@@ -237,10 +268,10 @@
                         </el-col>
                         <el-col :span="6"
                                 class="op-buttons">
-                          <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment'}" @click="restartPod(activePod[scope.$index])"
+                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment'}" @click="restartPod(activePod[scope.$index])"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      size="small">重启</el-button>
-                          <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment'}" @click="showPodEvents(activePod[scope.$index])"
+                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment'}" @click="showPodEvents(activePod[scope.$index])"
                                      size="small">查看事件</el-button>
                         </el-col>
                       </el-row>
@@ -273,11 +304,11 @@
                         </el-col>
                         <el-col :span="5"
                                 class="op-buttons">
-                          <el-button v-hasPermi="{projectName: projectName, action: 'debug_pod'}" @click="showContainerExec(activePod[scope.$index].name,container.name)"
+                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:debug_pod':'debug_pod',isBtn:true}" @click="showContainerExec(activePod[scope.$index].name,container.name)"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      icon="iconfont iconTerminal"
                                      size="small"> 调试</el-button>
-                          <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment'}" @click="showContainerLog(activePod[scope.$index].name,container.name)"
+                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',isBtn:true}" @click="showContainerLog(activePod[scope.$index].name,container.name)"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      icon="el-icon-document"
                                      size="small">实时日志</el-button>

@@ -126,7 +126,7 @@ export default {
       } else if (taskType === 'queue') {
         switch (operation) {
           case 'cancel':
-            cancelScannerTaskAPI(projectName, test_name, id).then(res => {
+            cancelScannerTaskAPI(projectName, id).then(res => {
               this.$notify({
                 title: '成功',
                 message: '队列任务取消成功',

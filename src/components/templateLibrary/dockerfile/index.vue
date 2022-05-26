@@ -35,7 +35,7 @@
                  class="no-content">
               <img src="@assets/icons/illustration/editorNoService.svg"
                    alt="">
-              <p v-if="files.length === 0">暂无模板，点击 <el-button size="mini"
+              <p v-if="files.length === 0">暂无模板，点击 <el-button v-hasPermi="{type: 'system', action: 'create_template'}" size="mini"
                            icon="el-icon-plus"
                            @click="createFile()"
                            plain

@@ -334,9 +334,7 @@
         </div>
       </el-tab-pane>-->
       <el-tab-pane v-if="showArtifactDeployBtn" disabled>
-        <span @click="runWorkflowFromVersion" slot="label">
-          <i class="el-icon-upload2"></i> 版本发布
-        </span>
+        <el-button v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}" icon="el-icon-upload2" @click="runWorkflowFromVersion"  slot="label" size="mini" type="text">版本发布</el-button>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -548,7 +546,7 @@ export default {
       }
     },
     projectName () {
-      return this.currentVersionDetail.versionInfo.productName
+      return this.$route.params.project_name
     }
   },
   created () {

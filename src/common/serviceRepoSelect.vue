@@ -51,10 +51,10 @@
                     <el-option
                       v-for="(host,index) in allCodeHosts"
                       :key="index"
-                      :label="host.type === 'other' ? '其他 ('+host.alias+')' : host.address + ' ' + (host.type==='github'||host.type==='gitee' ? '('+host.namespace+')':'')"
+                      :label="(host.type === 'other' ? '其他': host.address) + '('+host.alias+')'"
                       :value="host.id"
                     >
-                    {{host.type === 'other' ? '其他 ('+host.alias+')' : host.address + ' ' + (host.type==='github'||host.type==='gitee' ? '('+host.namespace+')':'')}}
+                    {{ (host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'}}
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -342,11 +342,21 @@ export default {
   },
   methods: {
     addService () {
-      this.targets.push({
-        service: {},
-        repos: []
-      })
-      this.addFirstRepo(this.targets.length - 1)
+      if (this.targets.length === 0) {
+        this.targets.push({
+          service: {},
+          repos: []
+        })
+        this.addFirstRepo(this.targets.length - 1)
+      } else {
+        this.validateForm(this.targets.length - 1).then(res => {
+          this.targets.push({
+            service: {},
+            repos: []
+          })
+          this.addFirstRepo(this.targets.length - 1)
+        })
+      }
     },
     deleteService (index) {
       this.targets.splice(index, 1)
