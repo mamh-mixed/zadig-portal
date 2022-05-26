@@ -234,7 +234,8 @@ export default {
             repo_name: repo.repo_name,
             repo_owner: repo.repo_owner,
             branch: repo.branch,
-            source: repo.source
+            source: repo.source,
+            repo_namespace: repo.repo_namespace
           }
         })
         console.log('payload: ', payload, this.scannerConfig)

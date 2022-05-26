@@ -313,6 +313,7 @@ export default {
             repo: re.repo_name,
             default_branch: re.branch,
             codehost_id: re.codehost_id,
+            repo_namespace: re.repo_namespace,
             filter_regexp: re.filter_regexp
           }
         }

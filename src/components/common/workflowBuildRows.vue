@@ -317,6 +317,7 @@ export default {
             repo: build.repo_name,
             default_branch: build.branch,
             codehost_id: build.codehost_id,
+            repo_namespace: build.repo_namespace,
             key: query
           }
         ]

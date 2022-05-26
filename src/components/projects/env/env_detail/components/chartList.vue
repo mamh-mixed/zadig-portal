@@ -266,7 +266,8 @@ export default {
           return {
             serviceName: chart.serviceName,
             overrideYaml: chart.overrideYaml,
-            overrideValues: chart.overrideValues
+            overrideValues: chart.overrideValues,
+            valuesData: chart.valuesData
           }
         }),
         updateServiceTmpl: this.currentChart.updateServiceTmpl

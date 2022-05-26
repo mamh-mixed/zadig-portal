@@ -39,9 +39,9 @@
         </el-col>
         <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
           <el-form-item
-            :label="repo_index === 0 ?(shortDescription?'拥有者':'代码库拥有者') : ''"
+            :label="repo_index === 0 ?'组织名/用户名' : ''"
             :prop="'repos.' + repo_index + '.repo_owner'"
-            :rules="{required: true, message: '拥有者不能为空', trigger: ['blur', 'change']}"
+            :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur', 'change']}"
           >
             <el-select
               @change="getRepoNameById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index]['repo_owner'])"
@@ -53,7 +53,7 @@
               allow-create
               clearable
               size="small"
-              placeholder="代码库拥有者"
+              placeholder="组织名/用户名"
               :loading="codeInfo[repo_index].loading.owner"
               filterable
             >
@@ -73,7 +73,7 @@
             :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
           >
             <el-select
-              @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name)"
+              @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name,'',config.repos[repo_index])"
               v-model.trim="config.repos[repo_index].repo_name"
               remote
               :remote-method="(query)=>{searchProject(repo_index,query)}"
@@ -434,7 +434,7 @@ export default {
       this.config.repos[index].repo_name = ''
       this.config.repos[index].branch = ''
     },
-    getBranchInfoById (index, id, repo_owner, repo_name, key = '') {
+    getBranchInfoById (index, id, repo_owner, repo_name, key = '', row) {
       if (!repo_name) {
         return
       }
@@ -443,16 +443,19 @@ export default {
       })
       let repoId = ''
       let repoUUID = ''
+      let namespace = ''
       if (repoItem) {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
+        namespace = repoItem.namespace
       }
+      row.repo_namespace = namespace
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
         this.setLoadingState(index, 'branch', true)
         getBranchInfoByIdAPI(
           id,
-          repo_owner,
+          namespace,
           repo_name,
           repoUUID,
           1,

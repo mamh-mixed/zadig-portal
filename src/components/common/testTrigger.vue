@@ -147,7 +147,7 @@
              class="trigger-list">
           <el-table :data="webhook.items"
                     style="width: 100%;">
-            <el-table-column label="代码库拥有者">
+            <el-table-column label="组织名/用户名">
               <template slot-scope="scope">
                 <span>{{ scope.row.main_repo.repo_owner }}</span>
               </template>
@@ -397,7 +397,7 @@ export default {
     },
     repoChange (currentRepo) {
       this.webhookSwap.events = []
-      this.getBranchInfoById(currentRepo.codehost_id, currentRepo.repo_owner, currentRepo.repo_name)
+      this.getBranchInfoById(currentRepo.codehost_id, currentRepo.repo_namespace, currentRepo.repo_name)
     }
   },
   computed: {

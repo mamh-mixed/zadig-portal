@@ -10,6 +10,7 @@
         :repoOwner="source.repoOwner"
         :branchName="source.branchName"
         :remoteName="source.remoteName"
+        :namespace="source.namespace"
         :gitType="source.gitType"
         @getPreloadServices="getPreloadServices"
         :showTree="workSpaceModalVisible"
@@ -27,7 +28,7 @@
       :visible.sync="dialogImportFromRepoVisible"
     >
       <div class="from-code-container">
-        <el-form :model="source" :rules="sourceRules" label-position="left" ref="sourceForm" label-width="120px">
+        <el-form :model="source" :rules="sourceRules" label-position="left" ref="sourceForm" label-width="130px">
           <el-form-item label="代码源" prop="codehostId" :rules="{required: true, message: '代码源不能为空', trigger: 'change'}">
             <el-select
               v-model="source.codehostId"
@@ -47,7 +48,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="拥有者" prop="repoOwner" :rules="{required: true, message: '代码库拥有者不能为空', trigger: 'change'}">
+          <el-form-item label="组织名/用户名" prop="repoOwner" :rules="{required: true, message: '组织名/用户名不能为空', trigger: 'change'}">
             <el-select
               v-model.trim="source.repoOwner"
               size="small"
@@ -59,7 +60,7 @@
               :loading="searchRepoOwnerLoading"
               allow-create
               clearable
-              placeholder="请选择拥有者"
+              placeholder="请选择组织名/用户名"
               filterable
             >
               <el-option v-for="(repo,index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path"></el-option>
@@ -68,7 +69,7 @@
           <template>
             <el-form-item label="代码库" prop="repoName" :rules="{required: true, message: '名称不能为空', trigger: 'change'}">
               <el-select
-                @change="getBranchInfoById(source.codehostId,source.repoOwner,source.repoName)"
+                @change="getBranchInfoById(source.codehostId,source.repoOwner,source.repoName,source)"
                 @clear="clearRepoName"
                 v-model.trim="source.repoName"
                 remote
@@ -615,18 +616,18 @@ export default {
       this.source.services = val.services
       this.workSpaceModalVisible = false
       const codehostId = this.source.codehostId
-      const repoOwner = this.source.repoOwner
       const repoName = this.source.repoName
       const repoUUID = this.source.repoUUID
       const branchName = this.source.branchName
       const remoteName = this.source.remoteName
       const serviceName = this.source.serviceName
+      const namespace = this.source.namespace
       const path = val.path
       const isDir = this.source.isDir
       if (serviceName) {
         validPreloadService(
           codehostId,
-          repoOwner,
+          namespace,
           repoName,
           branchName,
           path,
@@ -653,6 +654,7 @@ export default {
       const remoteName = this.source.remoteName
       const path = this.source.path
       const isDir = this.source.isDir
+      const namespace = this.source.namespace
       const payload = {
         product_name: this.projectName,
         visibility: 'private',
@@ -671,6 +673,7 @@ export default {
             branchName,
             remoteName,
             repoUUID,
+            namespace,
             payload
           )
             .then(res => {
@@ -867,7 +870,7 @@ export default {
           this.$set(this.codeInfo, 'repos', res)
         })
       })
-      getBranchInfoByIdAPI(codehostId, repoOwner, repoName).then(res => {
+      getBranchInfoByIdAPI(codehostId, source.namespace, repoName).then(res => {
         this.$set(this.codeInfo, 'branches', res)
       })
     },
@@ -954,6 +957,7 @@ export default {
       this.source.repoName = ''
       this.source.branchName = ''
       this.source.path = ''
+      this.source.namespace = ''
       this.source.services = []
       this.$set(this.codeInfo, 'repos', [])
       this.$set(this.codeInfo, 'branches', [])
@@ -975,16 +979,18 @@ export default {
       this.source.repoName = ''
       this.source.branchName = ''
       this.source.path = ''
+      this.source.namespace = ''
       this.source.services = []
     },
-    getBranchInfoById (id, repoOwner, repoName) {
+    getBranchInfoById (id, repoOwner, repoName, row) {
       const repoItem = this.codeInfo.repos.find(item => {
         return item.name === repoName
       })
       const repoUUID = repoItem.repo_uuid ? repoItem.repo_uuid : ''
       this.source.repoUUID = repoUUID
+      this.source.namespace = repoItem.namespace || ''
       if (repoName && repoOwner) {
-        getBranchInfoByIdAPI(id, repoOwner, repoName, repoUUID).then(res => {
+        getBranchInfoByIdAPI(id, this.source.namespace, repoName, repoUUID).then(res => {
           this.$set(this.codeInfo, 'branches', res)
         })
         this.source.branchName = ''
@@ -1008,10 +1014,11 @@ export default {
         this.source.gitType = data.source
         this.source.isDir = data.is_dir
         this.source.serviceName = data.service_name
+        this.source.namespace = data.repo_namespace
         this.getInitRepoInfo(this.source)
         validPreloadService(
           data.codehost_id,
-          data.repo_owner,
+          data.repo_namespace,
           data.repo_name,
           data.branch_name,
           data.load_path,
@@ -1172,7 +1179,6 @@ export default {
       this.$emit('update:showNext', true)
       this.$emit('onShowJoinToEnvBtn', true)
       this.$emit('onRefreshService')
-      this.$emit('getServiceModules')
       this.$router.replace({
         query: { service_name: serviceName, rightbar: 'var' }
       })
