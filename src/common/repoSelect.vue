@@ -29,21 +29,23 @@
               <el-option
                 v-for="(host,index) in allCodeHosts"
                 :key="index"
-                :label="(host.type === 'other' ? '其他': host.address) + '('+host.alias+')'"
+                :label="host.address + '('+host.alias+')'"
                 :value="host.id"
               >
-              {{ (host.type === 'other' ? '其他': host.address) + '('+host.alias+')'}}
+              {{ host.address + '('+host.alias+')'}}
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5" >
           <el-form-item
             :label="repo_index === 0 ?'组织名/用户名' : ''"
             :prop="'repos.' + repo_index + '.repo_owner'"
             :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur', 'change']}"
           >
+            <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_owner']" placeholder="请输入" size="small"></el-input>
             <el-select
+              v-else
               @change="getRepoNameById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index]['repo_owner'])"
               v-model.trim="config.repos[repo_index]['repo_owner']"
               remote
@@ -66,13 +68,15 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5" >
           <el-form-item
             :label="repo_index === 0 ? (shortDescription?'名称':'代码库名称') : ''"
             :prop="'repos.' + repo_index + '.repo_name'"
             :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
           >
+            <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_name']" placeholder="请输入" size="small"></el-input>
             <el-select
+              v-else
               @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name,'',config.repos[repo_index])"
               v-model.trim="config.repos[repo_index].repo_name"
               remote
@@ -95,23 +99,15 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?8:10" v-if="repo.source === 'other'||repo.type === 'other'" >
-          <el-form-item
-            style="width: 90%;"
-            :label="repo_index === 0 ? '代码库地址' : ''"
-            :prop="'repos.' + repo_index + '.other_address'"
-            :rules="{required: true, message: '代码库地址不能为空', trigger: ['blur', 'change']}"
-          >
-           <el-input v-model="repo.other_address" size="small" :placeholder="repo.auth_type === 'SSH'?'SSH 协议地址':' HTTPS 协议地址'"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5 " >
           <el-form-item
             :label="repo_index === 0 ? (shortDescription?'分支':'默认分支') : ''"
             :prop="'repos.' + repo_index + '.branch'"
             :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
           >
+          <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['branch']" placeholder="请输入" size="small"></el-input>
            <el-select
+              v-else
               v-model.trim="config.repos[repo_index].branch"
               placeholder="请选择"
               size="small"
@@ -131,15 +127,6 @@
                 :value="branch.name"
               ></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-         <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source === 'other'||repo.type === 'other'">
-          <el-form-item
-            :label="repo_index === 0 ? (shortDescription?'分支':'默认分支') : ''"
-            :prop="'repos.' + repo_index + '.branch'"
-            :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
-          >
-          <el-input v-model="repo.branch" size="small" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col v-if="showAdvanced" :span="3">
