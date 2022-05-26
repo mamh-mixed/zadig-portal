@@ -45,7 +45,7 @@
           <el-link
             style="font-size: 14px; vertical-align: baseline;"
             type="primary"
-            :href="`https://docs.koderover.com/`"
+            :href="`https://docs.koderover.com/zadig/project/workflow/#扩展`"
             :underline="false"
             target="_blank"
           >帮助文档</el-link>
