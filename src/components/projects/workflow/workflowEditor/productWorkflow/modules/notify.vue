@@ -92,6 +92,9 @@ export default {
           if (val.length === 0) {
             this.isCanAdd = true
             this.$emit('canAdd', this.isCanAdd)
+            bus.$once('check-tab:notify', () => {
+              bus.$emit('receive-tab-check:notify', this.isCanAdd)
+            })
           } else {
             this.check()
           }
