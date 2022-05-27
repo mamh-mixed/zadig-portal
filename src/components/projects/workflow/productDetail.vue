@@ -3,7 +3,7 @@
     <el-card class="workflow-basic-info">
       <el-button
         type="primary"
-        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'run_workflow'})"
+        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'run_workflow',resource:{name:workflowName,type:'workflow'}})"
         effect="dark"
         @click="startTask(workflow)"
         class="left"
@@ -11,16 +11,12 @@
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
       <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
-        <el-button
-          type="primary"
-          effect="dark"
-          class="left permission-disabled"
-        >
+        <el-button type="primary" effect="dark" class="left permission-disabled">
           <span class="iconfont iconzhixing">&nbsp;执行</span>
         </el-button>
       </el-tooltip>
       <router-link
-        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow'})"
+        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
         :to="`/workflows/product/edit/${workflowName}?projectName=${projectName}`"
         class="middle"
       >
@@ -242,10 +238,16 @@ export default {
     removeWorkflow () {
       const name = this.workflowName
       if (this.usedInPolicy.length) {
-        this.$alert(`工作流 ${name} 已在协作模式 ${this.usedInPolicy.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
-          confirmButtonText: '确定',
-          type: 'warning'
-        })
+        this.$alert(
+          `工作流 ${name} 已在协作模式 ${this.usedInPolicy.join(
+            '、'
+          )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
+          '删除工作流',
+          {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }
+        )
         return
       }
       this.$prompt('输入工作流名称确认', '删除工作流 ' + name, {
@@ -277,11 +279,14 @@ export default {
       this.forcedUserInput = task.workflow_args
     },
     async getWorkflow () {
-      const res = await getProductWorkflowsInProjectAPI(this.projectName).catch(err => {
-        console.log(err)
-      })
+      const res = await getProductWorkflowsInProjectAPI(this.projectName).catch(
+        err => {
+          console.log(err)
+        }
+      )
       if (res) {
-        this.usedInPolicy = res.find(re => re.name === this.workflowName).base_refs || []
+        this.usedInPolicy =
+          res.find(re => re.name === this.workflowName).base_refs || []
       }
     },
     getFilterList ({ type }) {

@@ -37,14 +37,14 @@
             </el-form-item>
             <el-form-item v-if="showOperation()" label="操作">
               <el-button
-                v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
                 v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
                 @click="rerun"
                 type="text"
                 size="medium"
               >失败重试</el-button>
               <el-button
-                v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
                 v-if="taskDetail.status==='running'||taskDetail.status==='created'"
                 @click="cancel"
                 type="text"

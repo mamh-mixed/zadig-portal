@@ -3,7 +3,7 @@
     <el-card class="workflow-basic-info">
       <el-button
         type="primary"
-        v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+        v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:workflowName,type:'workflow'},isBtn:true}"
         effect="dark"
         @click="startTask"
         class="left"
