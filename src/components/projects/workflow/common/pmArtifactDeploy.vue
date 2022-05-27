@@ -107,9 +107,10 @@ export default {
     },
     getArtifactFiles (val) {
       return new Promise((resolve, reject) => {
-        const objectstorage_id = this.pickedStorage
+        const objectStorageId = this.pickedStorage
+        const projectName = this.projectName
         const payload = { names: val }
-        getArtifactFileAPI(payload, objectstorage_id).then((files) => {
+        getArtifactFileAPI(payload, objectStorageId, projectName).then((files) => {
           files = files || []
           this.tarFileMap = this.$utils.makeMapOfArray(files, 'name')
           resolve()
@@ -121,7 +122,8 @@ export default {
         this.tarFileMap = []
         const allClickableServeiceNames = this.pickedTargetServices.map(service => service.name)
         const payload = { names: allClickableServeiceNames }
-        getArtifactFileAPI(payload, val).then((files) => {
+        const projectName = this.projectName
+        getArtifactFileAPI(payload, val, projectName).then((files) => {
           files = files || []
           this.tarFileMap = this.$utils.makeMapOfArray(files, 'name')
           this.pickedTargetServices.forEach(item => {
@@ -183,6 +185,12 @@ export default {
       type: Array,
       default () {
         return []
+      }
+    },
+    projectName: {
+      type: String,
+      default () {
+        return ''
       }
     }
   },

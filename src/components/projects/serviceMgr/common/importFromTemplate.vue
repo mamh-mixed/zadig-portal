@@ -131,7 +131,8 @@ export default {
     async getKubernetesTemplate (id) {
       if (id) {
         this.previewYamlFile = false
-        const res = await getKubernetesTemplateDetailAPI(id).catch(err => {
+        const projectName = this.projectName
+        const res = await getKubernetesTemplateDetailAPI(id, projectName).catch(err => {
           console.log(err)
         })
         if (res) {
@@ -165,12 +166,12 @@ export default {
       const valid = await this.$refs.importYamlForm.validate().catch((err) => { return err })
       if (valid) {
         const res = this.currentUpdatedServiceName
-          ? await reloadServiceFromKubernetesTemplateAPI(payload).catch(
+          ? await reloadServiceFromKubernetesTemplateAPI(payload, projectName).catch(
             err => {
               console.log(err)
             }
           )
-          : await loadServiceFromKubernetesTemplateAPI(payload).catch(
+          : await loadServiceFromKubernetesTemplateAPI(payload, projectName).catch(
             err => {
               console.log(err)
             }

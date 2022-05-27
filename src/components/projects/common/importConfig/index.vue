@@ -86,6 +86,9 @@ export default {
         this.$refs.valueRepoRef && this.$refs.valueRepoRef.resetSource()
         return Object.assign(this.importRepoInfo, defaultParams)
       }
+    },
+    projectName () {
+      return this.$route.params.project_name
     }
   },
   methods: {
@@ -98,7 +101,8 @@ export default {
           repoName: repoConfig.repo,
           branchName: repoConfig.branch,
           path: repoConfig.path,
-          isDir: repoConfig.isDir
+          isDir: repoConfig.isDir,
+          projectName: this.projectName
         }
         this.loadValueYamls = true
         const res = await getConfigYamlAPI(params).catch(error =>

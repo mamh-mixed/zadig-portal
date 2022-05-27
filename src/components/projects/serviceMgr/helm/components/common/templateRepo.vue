@@ -110,7 +110,10 @@ export default {
   computed: {
     ...mapState({
       currentService: state => state.serviceManage.currentService
-    })
+    }),
+    projectName () {
+      return this.$route.params.project_name
+    }
 
   },
   watch: {
@@ -193,12 +196,13 @@ export default {
       this.$refs.tempForm.clearValidate()
     },
     getTemplateCharts () {
-      return getChartTemplatesAPI().then(res => {
+      const projectName = this.projectName
+      return getChartTemplatesAPI(projectName).then(res => {
         this.tempCharts = res.chartTemplates
       })
     },
     async createTemplateService () {
-      const projectName = this.$route.params.project_name
+      const projectName = this.projectName
       const payload = {
         source: 'chartTemplate',
         name: this.tempData.serviceName,
@@ -236,7 +240,7 @@ export default {
         }
         this.commitDialogVisible(false)
         this.$store.dispatch('queryService', {
-          projectName: this.$route.params.project_name,
+          projectName: this.projectName,
           showServiceName: payload.name
         })
 
@@ -249,7 +253,7 @@ export default {
       }
     },
     async createTemplateMultiService () {
-      const projectName = this.$route.params.project_name
+      const projectName = this.projectName
       const payload = {
         source: 'chartTemplate',
         auto_sync: this.tempData.auto_sync,
@@ -277,7 +281,7 @@ export default {
         this.$message.success(`导入模板成功`)
         this.commitDialogVisible(false)
         this.$store.dispatch('queryService', {
-          projectName: this.$route.params.project_name,
+          projectName: this.projectName,
           showServiceName: res.successServices[0]
         })
 

@@ -1619,8 +1619,8 @@ export function changePasswordAPI (payload) {
 }
 
 // Template Helm
-export function getChartTemplatesAPI () {
-  return http.get(`/api/aslan/template/charts`)
+export function getChartTemplatesAPI (projectName = '') {
+  return http.get(`/api/aslan/template/charts?projectName=${projectName}`)
 }
 
 export function getChartTemplateByNameAPI (name) {
@@ -1676,8 +1676,8 @@ export function validateDockerfileAPI (payload) {
   return http.post(`/api/aslan/template/dockerfile/validation`, payload)
 }
 
-export function getDockerfileAPI (id) {
-  return http.get(`/api/aslan/template/dockerfile/${id}`)
+export function getDockerfileAPI (id, projectName = '') {
+  return http.get(`/api/aslan/template/dockerfile/${id}?projectName=${projectName}`)
 }
 
 export function deleteDockerfileTemplateAPI (id) {
@@ -1704,12 +1704,13 @@ export function updateKubernetesTemplateAPI (id, payload) {
 export function updateMulKubernetesTemplateAPI (id, payload) {
   return http.post(`/api/aslan/template/yaml/${id}/reference`)
 }
+
 export function praseKubernetesTemplateAPI (payload) {
   return http.post(`/api/aslan/template/yaml/getVariables`, payload)
 }
 
-export function getKubernetesTemplateDetailAPI (id) {
-  return http.get(`/api/aslan/template/yaml/${id}`)
+export function getKubernetesTemplateDetailAPI (id, projectName = '') {
+  return http.get(`/api/aslan/template/yaml/${id}?projectName=${projectName}`)
 }
 
 export function deleteKubernetesTemplateAPI (id) {
@@ -1720,12 +1721,12 @@ export function getKubernetesTemplateBuildReferenceAPI (id) {
   return http.get(`/api/aslan/template/yaml/${id}/reference`)
 }
 
-export function loadServiceFromKubernetesTemplateAPI (payload) {
-  return http.post(`/api/aslan/service/template/load`, payload)
+export function loadServiceFromKubernetesTemplateAPI (payload, projectName = '') {
+  return http.post(`/api/aslan/service/template/load?projectName=${projectName}`, payload)
 }
 
-export function reloadServiceFromKubernetesTemplateAPI (payload) {
-  return http.post(`/api/aslan/service/template/reload`, payload)
+export function reloadServiceFromKubernetesTemplateAPI (payload, projectName = '') {
+  return http.post(`/api/aslan/service/template/reload?projectName=${projectName}`, payload)
 }
 
 // Template Build
@@ -1901,8 +1902,8 @@ export function queryUserBindingsAPI (uid, projectName = '') { // Query all bind
 //   return http.get(`/api/v1/policy/permission/${uid}?projectName=${projectName}`)
 // }
 
-export function getArtifactFileAPI (payload, id) {
-  return http.post(`/api/aslan/system/s3storage/${id}/releases/search?kind=file`, payload)
+export function getArtifactFileAPI (payload, id, projectName = '') {
+  return http.post(`/api/aslan/system/s3storage/${id}/releases/search?kind=file&projectName=${projectName}`, payload)
 }
 
 // initialize project workflow and environment
@@ -2003,13 +2004,14 @@ export function getServiceFailureAPI ({ startDate, endDate, projectNames }) {
 }
 
 // environment config
-export function getConfigYamlAPI ({ codehostId, repoOwner, repoName, branchName, path, isDir }) {
+export function getConfigYamlAPI ({ codehostId, repoOwner, repoName, branchName, path, isDir, projectName }) {
   const params = {
     repoOwner,
     repoName,
     branchName,
     path,
-    isDir
+    isDir,
+    projectName
   }
   return http.get(`/api/aslan/code/workspace/getcontents/${codehostId}`, { params })
 }
