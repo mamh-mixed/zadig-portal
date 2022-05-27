@@ -435,8 +435,11 @@ export default {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
         namespace = repoItem.namespace
+        row.repo_namespace = namespace
       }
-      row.repo_namespace = namespace
+      if (repo.type === 'other') {
+        row.repo_namespace = repo_owner
+      }
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
         this.setLoadingState(index, 'branch', true)
