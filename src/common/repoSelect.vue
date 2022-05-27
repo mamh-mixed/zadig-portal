@@ -531,7 +531,8 @@ export default {
               )
             })
           })
-          getBranchInfoByIdAPI(codehostId, repoOwner, repoName, uuid).then(
+
+          getBranchInfoByIdAPI(codehostId, element.repo_namespace, repoName, uuid).then(
             res => {
               this.$set(this.codeInfo[index], 'branches', res || [])
               this.$set(this.codeInfo[index], 'origin_branches', res || [])
