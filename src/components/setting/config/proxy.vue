@@ -8,7 +8,7 @@
          支持配置系统代理，配置后可以在「代码源集成」和「软件包管理」中选择使用代理，详情可参考
           <el-link style="font-size: 14px; vertical-align: baseline;"
                    type="primary"
-                   :href="`https://docs.koderover.com/zadig/settings/system-settings/`"
+                   :href="`https://docs.koderover.com/zadig/settings/system-settings/#代理配置`"
                    :underline="false"
                    target="_blank">帮助文档</el-link>
         </template>
