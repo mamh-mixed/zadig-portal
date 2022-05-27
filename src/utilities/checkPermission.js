@@ -1,14 +1,5 @@
 import store from '../store'
 import { isEmpty } from 'lodash'
-export async function checkPermission (opts) {
-  const { projectName, action, logic, isPublic } = opts
-  return permissionCheckingLogic({
-    isPublic,
-    projectName,
-    action,
-    logic
-  })
-}
 
 export function checkPermissionSync (opts) {
   let globalPermission = store.getters.globalPermission
@@ -19,7 +10,7 @@ export function checkPermissionSync (opts) {
   }
   const isSystemAdmin = globalPermission.is_system_admin
   const projectAdminList = globalPermission.project_admin_list ? globalPermission.project_admin_list : []
-  const { type, projectName, action, actions, operator } = opts
+  const { type, projectName, action, actions, resource, operator } = opts
   // 系统管理员放行
   if (isSystemAdmin) {
     return true
@@ -59,33 +50,48 @@ export function checkPermissionSync (opts) {
     if (currentProject && currentProject.public) {
       return true
     }
-    if (!isEmpty(currentProjectPermissions) && (action || actions)) {
-      const projectVerbs = currentProjectPermissions.project_verbs ? currentProjectPermissions.project_verbs : []
-      if (projectVerbs.length > 0) {
-        if (operator && actions) {
-          if (operator === 'and') {
-            for (const action of actions) {
-              if (!projectVerbs.includes(action)) {
-                return false
+    const projectCollaborativeModeCheckingResult = () => {
+      if (!isEmpty(resource)) {
+        if (resource.type === 'workflow') {
+          const resourcePermission = currentProjectPermissions.workflow_verbs_map[resource.name]
+          return resourcePermission.includes(action)
+        } else if (resource.type === 'env') {
+          const resourcePermission = currentProjectPermissions.environment_verbs_map[resource.name]
+          return resourcePermission.includes(action)
+        }
+      }
+    }
+    const projectCheckingResult = () => {
+      if (!isEmpty(currentProjectPermissions) && (action || actions)) {
+        const projectVerbs = currentProjectPermissions.project_verbs ? currentProjectPermissions.project_verbs : []
+        if (projectVerbs.length > 0) {
+          if (operator && actions) {
+            if (operator === 'and') {
+              for (const action of actions) {
+                if (!projectVerbs.includes(action)) {
+                  return false
+                }
               }
             }
-          }
-          if (operator === 'or') {
-            for (const action of actions) {
-              if (projectVerbs.includes(action)) {
-                return true
+            if (operator === 'or') {
+              for (const action of actions) {
+                if (projectVerbs.includes(action)) {
+                  return true
+                }
               }
             }
+          } else {
+            return projectVerbs.includes(action)
           }
         } else {
-          return projectVerbs.includes(action)
+          return false
         }
       } else {
         return false
       }
-    } else {
-      return false
     }
+    console.log(projectCheckingResult(), projectCollaborativeModeCheckingResult())
+    return projectCheckingResult() || projectCollaborativeModeCheckingResult()
   } else {
     return false
   }
@@ -100,7 +106,7 @@ export async function permissionCheckingLogic (opts) {
   }
   const isSystemAdmin = globalPermission.is_system_admin
   const projectAdminList = globalPermission.project_admin_list ? globalPermission.project_admin_list : []
-  const { type, projectName, action, actions, operator } = opts
+  const { type, projectName, action, actions, resource, operator } = opts
   // 系统管理员放行
   if (isSystemAdmin) {
     return true
@@ -140,33 +146,50 @@ export async function permissionCheckingLogic (opts) {
     if (currentProject && currentProject.public) {
       return true
     }
-    if (!isEmpty(currentProjectPermissions) && (action || actions)) {
-      const projectVerbs = currentProjectPermissions.project_verbs ? currentProjectPermissions.project_verbs : []
-      if (projectVerbs.length > 0) {
-        if (operator && actions) {
-          if (operator === 'and') {
-            for (const action of actions) {
-              if (!projectVerbs.includes(action)) {
-                return false
-              }
-            }
-          }
-          if (operator === 'or') {
-            for (const action of actions) {
-              if (projectVerbs.includes(action)) {
-                return true
-              }
-            }
-          }
-        } else {
-          return projectVerbs.includes(action)
+    const projectCollaborativeModeCheckingResult = () => {
+      if (!isEmpty(resource)) {
+        if (resource.type === 'workflow') {
+          const resourcePermission = currentProjectPermissions.workflow_verbs_map[resource.name]
+          return resourcePermission.includes(action)
+        } else if (resource.type === 'env') {
+          const resourcePermission = currentProjectPermissions.environment_verbs_map[resource.name]
+          return resourcePermission.includes(action)
         }
       } else {
         return false
       }
-    } else {
-      return false
     }
+    const projectCheckingResult = () => {
+      if (!isEmpty(currentProjectPermissions) && (action || actions)) {
+        const projectVerbs = currentProjectPermissions.project_verbs ? currentProjectPermissions.project_verbs : []
+        if (projectVerbs.length > 0) {
+          if (operator && actions) {
+            if (operator === 'and') {
+              for (const action of actions) {
+                if (!projectVerbs.includes(action)) {
+                  return false
+                }
+              }
+            }
+            if (operator === 'or') {
+              for (const action of actions) {
+                if (projectVerbs.includes(action)) {
+                  return true
+                }
+              }
+            }
+          } else {
+            return projectVerbs.includes(action)
+          }
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    }
+    console.log(projectCheckingResult(), projectCollaborativeModeCheckingResult())
+    return projectCheckingResult() || projectCollaborativeModeCheckingResult()
   } else {
     return false
   }

@@ -60,14 +60,14 @@
                 <el-col :span="10">
                   <div class="item-desc">
                     <el-button
-                        v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                        v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
                         v-if="(taskDetail.status!=='running' && taskDetail.status !=='created') && taskDetail.status!=='passed'"
                         @click="taskOperation('restart',taskDetail.task_id,taskDetail.pipeline_name)"
                         type="text"
                         size="medium"
                       >失败重试</el-button>
                       <el-button
-                        v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                        v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
                         v-if="taskDetail.status==='running' || taskDetail.status ==='created'"
                         @click="taskOperation('cancel',taskDetail.task_id,taskDetail.pipeline_name)"
                         type="text"

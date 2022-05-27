@@ -151,7 +151,7 @@
                        label="操作"
                        align="center">
         <template slot-scope="scope">
-            <el-button v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+            <el-button v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:workflowName,type:'workflow'},isBtn:true}"
                        @click="rerun(scope.row)" v-if="scope.row.workflow_args || scope.row.task_args"
                        type="text"
                        icon="el-icon-copy-document"
