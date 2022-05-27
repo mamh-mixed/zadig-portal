@@ -437,9 +437,6 @@ export default {
         namespace = repoItem.namespace
         row.repo_namespace = namespace
       }
-      if (repo.type === 'other') {
-        row.repo_namespace = repo_owner
-      }
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
         this.setLoadingState(index, 'branch', true)
@@ -597,19 +594,27 @@ export default {
         this.getInitRepoInfo(new_val.repos)
       }
     },
-    'config.repos' (new_val, old_val) {
-      if (this.validObj !== null) {
-        if (new_val && new_val.length > 0) {
-          this.validObj.addValidate({
-            name: this.validateName,
-            valid: this.validateForm
-          })
-        } else {
-          this.validObj.deleteValidate({
-            name: this.validateName
-          })
+    'config.repos': {
+      handler (new_val) {
+        if (this.validObj !== null) {
+          if (new_val && new_val.length > 0) {
+            this.validObj.addValidate({
+              name: this.validateName,
+              valid: this.validateForm
+            })
+            new_val.forEach(item => {
+              if (item.type === 'other') {
+                item.repo_namespace = item.repo_owner
+              }
+            })
+          } else {
+            this.validObj.deleteValidate({
+              name: this.validateName
+            })
+          }
         }
-      }
+      },
+      deep: true
     }
   },
   components: {}

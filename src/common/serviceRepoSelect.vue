@@ -527,9 +527,6 @@ export default {
         namespace = repoItem.namespace
         repo.repo_namespace = namespace
       }
-      if (repo.type === 'other') {
-        repo.repo_namespace = repo_owner
-      }
       if (repo_owner && repo_name) {
         this.codeInfo[targetIndex][repoIndex].branches = []
         this.setLoadingState(targetIndex, repoIndex, 'branch', true)
@@ -718,6 +715,22 @@ export default {
     })
     if (!this.isCreate) {
       this.getInitRepoInfo(this.targets)
+    }
+  },
+  watch: {
+    targets: {
+      handler (new_val) {
+        if (new_val) {
+          new_val.forEach(item => {
+            item.repos.forEach(repo => {
+              if (repo.type === 'other') {
+                repo.repo_namespace = repo.repo_owner
+              }
+            })
+          })
+        }
+      },
+      deep: true
     }
   }
 }
