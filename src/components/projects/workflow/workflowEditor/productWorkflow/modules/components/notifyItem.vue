@@ -209,9 +209,6 @@ export default {
       type: Boolean,
       default: true
     }
-  },
-  beforeDestroy () {
-    bus.$off('check-tab:notify')
   }
 }
 </script>
