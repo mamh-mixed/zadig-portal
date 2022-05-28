@@ -43,7 +43,7 @@
             :prop="'repos.' + repo_index + '.repo_owner'"
             :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur', 'change']}"
           >
-            <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_owner']" placeholder="请输入" size="small"></el-input>
+            <el-input v-if="repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_owner']" placeholder="请输入" size="small"></el-input>
             <el-select
               v-else
               @change="getRepoNameById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index]['repo_owner'])"
@@ -74,7 +74,7 @@
             :prop="'repos.' + repo_index + '.repo_name'"
             :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
           >
-            <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_name']" placeholder="请输入" size="small"></el-input>
+            <el-input v-if="repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_name']" placeholder="请输入" size="small"></el-input>
             <el-select
               v-else
               @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name,'',config.repos[repo_index])"
@@ -105,7 +105,7 @@
             :prop="'repos.' + repo_index + '.branch'"
             :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
           >
-          <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="config.repos[repo_index]['branch']" placeholder="请输入" size="small"></el-input>
+          <el-input v-if="repo.source==='other'"  v-model.trim="config.repos[repo_index]['branch']" placeholder="请输入" size="small"></el-input>
            <el-select
               v-else
               v-model.trim="config.repos[repo_index].branch"
@@ -462,7 +462,7 @@ export default {
       const res = this.allCodeHosts.find(item => {
         return item.id === id
       })
-      row.type = res.type
+      row.source = res.type
       row.auth_type = res.auth_type
       if (!key) {
         if (this.codeInfo[index]) {
@@ -603,7 +603,7 @@ export default {
               valid: this.validateForm
             })
             new_val.forEach(item => {
-              if (item.type === 'other') {
+              if (item.source === 'other') {
                 item.repo_namespace = item.repo_owner
               }
             })
