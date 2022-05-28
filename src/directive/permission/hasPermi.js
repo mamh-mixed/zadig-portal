@@ -10,9 +10,9 @@ async function checkPermission (el, binding) {
     resource,
     operator
   })
-  const disableClickFn = (event) => {
-    event && event.stopImmediatePropagation()
-  }
+  // const disableClickFn = (event) => {
+  //   event && event.stopImmediatePropagation()
+  // }
   if (!hasPermission) {
     if (isBtn) {
       if (!el.classList.contains('permission-disabled')) {

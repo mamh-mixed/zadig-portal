@@ -51,7 +51,7 @@ export function checkPermissionSync (opts) {
       return true
     }
     const projectCollaborativeModeCheckingResult = () => {
-      if (!isEmpty(resource)) {
+      if (!isEmpty(resource) && (!isEmpty(currentProjectPermissions.workflow_verbs_map[resource.name]) || !isEmpty(currentProjectPermissions.environment_verbs_map[resource.name]))) {
         if (resource.type === 'workflow') {
           const resourcePermission = currentProjectPermissions.workflow_verbs_map[resource.name]
           return resourcePermission.includes(action)
@@ -59,6 +59,8 @@ export function checkPermissionSync (opts) {
           const resourcePermission = currentProjectPermissions.environment_verbs_map[resource.name]
           return resourcePermission.includes(action)
         }
+      } else {
+        return false
       }
     }
     const projectCheckingResult = () => {
@@ -147,7 +149,7 @@ export async function permissionCheckingLogic (opts) {
       return true
     }
     const projectCollaborativeModeCheckingResult = () => {
-      if (!isEmpty(resource)) {
+      if (!isEmpty(resource) && (!isEmpty(currentProjectPermissions.workflow_verbs_map[resource.name]) || !isEmpty(currentProjectPermissions.environment_verbs_map[resource.name]))) {
         if (resource.type === 'workflow') {
           const resourcePermission = currentProjectPermissions.workflow_verbs_map[resource.name]
           return resourcePermission.includes(action)

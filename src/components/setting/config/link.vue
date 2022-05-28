@@ -4,7 +4,7 @@
       <template>支持添加外部快捷链接，详情可参考
         <el-link style="font-size: 14px; vertical-align: baseline;"
           type="primary"
-          :href="`https://docs.koderover.com/zadig/settings/system-settings/`"
+          :href="`https://docs.koderover.com/zadig/settings/system-settings/#快捷链接`"
           :underline="false"
           target="_blank">帮助文档</el-link>
       </template>
