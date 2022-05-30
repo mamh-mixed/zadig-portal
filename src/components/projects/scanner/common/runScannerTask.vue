@@ -172,7 +172,8 @@ export default {
     async getScannerDetail () {
       this.loading = true
       const id = this.scannerInfo.id
-      const res = await getCodeScannerDetailAPI(id).catch(error => {
+      const projectName = this.projectName
+      const res = await getCodeScannerDetailAPI(id, projectName).catch(error => {
         console.log(error)
       })
       if (res) {
