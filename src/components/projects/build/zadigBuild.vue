@@ -300,16 +300,19 @@ export default {
         this.$refs.serviceRepoSelectRef.getInitRepoInfo(buildConfig.target_repos)
       })
     },
-    initGlobalData () {
-      // be used on Repo
-      const key = this.$utils.rsaEncrypt()
+    getBuildTemplates () {
       const projectName = this.projectName
-      getCodeSourceMaskedAPI(key).then(response => {
-        this.allCodeHosts = response
-      })
       getBuildTemplatesAPI(projectName).then(response => {
         this.templates = response.build_templates
       })
+    },
+    initGlobalData () {
+      // be used on Repo
+      const key = this.$utils.rsaEncrypt()
+      getCodeSourceMaskedAPI(key).then(response => {
+        this.allCodeHosts = response
+      })
+      this.getBuildTemplates()
     }
   },
   components: {
