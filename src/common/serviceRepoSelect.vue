@@ -595,7 +595,6 @@ export default {
     },
     getInitRepoInfo (targets) {
       targets.forEach((target, targetIndex) => {
-        console.log(target)
         this.$set(this.codeInfo, targetIndex, {})
         target.repos.forEach((repo, repoIndex) => {
           const codehostId = repo.codehost_id
