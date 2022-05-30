@@ -73,6 +73,7 @@ import {
   queryJenkins,
   createBuildTemplateAPI
 } from '@api'
+import { cloneDeep } from 'lodash'
 
 export default {
   props: {
@@ -174,15 +175,27 @@ export default {
     },
     async saveBuildConfigToTemplate () {
       if (this.source === 'zadig') {
-        this.$confirm('保存为系统全局构建模板，其中的代码信息将会被去除，构建信息将会作为构建模板内容保存，请确认?', '提示', {
+        const templateNames = this.$refs.zadigBuildForm.templates.map(temp => temp.name)
+        this.$prompt('保存为系统全局构建模板，其中的代码信息将会被去除，构建信息将会作为构建模板内容保存，请确认！', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
+          inputValidator: input => {
+            if (!input) {
+              return '请输入构建模板名称'
+            } else if (templateNames.includes(input)) {
+              return '构建模板名称已存在'
+            } else {
+              return true
+            }
+          },
+          inputPlaceholder: '请输入构建模板名称',
           type: 'warning'
-        }).then(() => {
+        }).then(({ value }) => {
           this.$refs.zadigBuildForm
             .validate()
             .then(data => {
-              const payload = data
+              const payload = cloneDeep(data)
+              payload.name = value
               this.$emit('updateBtnLoading', true)
               createBuildTemplateAPI(payload)
                 .then(() => {
@@ -191,6 +204,7 @@ export default {
                     message: '保存模板成功'
                   })
                   this.$emit('updateBtnLoading', false)
+                  this.$refs.zadigBuildForm.getBuildTemplates()
                 })
                 .catch(() => {
                   this.$emit('updateBtnLoading', false)
