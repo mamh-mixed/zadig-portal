@@ -380,7 +380,7 @@
                 </span>
                 <el-button @click="clusterOperation('edit',scope.row)" type="primary" size="mini" plain>编辑</el-button>
                 <el-button v-show="!scope.row.local" @click="clusterOperation('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
-                <el-button :disabled="scope.row.status !== 'normal'" @click="updateAgent(scope.row)" size="mini" type="primary" plain>更新 agent</el-button>
+                <el-button v-if="!scope.row.local" :disabled="scope.row.status !== 'normal'" @click="updateAgent(scope.row)" size="mini" type="primary" plain>更新 agent</el-button>
               </template>
             </el-table-column>
           </el-table>
