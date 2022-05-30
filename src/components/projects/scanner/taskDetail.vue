@@ -16,15 +16,15 @@
             <el-form-item label="创建者">{{ taskDetail.creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
             <el-form-item label="持续时间">{{ taskDetail.interval }}</el-form-item>
-            <!-- <el-form-item v-if="showOperation()" label="操作">
-              <el-button
+            <el-form-item v-if="showOperation()" label="操作">
+              <!-- <el-button
                 v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
                 @click="rerun"
                 type="text"
                 size="medium"
-              >失败重试</el-button>
+              >失败重试</el-button> -->
               <el-button v-if="taskDetail.status==='running'||taskDetail.status==='created'" @click="cancel" type="text" size="medium">取消任务</el-button>
-            </el-form-item> -->
+            </el-form-item>
           </el-form>
         </div>
       </div>
@@ -152,12 +152,12 @@ export default {
       })
     },
     cancel () {
-      const scannerName = this.scannerName
+      const scannerId = this.scannerId
       const taskID = this.taskID
       const projectName = this.projectName
-      cancelScannerTaskAPI(scannerName, taskID, projectName).then(res => {
+      cancelScannerTaskAPI(scannerId, taskID, projectName).then(res => {
         if (this.$refs && this.$refs.taskDetailScanner) {
-          this.$refs.taskDetailScanner.killLog('test')
+          this.$refs.taskDetailScanner.killLog('scanner')
         }
         this.$message.success('任务取消成功')
       })

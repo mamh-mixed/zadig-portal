@@ -32,13 +32,13 @@
           </div>
         </div>
         <el-button v-if="importRepoInfo.yamlSource === 'default'" type="text" @click="importRepoInfo.yamlSource = 'freeEdit'">高级设置</el-button>
-        <CommonImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo" :resize="{height: '188px'}" showDelete></CommonImportValues>
+        <CommonImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo" showDelete></CommonImportValues>
       </div>
       <ImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo"></ImportValues>
       <el-form-item prop="auto_sync">
         <span slot="label">
           <span>自动同步</span>
-           <el-tooltip effect="dark" content="开启后，模板库-批量更新时，该服务配置自动应用最新的服务模板。" placement="top">
+           <el-tooltip effect="dark" content="开启后，对模板库操作应用到服务时，该服务配置将自动基于模板内容同步。" placement="top">
               <i class="pointer el-icon-question"></i>
            </el-tooltip>
         </span>
