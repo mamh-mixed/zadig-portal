@@ -1302,6 +1302,10 @@ export function deleteClusterAPI (id) {
   return http.delete(`/api/aslan/cluster/clusters/${id}`)
 }
 
+export function upgradeHubAgentAPI (id) {
+  return http.get(`/api/aslan/cluster/agent/${id}/upgrade`)
+}
+
 export function getClusterNodeInfo (clusterId = '') {
   return http.get(`/api/aslan/environment/kube/nodes?clusterId=${clusterId}`)
 }
