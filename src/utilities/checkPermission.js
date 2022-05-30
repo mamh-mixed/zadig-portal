@@ -92,7 +92,6 @@ export function checkPermissionSync (opts) {
         return false
       }
     }
-    console.log(projectCheckingResult(), projectCollaborativeModeCheckingResult())
     return projectCheckingResult() || projectCollaborativeModeCheckingResult()
   } else {
     return false
@@ -190,7 +189,6 @@ export async function permissionCheckingLogic (opts) {
         return false
       }
     }
-    console.log(projectCheckingResult(), projectCollaborativeModeCheckingResult())
     return projectCheckingResult() || projectCollaborativeModeCheckingResult()
   } else {
     return false
