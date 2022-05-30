@@ -223,19 +223,19 @@ export default {
         },
         {
           // eslint-disable-next-line no-template-curly-in-string
-          variable: '$REPONAME_index',
-          desc: '代码库名称，其中 index 为构建配置中代码的位置，初始值为 0'
+          variable: '$REPONAME_<index>',
+          desc: '指定 <index> 的代码库名称，其中 <index> 为构建配置中代码的位置，初始值为 0'
         },
         {
           // eslint-disable-next-line no-template-curly-in-string
-          variable: '$REPO_index',
-          desc: '代码库名称（可用于代码信息相关变量名，仓库名称中的中划线 "-" 替换成下划线"_"），其中 index 为构建配置中代码的位置，初始值为 0'
+          variable: '$REPO_<index>',
+          desc: '指定 <index> 的代码库名称（可用于代码信息相关变量名，仓库名称中的中划线 "-" 替换成下划线"_"），其中 <index> 为构建配置中代码的位置，初始值为 0'
         },
         {
           // eslint-disable-next-line no-template-curly-in-string
           variable: '$<REPO>_PR',
           // eslint-disable-next-line no-template-curly-in-string
-          desc: '构建时使用的代码 Pull Request 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval PR=\\${${REPO_0}_PR} 方式获取第一个代码库的 Pull Request 信息'
+          desc: '构建时使用的代码 Pull Request 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_<index> 变量使用，比如可以通过 eval PR=\\${${REPO_0}_PR} 方式获取第一个代码库的 Pull Request 信息'
         },
         {
           // eslint-disable-next-line no-template-curly-in-string

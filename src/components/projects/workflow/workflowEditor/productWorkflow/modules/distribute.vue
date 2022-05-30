@@ -104,7 +104,6 @@ export default {
         t.key = t.service_name + '/' + t.service_module
       })
       if (!this.editMode && this.distributeStage.distributes.length === 0) {
-        console.log(targets)
         this.$set(
           this.distributeStageDetail,
           'serviceTargets',

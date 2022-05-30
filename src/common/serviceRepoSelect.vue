@@ -53,13 +53,11 @@
                       :key="index"
                       :label="host.address + '('+host.alias+')'"
                       :value="host.id"
-                    >
-                    {{ host.address + '('+host.alias+')'}}
-                    </el-option>
+                    >{{ host.address + '('+host.alias+')'}}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5" >
+              <el-col :span="showAdvanced || showTrigger ?4:5">
                 <el-form-item
                   :label="repoIndex === 0 ?'组织名/用户名' : ''"
                   :prop="'repos.' + repoIndex + '.repo_owner'"
@@ -90,7 +88,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5" >
+              <el-col :span="showAdvanced || showTrigger ?4:5">
                 <el-form-item
                   :label="repoIndex === 0 ? (shortDescription?'名称':'代码库名称') : ''"
                   :prop="'repos.' + repoIndex + '.repo_name'"
@@ -121,7 +119,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5 " >
+              <el-col :span="showAdvanced || showTrigger ?4:5 ">
                 <el-form-item
                   :label="repoIndex === 0 ? (shortDescription?'分支':'默认分支') : ''"
                   :prop="'repos.' + repoIndex + '.branch'"
@@ -237,9 +235,45 @@
             </el-row>
           </div>
         </el-form>
+        <div v-if="target.envs && target.envs.length" class="build-env-var">
+          <div class="primary-title">
+            变量
+            <i
+              :class="[target.showVars ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"
+              class="icon"
+              @click="target.showVars = !target.showVars"
+            ></i>
+          </div>
+          <div v-show="target.showVars">
+            <el-row v-for="(env, index) in target.envs" :key="index" :gutter="10" class="var-content">
+              <el-col :span="mini ? 6 : 4">
+                <el-select v-model="env.type" size="small" disabled>
+                  <el-option label="字符串" value="string"></el-option>
+                  <el-option label="枚举" value="choice"></el-option>
+                </el-select>
+              </el-col>
+              <el-col :span="mini ? 6 : 4">
+                <el-input v-model="env.key" size="small" disabled></el-input>
+              </el-col>
+              <el-col :span="mini ? 6 : 4">
+                <el-select v-if="env.type==='choice'" v-model="env.value" placeholder="默认值" size="small">
+                  <el-option v-for="option in env.choice_option" :key="option" :label="option" :value="option"></el-option>
+                </el-select>
+                <el-input v-else placeholder="值" v-model="env.value" size="small"></el-input>
+              </el-col>
+              <el-col :span="mini ? 6 : 4" v-show="env.type!=='choice'" style="line-height: 32px;">
+                <el-checkbox v-model="env.is_credential">
+                  敏感信息
+                  <el-tooltip effect="dark" content="设置为敏感信息变量后，系统会将变量进行加密，使用时进行解密，同时在工作流运行日志里不可见" placement="top">
+                    <i class="el-icon-question"></i>
+                  </el-tooltip>
+                </el-checkbox>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
       </div>
     </template>
-
     <span class="el-icon-circle-plus-outline add-service-repo" @click="addService"></span>
   </div>
 </template>
@@ -251,7 +285,7 @@ import {
   getRepoNameByIdAPI,
   getBranchInfoByIdAPI
 } from '@api'
-import { orderBy } from 'lodash'
+import { orderBy, cloneDeep } from 'lodash'
 export default {
   data () {
     return {
@@ -276,6 +310,10 @@ export default {
       required: true,
       type: Array
     },
+    currentTemplateEnvs: {
+      required: true,
+      type: Array
+    },
     showDivider: {
       required: false,
       type: Boolean,
@@ -285,6 +323,10 @@ export default {
       required: false,
       type: Boolean,
       default: true
+    },
+    mini: {
+      default: false,
+      type: Boolean
     },
     showAdvanced: {
       required: false,
@@ -338,14 +380,18 @@ export default {
       if (this.targets.length === 0) {
         this.targets.push({
           service: {},
-          repos: []
+          repos: [],
+          envs: cloneDeep(this.currentTemplateEnvs),
+          showVars: false
         })
         this.addFirstRepo(this.targets.length - 1)
       } else {
         this.validateForm(this.targets.length - 1).then(res => {
           this.targets.push({
             service: {},
-            repos: []
+            repos: [],
+            envs: cloneDeep(this.currentTemplateEnvs),
+            showVars: false
           })
           this.addFirstRepo(this.targets.length - 1)
         })
@@ -801,6 +847,19 @@ export default {
 
   &:not(:first-child) {
     margin-bottom: 5px;
+  }
+
+  .build-env-var {
+    .primary-title {
+      .icon {
+        margin-left: 5px;
+        cursor: pointer;
+      }
+    }
+
+    .var-content {
+      margin-bottom: 18px;
+    }
   }
 }
 </style>

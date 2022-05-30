@@ -150,6 +150,11 @@ export default {
           const payload = data
           payload.source = this.source
           payload.product_name = this.projectName
+          if (payload.target_repos) {
+            payload.target_repos.forEach(repo => {
+              delete repo.showVars
+            })
+          }
           this.saveLoading = true
           this.$emit('updateBtnLoading', true)
           reqAPI(payload)
@@ -259,6 +264,13 @@ export default {
         if (buildConfig.template_id) {
           this.useTemplate = true
         }
+
+        if (buildConfig.target_repos) {
+          buildConfig.target_repos.forEach(repo => {
+            this.$set(repo, 'showVars', false)
+          })
+        }
+
         this.buildConfig = buildConfig
 
         if (!this.isEdit) {
@@ -275,9 +287,9 @@ export default {
           }
         }
       }
-      if (!this.useTemplate) {
-        this.$refs.zadigBuildForm.initData(this.buildConfig)
-      }
+
+      this.$refs.zadigBuildForm.initData(this.buildConfig)
+
       // Add current service to template targets_repos when creating a new build
       if (this.useTemplate && !this.isEdit) {
         const service = this.buildConfig.targets.find(
@@ -294,7 +306,9 @@ export default {
               checkout_path: '',
               remote_name: 'origin',
               submodules: false
-            }]
+            }],
+            envs: [],
+            showVars: false
           })
         }
         this.$refs.zadigBuildForm.initServiceRepoSelectData(this.buildConfig)

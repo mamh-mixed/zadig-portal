@@ -770,42 +770,42 @@ export function updateCodeScannerAPI (id, payload) {
   return http.put(`/api/aslan/testing/scanning/${id}?projectName=${payload.project_name}`, payload)
 }
 
-export function getCodeScannerDetailAPI (id, projectName) {
+export function getCodeScannerDetailAPI (id, projectName = '') {
   return http.get(`/api/aslan/testing/scanning/${id}?projectName=${projectName}`)
 }
-export function deleteCodeScannerAPI (id, projectName) {
+export function deleteCodeScannerAPI (id, projectName = '') {
   return http.delete(`/api/aslan/testing/scanning/${id}?projectName=${projectName}`)
 }
 
-export function getCodeScannerListAPI (projectName) {
+export function getCodeScannerListAPI (projectName = '') {
   return http.get(`/api/aslan/testing/scanning?projectName=${projectName}`)
 }
 
-export function getCodeScannerHistoryAPI (id, projectName, page_num, page_size) {
-  return http.get(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}&page_num=${page_num}&page_size=${page_size}`)
+export function getCodeScannerHistoryAPI (id, projectName = '', pageNum, pageSize) {
+  return http.get(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}&page_num=${pageNum}&page_size=${pageSize}`)
 }
 
-export function runCodeScannerTaskAPI (id, payload, projectName) {
+export function runCodeScannerTaskAPI (id, payload, projectName = '') {
   return http.post(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}`, payload)
 }
 
-export function scannerTaskDetailAPI (scannerId, taskId, projectName) {
+export function scannerTaskDetailAPI (scannerId, taskId, projectName = '') {
   return http.get(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
-export function scannerTaskDetailSSEAPI (scannerId, taskId, projectName) {
+export function scannerTaskDetailSSEAPI (scannerId, taskId, projectName = '') {
   return makeEventSource(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}/sse?projectName=${projectName}`)
 }
 
-export function restartScannerTaskAPI (scannerId, taskId, payload, projectName) {
+export function restartScannerTaskAPI (scannerId, taskId, payload, projectName = '') {
   return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`, payload)
 }
 
-export function cancelScannerTaskAPI (scannerId, taskId) {
-  return http.delete(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}`)
+export function cancelScannerTaskAPI (scannerId, taskId, projectName = '') {
+  return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
-export function getScannerTaskLogAPI (scannerId, taskId, projectName) {
+export function getScannerTaskLogAPI (scannerId, taskId, projectName = '') {
   return http.get(`/api/aslan/logs/log/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
