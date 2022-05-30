@@ -798,8 +798,8 @@ export function restartScannerTaskAPI (scannerId, taskId, payload, projectName) 
   return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`, payload)
 }
 
-export function cancelScannerTaskAPI (scannerId, taskId, payload, projectName) {
-  return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`, payload)
+export function cancelScannerTaskAPI (scannerId, taskId) {
+  return http.delete(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}`)
 }
 
 export function getScannerTaskLogAPI (scannerId, taskId, projectName) {
