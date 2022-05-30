@@ -154,7 +154,8 @@ export default {
     cancel () {
       const scannerId = this.scannerId
       const taskID = this.taskID
-      cancelScannerTaskAPI(scannerId, taskID).then(res => {
+      const projectName = this.projectName
+      cancelScannerTaskAPI(scannerId, taskID, projectName).then(res => {
         if (this.$refs && this.$refs.taskDetailScanner) {
           this.$refs.taskDetailScanner.killLog('scanner')
         }
