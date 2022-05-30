@@ -111,19 +111,31 @@ export default {
         const payload = {
           service_names
         }
-        deleteEnvServicesAPI(
-          this.projectName,
-          this.productInfo.env_name,
-          payload
-        )
-          .then(() => {
-            this.$message.success(`${this.opeDesc}服务成功！`)
-            this.closeDialog()
-            this.fetchAllData()
-          })
-          .finally(() => {
-            this.loading = false
-          })
+        deleteEnvServicesAPI(this.projectName, this.productInfo.env_name, payload).then(() => {
+          this.$message.success(`${this.opeDesc}服务成功！`)
+          this.closeDialog()
+          this.fetchAllData()
+        }).catch(error => {
+          console.log(error)
+          if (error.response && error.response.data.code === 6094) {
+            const HtmlStrings = []
+            for (const service in error.response.data.extra) {
+              if (Object.hasOwnProperty.call(error.response.data.extra, service)) {
+                const envNames = error.response.data.extra[service]
+                HtmlStrings.push(`服务 ${service} 存在于子环境 ${envNames.join(',')} 中`)
+              }
+            }
+            const HtmlTemplate = `<p>待删除服务存在于子环境中，请先删除引用后再进行${this.opeDesc}操作！</p><br><p>${HtmlStrings.join('<br>')}</p>`
+            this.$message({
+              message: HtmlTemplate,
+              type: 'warning',
+              dangerouslyUseHTMLString: true,
+              duration: 5000
+            })
+          }
+        }).finally(() => {
+          this.loading = false
+        })
       } else if (this.opeType === 'add' || this.opeType === 'update') {
         const res = await this.$refs.chartValuesRef.validate().catch(err => {
           console.log(err)

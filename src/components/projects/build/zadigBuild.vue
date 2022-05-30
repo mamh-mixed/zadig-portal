@@ -241,6 +241,8 @@ export default {
         if (!res[1]) {
           valid.push(Promise.reject())
         }
+      } else {
+        valid.push(this.$refs.serviceRepoSelectRef.validateForm())
       }
       valid.push(this.$refs.zadigForm.validate())
       return Promise.all(valid).then(() => {

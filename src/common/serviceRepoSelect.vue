@@ -63,12 +63,7 @@
                   :prop="'repos.' + repoIndex + '.repo_owner'"
                   :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur', 'change']}"
                 >
-                  <el-input
-                    v-if="repo.type === 'other' || repo.source==='other'"
-                    v-model.trim="target.repos[repoIndex]['repo_owner']"
-                    placeholder="请输入"
-                    size="small"
-                  ></el-input>
+                  <el-input v-if="repo.source==='other'"  v-model.trim="target.repos[repoIndex]['repo_owner']" placeholder="请输入" size="small"></el-input>
                   <el-select
                     v-else
                     @change="getRepoNameById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex]['repo_owner'])"
@@ -99,15 +94,10 @@
                   :prop="'repos.' + repoIndex + '.repo_name'"
                   :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
                 >
-                  <el-input
-                    v-if="repo.type === 'other' || repo.source==='other'"
-                    v-model.trim="target.repos[repoIndex]['repo_name']"
-                    placeholder="请输入"
-                    size="small"
-                  ></el-input>
+                  <el-input v-if="repo.source==='other'"  v-model.trim="target.repos[repoIndex]['repo_name']" placeholder="请输入" size="small"></el-input>
                   <el-select
                     v-else
-                    @change="getBranchInfoById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex].repo_owner,target.repos[repoIndex].repo_name)"
+                    @change="getBranchInfoById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex].repo_owner,target.repos[repoIndex].repo_name,'',repo)"
                     v-model.trim="target.repos[repoIndex].repo_name"
                     remote
                     :remote-method="(query)=>{searchProject(targetIndex,repoIndex,query)}"
@@ -135,12 +125,7 @@
                   :prop="'repos.' + repoIndex + '.branch'"
                   :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
                 >
-                  <el-input
-                    v-if="repo.type === 'other' || repo.source==='other'"
-                    v-model.trim="target.repos[repoIndex]['branch']"
-                    placeholder="请输入"
-                    size="small"
-                  ></el-input>
+                  <el-input v-if="repo.source==='other'"  v-model.trim="target.repos[repoIndex]['branch']" placeholder="请输入" size="small"></el-input>
                   <el-select
                     v-else
                     v-model.trim="target.repos[repoIndex].branch"
@@ -384,6 +369,12 @@ export default {
       default: false
     }
   },
+  created () {
+    this.validObj.addValidate({
+      name: 'serviceRepoSelectRef',
+      valid: this.validateForm(this.targets.length - 1)
+    })
+  },
   methods: {
     addService () {
       if (this.targets.length === 0) {
@@ -414,7 +405,7 @@ export default {
         this.codeInfo[targetIndex][repoIndex].loading[loading] = isLoading
       }
     },
-    validateForm (targetIndex) {
+    validateForm (targetIndex = this.targets.length - 1) {
       const refName = `buildRepo-${targetIndex}`
       return new Promise((resolve, reject) => {
         this.$nextTick(() => {
@@ -562,7 +553,8 @@ export default {
       id,
       repo_owner,
       repo_name,
-      key = ''
+      key = '',
+      repo
     ) {
       if (!repo_name) {
         return
@@ -574,16 +566,19 @@ export default {
       )
       let repoId = ''
       let repoUUID = ''
+      let namespace = ''
       if (repoItem) {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
+        namespace = repoItem.namespace
+        repo.repo_namespace = namespace
       }
       if (repo_owner && repo_name) {
         this.codeInfo[targetIndex][repoIndex].branches = []
         this.setLoadingState(targetIndex, repoIndex, 'branch', true)
         getBranchInfoByIdAPI(
           id,
-          repo_owner,
+          namespace,
           repo_name,
           repoUUID,
           1,
@@ -615,7 +610,7 @@ export default {
       const res = this.allCodeHosts.find(item => {
         return item.id === id
       })
-      row.type = res.type
+      row.source = res.type
       row.auth_type = res.auth_type
       if (!key) {
         if (this.codeInfo[targetIndex][repoIndex]) {
@@ -696,7 +691,7 @@ export default {
                 )
               })
             })
-            getBranchInfoByIdAPI(codehostId, repoOwner, repoName, uuid).then(
+            getBranchInfoByIdAPI(codehostId, repo.repo_namespace, repoName, uuid).then(
               res => {
                 this.$set(
                   this.codeInfo[targetIndex][repoIndex],
@@ -766,6 +761,22 @@ export default {
     })
     if (!this.isCreate) {
       this.getInitRepoInfo(this.targets)
+    }
+  },
+  watch: {
+    targets: {
+      handler (new_val) {
+        if (new_val) {
+          new_val.forEach(item => {
+            item.repos.forEach(repo => {
+              if (repo.source === 'other') {
+                repo.repo_namespace = repo.repo_owner
+              }
+            })
+          })
+        }
+      },
+      deep: true
     }
   }
 }

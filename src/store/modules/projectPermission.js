@@ -30,10 +30,7 @@ const actions = {
   checkingPermission ({ state, commit, getters, dispatch, rootGetters }, payload) {
     const projectName = payload
     if (projectName && isEmpty(state[projectName])) {
-      console.log('Getting project permission')
       return dispatch('getProjectPermission', projectName)
-    } else {
-      console.log('Project permission exists')
     }
   },
   refreshProjectPermission ({ commit, dispatch }) {

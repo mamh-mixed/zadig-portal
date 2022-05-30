@@ -136,7 +136,10 @@ http.interceptors.response.use(
           window.location.href = `/signin?redirect=${redirectPath}`
         } else if (error.response.status === 403) {
           Element.Message.error('暂无权限')
-        } else if (error.response.data.code !== 6168 && error.response.data.code !== 6094 && !error.response.data.description.includes(ignoreErrResponse)) {
+        }
+        if (error.response.data && (error.response.data.code === 6168 || error.response.data.code === 6094 || error.response.data.description.includes(ignoreErrResponse))) {
+          return Promise.reject(error)
+        } else {
           displayError(error)
         }
       } else if (document.title === '登录') {
@@ -1366,7 +1369,7 @@ export function createProjectAPI (payload) {
   return http.post('/api/v1/picket/projects', payload)
 }
 
-export function deleteProjectAPI (projectName, is_delete = '') {
+export function deleteProjectAPI (projectName, is_delete = true) {
   return http.delete(`/api/v1/picket/projects/${projectName}?projectName=${projectName}&is_delete=${is_delete}`)
 }
 
@@ -1411,7 +1414,7 @@ export function rollbackConfigmapAPI (envType = '', payload) {
   return http.post(`/api/aslan/environment/configmaps?projectName=${payload.product_name}&envType=${envType}`, payload)
 }
 
-export function deleteProjectEnvAPI (projectName, envName, envType = '', is_delete = '') {
+export function deleteProjectEnvAPI (projectName, envName, envType = '', is_delete = true) {
   return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}&is_delete=${is_delete}`)
 }
 

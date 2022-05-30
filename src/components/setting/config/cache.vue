@@ -8,7 +8,7 @@
           支持清理系统中的镜像缓存，详情可参考
           <el-link style="font-size: 14px; vertical-align: baseline;"
                    type="primary"
-                   :href="`https://docs.koderover.com/zadig/settings/system-settings/`"
+                   :href="`https://docs.koderover.com/zadig/settings/system-settings/#缓存清理`"
                    :underline="false"
                    target="_blank">帮助文档</el-link>
         </template>

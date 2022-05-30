@@ -730,6 +730,15 @@ export default {
         behavior: 'smooth'
       })
       this.showDragContainer = true
+
+      const serviceLength = this.serviceGroup.length
+      if (this.serviceGroup[serviceLength - 1].children.length) {
+        this.serviceGroup.push({
+          label: `启动顺序 ${serviceLength}`,
+          id: serviceLength,
+          children: []
+        })
+      }
     },
     endDrag () {
       this.$refs.arrangeTreeRef.root.childNodes.forEach(child => {
@@ -818,11 +827,14 @@ export default {
               visibility: 'private',
               product_name: this.projectName
             }
-            this.services.push(data)
             this.setServiceSelected(data.service_name)
+            // Changes in services data will trigger watch.
+            // At this time, the query of $route has not changed, and the newly created service will not be displayed.
+            this.$route.query.service_name = data.service_name
             this.$router.replace({
               query: { service_name: data.service_name, rightbar: 'help' }
             })
+            this.services.push(data)
             this.$emit('onSelectServiceChange', data)
             this.showNewServiceInput = false
             this.service.newServiceName = ''
