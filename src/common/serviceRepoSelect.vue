@@ -369,12 +369,6 @@ export default {
       default: false
     }
   },
-  created () {
-    this.validObj.addValidate({
-      name: 'serviceRepoSelectRef',
-      valid: this.validateForm(this.targets.length - 1)
-    })
-  },
   methods: {
     addService () {
       if (this.targets.length === 0) {
