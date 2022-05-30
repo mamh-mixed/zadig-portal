@@ -223,13 +223,13 @@ export default {
         },
         {
           // eslint-disable-next-line no-template-curly-in-string
-          variable: '$REPONAME_index',
-          desc: '代码库名称，其中 index 为构建配置中代码的位置，初始值为 0'
+          variable: '$REPONAME_<index>',
+          desc: '指定 <index> 的代码库名称，其中 <index> 为构建配置中代码库的位置，初始值为 0'
         },
         {
           // eslint-disable-next-line no-template-curly-in-string
-          variable: '$REPO_index',
-          desc: '代码库名称（可用于代码信息相关变量名，仓库名称中的中划线 "-" 替换成下划线"_"），其中 index 为构建配置中代码的位置，初始值为 0'
+          variable: '$REPO_<index>',
+          desc: '指定 <index> 的代码库名称（可用于代码信息相关变量名，仓库名称中的中划线 "-" 替换成下划线"_"），其中 <index> 为构建配置中代码库的位置，初始值为 0'
         },
         {
           // eslint-disable-next-line no-template-curly-in-string

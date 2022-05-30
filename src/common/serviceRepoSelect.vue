@@ -99,7 +99,7 @@
                   <el-input v-if="repo.type === 'other' || repo.source==='other'"  v-model.trim="target.repos[repoIndex]['repo_name']" placeholder="请输入" size="small"></el-input>
                   <el-select
                     v-else
-                    @change="getBranchInfoById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex].repo_owner,target.repos[repoIndex].repo_name)"
+                    @change="getBranchInfoById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex].repo_owner,target.repos[repoIndex].repo_name,'',repo)"
                     v-model.trim="target.repos[repoIndex].repo_name"
                     remote
                     :remote-method="(query)=>{searchProject(targetIndex,repoIndex,query)}"
@@ -327,6 +327,12 @@ export default {
       default: false
     }
   },
+  created () {
+    this.validObj.addValidate({
+      name: 'serviceRepoSelectRef',
+      valid: this.validateForm(this.targets.length - 1)
+    })
+  },
   methods: {
     addService () {
       if (this.targets.length === 0) {
@@ -353,7 +359,7 @@ export default {
         this.codeInfo[targetIndex][repoIndex].loading[loading] = isLoading
       }
     },
-    validateForm (targetIndex) {
+    validateForm (targetIndex = this.targets.length - 1) {
       const refName = `buildRepo-${targetIndex}`
       return new Promise((resolve, reject) => {
         this.$nextTick(() => {
@@ -501,7 +507,8 @@ export default {
       id,
       repo_owner,
       repo_name,
-      key = ''
+      key = '',
+      repo
     ) {
       if (!repo_name) {
         return
@@ -513,16 +520,22 @@ export default {
       )
       let repoId = ''
       let repoUUID = ''
+      let namespace = ''
       if (repoItem) {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
+        namespace = repoItem.namespace
+        repo.repo_namespace = namespace
+      }
+      if (repo.type === 'other') {
+        repo.repo_namespace = repo_owner
       }
       if (repo_owner && repo_name) {
         this.codeInfo[targetIndex][repoIndex].branches = []
         this.setLoadingState(targetIndex, repoIndex, 'branch', true)
         getBranchInfoByIdAPI(
           id,
-          repo_owner,
+          namespace,
           repo_name,
           repoUUID,
           1,
@@ -635,7 +648,7 @@ export default {
                 )
               })
             })
-            getBranchInfoByIdAPI(codehostId, repoOwner, repoName, uuid).then(
+            getBranchInfoByIdAPI(codehostId, repo.repo_namespace, repoName, uuid).then(
               res => {
                 this.$set(
                   this.codeInfo[targetIndex][repoIndex],
