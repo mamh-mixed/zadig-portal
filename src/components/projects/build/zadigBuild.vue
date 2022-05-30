@@ -43,13 +43,13 @@
           <BuildEnv v-if="!useTemplate" ref="buildEnvRef" :buildConfig="buildConfig" :isCreate="isCreate" :mini="mini"></BuildEnv>
         </el-form>
       </div>
-      <div v-if="!useTemplate" class="section">
+      <div v-show="!useTemplate" class="section">
         <RepoSelect ref="repoSelectRef" :config="buildConfig" :validObj="validObj" class="build-secondary-form" showFirstLine></RepoSelect>
       </div>
       <section v-if="useTemplate">
         <ServiceRepoSelect ref="serviceRepoSelectRef" :serviceTargets="serviceTargets" :targets="buildConfig.target_repos" :currentTemplateEnvs="currentTemplateEnvs" :isCreate="isCreate" :validObj="validObj" :mini="mini" class="build-secondary-form" showFirstLine/>
       </section>
-      <section v-if="!useTemplate">
+      <section v-show="!useTemplate">
         <div class="primary-title not-first-child">构建变量</div>
         <EnvVariable :preEnvs="buildConfig.pre_build" :validObj="validObj" :fromServicePage="fromServicePage" :mini="mini"></EnvVariable>
         <div class="primary-title not-first-child">通用构建脚本</div>
@@ -60,7 +60,7 @@
         </div>
       </section>
     </section>
-    <template v-if="!useTemplate">
+    <div v-show="!useTemplate">
       <section>
         <div style="margin-bottom: 8px;">
           <el-button type="primary" size="small" plain @click="buildConfig.advanced_setting_modified = !buildConfig.advanced_setting_modified">
@@ -82,7 +82,7 @@
       <section>
         <OtherSteps ref="otherStepsRef" :buildConfig="buildConfig" :validObj="validObj" :mini="mini" :usedToHost="usedToHost"></OtherSteps>
       </section>
-    </template>
+    </div>
   </section>
 </template>
 
@@ -247,6 +247,9 @@ export default {
       valid.push(this.$refs.zadigForm.validate())
       return Promise.all(valid).then(() => {
         const payload = this.$utils.cloneObj(this.buildConfig)
+        if (!this.useTemplate) {
+          payload.template_id = ''
+        }
         payload.repos.forEach(repo => {
           this.allCodeHosts.forEach(codehost => {
             if (repo.codehost_id === codehost.id) {
