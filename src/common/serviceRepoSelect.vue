@@ -409,17 +409,13 @@ export default {
       const refName = `buildRepo-${targetIndex}`
       return new Promise((resolve, reject) => {
         this.$nextTick(() => {
-          if (this.$refs[`${refName}`]) {
-            this.$refs[`${refName}`][0].validate(valid => {
-              if (valid) {
-                resolve(true)
-              } else {
-                reject(false)
-              }
-            })
-          } else {
-            resolve(true)
-          }
+          this.$refs[`${refName}`][0].validate(valid => {
+            if (valid) {
+              resolve(true)
+            } else {
+              reject(false)
+            }
+          })
         })
       })
     },
