@@ -12,7 +12,8 @@
           :loading="saveLoading"
           type="primary"
         >{{ compBind.isEdit ? '确认修改' : '立即新建' }}</el-button>
-        <el-button v-if="showSaveToTemplate"
+        <el-button
+          v-if="showSaveToTemplate"
           v-hasPermi="{type: 'system', actions: ['edit_template','create_template'],operator:'or',isBtn:true }"
           @click="$refs.buildRef.saveBuildConfigToTemplate()"
           @updateBtnLoading="saveLoading = $event"
@@ -34,7 +35,8 @@ export default {
         buildName: this.$route.params.build_name,
         isEdit: !!this.$route.params.build_name,
         followUpFn: this.followUpFn,
-        initServiceName: false
+        initServiceName: !!this.$route.query.service_name,
+        name: this.$route.query.service_name || ''
       },
       saveLoading: false
     }
@@ -54,7 +56,11 @@ export default {
     },
     showSaveToTemplate () {
       if (this.$refs.buildRef.source) {
-        return this.compBind.isEdit && this.$refs.buildRef.source === 'zadig' && !this.$refs.buildRef.useTemplate
+        return (
+          this.compBind.isEdit &&
+          this.$refs.buildRef.source === 'zadig' &&
+          !this.$refs.buildRef.useTemplate
+        )
       } else {
         return false
       }
