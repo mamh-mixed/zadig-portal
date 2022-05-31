@@ -668,6 +668,14 @@ const routes = [
           requiresAuth: true,
           title: '协作模式'
         }
+      },
+      {
+        path: 'projects/detail/:project_name/host',
+        component: () => import(/* webpackChunkName: "project-policy" */ '@/components/projects/host/home.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '主机管理'
+        }
       }
     ]
   },

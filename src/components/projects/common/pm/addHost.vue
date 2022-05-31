@@ -342,6 +342,10 @@ export default {
       return this.$refs.host.validate().then(async () => {
         const payload = cloneDeep(this.host)
         payload.private_key = window.btoa(payload.private_key)
+        const projectName = this.$route.params.project_name
+        if (projectName) {
+          payload.project_name = projectName
+        }
         if (payload.probe.probe_type === 'tcp') {
           delete payload.probe.http_probe
         } else {
@@ -366,6 +370,10 @@ export default {
       return this.$refs.host.validate().then(async () => {
         const id = this.host.id
         const payload = cloneDeep(this.host)
+        const projectName = this.$route.params.project_name
+        if (projectName) {
+          payload.project_name = projectName
+        }
         payload.private_key = window.btoa(payload.private_key)
         delete payload.origin_private_key
         if (payload.probe.probe_type === 'tcp') {

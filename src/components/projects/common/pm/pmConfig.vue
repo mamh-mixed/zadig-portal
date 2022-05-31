@@ -124,7 +124,18 @@
                 :rules="{required: true, type: 'array', message: '主机不能为空', trigger: ['blur', 'change']}"
               >
                 <el-select v-model="currentBuildConfig.sshs" size="mini" multiple placeholder="请选择主机">
-                  <el-option v-for="(item,index) in  allHost" :key="index" :label="item.name" :value="item.id"></el-option>
+                   <el-option-group
+                    v-for="group in allHost"
+                    :key="group.label"
+                    :label="group.label">
+                    <el-option
+                      v-for="item in group.options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-option-group>
+                  <!-- <el-option v-for="(item,index) in  allHost" :key="index" :label="item.label" :value="item.value"></el-option> -->
                 </el-select>
               </el-form-item>
             </el-radio>
@@ -844,8 +855,27 @@ export default {
         this.allHostLabels = res
       })
       const key = this.$utils.rsaEncrypt()
-      getHostListAPI(key).then(res => {
-        this.allHost = res
+      Promise.all([getHostListAPI(key, projectName), getHostListAPI(key)]).then(res => {
+        const projectOptions = res[0].map(item => {
+          item.label = item.id
+          item.value = item.id
+          return item
+        })
+        const systemOptions = res[1].map(item => {
+          item.label = item.id
+          item.value = item.id
+          return item
+        })
+        this.allHost = [
+          {
+            label: '项目资源',
+            options: projectOptions
+          },
+          {
+            label: '系统资源',
+            options: systemOptions
+          }
+        ]
       })
     }
   },

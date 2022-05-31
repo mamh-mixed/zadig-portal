@@ -1302,8 +1302,8 @@ export function getClusterPvcAPI (clusterId, namespace) {
 }
 
 // Host
-export function getHostListAPI (key) {
-  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}`)
+export function getHostListAPI (key, projectName, keyword) {
+  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}&projectName=${projectName}&key=${keyword}`)
 }
 
 export function getHostLabelListAPI () {
@@ -1318,8 +1318,8 @@ export function updateHostAPI (id, payload) {
   return http.put(`/api/aslan/system/privateKey/${id}`, payload)
 }
 
-export function deleteHostAPI (id) {
-  return http.delete(`/api/aslan/system/privateKey/${id}`)
+export function deleteHostAPI (id, projectName) {
+  return http.delete(`/api/aslan/system/privateKey/${id}?projectName=${projectName}`)
 }
 
 export function importHostAPI (payload) {
