@@ -336,6 +336,7 @@ export default {
         )
         res.advanced_setting_modified = true
         this.scannerConfig = res
+        this.getImageList(this.scannerConfig.scanner_type, !this.isEdit)
         this.loading = false
       })
     } else {
