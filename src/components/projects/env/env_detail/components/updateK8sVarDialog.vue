@@ -45,34 +45,6 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态">
-          <template slot-scope="scope">
-            <span>{{ scope.row.state }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="50">
-          <template slot-scope="scope">
-            <template>
-              <span class="operate">
-                <el-tooltip
-                  v-if="scope.row.state === 'present'"
-                  effect="dark"
-                  content="模板中用到的渲染 Key 无法被删除"
-                  placement="top"
-                >
-                  <span class="el-icon-question"></span>
-                </el-tooltip>
-                <el-button
-                  v-else
-                  type="text"
-                  @click="deleteRenderKey(scope.$index, scope.row.state)"
-                  class="delete"
-                  >移除</el-button
-                >
-              </span>
-            </template>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
     <span slot="footer" class="dialog-footer">
@@ -175,9 +147,6 @@ export default {
             })
           })
       })
-    },
-    deleteRenderKey (index, state) {
-      this.vars.splice(index, 1)
     }
   },
   watch: {
