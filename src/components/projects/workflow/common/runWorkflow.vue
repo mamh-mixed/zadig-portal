@@ -76,7 +76,7 @@
                      :value="service">
             <span v-if="!service.has_build">
               <router-link style="color: #ccc;"
-                           :to="`/v1/projects/detail/${runner.product_tmpl_name}/builds`">
+                           :to="`/v1/projects/detail/${runner.product_tmpl_name}/builds/create?service_name=${service.name}`">
                 {{`${service.name}(${service.service_name}) (服务不存在构建，点击添加构建)`}}
               </router-link>
             </span>
