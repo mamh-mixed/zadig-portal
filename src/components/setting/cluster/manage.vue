@@ -279,7 +279,7 @@
               </el-form-item>
             </template>
           </section>
-          <section>
+          <section v-if="!cluster.local">
             <h4>
               Dind 资源配置
               <el-link
