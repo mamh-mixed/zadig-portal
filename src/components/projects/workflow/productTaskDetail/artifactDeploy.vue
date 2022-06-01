@@ -46,7 +46,7 @@
             <div class="grid-content item-desc">
               <router-link class="env-link"
                            :to="`/v1/projects/detail/${deploy.product_name}/envs/detail?envName=${deploy.env_name}`">
-                {{deploy.namespace}}</router-link>
+                {{deploy.env_name}}</router-link>
             </div>
           </el-col>
         </el-row>
