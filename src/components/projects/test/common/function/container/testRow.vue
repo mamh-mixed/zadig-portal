@@ -30,7 +30,7 @@
       </div>
     </section>
     <section class="associated-workflows">
-      <div class="gray-desc">
+      <div class="gray-desc" v-if="projectName">
         已关联的工作流
         <span
           v-if="checkPermissionSyncMixin({projectName: testInfo.product_name, action: 'edit_test'})"
@@ -41,12 +41,38 @@
           <span class="add-connection el-icon-circle-plus-outline permission-disabled"></span>
         </el-tooltip>
       </div>
-      <div class="value">
+      <div class="gray-desc" v-else>
+        已关联的工作流
+        <span
+          v-if="checkPermissionSyncMixin({type: 'system', action: 'edit_test'})"
+          @click="addConnection(testInfo.name, testInfo.product_name)"
+          class="add-connection el-icon-circle-plus-outline"
+        ></span>
+        <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <span class="add-connection el-icon-circle-plus-outline permission-disabled"></span>
+        </el-tooltip>
+      </div>
+      <div v-if="projectName" class="value">
         <div v-if="testInfo.workflows">
           <div v-for="(workflow,index) in testInfo.workflows" :key="index" class="info-wrapper">
             <router-link class="link" :to="`/v1/projects/detail/${projectName}/pipelines/multi/${workflow.name}`">{{workflow.name}}</router-link>
             <span
               v-if="checkPermissionSyncMixin({projectName: testInfo.product_name, action: 'edit_test'})"
+              @click="deleteConnection(testInfo.name, workflow)"
+              class="delete-connection el-icon-remove-outline"
+            ></span>
+            <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+              <span class="delete-connection el-icon-remove-outline permission-disabled"></span>
+            </el-tooltip>
+          </div>
+        </div>
+      </div>
+      <div v-else class="value">
+        <div v-if="testInfo.workflows">
+          <div v-for="(workflow,index) in testInfo.workflows" :key="index" class="info-wrapper">
+            <router-link class="link" :to="`/v1/projects/detail/${projectName}/pipelines/multi/${workflow.name}`">{{workflow.name}}</router-link>
+            <span
+              v-if="checkPermissionSyncMixin({type: 'system', action: 'edit_test'})"
               @click="deleteConnection(testInfo.name, workflow)"
               class="delete-connection el-icon-remove-outline"
             ></span>
