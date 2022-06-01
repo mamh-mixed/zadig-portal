@@ -14,7 +14,7 @@
       :jenkinsBuildData="jenkinsBuild"
       :isCreate="!isEdit"
       :serviceTargets="serviceTargets"
-      :jenkinsList = "jenkinsList"
+      :jenkinsList ="jenkinsList"
       :mini="mini"
     ></JenkinsBuild>
     <ZadigBuild
@@ -390,15 +390,19 @@ export default {
       handler () {
         this.loadBuild(this.buildName)
       }
+    },
+    source: {
+      handler (val) {
+        if (val === 'jenkins') {
+          this.getJenkins()
+        }
+      }
     }
   },
   created () {
     this.initGlobalData().then(() => {
       this.loadBuild(this.buildName)
     })
-  },
-  mounted () {
-    this.getJenkins()
   },
   components: {
     JenkinsBuild,
