@@ -125,7 +125,11 @@ import { cloneDeep } from 'lodash'
 import { renamingHelmReleaseAPI } from '@api'
 export default {
   props: {
-    changeExpandFileList: Function
+    changeExpandFileList: Function,
+    isGuide: {
+      default: false,
+      type: Boolean
+    }
   },
   data () {
     return {
@@ -181,7 +185,7 @@ export default {
         naming: this.currentService.release_naming
       }
       this.$confirm(
-        '修改后服务会在已部署的环境中重建，请确认?',
+        this.isGuide ? '确认修改 Helm Release 名称？' : '修改后服务会在已部署的环境中重建，请确认?',
         '修改 Helm Release 名称',
         {
           confirmButtonText: '确定',
