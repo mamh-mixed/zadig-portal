@@ -99,7 +99,7 @@
       <MultipaneResizer class="multipane-resizer" v-if="service && service.length" />
 
       <div :style="{ flexGrow: 1, minWidth: '372px' }" class="right">
-        <ServiceAside :changeExpandFileList="changeExpandFileList" ref="aside" slot="aside" :isCreate="isCreate" />
+        <ServiceAside :changeExpandFileList="changeExpandFileList" ref="aside" slot="aside" :isCreate="isCreate" :isGuide="isGuide"/>
       </div>
     </Multipane>
     <UpdateHelmEnv v-model="updateHelmEnvDialogVisible" :chartInfo="chartInfo" />
@@ -150,6 +150,10 @@ export default {
   name: 'service_helm',
   props: {
     isCreate: {
+      default: false,
+      type: Boolean
+    },
+    isGuide: {
       default: false,
       type: Boolean
     }

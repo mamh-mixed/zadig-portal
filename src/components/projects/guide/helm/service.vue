@@ -10,7 +10,7 @@
       </div>
     </div>
   <div class="content">
-    <Code ref="code" :service="serviceList" isCreate />
+    <Code ref="code" :service="serviceList" isCreate isGuide />
   </div>
       <div class="controls__wrap">
       <div class="controls__right">
