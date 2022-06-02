@@ -269,6 +269,10 @@
                         <el-col :span="6">
                           <span class="title">运行时长：</span>
                           <span class="content">{{ activePod[scope.$index].age }}</span>
+                          <div>
+                            <span class="title">节点信息：</span>
+                            <span class="content">{{ activePod[scope.$index].ip }}( {{activePod[scope.$index].node_name}} )</span>
+                          </div>
                         </el-col>
                         <el-col :span="6"
                                 class="op-buttons">
