@@ -822,6 +822,14 @@ export default {
     text-overflow: ellipsis;
   }
 
+  .el-form-item__content {
+    .el-input {
+      .el-input__inner {
+        padding-right: 50px;
+      }
+    }
+  }
+
   .app-operation {
     white-space: nowrap;
   }
