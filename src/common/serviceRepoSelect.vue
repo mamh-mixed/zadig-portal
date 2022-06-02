@@ -51,9 +51,9 @@
                     <el-option
                       v-for="(host,index) in allCodeHosts"
                       :key="index"
-                      :label="host.address + '('+host.alias+')'"
+                      :label="`${host.address}${host.alias?'('+host.alias+')':''}`"
                       :value="host.id"
-                    >{{ host.address + '('+host.alias+')'}}</el-option>
+                    >{{`${host.address}${host.alias?'('+host.alias+')':''}`}}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -439,8 +439,16 @@ export default {
           })
           if (this.allCodeHosts && this.allCodeHosts.length === 1) {
             const codeHostId = this.allCodeHosts[0].id
+            const type = this.allCodeHosts[0].type
             repoMeta.codehost_id = codeHostId
-            this.getRepoOwnerById(targetIndex, repoIndex + 1, codeHostId)
+            if (type && type === 'other') {
+              const authType = this.allCodeHosts[0].auth_type
+              repoMeta.type = type
+              repoMeta.source = type
+              repoMeta.auth_type = authType
+            } else {
+              this.getRepoOwnerById(targetIndex, repoIndex + 1, codeHostId)
+            }
           }
         })
         .catch(err => {
