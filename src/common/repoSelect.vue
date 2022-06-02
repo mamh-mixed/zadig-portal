@@ -310,6 +310,8 @@ export default {
         repo_owner: '',
         repo_name: '',
         branch: '',
+        source: '',
+        type: '',
         checkout_path: '',
         remote_name: 'origin',
         submodules: false
@@ -347,6 +349,8 @@ export default {
         codehost_id: null,
         repo_owner: '',
         repo_name: '',
+        source: '',
+        type: '',
         branch: '',
         checkout_path: '',
         remote_name: 'origin',
@@ -369,7 +373,7 @@ export default {
           repoMeta.source = type
           repoMeta.auth_type = authType
         } else {
-          this.getRepoOwnerById(0, codeHostId)
+          this.getRepoOwnerById(0, codeHostId, '', repoMeta)
         }
       }
       this.config.repos.push(repoMeta)
