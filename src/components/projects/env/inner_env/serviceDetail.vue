@@ -74,7 +74,7 @@
       </div>
       <div class="info-body fundamental-ops">
         <template>
-          <router-link v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})"
+          <router-link v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'}})"
                        :to="`/v1/projects/detail/${projectName}/envs/detail/${serviceName}/config${window.location.search}`">
             <el-button icon="iconfont iconshare1"
                        type="primary"
@@ -92,7 +92,7 @@
               配置管理
             </el-button>
           </el-tooltip>
-          <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})" @click="showExport"
+          <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'}})" @click="showExport"
                      icon="iconfont iconcloud icon-bold"
                      type="primary"
                      size="small"
@@ -232,7 +232,7 @@
               <template slot-scope="scope">
                 <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="restartService(scope.row.name,scope.row.type)"
                            size="mini">重启实例</el-button>
-                <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showScaleEvents(scope.row.name,scope.row.type)"
+                <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showScaleEvents(scope.row.name,scope.row.type)"
                            size="mini">查看事件</el-button>
               </template>
             </el-table-column>
@@ -275,7 +275,7 @@
                           <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}}" @click="restartPod(activePod[scope.$index])"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      size="small">重启</el-button>
-                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}}" @click="showPodEvents(activePod[scope.$index])"
+                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'}}" @click="showPodEvents(activePod[scope.$index])"
                                      size="small">查看事件</el-button>
                         </el-col>
                       </el-row>
@@ -312,7 +312,7 @@
                                      :disabled="!activePod[scope.$index].canOperate"
                                      icon="iconfont iconTerminal"
                                      size="small"> 调试</el-button>
-                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showContainerLog(activePod[scope.$index].name,container.name)"
+                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showContainerLog(activePod[scope.$index].name,container.name)"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      icon="el-icon-document"
                                      size="small">实时日志</el-button>
