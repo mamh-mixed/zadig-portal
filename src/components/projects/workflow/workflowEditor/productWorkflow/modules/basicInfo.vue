@@ -85,7 +85,7 @@
             </template>
             <el-switch v-model="workflowInfo.is_parallel"></el-switch>
           </el-form-item>
-          <el-form-item prop="reset_image" class="label-icon">
+          <el-form-item prop="reset_image" class="label-icon" v-if="!isExternal">
             <template slot="label">
               <span>镜像版本回退 </span>
               <el-tooltip effect="dark"
@@ -151,6 +151,17 @@ export default {
           trigger: 'blur'
         }
       }
+    }
+  },
+  computed: {
+    projectName () {
+      return this.$route.query.projectName
+    },
+    isExternal () {
+      const project = this.$store.getters.projectList.find(project => {
+        return project.name === this.projectName
+      })
+      return project.deployType === 'external'
     }
   },
   methods: {
