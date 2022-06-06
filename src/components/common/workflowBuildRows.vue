@@ -279,7 +279,7 @@ export default {
         value.forEach((item) => {
           item.build.repos.forEach(build => {
             // source:other  init options data
-            if (build.branchOrTag.name && build.source === 'other') {
+            if (build.source === 'other') {
               this.searchRepoInfo(build, '')
             }
           })
