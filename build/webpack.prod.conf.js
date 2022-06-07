@@ -113,6 +113,10 @@ const webpackConfig = merge(baseWebpackConfig, {
       files: ['src/**/*.{html,vue,css,less}'],
       failOnError: true,
       lintDirtyModulesOnly: true // Lint only changed files, skip lint on start
+    }),
+    new webpack.DllReferencePlugin({
+      context: __dirname,
+      manifest: require('../static/vendor-manifest.json')
     })
   ]
 });

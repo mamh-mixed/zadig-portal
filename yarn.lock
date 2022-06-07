@@ -4707,6 +4707,15 @@ html-tags@^3.1.0:
   resolved "https://registry.npmmirror.com/html-tags/download/html-tags-3.1.0.tgz#7b5e6f7e665e9fb41f30007ed9e0d41e97fb2140"
   integrity sha1-e15vfmZen7QfMAB+2eDUHpf7IUA=
 
+html-webpack-include-assets-plugin@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/html-webpack-include-assets-plugin/-/html-webpack-include-assets-plugin-2.0.0.tgz#cbc38ee467777bd437420076a29e6489bbe0fa99"
+  integrity sha512-sjXrJpaZw1siY9ebhb3tr7IZDKoPmsQb2Qv/3RGz3Cz4Kp8EKobu4pLlBKMODhChg/M+RRM+5xipRmyWa8AU/g==
+  dependencies:
+    glob "^7.1.3"
+    minimatch "^3.0.4"
+    slash "^2.0.0"
+
 html-webpack-plugin@^2.30.1:
   version "2.30.1"
   resolved "https://registry.npmmirror.com/html-webpack-plugin/download/html-webpack-plugin-2.30.1.tgz#7f9c421b7ea91ec460f56527d78df484ee7537d5"
