@@ -1,21 +1,12 @@
 <template>
   <div class="host-select">
     <el-dialog title="选择主机资源" :visible.sync="editHostDialogVisible" width="50%" center>
-
-      <!-- <el-select style="width: 100%;" size="small" multiple filterable v-model="serviceHosts" placeholder="请选择主机">
-        <el-option-group label="主机标签">
-          <el-option v-for="(item,index) in allHostLabels" :key="index" :label="`${item}`" :value="item"></el-option>
-        </el-option-group>
-        <el-option-group label="主机列表">
-          <el-option v-for="item in allHost" :key="item.name" :label="`${item.name}-${item.ip}`" :value="item.id"></el-option>
-        </el-option-group>
-      </el-select>-->
       <div class="tab-container">
         <el-tabs v-model="currentTab" type="card">
           <el-tab-pane v-for="item in tabList" :name="item.name" :label="item.label" :key="item.name">
             <keep-alive>
               <pmHostItem
-                ref="hostItemRef"
+                :ref="'hostItemRef'+ item.name"
                 :currentPmServiceData="currentPmServiceData"
                 :currentTab="currentTab"
               />
@@ -33,6 +24,7 @@
 <script>
 import { addHostToPmEnvAPI } from '@api'
 import pmHostItem from './pmHostItem.vue'
+import { uniq } from 'lodash'
 export default {
   name: 'pmHostList',
   props: {
@@ -47,8 +39,6 @@ export default {
     return {
       editHostDialogVisible: false,
       serviceHosts: [],
-      // allHost: [],
-      // allHostLabels: [],
       currentTab: 'project',
       keyword: '',
       multipleSelection: [],
@@ -63,7 +53,6 @@ export default {
         }
       ],
       envConfigs: []
-      // filtersList: []
     }
   },
   components: { pmHostItem },
@@ -71,35 +60,18 @@ export default {
   methods: {
     bindHost () {
       let hostIds = []
-      this.$refs.hostItemRef.forEach(item => {
-        hostIds = hostIds.concat(item.multipleSelection.map(item => item.id))
+      const refs = this.$refs.hostItemRefproject.concat(this.$refs.hostItemRefsystem)
+      refs.forEach(item => {
+        hostIds = uniq(hostIds.concat(item.multipleSelection.map(item => item.id)))
       })
-      // console.log(this.$refs.hostItemRef)
-      // this.$refs.hostItemRef[0].bindHost()
-
-      // const allHostIds = this.allHost.map(item => {
-      //   return item.id
-      // })
-      // const labels = this.serviceHosts.filter(item => {
-      //   return allHostIds.indexOf(item) < 0
-      // })
-      // const hostIds = this.serviceHosts.filter(item => {
-      //   return allHostIds.indexOf(item) >= 0
-      // })
-      // this.hostIds = hostIds
-
       const projectName = this.currentPmServiceData.product_name
       let envConfigs = []
-      // if (this.serviceHosts.length > 0) {
       envConfigs = [
         {
           env_name: this.currentPmServiceData.env_name,
           host_ids: hostIds
         }
       ]
-      // } else {
-      //   envConfigs = []
-      // }
       const payload = {
         product_name: this.currentPmServiceData.product_name,
         service_name: this.currentPmServiceData.service_name,

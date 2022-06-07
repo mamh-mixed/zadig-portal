@@ -8,7 +8,7 @@
       <el-table-column prop="name" label="主机名称"></el-table-column>
       <el-table-column prop="ip" label="主机 IP"></el-table-column>
       <el-table-column prop="label" label="标签" width="100" :filters="filtersList" :filter-method="filterTag" filter-placement="bottom-end">
-        <template slot-scope="scope">
+        <template slot-scope="scope" v-if="scope.row.label">
           <el-tag disable-transitions>{{scope.row.label}}</el-tag>
         </template>
       </el-table-column>
@@ -18,6 +18,7 @@
 <script>
 import { getHostListAPI } from '@api'
 import { concat } from 'lodash'
+
 export default {
   name: 'pmHostItem',
   props: {
@@ -63,16 +64,13 @@ export default {
         this.allHost.forEach(host => {
           if (host.id === id) {
             this.$nextTick(() => {
-              this.$refs.multipleTable.toggleRowSelection(host)
+              this.$refs.multipleTable.toggleRowSelection(host, true)
             })
           }
         })
       })
     },
     getHosts () {
-      // getHostLabelListAPI().then(res => {
-      //   this.allHostLabels = res
-      // })
       const key = this.$utils.rsaEncrypt()
       const keyword = this.keyword
       const projectName =
@@ -114,11 +112,8 @@ export default {
       },
       immediate: true
     },
-    currentTab (newVal) {
-      if (newVal === 'system' && this.firstLoad) {
-        this.getHosts()
-        this.firstLoad = false
-      }
+    currentTab () {
+      this.getHosts()
     }
   }
 }

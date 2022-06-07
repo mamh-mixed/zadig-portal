@@ -1319,8 +1319,8 @@ export function getClusterPvcAPI (clusterId, namespace) {
 }
 
 // Host
-export function getHostListAPI (key, projectName, keyword) {
-  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}&projectName=${projectName}&key=${keyword}`)
+export function getHostListAPI (key, projectName = '', keyword = '') {
+  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}&projectName=${projectName}&keyword=${keyword}`)
 }
 
 export function getHostLabelListAPI () {
