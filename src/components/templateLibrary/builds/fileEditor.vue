@@ -66,7 +66,6 @@ export default {
             const payload = data
             const id = data.id
             this.saveLoading = true
-            console.log(payload)
             updateBuildTemplateAPI(id, payload)
               .then(() => {
                 this.saveLoading = false

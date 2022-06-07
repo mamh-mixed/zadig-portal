@@ -265,7 +265,6 @@ export default {
     deleteProductWorkflow (workflow) {
       const name = workflow.name
       const projectName = workflow.projectName
-      console.log('ProductWorkflow', workflow, workflow.base_refs)
       if (workflow.base_refs && workflow.base_refs.length) {
         this.$alert(`工作流 ${name} 已在协作模式 ${workflow.base_refs.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
           confirmButtonText: '确定',

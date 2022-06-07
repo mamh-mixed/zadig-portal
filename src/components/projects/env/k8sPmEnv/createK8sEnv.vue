@@ -146,7 +146,7 @@
               <div class="service-content">
                 <div v-for="service in typeServiceMap" :key="`${service.service_name}-${service.type}`" class="service-block">
                   <template v-if="service.type==='k8s' && service.containers">
-                    <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name">
+                    <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name" label-width="40%">
                       <el-select v-model="con.image" :disabled="rollbackMode" filterable size="small">
                         <virtual-scroll-list
                           v-if="imageMap[con.image_name] && imageMap[con.image_name].length > 200"
@@ -746,7 +746,7 @@ export default {
 
   .service-form-block {
     width: 90%;
-    max-width: 800px;
+    max-width: 1000px;
 
     .service-item {
       margin-bottom: 8px;

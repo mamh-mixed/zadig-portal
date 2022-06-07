@@ -12,7 +12,7 @@ const sourceRules = {
   }],
   owner: [{
     required: true,
-    message: '代码库拥有者不能为空',
+    message: '组织名/用户名不能为空',
     trigger: 'change'
   }],
   repo: [{
@@ -34,7 +34,8 @@ export default {
         codehostID: null,
         owner: '',
         repo: '',
-        branch: ''
+        branch: '',
+        namespace: ''
       },
       codeInfo: {
         repoOwners: [],
@@ -136,11 +137,17 @@ export default {
           const type = item ? item.kind : 'group'
           getRepoNameByIdAPI(codehostId, type, encodeURI(repoOwner)).then(res => {
             this.$set(this.codeInfo, 'repos', res)
-          })
-          getBranchInfoByIdAPI(codehostId, repoOwner, repoName).then(res => {
-            if (res) {
-              this.$set(this.codeInfo, 'branches', res)
-            }
+            const repoItem = this.codeInfo.repos.find(
+              item => {
+                return item.name === repoName
+              }
+            )
+            this.source.namespace = repoItem.namespace || ''
+            getBranchInfoByIdAPI(codehostId, this.source.namespace, repoName).then(res => {
+              if (res) {
+                this.$set(this.codeInfo, 'branches', res)
+              }
+            })
           })
         }
       })

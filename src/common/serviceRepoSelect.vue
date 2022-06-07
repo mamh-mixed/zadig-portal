@@ -51,21 +51,21 @@
                     <el-option
                       v-for="(host,index) in allCodeHosts"
                       :key="index"
-                      :label="(host.type === 'other' ? '其他': host.address) + '('+host.alias+')'"
+                      :label="`${host.address}${host.alias?'('+host.alias+')':''}`"
                       :value="host.id"
-                    >
-                    {{ (host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'}}
-                    </el-option>
+                    >{{`${host.address}${host.alias?'('+host.alias+')':''}`}}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+              <el-col :span="showAdvanced || showTrigger ?4:5">
                 <el-form-item
-                  :label="repoIndex === 0 ?(shortDescription?'拥有者':'代码库拥有者') : ''"
+                  :label="repoIndex === 0 ?'组织名/用户名' : ''"
                   :prop="'repos.' + repoIndex + '.repo_owner'"
-                  :rules="{required: true, message: '拥有者不能为空', trigger: ['blur', 'change']}"
+                  :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur', 'change']}"
                 >
+                  <el-input v-if="repo.source==='other'"  v-model.trim="target.repos[repoIndex]['repo_owner']" placeholder="请输入" size="small"></el-input>
                   <el-select
+                    v-else
                     @change="getRepoNameById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex]['repo_owner'])"
                     v-model.trim="target.repos[repoIndex]['repo_owner']"
                     remote
@@ -75,7 +75,7 @@
                     allow-create
                     clearable
                     size="small"
-                    placeholder="代码库拥有者"
+                    placeholder="组织名/用户名"
                     :loading="codeInfo[targetIndex][repoIndex].loading.owner"
                     filterable
                   >
@@ -88,14 +88,16 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+              <el-col :span="showAdvanced || showTrigger ?4:5">
                 <el-form-item
                   :label="repoIndex === 0 ? (shortDescription?'名称':'代码库名称') : ''"
                   :prop="'repos.' + repoIndex + '.repo_name'"
                   :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
                 >
+                  <el-input v-if="repo.source==='other'"  v-model.trim="target.repos[repoIndex]['repo_name']" placeholder="请输入" size="small"></el-input>
                   <el-select
-                    @change="getBranchInfoById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex].repo_owner,target.repos[repoIndex].repo_name)"
+                    v-else
+                    @change="getBranchInfoById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex].repo_owner,target.repos[repoIndex].repo_name,'',repo)"
                     v-model.trim="target.repos[repoIndex].repo_name"
                     remote
                     :remote-method="(query)=>{searchProject(targetIndex,repoIndex,query)}"
@@ -117,23 +119,15 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?8:10" v-if="repo.source === 'other'||repo.type === 'other'" >
-                <el-form-item
-                  style="width: 90%;"
-                  :label="repoIndex === 0 ? '代码库地址' : ''"
-                  :prop="'repos.' + repoIndex + '.other_address'"
-                  :rules="{required: true, message: '代码库地址不能为空', trigger: ['blur', 'change']}"
-                >
-                <el-input v-model="repo.other_address" size="small" :placeholder="repo.auth_type === 'SSH'?'SSH 协议地址':' HTTPS 协议地址'"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source !== 'other'&&repo.type !== 'other'">
+              <el-col :span="showAdvanced || showTrigger ?4:5 ">
                 <el-form-item
                   :label="repoIndex === 0 ? (shortDescription?'分支':'默认分支') : ''"
                   :prop="'repos.' + repoIndex + '.branch'"
                   :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
                 >
+                  <el-input v-if="repo.source==='other'"  v-model.trim="target.repos[repoIndex]['branch']" placeholder="请输入" size="small"></el-input>
                   <el-select
+                    v-else
                     v-model.trim="target.repos[repoIndex].branch"
                     placeholder="请选择"
                     size="small"
@@ -155,15 +149,6 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source === 'other'||repo.type === 'other'">
-              <el-form-item
-                :label="repoIndex === 0 ? (shortDescription?'分支':'默认分支') : ''"
-                :prop="'repos.' + repoIndex + '.branch'"
-                :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
-              >
-              <el-input v-model="repo.branch" size="small" placeholder="请输入"></el-input>
-              </el-form-item>
-            </el-col>
               <el-col v-if="showAdvanced" :span="3">
                 <el-form-item :label="repoIndex === 0 ? '高级':''">
                   <div class="app-operation">
@@ -250,9 +235,45 @@
             </el-row>
           </div>
         </el-form>
+        <div v-if="target.envs && target.envs.length" class="build-env-var">
+          <div class="primary-title">
+            变量
+            <i
+              :class="[target.showVars ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"
+              class="icon"
+              @click="target.showVars = !target.showVars"
+            ></i>
+          </div>
+          <div v-show="target.showVars">
+            <el-row v-for="(env, index) in target.envs" :key="index" :gutter="10" class="var-content">
+              <el-col :span="mini ? 6 : 4">
+                <el-select v-model="env.type" size="small" disabled>
+                  <el-option label="字符串" value="string"></el-option>
+                  <el-option label="枚举" value="choice"></el-option>
+                </el-select>
+              </el-col>
+              <el-col :span="mini ? 6 : 4">
+                <el-input v-model="env.key" size="small" disabled></el-input>
+              </el-col>
+              <el-col :span="mini ? 6 : 4">
+                <el-select v-if="env.type==='choice'" v-model="env.value" placeholder="默认值" size="small">
+                  <el-option v-for="option in env.choice_option" :key="option" :label="option" :value="option"></el-option>
+                </el-select>
+                <el-input v-else placeholder="值" v-model="env.value" size="small"></el-input>
+              </el-col>
+              <el-col :span="mini ? 6 : 4" v-show="env.type!=='choice'" style="line-height: 32px;">
+                <el-checkbox v-model="env.is_credential">
+                  敏感信息
+                  <el-tooltip effect="dark" content="设置为敏感信息变量后，系统会将变量进行加密，使用时进行解密，同时在工作流运行日志里不可见" placement="top">
+                    <i class="el-icon-question"></i>
+                  </el-tooltip>
+                </el-checkbox>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
       </div>
     </template>
-
     <span class="el-icon-circle-plus-outline add-service-repo" @click="addService"></span>
   </div>
 </template>
@@ -264,7 +285,7 @@ import {
   getRepoNameByIdAPI,
   getBranchInfoByIdAPI
 } from '@api'
-import { orderBy } from 'lodash'
+import { orderBy, cloneDeep } from 'lodash'
 export default {
   data () {
     return {
@@ -289,6 +310,10 @@ export default {
       required: true,
       type: Array
     },
+    currentTemplateEnvs: {
+      required: true,
+      type: Array
+    },
     showDivider: {
       required: false,
       type: Boolean,
@@ -298,6 +323,10 @@ export default {
       required: false,
       type: Boolean,
       default: true
+    },
+    mini: {
+      default: false,
+      type: Boolean
     },
     showAdvanced: {
       required: false,
@@ -345,14 +374,18 @@ export default {
       if (this.targets.length === 0) {
         this.targets.push({
           service: {},
-          repos: []
+          repos: [],
+          envs: cloneDeep(this.currentTemplateEnvs),
+          showVars: false
         })
         this.addFirstRepo(this.targets.length - 1)
       } else {
         this.validateForm(this.targets.length - 1).then(res => {
           this.targets.push({
             service: {},
-            repos: []
+            repos: [],
+            envs: cloneDeep(this.currentTemplateEnvs),
+            showVars: false
           })
           this.addFirstRepo(this.targets.length - 1)
         })
@@ -366,17 +399,21 @@ export default {
         this.codeInfo[targetIndex][repoIndex].loading[loading] = isLoading
       }
     },
-    validateForm (targetIndex) {
+    validateForm (targetIndex = this.targets.length - 1) {
       const refName = `buildRepo-${targetIndex}`
       return new Promise((resolve, reject) => {
         this.$nextTick(() => {
-          this.$refs[`${refName}`][0].validate(valid => {
-            if (valid) {
-              resolve(true)
-            } else {
-              reject(false)
-            }
-          })
+          if (this.$refs[`${refName}`]) {
+            this.$refs[`${refName}`][0].validate(valid => {
+              if (valid) {
+                resolve(true)
+              } else {
+                reject(false)
+              }
+            })
+          } else {
+            resolve(true)
+          }
         })
       })
     },
@@ -402,8 +439,16 @@ export default {
           })
           if (this.allCodeHosts && this.allCodeHosts.length === 1) {
             const codeHostId = this.allCodeHosts[0].id
+            const type = this.allCodeHosts[0].type
             repoMeta.codehost_id = codeHostId
-            this.getRepoOwnerById(targetIndex, repoIndex + 1, codeHostId)
+            if (type && type === 'other') {
+              const authType = this.allCodeHosts[0].auth_type
+              repoMeta.type = type
+              repoMeta.source = type
+              repoMeta.auth_type = authType
+            } else {
+              this.getRepoOwnerById(targetIndex, repoIndex + 1, codeHostId)
+            }
           }
         })
         .catch(err => {
@@ -514,7 +559,8 @@ export default {
       id,
       repo_owner,
       repo_name,
-      key = ''
+      key = '',
+      repo
     ) {
       if (!repo_name) {
         return
@@ -526,16 +572,19 @@ export default {
       )
       let repoId = ''
       let repoUUID = ''
+      let namespace = ''
       if (repoItem) {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
+        namespace = repoItem.namespace
+        repo.repo_namespace = namespace
       }
       if (repo_owner && repo_name) {
         this.codeInfo[targetIndex][repoIndex].branches = []
         this.setLoadingState(targetIndex, repoIndex, 'branch', true)
         getBranchInfoByIdAPI(
           id,
-          repo_owner,
+          namespace,
           repo_name,
           repoUUID,
           1,
@@ -567,7 +616,7 @@ export default {
       const res = this.allCodeHosts.find(item => {
         return item.id === id
       })
-      row.type = res.type
+      row.source = res.type
       row.auth_type = res.auth_type
       if (!key) {
         if (this.codeInfo[targetIndex][repoIndex]) {
@@ -648,7 +697,7 @@ export default {
                 )
               })
             })
-            getBranchInfoByIdAPI(codehostId, repoOwner, repoName, uuid).then(
+            getBranchInfoByIdAPI(codehostId, repo.repo_namespace, repoName, uuid).then(
               res => {
                 this.$set(
                   this.codeInfo[targetIndex][repoIndex],
@@ -719,6 +768,22 @@ export default {
     if (!this.isCreate) {
       this.getInitRepoInfo(this.targets)
     }
+  },
+  watch: {
+    targets: {
+      handler (new_val) {
+        if (new_val) {
+          new_val.forEach(item => {
+            item.repos.forEach(repo => {
+              if (repo.source === 'other') {
+                repo.repo_namespace = repo.repo_owner
+              }
+            })
+          })
+        }
+      },
+      deep: true
+    }
   }
 }
 </script>
@@ -757,6 +822,14 @@ export default {
     text-overflow: ellipsis;
   }
 
+  .el-form-item__content {
+    .el-input {
+      .el-input__inner {
+        padding-right: 50px;
+      }
+    }
+  }
+
   .app-operation {
     white-space: nowrap;
   }
@@ -784,6 +857,19 @@ export default {
 
   &:not(:first-child) {
     margin-bottom: 5px;
+  }
+
+  .build-env-var {
+    .primary-title {
+      .icon {
+        margin-left: 5px;
+        cursor: pointer;
+      }
+    }
+
+    .var-content {
+      margin-bottom: 18px;
+    }
   }
 }
 </style>

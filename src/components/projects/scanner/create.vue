@@ -234,7 +234,11 @@ export default {
             repo_name: repo.repo_name,
             repo_owner: repo.repo_owner,
             branch: repo.branch,
-            source: repo.source
+            source: repo.source,
+            remote_name: repo.remote_name,
+            submodules: repo.submodules,
+            checkout_path: repo.checkout_path,
+            repo_namespace: repo.repo_namespace
           }
         })
         console.log('payload: ', payload, this.scannerConfig)
@@ -332,6 +336,7 @@ export default {
         )
         res.advanced_setting_modified = true
         this.scannerConfig = res
+        this.getImageList(this.scannerConfig.scanner_type, !this.isEdit)
         this.loading = false
       })
     } else {

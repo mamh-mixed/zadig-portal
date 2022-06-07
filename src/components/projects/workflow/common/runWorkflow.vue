@@ -76,7 +76,7 @@
                      :value="service">
             <span v-if="!service.has_build">
               <router-link style="color: #ccc;"
-                           :to="`/v1/projects/detail/${runner.product_tmpl_name}/builds`">
+                           :to="`/v1/projects/detail/${runner.product_tmpl_name}/builds/create?service_name=${service.name}`">
                 {{`${service.name}(${service.service_name}) (服务不存在构建，点击添加构建)`}}
               </router-link>
             </span>
@@ -121,6 +121,7 @@
       v-if="isPm"
       v-loading="precreateLoading"
       :forcedUserInput="forcedUserInput"
+      :projectName = "projectName"
       :allServices="allServiceNames"
       :pmArtifactDeployData.sync="pmArtifactDeployData"  />
     </template>
@@ -313,6 +314,7 @@ export default {
             repo: re.repo_name,
             default_branch: re.branch,
             codehost_id: re.codehost_id,
+            repo_namespace: re.repo_namespace,
             filter_regexp: re.filter_regexp
           }
         }

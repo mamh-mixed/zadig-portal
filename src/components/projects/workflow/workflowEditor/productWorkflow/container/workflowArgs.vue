@@ -33,19 +33,19 @@
                    value-key="key"
                    size="small"
                    class="full-width">
-          <el-option v-for="(ser,index) of allServiceNames"
+          <el-option v-for="(service,index) of allServiceNames"
                      :key="index"
-                     :disabled="!ser.has_build"
-                     :label="ser.name"
-                     :value="ser">
-            <span v-if="!ser.has_build">
+                     :disabled="!service.has_build"
+                     :label="service.name"
+                     :value="service">
+            <span v-if="!service.has_build">
               <router-link style="color: #ccc;"
-                           :to="`/v1/projects/detail/${runner.product_tmpl_name}/builds`">
-                {{`${ser.name}(${ser.service_name})(服务不存在构建，点击添加构建)`}}
+                           :to="`/v1/projects/detail/${runner.product_tmpl_name}/builds/create?service_name=${service.name}`">
+                {{`${service.name}(${service.service_name})(服务不存在构建，点击添加构建)`}}
               </router-link>
             </span>
             <span v-else>
-              <span>{{ser.name}}</span><span style="color: #ccc;"> ({{ser.service_name}})</span>
+              <span>{{service.name}}</span><span style="color: #ccc;"> ({{service.service_name}})</span>
             </span>
           </el-option>
         </el-select>
@@ -118,7 +118,8 @@ export default {
         repo_owner: re.repo_owner,
         repo: re.repo_name,
         default_branch: re.branch,
-        codehost_id: re.codehost_id
+        codehost_id: re.codehost_id,
+        repo_namespace: re.repo_namespace
       }))
     },
     haveForcedInput () {

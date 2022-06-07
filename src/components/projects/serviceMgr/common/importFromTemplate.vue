@@ -8,7 +8,8 @@
       width="720px"
       label-position="left"
       custom-class="dialog-import-from-template"
-      :visible.sync="dialogImportFromYamlVisible"
+      :visible="dialogImportFromYamlVisible"
+      @update:visible="$emit('update:dialogImportFromYamlVisible', $event)"
     >
       <el-form :model="importYaml" @submit.native.prevent ref="importYamlForm">
         <el-form-item label="服务名称" prop="serviceName" :rules="{ required: true, message: '服务名称不能为空', trigger: ['change','blur'] }">
@@ -50,7 +51,7 @@
         <el-form-item prop="auto_sync">
           <span style="margin-right: 16px;">
             <span>自动同步</span>
-            <el-tooltip  content="开启后，模板库-批量更新时，该服务配置自动应用最新的服务模板。" placement="top">
+            <el-tooltip  content="开启后，对模板库操作应用到服务时，该服务配置将自动基于模板内容同步。" placement="top">
               <i  class="pointer el-icon-question"></i>
             </el-tooltip>
           </span>
@@ -130,7 +131,8 @@ export default {
     async getKubernetesTemplate (id) {
       if (id) {
         this.previewYamlFile = false
-        const res = await getKubernetesTemplateDetailAPI(id).catch(err => {
+        const projectName = this.projectName
+        const res = await getKubernetesTemplateDetailAPI(id, projectName).catch(err => {
           console.log(err)
         })
         if (res) {
@@ -164,12 +166,12 @@ export default {
       const valid = await this.$refs.importYamlForm.validate().catch((err) => { return err })
       if (valid) {
         const res = this.currentUpdatedServiceName
-          ? await reloadServiceFromKubernetesTemplateAPI(payload).catch(
+          ? await reloadServiceFromKubernetesTemplateAPI(payload, projectName).catch(
             err => {
               console.log(err)
             }
           )
-          : await loadServiceFromKubernetesTemplateAPI(payload).catch(
+          : await loadServiceFromKubernetesTemplateAPI(payload, projectName).catch(
             err => {
               console.log(err)
             }

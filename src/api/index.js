@@ -136,7 +136,10 @@ http.interceptors.response.use(
           window.location.href = `/signin?redirect=${redirectPath}`
         } else if (error.response.status === 403) {
           Element.Message.error('暂无权限')
-        } else if (error.response.data.code !== 6168 && error.response.data.code !== 6094 && !error.response.data.description.includes(ignoreErrResponse)) {
+        }
+        if (error.response.data && (error.response.data.code === 6168 || error.response.data.code === 6094 || error.response.data.description.includes(ignoreErrResponse))) {
+          return Promise.reject(error)
+        } else {
           displayError(error)
         }
       } else if (document.title === '登录') {
@@ -404,6 +407,14 @@ export function initProjectEnvAPI (projectName, isStcov, envType = 'general', is
   return http.get(`/api/aslan/environment/init_info/${projectName}${isStcov ? '?stcov=true' : '?'}envType=${envType}&isBaseEnv=${isBaseEnv}&baseEnv=${baseEnvName}&projectName=${projectName}`)
 }
 
+export function getConfigFromNamespaceAPI (projectName, clusterId, namespace) {
+  return http.get(`/api/aslan/service/services/kube/workloads?projectName=${projectName}&cluster_id=${clusterId}&namespace=${namespace}`)
+}
+
+export function createServiceFromK8sNamespaceAPI (projectName, payload) {
+  return http.post(`/api/aslan/service/services/yaml?projectName=${projectName}`, payload)
+}
+
 // Build
 export function getImgListAPI (from = '', imageFrom = '') {
   return http.get(`/api/aslan/system/basicImages?image_from=${from}&image_type=${imageFrom}`)
@@ -429,7 +440,7 @@ export function getBuildConfigDetailAPI (name, projectName = '') {
   return http.get(`/api/aslan/build/build/${name}?projectName=${projectName}`)
 }
 
-export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '', branchName = '', path = '', type = '', repoLink = '', remoteName = 'origin' }) {
+export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '', branchName = '', path = '', type = '', repoLink = '', remoteName = 'origin', namespace = '' }) {
   if (type === 'github' || type === 'gitlab' || type === 'helm' || type === 'githubPublic') {
     let params = {}
     if (type === 'githubPublic') {
@@ -443,7 +454,8 @@ export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '
         path: path,
         branch: branchName,
         owner: repoOwner,
-        codehost_id: codehostId
+        codehost_id: codehostId,
+        namespace: namespace
       }
     }
     return http.get(`/api/aslan/code/workspace/tree`, { params })
@@ -489,14 +501,15 @@ export function getCodehubRepoFileServiceAPI (codehostId, repoUUID, repoName, br
   return http.get(`/api/aslan/service/loader/preload/${codehostId}`, { params })
 }
 
-export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', payload) {
+export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', namespace = '', payload) {
   const params = {
     projectName: projectName,
     repoOwner: repoOwner,
     repoName: repoName,
     branchName: branchName,
     remoteName: remoteName,
-    repoUUID: repoUUID
+    repoUUID: repoUUID,
+    namespace: namespace
   }
   return http.post(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
 }
@@ -757,42 +770,42 @@ export function updateCodeScannerAPI (id, payload) {
   return http.put(`/api/aslan/testing/scanning/${id}?projectName=${payload.project_name}`, payload)
 }
 
-export function getCodeScannerDetailAPI (id, projectName) {
+export function getCodeScannerDetailAPI (id, projectName = '') {
   return http.get(`/api/aslan/testing/scanning/${id}?projectName=${projectName}`)
 }
-export function deleteCodeScannerAPI (id, projectName) {
+export function deleteCodeScannerAPI (id, projectName = '') {
   return http.delete(`/api/aslan/testing/scanning/${id}?projectName=${projectName}`)
 }
 
-export function getCodeScannerListAPI (projectName) {
+export function getCodeScannerListAPI (projectName = '') {
   return http.get(`/api/aslan/testing/scanning?projectName=${projectName}`)
 }
 
-export function getCodeScannerHistoryAPI (id, projectName, page_num, page_size) {
-  return http.get(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}&page_num=${page_num}&page_size=${page_size}`)
+export function getCodeScannerHistoryAPI (id, projectName = '', pageNum, pageSize) {
+  return http.get(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}&page_num=${pageNum}&page_size=${pageSize}`)
 }
 
-export function runCodeScannerTaskAPI (id, payload, projectName) {
+export function runCodeScannerTaskAPI (id, payload, projectName = '') {
   return http.post(`/api/aslan/testing/scanning/${id}/task?projectName=${projectName}`, payload)
 }
 
-export function scannerTaskDetailAPI (scannerId, taskId, projectName) {
+export function scannerTaskDetailAPI (scannerId, taskId, projectName = '') {
   return http.get(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
-export function scannerTaskDetailSSEAPI (scannerId, taskId, projectName) {
+export function scannerTaskDetailSSEAPI (scannerId, taskId, projectName = '') {
   return makeEventSource(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}/sse?projectName=${projectName}`)
 }
 
-export function restartScannerTaskAPI (scannerId, taskId, payload, projectName) {
+export function restartScannerTaskAPI (scannerId, taskId, payload, projectName = '') {
   return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`, payload)
 }
 
-export function cancelScannerTaskAPI (scannerId, taskId, payload, projectName) {
-  return http.post(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`, payload)
+export function cancelScannerTaskAPI (scannerId, taskId, projectName = '') {
+  return http.delete(`/api/aslan/testing/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
-export function getScannerTaskLogAPI (scannerId, taskId, projectName) {
+export function getScannerTaskLogAPI (scannerId, taskId, projectName = '') {
   return http.get(`/api/aslan/logs/log/scanning/${scannerId}/task/${taskId}?projectName=${projectName}`)
 }
 
@@ -900,7 +913,7 @@ export function getRepoNameByIdAPI (id, type, repoOwner, key = '', projectUUID =
     return http.get(`/api/aslan/code/codehost/${id}/projects`, { params })
   }
 }
-
+// repoOwner from namespace
 export function getBranchInfoByIdAPI (id, repoOwner, repoName, repoUUID = '', page = 1, perPage = 200, key = '') {
   if (repoUUID) {
     const params = {
@@ -1289,6 +1302,10 @@ export function deleteClusterAPI (id) {
   return http.delete(`/api/aslan/cluster/clusters/${id}`)
 }
 
+export function upgradeHubAgentAPI (id) {
+  return http.get(`/api/aslan/cluster/agent/${id}/upgrade`)
+}
+
 export function getClusterNodeInfo (clusterId = '') {
   return http.get(`/api/aslan/environment/kube/nodes?clusterId=${clusterId}`)
 }
@@ -1356,8 +1373,8 @@ export function createProjectAPI (payload) {
   return http.post('/api/v1/picket/projects', payload)
 }
 
-export function deleteProjectAPI (projectName) {
-  return http.delete(`/api/v1/picket/projects/${projectName}?projectName=${projectName}`)
+export function deleteProjectAPI (projectName, is_delete = true) {
+  return http.delete(`/api/v1/picket/projects/${projectName}?projectName=${projectName}&is_delete=${is_delete}`)
 }
 
 export function downloadDevelopCLIAPI (os) {
@@ -1401,8 +1418,8 @@ export function rollbackConfigmapAPI (envType = '', payload) {
   return http.post(`/api/aslan/environment/configmaps?projectName=${payload.product_name}&envType=${envType}`, payload)
 }
 
-export function deleteProductEnvAPI (projectName, envName, envType = '') {
-  return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}`)
+export function deleteProjectEnvAPI (projectName, envName, envType = '', is_delete = true) {
+  return http.delete(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}&is_delete=${is_delete}`)
 }
 
 export function restartPodAPI (podName, projectName, envName, envType = '') {
@@ -1609,8 +1626,8 @@ export function changePasswordAPI (payload) {
 }
 
 // Template Helm
-export function getChartTemplatesAPI () {
-  return http.get(`/api/aslan/template/charts`)
+export function getChartTemplatesAPI (projectName = '') {
+  return http.get(`/api/aslan/template/charts?projectName=${projectName}`)
 }
 
 export function getChartTemplateByNameAPI (name) {
@@ -1666,8 +1683,8 @@ export function validateDockerfileAPI (payload) {
   return http.post(`/api/aslan/template/dockerfile/validation`, payload)
 }
 
-export function getDockerfileAPI (id) {
-  return http.get(`/api/aslan/template/dockerfile/${id}`)
+export function getDockerfileAPI (id, projectName = '') {
+  return http.get(`/api/aslan/template/dockerfile/${id}?projectName=${projectName}`)
 }
 
 export function deleteDockerfileTemplateAPI (id) {
@@ -1694,12 +1711,13 @@ export function updateKubernetesTemplateAPI (id, payload) {
 export function updateMulKubernetesTemplateAPI (id, payload) {
   return http.post(`/api/aslan/template/yaml/${id}/reference`)
 }
+
 export function praseKubernetesTemplateAPI (payload) {
   return http.post(`/api/aslan/template/yaml/getVariables`, payload)
 }
 
-export function getKubernetesTemplateDetailAPI (id) {
-  return http.get(`/api/aslan/template/yaml/${id}`)
+export function getKubernetesTemplateDetailAPI (id, projectName = '') {
+  return http.get(`/api/aslan/template/yaml/${id}?projectName=${projectName}`)
 }
 
 export function deleteKubernetesTemplateAPI (id) {
@@ -1710,12 +1728,12 @@ export function getKubernetesTemplateBuildReferenceAPI (id) {
   return http.get(`/api/aslan/template/yaml/${id}/reference`)
 }
 
-export function loadServiceFromKubernetesTemplateAPI (payload) {
-  return http.post(`/api/aslan/service/template/load`, payload)
+export function loadServiceFromKubernetesTemplateAPI (payload, projectName = '') {
+  return http.post(`/api/aslan/service/template/load?projectName=${projectName}`, payload)
 }
 
-export function reloadServiceFromKubernetesTemplateAPI (payload) {
-  return http.post(`/api/aslan/service/template/reload`, payload)
+export function reloadServiceFromKubernetesTemplateAPI (payload, projectName = '') {
+  return http.post(`/api/aslan/service/template/reload?projectName=${projectName}`, payload)
 }
 
 // Template Build
@@ -1792,14 +1810,15 @@ export function getCalculatedValuesYamlAPI ({ projectName, serviceName, envName,
   return http.post(`/api/aslan/environment/environments/${envName}/estimated-values?projectName=${projectName}&format=${format}&serviceName=${serviceName}&scene=${scene}`, payload)
 }
 
-export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valuesPaths }) {
+export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valuesPaths, namespace }) {
   return http.get(`/api/aslan/environment/rendersets/yamlContent`, {
     params: {
       codehostID,
       owner,
       repo,
       branch,
-      valuesPaths: valuesPaths.join(',')
+      valuesPaths: valuesPaths.join(','),
+      namespace
     }
   })
 }
@@ -1890,8 +1909,8 @@ export function queryUserBindingsAPI (uid, projectName = '') { // Query all bind
 //   return http.get(`/api/v1/policy/permission/${uid}?projectName=${projectName}`)
 // }
 
-export function getArtifactFileAPI (payload, id) {
-  return http.post(`/api/aslan/system/s3storage/${id}/releases/search?kind=file`, payload)
+export function getArtifactFileAPI (payload, id, projectName = '') {
+  return http.post(`/api/aslan/system/s3storage/${id}/releases/search?kind=file&projectName=${projectName}`, payload)
 }
 
 // initialize project workflow and environment
@@ -1992,13 +2011,14 @@ export function getServiceFailureAPI ({ startDate, endDate, projectNames }) {
 }
 
 // environment config
-export function getConfigYamlAPI ({ codehostId, repoOwner, repoName, branchName, path, isDir }) {
+export function getConfigYamlAPI ({ codehostId, repoOwner, repoName, branchName, path, isDir, projectName }) {
   const params = {
     repoOwner,
     repoName,
     branchName,
     path,
-    isDir
+    isDir,
+    projectName
   }
   return http.get(`/api/aslan/code/workspace/getcontents/${codehostId}`, { params })
 }

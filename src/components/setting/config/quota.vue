@@ -8,7 +8,7 @@
           设置系统的工作流及测试任务的执行策略，参考
           <el-link style="font-size: 14px; vertical-align: baseline;"
                    type="primary"
-                   :href="`https://docs.koderover.com/zadig/settings/system-settings/`"
+                   :href="`https://docs.koderover.com/zadig/settings/system-settings/#任务配置`"
                    :underline="false"
                    target="_blank">帮助文档</el-link>
         </template>

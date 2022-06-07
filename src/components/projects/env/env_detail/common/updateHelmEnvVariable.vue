@@ -75,6 +75,7 @@ export default {
           yamlSource: res.defaultValues ? 'freeEdit' : 'default',
           overrideYaml: res.defaultValues
         }
+        this.defaultEnvsValues.valuesData = this.envVariable
         if (res.yaml_data && res.yaml_data.source_detail && res.yaml_data.source_detail.git_repo_config && res.yaml_data.source_detail.git_repo_config.codehost_id) {
           this.envVariable.gitRepoConfig = {
             branch: res.yaml_data.source_detail.git_repo_config.branch,
@@ -101,7 +102,8 @@ export default {
       handler (newV, oldV) {
         if (newV === '' || this.overrideYaml || this.baseEnvObj) {
           this.initEnvVariableInfo()
-        } else {
+        }
+        if (newV) {
           this.getEnvVariablesYaml(newV)
         }
       },

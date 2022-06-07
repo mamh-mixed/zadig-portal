@@ -134,7 +134,8 @@ export default {
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
             pr: repo.pr,
-            branch: repo.branch
+            branch: repo.branch,
+            repo_namespace: repo.repo_namespace
           }
         } else {
           return {
@@ -142,6 +143,7 @@ export default {
             source: repo.source,
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
+            repo_namespace: repo.repo_namespace,
             tag: repo.branchOrTag.name
           }
         }
@@ -170,7 +172,8 @@ export default {
     async getScannerDetail () {
       this.loading = true
       const id = this.scannerInfo.id
-      const res = await getCodeScannerDetailAPI(id).catch(error => {
+      const projectName = this.projectName
+      const res = await getCodeScannerDetailAPI(id, projectName).catch(error => {
         console.log(error)
       })
       if (res) {
@@ -301,6 +304,7 @@ export default {
             repo: row.repo_name,
             default_branch: row.branch,
             codehost_id: row.codehost_id,
+            repo_namespace: row.repo_namespace,
             key: query
           }
         ]

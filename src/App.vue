@@ -56,6 +56,7 @@ export default {
 @import url('~@assets/css/common/icon.less');
 @import url('~@assets/css/common/common.less');
 @import url('~@assets/css/common/scroll-bar.less');
+@import url('~@assets/css/common/helper.less');
 
 // Todo: Try to use perfect-scrollbar
 .scrollBar();

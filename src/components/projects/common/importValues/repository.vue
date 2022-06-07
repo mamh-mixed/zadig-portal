@@ -24,20 +24,20 @@
           <el-option
             v-for="(host, index) in allCodeHosts"
             :key="index"
-            :label="(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'"
+            :label="host.address + '('+host.alias+')'"
             :value="host.id"
           >
-          {{ (host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'}}
+          {{ host.address + '('+host.alias+')'}}
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="owner" label="拥有者">
+      <el-form-item prop="owner" label="组织名/用户名">
         <el-select
           v-model="source.owner"
           size="small"
           style="width: 100%;"
           @change="getRepoNameById(source.codehostID, source.owner)"
-          placeholder="请选择拥有者"
+          placeholder="请选择组织名/用户名"
           filterable
           clearable
         >
@@ -120,7 +120,7 @@
 <script>
 import RepoMixin from '../mixin/importRepo'
 import TreeFile from './treeFile.vue'
-
+import { getBranchInfoByIdAPI } from '@api'
 export default {
   props: {
     repoSource: Object,
@@ -210,6 +210,19 @@ export default {
       }
       valid.push(this.$refs.repoForm.validate())
       return Promise.all(valid)
+    },
+    // select set namespace
+    getBranchInfoById (id, owner, repo, row) {
+      this.source.branch = ''
+      const repoItem = this.codeInfo.repos.find(item => {
+        return item.name === repo
+      })
+      this.source.namespace = repoItem.namespace || ''
+      if (repo && owner) {
+        getBranchInfoByIdAPI(id, this.source.namespace, repo).then(res => {
+          this.$set(this.codeInfo, 'branches', res)
+        })
+      }
     }
   },
   components: {

@@ -1,7 +1,7 @@
 <template>
   <div class="integration-account-container">
     <el-dialog :title="'账号系统管理-'+(userAccount.mode === 'add'?'添加':'编辑')" :close-on-click-modal="false" custom-class="user-form-dialog" :visible.sync="dialogUserAccountFormVisible">
-      <el-form :model="userAccount" @submit.native.prevent :rules="userAccountRules" status-icon ref="userAccountForm">
+      <el-form class="mg-t32" :model="userAccount" @submit.native.prevent :rules="userAccountRules" status-icon ref="userAccountForm" label-position="left" label-width="120px">
         <el-form-item label="账号系统类型" prop="type">
           <el-select v-model="userAccount.name" @change="clearValidate()" :disabled="userAccount.mode ==='edit'">
             <el-option label="Microsoft Active Directory" value="Microsoft Active Directory"></el-option>

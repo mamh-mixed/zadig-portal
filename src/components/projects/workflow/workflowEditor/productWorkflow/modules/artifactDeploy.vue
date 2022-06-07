@@ -16,17 +16,24 @@
           </div>
         </el-col>
 
-        <el-col :span="10">
+        <el-col :span="9">
           <div class="deploy">
             部署
           </div>
         </el-col>
 
-        <el-col :span="3">
+        <el-col :span="4">
           <div class="view">
             是否显示
             <el-tooltip effect="dark" content="执行工作流任务时是否在服务列表中显示，供用户选择。" placement="top">
               <i class="el-icon-question"></i>
+            </el-tooltip>
+            <el-tooltip effect="dark" :content="hiddenAllDisplay ? '全部显示' : '全部隐藏'" placement="top">
+              <i class="iconfont icon"
+                 :class="{'iconview-off1': hiddenAllDisplay, iconview: !hiddenAllDisplay}"
+                 :style="{ color: hiddenAllDisplay ? '#99a9bf' : '#0066ff' }"
+                 @click="actionDisplay"
+              ></i>
             </el-tooltip>
           </div>
         </el-col>
@@ -71,14 +78,14 @@
               </span>
             </div>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="9">
             <div class="deploy">
               <div>
                 {{ `${config.target.service_name}/${config.target.service_module}`}}
               </div>
             </div>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="4">
             <div class="build-item view">
               <i class="iconfont icon"
                  :class="{'iconview-off1': config.hide_service_module, iconview: !config.hide_service_module}"
@@ -97,6 +104,11 @@
 import bus from '@utils/eventBus'
 
 export default {
+  data () {
+    return {
+      hiddenAllDisplay: false
+    }
+  },
   computed: {
     presetMap () {
       return _.keyBy(this.presets, (i) => {
@@ -118,6 +130,15 @@ export default {
     },
     allTargets () {
       return this.presets.map(p => p.target)
+    }
+  },
+  methods: {
+    actionDisplay () {
+      const currentDisplay = !this.hiddenAllDisplay
+      this.hiddenAllDisplay = currentDisplay
+      this.serviceConfigs.forEach(config => {
+        config.hide_service_module = currentDisplay
+      })
     }
   },
   props: {

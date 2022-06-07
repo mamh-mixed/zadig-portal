@@ -176,6 +176,11 @@ export default {
           defaultValues: envInfo[info.initName] || '',
           namespace: `${projectName}-env-${info.envName}`
         }
+        const payload = payloadObj[info.initName]
+        if (payload.defaultValues) {
+          payload.valuesData = envInfo.valuesData
+          payload.valuesData.autoSync = envInfo.valuesData.gitRepoConfig.autoSync
+        }
       })
 
       chartInfo.forEach(chart => {

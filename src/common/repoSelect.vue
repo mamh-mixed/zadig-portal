@@ -29,21 +29,23 @@
               <el-option
                 v-for="(host,index) in allCodeHosts"
                 :key="index"
-                :label="(host.type === 'other' ? '其他': host.address) + '('+host.alias+')'"
+                :label="`${host.address}${host.alias?'('+host.alias+')':''}`"
                 :value="host.id"
               >
-              {{ (host.type === 'other' ? '其他': host.address) + '('+host.alias+')'}}
+              {{ `${host.address}${host.alias?'('+host.alias+')':''}`}}
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5" >
           <el-form-item
-            :label="repo_index === 0 ?(shortDescription?'拥有者':'代码库拥有者') : ''"
+            :label="repo_index === 0 ?'组织名/用户名' : ''"
             :prop="'repos.' + repo_index + '.repo_owner'"
-            :rules="{required: true, message: '拥有者不能为空', trigger: ['blur', 'change']}"
+            :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur', 'change']}"
           >
+            <el-input v-if="repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_owner']" placeholder="请输入" size="small"></el-input>
             <el-select
+              v-else
               @change="getRepoNameById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index]['repo_owner'])"
               v-model.trim="config.repos[repo_index]['repo_owner']"
               remote
@@ -53,7 +55,7 @@
               allow-create
               clearable
               size="small"
-              placeholder="代码库拥有者"
+              placeholder="组织名/用户名"
               :loading="codeInfo[repo_index].loading.owner"
               filterable
             >
@@ -66,14 +68,16 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5" v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5" >
           <el-form-item
             :label="repo_index === 0 ? (shortDescription?'名称':'代码库名称') : ''"
             :prop="'repos.' + repo_index + '.repo_name'"
             :rules="{required: true, message: '名称不能为空', trigger: ['blur', 'change']}"
           >
+            <el-input v-if="repo.source==='other'"  v-model.trim="config.repos[repo_index]['repo_name']" placeholder="请输入" size="small"></el-input>
             <el-select
-              @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name)"
+              v-else
+              @change="getBranchInfoById(repo_index,config.repos[repo_index].codehost_id,config.repos[repo_index].repo_owner,config.repos[repo_index].repo_name,'',config.repos[repo_index])"
               v-model.trim="config.repos[repo_index].repo_name"
               remote
               :remote-method="(query)=>{searchProject(repo_index,query)}"
@@ -95,23 +99,15 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="showAdvanced || showTrigger ?8:10" v-if="repo.source === 'other'||repo.type === 'other'" >
-          <el-form-item
-            style="width: 90%;"
-            :label="repo_index === 0 ? '代码库地址' : ''"
-            :prop="'repos.' + repo_index + '.other_address'"
-            :rules="{required: true, message: '代码库地址不能为空', trigger: ['blur', 'change']}"
-          >
-           <el-input v-model="repo.other_address" size="small" :placeholder="repo.auth_type === 'SSH'?'SSH 协议地址':' HTTPS 协议地址'"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source !== 'other'&&repo.type !== 'other'">
+        <el-col :span="showAdvanced || showTrigger ?4:5 " >
           <el-form-item
             :label="repo_index === 0 ? (shortDescription?'分支':'默认分支') : ''"
             :prop="'repos.' + repo_index + '.branch'"
             :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
           >
+          <el-input v-if="repo.source==='other'"  v-model.trim="config.repos[repo_index]['branch']" placeholder="请输入" size="small"></el-input>
            <el-select
+              v-else
               v-model.trim="config.repos[repo_index].branch"
               placeholder="请选择"
               size="small"
@@ -131,15 +127,6 @@
                 :value="branch.name"
               ></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-         <el-col :span="showAdvanced || showTrigger ?4:5 " v-if="repo.source === 'other'||repo.type === 'other'">
-          <el-form-item
-            :label="repo_index === 0 ? (shortDescription?'分支':'默认分支') : ''"
-            :prop="'repos.' + repo_index + '.branch'"
-            :rules="{required: true, message: '分支不能为空', trigger: ['blur', 'change']}"
-          >
-          <el-input v-model="repo.branch" size="small" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col v-if="showAdvanced" :span="3">
@@ -323,6 +310,8 @@ export default {
         repo_owner: '',
         repo_name: '',
         branch: '',
+        source: '',
+        type: '',
         checkout_path: '',
         remote_name: 'origin',
         submodules: false
@@ -339,8 +328,16 @@ export default {
           })
           if (this.allCodeHosts && this.allCodeHosts.length === 1) {
             const codeHostId = this.allCodeHosts[0].id
+            const type = this.allCodeHosts[0].type
             repoMeta.codehost_id = codeHostId
-            this.getRepoOwnerById(index + 1, codeHostId)
+            if (type && type === 'other') {
+              const authType = this.allCodeHosts[0].auth_type
+              repoMeta.type = type
+              repoMeta.source = type
+              repoMeta.auth_type = authType
+            } else {
+              this.getRepoOwnerById(index + 1, codeHostId)
+            }
           }
         })
         .catch(err => {
@@ -352,6 +349,8 @@ export default {
         codehost_id: null,
         repo_owner: '',
         repo_name: '',
+        source: '',
+        type: '',
         branch: '',
         checkout_path: '',
         remote_name: 'origin',
@@ -366,8 +365,16 @@ export default {
       })
       if (this.allCodeHosts && this.allCodeHosts.length === 1) {
         const codeHostId = this.allCodeHosts[0].id
+        const type = this.allCodeHosts[0].type
         repoMeta.codehost_id = codeHostId
-        this.getRepoOwnerById(0, codeHostId)
+        if (type && type === 'other') {
+          const authType = this.allCodeHosts[0].auth_type
+          repoMeta.type = type
+          repoMeta.source = type
+          repoMeta.auth_type = authType
+        } else {
+          this.getRepoOwnerById(0, codeHostId, '', repoMeta)
+        }
       }
       this.config.repos.push(repoMeta)
     },
@@ -434,7 +441,7 @@ export default {
       this.config.repos[index].repo_name = ''
       this.config.repos[index].branch = ''
     },
-    getBranchInfoById (index, id, repo_owner, repo_name, key = '') {
+    getBranchInfoById (index, id, repo_owner, repo_name, key = '', row) {
       if (!repo_name) {
         return
       }
@@ -443,16 +450,19 @@ export default {
       })
       let repoId = ''
       let repoUUID = ''
+      let namespace = ''
       if (repoItem) {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
+        namespace = repoItem.namespace
+        row.repo_namespace = namespace
       }
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
         this.setLoadingState(index, 'branch', true)
         getBranchInfoByIdAPI(
           id,
-          repo_owner,
+          namespace,
           repo_name,
           repoUUID,
           1,
@@ -472,7 +482,7 @@ export default {
       const res = this.allCodeHosts.find(item => {
         return item.id === id
       })
-      row.type = res.type
+      row.source = res.type
       row.auth_type = res.auth_type
       if (!key) {
         if (this.codeInfo[index]) {
@@ -541,7 +551,8 @@ export default {
               )
             })
           })
-          getBranchInfoByIdAPI(codehostId, repoOwner, repoName, uuid).then(
+
+          getBranchInfoByIdAPI(codehostId, element.repo_namespace, repoName, uuid).then(
             res => {
               this.$set(this.codeInfo[index], 'branches', res || [])
               this.$set(this.codeInfo[index], 'origin_branches', res || [])
@@ -603,19 +614,27 @@ export default {
         this.getInitRepoInfo(new_val.repos)
       }
     },
-    'config.repos' (new_val, old_val) {
-      if (this.validObj !== null) {
-        if (new_val && new_val.length > 0) {
-          this.validObj.addValidate({
-            name: this.validateName,
-            valid: this.validateForm
-          })
-        } else {
-          this.validObj.deleteValidate({
-            name: this.validateName
-          })
+    'config.repos': {
+      handler (new_val) {
+        if (this.validObj !== null) {
+          if (new_val && new_val.length > 0) {
+            this.validObj.addValidate({
+              name: this.validateName,
+              valid: this.validateForm
+            })
+            new_val.forEach(item => {
+              if (item.source === 'other') {
+                item.repo_namespace = item.repo_owner
+              }
+            })
+          } else {
+            this.validObj.deleteValidate({
+              name: this.validateName
+            })
+          }
         }
-      }
+      },
+      deep: true
     }
   },
   components: {}
@@ -654,6 +673,14 @@ export default {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  .el-form-item__content {
+    .el-input {
+      .el-input__inner {
+        padding-right: 50px;
+      }
+    }
   }
 
   .app-operation {

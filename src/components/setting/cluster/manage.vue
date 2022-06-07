@@ -279,6 +279,29 @@
               </el-form-item>
             </template>
           </section>
+          <section v-if="!cluster.local">
+            <h4>
+              Dind 资源配置
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/zadig/pages/cluster_manage/#dind-资源配置`"
+                :underline="false"
+                target="_blank"
+              >帮助</el-link>
+            </h4>
+            <el-form-item label="副本数量" prop="dind_cfg.replicas">
+              <el-input v-model.number="cluster.dind_cfg.replicas" size="small" placeholder="请输入副本数量"></el-input>
+            </el-form-item>
+            <el-form-item label="资源规格">
+              <el-form-item label="CPU(m)" label-width="90px" prop="dind_cfg.resources.limits.cpu">
+                <el-input v-model.number="cluster.dind_cfg.resources.limits.cpu" size="small" placeholder="请输入 CPU"></el-input>
+              </el-form-item>
+              <el-form-item label="Mem(Mi)" label-width="90px" prop="dind_cfg.resources.limits.memory">
+                <el-input v-model.number="cluster.dind_cfg.resources.limits.memory" size="small" placeholder="请输入 Memory"></el-input>
+              </el-form-item>
+            </el-form-item>
+          </section>
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -330,9 +353,12 @@
                 <span>{{scope.row.description}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="创建时间">
-              <template slot-scope="scope">
-                <span>{{$utils.convertTimestamp(scope.row.createdAt)}}</span>
+            <el-table-column label="最近连接时间">
+              <template slot-scope="{ row }">
+                <span>{{$utils.convertTimestamp(row.last_connection_time)}}</span>
+                <el-tooltip v-if="row.update_hubagent_error_msg" effect="dark" content="最近一次 agent 更新失败，点击「更新 agent」按钮再次更新" placement="top">
+                  <i class="el-icon-warning-outline" style="color: red;"></i>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column label="创建人">
@@ -341,7 +367,7 @@
               </template>
             </el-table-column>
 
-            <el-table-column width="240" label="操作">
+            <el-table-column width="310" label="操作">
               <template slot-scope="scope">
                 <span v-show="!scope.row.local">
                   <el-button
@@ -354,6 +380,7 @@
                 </span>
                 <el-button @click="clusterOperation('edit',scope.row)" type="primary" size="mini" plain>编辑</el-button>
                 <el-button v-show="!scope.row.local" @click="clusterOperation('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
+                <el-button v-if="!scope.row.local" :disabled="scope.row.status !== 'normal'" @click="updateAgent(scope.row)" size="mini" type="primary" plain>更新 agent</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -374,7 +401,8 @@ import {
   getClusterNodeInfo,
   getClusterStorageClassAPI,
   getClusterPvcAPI,
-  getStorageListAPI
+  getStorageListAPI,
+  upgradeHubAgentAPI
 } from '@api'
 import { wordTranslate } from '@utils/wordTranslate'
 import bus from '@utils/eventBus'
@@ -414,6 +442,15 @@ const clusterInfo = {
     project_names: [],
     strategy: 'normal',
     node_labels: []
+  },
+  dind_cfg: {
+    replicas: 1,
+    resources: {
+      limits: {
+        cpu: 4000,
+        memory: 8192
+      }
+    }
   }
 }
 export default {
@@ -522,6 +559,21 @@ export default {
               callback()
             }
           }
+        },
+        'dind_cfg.replicas': {
+          required: true,
+          message: '请输入副本数量',
+          type: 'number'
+        },
+        'dind_cfg.resources.limits.cpu': {
+          required: true,
+          message: '请输入 CPU',
+          type: 'number'
+        },
+        'dind_cfg.resources.limits.memory': {
+          required: true,
+          message: '请输入 Memory',
+          type: 'number'
         }
       },
       clusterNodes: {
@@ -774,6 +826,26 @@ export default {
       this.cluster = cloneDeep(clusterInfo)
       this.$nextTick(() => {
         this.$refs.cluster.clearValidate()
+      })
+    },
+    updateAgent (row) {
+      this.$confirm('确定更新 agent 吗?', '更新', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        upgradeHubAgentAPI(row.id).then(res => {
+          this.$message({
+            message: '更新 agent 成功',
+            type: 'success'
+          })
+          this.getCluster()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消更新'
+        })
       })
     }
   },

@@ -36,7 +36,8 @@ const valueInfo = {
     repo: '',
     branch: '',
     valuesPaths: [],
-    autoSync: false
+    autoSync: false,
+    namespace: ''
   }
 }
 
@@ -60,7 +61,7 @@ export default {
       type: Object,
       default: () => {
         return {
-          height: '260px',
+          height: '300px',
           direction: 'none'
         }
       }

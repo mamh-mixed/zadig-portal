@@ -18,7 +18,7 @@
             </el-form-item>
             <el-form-item label="创建者">{{ taskDetail.task_creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
-            <el-form-item label="环境">{{ workflow.product_tmpl_name }} - {{ workflow.namespace }}</el-form-item>
+            <el-form-item label="环境">{{ workflow.namespace }}</el-form-item>
             <el-form-item label="持续时间">
               {{ taskDetail.interval }}
               <el-tooltip v-if="taskDetail.intervalSec<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
@@ -37,14 +37,14 @@
             </el-form-item>
             <el-form-item v-if="showOperation()" label="操作">
               <el-button
-                v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
                 v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
                 @click="rerun"
                 type="text"
                 size="medium"
               >失败重试</el-button>
               <el-button
-                v-hasPermi="{projectName: projectName, action: 'run_workflow',isBtn:true}"
+                v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
                 v-if="taskDetail.status==='running'||taskDetail.status==='created'"
                 @click="cancel"
                 type="text"

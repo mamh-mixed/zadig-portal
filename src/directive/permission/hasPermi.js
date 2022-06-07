@@ -1,17 +1,18 @@
 import { permissionCheckingLogic } from '@utils/checkPermission'
 
 async function checkPermission (el, binding) {
-  const { type, projectName, action, actions, operator, isBtn } = binding.value
+  const { type, projectName, action, actions, operator, resource, isBtn } = binding.value
   const hasPermission = await permissionCheckingLogic({
     type,
     projectName,
     action,
     actions,
+    resource,
     operator
   })
-  const disableClickFn = (event) => {
-    event && event.stopImmediatePropagation()
-  }
+  // const disableClickFn = (event) => {
+  //   event && event.stopImmediatePropagation()
+  // }
   if (!hasPermission) {
     if (isBtn) {
       if (!el.classList.contains('permission-disabled')) {

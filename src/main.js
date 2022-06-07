@@ -91,7 +91,6 @@ const analyticsRequest = (to, from) => {
 }
 router.beforeEach(async (to, from, next) => {
   if (to.params.project_name) {
-    console.log('Enter:', to.params.project_name)
     const projectName = to.params.project_name
     await store.dispatch('checkingPermission', projectName)
   }

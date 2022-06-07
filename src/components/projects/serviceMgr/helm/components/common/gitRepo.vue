@@ -29,21 +29,21 @@
           <el-option
             v-for="(host, index) in allCodeHosts"
             :key="index"
-            :label="(host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'"
+            :label="host.address + '('+host.alias+')'"
             :value="host.id"
           >
             {{
-           (host.type === 'other' ? '其他': host.address)+ '('+host.alias+')'
+           host.address + '('+host.alias+')'
             }}
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item
-        label="拥有者"
+        label="组织名/用户名"
         prop="repoOwner"
         :rules="{
               required: true,
-              message: '拥有者不能为空',
+              message: '组织名/用户名不能为空',
               trigger: 'change',
             }"
       >
@@ -52,7 +52,7 @@
           size="small"
           style="width: 100%;"
           @change="getRepoNameById(source.codehostId, source.repoOwner)"
-          placeholder="请选择拥有者"
+          placeholder="请选择组织名/用户名"
           filterable
           :disabled="isUpdate"
         >
@@ -155,6 +155,7 @@
                     :repoOwner="source.repoOwner"
                     :branchName="source.branchName"
                     :remoteName="source.remoteName"
+                    :namespace="source.namespace"
                     :gitType="codehostSource"
                     @getPreloadServices="getPreloadServices"
                     :showTree="workSpaceModalVisible"/>
@@ -168,6 +169,7 @@
         :repoOwner="source.repoOwner"
         :branchName="source.branchName"
         :remoteName="source.remoteName"
+        :namespace="source.namespace"
         :showTree="workSpaceModalVisible"
         :type="gitName"
         :url="source.url"
@@ -231,7 +233,8 @@ export default {
         services: [],
         path: '',
         isDir: false,
-        url: null
+        url: null,
+        namespace: ''
       },
       sourceRules: {
         url: [
@@ -263,7 +266,8 @@ export default {
         repoName: '',
         branchName: '',
         remoteName: '',
-        gitType: ''
+        gitType: '',
+        namespace: ''
       }
       this.selectPath = []
       this.$refs.sourceForm.resetFields()
@@ -321,9 +325,13 @@ export default {
       })
     },
     getBranchInfoById (id, repoOwner, repoName) {
+      const repoItem = this.codeInfo.repos.find(item => {
+        return item.name === repoName
+      })
       this.source.branchName = ''
+      this.source.namespace = repoItem.namespace || ''
       if (repoName && repoOwner) {
-        getBranchInfoByIdAPI(id, repoOwner, repoName).then(res => {
+        getBranchInfoByIdAPI(id, this.source.namespace, repoName).then(res => {
           this.$set(this.codeInfo, 'branches', res)
         })
       }
@@ -365,7 +373,8 @@ export default {
         codeHostID: this.source.codehostId,
         owner: this.source.repoOwner,
         repo: this.source.repoName,
-        branch: this.source.branchName
+        branch: this.source.branchName,
+        namespace: this.source.namespace
       }
       this.$emit('selectPath', emitParams)
     },
@@ -388,6 +397,7 @@ export default {
           repoOwner: this.source.repoOwner,
           repoName: this.source.repoName,
           branchName: this.source.branchName,
+          namespace: this.source.namespace,
           path: this.selectPath,
           type: this.codehostSource
         }
@@ -411,7 +421,8 @@ export default {
             owner: this.source.repoOwner,
             repo: this.source.repoName,
             branch: this.source.branchName,
-            paths: this.selectPath
+            paths: this.selectPath,
+            namespace: this.source.namespace
           }
         }
       }
@@ -457,6 +468,7 @@ export default {
               this.source.branchName = gitRepoConfig.branch
               this.source.repoName = gitRepoConfig.repo
               this.source.repoOwner = gitRepoConfig.owner
+              this.source.namespace = value.repo_namespace
             }
             this.selectPath = [createFrom.load_path]
           } else {
@@ -472,6 +484,7 @@ export default {
             this.source.repoOwner = value.repo_owner
             this.source.url = value.src_path
             this.selectPath = [value.load_path]
+            this.source.namespace = value.repo_namespace
           }
           this.isUpdate = true
         } else {

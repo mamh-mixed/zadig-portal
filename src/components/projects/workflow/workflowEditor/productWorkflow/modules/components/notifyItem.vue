@@ -71,8 +71,6 @@
 </template>
 
 <script type="text/javascript">
-import bus from '@utils/eventBus'
-
 export default {
   name: 'NotifyItem',
   data () {
@@ -209,9 +207,6 @@ export default {
       type: Boolean,
       default: true
     }
-  },
-  beforeDestroy () {
-    bus.$off('check-tab:notify')
   }
 }
 </script>

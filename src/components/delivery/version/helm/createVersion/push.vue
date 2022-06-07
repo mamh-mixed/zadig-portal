@@ -31,10 +31,15 @@
         <div v-if="advancedConfigVisible[chart.serviceName]" class="advanced-config">
           <span class="title">配置镜像 Tag</span>
           <el-row v-for="(service,chartServiceImgIndex) in chart.imageData" :key="chartServiceImgIndex" class="img-row">
+            <el-col :span="1">
+              <el-tooltip effect="dark" content="选中后，对应镜像将重新打 tag 并推送到镜像仓库" placement="top">
+                <el-checkbox v-model="service.selected" style="line-height: 34px;"></el-checkbox>
+              </el-tooltip>
+            </el-col>
             <el-col :span="4">
               <span class="service-name">{{service.imageName}}</span>
             </el-col>
-            <el-col :span="16">
+            <el-col :span="15">
               <el-input v-model="service.imageTag" placeholder="请输入镜像 Tag" size="small" clearable></el-input>
               <span v-if="chartServiceImgIndex === 0" @click="applyInputTagToAll(service.imageTag,chart.imageData)" class="config-btn">应用全部</span>
             </el-col>

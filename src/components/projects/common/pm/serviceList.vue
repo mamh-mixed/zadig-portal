@@ -77,9 +77,7 @@ export default {
   },
   methods: {
     blur () {
-      if (!this.serviceName) {
-        this.showAddInput = false
-      }
+      this.showAddInput = false
     },
     change (value) {
       if (value) {
@@ -98,7 +96,6 @@ export default {
     },
     newService () {
       this.showAddInput = true
-      this.changeShowBuild(true)
       this.$nextTick(() => {
         this.$refs.input.focus()
       })
@@ -181,6 +178,16 @@ export default {
   },
   created () {
     this.getServiceTemplates()
+  },
+  watch: {
+    serviceList: {
+      handler (val) {
+        if (val.length > 0) {
+          this.changeShowBuild(true)
+        }
+      },
+      deep: true
+    }
   }
 }
 </script>
