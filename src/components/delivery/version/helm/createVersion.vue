@@ -84,6 +84,9 @@ export default {
       const deliveryRelease = cloneDeep(this.deliveryRelease)
       deliveryRelease.chartDatas.forEach(chart => {
         delete chart.lastVersion
+        chart.imageData && chart.imageData.forEach(image => {
+          delete image.hasBuild
+        })
       })
       deliveryRelease.labels = deliveryRelease.labels
         ? deliveryRelease.labels.split(',').map(label => label.trim())
