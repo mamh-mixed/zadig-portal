@@ -160,12 +160,7 @@ export default {
           this.$set(
             this.releaseInfo.chartDatas[chartIndex],
             'imageData',
-            res.serviceImages[0].imageData.map(image => {
-              return {
-                ...image,
-                selected: image.hasBuild || false
-              }
-            })
+            res.serviceImages[0].imageData
           )
         } else {
           this.$set(this.releaseInfo.chartDatas[chartIndex], 'imageData', [])
