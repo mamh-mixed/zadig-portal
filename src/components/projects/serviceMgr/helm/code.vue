@@ -608,7 +608,7 @@ export default {
   }
 
   .center {
-    width: 500px;
+    width: 50%;
     min-width: 200px;
     height: 100%;
 
