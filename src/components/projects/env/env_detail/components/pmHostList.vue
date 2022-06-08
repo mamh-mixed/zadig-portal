@@ -4,19 +4,17 @@
       <div class="tab-container">
         <el-tabs v-model="currentTab" type="card">
           <el-tab-pane v-for="item in tabList" :name="item.name" :label="item.label" :key="item.name">
-            <keep-alive>
               <pmHostItem
                 :ref="'hostItemRef'+ item.name"
                 :currentPmServiceData="currentPmServiceData"
                 :currentTab="currentTab"
               />
-            </keep-alive>
           </el-tab-pane>
         </el-tabs>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="editHostDialogVisible = false">取 消</el-button>
-        <el-button type="primary" size="small" :disabled="!serviceHosts" @click="bindHost">确 定</el-button>
+        <el-button type="primary" size="small" :disabled="currentPmServiceData.env_configs.length === 0" @click="bindHost">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -38,10 +36,7 @@ export default {
   data () {
     return {
       editHostDialogVisible: false,
-      serviceHosts: [],
       currentTab: 'project',
-      keyword: '',
-      multipleSelection: [],
       tabList: [
         {
           label: '项目资源',
@@ -59,11 +54,14 @@ export default {
 
   methods: {
     bindHost () {
-      let hostIds = []
       const refs = this.$refs.hostItemRefproject.concat(this.$refs.hostItemRefsystem)
-      refs.forEach(item => {
-        hostIds = uniq(hostIds.concat(item.multipleSelection.map(item => item.id)))
+      let hostIds = []
+      console.log(this.$refs)
+      refs.forEach((item, index) => {
+        console.log(item.$refs.multipleTable.data)
+        hostIds = hostIds.concat(item.serviceHosts)
       })
+      console.log(hostIds)
       const projectName = this.currentPmServiceData.product_name
       let envConfigs = []
       envConfigs = [
