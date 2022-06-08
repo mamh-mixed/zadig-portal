@@ -8,13 +8,14 @@
                 :ref="'hostItemRef'+ item.name"
                 :currentPmServiceData="currentPmServiceData"
                 :currentTab="currentTab"
+                :editHostDialogVisible="editHostDialogVisible"
               />
           </el-tab-pane>
         </el-tabs>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="editHostDialogVisible = false">取 消</el-button>
-        <el-button type="primary" size="small" :disabled="currentPmServiceData.env_configs.length === 0" @click="bindHost">确 定</el-button>
+        <el-button type="primary" size="small" :disabled="currentPmServiceData.env_configs && currentPmServiceData.env_configs.length === 0" @click="bindHost">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -55,13 +56,19 @@ export default {
   methods: {
     bindHost () {
       const refs = this.$refs.hostItemRefproject.concat(this.$refs.hostItemRefsystem)
-      let hostIds = []
-      console.log(this.$refs)
+      const hostIds = []
       refs.forEach((item, index) => {
-        console.log(item.$refs.multipleTable.data)
-        hostIds = hostIds.concat(item.serviceHosts)
+        if (index === 0) {
+          item.allHost = item.projectList
+        } else {
+          item.allHost = item.systemList
+        }
+        item.allHost.forEach(host => {
+          if (item.serviceHosts.indexOf(host.id) >= 0) {
+            hostIds.push(host.id)
+          }
+        })
       })
-      console.log(hostIds)
       const projectName = this.currentPmServiceData.product_name
       let envConfigs = []
       envConfigs = [

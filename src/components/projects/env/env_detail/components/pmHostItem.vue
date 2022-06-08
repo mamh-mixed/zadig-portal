@@ -2,8 +2,7 @@
   <div class="host-select">
     <el-input placeholder="请输入内容" v-model="keyword" size="small" class="search" @input="getHosts">
       <el-button slot="append" icon="el-icon-search"></el-button>
-    </el-input>
-    {{allHost.length}}{{serviceHosts}}
+    </el-input>{{serviceHosts}}
     <el-table :data="allHost" @select="handleSelectionChange" ref="multipleTable">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="name" label="主机名称"></el-table-column>
@@ -18,7 +17,6 @@
 </template>
 <script>
 import { getHostListAPI } from '@api'
-import { concat, uniq } from 'lodash'
 
 export default {
   name: 'pmHostItem',
@@ -33,9 +31,9 @@ export default {
       type: String,
       default: 'project'
     },
-    hostIds: {
-      type: Array,
-      default: () => []
+    editHostDialogVisible: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -43,8 +41,8 @@ export default {
       serviceHosts: [],
       allHost: [],
       keyword: '',
-      // multipleSelection: [],
-      firstLoad: true
+      projectList: [],
+      systemList: []
     }
   },
   computed: {
@@ -57,10 +55,26 @@ export default {
     }
   },
   created () {
-    console.log(11111)
     this.getHosts()
   },
   methods: {
+    getHosts () {
+      const key = this.$utils.rsaEncrypt()
+      const keyword = this.keyword
+      const projectName =
+        this.currentTab === 'project'
+          ? this.currentPmServiceData.product_name
+          : ''
+      getHostListAPI(key, projectName, keyword).then(res => {
+        this.allHost = [...res]
+        if (this.currentTab === 'project') {
+          this.projectList = [...res]
+        } else {
+          this.systemList = [...res]
+        }
+        this.updateRowSelection(this.serviceHosts)
+      })
+    },
     updateRowSelection (ids) {
       ids.forEach(id => {
         this.allHost.forEach(host => {
@@ -72,24 +86,8 @@ export default {
         })
       })
     },
-    getHosts () {
-      const key = this.$utils.rsaEncrypt()
-      const keyword = this.keyword
-      const projectName =
-        this.currentTab === 'project'
-          ? this.currentPmServiceData.product_name
-          : ''
-      getHostListAPI(key, projectName, keyword).then(res => {
-        this.allHost = [...res]
-        this.updateRowSelection(this.serviceHosts)
-      })
-    },
     handleSelectionChange (section, row) {
-      console.log(section)
-      console.log(row)
-      // if (section.length === 0) return
       this.serviceHosts = section.map(item => item.id)
-      console.log(this.serviceHosts)
     },
     filterTag (value, row) {
       return row.label === value
@@ -101,10 +99,11 @@ export default {
         if (val.env_configs) {
           this.serviceHosts = []
           val.env_configs.forEach(item => {
-            this.serviceHosts = concat(item.host_ids, item.labels)
+            this.serviceHosts = this.serviceHosts.concat(item.host_ids, item.labels)
           })
         }
-      }
+      },
+      immediate: true
     },
     serviceHosts: {
       handler (val) {
@@ -114,16 +113,11 @@ export default {
     },
     currentTab () {
       this.getHosts()
-      // if (this.allHost.length > 0) {
-      //   this.allHost.forEach(host => {
-      //     const hostIds = []
-      //     if (this.serviceHosts.indexOf(host.id) >= 0) {
-      //       hostIds.push(host.id)
-      //       console.log(hostIds)
-      //       this.serviceHosts = push(hostIds)
-      //     }
-      //   })
-      // }
+    },
+    editHostDialogVisible (newVal, oldVal) {
+      if (!newVal) {
+        this.serviceHosts = []
+      }
     }
   }
 }
