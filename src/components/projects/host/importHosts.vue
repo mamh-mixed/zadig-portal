@@ -117,6 +117,11 @@ export default {
       fileJson: []
     }
   },
+  computed: {
+    projectName () {
+      return this.$route.params.project_name
+    }
+  },
   methods: {
     async handleChange (file) {
       this.fileJson = []
@@ -186,7 +191,8 @@ export default {
           option: option,
           data: result
         }
-        const res = await importHostAPI(payload).catch(err => {
+        const projectName = this.projectName
+        const res = await importHostAPI(projectName, payload).catch(err => {
           console.log(err)
         })
         if (res) {

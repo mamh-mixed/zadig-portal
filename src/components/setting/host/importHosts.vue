@@ -186,7 +186,7 @@ export default {
           option: option,
           data: result
         }
-        const res = await importHostAPI(payload).catch(err => {
+        const res = await importHostAPI('', payload).catch(err => {
           console.log(err)
         })
         if (res) {

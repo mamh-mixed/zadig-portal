@@ -1339,8 +1339,8 @@ export function deleteHostAPI (id, projectName) {
   return http.delete(`/api/aslan/system/privateKey/${id}?projectName=${projectName}`)
 }
 
-export function importHostAPI (payload) {
-  return http.post(`/api/aslan/system/privateKey/batch`, payload)
+export function importHostAPI (projectName = '', payload) {
+  return http.post(`/api/aslan/system/privateKey/batch?projectName=${projectName}`, payload)
 }
 
 // Delivery Center
