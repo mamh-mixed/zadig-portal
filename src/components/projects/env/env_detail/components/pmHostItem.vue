@@ -116,7 +116,9 @@ export default {
     },
     editHostDialogVisible (newVal, oldVal) {
       if (!newVal) {
-        this.serviceHosts = []
+        this.allHost = []
+      } else {
+        this.getHosts()
       }
     }
   }
