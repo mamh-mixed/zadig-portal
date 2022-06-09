@@ -369,6 +369,7 @@ export default {
           function sleep (time) {
             return new Promise(resolve => setTimeout(resolve, time))
           }
+          this.$store.commit('SET_MASK_STATUS', true)
           createHelmEnvAPI(
             this.projectConfig.product_name,
             [payload],
@@ -390,6 +391,7 @@ export default {
             },
             () => {
               this.startDeployLoading = false
+              this.$store.commit('SET_MASK_STATUS', false)
             }
           )
         }
