@@ -67,7 +67,9 @@ export default {
     addService (obj) {
       this.isEdit = false
       this.serviceName = ''
-      this.$refs['pm-service'].addNewService(obj)
+      this.$nextTick(() => {
+        this.$refs['pm-service'].addNewService(obj)
+      })
     },
     editService (obj) {
       this.serviceName = obj.service_name
