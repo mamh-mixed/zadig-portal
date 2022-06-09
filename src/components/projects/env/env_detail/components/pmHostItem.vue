@@ -2,7 +2,7 @@
   <div class="host-select">
     <el-input placeholder="请输入内容" v-model="keyword" size="small" class="search" @input="getHosts">
       <el-button slot="append" icon="el-icon-search"></el-button>
-    </el-input>{{serviceHosts}}
+    </el-input>
     <el-table :data="allHost" @select="handleSelectionChange" ref="multipleTable">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="name" label="主机名称"></el-table-column>
