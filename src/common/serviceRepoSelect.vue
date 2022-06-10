@@ -290,7 +290,7 @@ export default {
   data () {
     return {
       allCodeHosts: [],
-      codeInfo: {},
+      codeInfo: [[{ repo_owners: '', loading: '', branch: '' }], [{ repo_owners: '', loading: '', branch: '' }]],
       showAdvancedSetting: {},
       validateName: 'repoSelect',
       loading: {
