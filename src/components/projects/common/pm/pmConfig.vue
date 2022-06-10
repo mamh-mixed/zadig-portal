@@ -857,12 +857,12 @@ export default {
       const key = this.$utils.rsaEncrypt()
       Promise.all([getHostListAPI(key, projectName), getHostListAPI(key)]).then(res => {
         const projectOptions = res[0].map(item => {
-          item.label = item.id
+          item.label = item.name
           item.value = item.id
           return item
         })
         const systemOptions = res[1].map(item => {
-          item.label = item.id
+          item.label = item.name
           item.value = item.id
           return item
         })

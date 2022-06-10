@@ -1,6 +1,6 @@
 <template>
   <div class="host-select">
-    <el-input placeholder="请输入内容" v-model="keyword" size="small" class="search" @input="getHosts">
+    <el-input placeholder="搜索主机名称或主机 IP" v-model="keyword" size="small" class="search" @input="getHosts">
       <el-button slot="append" icon="el-icon-search"></el-button>
     </el-input>
     <el-table :data="allHost" @select="handleSelectionChange" ref="multipleTable">
