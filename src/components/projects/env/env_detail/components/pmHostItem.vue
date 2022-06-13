@@ -16,7 +16,7 @@
   </div>
 </template>
 <script>
-import { getHostListAPI } from '@api'
+import { getHostListAPI, getProjectHostListAPI } from '@api'
 
 export default {
   name: 'pmHostItem',
@@ -65,15 +65,19 @@ export default {
         this.currentTab === 'project'
           ? this.currentPmServiceData.product_name
           : ''
-      getHostListAPI(key, projectName, keyword).then(res => {
-        this.allHost = [...res]
-        if (this.currentTab === 'project') {
+      if (this.currentTab === 'project') {
+        getProjectHostListAPI(key, projectName, keyword).then(res => {
+          this.allHost = [...res]
           this.projectList = [...res]
-        } else {
+          this.updateRowSelection(this.serviceHosts)
+        })
+      } else {
+        getHostListAPI(key, keyword).then(res => {
+          this.allHost = [...res]
           this.systemList = [...res]
-        }
-        this.updateRowSelection(this.serviceHosts)
-      })
+          this.updateRowSelection(this.serviceHosts)
+        })
+      }
     },
     updateRowSelection (ids) {
       ids.forEach(id => {
@@ -99,7 +103,10 @@ export default {
         if (val.env_configs) {
           this.serviceHosts = []
           val.env_configs.forEach(item => {
-            this.serviceHosts = this.serviceHosts.concat(item.host_ids, item.labels)
+            this.serviceHosts = this.serviceHosts.concat(
+              item.host_ids,
+              item.labels
+            )
           })
         }
       },

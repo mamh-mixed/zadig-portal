@@ -23,7 +23,6 @@
 <script>
 import { addHostToPmEnvAPI } from '@api'
 import pmHostItem from './pmHostItem.vue'
-import { uniq } from 'lodash'
 export default {
   name: 'pmHostList',
   props: {
