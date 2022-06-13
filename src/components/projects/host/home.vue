@@ -117,7 +117,7 @@
 <script>
 import AddHost from '@/components/projects/common/pm/addHost.vue'
 import ImportHosts from './importHosts.vue'
-import { getHostListAPI, deleteHostAPI } from '@api'
+import { getProjectHostListAPI, deleteProjectHostAPI } from '@api'
 import bus from '@utils/eventBus'
 import { cloneDeep } from 'lodash'
 
@@ -229,7 +229,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(({ value }) => {
-          deleteHostAPI(id, this.projectName).then((res) => {
+          deleteProjectHostAPI(id, this.projectName).then((res) => {
             this.getHost()
             this.$message({
               message: '删除主机成功',
@@ -263,7 +263,7 @@ export default {
       this.loading = true
       const key = this.$utils.rsaEncrypt()
       const projectName = this.projectName
-      getHostListAPI(key, projectName).then((res) => {
+      getProjectHostListAPI(key, projectName).then((res) => {
         this.loading = false
         res.forEach(element => {
           // return val is hex

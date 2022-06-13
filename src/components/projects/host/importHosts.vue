@@ -82,7 +82,7 @@
 </template>
 <script>
 import XLSX from 'xlsx'
-import { importHostAPI } from '@api'
+import { importProjectHostAPI } from '@api'
 export default {
   name: 'ImportHosts',
   props: {
@@ -192,7 +192,7 @@ export default {
           data: result
         }
         const projectName = this.projectName
-        const res = await importHostAPI(projectName, payload).catch(err => {
+        const res = await importProjectHostAPI(projectName, payload).catch(err => {
           console.log(err)
         })
         if (res) {
