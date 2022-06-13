@@ -1488,6 +1488,14 @@ export function disableShareEnvAPI (envName, projectName) {
   return http.delete(`/api/aslan/environment/environments/${envName}/share/enable?projectName=${projectName}`)
 }
 
+export function checkEphemeralContainersAPI (clusterId) {
+  return http.get(`/api/aslan/cluster/${clusterId}/check/ephemeralcontainers`)
+}
+
+export function startEphemeralContainersDebugAPI ({ projectName, envName, podName, image }) {
+  return http.post(`/api/aslan/environment/kube/${envName}/pods/${podName}/debugcontainer?projectName=${projectName}&debugImage=${image}`)
+}
+
 // Login
 export function userLoginAPI (payload) {
   return http.post(`/api/v1/login`, payload)
