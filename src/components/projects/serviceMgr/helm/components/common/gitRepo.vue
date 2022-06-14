@@ -187,7 +187,8 @@ import {
   getRepoOwnerByIdAPI,
   getBranchInfoByIdAPI,
   getRepoFilesAPI,
-  createTemplateServiceAPI
+  createTemplateServiceAPI,
+  updateTemplateServiceAPI
 } from '@api'
 import GitFileTree from './gitFileTree'
 import GerritFileTree from '@/components/common/gitFileTree.vue'
@@ -426,10 +427,8 @@ export default {
           }
         }
       }
-      const res = await createTemplateServiceAPI(
-        projectName,
-        payload
-      ).catch(error => console.log(error))
+      const reqApi = this.isUpdate ? updateTemplateServiceAPI : createTemplateServiceAPI
+      const res = await reqApi(projectName, payload).catch(error => console.log(error))
       if (res) {
         this.closeFileTree(res)
       }
