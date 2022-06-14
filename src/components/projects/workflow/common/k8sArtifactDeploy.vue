@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form-item label="服务">
+    <el-form-item label="服务">{{allServices}}
       <el-select
         v-model="pickedTargetServices"
         @change="getServiceImg"

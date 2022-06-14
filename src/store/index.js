@@ -26,6 +26,9 @@ import projectPermission from './modules/projectPermission'
 // Global Permission
 import globalPermission from './modules/globalPermission'
 
+// new Workflow
+import customWorkflow from './modules/customWorkflow'
+
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -40,7 +43,8 @@ export default new Vuex.Store({
     serviceManage,
     k8sService,
     externalLink,
-    commonWorkflow
+    commonWorkflow,
+    customWorkflow
   },
   strict: debug
 })

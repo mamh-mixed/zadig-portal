@@ -95,8 +95,32 @@ const routes = [
             }
           },
           {
+            path: 'pipelines/custom/create',
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/customWorkflow'),
+            meta: {
+              requiresAuth: true,
+              title: '新建工作流'
+            }
+          },
+          {
+            path: 'pipelines/custom/edit/:workflow_name',
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/customWorkflow'),
+            meta: {
+              requiresAuth: true,
+              title: '编辑工作流'
+            }
+          },
+          {
             path: 'pipelines/multi/:workflow_name/:task_id',
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productTaskDetail.vue'),
+            meta: {
+              requiresAuth: true,
+              title: '任务详情'
+            }
+          },
+          {
+            path: 'pipelines/multi/custom/:workflow_name/:task_id',
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomDetail.vue'),
             meta: {
               requiresAuth: true,
               title: '任务详情'

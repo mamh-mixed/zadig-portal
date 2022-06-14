@@ -2069,3 +2069,31 @@ export function getRoleListAPI () {
 export function addSystemRoleAPI (payload) {
   return http.post(`/api/v1/system-roles `, payload)
 }
+// new workflow
+export function addCustomWorkflowAPI (payload) {
+  return http.post(`/api/aslan/workflow/v4 `, payload)
+}
+export function updateCustomWorkflowAPI (workflow_name, payload) {
+  return http.put(` /api/aslan/workflow/v4/${workflow_name} `, payload)
+}
+export function getCustomWorkflowListAPI (projectName, page_num = 1, page_size = 20) {
+  return http.get(`/api/aslan/workflow/v4?project=${projectName}&page_num=${page_num}&page_size=${page_size}`)
+}
+export function getCustomWorkfloweDetailAPI (workflow_name) {
+  return http.get(`/api/aslan/workflow/v4/name/${workflow_name}`)
+}
+export function deleteWorkflowAPI (workflow_name) {
+  return http.delete(`/api/aslan/workflow/v4/${workflow_name}`)
+}
+export function getCustomWorkfloweTaskPresetAPI (workflowName) {
+  return http.get(`/api/aslan/workflow/v4/preset/${workflowName}`)
+}
+export function runCustomWorkflowTaskAPI (payload) {
+  return http.post(`/api/aslan/workflow/v4/workflowtask`, payload)
+}
+export function getCustomWorkflowTaskListAPI (workflowName, page_num = 1, page_size = 20) {
+  return http.get(`/api/aslan/workflow/v4/workflowtask?workflowName=${workflowName}&page_num=${page_num}&page_size=${page_size}`)
+}
+export function deleteWorkflowTaskAPI (workflowName, id) {
+  return http.delete(`/api/aslan/workflow/v4/task/workflow/${workflowName}/id/${id}`)
+}

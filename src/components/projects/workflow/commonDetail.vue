@@ -36,7 +36,7 @@
     </el-card>
 
     <el-card class="box-card full" :body-style="{ padding: '0px', margin: '15px 0 30px 0' }">
-      <div slot="header" class="block-title">历史任务</div>
+      <div slot="header" class="block-title">历史任务1</div>
       <TaskList
         :taskList="workflowTasks"
         :total="total"
@@ -50,7 +50,12 @@
     </el-card>
 
     <el-dialog :visible.sync="taskDialogVisible" title="运行 通用-工作流" custom-class="run-workflow" width="60%" class="dialog">
-      <RunCommonWorkflow :value="taskDialogVisible" :workflow="commonToRun"></RunCommonWorkflow>
+      <RunCustomWorkflow
+        v-if="taskDialogVisible"
+        :workflowName="workflowName"
+        :projectName="projectName"
+        @success="hideAfterSuccess"
+      />
     </el-dialog>
   </div>
 </template>
@@ -60,10 +65,12 @@ import {
   getCommonWorkflowAPI,
   deleteCommonWorkflowAPI,
   getCommonWorkflowTasksAPI,
+  getCustomWorkflowTaskListAPI,
   getCommonWorkflowListInProjectAPI
 } from '@api'
 import TaskList from '@/components/projects/common/taskList.vue'
 import RunCommonWorkflow from './common/runCommonWorkflow.vue'
+import RunCustomWorkflow from './common/runCustomWorkflow'
 import bus from '@utils/eventBus'
 export default {
   data () {
@@ -74,7 +81,7 @@ export default {
       pageSize: 50,
       taskDialogVisible: false,
       durationSet: {},
-      pageStart: 0,
+      pageStart: 1,
       timerId: null,
       timeTimeoutFinishFlag: false,
       commonToRun: {},
@@ -99,13 +106,12 @@ export default {
       const workflowName = this.$route.params.workflow_name
       const pageStart = this.pageStart
       const pageSize = this.pageSize
-      const res = await getCommonWorkflowTasksAPI(
-        projectName,
+      const res = await getCustomWorkflowTaskListAPI(
         workflowName,
         pageStart,
         pageSize
       )
-      this.workflowTasks = res.data
+      this.workflowTasks = res.workflow_list
       this.total = res.total
       if (!this.timeTimeoutFinishFlag) {
         this.timerId = setTimeout(this.autoRefreshHistoryTask, 3000) // Keep only one timer
@@ -114,13 +120,14 @@ export default {
     getCommonWorkflowTasks (start, max) {
       const projectName = this.projectName
       const workflowName = this.workflowName
-      getCommonWorkflowTasksAPI(projectName, workflowName, start, max).then(
+      getCustomWorkflowTaskListAPI(workflowName, start, max).then(
         res => {
-          this.workflowTasks = res.data
+          console.log(res)
+          this.workflowTasks = res.workflow_list
           this.total = res.total
         }
       )
-      this.workflowTasks = res.data
+      this.workflowTasks = res.workflow_list
       this.total = res.total
     },
     changeTaskPage (val) {
@@ -191,6 +198,9 @@ export default {
       if (res) {
         this.usedInPolicy = res.workflow_list.find(re => re.name === this.workflowName).base_refs || []
       }
+    },
+    hideAfterSuccess () {
+      this.taskDialogVisible = false
     }
   },
   beforeDestroy () {
@@ -225,6 +235,7 @@ export default {
   },
   components: {
     RunCommonWorkflow,
+    RunCustomWorkflow,
     TaskList
   }
 }

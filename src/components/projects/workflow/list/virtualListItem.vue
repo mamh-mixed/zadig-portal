@@ -22,7 +22,7 @@
         type="primary"
         v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'run_workflow',resource:{type:'workflow',name:workflow.name}})"
         class="button-exec"
-        @click="startCommonWorkflowBuild(workflow)"
+        @click="startCustomWorkflowBuild(workflow)"
       >
         <span class="iconfont iconzhixing">&nbsp;执行</span>
       </el-button>
@@ -33,7 +33,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'edit_workflow', action: 'run_workflow', resource:{type:'workflow',name:workflow.name}})"
-        :to="`/workflows/common/edit/${workflow.name}?projectName=${workflow.project_name}&id=${workflow.id}`"
+        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.project_name}&id=${workflow.id}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
@@ -63,10 +63,9 @@
           <span class="iconfont iconzhixing">&nbsp;执行</span>
         </el-button>
       </el-tooltip>
-
       <router-link
         v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow',resource:{type:'workflow',name:workflow.name},isBtn: true})"
-        :to="`/workflows/product/edit/${workflow.name}?projectName=${workflow.projectName}`"
+        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}` : `/workflows/product/edit/${workflow.name}?projectName=${workflow.projectName}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
@@ -130,6 +129,7 @@ export default {
   },
   inject: [
     'startProductWorkflowBuild',
+    'startCustomWorkflowBuild',
     'copyWorkflow',
     'deleteProductWorkflow',
     'renamePipeline',
@@ -144,11 +144,17 @@ export default {
       return this.workflow.projectName
     },
     stages () {
-      return this.workflow.enabledStages
-        ? this.workflow.enabledStages.map(stage =>
-          this.wordTranslation(stage, 'workflowStage')
-        )
-        : []
+      let stages = []
+      if (this.workflow.workflow_type === 'common_workflow') {
+        stages = this.workflow.enabledStages
+      } else {
+        stages = this.workflow.enabledStages
+          ? this.workflow.enabledStages.map(stage =>
+            this.wordTranslation(stage, 'workflowStage')
+          )
+          : []
+      }
+      return stages
     }
   },
   methods: {

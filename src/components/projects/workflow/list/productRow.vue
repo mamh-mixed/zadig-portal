@@ -7,8 +7,9 @@
           <el-tooltip effect="dark" :content="name" placement="top">
             <span class="name-span">{{ name }}</span>
           </el-tooltip>
+          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" size="mini" class="custom">自定义</el-tag>
         </router-link>
-        <el-tag v-if="type === 'common'" size="mini">通用</el-tag>
+        <!-- <el-tag v-if="type === 'common'" size="mini">通用</el-tag> -->
       </div>
       <div class="gray-desc" style="margin-top: 4px;">
         <span style="display: inline-block; margin-right: 10px;">
@@ -128,7 +129,7 @@ export default {
     },
     pipelineLink () {
       return this.type === 'common'
-        ? `/v1/projects/detail/${this.projectName}/pipelines/common/${this.name}?id=${this.workflowInfo.id}`
+        ? `/v1/projects/detail/${this.projectName}/pipelines/common/${this.name}`
         : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}`
     }
   },
@@ -247,10 +248,12 @@ export default {
       a {
         color: @themeColor;
         font-weight: 500;
+        display: flex;
 
         .name-span {
           display: inline-block;
-          width: 160px;
+          margin-right: 8px;
+          // width: 160px;
           max-width: 160px;
           overflow: hidden;
           white-space: nowrap;
@@ -275,6 +278,7 @@ export default {
 
   .stages {
     flex: 0 0 18%;
+    margin-left: 24px;
   }
 
   .desc {
