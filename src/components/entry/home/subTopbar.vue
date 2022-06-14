@@ -190,6 +190,8 @@ export default {
 </script>
 <style lang="less">
 .subtopbar-container {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: row;
   align-items: center;

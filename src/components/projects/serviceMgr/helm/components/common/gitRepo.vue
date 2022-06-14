@@ -1,5 +1,5 @@
 <template>
-  <div class="git-repo-container">
+  <div class="git-repo-container" v-loading="loading" element-loading-spinner="*" element-loading-background="rgba(255, 255, 255, 0.2)">
     <div v-if="!controlParam.hiddenRepoSelect" class="repo-attr">
       <span>仓库属性</span>
       <el-radio-group v-model="gitName" :disabled="isUpdate">

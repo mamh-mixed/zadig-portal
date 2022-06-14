@@ -16,6 +16,7 @@
           </div>
           <FloatLink class="main-float" />
           <router-view></router-view>
+          <div class="content-mask" v-show="showMask"></div>
         </div>
       </div>
     </div>
@@ -69,7 +70,7 @@ export default {
         return false
       }
     },
-    ...mapGetters(['showSidebar'])
+    ...mapGetters(['showSidebar', 'showMask'])
   },
   watch: {
     isAdmin: {
@@ -81,6 +82,15 @@ export default {
       },
       immediate: true
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.$store.commit('SET_MASK_STATUS', false)
+    })
+  },
+  beforeRouteUpdate (to, from, next) {
+    this.$store.commit('SET_MASK_STATUS', false)
+    next()
   },
   components: {
     Sidebar,
@@ -166,23 +176,38 @@ body {
           height: 100%;
           transition: width 350ms, margin-width 230ms;
 
-          &.small-sidebar {
-            width: calc(~'100% - 80px');
-          }
-
           .announcement-container {
             position: absolute;
             top: 40px;
             right: 0;
             left: 0;
-            z-index: 1;
+            z-index: 2;
           }
 
           .main-float {
             position: fixed;
             right: 20px;
             bottom: 20px;
+            z-index: 2;
+          }
+
+          .content-mask {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 176px;
             z-index: 1;
+            background: rgba(0, 0, 0, 0.02);
+            cursor: not-allowed;
+          }
+
+          &.small-sidebar {
+            width: calc(~'100% - 80px');
+
+            .content-mask {
+              left: 80px;
+            }
           }
         }
       }
