@@ -270,6 +270,7 @@ import {
   createPmServiceAPI,
   updatePmServiceAPI,
   getHostListAPI,
+  getProjectHostListAPI,
   getHostLabelListAPI
 } from '@api'
 import Editor from 'vue2-ace-bind'
@@ -855,7 +856,7 @@ export default {
         this.allHostLabels = res
       })
       const key = this.$utils.rsaEncrypt()
-      Promise.all([getHostListAPI(key, projectName), getHostListAPI(key)]).then(res => {
+      Promise.all([getProjectHostListAPI(key, projectName), getHostListAPI(key)]).then(res => {
         const projectOptions = res[0].map(item => {
           item.label = item.name
           item.value = item.id
