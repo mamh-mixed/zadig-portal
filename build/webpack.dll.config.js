@@ -1,9 +1,9 @@
-const path    = require('path');
+const path = require('path');
 const webpack = require('webpack');
 const config = require('../config');
 module.exports = {
   entry: {
-      vendor: ['vue-router','vuex','vue/dist/vue.common.js','vue/dist/vue.js','vue','aes-js','echarts','lodash','node-forge','vue2-ace-bind']
+    vendor: ['vue-router', 'vuex', 'vue/dist/vue.common.js', 'vue/dist/vue.js', 'vue', 'echarts', 'lodash', 'node-forge', 'vue2-ace-bind', 'countup.js', 'diff', 'js-base64', 'js-yaml', 'jsencrypt', 'moment', 'qs', 'xterm','xterm-addon-attach','xterm-addon-fit','xterm-addon-search','xlsx','vue-virtual-scroll-list']
   },
   output: {
     path: path.join(__dirname, '../static/js'),
