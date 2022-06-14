@@ -922,6 +922,7 @@ export default {
         if (valid) {
           startEphemeralContainersDebugAPI(payload).then(res => {
             this.$message.success('创建成功')
+            this.fetchServiceData()
             this.ephemeralContainersDialog = {
               visible: false,
               source: 'builtin',
