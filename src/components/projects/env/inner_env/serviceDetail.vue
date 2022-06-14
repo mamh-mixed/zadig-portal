@@ -1,6 +1,6 @@
 <template>
   <div class="service-details-container">
-    <el-dialog :visible.sync="ephemeralContainersDialog.visible" title="启动调试容器" width="600px" :close-on-click-modal="false" :show-close="false" append-to-body>
+    <el-dialog :visible.sync="ephemeralContainersDialog.visible" title="启动调试容器" width="600px" :close-on-click-modal="false" class="ephemeralContainers-dialog" :show-close="false" append-to-body>
       <el-alert style="background: #fff;" title="调试容器正常启动后，点击「调试」按钮可对服务进行诊断" type="info" :closable="false"></el-alert>
       <el-form ref="ephemeralContainerForm" :model="ephemeralContainersDialog" label-width="90px">
         <el-form-item label="镜像来源">
@@ -922,6 +922,17 @@ export default {
         if (valid) {
           startEphemeralContainersDebugAPI(payload).then(res => {
             this.$message.success('创建成功')
+            this.ephemeralContainersDialog = {
+              visible: false,
+              source: 'builtin',
+              image: ''
+            }
+          }, () => {
+            this.ephemeralContainersDialog = {
+              visible: false,
+              source: 'builtin',
+              image: ''
+            }
           })
         } else {
           return false
@@ -954,6 +965,12 @@ export default {
 
 <style lang="less" scoped>
 @import "~@assets/css/component/service-detail.less";
+
+.ephemeralContainers-dialog {
+  /deep/ .el-dialog__body {
+    padding: 0 20px;
+  }
+}
 
 /deep/.ephemeral-badge {
   margin-left: auto;
