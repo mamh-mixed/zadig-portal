@@ -1319,8 +1319,8 @@ export function getClusterPvcAPI (clusterId, namespace) {
 }
 
 // Host
-export function getHostListAPI (key) {
-  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}`)
+export function getHostListAPI (key, keyword = '') {
+  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}&keyword=${keyword}`)
 }
 
 export function getHostLabelListAPI () {
@@ -1341,6 +1341,26 @@ export function deleteHostAPI (id) {
 
 export function importHostAPI (payload) {
   return http.post(`/api/aslan/system/privateKey/batch`, payload)
+}
+// project host
+export function getProjectHostListAPI (key, projectName = '', keyword = '') {
+  return http.get(`/api/aslan/project/pms?encryptedKey=${key}&projectName=${projectName}&keyword=${keyword}`)
+}
+
+export function createProjectHostAPI (projectName = '', payload) {
+  return http.post(`/api/aslan/project/pms?projectName=${projectName}`, payload)
+}
+
+export function updateProjectHostAPI (id, projectName = '', payload) {
+  return http.put(` /api/aslan/project/pms/${id}?projectName=${projectName}`, payload)
+}
+
+export function deleteProjectHostAPI (id, projectName) {
+  return http.delete(`/api/aslan/project/pms/${id}?projectName=${projectName}`)
+}
+
+export function importProjectHostAPI (projectName = '', payload) {
+  return http.post(`/api/aslan/project/pms/batch?projectName=${projectName}`, payload)
 }
 
 // Delivery Center

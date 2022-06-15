@@ -82,7 +82,7 @@
 </template>
 <script>
 import XLSX from 'xlsx'
-import { importHostAPI } from '@api'
+import { importHostAPI, importProjectHostAPI } from '@api'
 export default {
   name: 'ImportHosts',
   props: {
@@ -92,6 +92,10 @@ export default {
       default () {
         return []
       }
+    },
+    type: {
+      type: String,
+      default: 'system'
     }
   },
   data () {
@@ -108,13 +112,22 @@ export default {
           主机探活: ''
         }
       ],
-      host: { provider: '', option: 'increment', msg: '只能上传 xls/xlsx 文件' },
+      host: {
+        provider: '',
+        option: 'increment',
+        msg: '只能上传 xls/xlsx 文件'
+      },
       rules: {
         provider: [{ required: true, message: '请选择提供商', trigger: 'blur' }]
       },
       fileList: [],
       uploadBtnDisabled: false,
       fileJson: []
+    }
+  },
+  computed: {
+    projectName () {
+      return this.$route.params.project_name
     }
   },
   methods: {
@@ -128,12 +141,17 @@ export default {
       if (fileJson.length > 1) {
         const invalidItems = []
         fileJson.forEach((element, index) => {
-          if (!element['主机名称'] || !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(element['主机名称'])) {
+          if (
+            !element['主机名称'] ||
+            !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(element['主机名称'])
+          ) {
             invalidItems.push(index + 2)
           }
         })
         if (invalidItems.length > 0) {
-          this.host.msg = `主机名称仅支持英文字母、数字、下划线且首个字符不以数字开头 <br> 第 ${invalidItems.join(',')} 行主机名称不符合需求，请检查`
+          this.host.msg = `主机名称仅支持英文字母、数字、下划线且首个字符不以数字开头 <br> 第 ${invalidItems.join(
+            ','
+          )} 行主机名称不符合需求，请检查`
         } else {
           this.host.msg = '只能上传 xls/xlsx 文件'
         }
@@ -186,11 +204,23 @@ export default {
           option: option,
           data: result
         }
-        const res = await importHostAPI(payload).catch(err => {
-          console.log(err)
-        })
+        let res = {}
+        if (this.type === 'project') {
+          res = await importProjectHostAPI(this.projectName, payload).catch(err => {
+            console.log(err)
+          })
+        } else {
+          res = await importHostAPI('', payload).catch(err => {
+            console.log(err)
+          })
+        }
+
         if (res) {
-          this.host = { provider: '', option: 'increment', msg: '只能上传 xls/xlsx 文件' }
+          this.host = {
+            provider: '',
+            option: 'increment',
+            msg: '只能上传 xls/xlsx 文件'
+          }
           this.$message({
             type: 'success',
             message: '导入主机信息成功'

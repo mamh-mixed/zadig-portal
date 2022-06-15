@@ -668,6 +668,14 @@ const routes = [
           requiresAuth: true,
           title: '协作模式'
         }
+      },
+      {
+        path: 'projects/detail/:project_name/host',
+        component: () => import(/* webpackChunkName: "Project Host Management" */ '@/components/projects/host/home.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '主机管理'
+        }
       }
     ]
   },
@@ -828,7 +836,7 @@ const routes = [
       },
       {
         path: 'host',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/host/manage.vue'),
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/host'),
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
