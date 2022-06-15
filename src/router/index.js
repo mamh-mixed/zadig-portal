@@ -836,7 +836,7 @@ const routes = [
       },
       {
         path: 'host',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/host/manage.vue'),
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/host'),
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,

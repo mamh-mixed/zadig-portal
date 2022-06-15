@@ -135,7 +135,6 @@
                       :value="item.value">
                     </el-option>
                   </el-option-group>
-                  <!-- <el-option v-for="(item,index) in  allHost" :key="index" :label="item.label" :value="item.value"></el-option> -->
                 </el-select>
               </el-form-item>
             </el-radio>

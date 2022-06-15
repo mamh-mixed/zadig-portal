@@ -9,7 +9,7 @@
       <el-table-column prop="ip" label="主机 IP"></el-table-column>
       <el-table-column prop="label" label="标签" width="100" :filters="filtersList" :filter-method="filterTag" filter-placement="bottom-end">
         <template slot-scope="scope" v-if="scope.row.label">
-          <el-tag disable-transitions>{{scope.row.label}}</el-tag>
+          <el-tag size="small" disable-transitions>{{scope.row.label}}</el-tag>
         </template>
       </el-table-column>
     </el-table>
@@ -47,11 +47,16 @@ export default {
   },
   computed: {
     filtersList: function () {
-      return this.allHost.map(item => {
-        item.text = item.label
-        item.value = item.label
-        return item
+      const arr = []
+      this.allHost.forEach(item => {
+        const filter = {}
+        if (item.label) {
+          filter.text = item.label
+          filter.value = item.label
+          arr.push(filter)
+        }
       })
+      return arr
     }
   },
   created () {

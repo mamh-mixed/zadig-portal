@@ -126,7 +126,7 @@
           </button>
           <el-dropdown-menu slot="dropdown" class="project-config">
             <el-dropdown-item icon="el-icon-edit-outline" @click.native="$router.push(`/v1/projects/edit/${projectName}`)">修改</el-dropdown-item>
-            <el-dropdown-item @click.native="$router.push(`/v1/projects/detail/${projectName}/host`)">
+            <el-dropdown-item v-if="deployType === 'cloud_host'" @click.native="$router.push(`/v1/projects/detail/${projectName}/host`)">
              <i class="iconfont iconwuliji"></i>主机管理
             </el-dropdown-item>
             <el-dropdown-item icon="el-icon-lock" @click.native="$router.push(`/v1/projects/detail/${projectName}/rbac`)">权限</el-dropdown-item>
