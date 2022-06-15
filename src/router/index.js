@@ -671,7 +671,7 @@ const routes = [
       },
       {
         path: 'projects/detail/:project_name/host',
-        component: () => import(/* webpackChunkName: "project-policy" */ '@/components/projects/host/home.vue'),
+        component: () => import(/* webpackChunkName: "Project Host Management" */ '@/components/projects/host/home.vue'),
         meta: {
           requiresAuth: true,
           title: '主机管理'
