@@ -279,7 +279,6 @@ export default {
       clearTimeout(sId)
       this.importLoading = false
       if (res) {
-        this.$message.success(`导入模板成功`)
         this.commitDialogVisible(false)
         this.$store.dispatch('queryService', {
           projectName: this.projectName,
@@ -294,6 +293,7 @@ export default {
         }))
 
         if (res.failedServices.length) {
+          this.$message.success(`创建部分服务成功`)
           let message = ``
           res.failedServices.forEach(fail => {
             message += `<div style="margin-bottom: 10px;"><span style="color: #e6a23c;">${fail.path}</span>: ${fail.error}</div>`
@@ -304,6 +304,8 @@ export default {
             duration: 0,
             title: '批量创建失败服务列表'
           })
+        } else {
+          this.$message.success(`创建服务成功`)
         }
       }
     },
