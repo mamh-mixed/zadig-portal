@@ -514,6 +514,19 @@ export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName
   return http.post(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
 }
 
+export function updateLoadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', namespace = '', payload) {
+  const params = {
+    projectName: projectName,
+    repoOwner: repoOwner,
+    repoName: repoName,
+    branchName: branchName,
+    remoteName: remoteName,
+    repoUUID: repoUUID,
+    namespace: namespace
+  }
+  return http.put(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
+}
+
 export function validPreloadService (codehostId, repoOwner, repoName, branchName, path, serviceName, isDir = false, remoteName = '', repoUUID = '') {
   const params = {
     repoOwner: repoOwner,
@@ -1682,6 +1695,10 @@ export function createTemplateServiceAPI (projectName, payload) {
   return http.post(`/api/aslan/service/helm/services?projectName=${projectName}`, payload)
 }
 
+export function updateTemplateServiceAPI (projectName, payload) {
+  return http.put(`/api/aslan/service/helm/services?projectName=${projectName}`, payload)
+}
+
 export function createTemplateMultiServiceAPI (projectName, payload) {
   return http.post(`/api/aslan/service/helm/services/bulk?projectName=${projectName}`, payload)
 }
@@ -1761,7 +1778,7 @@ export function loadServiceFromKubernetesTemplateAPI (payload, projectName = '')
 }
 
 export function reloadServiceFromKubernetesTemplateAPI (payload, projectName = '') {
-  return http.post(`/api/aslan/service/template/reload?projectName=${projectName}`, payload)
+  return http.put(`/api/aslan/service/template/reload?projectName=${projectName}`, payload)
 }
 
 // Template Build

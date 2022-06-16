@@ -57,6 +57,7 @@ import CommonImportValues from '@/components/projects/common/importValues/index.
 import ImportValues from './templateRepo/importValues.vue'
 import {
   createTemplateServiceAPI,
+  updateTemplateServiceAPI,
   createTemplateMultiServiceAPI,
   getChartTemplatesAPI,
   getHelmTemplateVariableAPI
@@ -223,8 +224,8 @@ export default {
       if (this.importRepoInfo.gitRepoConfig && this.importRepoInfo.gitRepoConfig.autoSync) {
         payload.valuesData.autoSync = this.importRepoInfo.gitRepoConfig.autoSync
       }
-
-      const res = await createTemplateServiceAPI(projectName, payload).catch(
+      const reqApi = this.isUpdate ? updateTemplateServiceAPI : createTemplateServiceAPI
+      const res = await reqApi(projectName, payload).catch(
         err => {
           console.log(err)
         }
