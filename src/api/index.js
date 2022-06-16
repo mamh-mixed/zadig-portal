@@ -1794,7 +1794,7 @@ export function loadServiceFromKubernetesTemplateAPI (payload, projectName = '')
 }
 
 export function reloadServiceFromKubernetesTemplateAPI (payload, projectName = '') {
-  return http.put(`/api/aslan/service/template/reload?projectName=${projectName}`, payload)
+  return http.post(`/api/aslan/service/template/reload?projectName=${projectName}`, payload)
 }
 
 // Template Build
