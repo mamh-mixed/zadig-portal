@@ -873,6 +873,21 @@ export function deleteSystemRoleBindingsAPI (name) {
   return http.delete(`/api/v1/system-rolebindings/${name}`)
 }
 
+// 获取角色定义列表
+export function getRolePolicyListAPI (role) {
+  return http.get(`/api/v1/policy-definitions?scope=${role}`)
+}
+
+// 获取角色列表
+export function getRoleListAPI () {
+  return http.get(`/api/v1/system-roles`)
+}
+
+// 新增角色
+export function addSystemRoleAPI (payload) {
+  return http.post(`/api/v1/system-roles `, payload)
+}
+
 // ----- System Setting-Integration -----
 
 // Code
@@ -1214,10 +1229,11 @@ export function setCapacityAPI (payload) {
 export function cleanCacheAPI () {
   return http.post('/api/aslan/system/cleanCache/oneClick')
 }
-// 定时清理
+
 export function timingCleanAPI (payload) {
   return http.post('/api/aslan/system/cleanCache/cron', payload)
 }
+
 export function getCleanCacheStatusAPI () {
   return http.get('/api/aslan/system/cleanCache/state')
 }
@@ -2100,17 +2116,4 @@ export function deleteConfigObjectAPI ({ objectName, projectName, envName, commo
 
 export function getObjectHistoryVersionAPI ({ objectName, projectName, envName, commonEnvCfgType }) {
   return http.get(`/api/aslan/environment/envcfgs/${envName}/cfg/${objectName}?projectName=${projectName}&commonEnvCfgType=${commonEnvCfgType}`)
-}
-
-// 获取角色定义列表
-export function getRolePolicyListAPI (role) {
-  return http.get(`/api/v1/policy-definitions?scope=${role}`)
-}
-// 获取角色列表
-export function getRoleListAPI () {
-  return http.get(`/api/v1/system-roles`)
-}
-// 新增角色
-export function addSystemRoleAPI (payload) {
-  return http.post(`/api/v1/system-roles `, payload)
 }
