@@ -170,8 +170,8 @@ export default {
     },
     addHost (service) {
       const allHostIds = this.allHost.map(item => {
-        return item.id
-      })
+        return item.options.map(option => option.id)
+      }).flat()
       const labels = service.host_with_labels.filter(item => {
         return allHostIds.indexOf(item) < 0
       })
