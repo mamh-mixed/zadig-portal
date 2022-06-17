@@ -773,6 +773,11 @@ export default {
     },
     refreshServiceList () {
       this.initPageInfo()
+      // Helm: update chart list
+      if (this.envSource === 'helm') {
+        this.filterChartName = '*'
+        this.$refs.chartListRef.getChartNames(this.envName)
+      }
       this.getEnvServices('search')
       this.fetchEnvRevision()
     },
