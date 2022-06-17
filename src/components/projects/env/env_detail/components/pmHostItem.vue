@@ -3,7 +3,7 @@
     <el-input placeholder="搜索主机名称或主机 IP" v-model="keyword" size="small" class="search" @input="getHosts">
       <el-button slot="append" icon="el-icon-search"></el-button>
     </el-input>
-    <el-table :data="allHost" @select="handleSelectionChange" ref="multipleTable">
+    <el-table :data="allHost" @select="handleSelectionChange" @select-all="handleSelectionChange" ref="multipleTable">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="name" label="主机名称"></el-table-column>
       <el-table-column prop="ip" label="主机 IP"></el-table-column>
