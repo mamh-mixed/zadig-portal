@@ -757,17 +757,16 @@ export default {
     },
     async handlePmService (buildConfigPayload, pmServicePayload) {
       buildConfigPayload.product_name = this.projectName
-
       const hostIds = this.allHost.map(item => {
-        return item.id
-      })
+        return item.options.map(id => id.id)
+      }).flat()
       // 处理主机标签
       pmServicePayload.env_configs.forEach(element => {
         element.labels = element.host_ids.filter(item => {
           return hostIds.indexOf(item) < 0
         })
         element.host_ids = element.host_ids.filter(item => {
-          return hostIds.indexOf(item) < 0
+          return hostIds.indexOf(item) >= 0
         })
       })
       const combinePayload = {
