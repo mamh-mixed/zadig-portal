@@ -684,11 +684,17 @@ const utils = {
       return `${cluster.name} （${cluster.production ? '生产集群' : '测试集群'})`
     }
   },
-  showServiceName (serviceName) {
-    if (serviceName.includes('_')) {
-      return `${serviceName.split('_')[0]} (${serviceName.split('_')[1]})`
+  showServiceName (unionString, serviceName = '') {
+    // The serviceName parameter is split by '_servicename' if present, otherwise it is split by '_'
+    if (serviceName) {
+      const serviceComponent = unionString.split('_' + serviceName)[0]
+      return `${serviceName} (${serviceComponent})`
     } else {
-      return serviceName
+      if (unionString.includes('_')) {
+        return `${unionString.split('_')[0]} (${unionString.split('_')[1]})`
+      } else {
+        return unionString
+      }
     }
   },
   // 随机生成32位aesKey

@@ -25,7 +25,7 @@
                 <i class="el-icon-warning" style="color: red;"></i>
               </el-tooltip>
             </el-form-item>
-            <el-form-item v-if="taskDetail.releases.length > 0 && taskDetail.status==='passed'" label="交付清单">
+            <el-form-item v-if="taskDetail.releases && taskDetail.releases.length > 0 && taskDetail.status==='passed'" label="交付清单">
               <router-link
                 :to="`/v1/delivery/version/detail/${projectName}/${taskDetail.releases[0].id}?version=${taskDetail.releases[0].version}&type=k8s`"
               >
@@ -58,7 +58,7 @@
           <div class="build-summary" v-if="buildSummary.length > 0">
             <el-table :data="buildSummary" style="width: 90%;" class="blank-background-header">
               <el-table-column label="服务" min-width="160">
-                <template slot-scope="scope">{{$utils.showServiceName(scope.row.service_name)}}</template>
+                <template slot-scope="scope">{{scope.row.service_name}}</template>
               </el-table-column>
               <el-table-column label="代码" min-width="160">
                 <template slot-scope="scope">
@@ -163,7 +163,7 @@
 
           <el-table-column prop="_target" label="服务" min-width="200px">
             <template slot-scope="scope">
-              <span>{{$utils.showServiceName(scope.row._target)}}</span>
+              <span>{{$utils.showServiceName(scope.row._target,scope.row.buildv2SubTask.service)}}</span>
             </template>
           </el-table-column>
 
@@ -234,7 +234,7 @@
 
           <el-table-column prop="_target" label="服务" min-width="200px">
             <template slot-scope="scope">
-              <span>{{$utils.showServiceName(scope.row._target)}}</span>
+              <span>{{$utils.showServiceName(scope.row._target,scope.row.deploySubTask.service_name)}}</span>
             </template>
           </el-table-column>
 
@@ -642,7 +642,7 @@ export default {
           currentIssues = null
         }
         return {
-          service_name: element._target,
+          service_name: this.$utils.showServiceName(element._target, element.buildv2SubTask.service),
           builds: _.get(element, 'buildv2SubTask.job_ctx.builds', ''),
           issues: currentIssues ? currentIssues.issues : [],
           envs: envs[element._target] || []
