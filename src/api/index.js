@@ -327,8 +327,8 @@ export function serviceTemplateAfterRenderAPI (projectName, serviceName, envName
   return http.get(`/api/aslan/environment/diff/products/${projectName}/service/${serviceName}?projectName=${projectName}&envName=${envName}`)
 }
 
-export function saveServiceTemplateAPI (payload) {
-  return http.post(`/api/aslan/service/services?projectName=${payload.product_name}`, payload)
+export function saveServiceTemplateAPI (isEdit = false, payload) {
+  return http.post(`/api/aslan/service/services?projectName=${payload.product_name}&force=${isEdit}`, payload)
 }
 
 export function updateServicePermissionAPI (projectName, data) {

@@ -150,6 +150,7 @@ export default {
         ? this.service.visibility
         : 'private'
       const yaml = this.service.yaml
+      const isEdit = this.serviceInTree.status === 'added'
       const payload = {
         product_name: projectName,
         service_name: serviceName,
@@ -158,7 +159,7 @@ export default {
         yaml: yaml,
         source: 'spock'
       }
-      return saveServiceTemplateAPI(payload).then(res => {
+      return saveServiceTemplateAPI(isEdit, payload).then(res => {
         this.$message({
           type: 'success',
           message: `服务 ${payload.service_name} 保存成功`
