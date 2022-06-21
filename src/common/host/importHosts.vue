@@ -109,7 +109,16 @@ export default {
           标签: '',
           'SSH 私钥': '',
           '是否生产机器(y/n)': '',
-          主机探活: ''
+          主机探活: JSON.stringify({
+            probe_type: '',
+            http_probe: {
+              path: '',
+              port: 80,
+              http_headers: [],
+              timeout_second: 0,
+              response_success_flag: ''
+            }
+          })
         }
       ],
       host: {
@@ -197,7 +206,7 @@ export default {
             is_prod: item['是否生产机器(y/n)'] === 'y',
             user_name: item['用户名'],
             private_key: window.btoa(item['SSH 私钥']),
-            probe: JSON.parse(item['主机探活'])
+            probe: item['主机探活'] ? JSON.parse(item['主机探活']) : null
           }
         })
         const payload = {
