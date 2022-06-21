@@ -11,6 +11,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
+const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 
 const env = require('../config/prod.env');
 
@@ -117,7 +118,14 @@ const webpackConfig = merge(baseWebpackConfig, {
     new webpack.DllReferencePlugin({
       context: __dirname,
       manifest: require('../static/vendor-manifest.json')
-    })
+    }),
+    new IncludeAssetsPlugin({
+
+      assets: [`${config.build.assetsSubDirectory}/js/vendor.dll.js`],
+
+      append: false
+
+    }),
   ]
 });
 
