@@ -221,7 +221,8 @@ export default {
       el.overflow = 'auto'
     },
     openBuildLog (buildType) {
-      let url = `/api/aslan/logs/sse/workflow/build/${this.pipelineName}/${this.taskID}/999999/${this.serviceName}?subTask=${buildType}&projectName=${this.projectName}`
+      const serviceModule = this.serviceName.split('_' + this.originServiceName)[0]
+      let url = `/api/aslan/logs/sse/workflow/build/${this.pipelineName}/${this.taskID}/999999/${this.serviceName}?subTask=${buildType}&projectName=${this.projectName}&serviceModule=${serviceModule}`
       if (this.serviceType === 'pm') {
         url = `/api/aslan/logs/sse/workflow/build/${this.pipelineName}/${this.taskID}/999999/${this.serviceName}?subTask=buildv2&envName=${this.envName}&projectName=${this.projectName}`
       }
@@ -307,6 +308,10 @@ export default {
       required: true
     },
     serviceName: {
+      type: String,
+      default: ''
+    },
+    originServiceName: {
       type: String,
       default: ''
     },

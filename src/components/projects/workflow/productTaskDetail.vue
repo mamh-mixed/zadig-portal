@@ -152,6 +152,7 @@
                 :docker_build="scope.row.docker_buildSubTask"
                 :isWorkflow="true"
                 :serviceName="scope.row._target"
+                :originServiceName="scope.row.buildv2SubTask.service"
                 :pipelineName="workflowName"
                 :projectName="projectName"
                 :taskID="taskID"
