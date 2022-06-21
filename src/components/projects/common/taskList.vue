@@ -57,8 +57,8 @@
         <template slot-scope="{ row }">
           <template v-if="row.service_modules && row.service_modules.length > 0">
             <div v-for="(item,index) in row.service_modules" :key="index" class="common-column hover-color">
-              <el-tooltip effect="dark" :content="`${item.service_name}(${item.service_module})`" placement="top">
-                <span class="service-name-span">{{`${item.service_name}(${item.service_module})`}}</span>
+              <el-tooltip effect="dark" :content="`${item.service_module}(${item.service_name})`" placement="top">
+                <span class="service-name-span">{{`${item.service_module}(${item.service_name})`}}</span>
               </el-tooltip>
             </div>
           </template>
