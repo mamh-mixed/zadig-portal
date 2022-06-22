@@ -55,10 +55,10 @@
                        min-width="180"
                        label="服务名称">
         <template slot-scope="{ row }">
-          <template v-if="row.build_services && row.build_services.length > 0">
-            <div v-for="item in row.build_services.slice().sort()" :key="item" class="common-column hover-color">
-              <el-tooltip effect="dark" :content="$utils.showServiceName(item)" placement="top">
-                <span class="service-name-span">{{$utils.showServiceName(item)}}</span>
+          <template v-if="row.service_modules && row.service_modules.length > 0">
+            <div v-for="(item,index) in row.service_modules" :key="index" class="common-column hover-color">
+              <el-tooltip effect="dark" :content="`${item.service_module}(${item.service_name})`" placement="top">
+                <span class="service-name-span">{{`${item.service_module}(${item.service_name})`}}</span>
               </el-tooltip>
             </div>
           </template>

@@ -48,11 +48,16 @@
                         placeholder="请选择要关联的主机"
                         size="small"
                       >
-                        <el-option-group label="主机标签">
-                          <el-option v-for="(item,index) in allHostLabels" :key="index" :label="`${item}`" :value="item"></el-option>
-                        </el-option-group>
-                        <el-option-group label="主机列表">
-                          <el-option v-for="(host,index) in  allHost" :key="index" :label="`${host.name}-${host.ip}`" :value="host.id"></el-option>
+                        <el-option-group
+                          v-for="group in allHost"
+                          :key="group.label"
+                          :label="group.label">
+                          <el-option
+                            v-for="item in group.options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
                         </el-option-group>
                       </el-select>
                     </el-form-item>
@@ -89,6 +94,7 @@ import {
   initProjectEnvAPI,
   createProductAPI,
   getHostListAPI,
+  getProjectHostListAPI,
   getHostLabelListAPI
 } from '@api'
 import bus from '@utils/eventBus'
@@ -139,14 +145,33 @@ export default {
         this.allHostLabels = res
       })
       const key = this.$utils.rsaEncrypt()
-      getHostListAPI(key).then(res => {
-        this.allHost = res
+      Promise.all([getProjectHostListAPI(key, this.projectName), getHostListAPI(key)]).then(res => {
+        const projectOptions = res[0].map(item => {
+          item.label = item.name
+          item.value = item.id
+          return item
+        })
+        const systemOptions = res[1].map(item => {
+          item.label = item.name
+          item.value = item.id
+          return item
+        })
+        this.allHost = [
+          {
+            label: '项目资源',
+            options: projectOptions
+          },
+          {
+            label: '系统资源',
+            options: systemOptions
+          }
+        ]
       })
     },
     addHost (service) {
       const allHostIds = this.allHost.map(item => {
-        return item.id
-      })
+        return item.options.map(option => option.id)
+      }).flat()
       const labels = service.host_with_labels.filter(item => {
         return allHostIds.indexOf(item) < 0
       })
