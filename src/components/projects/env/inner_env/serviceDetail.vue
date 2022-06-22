@@ -293,11 +293,11 @@
                             <span class="title">健康探测：</span>
                             <span
                               class="content"
-                              :style="{ color: activePod[scope.$index].containers_ready === 'not ready' ? 'red' : 'inherit'}"
-                            >{{ activePod[scope.$index].containers_ready }}</span>
+                              :style="{ color: activePod[scope.$index].containers_ready ? 'inherit' : 'red' }"
+                            >{{ activePod[scope.$index].containers_ready ? 'ready' : 'not ready' }}</span>
                             <el-tooltip effect="dark" :content="activePod[scope.$index].containers_message" placement="top">
                               <i
-                                v-show="activePod[scope.$index].containers_ready === 'not ready'"
+                                v-show="!activePod[scope.$index].containers_ready"
                                 class="el-icon-warning-outline"
                                 style="color: red; vertical-align: middle;"
                               ></i>
@@ -357,7 +357,7 @@
                             <span class="content">{{ container.status }}</span>
                             <el-tooltip effect="dark" content="未通过健康监测" placement="top">
                               <i
-                                v-show="container.ready === 'not ready'"
+                                v-show="!container.ready"
                                 class="el-icon-warning-outline"
                                 style="color: red; vertical-align: middle;"
                               ></i>
@@ -685,7 +685,7 @@ export default {
           res.scales.forEach(scale => {
             scale.pods.forEach(pod => {
               pod.status = pod.status.toLowerCase()
-              pod.__color = pod.pod_ready === 'ready' ? this.statusColorMap[pod.status] : this.statusColorMap['pod not ready']
+              pod.__color = this.statusColorMap[pod.pod_ready ? pod.status : 'pod not ready']
               pod.canOperate = !(pod.status in {
                 pending: 1,
                 terminating: 1
@@ -695,7 +695,7 @@ export default {
                 con.image2Apply = con.image
                 con.imageShort = con.image.split('/').pop()
                 con.status = con.status.toLowerCase()
-                con.__color = pod.pod_ready === 'ready' ? this.statusColorMap[con.status] : this.statusColorMap['pod not ready']
+                con.__color = this.statusColorMap[pod.pod_ready ? con.status : 'pod not ready']
                 con.startedAtReadable = con.started_at
                   ? moment(con.started_at, 'X').format('YYYY-MM-DD HH:mm:ss')
                   : ''
