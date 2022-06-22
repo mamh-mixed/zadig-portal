@@ -69,7 +69,7 @@
                     @change="getRepoNameById(targetIndex,repoIndex,target.repos[repoIndex].codehost_id,target.repos[repoIndex]['repo_owner'])"
                     v-model.trim="target.repos[repoIndex]['repo_owner']"
                     remote
-                    :remote-method="(query)=>{searchNamespace(repoIndex,query)}"
+                    :remote-method="(query)=>{searchNamespace(targetIndex,repoIndex,query)}"
                     @clear="searchNamespace(targetIndex,repoIndex,'')"
                     loading-text="加载中，支持手动创建"
                     allow-create
