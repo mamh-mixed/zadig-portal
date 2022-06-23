@@ -336,7 +336,7 @@
                       </el-row>
                       <el-row v-for="container of activePod[scope.$index].containers"
                               :key="container.name"
-                              :class="['container-row', container.__color]">
+                              :class="['container-row', container.__color || activePod[scope.$index].__color]">
                         <el-col :span="12">
                           <div>
                             <span class="title">容器名称：</span>
@@ -575,10 +575,10 @@ export default {
         running: 'green',
         pending: 'yellow',
         failed: 'red',
-        unstable: 'red',
+        unstable: 'light-red',
         unknown: 'purple',
         terminating: 'gray',
-        'pod not ready': 'red'
+        'pod not ready': 'dark-red'
       },
       registryId: '',
       servicesLoading: true,
@@ -685,7 +685,7 @@ export default {
           res.scales.forEach(scale => {
             scale.pods.forEach(pod => {
               pod.status = pod.status.toLowerCase()
-              pod.__color = this.statusColorMap[pod.pod_ready ? pod.status : 'pod not ready']
+              pod.__color = this.statusColorMap[!pod.pod_ready && pod.status === 'running' ? 'pod not ready' : pod.status]
               pod.canOperate = !(pod.status in {
                 pending: 1,
                 terminating: 1
@@ -695,7 +695,7 @@ export default {
                 con.image2Apply = con.image
                 con.imageShort = con.image.split('/').pop()
                 con.status = con.status.toLowerCase()
-                con.__color = this.statusColorMap[pod.pod_ready ? con.status : 'pod not ready']
+                con.__color = this.statusColorMap[!pod.pod_ready && pod.status === 'running' ? 'pod not ready' : con.status]
                 con.startedAtReadable = con.started_at
                   ? moment(con.started_at, 'X').format('YYYY-MM-DD HH:mm:ss')
                   : ''
