@@ -11,7 +11,7 @@
                 <div class="item-detail">
                   <div>
                     <span class="key">服务名称：</span>
-                    <span class="value">{{$utils.showServiceName(artifact.name)}}</span>
+                    <span class="value">{{artifact.name}}</span>
                   </div>
                   <template v-if="artifact.type==='image'">
                     <div>
