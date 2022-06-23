@@ -289,6 +289,20 @@
                             <span class="title">实例 IP：</span>
                             <span class="content">{{ activePod[scope.$index].ip }}</span>
                           </div>
+                          <div>
+                            <span class="title">健康探测：</span>
+                            <span
+                              class="content"
+                              :style="{ color: activePod[scope.$index].containers_ready ? 'inherit' : 'red' }"
+                            >{{ activePod[scope.$index].containers_ready ? 'ready' : 'not ready' }}</span>
+                            <el-tooltip effect="dark" :content="activePod[scope.$index].containers_message" placement="top">
+                              <i
+                                v-show="!activePod[scope.$index].containers_ready"
+                                class="el-icon-warning-outline"
+                                style="color: red; vertical-align: middle; cursor: pointer;"
+                              ></i>
+                            </el-tooltip>
+                          </div>
                         </el-col>
                         <el-col :span="6">
                           <span class="title">运行时长：</span>
@@ -341,6 +355,13 @@
                           <div>
                             <span class="title">状态：</span>
                             <span class="content">{{ container.status }}</span>
+                            <el-tooltip effect="dark" content="未通过健康监测" placement="top">
+                              <i
+                                v-show="!container.ready"
+                                class="el-icon-warning-outline"
+                                style="color: red; vertical-align: middle; cursor: pointer;"
+                              ></i>
+                            </el-tooltip>
                           </div>
                           <div v-if="container.startedAtReadable">
                             <span class="title">启动时间：</span>
@@ -556,7 +577,8 @@ export default {
         failed: 'red',
         unstable: 'red',
         unknown: 'purple',
-        terminating: 'gray'
+        terminating: 'gray',
+        'pod not ready': 'red'
       },
       registryId: '',
       servicesLoading: true,
@@ -663,7 +685,7 @@ export default {
           res.scales.forEach(scale => {
             scale.pods.forEach(pod => {
               pod.status = pod.status.toLowerCase()
-              pod.__color = this.statusColorMap[pod.status]
+              pod.__color = this.statusColorMap[pod.pod_ready ? pod.status : 'pod not ready']
               pod.canOperate = !(pod.status in {
                 pending: 1,
                 terminating: 1
@@ -673,7 +695,7 @@ export default {
                 con.image2Apply = con.image
                 con.imageShort = con.image.split('/').pop()
                 con.status = con.status.toLowerCase()
-                con.__color = this.statusColorMap[con.status]
+                con.__color = this.statusColorMap[pod.pod_ready ? con.status : 'pod not ready']
                 con.startedAtReadable = con.started_at
                   ? moment(con.started_at, 'X').format('YYYY-MM-DD HH:mm:ss')
                   : ''
