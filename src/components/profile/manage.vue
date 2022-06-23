@@ -24,7 +24,7 @@
         <el-button type="primary" @click="updateUserInfo">确 定</el-button>
       </span>
     </el-dialog>
-    <div class="section">
+    <div v-if="currentEditUserInfo" class="section">
       <div class="Box">
         <div class="row">
           <div class="edit-columns">
@@ -33,7 +33,7 @@
             </div>
           </div>
           <div class="info-tag">
-            <span class="username">{{currentEditUserInfo.name}}</span>
+            <span  class="username">{{currentEditUserInfo.name}}</span>
             <el-tag v-if="role.includes('admin')" size="mini" type="primary">管理员</el-tag>
             <el-tag v-else size="mini" type="primary">普通用户</el-tag>
           </div>
