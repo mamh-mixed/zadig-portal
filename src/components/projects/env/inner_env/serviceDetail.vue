@@ -355,7 +355,7 @@
                           <div>
                             <span class="title">状态：</span>
                             <span class="content">{{ container.status }}</span>
-                            <el-tooltip effect="dark" content="未通过健康监测" placement="top">
+                            <el-tooltip effect="dark" content="未通过健康探测" placement="top">
                               <i
                                 v-show="!container.ready"
                                 class="el-icon-warning-outline"
