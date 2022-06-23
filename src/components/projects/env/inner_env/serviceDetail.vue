@@ -299,7 +299,7 @@
                               <i
                                 v-show="!activePod[scope.$index].containers_ready"
                                 class="el-icon-warning-outline"
-                                style="color: red; vertical-align: middle;"
+                                style="color: red; vertical-align: middle; cursor: pointer;"
                               ></i>
                             </el-tooltip>
                           </div>
@@ -359,7 +359,7 @@
                               <i
                                 v-show="!container.ready"
                                 class="el-icon-warning-outline"
-                                style="color: red; vertical-align: middle;"
+                                style="color: red; vertical-align: middle; cursor: pointer;"
                               ></i>
                             </el-tooltip>
                           </div>
