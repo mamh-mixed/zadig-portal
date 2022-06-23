@@ -44,6 +44,7 @@
             filterable
             :disabled="createShare"
             v-model="projectConfig.cluster_id"
+            @change="changeCluster"
             size="small"
             placeholder="请选择 K8s 集群"
           >
