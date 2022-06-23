@@ -21,7 +21,7 @@
                  :desc="from">
       </van-panel>
       <van-panel title="最近登录"
-                 :desc="$utils.convertTimestamp(currentEditUserInfo.info.lastLoginTime)">
+                 :desc="$utils.convertTimestamp(currentEditUserInfo.info.last_login_time)">
       </van-panel>
       <van-panel v-if="jwtToken"
                  title="API Token"
