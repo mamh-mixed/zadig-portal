@@ -65,7 +65,7 @@
                 :prop="'env_configs.'+item_index+'.host_ids'"
                 :rules="{required: false, message: '请选择主机', trigger: 'blur'}"
               >
-                <el-button v-if="allHost.length===0" @click="$router.push('/v1/system/host')" type="text">创建主机</el-button>
+                <el-button v-if="allHost.reduce((pre, cur) => pre + cur.options.length, 0) === 0" @click="$router.push('/v1/system/host')" type="text">创建主机</el-button>
                 <el-select v-else size="mini" multiple filterable v-model="item.host_ids" placeholder="请选择主机">
                   <el-option-group label="主机标签">
                     <el-option v-for="(item,index) in allHostLabels" :key="index" :label="`${item}`" :value="item"></el-option>
