@@ -88,7 +88,7 @@
             class="service-editor-content"
           />
           <div class="modal-block" v-if="currentCode.type==='file' && currentCode.source==='chartTemplate' && showModal">
-            <el-button type="primary" size="small" @click="showModal = false">预览/编辑</el-button>
+            <el-button type="primary" size="small" @click="showModal = false">预览</el-button>
           </div>
         </div>
         <div class="footer" v-if="!isCreate">
