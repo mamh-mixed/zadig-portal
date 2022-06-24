@@ -1339,8 +1339,8 @@ export function getClusterNodeInfo (clusterId = '') {
   return http.get(`/api/aslan/environment/kube/nodes?clusterId=${clusterId}`)
 }
 
-export function getClusterStorageClassAPI (clusterId) {
-  return http.get(`/api/aslan/cluster/${clusterId}/storageclasses`)
+export function getClusterStorageClassAPI (clusterId, type = '') {
+  return http.get(`/api/aslan/cluster/${clusterId}/storageclasses?type=${type}`)
 }
 
 export function getClusterPvcAPI (clusterId, namespace) {
