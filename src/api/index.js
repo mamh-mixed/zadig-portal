@@ -1340,6 +1340,7 @@ export function getClusterNodeInfo (clusterId = '') {
 }
 
 export function getClusterStorageClassAPI (clusterId, type = '') {
+  // type: 'all'(all available storageClasses)/ null(storageClasses for file storage types)
   return http.get(`/api/aslan/cluster/${clusterId}/storageclasses?type=${type}`)
 }
 

@@ -305,7 +305,10 @@
               <el-form-item label="存储资源">
                 <el-radio-group v-model="cluster.dind_cfg.storage.type" @change="changeDindStorageType">
                   <el-radio label="rootfs">临时存储</el-radio>
-                  <el-radio label="dynamic" :disabled="cluster.status !== 'normal'">集群存储</el-radio>
+                  <el-radio label="dynamic" :disabled="cluster.status !== 'normal'">
+                    集群存储资源
+                    <span v-if="cluster.status !== 'normal'" style="color: #e6a23c; font-weight: 400; font-size: 12px;">集群正常接入后才可使用集群存储资源</span>
+                  </el-radio>
                 </el-radio-group>
               </el-form-item>
               <template v-if="cluster.dind_cfg.storage.type === 'dynamic' && cluster.status === 'normal'">
