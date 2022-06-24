@@ -38,7 +38,7 @@
                 <div v-for="service in typeServiceMap" :key="`${service.service_name}-${service.type}`" class="service-block">
                   <template v-if="service.type==='pm'" class="container-images">
                     <el-form-item label="请关联主机资源" label-width="40%">
-                      <el-button v-if="allHost.length === 0" @click="$router.push('/v1/system/host')" type="text">创建主机</el-button>
+                      <el-button v-if="allHost.reduce((pre, cur) => pre + cur.options.length, 0) === 0" @click="$router.push('/v1/system/host')" type="text">创建主机</el-button>
                       <el-select
                         v-else
                         v-model="service.host_with_labels"
