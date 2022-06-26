@@ -3,7 +3,7 @@
     <div class="stage-name">{{stageInfo.name}}</div>
     <div v-for="(item,index) in stageInfo.jobs" :key="item.value" @click="setCurIndex(index,item)" class="job-wrap">
       <span class="job-name">{{item.name}}</span>
-      <div class="del" @click="delJob(item)">
+      <div class="del" @click="delJob(item)" v-if="isShowJobAddBtn">
         <i class="el-icon-close"></i>
       </div>
     </div>
@@ -14,7 +14,7 @@
         <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <div @click="isShowJobOperateDialog = true" class="job-wrap">+ Job</div>
+    <div @click="isShowJobOperateDialog = true" v-if="isShowJobAddBtn" class="job-wrap">+ Job</div>
   </div>
 </template>
 
@@ -34,6 +34,10 @@ export default {
     curJobIndex: {
       type: Number,
       default: 0
+    },
+    isShowJobAddBtn: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -125,15 +129,17 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 500;
+    border-bottom: 1px solid  @borderGray;
   }
 
   .job-wrap {
     position: relative;
-    height: 40px;
-    line-height: 40px;
-    margin: 16px auto;
+    height: 36px;
+    line-height: 36px;
+    margin: 12px auto;
+    // padding: 2px 8px;
     color: #555;
     cursor: pointer;
     border: 1px solid @borderGray;
@@ -142,6 +148,7 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 20px;
+    border-radius: 12px;
 
     .del {
       display: none;

@@ -1,8 +1,9 @@
 <template>
   <div class="build-env">
-    <el-form :label-width="labelWidth">
-      <el-form-item label="镜像仓库">
-        <el-select v-model="docker_registry_id" placeholder="请选择" :size="size">
+    <el-form :label-width="labelWidth" :model="form" ref="ruleForm">
+      {{form.docker_registry_id}}
+      <el-form-item label="镜像仓库" required prop="docker_registry_id">
+        <el-select v-model="form.docker_registry_id" placeholder="请选择" :size="size">
           <el-option v-for="item in dockerList" :key="item.id" :label="item.namespace" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -35,20 +36,20 @@ export default {
   data () {
     return {
       form: {
-        name: ' ',
-        name1: ''
+        // docker_registry_id: ''
       },
       dockerList: []
     }
   },
   computed: {
-    docker_registry_id: {
+    'form.docker_registry_id': {
       get () {
         return this.value
-      },
-      set (val) {
-        this.$emit('input', val)
       }
+      // set (val) {
+      //   console.log(val)
+      //   this.$emit('input', val)
+      // }
     }
   },
   created () {
@@ -60,8 +61,16 @@ export default {
       getRegistryWhenBuildAPI(projectName).then(res => {
         this.dockerList = res
       })
+    },
+    validate () {
+      return this.$refs.ruleForm.validate()
     }
   }
+  // watch: {
+  //   'form.docker_registry_id' (val) {
+  //     this.$emit('input', val)
+  //   }
+  // }
 }
 </script>
 <style lang="less" scoped>

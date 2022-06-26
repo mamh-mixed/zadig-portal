@@ -49,6 +49,10 @@ const configList = [
   //   value: 'notify'
   // }
 ]
+const jobType = {
+  build: 'zadig-build',
+  deploy: 'zadig-deploy'
+}
 const editorOptions = {
   mode: 'yaml',
   theme: 'neo',
@@ -67,5 +71,6 @@ export {
   configList,
   jobTabList,
   jobTypeList,
-  editorOptions
+  editorOptions,
+  jobType
 }

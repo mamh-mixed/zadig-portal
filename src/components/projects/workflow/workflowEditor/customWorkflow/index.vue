@@ -16,11 +16,9 @@
         </div>
       </header>
       <Multipane layout="horizontal">
-        <main>
+        <main class="mg-t16">
           <section v-show="activeName === 'ui'" class="ui">
-            <div class="start">
-              <i class="el-icon-video-play"></i>
-            </div>
+            <i class="el-icon-video-play"></i>
             <div class="line"></div>
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
               <div class="item" @click="setCurStage(index,item)">
@@ -36,9 +34,7 @@
             </div>
             <div @click="showStageOperateDialog('add')" class="stage-add">+ Stage</div>
             <div class="line"></div>
-            <div>
-              <i class="el-icon-video-pause"></i>
-            </div>
+            <i class="el-icon-video-pause"></i>
           </section>
           <section v-show="activeName === 'yaml'" class="yaml">
             <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
@@ -57,8 +53,8 @@
                 >
                   <el-input v-model="job.name" size="small" style="width: 200px;"></el-input>
                 </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === 'zadig-build'" class="mg-t40">
-                  <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" />
+                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === 'jobType.build'" class="mg-t40">
+                  <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
                   <el-select size="small" v-model="service">
                     <el-option
                       v-for="service in serviceAndBuilds"
@@ -69,16 +65,14 @@
                   </el-select>
                   <el-button type="success" size="mini" @click="addServiceAndBuild(job.spec.service_and_builds)">+ 添加</el-button>
                 </div>
-                <div class="mg-t64">
-                  <el-button type="primary" size="mini" @click="saveJobConfig">确定</el-button>
-                </div>
+                <el-button class="mg-t64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
               </el-form>
             </div>
             <div v-show="jobActiveName === 'env'" v-if="payload.stages.length > 0 && payload.stages[curStageIndex].jobs.length  > 0">
-              <Env :projectName="projectName" v-model="job" />
-              <div class="mg-t64">
-                <el-button type="primary" size="mini" @click="saveJobConfig">确定</el-button>
-              </div>
+              {{job}}
+              <Docker :projectName="projectName" v-if="job.type===jobType.build" v-model="job.spec.docker_registry_id" ref="docker"></Docker>
+              <BuildEnv :projectName="projectName" v-if="job.type === jobType.deploy" v-model="job.spec" ref="buildEnv"></BuildEnv>
+              <el-button class="mg-t64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
             </div>
           </el-tabs>
         </footer>
@@ -108,7 +102,13 @@
 </template>
 
 <script>
-import { tabList, configList, jobTabList, editorOptions } from './config'
+import {
+  tabList,
+  configList,
+  jobTabList,
+  editorOptions,
+  jobType
+} from './config'
 import {
   getAssociatedBuildsAPI,
   addCustomWorkflowAPI,
@@ -120,7 +120,8 @@ import CanInput from './components/CanInput'
 import Stage from './stage.vue'
 import StageOperate from './stageOperate.vue'
 import ServiceAndBuild from './components/ServiceAndBuild'
-import Env from './env.vue'
+import BuildEnv from './components/BuildEnv'
+import Docker from './components/Docker'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
@@ -137,6 +138,7 @@ export default {
       activeName: 'ui',
       jobActiveName: 'base',
       editorOptions,
+      jobType,
       stage: {
         name: '',
         parallel: false,
@@ -176,7 +178,8 @@ export default {
     Multipane,
     MultipaneResizer,
     ServiceAndBuild,
-    Env,
+    BuildEnv,
+    Docker,
     Service,
     RunCustomWorkflow,
     codemirror
@@ -291,14 +294,51 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
+      // if (this.jobActiveName === 'env') {
+      //   if (this.job.type === jobType.deploy) {
+      //     this.$refs.buildEnv.validate(valid => {
+      //       console.log(valid)
+      //       if (valid) {
+      //         this.$set(
+      //           this.payload.stages[this.curStageIndex].jobs,
+      //           this.curJobIndex,
+      //           this.job
+      //         )
+      //         // this.payload.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+      //         this.$store.dispatch('setIsShowFooter', false)
+      //       }
+      //     })
+      //   } else {
+      //     this.$refs.docker.validate(valid => {
+      //       console.log(valid)
+      //       if (valid) {
+      //         console.log(valid)
+      //       }
+      //     })
+      //   }
+      // } else {
+      //   this.$refs.jobRuleForm.validate(valid => {
+      //     if (valid) {
+      //       this.$set(
+      //         this.payload.stages[this.curStageIndex].jobs,
+      //         this.curJobIndex,
+      //         this.job
+      //       )
+      //       this.$store.dispatch('setIsShowFooter', false)
+      //     }
+      //   })
+      // }
       this.$refs.jobRuleForm.validate(valid => {
-        this.$set(
-          this.payload.stages[this.curStageIndex].jobs,
-          this.curJobIndex,
-          this.job
-        )
-        // this.payload.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
-        this.$store.dispatch('setIsShowFooter', false)
+        console.log(valid)
+        if (valid) {
+          this.$set(
+            this.payload.stages[this.curStageIndex].jobs,
+            this.curJobIndex,
+            this.job
+          )
+          // this.payload.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+          this.$store.dispatch('setIsShowFooter', false)
+        }
       })
     },
     setJob () {
@@ -395,8 +435,8 @@ export default {
             position: relative;
 
             .stage {
-              padding: 24px;
-              border: 1px solid @borderGray;
+              padding: 16px 8px;
+              border: 1px dotted @borderGray;
             }
 
             .del {
@@ -409,7 +449,7 @@ export default {
 
             .edit {
               position: absolute;
-              top: 20px;
+              top: 12px;
               right: 15%;
               font-size: 24px;
             }
@@ -473,6 +513,11 @@ export default {
     height: 2px;
     margin-top: 24px;
     background: #000;
+  }
+  .CodeMirror {
+    border: 1px solid #eee;
+    height: 80% !important;
+    /*min-height: 100px;*/
   }
 }
 </style>
