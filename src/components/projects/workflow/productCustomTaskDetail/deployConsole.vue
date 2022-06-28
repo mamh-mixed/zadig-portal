@@ -75,7 +75,6 @@ export default {
     jobInfo: {
       type: Object,
       default: () => {}
-      // required: true
     },
 
     projectName: {

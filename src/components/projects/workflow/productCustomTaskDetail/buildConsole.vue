@@ -114,13 +114,6 @@ export default {
     buildIsDone () {
       return this.isSubTaskDone(this.jobInfo)
     },
-    dockerBuildIsRunning () {
-      return this.jobInfo && this.jobInfo.status === 'running'
-    },
-    no_docker_build () {
-      return !this.jobInfo
-    },
-
     buildOverallStatus () {
       return this.$utils.calcOverallBuildStatus(this.jobInfo, {})
     },
@@ -129,12 +122,6 @@ export default {
     },
     buildOverallColor () {
       return this.$translate.calcTaskStatusColor(this.buildOverallStatus)
-    },
-    serviceType () {
-      return this.jobInfo.service_type
-    },
-    envName () {
-      return this.jobInfo.env_name
     }
   },
   methods: {
@@ -181,10 +168,6 @@ export default {
         })
     },
     getHistoryBuildLog () {
-      // let type = 'jobInfo'
-      // if (this.jobInfo.type === 'jenkins_build') {
-      //   type = 'jenkins_build'
-      // }
       return getHistoryLogsAPI(
         this.workflowName,
         this.taskId,
@@ -193,7 +176,6 @@ export default {
         this.buildv4AnyLog = response.split('\n').map(element => {
           return element + '\n'
         })
-        console.log(this.buildv4AnyLog)
       })
     },
     getLog () {
@@ -207,17 +189,8 @@ export default {
     }
   },
   mounted () {},
-
   watch: {
     buildIsRunning (val, oldVal) {
-      if (!oldVal && val && this.buildLogStarted) {
-        this.openBuildLog('customWorkflow')
-      }
-      if (oldVal && !val) {
-        this.killLog('docker_build')
-      }
-    },
-    dockerBuildIsRunning (val, oldVal) {
       if (!oldVal && val && this.buildLogStarted) {
         this.openBuildLog('customWorkflow')
       }

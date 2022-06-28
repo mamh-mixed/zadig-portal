@@ -80,7 +80,6 @@ export default {
     setCurJob (item) {
       this.isShowConsoleFooter = true
       this.curJob = item
-      console.log(this.curJob)
     }
   }
 }

@@ -44,17 +44,6 @@ export default {
       dockerList: []
     }
   },
-  computed: {
-    // 'form.docker_registry_id': {
-    //   get () {
-    //     return this.dockerRegistryId
-    //   }
-    // set (val) {
-    //   console.log(val)
-    //   this.$emit('input', val)
-    // }
-    // }
-  },
   created () {
     this.getRegistryWhenBuild()
   },

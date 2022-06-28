@@ -73,7 +73,6 @@ export default {
         return this.value
       },
       set (val) {
-        console.log(val)
         this.$emit('input', val)
       }
     },
@@ -94,13 +93,10 @@ export default {
       this.$refs.jobOperate.$refs.ruleForm.validate(valid => {
         if (valid) {
           this.stageInfo.jobs.push(this.jobInfos[this.jobInfo.type])
-          console.log(this.stageInfo.jobs)
           this.JobIndex = this.stageInfo.jobs.length - 1
           this.isShowJobOperateDialog = false
           this.$store.dispatch('setIsShowFooter', true)
           this.jobInfo = { type: '' }
-          console.log(this.stageInfo)
-          // this.$emit('input', this.stageInfo)
         }
       })
     },
@@ -135,8 +131,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(res => {
-        this.stageInfo.jobs = this.stageInfo.jobs.splice(index, 1)
-        this.$emit('input', this.stageInfo)
+        this.stageInfo.jobs.splice(index, 1)
         this.$store.dispatch('setIsShowFooter', false)
         this.JobIndex = 0
       })

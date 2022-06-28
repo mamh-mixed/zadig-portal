@@ -2,8 +2,6 @@
   <div class="new-workflow-home">
     <div class="left">
       <header class="header">
-        {{job}}
-        {{curStageIndex}}{{curJobIndex}}
         <div class="header-name">
           <CanInput v-model="payload.name" placeholder="名称" width="150px" class="mg-r24" />
           <CanInput v-model="payload.description" placeholder="描述" />
@@ -46,8 +44,7 @@
         <footer :style="{ minHeight: '350px'}" v-if="isShowFooter">
           <el-tabs v-model="jobActiveName">
             <el-tab-pane :label="item.label" :name="item.name" v-for="item in jobTabList" :key="item.name"></el-tab-pane>
-            {{job}}
-            <div v-show="jobActiveName === 'base'" v-if="payload.stages.length > 0 &&job">
+            <div v-show="jobActiveName === 'base'" v-if="payload.stages.length > 0 && job">
               <el-form :rules="JobConfigrules" ref="jobRuleForm" :model="job">
                 <el-form-item
                   label="Job 名称"
@@ -216,11 +213,6 @@ export default {
     isEdit () {
       return this.$route.params.workflow_name
     }
-    // job () {
-    //   return cloneDeep(
-    //     this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-    //   )
-    // }
   },
   created () {
     this.getServiceAndBuildList()
@@ -388,35 +380,34 @@ export default {
         }
       } else {
         // job name
-        this.$refs.jobRuleForm.validate().then(valid => {
-          if (valid) {
+        if (this.job.type === jobType.build) {
+          this.$refs.jobRuleForm.validate().then(valid => {
+            if (this.$refs.serviceAndbuild.validate()) {
+              this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
+              this.$set(
+                this.payload.stages[this.curStageIndex].jobs,
+                this.curJobIndex,
+                this.job
+              )
+              this.$store.dispatch('setIsShowFooter', false)
+            } else {
+              this.$message.error('请至少选择一个服务组件')
+            }
+          })
+        } else {
+          this.$refs.jobRuleForm.validate().then(valid => {
             this.$set(
               this.payload.stages[this.curStageIndex].jobs,
               this.curJobIndex,
               this.job
             )
             this.$store.dispatch('setIsShowFooter', false)
-
-            // if (this.$refs.serviceAndbuild.validate()) {
-            //   this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
-            //   this.$set(
-            //     this.payload.stages[this.curStageIndex].jobs,
-            //     this.curJobIndex,
-            //     this.job
-            //   )
-            //   this.$store.dispatch('setIsShowFooter', false)
-            // } else {
-            //   // TODO:
-            //   // this.$message.error('请至少选择一个服务组件')
-            // }
-          }
-        })
+          })
+        }
       }
     },
     setJob () {
       if (this.payload.stages.length === 0) return
-
-      console.log(this.payload.stages[this.curStageIndex].jobs)
       this.job = cloneDeep(
         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       )
@@ -465,7 +456,6 @@ export default {
       this.setJob()
     },
     job: {
-      // TODO: filter service and build
       handler (val) {
         if (val) {
           this.serviceAndBuilds = this.originServiceAndBuilds
