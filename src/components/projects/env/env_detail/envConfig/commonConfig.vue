@@ -18,6 +18,7 @@ import {
   deleteConfigObjectAPI
 } from '@api'
 import ETable from '@/components/common/etable/index.vue'
+import { pick } from 'lodash'
 export default {
   props: {
     currentType: String
@@ -229,13 +230,29 @@ export default {
           showImport: true
         })
       } else {
+        const gitRepoConfig = row.source_detail
+          ? {
+            ...pick(row.source_detail.git_repo_config, [
+              'owner',
+              'repo',
+              'branch',
+              'namespace'
+            ]),
+            codehostID: row.source_detail.git_repo_config.codehost_id,
+            valuesPaths: Array.isArray(row.source_detail.load_path)
+              ? row.source_detail.load_path
+              : [row.source_detail.load_path],
+            autoSync: row.auto_sync || false
+          }
+          : null
         this.$emit('actionConfig', {
           actionType: action, // view/edit/history
           name: row[this.currentInfos.id],
           yamlData: row.yaml_data,
           services: row.services || [],
           showImport: action === 'edit',
-          readOnly: action === 'view'
+          readOnly: action === 'view',
+          gitRepoConfig
         })
       }
     },
@@ -310,11 +327,13 @@ export default {
         }
       })
     },
-    createConfigByType ({ yamlData }) {
+    createConfigByType ({ yamlData, gitRepoConfig, autoSync }) {
       const payload = {
         env_name: this.envName,
         common_env_cfg_type: this.currentType,
-        yaml_data: yamlData
+        yaml_data: yamlData,
+        git_repo_config: gitRepoConfig,
+        auto_sync: autoSync
       }
       return addConfigObjectAPI(this.projectName, payload)
         .then(res => {
@@ -330,7 +349,9 @@ export default {
       name,
       restart_associated_svc = false,
       services,
-      yamlData
+      yamlData,
+      gitRepoConfig,
+      autoSync
     }) {
       const payload = {
         service_name: '',
@@ -339,7 +360,9 @@ export default {
         services,
         env_name: this.envName,
         common_env_cfg_type: this.currentType,
-        yaml_data: yamlData
+        yaml_data: yamlData,
+        git_repo_config: gitRepoConfig,
+        auto_sync: autoSync
       }
       return updateConfigObjectAPI(this.projectName, payload)
         .then(res => {
