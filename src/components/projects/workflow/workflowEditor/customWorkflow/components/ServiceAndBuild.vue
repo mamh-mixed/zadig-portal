@@ -1,39 +1,45 @@
 <template>
-  <div class="base">
-    <div class="column">
-      <span class="column-item">服务组件</span>
-      <span class="column-item">构建名称</span>
-      <span class="column-item">构建变量</span>
-    </div>
-    <div>
-      <div v-for="(item,index) in serviceAndBuilds" :key="index">
-        <div class="column">
-          <span class="column-item">{{item.service_name}}/{{item.service_module}}</span>
-          <el-select class="column-item" v-model="item.build_name" size="small" @change="handleBuildChange(item)">
+  <div class="service-build-val">
+    <el-row :gutter="24" class="mg-b24">
+      <el-col :span="6">服务组件</el-col>
+      <el-col :span="6">构建名称</el-col>
+      <el-col :span="6">构建变量</el-col>
+    </el-row>
+    <el-form :model="form" ref="ruleForm">
+      <el-row :gutter="24" v-for="(item,index) in serviceAndBuilds" :key="index" class="mg-t16">
+        <el-col :span="6">
+          <span>{{item.service_name}}/{{item.service_module}}</span>
+        </el-col>
+        <el-col :span="6">
+          <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)">
             <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
           </el-select>
-          <el-button type="text" @click="toggleIsShowVals(item,index)" class="column-item">
+        </el-col>
+        <el-col :span="6">
+          <el-button type="text" @click="toggleIsShowVals(item,index)">
             <span>设置</span>
             <span :class="{'el-icon-caret-bottom':item.isShowVals,'el-icon-caret-top': !item.isShowVals}"></span>
           </el-button>
-          <el-button type="danger" size="mini" @click="delServiceAndBuild(item.service_name,index)" class="mg-l16">删除</el-button>
-        </div>
-        <el-table :data="item.key_vals" class="mg-t24" v-if="item.isShowVals">
-          <el-table-column prop="key" label="键" width="180"></el-table-column>
-          <el-table-column label="类型" width="180">
+        </el-col>
+        <el-col :span="4">
+          <el-button type="danger" size="mini" @click="delServiceAndBuild(item.service_name,index)">删除</el-button>
+        </el-col>
+        <el-table :data="item.key_vals" v-if="item.isShowVals" size="small" style="width: 75%">
+          <el-table-column prop="key" label="键"></el-table-column>
+          <el-table-column label="类型">
             <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
           </el-table-column>
-          <el-table-column label="值">
+          <el-table-column label="值" width="300">
             <template slot-scope="scope">
               <el-select size="small" v-model="scope.row.value" v-if="scope.row.type === 'choice'">
                 <el-option v-for="option in scope.row.choice_option" :key="option" :label="option" :value="option">{{option}}</el-option>
               </el-select>
-              <el-input v-model="scope.row.value" v-if="scope.row.type === 'string'"></el-input>
+              <el-input v-model="scope.row.value" v-if="scope.row.type === 'string'" size="small"></el-input>
             </template>
           </el-table-column>
         </el-table>
-      </div>
-    </div>
+      </el-row>
+    </el-form>
   </div>
 </template>
 
@@ -54,7 +60,8 @@ export default {
   },
   data () {
     return {
-      originServiceAndBuilds: []
+      originServiceAndBuilds: [],
+      form: {}
     }
   },
   computed: {
@@ -106,6 +113,12 @@ export default {
         build => build.name === item.build_name
       ).key_vals
       this.$set(item, 'key_vals', res)
+    },
+    validate () {
+      return this.serviceAndBuilds.length > 0
+    },
+    getData () {
+      return this.serviceAndBuilds
     }
   },
   watch: {
@@ -116,23 +129,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.base {
+.service-build-val {
   width: 70%;
-
-  &-title {
-    display: flex;
-    margin-bottom: 24px;
-  }
-
-  .column {
-    display: flex;
-    align-items: center;
-    margin-top: 16px;
-    &-item {
-      width: 30%;
-      text-align: left;
-      font-size: 14px;
-    }
-  }
 }
 </style>

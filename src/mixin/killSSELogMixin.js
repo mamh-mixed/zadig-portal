@@ -3,6 +3,7 @@ export default {
     killLog (type) {
       clearInterval(this[`${type}IntervalHandle`])
       if (typeof msgServer !== 'undefined' && msgServer) {
+        console.log(msgServer)
         for (const key in msgServer) {
           if (Object.prototype.hasOwnProperty.call(msgServer, key)) {
             msgServer[key].close()

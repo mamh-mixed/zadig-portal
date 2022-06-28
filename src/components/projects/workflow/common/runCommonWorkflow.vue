@@ -195,7 +195,7 @@ export default {
           this.loading = false
           this.$message.success('创建成功')
           this.$router.push(
-            `/v1/projects/detail/${projectName}/pipelines/common/${res.name}/${res.task_id}?status=running&id=${this.workflow.id}`
+            `/v1/projects/detail/${projectName}/pipelines/custom/${res.name}/${res.task_id}?status=running&id=${this.workflow.id}`
           )
         })
         .catch(() => {

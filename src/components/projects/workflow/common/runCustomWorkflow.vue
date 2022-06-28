@@ -2,9 +2,9 @@
   <div class="custom-workflow">
     <el-form label-width="150px">
       <el-collapse>
-        <div v-for="stage in payload.stages" :key="stage.name">
-          <el-collapse-item v-for="job in stage.jobs" :title="`【${job.type}】${job.name}`" :key="job.name">
-            <div v-if="job.type === 'zadig-build'">
+        <div v-for="(stage) in payload.stages" :key="stage.name">
+          <el-collapse-item v-for="(job) in stage.jobs" :title="`【${job.type}】${job.name}`" :key="job.name">
+            <div v-show="job.type === 'zadig-build'">
               <el-form-item label="服务组件">
                 <el-select
                   v-model="job.pickedTargets"
@@ -28,7 +28,11 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <Docker size="medium" v-model="job.spec.docker_registry_id" labelWidth="150px" />
+              <el-form-item label="镜像仓库" prop="docker_registry_id">
+                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择镜像" size="small">
+                  <el-option v-for="item in dockerList" :key="item.id" :label="item.namespace" :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
               <div v-if="job.pickedTargets">
                 <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets"></CustomWorkflowBuildRows>
               </div>
@@ -115,7 +119,8 @@ import {
   getAllBranchInfoAPI,
   runCustomWorkflowTaskAPI,
   imagesAPI,
-  getCustomWorkfloweTaskPresetAPI
+  getCustomWorkfloweTaskPresetAPI,
+  getRegistryWhenBuildAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
 import Docker from '../workflowEditor/customWorkflow/components/Docker'
@@ -125,6 +130,7 @@ export default {
     return {
       registry_id: '',
       currentProjectEnvs: [],
+      dockerList: [],
       specificEnv: true,
       startTaskLoading: false,
       payload: {
@@ -159,9 +165,20 @@ export default {
     init () {
       this.getWorkflowPresetInfo(this.workflowName)
       this.getEnvList()
+      this.getRegistryWhenBuild()
     },
     getWorkflowPresetInfo (workflowName) {
       getCustomWorkfloweTaskPresetAPI(workflowName).then(res => {
+        res.stages.forEach(stage => {
+          stage.jobs.forEach(job => {
+            job.pickedTargets = job.spec.service_and_builds
+            if (job.spec.service_and_builds && job.spec.service_and_builds.length > 0) {
+              job.spec.service_and_builds.forEach(build => {
+                this.getRepoInfo(build.repos)
+              })
+            }
+          })
+        })
         this.payload = res
       })
     },
@@ -174,6 +191,12 @@ export default {
           ['production', 'name'],
           ['asc', 'asc']
         )
+      })
+    },
+    getRegistryWhenBuild () {
+      const projectName = this.projectName
+      getRegistryWhenBuildAPI(projectName).then(res => {
+        this.dockerList = res
       })
     },
     async getRepoInfo (originRepos) {
@@ -287,6 +310,11 @@ export default {
       this.startTaskLoading = true
       // 数据处理
       const payload = cloneDeep(this.payload)
+      this.$nextTick(() => {
+        setTimeout(() => {
+          console.log(this.$refs)
+        }, 1000)
+      })
       payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
           job.spec.service_and_builds = job.pickedTargets
@@ -307,7 +335,7 @@ export default {
           this.$message.success('创建成功')
           this.$emit('success')
           this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/multi/custom/${this.payload.name}/${taskId}?status=running`
+            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running`
           )
         })
         .catch(error => {

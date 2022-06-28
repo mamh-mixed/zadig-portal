@@ -1,8 +1,7 @@
 <template>
   <div class="build-env">
     <el-form :label-width="labelWidth" :model="form" ref="ruleForm">
-      {{form.docker_registry_id}}
-      <el-form-item label="镜像仓库" required prop="docker_registry_id">
+      <el-form-item label="镜像仓库" :required="required" prop="docker_registry_id">
         <el-select v-model="form.docker_registry_id" placeholder="请选择" :size="size">
           <el-option v-for="item in dockerList" :key="item.id" :label="item.namespace" :value="item.id"></el-option>
         </el-select>
@@ -20,7 +19,7 @@ export default {
       type: String,
       default: ''
     },
-    value: {
+    dockerRegistryId: {
       type: [String, Number],
       default: ''
     },
@@ -31,6 +30,10 @@ export default {
     labelWidth: {
       type: String,
       default: '90px'
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -42,20 +45,23 @@ export default {
     }
   },
   computed: {
-    'form.docker_registry_id': {
-      get () {
-        return this.value
-      }
-      // set (val) {
-      //   console.log(val)
-      //   this.$emit('input', val)
-      // }
-    }
+    // 'form.docker_registry_id': {
+    //   get () {
+    //     return this.dockerRegistryId
+    //   }
+    // set (val) {
+    //   console.log(val)
+    //   this.$emit('input', val)
+    // }
+    // }
   },
   created () {
     this.getRegistryWhenBuild()
   },
   methods: {
+    getData () {
+      return this.form.docker_registry_id
+    },
     getRegistryWhenBuild () {
       const projectName = this.projectName
       getRegistryWhenBuildAPI(projectName).then(res => {
@@ -65,12 +71,15 @@ export default {
     validate () {
       return this.$refs.ruleForm.validate()
     }
+  },
+  watch: {
+    dockerRegistryId: {
+      handler (val) {
+        this.$set(this.form, 'docker_registry_id', val)
+      },
+      immediate: true
+    }
   }
-  // watch: {
-  //   'form.docker_registry_id' (val) {
-  //     this.$emit('input', val)
-  //   }
-  // }
 }
 </script>
 <style lang="less" scoped>

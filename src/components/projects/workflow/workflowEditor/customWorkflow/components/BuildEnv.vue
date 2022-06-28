@@ -14,7 +14,7 @@
           <el-option label="运行时输入" value="runtime"></el-option>
           <el-option label="其他 Job输出" value="fromjob"></el-option>
         </el-select>
-        <el-form-item prop="job_name" required v-if="form.source==='fromjob'">
+        <el-form-item prop="job_name" required v-if="form.source==='fromjob'&&allJobList.length > 0">
           <el-select v-model="form.job_name" placeholder="请选择" size="small">
             <el-option v-for="item in allJobList" :key="item.name" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
@@ -37,6 +37,10 @@ export default {
     value: {
       type: Object,
       default: () => {}
+    },
+    workflowInfo: {
+      type: Object,
+      default: () => {}
     }
   },
   data () {
@@ -53,9 +57,6 @@ export default {
       set (val) {
         this.$emit('input', val)
       }
-    },
-    workflowInfo () {
-      return this.$store.state.customWorkflow.workflowInfo
     },
     allJobList () {
       return this.workflowInfo.stages

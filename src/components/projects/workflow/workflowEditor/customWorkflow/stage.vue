@@ -3,7 +3,7 @@
     <div class="stage-name">{{stageInfo.name}}</div>
     <div v-for="(item,index) in stageInfo.jobs" :key="item.value" @click="setCurIndex(index,item)" class="job-wrap">
       <span class="job-name">{{item.name}}</span>
-      <div class="del" @click="delJob(item)" v-if="isShowJobAddBtn">
+      <div class="del" @click="delJob(item,index)" v-if="isShowJobAddBtn">
         <i class="el-icon-close"></i>
       </div>
     </div>
@@ -14,13 +14,13 @@
         <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <div @click="isShowJobOperateDialog = true" v-if="isShowJobAddBtn" class="job-wrap">+ Job</div>
+    <div @click="addJob" v-if="isShowJobAddBtn" class="job-wrap">+ Job</div>
   </div>
 </template>
 
 <script>
 import JobOperate from './jobOperate.vue'
-
+import { jobType } from './config'
 export default {
   name: 'Stage',
   components: {
@@ -42,6 +42,7 @@ export default {
   },
   data () {
     return {
+      jobType,
       jobInfos: {
         'zadig-build': {
           name: 'default',
@@ -72,6 +73,7 @@ export default {
         return this.value
       },
       set (val) {
+        console.log(val)
         this.$emit('input', val)
       }
     },
@@ -84,7 +86,7 @@ export default {
       }
     },
     isShowFooter () {
-      return this.$store.state.CustomWorkflow.isShowFooter
+      return this.$store.state.customWorkflow.isShowFooter
     }
   },
   methods: {
@@ -92,29 +94,56 @@ export default {
       this.$refs.jobOperate.$refs.ruleForm.validate(valid => {
         if (valid) {
           this.stageInfo.jobs.push(this.jobInfos[this.jobInfo.type])
+          console.log(this.stageInfo.jobs)
           this.JobIndex = this.stageInfo.jobs.length - 1
           this.isShowJobOperateDialog = false
-          // this.stageInfo.jobs[index] = {}
           this.$store.dispatch('setIsShowFooter', true)
           this.jobInfo = { type: '' }
+          console.log(this.stageInfo)
+          // this.$emit('input', this.stageInfo)
         }
       })
     },
-    delJob (item) {
+    addJob () {
+      const curJob = this.stageInfo.jobs[this.curJobIndex]
+      if (this.stageInfo.jobs.length > 0) {
+        if (!curJob.name) {
+          this.$message.error('请填写 Job 名称并保存')
+          return
+        }
+        if (curJob.type === jobType.build) {
+          if (!curJob.spec.docker_registry_id) {
+            this.$message.error('请选择景象仓库并保存')
+            return
+          }
+        } else {
+          if (!curJob.spec.env) {
+            this.$message.error('请选择环境并保存')
+            return
+          }
+          if (!curJob.spec.source) {
+            this.$message.error('请选择服务来源并保存')
+            return
+          }
+        }
+      }
+      this.isShowJobOperateDialog = true
+    },
+    delJob (item, index) {
       this.$confirm(`确定删除 Job [${item.name}]？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(res => {
-        this.stageInfo.jobs = this.stageInfo.jobs.filter(
-          job => job.name !== item.name
-        )
+        this.stageInfo.jobs = this.stageInfo.jobs.splice(index, 1)
+        this.$emit('input', this.stageInfo)
         this.$store.dispatch('setIsShowFooter', false)
+        this.JobIndex = 0
       })
     },
     setCurIndex (index) {
-      this.$store.dispatch('setIsShowFooter', true)
       this.JobIndex = index
+      this.$store.dispatch('setIsShowFooter', true)
     }
   }
 }
@@ -131,7 +160,7 @@ export default {
     white-space: nowrap;
     font-size: 30px;
     font-weight: 500;
-    border-bottom: 1px solid  @borderGray;
+    border-bottom: 1px solid @borderGray;
   }
 
   .job-wrap {

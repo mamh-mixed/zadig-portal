@@ -129,7 +129,7 @@ export default {
     },
     pipelineLink () {
       return this.type === 'common'
-        ? `/v1/projects/detail/${this.projectName}/pipelines/common/${this.name}`
+        ? `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}`
         : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}`
     }
   },

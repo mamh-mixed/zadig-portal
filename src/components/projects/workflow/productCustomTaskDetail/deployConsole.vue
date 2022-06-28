@@ -1,0 +1,126 @@
+<template>
+  <div class="build-console">
+    <el-card :body-style="{padding: '8px 20px', margin: '5px 0 0 0' }">
+      <div slot="header" class="mg-b8">
+        <el-col v-if="jobInfo.status!=='running'" :span="4">
+          <span class="build-console-type">部署</span>
+          <span>{{jobInfo.name}}</span>
+        </el-col>
+        <el-col v-if="jobInfo.status!=='running'" :span="2">
+          <div class="grid-content item-desc">
+            <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
+          </div>
+        </el-col>
+        <el-col v-if="jobInfo.status!=='running'" :span="2">
+          <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
+        </el-col>
+      </div>
+      <div class="error-wrapper">
+        <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+      </div>
+      <el-row class="text item mg-t24" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
+        <el-col :span="4">
+          <div class="item-title">服务名称</div>
+        </el-col>
+        <el-col :span="8">
+          <span class="item-desc">{{build.service_name}}({{build.service_module}})</span>
+        </el-col>
+        <el-col :span="4">
+          <div class="item-title">
+            镜像名称
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                构建镜像标签生成规则 ：
+                <br />选择 Tag 进行构建 ： 构建时间戳 -
+                Tag
+                <br />只选择分支进行构建：构建时间戳
+                - 任务 ID - 分支名称
+                <br />选择分支和 PR 进行构建：构建时间戳 - 任务 ID - 分支名称 - PR ID
+                <br />只选择 PR
+                进行构建：构建时间戳 - 任务 ID - PR ID
+              </div>
+              <span>
+                <i class="el-icon-question"></i>
+              </span>
+            </el-tooltip>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <span class="item-desc">{{build.image}}</span>
+        </el-col>
+      </el-row>
+      <el-row class="mg-t24">
+        <el-col :span="4">
+          <div class="item-title">部署环境</div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content item-desc">
+            <router-link
+              class="env-link"
+              :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`"
+            >{{jobInfo.spec.env}}</router-link>
+          </div>
+        </el-col>
+      </el-row>
+    </el-card>
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {}
+  },
+  props: {
+    jobInfo: {
+      type: Object,
+      default: () => {}
+      // required: true
+    },
+
+    projectName: {
+      type: String,
+      default: ''
+    },
+    taskId: {
+      type: [String, Number],
+      default: 1
+    },
+    workflowName: {
+      type: String,
+      default: ''
+    }
+  },
+
+  computed: {
+    buildOverallStatus () {
+      return this.$utils.calcOverallBuildStatus(this.jobInfo, {})
+    },
+    buildOverallStatusZh () {
+      return this.$translate.translateTaskStatus(this.buildOverallStatus)
+    },
+    buildOverallColor () {
+      return this.$translate.calcTaskStatusColor(this.buildOverallStatus)
+    }
+  }
+}
+</script>
+<style lang="less" scoped>
+.build-console {
+  height: 100%;
+  padding: 24px;
+  font-size: 14px;
+  &-type {
+    margin-right: 8px;
+    font-weight: 500;
+  }
+  .item {
+    &-title {
+      color: #8d9199;
+    }
+  }
+  .env-link {
+    color: @themeColor;
+  }
+}
+</style>

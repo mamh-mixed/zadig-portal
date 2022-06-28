@@ -2,6 +2,8 @@
   <div class="new-workflow-home">
     <div class="left">
       <header class="header">
+        {{job}}
+        {{curStageIndex}}{{curJobIndex}}
         <div class="header-name">
           <CanInput v-model="payload.name" placeholder="名称" width="150px" class="mg-r24" />
           <CanInput v-model="payload.description" placeholder="描述" />
@@ -44,7 +46,8 @@
         <footer :style="{ minHeight: '350px'}" v-if="isShowFooter">
           <el-tabs v-model="jobActiveName">
             <el-tab-pane :label="item.label" :name="item.name" v-for="item in jobTabList" :key="item.name"></el-tab-pane>
-            <div v-show="jobActiveName === 'base'" v-if="payload.stages.length > 0">
+            {{job}}
+            <div v-show="jobActiveName === 'base'" v-if="payload.stages.length > 0 &&job">
               <el-form :rules="JobConfigrules" ref="jobRuleForm" :model="job">
                 <el-form-item
                   label="Job 名称"
@@ -53,14 +56,14 @@
                 >
                   <el-input v-model="job.name" size="small" style="width: 200px;"></el-input>
                 </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === 'jobType.build'" class="mg-t40">
+                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
                   <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
                   <el-select size="small" v-model="service">
                     <el-option
                       v-for="service in serviceAndBuilds"
                       :key="service.service_name"
                       :value="service.service_name"
-                      :label="service.service_name"
+                      :label="`${service.service_name}(${service.service_module})`"
                     >{{service.service_name}}/{{service.service_module}}</el-option>
                   </el-select>
                   <el-button type="success" size="mini" @click="addServiceAndBuild(job.spec.service_and_builds)">+ 添加</el-button>
@@ -68,10 +71,21 @@
                 <el-button class="mg-t64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
               </el-form>
             </div>
-            <div v-show="jobActiveName === 'env'" v-if="payload.stages.length > 0 && payload.stages[curStageIndex].jobs.length  > 0">
-              {{job}}
-              <Docker :projectName="projectName" v-if="job.type===jobType.build" v-model="job.spec.docker_registry_id" ref="docker"></Docker>
-              <BuildEnv :projectName="projectName" v-if="job.type === jobType.deploy" v-model="job.spec" ref="buildEnv"></BuildEnv>
+            <div v-show="jobActiveName === 'env'" v-if="payload.stages.length > 0 && payload.stages[curStageIndex].jobs.length  > 0 && job">
+              <Docker
+                :projectName="projectName"
+                v-if="job.type===jobType.build"
+                :dockerRegistryId="job.spec.docker_registry_id"
+                required
+                ref="docker"
+              ></Docker>
+              <BuildEnv
+                :projectName="projectName"
+                v-if="job.type === jobType.deploy"
+                v-model="job.spec"
+                ref="buildEnv"
+                :workflowInfo="payload"
+              ></BuildEnv>
               <el-button class="mg-t64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
             </div>
           </el-tabs>
@@ -113,7 +127,7 @@ import {
   getAssociatedBuildsAPI,
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
-  getCustomWorkfloweDetailAPI
+  getCustomWorkflowDetailAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/CanInput'
@@ -126,7 +140,7 @@ import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
 import { codemirror } from 'vue-codemirror'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, differenceWith } from 'lodash'
 
 export default {
   name: 'CustomWorkflow',
@@ -144,7 +158,11 @@ export default {
         parallel: false,
         jobs: []
       },
-      job: {},
+      job: {
+        name: '',
+        spec: {}
+      },
+      curJobName: '',
       stageOperateType: 'add',
       payload: {
         name: '',
@@ -157,6 +175,7 @@ export default {
       isShowDrawer: false,
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
+      originServiceAndBuilds: [],
       service: '',
       yaml: '',
       JobConfigrules: {
@@ -193,12 +212,21 @@ export default {
     },
     workflowInfo () {
       return this.$store.state.customWorkflow.workflowInfo
+    },
+    isEdit () {
+      return this.$route.params.workflow_name
     }
+    // job () {
+    //   return cloneDeep(
+    //     this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+    //   )
+    // }
   },
   created () {
     this.getServiceAndBuildList()
+    this.$store.dispatch('setIsShowFooter', false)
     // edit
-    if (this.$route.params.workflow_name) {
+    if (this.isEdit) {
       this.getWorkflowDetail(this.$route.params.workflow_name)
     }
   },
@@ -229,35 +257,70 @@ export default {
         this.$message.error(' 请填写 Job')
         return
       }
-      if (this.$route.fullPath.includes('edit')) {
-        updateCustomWorkflowAPI(workflowName, yamlParams).then(res => {
-          this.$message.success('编辑成功')
-          this.getWorkflowDetail(this.payload.name)
-        })
-      } else {
-        addCustomWorkflowAPI(yamlParams).then(res => {
-          this.$message.success('新建成功')
-          this.getWorkflowDetail(this.payload.name)
-        })
+      if (this.checkForm()) {
+        if (this.$route.fullPath.includes('edit')) {
+          updateCustomWorkflowAPI(workflowName, yamlParams).then(res => {
+            this.$message.success('编辑成功')
+            this.getWorkflowDetail(this.payload.name)
+          })
+        } else {
+          addCustomWorkflowAPI(yamlParams).then(res => {
+            this.$message.success('新建成功')
+            this.getWorkflowDetail(this.payload.name)
+          })
+        }
       }
     },
     cancelWorkflow () {
-      this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines`)
+      if (this.isEdit) {
+        this.$router.push(
+          `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+        )
+      } else {
+        this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines`)
+      }
     },
     runWorkflow () {
       this.isShowRunWorkflowDialog = true
     },
     getWorkflowDetail (workflow_name) {
-      getCustomWorkfloweDetailAPI(workflow_name).then(res => {
+      getCustomWorkflowDetailAPI(workflow_name).then(res => {
         this.payload = jsyaml.load(res)
         this.$store.dispatch('setWorkflowInfo', this.payload)
       })
     },
+    checkForm () {
+      const curJob = this.job
+      if (this.payload.stages.length > 0) {
+        if (!curJob.name) {
+          this.$message.error('请填写 Job 名称并保存')
+          return
+        }
+        if (curJob.type === jobType.build) {
+          if (!curJob.spec.docker_registry_id) {
+            this.$message.error('请选择镜像仓库并保存')
+            return
+          }
+        } else {
+          if (!curJob.spec.env) {
+            this.$message.error('请选择环境并保存')
+            return
+          }
+          if (!curJob.spec.source) {
+            this.$message.error('请选择服务来源并保存')
+            return
+          }
+        }
+      }
+      return true
+    },
     showStageOperateDialog (type, row) {
-      this.stageOperateType = type
-      this.isShowStageOperateDialog = true
-      if (row) {
-        this.stage = cloneDeep(row)
+      if (this.checkForm()) {
+        this.stageOperateType = type
+        this.isShowStageOperateDialog = true
+        if (row) {
+          this.stage = cloneDeep(row)
+        }
       }
     },
     operateStage (type, row) {
@@ -266,8 +329,11 @@ export default {
           if (this.stageOperateType === 'add') {
             this.stage.jobs = []
             this.payload.stages.push(this.stage)
+            this.curStageIndex = this.payload.stages.length - 1
+            this.curJobIndex = -1
+            this.$store.dispatch('setIsShowFooter', false)
+            this.setJob()
           } else {
-            // this.payload.stages[this.curStageIndex] = [...this.stage]
             this.$set(this.payload.stages, this.curStageIndex, this.stage)
           }
           this.isShowStageOperateDialog = false
@@ -294,55 +360,63 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
-      // if (this.jobActiveName === 'env') {
-      //   if (this.job.type === jobType.deploy) {
-      //     this.$refs.buildEnv.validate(valid => {
-      //       console.log(valid)
-      //       if (valid) {
-      //         this.$set(
-      //           this.payload.stages[this.curStageIndex].jobs,
-      //           this.curJobIndex,
-      //           this.job
-      //         )
-      //         // this.payload.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
-      //         this.$store.dispatch('setIsShowFooter', false)
-      //       }
-      //     })
-      //   } else {
-      //     this.$refs.docker.validate(valid => {
-      //       console.log(valid)
-      //       if (valid) {
-      //         console.log(valid)
-      //       }
-      //     })
-      //   }
-      // } else {
-      //   this.$refs.jobRuleForm.validate(valid => {
-      //     if (valid) {
-      //       this.$set(
-      //         this.payload.stages[this.curStageIndex].jobs,
-      //         this.curJobIndex,
-      //         this.job
-      //       )
-      //       this.$store.dispatch('setIsShowFooter', false)
-      //     }
-      //   })
-      // }
-      this.$refs.jobRuleForm.validate(valid => {
-        console.log(valid)
-        if (valid) {
-          this.$set(
-            this.payload.stages[this.curStageIndex].jobs,
-            this.curJobIndex,
-            this.job
-          )
-          // this.payload.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
-          this.$store.dispatch('setIsShowFooter', false)
+      if (this.jobActiveName === 'env') {
+        if (this.job.type === jobType.deploy) {
+          this.$refs.buildEnv.validate().then(valid => {
+            if (valid) {
+              this.$set(
+                this.payload.stages[this.curStageIndex].jobs,
+                this.curJobIndex,
+                this.job
+              )
+              this.$store.dispatch('setIsShowFooter', false)
+            }
+          })
+        } else {
+          // build docker
+          this.$refs.docker.validate().then(valid => {
+            if (valid) {
+              this.job.spec.docker_registry_id = this.$refs.docker.getData()
+              this.$set(
+                this.payload.stages[this.curStageIndex].jobs,
+                this.curJobIndex,
+                this.job
+              )
+              this.$store.dispatch('setIsShowFooter', false)
+            }
+          })
         }
-      })
+      } else {
+        // job name
+        this.$refs.jobRuleForm.validate().then(valid => {
+          if (valid) {
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              this.job
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+
+            // if (this.$refs.serviceAndbuild.validate()) {
+            //   this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
+            //   this.$set(
+            //     this.payload.stages[this.curStageIndex].jobs,
+            //     this.curJobIndex,
+            //     this.job
+            //   )
+            //   this.$store.dispatch('setIsShowFooter', false)
+            // } else {
+            //   // TODO:
+            //   // this.$message.error('请至少选择一个服务组件')
+            // }
+          }
+        })
+      }
     },
     setJob () {
       if (this.payload.stages.length === 0) return
+
+      console.log(this.payload.stages[this.curStageIndex].jobs)
       this.job = cloneDeep(
         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       )
@@ -351,6 +425,7 @@ export default {
       const projectName = this.projectName
       getAssociatedBuildsAPI(projectName).then(res => {
         this.serviceAndBuilds = res
+        this.originServiceAndBuilds = res
       })
     },
     addServiceAndBuild (val) {
@@ -358,6 +433,11 @@ export default {
         item => item.service_name === this.service
       )
       val.push(cloneDeep(curService))
+      // added need to del
+      this.serviceAndBuilds = this.serviceAndBuilds.filter(item => {
+        return item.service_name !== curService.service_name
+      })
+      this.service = ''
     },
     hideAfterSuccess () {
       this.isShowRunWorkflowDialog = false
@@ -372,13 +452,8 @@ export default {
         this.payload = jsyaml.load(this.yaml)
       }
     },
-    // isShowFooter (newVal, oldVal) {
-    //   this.job = cloneDeep(
-    //     this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-    //   )
-    // },
-    'payload.stages': {
-      handler (val) {
+    payload: {
+      handler (val, oldVal) {
         this.setJob()
       },
       deep: true
@@ -388,10 +463,28 @@ export default {
     },
     curStageIndex () {
       this.setJob()
+    },
+    job: {
+      // TODO: filter service and build
+      handler (val) {
+        if (val) {
+          this.serviceAndBuilds = this.originServiceAndBuilds
+          if (
+            val.spec.service_and_builds &&
+            val.spec.service_and_builds.length > 0
+          ) {
+            this.serviceAndBuilds = differenceWith(
+              this.originServiceAndBuilds,
+              val.spec.service_and_builds,
+              (a, b) => {
+                return a.service_name === b.service_name
+              }
+            )
+          }
+        }
+      },
+      deep: true
     }
-  },
-  beforeDestroy () {
-    this.$store.dispatch('setIsShowFooter', false)
   }
 }
 </script>
@@ -435,7 +528,8 @@ export default {
             position: relative;
 
             .stage {
-              padding: 16px 8px;
+              padding: 8px;
+              border-radius: 4px;
               border: 1px dotted @borderGray;
             }
 
@@ -450,7 +544,7 @@ export default {
             .edit {
               position: absolute;
               top: 12px;
-              right: 15%;
+              right: 8%;
               font-size: 24px;
             }
             &:hover {
@@ -512,12 +606,12 @@ export default {
     width: 100px;
     height: 2px;
     margin-top: 24px;
-    background: #000;
+    background: #d2d7dc;
   }
-  .CodeMirror {
-    border: 1px solid #eee;
-    height: 80% !important;
-    /*min-height: 100px;*/
-  }
+}
+</style>
+<style lang="less">
+.CodeMirror {
+  min-height: 600px;
 }
 </style>

@@ -119,11 +119,11 @@ const routes = [
             }
           },
           {
-            path: 'pipelines/multi/custom/:workflow_name/:task_id',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomDetail.vue'),
+            path: 'pipelines/custom/:workflow_name/:task_id',
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomTaskDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '任务详情'
+              title: '工作流任务详情'
             }
           },
           {
@@ -140,6 +140,14 @@ const routes = [
             meta: {
               requiresAuth: true,
               title: '工作流详情'
+            }
+          },
+          {
+            path: 'pipelines/custom/:workflow_name',
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomDetail.vue'),
+            meta: {
+              requiresAuth: true,
+              title: '工作流任务列表'
             }
           },
           {
