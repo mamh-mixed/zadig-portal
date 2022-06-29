@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import CustomWorkflowBuildRows from '@/components/common/CustomWorkflowBuildRows.vue'
+import CustomWorkflowBuildRows from '@/components/common/customWorkflowBuildRows.vue'
 import {
   listProductAPI,
   getAllBranchInfoAPI,

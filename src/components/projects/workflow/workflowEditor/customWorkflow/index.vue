@@ -224,7 +224,7 @@ export default {
   },
   methods: {
     validateName (rule, value, callback) {
-      const reg = /^[a-z0-9-]{1,32}$/
+      const reg = /^[a-z][a-z0-9-]{0,32}$/
       if (value === '') {
         callback(new Error('请输入 Job 名称'))
       } else if (!reg.test(value)) {
