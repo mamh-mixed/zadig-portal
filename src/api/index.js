@@ -2119,18 +2119,6 @@ export function getObjectHistoryVersionAPI ({ objectName, projectName, envName, 
   return http.get(`/api/aslan/environment/envcfgs/${envName}/cfg/${objectName}?projectName=${projectName}&commonEnvCfgType=${commonEnvCfgType}`)
 }
 
-// 获取角色定义列表
-export function getRolePolicyListAPI (role) {
-  return http.get(`/api/v1/policy-definitions?scope=${role}`)
-}
-// 获取角色列表
-export function getRoleListAPI () {
-  return http.get(`/api/v1/system-roles`)
-}
-// 新增角色
-export function addSystemRoleAPI (payload) {
-  return http.post(`/api/v1/system-roles `, payload)
-}
 // new workflow
 export function addCustomWorkflowAPI (payload) {
   return http.post(`/api/aslan/workflow/v4 `, payload)
