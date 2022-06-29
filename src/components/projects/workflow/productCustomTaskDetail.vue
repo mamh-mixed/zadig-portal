@@ -2,21 +2,25 @@
   <div class="product-custom-detail">
     <Multipane layout="horizontal">
       <main>
-        <i class="el-icon-video-play"></i>
-        <div class="line"></div>
-        <div class="stages" v-for="(stage) in payload.stages" :key="stage.label">
-          <div class="stage">
-            <div class="stage-name">{{stage.name}}</div>
-            <div class="jobs" v-for="job in stage.jobs" :key="job.name">
-              <span class="jobs-name" @click="setCurJob(job)">
-                <span class="jobs-status"></span>
-                <span>{{job.name}}</span>
-              </span>
-            </div>
-          </div>
+        <div class="content">
+          <!-- <i class="el-icon-video-play"></i> -->
+          <span class="text mg-r8">Start</span>
           <div class="line"></div>
+          <div class="stages" v-for="(stage) in payload.stages" :key="stage.label">
+            <div class="stage">
+              <div class="stage-name">{{stage.name}}</div>
+              <div class="jobs" v-for="job in stage.jobs" :key="job.name">
+                <span class="job" @click="setCurJob(job)">
+                  <span :class="$translate.calcTaskStatusColor(job.status)">•</span>
+                  <span class="job-name">{{job.name}}</span>
+                </span>
+              </div>
+            </div>
+            <div class="line"></div>
+          </div>
+          <span class="text mg-l8">End</span>
+          <!-- <i class="el-icon-video-pause"></i> -->
         </div>
-        <i class="el-icon-video-pause"></i>
       </main>
       <div></div>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
@@ -100,56 +104,48 @@ export default {
   background: #fff;
 
   main {
-    display: flex;
-    align-items: center;
-    font-size: 40px;
-
-    .stages {
+    .content {
       display: flex;
-      align-items: center;
-      // flex-direction: row;
-      // width: 6em;
-      padding: 16px;
-      font-size: 24px;
-      text-align: center;
 
-      .stage {
-        padding: 16px;
-        border: 1px dotted @borderGray;
-        border-radius: 8px;
-
-        &-name {
-          border-bottom: 1px dotted @borderGray;
-        }
+      .text {
+        line-height: 52px;
       }
 
-      .jobs {
-        height: 40px;
-        margin-top: 16px;
-        padding: 0 8px;
-        line-height: 40px;
+      .stages {
+        display: flex;
+        font-size: 24px;
+        text-align: center;
 
-        &-name {
-          display: inline-block;
-          width: 100px;
-          padding: 0 8px;
-          overflow: hidden;
-          font-weight: 400;
-          font-size: 24px;
-          font-size: 20px;
-          white-space: nowrap;
-          text-overflow: ellipsis;
+        .stage {
+          width: 140px;
+          padding: 8px;
           border: 1px dotted @borderGray;
-          border-radius: 12px;
+          border-radius: 8px;
+
+          &-name {
+            border-bottom: 1px dotted @borderGray;
+          }
         }
 
-        &-status {
-          display: inline-block;
-          width: 6px;
-          height: 6px;
-          margin-right: 8px;
-          background: green;
-          border-radius: 50%;
+        .jobs {
+          height: 40px;
+          margin-top: 16px;
+          padding: 0 8px;
+          line-height: 40px;
+
+          .job {
+            display: inline-block;
+            width: 100px;
+            padding: 0 8px;
+            overflow: hidden;
+            font-weight: 400;
+            font-size: 24px;
+            font-size: 20px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            border: 1px dotted @borderGray;
+            border-radius: 12px;
+          }
         }
       }
     }
@@ -177,7 +173,8 @@ export default {
   .line {
     width: 100px;
     height: 2px;
-    background: #000;
+    margin-top: 24px;
+    background: #d2d7dc;
   }
 }
 </style>

@@ -14,11 +14,9 @@ const mutations = {
 }
 const actions = {
   setIsShowFooter ({ commit }, payload) {
-    console.log(payload)
     commit(Mutation.SET_IS_SHOW_FOOTER, payload)
   },
   setWorkflowInfo ({ commit }, payload) {
-    console.log(payload)
     commit(Mutation.SET_WORKFLOW_INFO, payload)
   }
 }

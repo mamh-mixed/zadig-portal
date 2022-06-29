@@ -18,7 +18,8 @@
       <Multipane layout="horizontal">
         <main class="mg-t16">
           <section v-show="activeName === 'ui'" class="ui">
-            <i class="el-icon-video-play"></i>
+            <!-- <i class="el-icon-video-play"></i> -->
+            <span class="ui-text mg-r8">Start</span>
             <div class="line"></div>
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
               <div class="item" @click="setCurStage(index,item)">
@@ -34,7 +35,8 @@
             </div>
             <div @click="showStageOperateDialog('add')" class="stage-add">+ Stage</div>
             <div class="line"></div>
-            <i class="el-icon-video-pause"></i>
+            <span class="ui-text mg-l8">End</span>
+            <!-- <i class="el-icon-video-pause"></i> -->
           </section>
           <section v-show="activeName === 'yaml'" class="yaml">
             <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
@@ -162,7 +164,7 @@ export default {
       curJobName: '',
       stageOperateType: 'add',
       payload: {
-        name: '',
+        name: 'untitled',
         project: '',
         description: '',
         stages: []
@@ -242,11 +244,11 @@ export default {
         return
       }
       if (this.payload.stages.length === 0) {
-        this.$message.error(' 请填写 Satge')
+        this.$message.error(' 请至少填写一个 Satge')
         return
       }
       if (this.payload.stages.find(item => item.jobs.length === 0)) {
-        this.$message.error(' 请填写 Job')
+        this.$message.error(' 请填写 Stage 中的 Job')
         return
       }
       if (this.checkForm()) {
@@ -508,7 +510,10 @@ export default {
 
       .ui {
         display: flex;
-        font-size: 40px;
+
+        &-text {
+          line-height: 52px;
+        }
 
         &-stage {
           position: relative;
@@ -518,6 +523,7 @@ export default {
             position: relative;
 
             .stage {
+              width: 140px;
               padding: 8px;
               border: 1px dotted @borderGray;
               border-radius: 4px;
@@ -526,7 +532,7 @@ export default {
             .del {
               position: absolute;
               top: -6px;
-              right: 6px;
+              right: -6px;
               display: none;
               font-size: 24px;
             }
@@ -534,7 +540,7 @@ export default {
             .edit {
               position: absolute;
               top: 12px;
-              right: 8%;
+              right: 2%;
               font-size: 24px;
             }
 

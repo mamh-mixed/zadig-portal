@@ -7,6 +7,7 @@
     <section v-else class="running-time">
       <ProductWorkflowStatus :productWorkflowTasks="productWorkflowTasks" :expandId="productExpandId" />
       <CommonWorkflowStatus :commonWorkflowTasks="commonWorkflowTasks" />
+      <CustomWorkflowStatus :customWorkflowTasks="customWorkflowTasks" />
       <TestStatus :testTasks="testTasks" />
       <ScannerStatus :scannerTasks="scannerTasks" />
     </section>
@@ -32,6 +33,10 @@ export default {
         running: []
       },
       commonWorkflowTasks: {
+        running: [],
+        pending: []
+      },
+      customWorkflowTasks: {
         running: [],
         pending: []
       },

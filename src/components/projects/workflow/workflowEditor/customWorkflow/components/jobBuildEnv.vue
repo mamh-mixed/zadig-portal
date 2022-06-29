@@ -16,7 +16,7 @@
         </el-select>
         <el-form-item prop="job_name" required v-if="form.source==='fromjob'&&allJobList.length > 0">
           <el-select v-model="form.job_name" placeholder="请选择" size="small">
-            <el-option v-for="item in allJobList" :key="item.name" :label="item.name" :value="item.name">{{item.name}}</el-option>
+            <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>
       </el-form-item>
@@ -59,6 +59,7 @@ export default {
       }
     },
     allJobList () {
+      // TODO:
       return this.workflowInfo.stages
         .map(stage => {
           return stage.jobs
