@@ -358,7 +358,8 @@ export default {
       services,
       yamlData,
       gitRepoConfig,
-      autoSync
+      autoSync,
+      fromRollback
     }) {
       const payload = {
         service_name: '',
@@ -371,7 +372,7 @@ export default {
         git_repo_config: gitRepoConfig,
         auto_sync: autoSync
       }
-      return updateConfigObjectAPI(this.projectName, payload)
+      return updateConfigObjectAPI(this.projectName, fromRollback, payload)
         .then(res => {
           this.$message.success(`更新配置成功！`)
           this.getConfigByType(this.currentType)

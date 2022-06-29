@@ -107,7 +107,10 @@ export default {
           ...payload,
           name: this.repoConfig.name,
           restart_associated_svc: this.repoConfig.restart_associated_svc,
-          services: this.repoConfig.services
+          services: this.repoConfig.services,
+
+          // When editing, determine whether it is from a rollback operation by whether to display the import information
+          fromRollback: !this.repoConfig.showParams.showImport
         }
         method = 'updateConfigByType'
       }
