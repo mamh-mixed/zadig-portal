@@ -182,6 +182,13 @@ export default {
       return current ? current.deployType === 'helm' : false
     }
   },
+  watch: {
+    currentType (nVal, oVal) {
+      if (nVal !== oVal) {
+        this.getConfigByType(nVal)
+      }
+    }
+  },
   methods: {
     operation (scope) {
       return (
