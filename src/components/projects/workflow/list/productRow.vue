@@ -246,15 +246,15 @@ export default {
       align-items: center;
 
       a {
+        display: flex;
         color: @themeColor;
         font-weight: 500;
-        display: flex;
 
         .name-span {
           display: inline-block;
-          margin-right: 8px;
           // width: 160px;
           max-width: 160px;
+          margin-right: 8px;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;

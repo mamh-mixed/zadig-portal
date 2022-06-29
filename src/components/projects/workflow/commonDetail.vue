@@ -36,7 +36,7 @@
     </el-card>
 
     <el-card class="box-card full" :body-style="{ padding: '0px', margin: '15px 0 30px 0' }">
-      <div slot="header" class="block-title">历史任务1</div>
+      <div slot="header" class="block-title">历史任务</div>
       <TaskList
         :taskList="workflowTasks"
         :total="total"

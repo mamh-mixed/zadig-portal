@@ -94,48 +94,53 @@ export default {
     display: flex;
     align-items: center;
     font-size: 40px;
+
     .stages {
       display: flex;
       align-items: center;
       // flex-direction: row;
       // width: 6em;
       padding: 16px;
-      text-align: center;
       font-size: 24px;
+      text-align: center;
+
       .stage {
         padding: 16px;
-        border-radius: 8px;
         border: 1px dotted @borderGray;
+        border-radius: 8px;
+
         &-name {
           border-bottom: 1px dotted @borderGray;
         }
       }
+
       .jobs {
         height: 40px;
-        line-height: 40px;
         margin-top: 16px;
         padding: 0 8px;
+        line-height: 40px;
 
         &-name {
+          display: inline-block;
           width: 100px;
           padding: 0 8px;
-          display: inline-block;
-          font-size: 24px;
           overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 20px;
           font-weight: 400;
+          font-size: 24px;
+          font-size: 20px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
           border: 1px dotted @borderGray;
           border-radius: 12px;
         }
+
         &-status {
           display: inline-block;
           width: 6px;
           height: 6px;
           margin-right: 8px;
-          border-radius: 50%;
           background: green;
+          border-radius: 50%;
         }
       }
     }
@@ -159,6 +164,7 @@ export default {
     border-radius: 5px;
     content: '';
   }
+
   .line {
     width: 100px;
     height: 2px;

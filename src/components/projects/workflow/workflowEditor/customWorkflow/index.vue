@@ -519,15 +519,15 @@ export default {
 
             .stage {
               padding: 8px;
-              border-radius: 4px;
               border: 1px dotted @borderGray;
+              border-radius: 4px;
             }
 
             .del {
-              display: none;
               position: absolute;
               top: -6px;
               right: 6px;
+              display: none;
               font-size: 24px;
             }
 
@@ -537,6 +537,7 @@ export default {
               right: 8%;
               font-size: 24px;
             }
+
             &:hover {
               .del {
                 display: block;
@@ -553,8 +554,10 @@ export default {
           border: 1px solid @borderGray;
         }
       }
+
       .yaml {
         height: 100%;
+
         .codemirror {
           height: calc(~'100% - 100px');
           padding: 5px;
@@ -566,6 +569,7 @@ export default {
       position: relative;
       z-index: 1;
       background: #fff;
+
       .confirm {
         position: absolute;
         bottom: 24px;
@@ -573,6 +577,7 @@ export default {
       }
     }
   }
+
   .multipane-resizer {
     z-index: 10;
     cursor: row-resize;

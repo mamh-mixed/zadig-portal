@@ -151,38 +151,40 @@ export default {
   &-name {
     width: 5em;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 30px;
     font-weight: 500;
+    font-size: 30px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     border-bottom: 1px solid @borderGray;
   }
 
   .job-wrap {
     position: relative;
+    width: 5em;
     height: 36px;
-    line-height: 36px;
     margin: 12px auto;
+    overflow: hidden;
     // padding: 2px 8px;
     color: #555;
-    cursor: pointer;
-    border: 1px solid @borderGray;
-    width: 5em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     font-size: 20px;
+    line-height: 36px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    border: 1px solid @borderGray;
     border-radius: 12px;
+    cursor: pointer;
 
     .del {
-      display: none;
       position: absolute;
       top: -8px;
-      right: 0px;
+      right: 0;
+      display: none;
       font-size: 24px;
     }
+
     &:hover {
       color: #000;
+
       .del {
         display: block;
       }

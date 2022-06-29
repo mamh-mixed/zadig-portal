@@ -223,14 +223,18 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+@import '~@assets/css/component/subtask.less';
+
 .build-console {
   height: 100%;
   padding: 24px;
   font-size: 14px;
+
   &-type {
     margin-right: 8px;
     font-weight: 500;
   }
+
   .item {
     &-title {
       color: #8d9199;

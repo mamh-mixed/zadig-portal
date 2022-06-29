@@ -380,8 +380,3 @@ export default {
   watch: {}
 }
 </script>
-
-<style lang="less" scoped>
-.custom-workflow {
-}
-</style>

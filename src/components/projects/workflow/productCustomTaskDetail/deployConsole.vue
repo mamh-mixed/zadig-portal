@@ -109,15 +109,18 @@ export default {
   height: 100%;
   padding: 24px;
   font-size: 14px;
+
   &-type {
     margin-right: 8px;
     font-weight: 500;
   }
+
   .item {
     &-title {
       color: #8d9199;
     }
   }
+
   .env-link {
     color: @themeColor;
   }

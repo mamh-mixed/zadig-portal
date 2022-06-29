@@ -71,7 +71,3 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
-.build-env {
-}
-</style>

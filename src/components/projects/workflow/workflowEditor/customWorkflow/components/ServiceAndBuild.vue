@@ -24,7 +24,7 @@
         <el-col :span="4">
           <el-button type="danger" size="mini" @click="delServiceAndBuild(item.service_name,index)">删除</el-button>
         </el-col>
-        <el-table :data="item.key_vals" v-if="item.isShowVals" size="small" style="width: 75%">
+        <el-table :data="item.key_vals" v-if="item.isShowVals" size="small" style="width: 75%;">
           <el-table-column prop="key" label="键"></el-table-column>
           <el-table-column label="类型">
             <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
