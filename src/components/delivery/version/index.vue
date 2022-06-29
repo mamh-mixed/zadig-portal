@@ -62,6 +62,14 @@
           <span>{{ scope.row.versionInfo.productName }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="状态" v-if="showStatus">
+        <template slot-scope="{ row }">
+          <el-tag
+            :type="helmStatusEnum[row.versionInfo.status].tag || 'info'"
+            size="small"
+          >{{ helmStatusEnum[row.versionInfo.status].text || '未知' }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="标签">
         <template slot-scope="scope">
           <span v-for="(label,index) in scope.row.versionInfo.labels" :key="index" style="margin-right: 3px;">
@@ -124,6 +132,25 @@ export default {
         enable: false,
         hook_host: '',
         path: ''
+      },
+      showStatus: false,
+      helmStatusEnum: {
+        success: {
+          text: '成功',
+          tag: 'success'
+        },
+        failed: {
+          text: '失败',
+          tag: 'danger'
+        },
+        creating: {
+          text: '创建中',
+          tag: 'info'
+        },
+        retrying: {
+          text: '重试中',
+          tag: 'warning'
+        }
       }
     }
   },
@@ -224,6 +251,7 @@ export default {
         return false
       } else if (project && project.deployType === 'helm') {
         this.initData()
+        this.showStatus = true
         return true
       } else {
         return false
