@@ -2,10 +2,17 @@
   <div class="build-console">
     <el-card :body-style="{padding: '8px 20px', margin: '5px 0 0 0' }">
       <div slot="header" class="mg-b8">
-        <el-col v-if="jobInfo.status!=='running'" :span="4">
+        <el-col :span="4">
           <span class="build-console-type">构建</span>
           <span>{{jobInfo.name}}</span>
         </el-col>
+        <div v-if="jobInfo.status==='running'" class="loader">
+          <div class="ball-scale-multiple">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
         <el-col v-if="jobInfo.status!=='running'" :span="2">
           <div class="grid-content item-desc">
             <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
@@ -129,7 +136,7 @@ export default {
       this.buildLogStarted = true
     },
     leaveLog () {
-      const el = document.querySelector('.build-console').style
+      const el = document.querySelector('.product-custom-detail').style
       el.overflow = 'auto'
     },
     openBuildLog (buildType) {
@@ -149,6 +156,7 @@ export default {
       }, 500)
       this.$sse(url, { format: 'plain' })
         .then(sse => {
+          console.log(sse)
           // Store SSE object at a higher scope
           window.msgServer[
             `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
@@ -164,6 +172,7 @@ export default {
             this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(
               Object.freeze(data + '\n')
             )
+            console.log(this.wsBuildDataBuffer)
           })
         })
         .catch(err => {
@@ -187,9 +196,7 @@ export default {
       if (this.buildIsRunning) {
         this.openBuildLog('customWorkflow')
       } else {
-        this.getHistoryBuildLog().then(() => {
-          this.openBuildLog('customWorkflow')
-        })
+        this.getHistoryBuildLog()
       }
     }
   },
@@ -199,7 +206,7 @@ export default {
         this.openBuildLog('customWorkflow')
       }
       if (oldVal && !val) {
-        this.killLog('docker_build')
+        this.killLog('customWorkflow')
       }
     },
     jobInfo: {

@@ -66,6 +66,15 @@ export default {
     },
     projectName () {
       return this.$route.params.project_name
+    },
+    buildOverallStatus () {
+      return this.$utils.calcOverallBuildStatus(this.buildStage)
+    },
+    buildOverallStatusZh () {
+      return this.myTranslate(this.buildOverallStatus)
+    },
+    buildOverallColor () {
+      return this.colorTranslation(this.buildOverallStatus, 'pipeline', 'task')
     }
   },
   created () {

@@ -70,26 +70,23 @@
     </el-card>
 
     <el-dialog :visible.sync="taskDialogVisible" title="运行 产品-工作流" custom-class="run-workflow" width="60%" class="dialog">
-      <run-workflow
+       <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
-        :workflowMeta="workflow"
-        :targetProject="workflow.product_tmpl_name"
-        :forcedUserInput="forcedUserInput"
+        :projectName="projectName"
         @success="hideAndFetchHistory"
-      ></run-workflow>
+      />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import {
-  getWorkflowDetailAPI,
   deleteProductWorkflowAPI,
   getCustomWorkflowTaskListAPI,
   getWorkflowFilterListAPI
 } from '@api'
-import runWorkflow from './common/runWorkflow.vue'
+import RunCustomWorkflow from '../workflow/common/runCustomWorkflow'
 import FilterStatus from './productTaskDetail/filterStatus.vue'
 import TaskList from '@/components/projects/common/taskList.vue'
 import bus from '@utils/eventBus'
@@ -322,10 +319,6 @@ export default {
     clearTimeout(this.timerId)
   },
   mounted () {
-    getWorkflowDetailAPI(this.projectName, this.workflowName).then(res => {
-      this.workflow = res
-      this.fetchStages(res)
-    })
     this.refreshHistoryTask()
     bus.$emit('set-topbar-title', {
       title: '',
@@ -345,7 +338,7 @@ export default {
     })
   },
   components: {
-    runWorkflow,
+    RunCustomWorkflow,
     FilterStatus,
     TaskList
   }

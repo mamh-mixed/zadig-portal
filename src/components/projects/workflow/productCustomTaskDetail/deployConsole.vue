@@ -2,10 +2,17 @@
   <div class="build-console">
     <el-card :body-style="{padding: '8px 20px', margin: '5px 0 0 0' }">
       <div slot="header" class="mg-b8">
-        <el-col v-if="jobInfo.status!=='running'" :span="4">
+        <el-col :span="4">
           <span class="build-console-type">部署</span>
           <span>{{jobInfo.name}}</span>
         </el-col>
+        <div v-if="jobInfo.status==='running'" class="loader">
+          <div class="ball-scale-multiple">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
         <el-col v-if="jobInfo.status!=='running'" :span="2">
           <div class="grid-content item-desc">
             <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
