@@ -156,7 +156,6 @@ export default {
       }, 500)
       this.$sse(url, { format: 'plain' })
         .then(sse => {
-          console.log(sse)
           // Store SSE object at a higher scope
           window.msgServer[
             `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
@@ -172,7 +171,6 @@ export default {
             this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(
               Object.freeze(data + '\n')
             )
-            console.log(this.wsBuildDataBuffer)
           })
         })
         .catch(err => {
@@ -189,7 +187,6 @@ export default {
         this.buildv4AnyLog = response.split('\n').map(element => {
           return element + '\n'
         })
-        console.log(response)
       })
     },
     getLog () {
@@ -217,11 +214,6 @@ export default {
       },
       deep: true,
       immediate: true
-    },
-    buildv4AnyLog: {
-      handler (val) {
-        console.log(val)
-      }
     }
   },
   beforeDestroy () {

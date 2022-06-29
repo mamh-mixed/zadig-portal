@@ -51,7 +51,9 @@ export default {
       isShowConsoleFooter: false,
       curJobIndex: 0,
       curJob: {},
-      payload: {}
+      payload: {},
+      timerId: null,
+      timeTimeoutFinishFlag: false
     }
   },
   components: {
@@ -93,7 +95,20 @@ export default {
     setCurJob (item) {
       this.isShowConsoleFooter = true
       this.curJob = item
+    },
+    async refreshHistoryTaskDetail () {
+      await this.getWorkflowTaskDetail(this.workflowName, this.taskId)
+      if (!this.timeTimeoutFinishFlag) {
+        this.timerId = setTimeout(this.refreshHistoryTaskDetail, 3000) // 保证内存中只有一个定时器
+      }
     }
+  },
+  mounted () {
+    this.refreshHistoryTaskDetail()
+  },
+  beforeDestroy () {
+    this.timeTimeoutFinishFlag = true
+    clearTimeout(this.timerId)
   }
 }
 </script>
