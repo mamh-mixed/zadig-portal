@@ -75,7 +75,7 @@
 <script>
 import RepoJump from '@/components/projects/workflow/common/repoJump.vue'
 import mixin from '@/mixin/killSSELogMixin'
-import { getWorkflowHistoryBuildLogAPI, getHistoryLogsAPI } from '@api'
+import { getHistoryLogsAPI } from '@api'
 
 export default {
   data () {
@@ -88,7 +88,7 @@ export default {
   props: {
     jobInfo: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     projectName: {
       type: String,
@@ -136,7 +136,9 @@ export default {
       const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.jobInfo.name}/999999`
       if (typeof window.msgServer === 'undefined') {
         window.msgServer = {}
-        window.msgServer[`${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`] = {}
+        window.msgServer[
+          `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
+        ] = {}
       }
       this[`${buildType}IntervalHandle`] = setInterval(() => {
         if (this.hasNewMsg) {
@@ -148,7 +150,9 @@ export default {
       this.$sse(url, { format: 'plain' })
         .then(sse => {
           // Store SSE object at a higher scope
-          window.msgServer[`${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`] = sse
+          window.msgServer[
+            `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
+          ] = sse
           sse.onError(e => {
             console.error('lost connection; giving up!', e)
             sse.close()
@@ -176,6 +180,7 @@ export default {
         this.buildv4AnyLog = response.split('\n').map(element => {
           return element + '\n'
         })
+        console.log(response)
       })
     },
     getLog () {
@@ -188,7 +193,6 @@ export default {
       }
     }
   },
-  mounted () {},
   watch: {
     buildIsRunning (val, oldVal) {
       if (!oldVal && val && this.buildLogStarted) {
@@ -206,6 +210,11 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    buildv4AnyLog: {
+      handler (val) {
+        console.log(val)
+      }
     }
   },
   beforeDestroy () {

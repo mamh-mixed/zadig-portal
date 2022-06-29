@@ -50,8 +50,6 @@ export default {
       }
     }
   },
-  created () {},
-  methods: {},
   watch: {
     type: {
       handler (val) {

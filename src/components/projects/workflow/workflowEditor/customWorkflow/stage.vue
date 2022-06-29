@@ -29,7 +29,7 @@ export default {
   props: {
     value: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     curJobIndex: {
       type: Number,

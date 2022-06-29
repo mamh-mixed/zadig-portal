@@ -86,9 +86,7 @@
 import {
   getWorkflowDetailAPI,
   deleteProductWorkflowAPI,
-  workflowTaskListAPI,
   getCustomWorkflowTaskListAPI,
-  getProductWorkflowsInProjectAPI,
   getWorkflowFilterListAPI
 } from '@api'
 import runWorkflow from './common/runWorkflow.vue'
@@ -276,17 +274,6 @@ export default {
       this.taskDialogVisible = true
       this.forcedUserInput = task.workflow_args
     },
-    async getWorkflow () {
-      const res = await getProductWorkflowsInProjectAPI(this.projectName).catch(
-        err => {
-          console.log(err)
-        }
-      )
-      // if (res) {
-      //   this.usedInPolicy =
-      //     res.find(re => re.name === this.workflowName).base_refs || []
-      // }
-    },
     getFilterList ({ type }) {
       return getWorkflowFilterListAPI(this.projectName, this.workflowName, type)
         .then(res => {
@@ -335,7 +322,6 @@ export default {
     clearTimeout(this.timerId)
   },
   mounted () {
-    this.getWorkflow()
     getWorkflowDetailAPI(this.projectName, this.workflowName).then(res => {
       this.workflow = res
       this.fetchStages(res)

@@ -36,11 +36,11 @@ export default {
     },
     value: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     },
     workflowInfo: {
       type: Object,
-      default: () => {}
+      default: () => ({})
     }
   },
   data () {

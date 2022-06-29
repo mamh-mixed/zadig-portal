@@ -20,7 +20,7 @@
       </main>
       <div></div>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{ minHeight: '350px'}" v-if="isShowConsoleFooter">
+      <footer :style="{ minHeight: '400px'}" v-if="isShowConsoleFooter">
         <BuildConsole
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"

@@ -64,7 +64,6 @@
 import {
   getCommonWorkflowAPI,
   deleteCommonWorkflowAPI,
-  getCommonWorkflowTasksAPI,
   getCustomWorkflowTaskListAPI,
   getCommonWorkflowListInProjectAPI
 } from '@api'
@@ -102,7 +101,6 @@ export default {
   },
   methods: {
     async autoRefreshHistoryTask () {
-      const projectName = this.$route.params.project_name
       const workflowName = this.$route.params.workflow_name
       const pageStart = this.pageStart
       const pageSize = this.pageSize
@@ -118,7 +116,6 @@ export default {
       }
     },
     getCommonWorkflowTasks (start, max) {
-      const projectName = this.projectName
       const workflowName = this.workflowName
       getCustomWorkflowTaskListAPI(workflowName, start, max).then(
         res => {
