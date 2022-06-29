@@ -69,13 +69,13 @@
               </el-form>
             </div>
             <div v-show="jobActiveName === 'env'" v-if="payload.stages.length > 0 && payload.stages[curStageIndex].jobs.length  > 0 && job">
-              <Docker
+              <DockerList
                 :projectName="projectName"
                 v-if="job.type===jobType.build"
                 :dockerRegistryId="job.spec.docker_registry_id"
                 required
                 ref="docker"
-              ></Docker>
+              ></DockerList>
               <BuildEnv
                 :projectName="projectName"
                 v-if="job.type === jobType.deploy"
@@ -127,12 +127,12 @@ import {
   getCustomWorkflowDetailAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
-import CanInput from './components/CanInput'
+import CanInput from './components/canInput'
 import Stage from './stage.vue'
 import StageOperate from './stageOperate.vue'
-import ServiceAndBuild from './components/ServiceAndBuild'
-import BuildEnv from './components/BuildEnv'
-import Docker from './components/Docker'
+import ServiceAndBuild from './components/serviceAndBuild'
+import BuildEnv from './components/buildEnv'
+import DockerList from './components/dockerList.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
@@ -195,7 +195,7 @@ export default {
     MultipaneResizer,
     ServiceAndBuild,
     BuildEnv,
-    Docker,
+    DockerList,
     Service,
     RunCustomWorkflow,
     codemirror

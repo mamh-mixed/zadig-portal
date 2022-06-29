@@ -123,7 +123,6 @@ import {
   getRegistryWhenBuildAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
-import Docker from '../workflowEditor/customWorkflow/components/Docker'
 
 export default {
   data () {
@@ -155,8 +154,7 @@ export default {
     }
   },
   components: {
-    CustomWorkflowBuildRows,
-    Docker
+    CustomWorkflowBuildRows
   },
   created () {
     this.init()
