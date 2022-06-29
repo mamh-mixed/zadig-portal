@@ -611,6 +611,7 @@ export default {
           function sleep (time) {
             return new Promise(resolve => setTimeout(resolve, time))
           }
+          this.$store.commit('SET_MASK_STATUS', true)
           createProductAPI(payload).then(
             res => {
               // Add delay to solve the back-end permission synchronization problem
@@ -628,6 +629,7 @@ export default {
             },
             () => {
               this.startDeployLoading = false
+              this.$store.commit('SET_MASK_STATUS', false)
             }
           )
         } else {

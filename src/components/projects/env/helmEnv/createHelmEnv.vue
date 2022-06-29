@@ -44,6 +44,7 @@
             filterable
             :disabled="createShare"
             v-model="projectConfig.cluster_id"
+            @change="changeCluster"
             size="small"
             placeholder="请选择 K8s 集群"
           >
@@ -369,6 +370,7 @@ export default {
           function sleep (time) {
             return new Promise(resolve => setTimeout(resolve, time))
           }
+          this.$store.commit('SET_MASK_STATUS', true)
           createHelmEnvAPI(
             this.projectConfig.product_name,
             [payload],
@@ -390,6 +392,7 @@ export default {
             },
             () => {
               this.startDeployLoading = false
+              this.$store.commit('SET_MASK_STATUS', false)
             }
           )
         }

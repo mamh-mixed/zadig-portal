@@ -241,11 +241,13 @@ export default {
         })
         this.getServiceImgs(
           this.forcedUserInput.artifact_args.map(r => r.image_name)
-        ).then(() => {
-          this.forcedUserInput.artifact_args.forEach((art, index) => {
-            this.changeVirtualData(false, art, index)
-          })
-        })
+        )
+        // Todo: use virtual-list
+        // .then(() => {
+        //   this.forcedUserInput.artifact_args.forEach((art, index) => {
+        //     this.changeVirtualData(false, art, index)
+        //   })
+        // })
         return
       }
       if (res && res.length > 0) {

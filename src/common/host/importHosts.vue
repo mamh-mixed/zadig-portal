@@ -82,7 +82,7 @@
 </template>
 <script>
 import XLSX from 'xlsx'
-import { importHostAPI } from '@api'
+import { importHostAPI, importProjectHostAPI } from '@api'
 export default {
   name: 'ImportHosts',
   props: {
@@ -92,6 +92,10 @@ export default {
       default () {
         return []
       }
+    },
+    type: {
+      type: String,
+      default: 'system'
     }
   },
   data () {
@@ -105,16 +109,34 @@ export default {
           标签: '',
           'SSH 私钥': '',
           '是否生产机器(y/n)': '',
-          主机探活: ''
+          主机探活: JSON.stringify({
+            probe_type: '',
+            http_probe: {
+              path: '',
+              port: 80,
+              http_headers: [],
+              timeout_second: 0,
+              response_success_flag: ''
+            }
+          })
         }
       ],
-      host: { provider: '', option: 'increment', msg: '只能上传 xls/xlsx 文件' },
+      host: {
+        provider: '',
+        option: 'increment',
+        msg: '只能上传 xls/xlsx 文件'
+      },
       rules: {
         provider: [{ required: true, message: '请选择提供商', trigger: 'blur' }]
       },
       fileList: [],
       uploadBtnDisabled: false,
       fileJson: []
+    }
+  },
+  computed: {
+    projectName () {
+      return this.$route.params.project_name
     }
   },
   methods: {
@@ -128,12 +150,17 @@ export default {
       if (fileJson.length > 1) {
         const invalidItems = []
         fileJson.forEach((element, index) => {
-          if (!element['主机名称'] || !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(element['主机名称'])) {
+          if (
+            !element['主机名称'] ||
+            !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(element['主机名称'])
+          ) {
             invalidItems.push(index + 2)
           }
         })
         if (invalidItems.length > 0) {
-          this.host.msg = `主机名称仅支持英文字母、数字、下划线且首个字符不以数字开头 <br> 第 ${invalidItems.join(',')} 行主机名称不符合需求，请检查`
+          this.host.msg = `主机名称仅支持英文字母、数字、下划线且首个字符不以数字开头 <br> 第 ${invalidItems.join(
+            ','
+          )} 行主机名称不符合需求，请检查`
         } else {
           this.host.msg = '只能上传 xls/xlsx 文件'
         }
@@ -179,18 +206,30 @@ export default {
             is_prod: item['是否生产机器(y/n)'] === 'y',
             user_name: item['用户名'],
             private_key: window.btoa(item['SSH 私钥']),
-            probe: JSON.parse(item['主机探活'])
+            probe: item['主机探活'] ? JSON.parse(item['主机探活']) : null
           }
         })
         const payload = {
           option: option,
           data: result
         }
-        const res = await importHostAPI(payload).catch(err => {
-          console.log(err)
-        })
+        let res = {}
+        if (this.type === 'project') {
+          res = await importProjectHostAPI(this.projectName, payload).catch(err => {
+            console.log(err)
+          })
+        } else {
+          res = await importHostAPI('', payload).catch(err => {
+            console.log(err)
+          })
+        }
+
         if (res) {
-          this.host = { provider: '', option: 'increment', msg: '只能上传 xls/xlsx 文件' }
+          this.host = {
+            provider: '',
+            option: 'increment',
+            msg: '只能上传 xls/xlsx 文件'
+          }
           this.$message({
             type: 'success',
             message: '导入主机信息成功'

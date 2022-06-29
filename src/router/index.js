@@ -605,7 +605,7 @@ const routes = [
       },
       {
         path: 'projects/initialize/:project_name',
-        component: () => import(/* webpackChunkName: "project" */ '@/components/projects/detail_ope/initialize.vue'),
+        component: () => import(/* webpackChunkName: "Project Init" */ '@/components/projects/detail_ope/initialize.vue'),
         meta: {
           requiresAuth: true,
           title: '项目详情'
@@ -653,7 +653,7 @@ const routes = [
           },
           {
             path: 'externalConfig',
-            component: () => import(/* webpackChunkName: "project-external-env" */ '@/components/projects/env/hostEnv/editExternalConfig.vue'),
+            component: () => import(/* webpackChunkName: "Project External Env" */ '@/components/projects/env/hostEnv/editExternalConfig.vue'),
             meta: {
               requiresAuth: true,
               title: '配置托管环境'
@@ -687,7 +687,7 @@ const routes = [
       },
       {
         path: 'projects/detail/:project_name/rbac',
-        component: () => import(/* webpackChunkName: "Project Rbac" */ '@/components/projects/rbac/home.vue'),
+        component: () => import(/* webpackChunkName: "Project RBAC" */ '@/components/projects/rbac/home.vue'),
         meta: {
           requiresAuth: true,
           title: '权限管理'
@@ -695,10 +695,18 @@ const routes = [
       },
       {
         path: 'projects/detail/:project_name/policy',
-        component: () => import(/* webpackChunkName: "project-policy" */ '@/components/projects/policy/home.vue'),
+        component: () => import(/* webpackChunkName: "Project Policy" */ '@/components/projects/policy/home.vue'),
         meta: {
           requiresAuth: true,
           title: '协作模式'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/host',
+        component: () => import(/* webpackChunkName: "Project Host Management" */ '@/components/projects/host/home.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '主机管理'
         }
       }
     ]
@@ -860,7 +868,7 @@ const routes = [
       },
       {
         path: 'host',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/host/manage.vue'),
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/host'),
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,

@@ -3,6 +3,9 @@ import Vuex from 'vuex'
 // Login
 import login from './modules/login'
 
+// global config
+import globalConfig from './modules/globalConfig'
+
 // Project
 import projectList from './modules/projectList'
 
@@ -36,6 +39,7 @@ const debug = process.env.NODE_ENV !== 'production'
 export default new Vuex.Store({
   modules: {
     login,
+    globalConfig,
     projectList,
     projectPermission,
     globalPermission,

@@ -327,8 +327,8 @@ export function serviceTemplateAfterRenderAPI (projectName, serviceName, envName
   return http.get(`/api/aslan/environment/diff/products/${projectName}/service/${serviceName}?projectName=${projectName}&envName=${envName}`)
 }
 
-export function saveServiceTemplateAPI (payload) {
-  return http.post(`/api/aslan/service/services?projectName=${payload.product_name}`, payload)
+export function saveServiceTemplateAPI (isEdit = false, payload) {
+  return http.post(`/api/aslan/service/services?projectName=${payload.product_name}&force=${isEdit}`, payload)
 }
 
 export function updateServicePermissionAPI (projectName, data) {
@@ -512,6 +512,19 @@ export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName
     namespace: namespace
   }
   return http.post(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
+}
+
+export function updateLoadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', namespace = '', payload) {
+  const params = {
+    projectName: projectName,
+    repoOwner: repoOwner,
+    repoName: repoName,
+    branchName: branchName,
+    remoteName: remoteName,
+    repoUUID: repoUUID,
+    namespace: namespace
+  }
+  return http.put(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
 }
 
 export function validPreloadService (codehostId, repoOwner, repoName, branchName, path, serviceName, isDir = false, remoteName = '', repoUUID = '') {
@@ -860,6 +873,21 @@ export function deleteSystemRoleBindingsAPI (name) {
   return http.delete(`/api/v1/system-rolebindings/${name}`)
 }
 
+// 获取角色定义列表
+export function getRolePolicyListAPI (role) {
+  return http.get(`/api/v1/policy-definitions?scope=${role}`)
+}
+
+// 获取角色列表
+export function getRoleListAPI () {
+  return http.get(`/api/v1/system-roles`)
+}
+
+// 新增角色
+export function addSystemRoleAPI (payload) {
+  return http.post(`/api/v1/system-roles `, payload)
+}
+
 // ----- System Setting-Integration -----
 
 // Code
@@ -1201,10 +1229,11 @@ export function setCapacityAPI (payload) {
 export function cleanCacheAPI () {
   return http.post('/api/aslan/system/cleanCache/oneClick')
 }
-// 定时清理
+
 export function timingCleanAPI (payload) {
   return http.post('/api/aslan/system/cleanCache/cron', payload)
 }
+
 export function getCleanCacheStatusAPI () {
   return http.get('/api/aslan/system/cleanCache/state')
 }
@@ -1310,8 +1339,9 @@ export function getClusterNodeInfo (clusterId = '') {
   return http.get(`/api/aslan/environment/kube/nodes?clusterId=${clusterId}`)
 }
 
-export function getClusterStorageClassAPI (clusterId) {
-  return http.get(`/api/aslan/cluster/${clusterId}/storageclasses`)
+export function getClusterStorageClassAPI (clusterId, type = '') {
+  // type: 'all'(all available storageClasses)/ null(storageClasses for file storage types)
+  return http.get(`/api/aslan/cluster/${clusterId}/storageclasses?type=${type}`)
 }
 
 export function getClusterPvcAPI (clusterId, namespace) {
@@ -1319,8 +1349,8 @@ export function getClusterPvcAPI (clusterId, namespace) {
 }
 
 // Host
-export function getHostListAPI (key) {
-  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}`)
+export function getHostListAPI (key, keyword = '') {
+  return http.get(`/api/aslan/system/privateKey?encryptedKey=${key}&keyword=${keyword}`)
 }
 
 export function getHostLabelListAPI () {
@@ -1341,6 +1371,26 @@ export function deleteHostAPI (id) {
 
 export function importHostAPI (payload) {
   return http.post(`/api/aslan/system/privateKey/batch`, payload)
+}
+// project host
+export function getProjectHostListAPI (key, projectName = '', keyword = '') {
+  return http.get(`/api/aslan/project/pms?encryptedKey=${key}&projectName=${projectName}&keyword=${keyword}`)
+}
+
+export function createProjectHostAPI (projectName = '', payload) {
+  return http.post(`/api/aslan/project/pms?projectName=${projectName}`, payload)
+}
+
+export function updateProjectHostAPI (id, projectName = '', payload) {
+  return http.put(` /api/aslan/project/pms/${id}?projectName=${projectName}`, payload)
+}
+
+export function deleteProjectHostAPI (id, projectName) {
+  return http.delete(`/api/aslan/project/pms/${id}?projectName=${projectName}`)
+}
+
+export function importProjectHostAPI (projectName = '', payload) {
+  return http.post(`/api/aslan/project/pms/batch?projectName=${projectName}`, payload)
 }
 
 // Delivery Center
@@ -1486,6 +1536,14 @@ export function enableShareEnvAPI (envName, projectName) {
 
 export function disableShareEnvAPI (envName, projectName) {
   return http.delete(`/api/aslan/environment/environments/${envName}/share/enable?projectName=${projectName}`)
+}
+
+export function checkEphemeralContainersAPI (clusterId) {
+  return http.get(`/api/aslan/cluster/${clusterId}/check/ephemeralcontainers`)
+}
+
+export function startEphemeralContainersDebugAPI ({ projectName, envName, podName, image }) {
+  return http.post(`/api/aslan/environment/kube/${envName}/pods/${podName}/debugcontainer?projectName=${projectName}&debugImage=${image}`)
 }
 
 // Login
@@ -1652,6 +1710,10 @@ export function deleteChartTemplateAPI (name) {
 
 export function createTemplateServiceAPI (projectName, payload) {
   return http.post(`/api/aslan/service/helm/services?projectName=${projectName}`, payload)
+}
+
+export function updateTemplateServiceAPI (projectName, payload) {
+  return http.put(`/api/aslan/service/helm/services?projectName=${projectName}`, payload)
 }
 
 export function createTemplateMultiServiceAPI (projectName, payload) {
