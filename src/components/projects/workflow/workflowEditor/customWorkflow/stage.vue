@@ -109,7 +109,7 @@ export default {
         }
         if (curJob.type === jobType.build) {
           if (!curJob.spec.docker_registry_id) {
-            this.$message.error('请选择景象仓库并保存')
+            this.$message.error('请选择镜像仓库并保存')
             return
           }
         } else {

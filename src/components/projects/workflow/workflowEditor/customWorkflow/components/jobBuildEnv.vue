@@ -12,7 +12,7 @@
       <el-form-item label="服务" prop="source" required>
         <el-select v-model="form.source" placeholder="请选择" size="small">
           <el-option label="运行时输入" value="runtime"></el-option>
-          <el-option label="其他 Job输出" value="fromjob"></el-option>
+          <el-option label="其他 Job 输出" value="fromjob"></el-option>
         </el-select>
         <el-form-item prop="job_name" required v-if="form.source==='fromjob'&&allJobList.length > 0">
           <el-select v-model="form.job_name" placeholder="请选择" size="small">

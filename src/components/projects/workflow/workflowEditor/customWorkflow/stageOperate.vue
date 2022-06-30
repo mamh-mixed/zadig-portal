@@ -33,7 +33,7 @@ export default {
   data () {
     const validateName = (rule, value, callback) => {
       if (!/^[A-Za-z0-9\u4e00-\u9fa5]{1,16}$/.test(value)) {
-        callback(new Error('长度在 1 到 16 个字符'))
+        callback(new Error('支持中文和大小写英文字母，字节长度小于 16 位'))
       } else {
         callback()
       }
