@@ -7,7 +7,7 @@
         <i class="el-icon-close"></i>
       </div>
     </div>
-    <el-dialog title="新建 Job" :visible="isShowJobOperateDialog" width="20%">
+    <el-dialog title="新建 Job" :visible.sync="isShowJobOperateDialog" width="20%">
       <JobOperate v-model="jobInfo" ref="jobOperate" />
       <div slot="footer" class="dialog-footer">
         <el-button @click="isShowJobOperateDialog = false" size="small">取 消</el-button>
