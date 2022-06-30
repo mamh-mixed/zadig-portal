@@ -747,7 +747,9 @@ export default {
           )
           this.allPvc = await getClusterPvcAPI(currentCluster.id, namesapce)
         }
-        if (this.cluster.dind_cfg.storage.type === 'dynamic' && this.cluster.status === 'normal') {
+        if (!this.cluster.dind_cfg.storage) {
+          this.$set(this.cluster.dind_cfg, 'storage', cloneDeep(clusterInfo.dind_cfg.storage))
+        } else if (this.cluster.dind_cfg.storage.type === 'dynamic' && this.cluster.status === 'normal') {
           this.allStorageClass = await getClusterStorageClassAPI(currentCluster.id, 'all')
         }
         this.dialogClusterFormVisible = true
