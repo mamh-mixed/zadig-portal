@@ -208,7 +208,6 @@ export default {
         filters
       ).then(res => {
         this.processTestData(res.workflow_list)
-        console.log(res)
         this.workflowTasks = res.workflow_list
         this.total = res.total
       })

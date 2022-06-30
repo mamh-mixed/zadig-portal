@@ -17,7 +17,7 @@
     :description="workflow.description"
     @refreshWorkflow="refreshWorkflow"
   >
-    <template v-if="workflow.type === 'common'" slot="operations">
+    <template v-if="workflow.workflow_type === 'common_workflow'" slot="operations">{{workflow.workflow_type}}
       <el-button
         type="primary"
         v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'run_workflow',resource:{type:'workflow',name:workflow.name}})"

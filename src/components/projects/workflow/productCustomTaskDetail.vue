@@ -120,7 +120,7 @@ export default {
           title: '工作流',
           url: `/v1/projects/detail/${this.projectName}/pipelines`
         },
-        { title: this.workflowName, url: '' },
+        { title: this.workflowName, url: `/v1/projects/detail/${this.projectName}/pipelines/custom/edit/${this.workflowName}?projectName=${this.projectName}` },
         { title: this.taskId, url: `` }
       ]
     })

@@ -78,7 +78,7 @@
     </el-dialog>
     <el-dialog :visible.sync="isShowRunCustomWorkflowDialog" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog">
       <RunCustomWorkflow
-        v-if="isShowRunCustomWorkflowDialog"
+        v-if="workflowToRun.name"
         :workflowName="workflowToRun.name"
         :projectName="projectName"
         @success="hideAfterSuccess"
@@ -353,7 +353,6 @@ export default {
         })
     },
     startCustomWorkflowBuild (workflow) {
-      console.log(workflow)
       this.workflowToRun = {}
       getCustomWorkfloweTaskPresetAPI(workflow.name)
         .then(res => {

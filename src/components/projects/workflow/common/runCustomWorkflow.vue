@@ -146,7 +146,7 @@ export default {
   props: {
     workflowName: {
       type: String,
-      required: true
+      default: ''
     },
     projectName: {
       type: String,
@@ -156,7 +156,7 @@ export default {
   components: {
     CustomWorkflowBuildRows
   },
-  created () {
+  mounted () {
     this.init()
   },
   methods: {
@@ -177,7 +177,7 @@ export default {
             }
           })
         })
-        this.payload = res
+        this.payload = cloneDeep(res)
       })
     },
     getEnvList () {
