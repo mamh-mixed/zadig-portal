@@ -2157,3 +2157,9 @@ export function getHistoryLogsAPI (workflow_name, task_id, job_name) {
 export function getRunningLogAPI (workflow_name, task_id, job_name, lines) {
   return http.get(`/api/aslan/logs/log/v4/workflow/${workflow_name}/${task_id}/jobs/${job_name}/${lines}`)
 }
+export function getRunningStatusCustomWorkflowListAPI () {
+  return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/running`)
+}
+export function getPendingStatusCustomWorkflowListAPI () {
+  return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/pending `)
+}
