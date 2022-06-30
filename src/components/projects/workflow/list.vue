@@ -272,9 +272,9 @@ export default {
           list.type = 'common'
         })
       }
+      // use new api includes add data
       this.workflowListLoading = false
       this.workflowsList = [
-        ...productWorkflows,
         ...commonWorkflows.workflow_list
       ]
     },

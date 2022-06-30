@@ -44,6 +44,8 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
+import bus from '@utils/eventBus'
+
 export default {
   data () {
     return {
@@ -105,6 +107,23 @@ export default {
   },
   mounted () {
     this.refreshHistoryTaskDetail()
+    bus.$emit('set-topbar-title', {
+      title: '',
+      breadcrumb: [
+        { title: '项目', url: '/v1/projects' },
+        {
+          title: this.projectName,
+          isProjectName: true,
+          url: `/v1/projects/detail/${this.projectName}/detail`
+        },
+        {
+          title: '工作流',
+          url: `/v1/projects/detail/${this.projectName}/pipelines`
+        },
+        { title: this.workflowName, url: '' },
+        { title: this.taskId, url: `` }
+      ]
+    })
   },
   beforeDestroy () {
     this.timeTimeoutFinishFlag = true
