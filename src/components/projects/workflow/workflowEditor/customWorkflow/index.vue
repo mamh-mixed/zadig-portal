@@ -35,7 +35,6 @@
             <div>
               <el-button @click="showStageOperateDialog('add')" type="primary" size="small" class="stage-add">+ Stage</el-button>
             </div>
-            <!-- <div @click="showStageOperateDialog('add')" class="stage-add">+ Stage</div> -->
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
           </section>
@@ -98,7 +97,7 @@
       </el-drawer>
     </div>-->
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="20%">
-      <StageOperate ref="stageOperate" :stageInfo="stage" />
+      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType"/>
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
@@ -159,8 +158,8 @@ export default {
         approval: {
           enabled: false,
           approve_users: [],
-          timeout: 1,
-          needed_approvers: 1,
+          timeout: null,
+          needed_approvers: null,
           description: ''
         },
         jobs: []
@@ -322,8 +321,6 @@ export default {
       return true
     },
     showStageOperateDialog (type, row) {
-      console.log(this.stage)
-      console.log(this.payload)
       if (
         type === 'add' &&
         this.payload.stages.length !== 0 &&
@@ -338,7 +335,7 @@ export default {
         this.stage = cloneDeep(row)
       }
     },
-    operateStage (type, row) {
+    operateStage () {
       this.$refs.stageOperate.validate().then(valid => {
         if (valid) {
           if (this.stageOperateType === 'add') {
@@ -349,6 +346,7 @@ export default {
             this.$store.dispatch('setIsShowFooter', false)
             this.setJob()
           } else {
+            this.stage = this.$refs.stageOperate.getData()
             this.$set(this.payload.stages, this.curStageIndex, this.stage)
           }
           this.$refs.stageOperate.reset()

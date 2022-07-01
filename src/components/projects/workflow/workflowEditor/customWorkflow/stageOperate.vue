@@ -4,16 +4,16 @@
       <el-form-item label="Stage 名称" prop="name">
         <el-input v-model="form.name" size="small"></el-input>
       </el-form-item>
-      <el-form-item label="并发执行">
+      <el-form-item label="并发执行" prop="parallel">
         <el-switch v-model="form.parallel"></el-switch>
       </el-form-item>
       <div>前置步骤</div>
-      <el-form-item label="人工审核">
+      <el-form-item label="人工审核" prop="approval.enabled" v-if="form.approval">
         <el-switch v-model="form.approval.enabled"></el-switch>
       </el-form-item>
       <div v-if="form.approval.enabled">
-        <el-form-item label="超时时间">
-          <el-input v-model="form.approval.timeout" size="small" type="number"></el-input>
+        <el-form-item label="超时时间" prop="approval.timeout">
+          <el-input v-model.number="form.approval.timeout" size="small" type="number" :min="0"></el-input>
         </el-form-item>
         <el-form-item label="审核人">
           <el-select size="small" v-model="form.approval.approve_users" multiple value-key="user_id">
@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="需要审核人数">
-          <el-input v-model="form.approval.needed_approvers" type="number"></el-input>
+          <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0"></el-input>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行"></el-input>
@@ -39,7 +39,9 @@ export default {
   name: 'StageOperate',
   data () {
     const validateName = (rule, value, callback) => {
-      if (!/^[A-Za-z0-9\u4e00-\u9fa5]{1,16}$/.test(value)) {
+      if (value === '') {
+        callback(new Error('请输入 Stage 名称'))
+      } else if (!/^[A-Za-z0-9\u4e00-\u9fa5]{1,16}$/.test(value)) {
         callback(new Error('支持中文和大小写英文字母，字节长度小于 16 位'))
       } else {
         callback()
@@ -49,10 +51,10 @@ export default {
       formLabelWidth: '120px',
       rules: {
         name: [
-          { required: true, message: 'Stage 名称', trigger: 'blur' },
           {
             validator: validateName,
-            trigger: ['blur', 'change']
+            required: true,
+            trigger: 'blur'
           }
         ]
       },
@@ -75,6 +77,10 @@ export default {
     stageInfo: {
       type: Object,
       default: () => ({})
+    },
+    type: {
+      type: String,
+      default: 'add'
     }
   },
   created () {
@@ -95,14 +101,24 @@ export default {
           }
           return obj
         })
-        console.log(this.userList)
       })
     },
     validate () {
       return this.$refs.ruleForm.validate()
     },
     reset () {
-      this.$refs.ruleForm.resetFields()
+      this.form = {
+        name: '',
+        parallel: false,
+        approval: {
+          enabled: false,
+          approve_users: [],
+          timeout: null,
+          needed_approvers: null,
+          description: ''
+        },
+        jobs: []
+      }
     },
     getData () {
       return this.form
@@ -111,7 +127,15 @@ export default {
   watch: {
     stageInfo: {
       handler (val) {
-        this.form = cloneDeep(val)
+        if (this.type === 'edit') {
+          this.form = cloneDeep(val)
+        }
+      },
+      immediate: true
+    },
+    type (newVal, oldVal) {
+      if (newVal === 'add') {
+        this.reset()
       }
     }
   }

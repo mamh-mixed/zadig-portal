@@ -26,7 +26,7 @@
       </main>
       <div></div>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{ minHeight: '400px'}" v-if="isShowConsoleFooter">
+      <footer :style="{ minHeight: '300px'}" v-if="isShowConsoleFooter">
         <BuildConsole
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"
@@ -35,7 +35,7 @@
           :projectName="projectName"
         />
         <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" />
-        <Approval v-if="isShowApproval" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" @showFooter="showFooter" />
+        <Approval v-if="!curJob.type" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" @showFooter="showFooter" />
       </footer>
     </Multipane>
   </div>
@@ -60,8 +60,7 @@ export default {
       payload: {},
       curStageIndex: 0,
       timerId: null,
-      timeTimeoutFinishFlag: false,
-      isShowApproval: false
+      timeTimeoutFinishFlag: false
     }
   },
   components: {
@@ -115,10 +114,9 @@ export default {
       }
     },
     handleApprovalChange (stage, index) {
-      // this.curStage = stage
       this.curStageIndex = index
+      this.curJob.type = ''
       this.isShowConsoleFooter = true
-      this.isShowApproval = true
     },
     showFooter (val) {
       this.isShowConsoleFooter = val

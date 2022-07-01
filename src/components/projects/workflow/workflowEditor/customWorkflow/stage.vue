@@ -14,7 +14,7 @@
         <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <div @click="addJob" v-if="isShowJobAddBtn" class="job-wrap">+ Job</div>
+    <el-button @click="addJob" v-if="isShowJobAddBtn"  type="primary" size="small" class="add">+ Job</el-button>
   </div>
 </template>
 
@@ -164,7 +164,6 @@ export default {
     height: 36px;
     margin: 12px auto;
     overflow: hidden;
-    // padding: 2px 8px;
     color: #555;
     font-size: 20px;
     line-height: 36px;
@@ -189,6 +188,11 @@ export default {
         display: block;
       }
     }
+  }
+
+  .add {
+    margin: 8px 0;
+    font-size: 16px;
   }
 }
 </style>
