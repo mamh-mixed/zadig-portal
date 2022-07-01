@@ -18,7 +18,6 @@
       <Multipane layout="horizontal">
         <main class="mg-t16">
           <section v-show="activeName === 'ui'" class="ui">
-            <!-- <i class="el-icon-video-play"></i> -->
             <span class="ui-text mg-r8">Start</span>
             <div class="line"></div>
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
@@ -33,10 +32,12 @@
               </div>
               <div class="line"></div>
             </div>
-            <div @click="showStageOperateDialog('add')" class="stage-add">+ Stage</div>
+            <div>
+              <el-button @click="showStageOperateDialog('add')" type="primary" size="small" class="stage-add">+ Stage</el-button>
+            </div>
+            <!-- <div @click="showStageOperateDialog('add')" class="stage-add">+ Stage</div> -->
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
-            <!-- <i class="el-icon-video-pause"></i> -->
           </section>
           <section v-show="activeName === 'yaml'" class="yaml">
             <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
@@ -97,7 +98,7 @@
       </el-drawer>
     </div>-->
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="20%">
-      <StageOperate ref="stageOperate" v-model="stage" />
+      <StageOperate ref="stageOperate" :stageInfo="stage" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
@@ -155,6 +156,13 @@ export default {
       stage: {
         name: '',
         parallel: false,
+        approval: {
+          enabled: false,
+          approve_users: [],
+          timeout: 1,
+          needed_approvers: 1,
+          description: ''
+        },
         jobs: []
       },
       job: {
@@ -236,9 +244,14 @@ export default {
       }
     },
     operateWorkflow () {
+      if (this.activeName === 'yaml') {
+        this.payload = jsyaml.load(this.yaml)
+      }
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
+      console.log(this.yaml)
+      console.log(this.payload)
       if (!workflowName) {
         this.$message.error(' 请填写工作流名称')
         return
@@ -309,19 +322,27 @@ export default {
       return true
     },
     showStageOperateDialog (type, row) {
-      if (this.checkForm()) {
-        this.stageOperateType = type
-        this.isShowStageOperateDialog = true
-        if (row) {
-          this.stage = cloneDeep(row)
-        }
+      console.log(this.stage)
+      console.log(this.payload)
+      if (
+        type === 'add' &&
+        this.payload.stages.length !== 0 &&
+        this.stage.jobs.length === 0
+      ) {
+        this.$message.error('请至少创建一个 job')
+        return
+      }
+      this.stageOperateType = type
+      this.isShowStageOperateDialog = true
+      if (row) {
+        this.stage = cloneDeep(row)
       }
     },
     operateStage (type, row) {
-      this.$refs.stageOperate.$refs.ruleForm.validate(valid => {
+      this.$refs.stageOperate.validate().then(valid => {
         if (valid) {
           if (this.stageOperateType === 'add') {
-            this.stage.jobs = []
+            this.stage = this.$refs.stageOperate.getData()
             this.payload.stages.push(this.stage)
             this.curStageIndex = this.payload.stages.length - 1
             this.curJobIndex = -1
@@ -330,8 +351,8 @@ export default {
           } else {
             this.$set(this.payload.stages, this.curStageIndex, this.stage)
           }
+          this.$refs.stageOperate.reset()
           this.isShowStageOperateDialog = false
-          this.stage = {}
         }
       })
     },
@@ -553,11 +574,7 @@ export default {
         }
 
         .stage-add {
-          width: 100px;
-          height: 50px;
           font-size: 24px;
-          line-height: 50px;
-          border: 1px solid @borderGray;
         }
       }
 

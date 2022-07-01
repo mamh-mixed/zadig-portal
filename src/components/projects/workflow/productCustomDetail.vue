@@ -45,13 +45,13 @@
         <span>
           <i class="iconfont iconhistory title-icon"></i>历史任务
         </span>
-        <FilterStatus
+        <!-- <FilterStatus
           ref="filterStatusRef"
           :filteredItems="filteredItems"
           :defaultFilterList="defaultFilterList"
           :getFilterList="getFilterList"
           @updateFilter="updateFilter"
-        ></FilterStatus>
+        ></FilterStatus> -->
       </div>
       <TaskList
         :taskList="workflowTasks"

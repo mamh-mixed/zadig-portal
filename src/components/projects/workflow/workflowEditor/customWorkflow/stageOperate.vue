@@ -7,27 +7,34 @@
       <el-form-item label="并发执行">
         <el-switch v-model="form.parallel"></el-switch>
       </el-form-item>
-      <!-- <div>前置步骤</div>
+      <div>前置步骤</div>
       <el-form-item label="人工审核">
         <el-switch v-model="form.approval.enabled"></el-switch>
       </el-form-item>
-      <el-form-item label="超时时间">
-        <el-switch v-model="form.approval.timeout"></el-switch>
-      </el-form-item>
-      <el-form-item label="审核人">
-        <el-switch v-model="form.approval.enabled"></el-switch>
-      </el-form-item>
-      <el-form-item label="需要审核人数">
-        <el-input v-model="form.approval.neededApprovers"></el-input>
-      </el-form-item>
-      <el-form-item label="描述">
-        <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行"></el-input>
-      </el-form-item>-->
+      <div v-if="form.approval.enabled">
+        <el-form-item label="超时时间">
+          <el-input v-model="form.approval.timeout" size="small" type="number"></el-input>
+        </el-form-item>
+        <el-form-item label="审核人">
+          <el-select size="small" v-model="form.approval.approve_users" multiple value-key="user_id">
+            <el-option v-for="user in userList" :key="user.user_id" :value="user" :label="user.user_name">{{user.user_name}}</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="需要审核人数">
+          <el-input v-model="form.approval.needed_approvers" type="number"></el-input>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行"></el-input>
+        </el-form-item>
+      </div>
     </el-form>
   </div>
 </template>
 
 <script>
+import { getUsersAPI } from '@api'
+import { cloneDeep } from 'lodash'
+
 export default {
   name: 'StageOperate',
   data () {
@@ -39,7 +46,7 @@ export default {
       }
     }
     return {
-      formLabelWidth: '100px',
+      formLabelWidth: '120px',
       rules: {
         name: [
           { required: true, message: 'Stage 名称', trigger: 'blur' },
@@ -48,26 +55,65 @@ export default {
             trigger: ['blur', 'change']
           }
         ]
+      },
+      userList: [],
+      form: {
+        name: '',
+        parallel: false,
+        approval: {
+          enabled: false,
+          approve_users: [],
+          timeout: null,
+          needed_approvers: null,
+          description: ''
+        },
+        jobs: []
       }
     }
   },
   props: {
-    value: {
+    stageInfo: {
       type: Object,
       default: () => ({})
     }
   },
-  computed: {
-    form: {
-      get () {
-        return this.value
-      },
-      set (val) {
-        this.$emit('input', val)
+  created () {
+    this.getUserList()
+  },
+  methods: {
+    getUserList () {
+      const payload = {
+        page: 1,
+        per_page: 50,
+        name: ''
       }
+      getUsersAPI(payload).then(res => {
+        this.userList = res.users.map(item => {
+          const obj = {
+            user_id: item.uid,
+            user_name: item.name
+          }
+          return obj
+        })
+        console.log(this.userList)
+      })
+    },
+    validate () {
+      return this.$refs.ruleForm.validate()
+    },
+    reset () {
+      this.$refs.ruleForm.resetFields()
+    },
+    getData () {
+      return this.form
     }
   },
-
-  methods: {}
+  watch: {
+    stageInfo: {
+      handler (val) {
+        this.form = cloneDeep(val)
+      }
+    }
+  }
 }
 </script>

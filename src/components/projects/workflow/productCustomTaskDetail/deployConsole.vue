@@ -114,7 +114,6 @@ export default {
 <style lang="less" scoped>
 .build-console {
   height: 100%;
-  padding: 24px;
   font-size: 14px;
 
   &-type {

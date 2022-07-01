@@ -3,10 +3,13 @@
     <Multipane layout="horizontal">
       <main>
         <div class="content">
-          <!-- <i class="el-icon-video-play"></i> -->
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
-          <div class="stages" v-for="(stage) in payload.stages" :key="stage.label">
+          <div class="stages" v-for="(stage,index) in payload.stages" :key="stage.label">
+            <div v-if="stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,index)">
+              <el-button type="primary" size="small">人工审核</el-button>
+              <div class="line"></div>
+            </div>
             <div class="stage">
               <div class="stage-name">{{stage.name}}</div>
               <div class="jobs" v-for="job in stage.jobs" :key="job.name">
@@ -19,7 +22,6 @@
             <div class="line"></div>
           </div>
           <span class="text mg-l8">End</span>
-          <!-- <i class="el-icon-video-pause"></i> -->
         </div>
       </main>
       <div></div>
@@ -33,6 +35,7 @@
           :projectName="projectName"
         />
         <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" />
+        <Approval v-if="isShowApproval" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" @showFooter="showFooter" />
       </footer>
     </Multipane>
   </div>
@@ -43,6 +46,7 @@ import Stage from './workflowEditor/customWorkflow/stage.vue'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
+import Approval from './productCustomTaskDetail/approval.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 
@@ -54,8 +58,10 @@ export default {
       curJobIndex: 0,
       curJob: {},
       payload: {},
+      curStageIndex: 0,
       timerId: null,
-      timeTimeoutFinishFlag: false
+      timeTimeoutFinishFlag: false,
+      isShowApproval: false
     }
   },
   components: {
@@ -63,7 +69,8 @@ export default {
     Multipane,
     MultipaneResizer,
     BuildConsole,
-    DeployConsole
+    DeployConsole,
+    Approval
   },
   computed: {
     taskId () {
@@ -83,6 +90,9 @@ export default {
     },
     buildOverallColor () {
       return this.colorTranslation(this.buildOverallStatus, 'pipeline', 'task')
+    },
+    curStage () {
+      return this.payload.stages[this.curStageIndex]
     }
   },
   created () {
@@ -103,6 +113,15 @@ export default {
       if (!this.timeTimeoutFinishFlag) {
         this.timerId = setTimeout(this.refreshHistoryTaskDetail, 3000) // 保证内存中只有一个定时器
       }
+    },
+    handleApprovalChange (stage, index) {
+      // this.curStage = stage
+      this.curStageIndex = index
+      this.isShowConsoleFooter = true
+      this.isShowApproval = true
+    },
+    showFooter (val) {
+      this.isShowConsoleFooter = val
     }
   },
   mounted () {
@@ -120,7 +139,10 @@ export default {
           title: '工作流',
           url: `/v1/projects/detail/${this.projectName}/pipelines`
         },
-        { title: this.workflowName, url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}` },
+        {
+          title: this.workflowName,
+          url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}`
+        },
         { title: this.taskId, url: `` }
       ]
     })
@@ -149,6 +171,11 @@ export default {
         display: flex;
         font-size: 24px;
         text-align: center;
+
+        &-approval {
+          display: flex;
+          height: 40px;
+        }
 
         .stage {
           width: 140px;

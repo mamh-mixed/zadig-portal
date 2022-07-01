@@ -2163,3 +2163,7 @@ export function getRunningStatusCustomWorkflowListAPI () {
 export function getPendingStatusCustomWorkflowListAPI () {
   return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/pending `)
 }
+// approval
+export function approvalCustomWorkflowTaskAPI (payload) {
+  return http.post(`/api/aslan/workflow/v4/workflowtask/approve`, payload)
+}
