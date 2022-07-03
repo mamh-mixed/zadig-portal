@@ -14,7 +14,7 @@
         <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <el-button @click="addJob" v-if="isShowJobAddBtn"  type="primary" size="small" class="add">+ Job</el-button>
+    <el-button @click="addJob" v-if="isShowJobAddBtn" type="primary" size="small" class="add">+ Job</el-button>
   </div>
 </template>
 
@@ -40,6 +40,7 @@ export default {
       default: true
     }
   },
+  inject: ['saveJobConfig'],
   data () {
     return {
       jobType,
@@ -101,29 +102,15 @@ export default {
       })
     },
     addJob () {
-      const curJob = this.stageInfo.jobs[this.curJobIndex]
       if (this.stageInfo.jobs.length > 0) {
-        if (!curJob.name) {
-          this.$message.error('请填写 Job 名称并保存')
-          return
-        }
-        if (curJob.type === jobType.build) {
-          if (!curJob.spec.docker_registry_id) {
-            this.$message.error('请选择镜像仓库并保存')
-            return
-          }
+        if (this.isShowFooter) {
+          this.$message.error('请先保存上一个 Job 配置')
         } else {
-          if (!curJob.spec.env) {
-            this.$message.error('请选择环境并保存')
-            return
-          }
-          if (!curJob.spec.source) {
-            this.$message.error('请选择服务来源并保存')
-            return
-          }
+          this.isShowJobOperateDialog = true
         }
+      } else {
+        this.isShowJobOperateDialog = true
       }
-      this.isShowJobOperateDialog = true
     },
     delJob (item, index) {
       this.$confirm(`确定删除 Job [${item.name}]？`, '确认', {
@@ -170,7 +157,7 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     border: 1px solid @borderGray;
-    border-radius: 12px;
+    // border-radius: 12px;
     cursor: pointer;
 
     .del {
@@ -191,6 +178,7 @@ export default {
   }
 
   .add {
+    width: 6em;
     margin: 8px 0;
     font-size: 16px;
   }

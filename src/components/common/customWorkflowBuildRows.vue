@@ -117,33 +117,17 @@ export default {
   methods: {
     async searchRepoInfo (build, query) {
       let reposQuery = []
-      if (build.source === 'codehub') {
-        reposQuery = [
-          {
-            source: build.source,
-            repo_owner: build.repo_owner,
-            repo: build.repo_name,
-            default_branch: build.branch,
-            project_uuid: build.project_uuid,
-            repo_uuid: build.repo_uuid,
-            repo_id: build.repo_id,
-            codehost_id: build.codehost_id,
-            key: query
-          }
-        ]
-      } else {
-        reposQuery = [
-          {
-            source: build.source,
-            repo_owner: build.repo_owner,
-            repo: build.repo_name,
-            default_branch: build.branch,
-            codehost_id: build.codehost_id,
-            repo_namespace: build.repo_namespace,
-            key: query
-          }
-        ]
-      }
+      reposQuery = [
+        {
+          source: build.source,
+          repo_owner: build.repo_owner,
+          repo: build.repo_name,
+          default_branch: build.branch,
+          codehost_id: build.codehost_id,
+          repo_namespace: build.repo_namespace,
+          key: query
+        }
+      ]
       const payload = { infos: reposQuery }
       // b = branch, p = pr, t = tag
       const res = await getAllBranchInfoAPI(payload)
@@ -201,23 +185,17 @@ export default {
       if (build.branchOrTag) {
         build[build.prNumberPropName] = null
       }
-    },
-    // 如果是勾选的不需要展示当前行 这里不处理数据  通过样式隐藏当前行
-    rowStyle ({ row, rowIndex }) {
-      if (row.name === 'IMAGE' && row.auto_generate) {
-        return { visibility: 'collapse' }
-      } else {
-        return {}
-      }
     }
   },
   watch: {
     pickedTargets: {
       handler (value) {
         value.forEach(item => {
-          item.repos.forEach(build => {
-            this.searchRepoInfo(build, '')
-          })
+          if (item.repos.length > 0) {
+            item.repos.forEach(build => {
+              this.searchRepoInfo(build, '')
+            })
+          }
         })
       }
     }

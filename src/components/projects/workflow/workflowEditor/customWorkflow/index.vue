@@ -44,40 +44,33 @@
         </main>
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
         <footer :style="{ minHeight: '350px'}" v-if="isShowFooter">
-          <el-tabs v-model="jobActiveName">
-            <el-tab-pane :label="item.label" :name="item.name" v-for="item in jobTabList" :key="item.name"></el-tab-pane>
-            <div v-show="jobActiveName === 'base'" v-if="payload.stages.length > 0 && job">
-              <el-form :rules="JobConfigrules" ref="jobRuleForm" :model="job">
-                <el-form-item
-                  label="Job 名称"
-                  prop="name"
-                  v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
-                >
-                  <el-input v-model="job.name" size="small" style="width: 200px;"></el-input>
-                </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
-                  <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
-                  <el-select size="small" v-model="service">
-                    <el-option
-                      v-for="service in serviceAndBuilds"
-                      :key="service.service_name"
-                      :value="service.service_name"
-                      :label="`${service.service_name}(${service.service_module})`"
-                    >{{service.service_name}}/{{service.service_module}}</el-option>
-                  </el-select>
-                  <el-button type="success" size="mini" @click="addServiceAndBuild(job.spec.service_and_builds)">+ 添加</el-button>
-                </div>
-                <el-button class="mg-t64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
-              </el-form>
-            </div>
-            <div v-show="jobActiveName === 'env'" v-if="payload.stages.length > 0 && payload.stages[curStageIndex].jobs.length  > 0 && job">
-              <DockerList
-                :projectName="projectName"
-                v-if="job.type===jobType.build"
-                :dockerRegistryId="job.spec.docker_registry_id"
-                required
-                ref="docker"
-              ></DockerList>
+          <div v-if="payload.stages.length > 0 && job">
+            <span>基本配置</span>
+            <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24">
+              <el-form-item
+                label="Job 名称"
+                prop="name"
+                v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
+              >
+                <el-input v-model="job.name" size="small" style="width: 200px;"></el-input>
+              </el-form-item>
+              <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
+                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small">
+                  <el-option v-for="item in dockerList" :key="item.id" :label="item.namespace" :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
+                <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
+                <el-select size="small" v-model="service">
+                  <el-option
+                    v-for="service in serviceAndBuilds"
+                    :key="service.service_name"
+                    :value="service.service_name"
+                    :label="`${service.service_name}(${service.service_module})`"
+                  >{{service.service_name}}/{{service.service_module}}</el-option>
+                </el-select>
+                <el-button type="success" size="mini" @click="addServiceAndBuild(job.spec.service_and_builds)">+ 添加</el-button>
+              </div>
               <BuildEnv
                 :projectName="projectName"
                 v-if="job.type === jobType.deploy"
@@ -85,9 +78,9 @@
                 ref="buildEnv"
                 :workflowInfo="payload"
               ></BuildEnv>
-              <el-button class="mg-t64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
-            </div>
-          </el-tabs>
+              <el-button class="mg-t24" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
+            </el-form>
+          </div>
         </footer>
       </Multipane>
     </div>
@@ -97,7 +90,7 @@
       </el-drawer>
     </div>-->
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="20%">
-      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType"/>
+      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
@@ -126,7 +119,8 @@ import {
   getAssociatedBuildsAPI,
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
-  getCustomWorkflowDetailAPI
+  getCustomWorkflowDetailAPI,
+  getRegistryWhenBuildAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
@@ -140,7 +134,16 @@ import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
 import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
-
+const validateName = (rule, value, callback) => {
+  const reg = /^[a-z][a-z0-9-]{0,32}$/
+  if (value === '') {
+    callback(new Error('请输入 Job 名称'))
+  } else if (!reg.test(value)) {
+    callback(new Error('请输入正确格式的 Job 名称'))
+  } else {
+    callback()
+  }
+}
 export default {
   name: 'CustomWorkflow',
   data () {
@@ -149,7 +152,6 @@ export default {
       configList,
       jobTabList,
       activeName: 'ui',
-      jobActiveName: 'base',
       editorOptions,
       jobType,
       stage: {
@@ -166,7 +168,9 @@ export default {
       },
       job: {
         name: '',
-        spec: {}
+        spec: {
+          docker_registry_id: ''
+        }
       },
       curJobName: '',
       stageOperateType: 'add',
@@ -182,6 +186,7 @@ export default {
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
+      dockerList: [],
       service: '',
       yaml: '',
       JobConfigrules: {
@@ -189,9 +194,18 @@ export default {
           {
             required: true,
             trigger: 'blur',
-            validator: this.validateName
+            validator: validateName
           }
-        ]
+        ],
+        spec: {
+          docker_registry_id: [
+            {
+              required: true,
+              message: '请选择镜像',
+              trigger: 'blur'
+            }
+          ]
+        }
       },
       isShowRunWorkflowDialog: false
     }
@@ -209,6 +223,11 @@ export default {
     RunCustomWorkflow,
     codemirror
   },
+  provide () {
+    return {
+      saveJobConfig: this.saveJobConfig
+    }
+  },
   computed: {
     projectName () {
       return this.$route.query.projectName
@@ -224,34 +243,23 @@ export default {
     }
   },
   created () {
-    this.getServiceAndBuildList()
+    this.init()
     this.$store.dispatch('setIsShowFooter', false)
-    // edit
-    if (this.isEdit) {
-      this.getWorkflowDetail(this.$route.params.workflow_name)
-    }
   },
   methods: {
-    validateName (rule, value, callback) {
-      const reg = /^[a-z][a-z0-9-]{0,32}$/
-      if (value === '') {
-        callback(new Error('请输入 Job 名称'))
-      } else if (!reg.test(value)) {
-        callback(new Error('请输入正确格式的 Job 名称'))
-      } else {
-        callback()
+    init () {
+      this.getRegistryWhenBuild()
+      this.getServiceAndBuildList()
+      // edit
+      if (this.isEdit) {
+        this.getWorkflowDetail(this.$route.params.workflow_name)
       }
     },
     operateWorkflow () {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
-      this.payload.project = this.projectName
-      const yamlParams = jsyaml.dump(this.payload)
-      const workflowName = this.payload.name
-      console.log(this.yaml)
-      console.log(this.payload)
-      if (!workflowName) {
+      if (!this.payload.name) {
         this.$message.error(' 请填写工作流名称')
         return
       }
@@ -263,18 +271,26 @@ export default {
         this.$message.error(' 请填写 Stage 中的 Job')
         return
       }
-      if (this.checkForm()) {
-        if (this.$route.fullPath.includes('edit')) {
-          updateCustomWorkflowAPI(workflowName, yamlParams).then(res => {
-            this.$message.success('编辑成功')
-            this.getWorkflowDetail(this.payload.name)
-          })
-        } else {
-          addCustomWorkflowAPI(yamlParams).then(res => {
-            this.$message.success('新建成功')
-            this.getWorkflowDetail(this.payload.name)
-          })
-        }
+      if (this.isShowFooter) {
+        this.$message.error('请先保存 Job 配置')
+        return
+      }
+      this.saveWorkflow()
+    },
+    saveWorkflow () {
+      this.payload.project = this.projectName
+      const yamlParams = jsyaml.dump(this.payload)
+      const workflowName = this.payload.name
+      if (this.$route.fullPath.includes('edit')) {
+        updateCustomWorkflowAPI(workflowName, yamlParams).then(res => {
+          this.$message.success('编辑成功')
+          this.getWorkflowDetail(this.payload.name)
+        })
+      } else {
+        addCustomWorkflowAPI(yamlParams).then(res => {
+          this.$message.success('新建成功')
+          this.getWorkflowDetail(this.payload.name)
+        })
       }
     },
     cancelWorkflow () {
@@ -295,31 +311,6 @@ export default {
         this.$store.dispatch('setWorkflowInfo', this.payload)
       })
     },
-    checkForm () {
-      const curJob = this.job
-      if (this.payload.stages.length > 0) {
-        if (!curJob.name) {
-          this.$message.error('请填写 Job 名称并保存')
-          return
-        }
-        if (curJob.type === jobType.build) {
-          if (!curJob.spec.docker_registry_id) {
-            this.$message.error('请选择镜像仓库并保存')
-            return
-          }
-        } else {
-          if (!curJob.spec.env) {
-            this.$message.error('请选择环境并保存')
-            return
-          }
-          if (!curJob.spec.source) {
-            this.$message.error('请选择服务来源并保存')
-            return
-          }
-        }
-      }
-      return true
-    },
     showStageOperateDialog (type, row) {
       if (
         type === 'add' &&
@@ -329,8 +320,12 @@ export default {
         this.$message.error('请至少创建一个 job')
         return
       }
+      if (this.isShowFooter) {
+        this.$message.error('请先保存上一个 Job 配置')
+      } else {
+        this.isShowStageOperateDialog = true
+      }
       this.stageOperateType = type
-      this.isShowStageOperateDialog = true
       if (row) {
         this.stage = cloneDeep(row)
       }
@@ -373,36 +368,20 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
-      if (this.jobActiveName === 'env') {
-        if (this.job.type === jobType.deploy) {
-          this.$refs.buildEnv.validate().then(valid => {
-            if (valid) {
-              this.$set(
-                this.payload.stages[this.curStageIndex].jobs,
-                this.curJobIndex,
-                this.job
-              )
-              this.$store.dispatch('setIsShowFooter', false)
-            }
-          })
-        } else {
-          // build docker
-          this.$refs.docker.validate().then(valid => {
-            if (valid) {
-              this.job.spec.docker_registry_id = this.$refs.docker.getData()
-              this.$set(
-                this.payload.stages[this.curStageIndex].jobs,
-                this.curJobIndex,
-                this.job
-              )
-              this.$store.dispatch('setIsShowFooter', false)
-            }
-          })
-        }
-      } else {
-        // job name
-        if (this.job.type === jobType.build) {
-          this.$refs.jobRuleForm.validate().then(valid => {
+      return this.$refs.jobRuleForm.validate().then(valid => {
+        if (valid) {
+          if (this.job.type === jobType.deploy) {
+            this.$refs.buildEnv.validate().then(valid => {
+              if (valid) {
+                this.$set(
+                  this.payload.stages[this.curStageIndex].jobs,
+                  this.curJobIndex,
+                  this.job
+                )
+                this.$store.dispatch('setIsShowFooter', false)
+              }
+            })
+          } else {
             if (this.$refs.serviceAndbuild.validate()) {
               this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
               this.$set(
@@ -413,25 +392,23 @@ export default {
               this.$store.dispatch('setIsShowFooter', false)
             } else {
               this.$message.error('请至少选择一个服务组件')
+              Promise.reject()
             }
-          })
-        } else {
-          this.$refs.jobRuleForm.validate().then(valid => {
-            this.$set(
-              this.payload.stages[this.curStageIndex].jobs,
-              this.curJobIndex,
-              this.job
-            )
-            this.$store.dispatch('setIsShowFooter', false)
-          })
+          }
         }
-      }
+      })
     },
     setJob () {
       if (this.payload.stages.length === 0) return
       this.job = cloneDeep(
         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       )
+    },
+    getRegistryWhenBuild () {
+      const projectName = this.projectName
+      getRegistryWhenBuildAPI(projectName).then(res => {
+        this.dockerList = res
+      })
     },
     getServiceAndBuildList () {
       const projectName = this.projectName
@@ -589,6 +566,7 @@ export default {
     footer {
       position: relative;
       z-index: 1;
+      overflow-y: auto;
       background: #fff;
 
       .confirm {

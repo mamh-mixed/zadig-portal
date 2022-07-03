@@ -1,9 +1,9 @@
 <template>
   <div class="custom-workflow">
     <el-form label-width="150px">
-      <el-collapse>
+      <el-collapse v-model="activeNames">
         <div v-for="(stage) in payload.stages" :key="stage.name">
-          <el-collapse-item v-for="(job) in stage.jobs" :title="`【${job.type}】${job.name}`" :key="job.name">
+          <el-collapse-item v-for="(job,index) in stage.jobs" :title="`【${job.type}】${job.name}`" :key="job.name" :name="index">
             <div v-show="job.type === 'zadig-build'">
               <el-form-item label="服务组件">
                 <el-select
@@ -60,7 +60,6 @@
                     <i style="color: #909399;" class="el-icon-question"></i>
                   </span>
                 </el-tooltip>
-                <!-- <div v-if="imageRegistryByEnv" class="show-image-info">镜像仓库：{{imageRegistryByEnv}}</div> -->
               </el-form-item>
               <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
                 <el-select
@@ -140,7 +139,8 @@ export default {
             jobs: []
           }
         ]
-      }
+      },
+      activeNames: [0]
     }
   },
   props: {
@@ -156,28 +156,31 @@ export default {
   components: {
     CustomWorkflowBuildRows
   },
-  mounted () {
+  created () {
     this.init()
   },
   methods: {
     init () {
-      this.getWorkflowPresetInfo(this.workflowName)
       this.getEnvList()
       this.getRegistryWhenBuild()
+      this.getWorkflowPresetInfo(this.workflowName)
     },
     getWorkflowPresetInfo (workflowName) {
       getCustomWorkfloweTaskPresetAPI(workflowName).then(res => {
         res.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            job.pickedTargets = job.spec.service_and_builds
-            if (job.spec.service_and_builds && job.spec.service_and_builds.length > 0) {
-              job.spec.service_and_builds.forEach(build => {
+            if (
+              job.spec.service_and_builds &&
+              job.spec.service_and_builds.length > 0
+            ) {
+              job.pickedTargets = job.spec.service_and_builds
+              job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
               })
             }
           })
         })
-        this.payload = cloneDeep(res)
+        this.payload = res
       })
     },
     getEnvList () {
@@ -199,27 +202,14 @@ export default {
     },
     async getRepoInfo (originRepos) {
       const reposQuery = originRepos.map(re => {
-        if (re.source === 'codehub') {
-          return {
-            source: re.source,
-            repo_owner: re.repo_owner,
-            repo: re.repo_name,
-            default_branch: re.branch,
-            project_uuid: re.project_uuid,
-            repo_uuid: re.repo_uuid,
-            repo_id: re.repo_id,
-            codehost_id: re.codehost_id
-          }
-        } else {
-          return {
-            source: re.source,
-            repo_owner: re.repo_owner,
-            repo: re.repo_name,
-            default_branch: re.branch,
-            codehost_id: re.codehost_id,
-            repo_namespace: re.repo_namespace,
-            filter_regexp: re.filter_regexp
-          }
+        return {
+          source: re.source,
+          repo_owner: re.repo_owner,
+          repo: re.repo_name,
+          default_branch: re.branch,
+          codehost_id: re.codehost_id,
+          repo_namespace: re.repo_namespace,
+          filter_regexp: re.filter_regexp
         }
       })
       const payload = { infos: reposQuery }
@@ -308,11 +298,6 @@ export default {
       this.startTaskLoading = true
       // 数据处理
       const payload = cloneDeep(this.payload)
-      this.$nextTick(() => {
-        setTimeout(() => {
-          console.log(this.$refs)
-        }, 1000)
-      })
       payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
           job.spec.service_and_builds = job.pickedTargets
@@ -324,6 +309,10 @@ export default {
             job.spec.service_and_images.forEach(item => {
               delete item.images
             })
+          }
+          if (job.type === 'zadig-deploy') {
+            job.spec.service_and_images = job.spec.service_and_builds
+            delete job.spec.service_and_builds
           }
         })
       })

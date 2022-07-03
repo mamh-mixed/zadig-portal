@@ -45,7 +45,7 @@ export default {
   },
   data () {
     return {
-      formLabelWidth: '60px',
+      formLabelWidth: '90px',
       envList: []
     }
   },

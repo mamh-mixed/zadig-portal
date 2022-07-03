@@ -131,5 +131,7 @@ export default {
 <style lang="less" scoped>
 .service-build-val {
   width: 70%;
+  color: #606266;
+  font-size: 14px;
 }
 </style>
