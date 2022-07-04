@@ -3,7 +3,7 @@
     :workflowInfo="workflow"
     :name="workflow.name"
     :isFavorite="workflow.isFavorite || false"
-    :type="workflow.type === 'common' ? 'common' : 'workflow'"
+    :type="workflow.workflow_type === 'common_workflow' ? 'common_workflow' : 'workflow'"
     :projectName="workflow.projectName || workflow.project_name"
     :stages="stages"
     :recentTaskStatus="workflow.recentTask?workflow.recentTask.status:''"
@@ -65,7 +65,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow',resource:{type:'workflow',name:workflow.name},isBtn: true})"
-        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}` : `/workflows/product/edit/${workflow.name}?projectName=${workflow.projectName}`"
+        :to="`/workflows/product/edit/${workflow.name}?projectName=${workflow.projectName}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>

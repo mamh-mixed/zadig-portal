@@ -128,14 +128,14 @@ export default {
       return this.$route.params.project_name
     },
     pipelineLink () {
-      return this.type === 'common'
+      return this.type === 'common_workflow'
         ? `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}`
         : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}`
     }
   },
   methods: {
     setFavorite (projectName, workflowName, type) {
-      if (type === 'common') {
+      if (type === 'common_workflow') {
         this.$message.info('通用工作流暂不支持收藏！')
         return
       }
