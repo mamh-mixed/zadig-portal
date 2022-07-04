@@ -11,14 +11,20 @@
         <span>后审核超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>
-        <span class="red">{{approvalInfo.approval.reject_or_approve}}</span>
+        <span>完成时间</span>
+        <span>{{$utils.convertTimestamp(approvalInfo.end_time)}}</span>
+        <span
+          :class="[`status-${$utils.taskElTagType(approvalInfo.approval.reject_or_approve)}`]"
+        >{{ wordTranslation(approvalInfo.approval.reject_or_approve,'pipeline','task') }}</span>
       </el-col>
     </el-row>
     <el-table :data="approvalInfo.approval.approve_users">
       <el-table-column prop="user_name" label="审核人"></el-table-column>
       <el-table-column prop="reject_or_approve" label="审核结果">
         <template slot-scope="scope">
-          <span>{{ !scope.row.reject_or_approve ? 'waiting':scope.row.reject_or_approve}}</span>
+          <span
+            :class="[`status-${$utils.taskElTagType(scope.row.reject_or_approve)}`]"
+          >{{ wordTranslation(scope.row.reject_or_approve,'pipeline','task') }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="operation_time" label="审核时间">
@@ -29,7 +35,6 @@
       <el-table-column prop="comment" label="评论信息"></el-table-column>
     </el-table>
     <el-row class="mg-t24">
-      <!-- <el-button type="primary" size="small" @click="hideFooter">确定</el-button> -->
       <el-button type="warning" size="small" @click="isShowCommentDialog=true">审核</el-button>
     </el-row>
     <el-dialog title="评论信息" :visible.sync="isShowCommentDialog">
@@ -46,6 +51,7 @@
 
 <script>
 import { approvalCustomWorkflowTaskAPI } from '@api'
+import { wordTranslate } from '@utils/wordTranslate.js'
 
 export default {
   name: '',
@@ -86,6 +92,9 @@ export default {
     },
     hideFooter () {
       this.$emit('showFooter', false)
+    },
+    wordTranslation (word, category, subitem) {
+      return wordTranslate(word, category, subitem)
     }
   }
 }
