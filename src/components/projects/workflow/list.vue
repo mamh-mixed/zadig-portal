@@ -95,8 +95,6 @@ import RunCustomWorkflow from './common/runCustomWorkflow'
 import VirtualList from 'vue-virtual-scroll-list'
 import qs from 'qs'
 import {
-  getProductWorkflowsAPI,
-  getProductWorkflowsInProjectAPI,
   getWorkflowDetailAPI,
   deleteProductWorkflowAPI,
   copyWorkflowAPI,
@@ -241,15 +239,8 @@ export default {
     },
     async getWorkflows (projectName) {
       this.workflowListLoading = true
-      // let productWorkflows = []
       let commonWorkflows = []
       if (this.projectName) {
-        productWorkflows = await getProductWorkflowsInProjectAPI(
-          projectName
-        ).catch(err => {
-          console.log(err)
-          return []
-        })
         commonWorkflows = await getCustomWorkflowListAPI(
           projectName
         ).catch(err => {
@@ -260,10 +251,6 @@ export default {
           list.type = 'common'
         })
       } else {
-        productWorkflows = await getProductWorkflowsAPI().catch(err => {
-          console.log(err)
-          return []
-        })
         commonWorkflows = await getCommonWorkflowListAPI().catch(err => {
           console.log(err)
           return []
