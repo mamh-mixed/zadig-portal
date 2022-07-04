@@ -241,7 +241,7 @@ export default {
     },
     async getWorkflows (projectName) {
       this.workflowListLoading = true
-      let productWorkflows = []
+      // let productWorkflows = []
       let commonWorkflows = []
       if (this.projectName) {
         productWorkflows = await getProductWorkflowsInProjectAPI(
