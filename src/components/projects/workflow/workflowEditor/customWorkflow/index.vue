@@ -3,8 +3,8 @@
     <div class="left">
       <header class="header">
         <div class="header-name">
-          <CanInput v-model="payload.name" placeholder="名称" width="150px" class="mg-r24" v-show="activeName === 'ui'" />
-          <CanInput v-model="payload.description" placeholder="描述" v-show="activeName === 'ui'" />
+          <CanInput v-model="payload.name" placeholder="名称" width="150px" class="mg-r24" />
+          <CanInput v-model="payload.description" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
           <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabList" :key="item.name"></el-tab-pane>
@@ -56,7 +56,7 @@
               </el-form-item>
               <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
                 <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small">
-                  <el-option v-for="item in dockerList" :key="item.id" :label="item.reg_addr" :value="item.id"></el-option>
+                  <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
               <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">

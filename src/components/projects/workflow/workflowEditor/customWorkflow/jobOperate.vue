@@ -12,7 +12,7 @@
             trigger="hover"
             :content="item.tip"
           >
-            <el-radio :label="item.name" size="small" class="mg-r8 mg-b8" border>{{item.label}}</el-radio>
+            <el-radio :label="item.name" size="small" class="mg-r8 mg-b8" border  :disabled="!item.name">{{item.label}}</el-radio>
           </el-tooltip>
         </el-radio-group>
       </el-form-item>

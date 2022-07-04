@@ -33,6 +33,16 @@ const jobTypeList = [
     label: '部署',
     name: 'zadig-deploy',
     tip: '可更新容器形态的服务镜像'
+  },
+  {
+    label: '测试',
+    name: '',
+    tip: 'coming soon'
+  },
+  {
+    label: '自定义',
+    name: '',
+    tip: 'coming soon'
   }
 ]
 const configList = [

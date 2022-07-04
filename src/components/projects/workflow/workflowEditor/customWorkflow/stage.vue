@@ -2,7 +2,9 @@
   <div class="stage">
     <div class="stage-name">{{stageInfo.name}}</div>
     <div v-for="(item,index) in stageInfo.jobs" :key="item.value" @click="setCurIndex(index,item)" class="job-wrap">
-      <span class="job-name">{{item.name}}</span>
+      <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
+        <span class="job-name">{{item.name}}</span>
+      </el-tooltip>
       <div class="del" @click="delJob(item,index)" v-if="isShowJobAddBtn">
         <i class="el-icon-close"></i>
       </div>

@@ -6,13 +6,13 @@
           <span>{{workflowName}}#</span>
           <span>{{taskId}}</span>
         </el-col>
-        <el-col :offset="8" :span="4">
+        <el-col :offset="10" :span="3">
           <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
         </el-col>
         <el-col :span="2">
           <span>{{ payload.interval }}</span>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="1">
           <span>{{payload.task_revoker}}</span>
         </el-col>
       </el-row>
@@ -32,7 +32,9 @@
               <div class="jobs" v-for="job in stage.jobs" :key="job.name">
                 <span class="job" @click="setCurJob(job)">
                   <span :class="$translate.calcTaskStatusColor(job.status)">•</span>
-                  <span class="job-name">{{job.name}}</span>
+                  <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
+                    <span class="job-name">{{job.name}}</span>
+                  </el-tooltip>
                 </span>
               </div>
             </div>
