@@ -41,9 +41,8 @@
           <span class="text mg-l8">End</span>
         </div>
       </main>
-      <div></div>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{ minHeight: '300px'}" v-if="isShowConsoleFooter">
+      <footer :style="{ minHeight: '500px'}" v-if="isShowConsoleFooter">
         <BuildConsole
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"
@@ -198,7 +197,7 @@ export default {
 
       .stages {
         display: flex;
-        font-size: 24px;
+        font-size: 20px;
         text-align: center;
 
         &-approval {
@@ -229,8 +228,7 @@ export default {
             padding: 0 8px;
             overflow: hidden;
             font-weight: 400;
-            font-size: 24px;
-            font-size: 20px;
+            font-size: 18px;
             white-space: nowrap;
             text-overflow: ellipsis;
             border: 1px dotted @borderGray;
