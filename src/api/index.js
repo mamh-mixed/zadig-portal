@@ -2106,8 +2106,8 @@ export function addConfigObjectAPI (projectName, payload) {
   return http.post(`/api/aslan/environment/envcfgs/${payload.env_name}?projectName=${projectName}`, payload)
 }
 
-export function updateConfigObjectAPI (projectName, payload) {
-  return http.put(`/api/aslan/environment/envcfgs/${payload.env_name}?projectName=${projectName}`, payload)
+export function updateConfigObjectAPI (projectName, rollback = false, payload) {
+  return http.put(`/api/aslan/environment/envcfgs/${payload.env_name}?projectName=${projectName}&rollback=${rollback}`, payload)
 }
 
 export function deleteConfigObjectAPI ({ objectName, projectName, envName, commonEnvCfgType }) {
