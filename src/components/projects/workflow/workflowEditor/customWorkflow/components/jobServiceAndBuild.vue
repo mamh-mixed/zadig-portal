@@ -11,7 +11,7 @@
           <span>{{item.service_name}}/{{item.service_module}}</span>
         </el-col>
         <el-col :span="6">
-          <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)">
+          <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 220px;">
             <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
           </el-select>
         </el-col>
@@ -31,10 +31,10 @@
           </el-table-column>
           <el-table-column label="值" width="300">
             <template slot-scope="scope">
-              <el-select size="small" v-model="scope.row.value" v-if="scope.row.type === 'choice'">
+              <el-select size="small" v-model="scope.row.value" v-if="scope.row.type === 'choice'" style="width: 220px;">
                 <el-option v-for="option in scope.row.choice_option" :key="option" :label="option" :value="option">{{option}}</el-option>
               </el-select>
-              <el-input v-model="scope.row.value" v-if="scope.row.type === 'string'" size="small"></el-input>
+              <el-input v-model="scope.row.value" v-if="scope.row.type === 'string'" size="small" style="width: 220px;"></el-input>
             </template>
           </el-table-column>
         </el-table>

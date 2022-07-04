@@ -1,7 +1,9 @@
 <template>
   <div class="can-input" :style="{width: width}">
     <span v-if="!isCanInput">
-      <span>{{inputValue}}</span>
+      <el-tooltip effect="dark" :content="inputValue" placement="top">
+        <span>{{ $utils.tailCut(inputValue,10) }}</span>
+      </el-tooltip>
       <span class="tip" v-if="!inputValue">{{placeholder}}</span>
       <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput" v-if="from==='ui'&&!disabled"></i>
     </span>
@@ -14,7 +16,7 @@
         @focus="handleInput(true)"
         @blur="handleInput(false)"
       ></el-input>
-      <el-button type="text" @click="handleInput(false)" size="mini"  class="mg-l8">确定</el-button>
+      <el-button type="text" @click="handleInput(false)" size="mini" class="mg-l8">确定</el-button>
     </span>
   </div>
 </template>

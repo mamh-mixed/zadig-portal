@@ -1,6 +1,8 @@
 <template>
   <div class="stage">
-    <div class="stage-name">{{stageInfo.name}}</div>
+    <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
+      <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
+    </el-tooltip>
     <div v-for="(item,index) in stageInfo.jobs" :key="item.value" @click="setCurIndex(index,item)" class="job-wrap">
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
         <span class="job-name">{{item.name}}</span>

@@ -48,7 +48,7 @@
         </div>
       </main>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{ minHeight: '500px'}" v-if="isShowConsoleFooter">
+      <footer :style="{ minHeight: '500px',maxHeight: '600px'}" v-if="isShowConsoleFooter">
         <BuildConsole
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"
@@ -56,7 +56,7 @@
           :workflowName="workflowName"
           :projectName="projectName"
         />
-        <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob"    :projectName="projectName"/>
+        <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
         <Approval v-if="!curJob.type" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" @showFooter="showFooter" />
       </footer>
     </Multipane>
@@ -247,6 +247,10 @@ export default {
         }
       }
     }
+  }
+
+  footer {
+    overflow-y: auto;
   }
 
   .multipane-resizer {

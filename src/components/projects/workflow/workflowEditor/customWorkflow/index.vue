@@ -3,7 +3,7 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="isEdit" width="250px" class="mg-r40" />
+          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="isEdit" width="150px" class="mg-r40" />
           <CanInput v-model="payload.description" width="150px" :from="activeName" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
@@ -43,44 +43,48 @@
           </section>
         </main>
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{ minHeight: '350px'}" v-if="isShowFooter">
-          <div v-if="payload.stages.length > 0 && job">
-            <span>基本配置</span>
-            <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24" size="small">
-              <el-form-item
-                label="Job 名称"
-                prop="name"
-                v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
-              >
-                <el-input v-model="job.name" size="small" style="width: 200px;"></el-input>
-              </el-form-item>
-              <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
-                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small">
-                  <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
-                </el-select>
-              </el-form-item>
-              <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
-                <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
-                <el-select size="small" v-model="service">
-                  <el-option
-                    v-for="service in serviceAndBuilds"
-                    :key="service.service_name"
-                    :value="service.service_name"
-                    :label="`${service.service_name}(${service.service_module})`"
-                  >{{service.service_name}}/{{service.service_module}}</el-option>
-                </el-select>
-                <el-button type="success" size="mini" @click="addServiceAndBuild(job.spec.service_and_builds)">+ 添加</el-button>
-              </div>
-              <BuildEnv
-                :projectName="projectName"
-                v-if="job.type === jobType.deploy"
-                v-model="job.spec"
-                ref="buildEnv"
-                :workflowInfo="payload"
-              ></BuildEnv>
-              <el-button class="mg-t24" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
-            </el-form>
-          </div>
+        <footer :style="{ minHeight: '350px',maxHeight: '600px'}" v-if="isShowFooter">
+          <el-card :body-style="{padding: '4px 16px', margin: '0' }" >
+            <div slot="header">
+              <span>基本配置</span>
+            </div>
+            <div v-if="payload.stages.length > 0 && job">
+              <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24" size="small" >
+                <el-form-item
+                  label="Job 名称"
+                  prop="name"
+                  v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
+                >
+                  <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+                </el-form-item>
+                <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
+                  <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small"  style="width: 220px;">
+                    <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
+                  </el-select>
+                </el-form-item>
+                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
+                  <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
+                  <el-select size="small" v-model="service">
+                    <el-option
+                      v-for="service in serviceAndBuilds"
+                      :key="service.service_name"
+                      :value="service.service_name"
+                      :label="`${service.service_name}(${service.service_module})`"
+                    >{{service.service_name}}/{{service.service_module}}</el-option>
+                  </el-select>
+                  <el-button type="success" size="mini" @click="addServiceAndBuild(job.spec.service_and_builds)">+ 添加</el-button>
+                </div>
+                <BuildEnv
+                  :projectName="projectName"
+                  v-if="job.type === jobType.deploy"
+                  v-model="job.spec"
+                  ref="buildEnv"
+                  :workflowInfo="payload"
+                ></BuildEnv>
+                <el-button class="mg-t16 mg-b24" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
+              </el-form>
+            </div>
+          </el-card>
         </footer>
       </Multipane>
     </div>
@@ -140,7 +144,11 @@ const validateName = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入 Job 名称'))
   } else if (!reg.test(value)) {
-    callback(new Error('支持小写英文字母、数字或者中划线，必须小写英文字母开头，最多 32 位。'))
+    callback(
+      new Error(
+        '支持小写英文字母、数字或者中划线，必须小写英文字母开头，最多 32 位。'
+      )
+    )
   } else {
     callback()
   }
@@ -649,5 +657,9 @@ export default {
 <style lang="less">
 .CodeMirror {
   min-height: 600px;
+}
+
+.el-card__header {
+  padding: 8px 16px;
 }
 </style>
