@@ -7,12 +7,15 @@
           <span>{{taskId}}</span>
         </el-col>
         <el-col :offset="10" :span="3">
+          <i class="el-icon-video-play"></i>
           <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
         </el-col>
         <el-col :span="2">
+          <i class="el-icon-time"></i>
           <span>{{ payload.interval }}</span>
         </el-col>
         <el-col :span="1">
+          <i class="el-icon-user"></i>
           <span>{{payload.task_revoker}}</span>
         </el-col>
       </el-row>
@@ -52,7 +55,7 @@
           :workflowName="workflowName"
           :projectName="projectName"
         />
-        <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" />
+        <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob"    :projectName="projectName"/>
         <Approval v-if="!curJob.type" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" @showFooter="showFooter" />
       </footer>
     </Multipane>

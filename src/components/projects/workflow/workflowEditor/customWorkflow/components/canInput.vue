@@ -1,9 +1,11 @@
 <template>
   <div class="can-input">
+    <span v-if="!isCanInput">{{inputValue}}</span>
     <el-input
+      v-else
       v-model="inputValue"
       type="text"
-      size="small"
+      size="mini"
       :placeholder="placeholder"
       @focus="handleInput(true)"
       @blur="handleInput(false)"
@@ -56,13 +58,13 @@ export default {
 <style lang="less" scoped>
 .can-input {
   display: flex;
+  align-items: center;
   width: 100%;
+  line-height: 50px;
 
   .icon {
     display: inline-block;
-    width: 20px;
-    height: 32px;
-    line-height: 32px;
+    margin-left: 8px;
   }
 }
 </style>

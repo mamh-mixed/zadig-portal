@@ -1,9 +1,9 @@
 <template>
   <div class="new-workflow-home">
     <div class="left">
-      <header class="header">
-        <div class="header-name">
-          <CanInput v-model="payload.name" placeholder="名称" width="150px" class="mg-r24" />
+      <header>
+        <div class="name">
+          <CanInput v-model="payload.name" placeholder="名称" width="150px" class="mg-r40" />
           <CanInput v-model="payload.description" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
@@ -528,11 +528,12 @@ export default {
     flex: 1;
     padding: 24px;
 
-    .header {
+    header {
       display: flex;
+      align-items: center;
       justify-content: space-between;
 
-      &-name {
+      .name {
         display: flex;
         height: 32px;
       }
