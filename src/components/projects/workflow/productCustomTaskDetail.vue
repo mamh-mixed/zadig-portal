@@ -5,8 +5,9 @@
         <el-col :span="8">
           <span>{{workflowName}}#</span>
           <span>{{taskId}}</span>
+          <span>{{translateStatus(payload.status)}}</span>
         </el-col>
-        <el-col :offset="8" :span="3">
+        <el-col :offset="8" :span="4">
           <i class="el-icon-video-play"></i>
           <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
         </el-col>
@@ -26,7 +27,7 @@
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
           <div class="stages" v-for="(stage,index) in payload.stages" :key="stage.label">
-            <div v-if="stage.approval" class="stages-approval" @click="handleApprovalChange(stage,index)">
+            <div v-if="stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,index)">
               <el-button type="primary" size="small">人工审核</el-button>
               <div class="line"></div>
             </div>
@@ -70,6 +71,7 @@ import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
 import Approval from './productCustomTaskDetail/approval.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
+import { wordTranslate } from '@utils/wordTranslate.js'
 
 export default {
   data () {
@@ -149,6 +151,9 @@ export default {
     },
     showFooter (val) {
       this.isShowConsoleFooter = val
+    },
+    translateStatus (word) {
+      return wordTranslate(word, 'pipeline', 'task')
     }
   },
   mounted () {

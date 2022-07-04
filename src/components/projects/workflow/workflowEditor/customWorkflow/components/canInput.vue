@@ -2,7 +2,7 @@
   <div class="can-input" :style="{width: width}">
     <span v-if="!isCanInput">
       <span>{{inputValue}}</span>
-      <span class="tip" v-if="!inputValue">请输入</span>
+      <span class="tip" v-if="!inputValue">{{placeholder}}</span>
       <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput"></i>
     </span>
     <span v-else class="input">

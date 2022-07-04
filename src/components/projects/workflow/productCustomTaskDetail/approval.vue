@@ -29,7 +29,7 @@
       <el-table-column prop="comment" label="评论信息"></el-table-column>
     </el-table>
     <el-row class="mg-t24">
-      <el-button type="primary" size="small" @click="hideFooter">确定</el-button>
+      <!-- <el-button type="primary" size="small" @click="hideFooter">确定</el-button> -->
       <el-button type="warning" size="small" @click="isShowCommentDialog=true">审核</el-button>
     </el-row>
     <el-dialog title="评论信息" :visible.sync="isShowCommentDialog">
