@@ -5,7 +5,7 @@
         <el-col :span="8">
           <span>{{workflowName}}#</span>
           <span>{{taskId}}</span>
-          <span>{{translateStatus(payload.status)}}</span>
+          <span :class="$translate.calcTaskStatusColor(payload.status)">{{translateStatus(payload.status)}}</span>
         </el-col>
         <el-col :offset="8" :span="4">
           <i class="el-icon-video-play"></i>

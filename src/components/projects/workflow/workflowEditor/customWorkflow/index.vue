@@ -3,8 +3,8 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" width="250px" class="mg-r40" />
-          <CanInput v-model="payload.description" width="150px" placeholder="描述" />
+          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" width="250px" class="mg-r40" />
+          <CanInput v-model="payload.description" width="150px" :from="activeName" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
           <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabList" :key="item.name"></el-tab-pane>
@@ -140,7 +140,7 @@ const validateName = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入 Job 名称'))
   } else if (!reg.test(value)) {
-    callback(new Error('请输入正确格式的 Job 名称'))
+    callback(new Error('支持小写英文字母、数字或者中划线，必须小写英文字母开头，最多 32 位。'))
   } else {
     callback()
   }

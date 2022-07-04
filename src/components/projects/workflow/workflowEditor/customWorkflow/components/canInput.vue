@@ -3,7 +3,7 @@
     <span v-if="!isCanInput">
       <span>{{inputValue}}</span>
       <span class="tip" v-if="!inputValue">{{placeholder}}</span>
-      <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput"></i>
+      <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput" v-if="from==='ui'"></i>
     </span>
     <span v-else class="input">
       <el-input
@@ -37,6 +37,10 @@ export default {
       default: '200px'
     },
     value: {
+      type: String,
+      default: ''
+    },
+    from: {
       type: String,
       default: ''
     }
