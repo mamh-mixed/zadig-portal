@@ -2,12 +2,17 @@
   <div class="product-custom-detail">
     <header>
       <el-row>
-        <el-col :span="6">
-          <span>{{workflowName}}#{{taskId}}</span>
+        <el-col :span="8">
+          <span>{{workflowName}}#</span>
+          <span>{{taskId}}</span>
         </el-col>
-        <el-col :offset="12" :span="6">
+        <el-col :offset="8" :span="4">
           <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
-          <span></span>
+        </el-col>
+        <el-col :span="2">
+          <span>{{ payload.interval }}</span>
+        </el-col>
+        <el-col :span="2">
           <span>{{payload.task_revoker}}</span>
         </el-col>
       </el-row>
@@ -113,6 +118,7 @@ export default {
     getWorkflowTaskDetail (workflow_name, task_id) {
       getCustomWorkflowTaskDetailAPI(workflow_name, task_id).then(res => {
         this.payload = res
+        this.adaptTaskDetail(res)
       })
     },
     setCurJob (item) {
@@ -124,6 +130,13 @@ export default {
       if (!this.timeTimeoutFinishFlag) {
         this.timerId = setTimeout(this.refreshHistoryTaskDetail, 3000) // 保证内存中只有一个定时器
       }
+    },
+    adaptTaskDetail (detail) {
+      detail.intervalSec =
+        (detail.status === 'running'
+          ? Math.round(new Date().getTime() / 1000)
+          : detail.end_time) - detail.start_time
+      detail.interval = this.$utils.timeFormat(detail.intervalSec)
     },
     handleApprovalChange (stage, index) {
       this.curStageIndex = index
@@ -172,7 +185,7 @@ export default {
   header {
     margin-bottom: 24px;
     line-height: 40px;
-    // background: #dedede;
+    background: #eee;
   }
 
   main {
@@ -195,7 +208,7 @@ export default {
 
         .stage {
           width: 140px;
-          padding: 8px;
+          padding: 16px 8px;
           border: 1px dotted @borderGray;
           border-radius: 8px;
 
@@ -221,7 +234,7 @@ export default {
             white-space: nowrap;
             text-overflow: ellipsis;
             border: 1px dotted @borderGray;
-            border-radius: 12px;
+            // border-radius: 12px;
           }
         }
       }

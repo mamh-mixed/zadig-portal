@@ -30,7 +30,7 @@
               </el-form-item>
               <el-form-item label="镜像仓库" prop="docker_registry_id">
                 <el-select v-model="job.spec.docker_registry_id" placeholder="请选择镜像" size="small">
-                  <el-option v-for="item in dockerList" :key="item.id" :label="item.namespace" :value="item.id"></el-option>
+                  <el-option v-for="item in dockerList" :key="item.id" :label="item.reg_addr" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
               <div v-if="job.pickedTargets">

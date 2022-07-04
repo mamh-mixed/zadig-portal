@@ -56,7 +56,7 @@
               </el-form-item>
               <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
                 <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small">
-                  <el-option v-for="item in dockerList" :key="item.id" :label="item.namespace" :value="item.id"></el-option>
+                  <el-option v-for="item in dockerList" :key="item.id" :label="item.reg_addr" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
               <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
@@ -132,6 +132,7 @@ import DockerList from './components/dockerList.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
+import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
 const validateName = (rule, value, callback) => {
@@ -250,10 +251,32 @@ export default {
     init () {
       this.getRegistryWhenBuild()
       this.getServiceAndBuildList()
+      this.setTitle()
       // edit
       if (this.isEdit) {
         this.getWorkflowDetail(this.$route.params.workflow_name)
       }
+    },
+    setTitle () {
+      bus.$emit('set-topbar-title', {
+        title: '',
+        breadcrumb: [
+          { title: '项目', url: '/v1/projects' },
+          {
+            title: this.projectName,
+            isProjectName: true,
+            url: `/v1/projects/detail/${this.projectName}/detail`
+          },
+          {
+            title: '工作流',
+            url: `/v1/projects/detail/${this.projectName}/pipelines`
+          },
+          {
+            title: this.$route.params.workflow_name,
+            url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
+          }
+        ]
+      })
     },
     operateWorkflow () {
       if (this.activeName === 'yaml') {

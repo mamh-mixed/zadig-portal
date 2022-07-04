@@ -65,7 +65,6 @@
         @cloneTask="rerun"
         @currentChange="changeTaskPage"
         :workflowType="!$utils.isEmpty(workflow.build_stage) && workflow.build_stage.enabled ? `buildv2` : ''"
-        showOperation
       ></TaskList>
     </el-card>
 
