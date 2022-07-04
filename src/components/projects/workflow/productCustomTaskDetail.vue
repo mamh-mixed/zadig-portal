@@ -27,7 +27,7 @@
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
           <div class="stages" v-for="(stage,index) in payload.stages" :key="stage.label">
-            <div v-if="stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,index)">
+            <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,index)">
               <el-button type="primary" size="small">人工审核</el-button>
               <div class="line"></div>
             </div>
