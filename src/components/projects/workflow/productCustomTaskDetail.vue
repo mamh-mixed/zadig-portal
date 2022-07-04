@@ -6,7 +6,7 @@
           <span>{{workflowName}}#</span>
           <span>{{taskId}}</span>
         </el-col>
-        <el-col :offset="10" :span="3">
+        <el-col :offset="8" :span="3">
           <i class="el-icon-video-play"></i>
           <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
         </el-col>
@@ -14,7 +14,7 @@
           <i class="el-icon-time"></i>
           <span>{{ payload.interval }}</span>
         </el-col>
-        <el-col :span="1">
+        <el-col :span="2">
           <i class="el-icon-user"></i>
           <span>{{payload.task_revoker}}</span>
         </el-col>

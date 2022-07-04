@@ -3,8 +3,8 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" width="150px" class="mg-r40" />
-          <CanInput v-model="payload.description" placeholder="描述" />
+          <CanInput v-model="payload.name" placeholder="名称" width="250px" class="mg-r40" />
+          <CanInput v-model="payload.description" width="150px" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
           <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabList" :key="item.name"></el-tab-pane>
@@ -89,7 +89,7 @@
       <el-drawer title="变量" :visible.sync="isShowDrawer" direction="rtl">
       </el-drawer>
     </div>-->
-    <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="20%">
+    <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
@@ -307,18 +307,18 @@ export default {
       if (this.$route.fullPath.includes('edit')) {
         updateCustomWorkflowAPI(workflowName, yamlParams).then(res => {
           this.$message.success('编辑成功')
-          this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
-          )
           this.getWorkflowDetail(this.payload.name)
+          this.$router.push(
+            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+          )
         })
       } else {
         addCustomWorkflowAPI(yamlParams).then(res => {
           this.$message.success('新建成功')
-          this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
-          )
           this.getWorkflowDetail(this.payload.name)
+          this.$router.push(
+            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+          )
         })
       }
     },
@@ -341,8 +341,11 @@ export default {
       })
     },
     showStageOperateDialog (type, row) {
+      console.log(this.stage)
+      console.log(type)
       if (
         type === 'add' &&
+        !this.isEdit &&
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {

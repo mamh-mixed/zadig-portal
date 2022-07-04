@@ -141,7 +141,7 @@ export default {
     width: 5em;
     overflow: hidden;
     font-weight: 500;
-    font-size: 30px;
+    font-size: 24px;
     white-space: nowrap;
     text-overflow: ellipsis;
     border-bottom: 1px solid @borderGray;

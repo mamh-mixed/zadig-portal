@@ -1,17 +1,21 @@
 <template>
-  <div class="can-input">
-    <span v-if="!isCanInput">{{inputValue}}</span>
-    <el-input
-      v-else
-      v-model="inputValue"
-      type="text"
-      size="mini"
-      :placeholder="placeholder"
-      @focus="handleInput(true)"
-      @blur="handleInput(false)"
-      :style="{width: width}"
-    ></el-input>
-    <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput"></i>
+  <div class="can-input" :style="{width: width}">
+    <span v-if="!isCanInput">
+      <span>{{inputValue}}</span>
+      <span class="tip" v-if="!inputValue">请输入</span>
+      <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput"></i>
+    </span>
+    <span v-else class="input">
+      <el-input
+        v-model="inputValue"
+        type="text"
+        size="mini"
+        :placeholder="placeholder"
+        @focus="handleInput(true)"
+        @blur="handleInput(false)"
+      ></el-input>
+      <el-button @click="handleInput(false)" size="mini" type="info" class="mg-l8">确定</el-button>
+    </span>
   </div>
 </template>
 
@@ -62,9 +66,19 @@ export default {
   width: 100%;
   line-height: 50px;
 
+  .tip {
+    color: #a0a0a0;
+  }
+
   .icon {
     display: inline-block;
     margin-left: 8px;
+  }
+
+  .input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 </style>

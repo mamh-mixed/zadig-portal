@@ -7,7 +7,7 @@
         <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
       </el-col>
       <el-col :span="6" class="text" v-if="approvalInfo.approval.reject_or_approve!=='reject'">
-        <span class="red">{{approvalInfo.approval.timeout}}分</span>
+        <span class="red">{{approvalInfo.approval.timeout}} 分钟</span>
         <span>后审核超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>

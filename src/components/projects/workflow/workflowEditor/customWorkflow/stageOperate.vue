@@ -5,15 +5,17 @@
         <el-input v-model="form.name" size="small"></el-input>
       </el-form-item>
       <el-form-item label="并发执行" prop="parallel">
-        <el-switch v-model="form.parallel"></el-switch>
+        <el-switch v-model="form.parallel" size="small"></el-switch>
       </el-form-item>
-      <div>前置步骤</div>
+      <el-form-item label="前置步骤"></el-form-item>
       <el-form-item label="人工审核" prop="approval.enabled" v-if="form.approval">
-        <el-switch v-model="form.approval.enabled"></el-switch>
+        <el-switch v-model="form.approval.enabled" size="small"></el-switch>
       </el-form-item>
       <div v-if="form.approval.enabled">
         <el-form-item label="超时时间" prop="approval.timeout">
-          <el-input v-model.number="form.approval.timeout" size="small" type="number" :min="0"></el-input>
+          <el-input v-model.number="form.approval.timeout" size="small" type="number" :min="0">
+            <i slot="suffix">分钟</i>
+          </el-input>
         </el-form-item>
         <el-form-item label="审核人">
           <el-select size="small" v-model="form.approval.approve_users" multiple value-key="user_id">
@@ -21,10 +23,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="需要审核人数">
-          <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0"></el-input>
+          <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0" size="small"></el-input>
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行"></el-input>
+          <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行" size="small"></el-input>
         </el-form-item>
       </div>
     </el-form>
