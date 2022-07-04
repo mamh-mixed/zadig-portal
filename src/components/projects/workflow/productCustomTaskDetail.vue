@@ -1,12 +1,24 @@
 <template>
   <div class="product-custom-detail">
+    <header>
+      <el-row>
+        <el-col :span="6">
+          <span>{{workflowName}}#{{taskId}}</span>
+        </el-col>
+        <el-col :offset="12" :span="6">
+          <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
+          <span></span>
+          <span>{{payload.task_revoker}}</span>
+        </el-col>
+      </el-row>
+    </header>
     <Multipane layout="horizontal">
       <main>
         <div class="content">
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
           <div class="stages" v-for="(stage,index) in payload.stages" :key="stage.label">
-            <div v-if="stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,index)">
+            <div v-if="stage.approval" class="stages-approval" @click="handleApprovalChange(stage,index)">
               <el-button type="primary" size="small">人工审核</el-button>
               <div class="line"></div>
             </div>
@@ -156,6 +168,12 @@ export default {
   height: 100%;
   padding: 24px;
   background: #fff;
+
+  header {
+    margin-bottom: 24px;
+    line-height: 40px;
+    // background: #dedede;
+  }
 
   main {
     .content {

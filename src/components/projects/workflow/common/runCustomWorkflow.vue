@@ -1,7 +1,7 @@
 <template>
   <div class="custom-workflow">
     <el-form label-width="150px">
-      <el-collapse v-model="activeNames">
+      <el-collapse>
         <div v-for="(stage) in payload.stages" :key="stage.name">
           <el-collapse-item v-for="(job,index) in stage.jobs" :title="`【${job.type}】${job.name}`" :key="job.name" :name="index">
             <div v-show="job.type === 'zadig-build'">
@@ -139,8 +139,7 @@ export default {
             jobs: []
           }
         ]
-      },
-      activeNames: [0]
+      }
     }
   },
   props: {
