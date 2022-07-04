@@ -70,7 +70,7 @@
           </span>
         </slot>
       </el-alert>
-      <el-form ref="cluster" :rules="rules" label-width="148px" label-position="left" :model="cluster">
+      <el-form ref="cluster" :rules="rules" label-width="150px" label-position="left" :model="cluster">
         <el-form-item label="名称" prop="name">
           <el-input size="small" v-model="cluster.name" placeholder="请输入集群名称"></el-input>
         </el-form-item>
@@ -222,7 +222,7 @@
                 <el-form-item prop="cache.nfs_properties.storage_class">
                   <span slot="label">选择 Storage Class</span>
                   <el-select v-model="cluster.cache.nfs_properties.storage_class" placeholder="请选择" style="width: 100%;" size="small">
-                    <el-option v-for="(item,index) in allStorageClass" :key="index" :label="item" :value="item"></el-option>
+                    <el-option v-for="(item,index) in allFileStorageClass" :key="index" :label="item" :value="item"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item prop="cache.nfs_properties.storage_size_in_gib">
@@ -279,7 +279,7 @@
               </el-form-item>
             </template>
           </section>
-          <section v-if="!cluster.local">
+          <section>
             <h4>
               Dind 资源配置
               <el-link
@@ -293,7 +293,7 @@
             <el-form-item label="副本数量" prop="dind_cfg.replicas">
               <el-input v-model.number="cluster.dind_cfg.replicas" size="small" placeholder="请输入副本数量"></el-input>
             </el-form-item>
-            <el-form-item label="资源规格">
+            <el-form-item label="资源限制(limit)">
               <el-form-item label="CPU(m)" label-width="90px" prop="dind_cfg.resources.limits.cpu">
                 <el-input v-model.number="cluster.dind_cfg.resources.limits.cpu" size="small" placeholder="请输入 CPU"></el-input>
               </el-form-item>
@@ -301,6 +301,34 @@
                 <el-input v-model.number="cluster.dind_cfg.resources.limits.memory" size="small" placeholder="请输入 Memory"></el-input>
               </el-form-item>
             </el-form-item>
+            <template v-if="isEdit">
+              <el-form-item label="存储资源">
+                <el-radio-group v-model="cluster.dind_cfg.storage.type" @change="changeDindStorageType">
+                  <el-radio label="rootfs">临时存储</el-radio>
+                  <el-radio label="dynamic" :disabled="cluster.status !== 'normal'">
+                    集群存储资源
+                    <span v-if="cluster.status !== 'normal'" style="color: #e6a23c; font-weight: 400; font-size: 12px;">集群正常接入后才可使用集群存储资源</span>
+                  </el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <template v-if="cluster.dind_cfg.storage.type === 'dynamic' && cluster.status === 'normal'">
+                <el-form-item prop="dind_cfg.storage.storage_class" label="选择 Storage Class">
+                  <el-select v-model="cluster.dind_cfg.storage.storage_class" placeholder="请选择" style="width: 100%;" size="small">
+                    <el-option v-for="(item,index) in allStorageClass" :key="index" :label="item" :value="item"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item prop="dind_cfg.storage.storage_size_in_gib" label="存储空间大小">
+                  <el-input
+                    v-model.number="cluster.dind_cfg.storage.storage_size_in_gib"
+                    style="width: 100%; vertical-align: baseline;"
+                    size="small"
+                    placeholder="请输入存储空间大小"
+                  >
+                    <template slot="append">GiB</template>
+                  </el-input>
+                </el-form-item>
+              </template>
+            </template>
           </section>
         </template>
       </el-form>
@@ -450,6 +478,11 @@ const clusterInfo = {
         cpu: 4000,
         memory: 8192
       }
+    },
+    storage: {
+      type: 'rootfs',
+      storage_class: '',
+      storage_size_in_gib: 10
     }
   }
 }
@@ -465,6 +498,7 @@ export default {
       allCluster: [],
       allStorage: [],
       externalStorage: [],
+      allFileStorageClass: [],
       allStorageClass: [],
       allPvc: [],
       deployType: 'Deployment',
@@ -573,6 +607,16 @@ export default {
         'dind_cfg.resources.limits.memory': {
           required: true,
           message: '请输入 Memory',
+          type: 'number'
+        },
+        'dind_cfg.storage.storage_class': {
+          required: true,
+          message: '请选择 Storage Class',
+          type: 'string'
+        },
+        'dind_cfg.storage.storage_size_in_gib': {
+          required: true,
+          message: '请输入存储空间大小',
           type: 'number'
         }
       },
@@ -698,10 +742,15 @@ export default {
         if (this.cluster.cache.medium_type === 'object') {
           await this.getStorage()
         } else if (this.cluster.cache.medium_type === 'nfs') {
-          this.allStorageClass = await getClusterStorageClassAPI(
+          this.allFileStorageClass = await getClusterStorageClassAPI(
             currentCluster.id
           )
           this.allPvc = await getClusterPvcAPI(currentCluster.id, namesapce)
+        }
+        if (!this.cluster.dind_cfg.storage) {
+          this.$set(this.cluster.dind_cfg, 'storage', cloneDeep(clusterInfo.dind_cfg.storage))
+        } else if (this.cluster.dind_cfg.storage.type === 'dynamic' && this.cluster.status === 'normal') {
+          this.allStorageClass = await getClusterStorageClassAPI(currentCluster.id, 'all')
         }
         this.dialogClusterFormVisible = true
         this.hasNotified = false
@@ -733,6 +782,11 @@ export default {
         })
       }
     },
+    async changeDindStorageType (type) {
+      if (type === 'dynamic') {
+        this.allStorageClass = await getClusterStorageClassAPI(this.cluster.id, 'all')
+      }
+    },
     async changeMediumType (type) {
       if (!this.hasNotified) {
         this.$message({
@@ -747,7 +801,7 @@ export default {
         await this.getStorage()
       } else if (type === 'nfs') {
         this.allPvc = await getClusterPvcAPI(id, namesapce)
-        this.allStorageClass = await getClusterStorageClassAPI(id)
+        this.allFileStorageClass = await getClusterStorageClassAPI(id)
       }
     },
     addCluster (payload) {
