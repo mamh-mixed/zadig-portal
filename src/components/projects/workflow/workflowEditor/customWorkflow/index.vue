@@ -3,7 +3,7 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" width="250px" class="mg-r40" />
+          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="isEdit" width="250px" class="mg-r40" />
           <CanInput v-model="payload.description" width="150px" :from="activeName" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
@@ -11,7 +11,7 @@
         </el-tabs>
         <div>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
-          <el-button type="success" size="small" :disabled="Object.keys(workflowInfo).length === 0" @click="runWorkflow">执行</el-button>
+          <!-- <el-button type="success" size="small" :disabled="Object.keys(workflowInfo).length === 0" @click="runWorkflow">执行</el-button> -->
           <el-button type="default" size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
@@ -46,7 +46,7 @@
         <footer :style="{ minHeight: '350px'}" v-if="isShowFooter">
           <div v-if="payload.stages.length > 0 && job">
             <span>基本配置</span>
-            <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24">
+            <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24" size="small">
               <el-form-item
                 label="Job 名称"
                 prop="name"
@@ -562,7 +562,7 @@ export default {
 
             .stage {
               width: 140px;
-              padding: 8px;
+              padding: 8px 0;
               border: 1px dotted @borderGray;
               border-radius: 4px;
             }
@@ -572,14 +572,14 @@ export default {
               top: -6px;
               right: -6px;
               display: none;
-              font-size: 24px;
+              font-size: 20px;
             }
 
             .edit {
               position: absolute;
               top: 12px;
               right: 2%;
-              font-size: 24px;
+              font-size: 20px;
             }
 
             &:hover {
@@ -591,7 +591,7 @@ export default {
         }
 
         .stage-add {
-          font-size: 24px;
+          font-size: 20px;
         }
       }
 

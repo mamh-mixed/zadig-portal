@@ -32,7 +32,8 @@ export function wordTranslate (word, category, subitem = '') {
         blocked: '阻塞',
         queued: '队列中',
         skipped: '跳过',
-        prepare: '准备环境'
+        prepare: '准备环境',
+        reject: '拒绝'
       }
     },
     project: {
@@ -80,7 +81,8 @@ export function colorTranslate (word, category, subitem = '') {
           failed: 'color-failed',
           passed: 'color-passed',
           timeout: 'color-timeout',
-          cancelled: 'color-cancelled'
+          cancelled: 'color-cancelled',
+          reject: 'color-failed'
         }
       },
       environment: {

@@ -92,6 +92,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .approval {
+  background: #fff;
+
   .text {
     color: #8d9199;
     font-size: 14px;

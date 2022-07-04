@@ -3,7 +3,7 @@
     <span v-if="!isCanInput">
       <span>{{inputValue}}</span>
       <span class="tip" v-if="!inputValue">{{placeholder}}</span>
-      <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput" v-if="from==='ui'"></i>
+      <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput" v-if="from==='ui'&&!disabled"></i>
     </span>
     <span v-else class="input">
       <el-input
@@ -14,7 +14,7 @@
         @focus="handleInput(true)"
         @blur="handleInput(false)"
       ></el-input>
-      <el-button @click="handleInput(false)" size="mini" type="info" class="mg-l8">确定</el-button>
+      <el-button type="text" @click="handleInput(false)" size="mini"  class="mg-l8">确定</el-button>
     </span>
   </div>
 </template>
@@ -43,6 +43,10 @@ export default {
     from: {
       type: String,
       default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
