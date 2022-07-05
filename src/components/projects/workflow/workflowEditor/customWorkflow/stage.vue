@@ -141,9 +141,8 @@ export default {
 
   &-name {
     overflow: hidden;
-    font-size: 20px;
-    // white-space: nowrap;
-    // text-overflow: ellipsis;
+    font-size: 18px;
+    cursor: pointer;
   }
 
   .job-wrap {

@@ -68,7 +68,7 @@
       ></TaskList>
     </el-card>
 
-    <el-dialog :visible.sync="taskDialogVisible" title="运行 产品-工作流" custom-class="run-workflow" width="60%" class="dialog">
+    <el-dialog :visible.sync="taskDialogVisible" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog">
        <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"

@@ -219,7 +219,7 @@ export default {
 
       .stages {
         display: flex;
-        font-size: 20px;
+        font-size: 18px;
         text-align: center;
 
         &-approval {
@@ -233,6 +233,7 @@ export default {
           padding: 8px 0 16px 0;
           border: 1px dotted @themeColor;
           border-radius: 4px;
+          cursor: pointer;
         }
 
         .jobs {
@@ -251,6 +252,7 @@ export default {
             white-space: nowrap;
             text-overflow: ellipsis;
             border: 1px dotted @borderGray;
+            cursor: pointer;
           }
         }
       }

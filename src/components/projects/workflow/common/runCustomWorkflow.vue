@@ -3,7 +3,7 @@
     <el-form label-width="150px">
       <el-collapse>
         <div v-for="(stage) in payload.stages" :key="stage.name">
-          <el-collapse-item v-for="(job,index) in stage.jobs" :title="`【${job.type}】${job.name}`" :key="job.name" :name="index">
+          <el-collapse-item v-for="(job,index) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="index">
             <div v-show="job.type === 'zadig-build'">
               <el-form-item label="服务组件">
                 <el-select
