@@ -3,7 +3,7 @@
     <el-table :data="pickedTargets" v-if="pickedTargets.length > 0" empty-text="无">
       <el-table-column type="expand" prop="service_name" width="50px">
         <template slot-scope="props">
-          <el-table :data="props.row.key_vals" style="width: 50%; margin: 0 auto;" size="mini">
+          <el-table :data="props.row.key_vals" style="width: 70%; margin: 0 auto;" size="mini">
             <el-table-column label="键" prop="key"></el-table-column>
             <el-table-column label="值">
               <template slot-scope="scope">

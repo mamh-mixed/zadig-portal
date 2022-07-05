@@ -3,7 +3,7 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="isEdit" class="mg-r16" />
+          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
           <CanInput v-model="payload.description" :from="activeName" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
@@ -543,7 +543,7 @@ export default {
       justify-content: space-between;
       padding: 0 8px;
       background: #f6f6f6;
-      box-shadow: 1px 0 2px -1px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1);
 
       .name {
         display: flex;
@@ -553,6 +553,7 @@ export default {
     main {
       width: 100%;
       height: 100%;
+      margin-top: 24px;
 
       .ui {
         display: flex;

@@ -1,6 +1,6 @@
 <template>
   <div class="build-console">
-    <el-card :body-style="{padding: '8px 20px', margin: '5px 0 0 0' }"  class="box-card task-process">
+    <el-card :body-style="{padding: '8px 20px', margin: '5px 0' }"  class="box-card task-process">
       <div slot="header" class="mg-b8">
         <el-col :span="4">
           <span class="build-console-type">构建</span>

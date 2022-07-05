@@ -19,7 +19,7 @@
           <i class="el-icon-user"></i>
           <span>{{payload.task_revoker}}</span>
         </el-col>
-        <el-col :span="1">
+        <el-col :span="1" v-if="payload.status==='waiting'||payload.status==='running'">
           <el-button size="small" @click="cancel">取消</el-button>
         </el-col>
       </el-row>
@@ -197,17 +197,19 @@ export default {
 .product-custom-detail {
   height: 100%;
   padding: 24px;
+  font-size: 14px;
   background: #fff;
 
   header {
-    margin-bottom: 24px;
     padding: 0 8px;
     line-height: 40px;
     background: #f6f6f6;
-    box-shadow: 1px 0 4px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1);
   }
 
   main {
+    margin-top: 24px;
+
     .content {
       display: flex;
 

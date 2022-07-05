@@ -140,13 +140,10 @@ export default {
   text-align: center;
 
   &-name {
-    width: 7em;
     overflow: hidden;
-    font-weight: 500;
     font-size: 20px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    // border-bottom: 1px solid @borderGray;
+    // white-space: nowrap;
+    // text-overflow: ellipsis;
   }
 
   .job-wrap {
