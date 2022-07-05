@@ -23,7 +23,7 @@
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
               <div class="item" @click="setCurStage(index,item)">
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
-                  <i class="el-icon-edit"></i>
+                  <i class="el-icon-s-tools"></i>
                 </div>
                 <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" />
                 <div @click="delStage(index,item)" class="del">
@@ -559,7 +559,7 @@ export default {
         display: flex;
 
         &-text {
-          line-height: 52px;
+          line-height: 40px;
         }
 
         &-stage {
@@ -587,8 +587,8 @@ export default {
 
             .edit {
               position: absolute;
-              top: 0;
-              right: 8%;
+              top: 4px;
+              right: 20%;
               font-size: 16px;
             }
 
