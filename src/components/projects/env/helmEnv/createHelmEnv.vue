@@ -357,7 +357,7 @@ export default {
             },
             namespace: this.projectConfig.defaultNamespace,
             is_existed: this.nsIsExisted,
-            env_config_yamls: this.$refs.envConfigRef.getAllYaml()
+            env_configs: this.$refs.envConfigRef.getEnvConfig()
           }
           if (this.createShare && this.baseEnvName) {
             payload.share_env = {
