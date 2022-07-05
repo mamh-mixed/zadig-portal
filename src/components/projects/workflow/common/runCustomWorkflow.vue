@@ -1,9 +1,9 @@
 <template>
   <div class="custom-workflow">
     <el-form label-width="150px">
-      <el-collapse>
+      <el-collapse v-model="activeName">
         <div v-for="(stage) in payload.stages" :key="stage.name">
-          <el-collapse-item v-for="(job,index) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="index">
+          <el-collapse-item v-for="(job) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="job.name">
             <div v-show="job.type === 'zadig-build'">
               <el-form-item label="服务组件">
                 <el-select
@@ -131,6 +131,7 @@ export default {
       dockerList: [],
       specificEnv: true,
       startTaskLoading: false,
+      activeName: '',
       payload: {
         workflow_name: '',
         stages: [
@@ -315,11 +316,13 @@ export default {
           ) {
             job.spec.service_and_builds.forEach(item => {
               item.repos.forEach(repo => {
-                if (repo.branchOrTag.type === 'branch') {
-                  repo.branch = repo.branchOrTag.name
-                }
-                if (repo.branchOrTag.type === 'tag') {
-                  repo.tag = repo.branchOrTag.name
+                if (repo.branchOrTag) {
+                  if (repo.branchOrTag.type === 'branch') {
+                    repo.branch = repo.branchOrTag.name
+                  }
+                  if (repo.branchOrTag.type === 'tag') {
+                    repo.tag = repo.branchOrTag.name
+                  }
                 }
               })
             })

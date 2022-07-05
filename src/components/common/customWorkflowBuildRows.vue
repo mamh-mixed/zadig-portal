@@ -8,7 +8,7 @@
             <el-table-column label="值">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'"  style="width: 220px;">
-                  <el-option v-for="item in scope.row.choice_option" :key="item" :label="item">{{item}}</el-option>
+                  <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
                 </el-select>
                 <el-input v-else v-model="scope.row.value" size="small"  style="width: 220px;"></el-input>
               </template>
@@ -191,7 +191,7 @@ export default {
     pickedTargets: {
       handler (value) {
         value.forEach(item => {
-          if (item.repos.length > 0) {
+          if (item.repos && item.repos.length > 0) {
             item.repos.forEach(build => {
               this.searchRepoInfo(build, '')
             })

@@ -1,18 +1,18 @@
 <template>
   <div class="build-console">
-    <el-card :body-style="{padding: '8px 20px', margin: '5px 0' }"  class="box-card task-process">
+    <el-card :body-style="{padding: '8px 20px', margin: '5px 0' }" class="box-card task-process">
       <div slot="header" class="mg-b8">
         <el-col :span="4">
           <span class="build-console-type">构建</span>
           <span>{{jobInfo.name}}</span>
         </el-col>
-        <el-col v-if="jobInfo.status!=='running'" :span="2">
+        <el-col :span="2">
           <div class="grid-content item-desc">
             <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
           </div>
         </el-col>
-        <el-col v-if="jobInfo.status!=='running'" :span="2">
-          <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
+        <el-col :span="2">
+          <span class="item-desc">{{jobInfo.interval}}</span>
         </el-col>
       </div>
       <div class="error-wrapper">
@@ -188,6 +188,13 @@ export default {
       } else {
         this.getHistoryBuildLog()
       }
+    },
+    adaptTaskDetail (detail) {
+      detail.intervalSec =
+        (detail.status === 'running'
+          ? Math.round(new Date().getTime() / 1000)
+          : detail.end_time) - detail.start_time
+      detail.interval = this.$utils.timeFormat(detail.intervalSec)
     }
   },
   watch: {
@@ -202,6 +209,7 @@ export default {
     jobInfo: {
       handler (val) {
         if (val) {
+          this.adaptTaskDetail(val)
           this.getLog()
         }
       },
