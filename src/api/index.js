@@ -2148,7 +2148,7 @@ export function getCustomWorkflowTaskDetailAPI (workflow_name, task_id) {
   return http.get(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${task_id}`)
 }
 export function deleteWorkflowTaskAPI (workflow_name, id) {
-  return http.delete(`/api/aslan/workflow/v4/task/workflow/${workflow_name}/id/${id}`)
+  return http.delete(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${id}`)
 }
 export function getHistoryLogsAPI (workflow_name, task_id, job_name) {
   return http.get(`/api/aslan/logs/log/v4/workflow/${workflow_name}/tasks/${task_id}/jobs/${job_name}`)

@@ -75,6 +75,8 @@ export default {
   align-items: center;
   width: 100%;
   color: @projectNameColor;
+  font-size: 14px;
+  // max-width: 150px;
 
   .tip {
     color: #a0a0a0;

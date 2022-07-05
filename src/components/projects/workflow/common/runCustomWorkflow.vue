@@ -14,7 +14,7 @@
                   reserve-keyword
                   value-key="service_name"
                   size="medium"
-                  class="full-width"
+                  style="width: 220px;"
                   @change="handleServiceBuildChange"
                 >
                   <el-option
@@ -29,7 +29,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="镜像仓库" prop="docker_registry_id">
-                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择镜像" size="small">
+                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择镜像" size="small" style="width: 220px;">
                   <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -39,7 +39,7 @@
             </div>
             <div v-if="job.type === 'zadig-deploy'">
               <el-form-item prop="productName" label="环境">
-                <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" class="full-width">
+                <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
                     :key="`${pro.projectName} / ${pro.name}`"
@@ -70,7 +70,7 @@
                   reserve-keyword
                   value-key="service_name"
                   size="medium"
-                  class="full-width"
+                  style="width: 220px;"
                   @change="handleServiceDeployChange"
                 >
                   <el-option
@@ -90,7 +90,7 @@
                     reserve-keyword
                     value-key="service_name"
                     size="medium"
-                    class="full-width"
+                    style="width: 220px;"
                     placeholder="请选择镜像"
                   >
                     <el-option

@@ -1,17 +1,17 @@
 <template>
   <div class="service-build-val">
-    <el-row :gutter="24" class="mg-b24">
+    <el-row :gutter="24" class="mg-b16">
       <el-col :span="6">服务组件</el-col>
       <el-col :span="6">构建名称</el-col>
       <el-col :span="6">构建变量</el-col>
     </el-row>
-    <el-form :model="form" ref="ruleForm">
-      <el-row :gutter="24" v-for="(item,index) in serviceAndBuilds" :key="index" class="mg-t16">
+    <el-form :model="form" ref="ruleForm" size="small">
+      <el-row :gutter="24" v-for="(item,index) in serviceAndBuilds" :key="index" >
         <el-col :span="6">
           <span>{{item.service_name}}/{{item.service_module}}</span>
         </el-col>
         <el-col :span="6">
-          <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 220px;">
+          <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
             <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
           </el-select>
         </el-col>

@@ -7,17 +7,20 @@
           <span>{{taskId}}</span>
           <span :class="$translate.calcTaskStatusColor(payload.status)">{{translateStatus(payload.status)}}</span>
         </el-col>
-        <el-col :offset="8" :span="4">
+        <el-col :offset="4" :span="4">
           <i class="el-icon-video-play"></i>
           <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="3">
           <i class="el-icon-time"></i>
           <span>{{ payload.interval }}</span>
         </el-col>
         <el-col :span="2">
           <i class="el-icon-user"></i>
           <span>{{payload.task_revoker}}</span>
+        </el-col>
+        <el-col :span="1">
+          <el-button size="small" @click="cancel">取消</el-button>
         </el-col>
       </el-row>
     </header>
@@ -63,7 +66,7 @@
   </div>
 </template>
 <script>
-import { getCustomWorkflowTaskDetailAPI } from '@api'
+import { getCustomWorkflowTaskDetailAPI, deleteWorkflowTaskAPI } from '@api'
 import Stage from './workflowEditor/customWorkflow/stage.vue'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
@@ -154,6 +157,11 @@ export default {
     },
     translateStatus (word) {
       return wordTranslate(word, 'pipeline', 'task')
+    },
+    cancel () {
+      deleteWorkflowTaskAPI(this.workflowName, this.taskId).then(res => {
+        this.$message.success(' 取消成功')
+      })
     }
   },
   mounted () {
