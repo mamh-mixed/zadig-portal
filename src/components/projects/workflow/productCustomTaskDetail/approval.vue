@@ -56,7 +56,7 @@
 <script>
 import { approvalCustomWorkflowTaskAPI } from '@api'
 import { wordTranslate } from '@utils/wordTranslate.js'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: '',

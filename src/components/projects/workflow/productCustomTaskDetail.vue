@@ -35,7 +35,9 @@
               <div class="line"></div>
             </div>
             <div class="stage">
-              <div class="stage-name">{{stage.name}}</div>
+              <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="stage.name">
+                <div class="stage-name">{{$utils.tailCut(stage.name,15)}}</div>
+              </el-tooltip>
               <div class="jobs" v-for="job in stage.jobs" :key="job.name">
                 <span class="job" @click="setCurJob(job)">
                   <span :class="$translate.calcTaskStatusColor(job.status)">•</span>
