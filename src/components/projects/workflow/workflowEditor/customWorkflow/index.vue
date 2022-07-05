@@ -553,7 +553,7 @@ export default {
     main {
       width: 100%;
       height: 100%;
-      margin-top: 24px;
+      margin-top: 40px;
 
       .ui {
         display: flex;
@@ -573,7 +573,7 @@ export default {
               width: 140px;
               margin: -6px 4px;
               padding: 8px 0;
-              border: 1px dotted @themeColor;
+              border: 1px dotted @borderGray;
               border-radius: 4px;
             }
 
@@ -582,14 +582,14 @@ export default {
               top: -6px;
               right: -6px;
               display: none;
-              font-size: 20px;
+              font-size: 16px;
             }
 
             .edit {
               position: absolute;
               top: 0;
               right: 8%;
-              font-size: 20px;
+              font-size: 16px;
             }
 
             &:hover {
@@ -602,7 +602,7 @@ export default {
 
         .stage-add {
           margin: 0 4px;
-          font-size: 20px;
+          font-size: 16px;
         }
       }
 
@@ -651,9 +651,9 @@ export default {
 
   .line {
     position: relative;
-    width: 98px;
+    width: 70px;
     height: 2px;
-    margin-top: 24px;
+    margin-top: 20px;
     background: @themeColor;
 
     &::before {

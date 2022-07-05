@@ -208,7 +208,7 @@ export default {
   }
 
   main {
-    margin-top: 24px;
+    margin-top: 40px;
 
     .content {
       display: flex;
@@ -219,7 +219,7 @@ export default {
 
       .stages {
         display: flex;
-        font-size: 18px;
+        font-size: 16px;
         text-align: center;
 
         &-approval {
@@ -231,7 +231,7 @@ export default {
           width: 140px;
           margin: -6px 4px;
           padding: 8px 0 16px 0;
-          border: 1px dotted @themeColor;
+          border: 1px dotted @borderGray;
           border-radius: 4px;
           cursor: pointer;
         }
@@ -248,7 +248,7 @@ export default {
             padding: 0 8px;
             overflow: hidden;
             font-weight: 400;
-            font-size: 16px;
+            font-size: 14px;
             white-space: nowrap;
             text-overflow: ellipsis;
             border: 1px dotted @borderGray;
@@ -284,7 +284,7 @@ export default {
 
   .line {
     position: relative;
-    width: 98px;
+    width: 70px;
     height: 2px;
     margin-top: 24px;
     background: @themeColor;

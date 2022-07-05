@@ -141,7 +141,7 @@ export default {
 
   &-name {
     overflow: hidden;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
   }
 
@@ -151,7 +151,7 @@ export default {
     margin: 8px auto;
     overflow: hidden;
     color: #555;
-    font-size: 18px;
+    font-size: 14px;
     line-height: 30px;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -163,7 +163,7 @@ export default {
       top: -8px;
       right: 0;
       display: none;
-      font-size: 18px;
+      font-size: 14px;
     }
 
     &:hover {
@@ -176,8 +176,8 @@ export default {
   }
 
   .add {
-    width: 7em;
-    font-size: 16px;
+    width: 6em;
+    font-size: 14px;
   }
 }
 </style>
