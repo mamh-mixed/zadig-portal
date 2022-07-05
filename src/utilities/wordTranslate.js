@@ -24,6 +24,7 @@ export function wordTranslate (word, category, subitem = '') {
       task: {
         '': '未运行',
         created: '排队中',
+        waiting: '排队中',
         running: '正在运行',
         failed: '失败',
         passed: '成功',
@@ -77,6 +78,7 @@ export function colorTranslate (word, category, subitem = '') {
       pipeline: {
         task: {
           created: 'color-created',
+          waiting: 'color-created',
           running: 'color-running',
           failed: 'color-failed',
           passed: 'color-passed',

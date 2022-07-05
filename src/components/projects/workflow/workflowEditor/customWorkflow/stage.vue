@@ -11,7 +11,7 @@
         <i class="el-icon-close"></i>
       </div>
     </div>
-    <el-dialog title="新建 Job" :visible.sync="isShowJobOperateDialog" width="20%">
+    <el-dialog title="新建 Job" :visible.sync="isShowJobOperateDialog" width="30%">
       <JobOperate v-model="jobInfo" ref="jobOperate" />
       <div slot="footer" class="dialog-footer">
         <el-button @click="isShowJobOperateDialog = false" size="small">取 消</el-button>
@@ -146,13 +146,13 @@ export default {
     font-size: 20px;
     white-space: nowrap;
     text-overflow: ellipsis;
-    border-bottom: 1px solid @borderGray;
+    // border-bottom: 1px solid @borderGray;
   }
 
   .job-wrap {
     position: relative;
-    width: 5em;
-    margin: 12px auto;
+    width: 6em;
+    margin: 8px auto;
     overflow: hidden;
     color: #555;
     font-size: 18px;
@@ -160,7 +160,6 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     border: 1px solid @borderGray;
-    // border-radius: 12px;
     cursor: pointer;
 
     .del {
@@ -168,7 +167,7 @@ export default {
       top: -8px;
       right: 0;
       display: none;
-      font-size: 24px;
+      font-size: 18px;
     }
 
     &:hover {
@@ -181,8 +180,7 @@ export default {
   }
 
   .add {
-    width: 6em;
-    margin: 8px 0;
+    width: 7em;
     font-size: 16px;
   }
 }

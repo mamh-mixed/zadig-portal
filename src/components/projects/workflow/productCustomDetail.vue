@@ -31,11 +31,11 @@
         <CusTags :values="stages" class="item"></CusTags>
         <span class="item">
           <span class="item left">修改人</span>
-          {{ workflow.update_by }}
+          {{ detail.updated_by }}
         </span>
         <span class="item">
           <span class="item left">更新时间</span>
-          {{ $utils.convertTimestamp(workflow.update_time) }}
+          {{ $utils.convertTimestamp(detail.update_time) }}
         </span>
       </div>
     </el-card>
@@ -83,12 +83,15 @@
 import {
   deleteProductWorkflowAPI,
   getCustomWorkflowTaskListAPI,
-  getWorkflowFilterListAPI
+  getWorkflowFilterListAPI,
+  getCustomWorkflowDetailAPI
 } from '@api'
 import RunCustomWorkflow from '../workflow/common/runCustomWorkflow'
 import FilterStatus from './productTaskDetail/filterStatus.vue'
 import TaskList from '@/components/projects/common/taskList.vue'
 import bus from '@utils/eventBus'
+import jsyaml from 'js-yaml'
+
 export default {
   data () {
     this.filterInfo = { type: '', list: '' }
@@ -120,6 +123,7 @@ export default {
         ]
       },
       workflow: {},
+      detail: {},
       stages: [],
       workflowTasks: [],
       total: 0,
@@ -140,6 +144,9 @@ export default {
     },
     workflowName () {
       return this.$route.params.workflow_name
+    },
+    taskId () {
+      return this.$route.params.task_id
     },
     testReportExists () {
       const items = []
@@ -310,6 +317,11 @@ export default {
         stages.push('分发部署')
       }
       this.stages = stages
+    },
+    getCustomWorkflowDetail () {
+      getCustomWorkflowDetailAPI(this.workflowName).then(res => {
+        this.detail = jsyaml.load(res)
+      })
     }
   },
   beforeDestroy () {
@@ -317,7 +329,9 @@ export default {
     clearTimeout(this.timerId)
   },
   mounted () {
+    console.log(this.$route.params)
     this.refreshHistoryTask()
+    this.getCustomWorkflowDetail()
     bus.$emit('set-topbar-title', {
       title: '',
       breadcrumb: [

@@ -2145,7 +2145,6 @@ export function getCustomWorkflowTaskListAPI (workflow_name, page_num = 1, page_
   return http.get(`/api/aslan/workflow/v4/workflowtask?workflow_name=${workflow_name}&page_num=${page_num}&page_size=${page_size}`)
 }
 export function getCustomWorkflowTaskDetailAPI (workflow_name, task_id) {
-  console.log(workflow_name, task_id)
   return http.get(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${task_id}`)
 }
 export function deleteWorkflowTaskAPI (workflow_name, id) {

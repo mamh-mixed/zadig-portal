@@ -5,17 +5,17 @@
         <!-- <el-select v-model="form.runtime" placeholder="请选择" size="small">
           <el-option label="运行时输入"></el-option>
         </el-select>-->
-        <el-select v-model="form.env" placeholder="请选择" size="small">
+        <el-select v-model="form.env" placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="服务" prop="source" required>
-        <el-select v-model="form.source" placeholder="请选择" size="small">
+        <el-select v-model="form.source" placeholder="请选择" size="small" style="width: 220px;">
           <el-option label="运行时输入" value="runtime"></el-option>
           <el-option label="其他 Job 输出" value="fromjob"></el-option>
         </el-select>
         <el-form-item prop="job_name" required v-if="form.source==='fromjob'&&allJobList.length > 0">
-          <el-select v-model="form.job_name" placeholder="请选择" size="small">
+          <el-select v-model="form.job_name" placeholder="请选择" size="small" style="width: 220px;">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>

@@ -2,7 +2,7 @@
   <div class="can-input" :style="{width: width}">
     <span v-if="!isCanInput">
       <el-tooltip effect="dark" :content="inputValue" placement="top">
-        <span>{{ $utils.tailCut(inputValue,10) }}</span>
+        <span>{{ $utils.tailCut(inputValue,20) }}</span>
       </el-tooltip>
       <span class="tip" v-if="!inputValue">{{placeholder}}</span>
       <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput" v-if="from==='ui'&&!disabled"></i>
@@ -74,7 +74,7 @@ export default {
   display: flex;
   align-items: center;
   width: 100%;
-  line-height: 50px;
+  color: @projectNameColor;
 
   .tip {
     color: #a0a0a0;

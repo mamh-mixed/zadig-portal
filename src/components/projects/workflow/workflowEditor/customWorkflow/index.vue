@@ -3,8 +3,8 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="isEdit" width="150px" class="mg-r40" />
-          <CanInput v-model="payload.description" width="150px" :from="activeName" placeholder="描述" />
+          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="isEdit" class="mg-r40" />
+          <CanInput v-model="payload.description" :from="activeName" placeholder="描述" />
         </div>
         <el-tabs v-model="activeName">
           <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabList" :key="item.name"></el-tab-pane>
@@ -44,12 +44,12 @@
         </main>
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
         <footer :style="{ minHeight: '350px',maxHeight: '600px'}" v-if="isShowFooter">
-          <el-card :body-style="{padding: '4px 16px', margin: '0' }" >
+          <el-card :body-style="{padding: '4px 16px', margin: '0' }">
             <div slot="header">
               <span>基本配置</span>
             </div>
             <div v-if="payload.stages.length > 0 && job">
-              <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24" size="small" >
+              <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24" size="small">
                 <el-form-item
                   label="Job 名称"
                   prop="name"
@@ -58,7 +58,7 @@
                   <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
                 </el-form-item>
                 <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
-                  <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small"  style="width: 220px;">
+                  <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
                     <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                   </el-select>
                 </el-form-item>
@@ -349,8 +349,6 @@ export default {
       })
     },
     showStageOperateDialog (type, row) {
-      console.log(this.stage)
-      console.log(type)
       if (
         type === 'add' &&
         !this.isEdit &&
@@ -543,6 +541,9 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0 8px;
+      background: #f6f6f6;
+      box-shadow: 1px 0 4px -1px rgba(0, 0, 0, 0.3);
 
       .name {
         display: flex;
@@ -570,8 +571,9 @@ export default {
 
             .stage {
               width: 140px;
+              margin: -6px 4px;
               padding: 8px 0;
-              border: 1px dotted @borderGray;
+              border: 1px dotted @themeColor;
               border-radius: 4px;
             }
 
@@ -585,8 +587,8 @@ export default {
 
             .edit {
               position: absolute;
-              top: 12px;
-              right: 2%;
+              top: 0;
+              right: 8%;
               font-size: 20px;
             }
 
@@ -599,6 +601,7 @@ export default {
         }
 
         .stage-add {
+          margin: 0 4px;
           font-size: 20px;
         }
       }
@@ -647,10 +650,33 @@ export default {
   }
 
   .line {
-    width: 100px;
+    position: relative;
+    width: 98px;
     height: 2px;
     margin-top: 24px;
-    background: #d2d7dc;
+    background: @themeColor;
+
+    &::before {
+      position: absolute;
+      top: -2px;
+      left: -5px;
+      width: 4px;
+      height: 4px;
+      border: 1px solid @themeColor;
+      border-radius: 50%;
+      content: '';
+    }
+
+    &::after {
+      position: absolute;
+      top: -2px;
+      right: -5px;
+      width: 4px;
+      height: 4px;
+      border: 1px solid @themeColor;
+      border-radius: 50%;
+      content: '';
+    }
   }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="stage-operate">
-    <el-form :model="form" :rules="rules" ref="ruleForm" :label-width="formLabelWidth">
+    <el-form :model="form" :rules="rules" ref="ruleForm" :label-width="formLabelWidth" size="small">
       <el-form-item label="Stage 名称" prop="name">
         <el-input v-model="form.name" size="small"></el-input>
       </el-form-item>
@@ -18,7 +18,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="审核人">
-          <el-select size="small" v-model="form.approval.approve_users" multiple value-key="user_id">
+          <el-select size="small" v-model="form.approval.approve_users" multiple value-key="user_id" style="width: 100%;">
             <el-option v-for="user in userList" :key="user.user_id" :value="user" :label="user.user_name">{{user.user_name}}</el-option>
           </el-select>
         </el-form-item>

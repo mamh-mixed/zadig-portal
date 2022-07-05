@@ -193,8 +193,10 @@ export default {
 
   header {
     margin-bottom: 24px;
+    padding: 0 8px;
     line-height: 40px;
-    background: #eee;
+    background: #f6f6f6;
+    box-shadow: 1px 0 4px -1px rgba(0, 0, 0, 0.3);
   }
 
   main {
@@ -217,18 +219,15 @@ export default {
 
         .stage {
           width: 140px;
-          padding: 16px 8px;
-          border: 1px dotted @borderGray;
-          border-radius: 8px;
-
-          &-name {
-            border-bottom: 1px dotted @borderGray;
-          }
+          margin: -6px 4px;
+          padding: 8px 0 16px 0;
+          border: 1px dotted @themeColor;
+          border-radius: 4px;
         }
 
         .jobs {
           height: 40px;
-          margin-top: 16px;
+          margin-top: 8px;
           padding: 0 8px;
           line-height: 40px;
 
@@ -238,11 +237,10 @@ export default {
             padding: 0 8px;
             overflow: hidden;
             font-weight: 400;
-            font-size: 18px;
+            font-size: 16px;
             white-space: nowrap;
             text-overflow: ellipsis;
             border: 1px dotted @borderGray;
-            // border-radius: 12px;
           }
         }
       }
@@ -273,10 +271,33 @@ export default {
   }
 
   .line {
-    width: 100px;
+    position: relative;
+    width: 98px;
     height: 2px;
     margin-top: 24px;
-    background: #d2d7dc;
+    background: @themeColor;
+
+    &::before {
+      position: absolute;
+      top: -2px;
+      left: -5px;
+      width: 4px;
+      height: 4px;
+      border: 1px solid @themeColor;
+      border-radius: 50%;
+      content: '';
+    }
+
+    &::after {
+      position: absolute;
+      top: -2px;
+      right: -5px;
+      width: 4px;
+      height: 4px;
+      border: 1px solid @themeColor;
+      border-radius: 50%;
+      content: '';
+    }
   }
 }
 </style>
