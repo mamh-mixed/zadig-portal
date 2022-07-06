@@ -1,6 +1,6 @@
 <template>
   <div class="build-console">
-    <el-card :body-style="{padding: '8px', margin: '5px 0' }">
+    <el-card>
       <div slot="header" class="mg-b8">
         <el-col :span="4">
           <span class="build-console-type">部署</span>
@@ -18,7 +18,7 @@
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
       </div>
-      <el-row class="text item mg-t24" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
+      <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
         <el-col :span="4">
           <div class="item-title">服务名称</div>
         </el-col>
@@ -46,10 +46,12 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <span class="item-desc">{{build.image}}</span>
+          <el-tooltip effect="dark" :content="build.image" placement="top">
+            <span class="file-name">{{ $utils.tailCut(build.image, 40) }}</span>
+          </el-tooltip>
         </el-col>
       </el-row>
-      <el-row class="mg-t24">
+      <el-row class="mg-t8">
         <el-col :span="4">
           <div class="item-title">部署环境</div>
         </el-col>

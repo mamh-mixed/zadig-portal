@@ -1,6 +1,6 @@
 <template>
-  <div class="build-console">
-    <el-card :body-style="{padding: '8px', margin: '5px 0' }" class="box-card task-process">
+  <div class="build-console workflow-task-detail">
+    <el-card class="box-card task-process">
       <div slot="header" class="mg-b8">
         <el-col :span="4">
           <span class="build-console-type">构建</span>
@@ -18,7 +18,7 @@
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
       </div>
-      <el-row class="text item mg-t24" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
+      <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
         <el-col :span="4">
           <div class="grid-content item-title">代码库({{build.source}})</div>
         </el-col>
@@ -32,7 +32,7 @@
           <RepoJump :build="build" showIcon />
         </el-col>
       </el-row>
-      <el-row :gutter="0" class="mg-t24">
+      <el-row :gutter="0" class="mg-t8">
         <el-col :span="4">
           <div class="item-title">服务名称</div>
         </el-col>
@@ -65,7 +65,7 @@
           </el-tooltip>
         </el-col>
       </el-row>
-      <div class="log-content mg-t24">
+      <div class="log-content mg-t8">
         <XtermLog :id="jobInfo.spec.service_name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" />
       </div>
     </el-card>
@@ -126,10 +126,11 @@ export default {
   },
   methods: {
     leaveLog () {
-      const el = document.querySelector('.product-custom-detail').style
+      const el = document.querySelector('.workflow-task-detail').style
       el.overflow = 'auto'
     },
     openBuildLog (buildType) {
+      this.buildv4AnyLog = []
       const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.jobInfo.name}/999999`
       if (typeof window.msgServer === 'undefined') {
         window.msgServer = {}
@@ -195,15 +196,6 @@ export default {
     }
   },
   watch: {
-    buildIsRunning (val, oldVal) {
-      console.log(val, oldVal)
-      if (!oldVal && val) {
-        this.getLog()
-      }
-      if (oldVal && !val) {
-        this.killLog('customWorkflow')
-      }
-    },
     jobInfo: {
       handler (val) {
         if (val) {
