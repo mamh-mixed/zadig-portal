@@ -1,6 +1,6 @@
 <template>
   <div class="build-console">
-    <el-card :body-style="{padding: '8px 20px', margin: '5px 0' }">
+    <el-card :body-style="{padding: '8px', margin: '5px 0' }">
       <div slot="header" class="mg-b8">
         <el-col :span="4">
           <span class="build-console-type">部署</span>

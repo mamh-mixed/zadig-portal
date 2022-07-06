@@ -1,6 +1,6 @@
 <template>
   <div class="approval">
-    <el-card :body-style="{padding: '8px 20px', margin: '5px 0' }" class="box-card task-process">
+    <el-card :body-style="{padding: '8px', margin: '5px 0' }" class="box-card task-process">
       <div slot="header" class="mg-b8">
         <el-col :span="2" class>
           <span class="approval-type">人工审核</span>
@@ -38,7 +38,7 @@
         <el-table-column prop="comment" label="评论信息"></el-table-column>
       </el-table>
       <el-row class="mg-t24">
-        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审核</el-button>
+        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="!isDisabled">审核</el-button>
       </el-row>
     </el-card>
     <el-dialog title="评论信息" :visible.sync="isShowCommentDialog">
@@ -92,7 +92,7 @@ export default {
         item => item.user_name === this.userInfo.name
       )
       if (!curUser) {
-        return false
+        return true
       }
       return (
         !this.approvalInfo.approval.reject_or_approve &&

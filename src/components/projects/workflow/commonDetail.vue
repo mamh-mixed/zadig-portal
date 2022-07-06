@@ -119,7 +119,6 @@ export default {
       const workflowName = this.workflowName
       getCustomWorkflowTaskListAPI(workflowName, start, max).then(
         res => {
-          console.log(res)
           this.workflowTasks = res.workflow_list
           this.total = res.total
         }

@@ -295,7 +295,7 @@ export default {
         return
       }
       if (this.payload.stages.length === 0) {
-        this.$message.error(' 请至少填写一个 Satge')
+        this.$message.error(' 请至少填写一个 Stage')
         return
       }
       if (this.payload.stages.find(item => item.jobs.length === 0)) {
@@ -355,7 +355,7 @@ export default {
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {
-        this.$message.error('请至少创建一个 job')
+        this.$message.error('请至少创建一个 Job')
         return
       }
       if (this.isShowFooter) {

@@ -1,6 +1,6 @@
 <template>
   <div class="build-console">
-    <el-card :body-style="{padding: '8px 20px', margin: '5px 0' }" class="box-card task-process">
+    <el-card :body-style="{padding: '8px', margin: '5px 0' }" class="box-card task-process">
       <div slot="header" class="mg-b8">
         <el-col :span="4">
           <span class="build-console-type">构建</span>
@@ -125,9 +125,6 @@ export default {
     }
   },
   methods: {
-    getBuildv2Log () {
-      this.buildLogStarted = true
-    },
     leaveLog () {
       const el = document.querySelector('.product-custom-detail').style
       el.overflow = 'auto'
@@ -199,8 +196,9 @@ export default {
   },
   watch: {
     buildIsRunning (val, oldVal) {
-      if (!oldVal && val && this.buildLogStarted) {
-        this.openBuildLog('customWorkflow')
+      console.log(val, oldVal)
+      if (!oldVal && val) {
+        this.getLog()
       }
       if (oldVal && !val) {
         this.killLog('customWorkflow')
@@ -209,8 +207,8 @@ export default {
     jobInfo: {
       handler (val) {
         if (val) {
-          this.adaptTaskDetail(val)
           this.getLog()
+          this.adaptTaskDetail(val)
         }
       },
       deep: true,
@@ -218,7 +216,7 @@ export default {
     }
   },
   beforeDestroy () {
-    this.killLog('docker_build')
+    this.killLog('customWorkflow')
   }
 }
 </script>

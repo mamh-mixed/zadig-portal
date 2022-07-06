@@ -315,16 +315,18 @@ export default {
             job.spec.service_and_builds.length > 0
           ) {
             job.spec.service_and_builds.forEach(item => {
-              item.repos.forEach(repo => {
-                if (repo.branchOrTag) {
-                  if (repo.branchOrTag.type === 'branch') {
-                    repo.branch = repo.branchOrTag.name
+              if (item.repos) {
+                item.repos.forEach(repo => {
+                  if (repo.branchOrTag) {
+                    if (repo.branchOrTag.type === 'branch') {
+                      repo.branch = repo.branchOrTag.name
+                    }
+                    if (repo.branchOrTag.type === 'tag') {
+                      repo.tag = repo.branchOrTag.name
+                    }
                   }
-                  if (repo.branchOrTag.type === 'tag') {
-                    repo.tag = repo.branchOrTag.name
-                  }
-                }
-              })
+                })
+              }
             })
           }
 
@@ -334,7 +336,6 @@ export default {
           }
         })
       })
-      console.log(payload)
       runCustomWorkflowTaskAPI(payload)
         .then(res => {
           const taskId = res.task_id || 1

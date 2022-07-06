@@ -14,7 +14,7 @@
       <div v-if="form.approval.enabled">
         <el-form-item label="超时时间" prop="approval.timeout">
           <el-input v-model.number="form.approval.timeout" size="small" type="number" :min="0">
-            <i slot="suffix">分钟</i>
+            <span slot="suffix">分钟</span>
           </el-input>
         </el-form-item>
         <el-form-item label="审核人">
