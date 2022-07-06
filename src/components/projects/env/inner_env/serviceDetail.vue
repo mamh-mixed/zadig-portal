@@ -309,7 +309,7 @@
                           <span class="content">{{ activePod[scope.$index].age }}</span>
                           <div>
                             <span class="title">节点信息：</span>
-                            <span class="content">{{ activePod[scope.$index].ip }}( {{activePod[scope.$index].node_name}} )</span>
+                            <span class="content">{{ activePod[scope.$index].host_ip }}( {{activePod[scope.$index].node_name}} )</span>
                           </div>
                         </el-col>
                         <el-col :span="6"

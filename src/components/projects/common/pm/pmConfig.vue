@@ -65,13 +65,14 @@
                 :prop="'env_configs.'+item_index+'.host_ids'"
                 :rules="{required: false, message: '请选择主机', trigger: 'blur'}"
               >
-                <el-button v-if="allHost.reduce((pre, cur) => pre + cur.options.length, 0) === 0" @click="$router.push('/v1/system/host')" type="text">创建主机</el-button>
+                <el-button
+                  v-if="isEmptyHost"
+                  @click="$router.push('/v1/system/host')"
+                  type="text"
+                >创建主机</el-button>
                 <el-select v-else size="mini" multiple filterable v-model="item.host_ids" placeholder="请选择主机">
-                  <el-option-group label="主机标签">
-                    <el-option v-for="(item,index) in allHostLabels" :key="index" :label="`${item}`" :value="item"></el-option>
-                  </el-option-group>
-                  <el-option-group label="主机列表">
-                    <el-option v-for="item in allHost" :key="item.name" :label="`${item.name}-${item.ip}`" :value="item.id"></el-option>
+                  <el-option-group v-for="group in allHost" :key="group.label" :label="group.label">
+                    <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-option-group>
                 </el-select>
               </el-form-item>
@@ -124,16 +125,8 @@
                 :rules="{required: true, type: 'array', message: '主机不能为空', trigger: ['blur', 'change']}"
               >
                 <el-select v-model="currentBuildConfig.sshs" size="mini" multiple placeholder="请选择主机">
-                   <el-option-group
-                    v-for="group in allHost"
-                    :key="group.label"
-                    :label="group.label">
-                    <el-option
-                      v-for="item in group.options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                  <el-option-group v-for="group in allHost" :key="group.label" :label="group.label">
+                    <el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
                   </el-option-group>
                 </el-select>
               </el-form-item>
@@ -256,7 +249,12 @@
       </template>
     </div>
     <div class="save-btn">
-      <el-button v-hasPermi="{projectName: projectName, action: isEdit?'edit_service':'create_service',isBtn:true}"  size="small" type="primary" @click="savePmService">保存</el-button>
+      <el-button
+        v-hasPermi="{projectName: projectName, action: isEdit?'edit_service':'create_service',isBtn:true}"
+        size="small"
+        type="primary"
+        @click="savePmService"
+      >保存</el-button>
     </div>
   </div>
 </template>
@@ -362,6 +360,7 @@ export default {
       anchorTab: '',
       builds: [],
       useSshKey: false,
+      isEmptyHost: false,
       host: {
         name: '',
         label: '',
@@ -743,9 +742,11 @@ export default {
     },
     async handlePmService (buildConfigPayload, pmServicePayload) {
       buildConfigPayload.product_name = this.projectName
-      const hostIds = this.allHost.map(item => {
-        return item.options.map(option => option.id)
-      }).flat()
+      const hostIds = this.allHost
+        .map(item => {
+          return item.options.map(option => option.id)
+        })
+        .flat()
       // 处理主机标签
       pmServicePayload.env_configs.forEach(element => {
         element.labels = element.host_ids.filter(item => {
@@ -840,7 +841,10 @@ export default {
         this.allHostLabels = res
       })
       const key = this.$utils.rsaEncrypt()
-      Promise.all([getProjectHostListAPI(key, projectName), getHostListAPI(key)]).then(res => {
+      Promise.all([
+        getProjectHostListAPI(key, projectName),
+        getHostListAPI(key)
+      ]).then(res => {
         const projectOptions = res[0].map(item => {
           item.label = item.name
           item.value = item.id
@@ -851,6 +855,7 @@ export default {
           item.value = item.id
           return item
         })
+        this.isEmptyHost = projectOptions.length + systemOptions.length === 0
         this.allHost = [
           {
             label: '项目资源',
