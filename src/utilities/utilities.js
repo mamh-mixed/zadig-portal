@@ -589,6 +589,8 @@ const utils = {
       return 'success'
     } else if (status === 'failed') {
       return 'danger'
+    } else if (status === 'reject') {
+      return 'danger'
     }
   },
   mobileElTagType (status) {

@@ -2118,3 +2118,51 @@ export function deleteConfigObjectAPI ({ objectName, projectName, envName, commo
 export function getObjectHistoryVersionAPI ({ objectName, projectName, envName, commonEnvCfgType }) {
   return http.get(`/api/aslan/environment/envcfgs/${envName}/cfg/${objectName}?projectName=${projectName}&commonEnvCfgType=${commonEnvCfgType}`)
 }
+
+// new workflow
+export function addCustomWorkflowAPI (payload) {
+  return http.post(`/api/aslan/workflow/v4 `, payload)
+}
+export function updateCustomWorkflowAPI (workflow_name, payload) {
+  return http.put(` /api/aslan/workflow/v4/${workflow_name} `, payload)
+}
+export function getCustomWorkflowListAPI (projectName, page_num = 1, page_size = 20) {
+  return http.get(`/api/aslan/workflow/v4?project=${projectName}&page_num=${page_num}&page_size=${page_size}`)
+}
+export function getCustomWorkflowDetailAPI (workflow_name) {
+  return http.get(`/api/aslan/workflow/v4/name/${workflow_name}`)
+}
+export function deleteWorkflowAPI (workflow_name) {
+  return http.delete(`/api/aslan/workflow/v4/${workflow_name}`)
+}
+export function getCustomWorkfloweTaskPresetAPI (workflow_name) {
+  return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}`)
+}
+export function runCustomWorkflowTaskAPI (payload) {
+  return http.post(`/api/aslan/workflow/v4/workflowtask`, payload)
+}
+export function getCustomWorkflowTaskListAPI (workflow_name, page_num = 1, page_size = 20) {
+  return http.get(`/api/aslan/workflow/v4/workflowtask?workflow_name=${workflow_name}&page_num=${page_num}&page_size=${page_size}`)
+}
+export function getCustomWorkflowTaskDetailAPI (workflow_name, task_id) {
+  return http.get(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${task_id}`)
+}
+export function deleteWorkflowTaskAPI (workflow_name, id) {
+  return http.delete(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${id}`)
+}
+export function getHistoryLogsAPI (workflow_name, task_id, job_name) {
+  return http.get(`/api/aslan/logs/log/v4/workflow/${workflow_name}/tasks/${task_id}/jobs/${job_name}`)
+}
+export function getRunningLogAPI (workflow_name, task_id, job_name, lines) {
+  return http.get(`/api/aslan/logs/log/v4/workflow/${workflow_name}/${task_id}/jobs/${job_name}/${lines}`)
+}
+export function getRunningStatusCustomWorkflowListAPI () {
+  return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/running`)
+}
+export function getPendingStatusCustomWorkflowListAPI () {
+  return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/pending `)
+}
+// approval
+export function approvalCustomWorkflowTaskAPI (payload) {
+  return http.post(`/api/aslan/workflow/v4/workflowtask/approve`, payload)
+}

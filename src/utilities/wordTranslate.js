@@ -24,6 +24,7 @@ export function wordTranslate (word, category, subitem = '') {
       task: {
         '': '未运行',
         created: '排队中',
+        waiting: '排队中',
         running: '正在运行',
         failed: '失败',
         passed: '成功',
@@ -32,7 +33,8 @@ export function wordTranslate (word, category, subitem = '') {
         blocked: '阻塞',
         queued: '队列中',
         skipped: '跳过',
-        prepare: '准备环境'
+        prepare: '准备环境',
+        reject: '拒绝'
       }
     },
     project: {
@@ -76,11 +78,13 @@ export function colorTranslate (word, category, subitem = '') {
       pipeline: {
         task: {
           created: 'color-created',
+          waiting: 'color-created',
           running: 'color-running',
           failed: 'color-failed',
           passed: 'color-passed',
           timeout: 'color-timeout',
-          cancelled: 'color-cancelled'
+          cancelled: 'color-cancelled',
+          reject: 'color-failed'
         }
       },
       environment: {
