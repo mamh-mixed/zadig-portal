@@ -6,7 +6,7 @@
           <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
           <CanInput v-model="payload.description" :from="activeName" placeholder="描述" />
         </div>
-        <el-tabs v-model="activeName">
+        <el-tabs v-model="activeName" type="card">
           <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabList" :key="item.name"></el-tab-pane>
         </el-tabs>
         <div>
@@ -543,7 +543,7 @@ export default {
       justify-content: space-between;
       padding: 0 8px;
       background: #f6f6f6;
-      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
 
       .name {
         display: flex;
@@ -687,5 +687,18 @@ export default {
 
 .el-card__header {
   padding: 8px 16px;
+}
+
+.el-tabs--card > .el-tabs__header {
+  margin: 4px 0;
+  border: none;
+
+  .el-tabs__nav {
+    border: none;
+  }
+
+  .el-tabs__item.is-active {
+    border-bottom: none;
+  }
 }
 </style>

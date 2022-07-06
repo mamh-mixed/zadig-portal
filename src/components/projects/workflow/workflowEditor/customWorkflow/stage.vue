@@ -147,7 +147,7 @@ export default {
 
   .job-wrap {
     position: relative;
-    width: 6em;
+    width: 7em;
     margin: 8px auto;
     overflow: hidden;
     color: #555;
@@ -176,7 +176,7 @@ export default {
   }
 
   .add {
-    width: 6em;
+    width: 7em;
     font-size: 14px;
   }
 }
