@@ -482,8 +482,10 @@ export default {
       const res = this.allCodeHosts.find(item => {
         return item.id === id
       })
-      row.source = res.type
-      row.auth_type = res.auth_type
+      if (row && res) {
+        row.source = res.type
+        row.auth_type = res.auth_type
+      }
       if (!key) {
         if (this.codeInfo[index]) {
           this.codeInfo[index].repo_owners = []
