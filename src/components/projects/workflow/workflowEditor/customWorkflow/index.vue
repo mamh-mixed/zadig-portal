@@ -6,9 +6,18 @@
           <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
           <CanInput v-model="payload.description" :from="activeName" placeholder="描述" />
         </div>
-        <el-tabs v-model="activeName" type="card">
+        <!-- <el-tabs v-model="activeName" type="card" class="tab">
           <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabList" :key="item.name"></el-tab-pane>
-        </el-tabs>
+        </el-tabs>-->
+        <div class="tab">
+          <span
+            class="tab-item"
+            :class="{'active': activeName===item.name}"
+            v-for="item in tabList"
+            :key="item.name"
+            @click="activeName = item.name"
+          >{{item.label}}</span>
+        </div>
         <div>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
           <!-- <el-button type="success" size="small" :disabled="Object.keys(workflowInfo).length === 0" @click="runWorkflow">执行</el-button> -->
@@ -38,10 +47,8 @@
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
           </section>
-          <section v-show="activeName === 'yaml'" class="yaml">
-            <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
-          </section>
         </main>
+
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
         <footer :style="{ minHeight: '350px',maxHeight: '600px'}" v-if="isShowFooter">
           <el-card :body-style="{padding: '4px 16px', margin: '0' }">
@@ -72,7 +79,12 @@
                       :label="`${service.service_name}(${service.service_module})`"
                     >{{service.service_name}}/{{service.service_module}}</el-option>
                   </el-select>
-                  <el-button type="success" size="mini" @click="addServiceAndBuild(job.spec.service_and_builds)">+ 添加</el-button>
+                  <el-button
+                    type="success"
+                    size="mini"
+                    :disabled="Object.keys(service).length === 0"
+                    @click="addServiceAndBuild(job.spec.service_and_builds)"
+                  >+ 添加</el-button>
                 </div>
                 <BuildEnv
                   :projectName="projectName"
@@ -87,12 +99,10 @@
           </el-card>
         </footer>
       </Multipane>
+      <section v-show="activeName === 'yaml'" class="yaml">
+        <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
+      </section>
     </div>
-    <!-- <div class="right">
-      <div v-for="item in configList" :key="item.value" class="config" @click="isShowDrawer = true">{{item.label}}</div>
-      <el-drawer title="变量" :visible.sync="isShowDrawer" direction="rtl">
-      </el-drawer>
-    </div>-->
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
@@ -541,12 +551,36 @@ export default {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 8px;
-      background: #f6f6f6;
-      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 
       .name {
         display: flex;
+      }
+
+      .tab {
+        color: @projectNameColor;
+        font-size: 14px;
+        cursor: pointer;
+
+        span:first-child {
+          position: relative;
+          margin-right: 16px;
+
+          &::after {
+            position: absolute;
+            top: 0;
+            right: -10px;
+            width: 2px;
+            height: 100%;
+            background: @borderGray;
+            content: '';
+          }
+        }
+
+        .active {
+          color: @themeColor;
+        }
       }
     }
 
@@ -605,13 +639,16 @@ export default {
           font-size: 16px;
         }
       }
+    }
 
-      .yaml {
-        height: 100%;
+    .yaml {
+      .vue-codemirror {
+        width: calc(~'100% - 10px');
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
 
-        .codemirror {
-          height: calc(~'100% - 100px');
-          padding: 5px;
+        /deep/ .CodeMirror {
+          height: 70vh;
         }
       }
     }
@@ -677,28 +714,6 @@ export default {
       border-radius: 50%;
       content: '';
     }
-  }
-}
-</style>
-<style lang="less">
-.CodeMirror {
-  min-height: 600px;
-}
-
-.el-card__header {
-  padding: 8px 16px;
-}
-
-.el-tabs--card > .el-tabs__header {
-  margin: 4px 0;
-  border: none;
-
-  .el-tabs__nav {
-    border: none;
-  }
-
-  .el-tabs__item.is-active {
-    border-bottom: none;
   }
 }
 </style>

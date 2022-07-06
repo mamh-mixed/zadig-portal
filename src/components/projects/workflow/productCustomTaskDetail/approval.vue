@@ -1,6 +1,6 @@
 <template>
   <div class="approval">
-    <el-card :body-style="{padding: '8px', margin: '5px 0' }" class="box-card task-process">
+    <el-card class="box-card task-process">
       <div slot="header" class="mg-b8">
         <el-col :span="2" class>
           <span class="approval-type">人工审核</span>
@@ -9,7 +9,7 @@
           <span>开始时间:</span>
           <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
         </el-col>
-        <el-col :span="6" class="text" v-if="!approvalInfo.approval.reject_or_approve">
+        <el-col :span="6" class="text" v-if="!isDisabled">
           <span class="red">{{approvalInfo.approval.timeout}} 分钟</span>
           <span>后审核超时</span>
         </el-col>
@@ -26,8 +26,8 @@
         <el-table-column prop="reject_or_approve" label="审核结果">
           <template slot-scope="scope">
             <span
-              :class="[`status-${$utils.taskElTagType(scope.row.reject_or_approve)}`]"
-            >{{ wordTranslation(scope.row.reject_or_approve,'pipeline','task') }}</span>
+              :class="$translate.calcTaskStatusColor(scope.row.reject_or_approve,'approval','status')"
+            >{{ wordTranslation(scope.row.reject_or_approve,'approval','status') }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="operation_time" label="审核时间">
@@ -38,7 +38,7 @@
         <el-table-column prop="comment" label="评论信息"></el-table-column>
       </el-table>
       <el-row class="mg-t24">
-        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="!isDisabled">审核</el-button>
+        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审核</el-button>
       </el-row>
     </el-card>
     <el-dialog title="评论信息" :visible.sync="isShowCommentDialog">
@@ -94,10 +94,14 @@ export default {
       if (!curUser) {
         return true
       }
-      return (
+      if (
         !this.approvalInfo.approval.reject_or_approve &&
         !curUser.reject_or_approve
-      )
+      ) {
+        return false
+      } else {
+        return true
+      }
     }
   },
   methods: {

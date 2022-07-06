@@ -33,8 +33,14 @@ export function wordTranslate (word, category, subitem = '') {
         blocked: '阻塞',
         queued: '队列中',
         skipped: '跳过',
-        prepare: '准备环境',
-        reject: '拒绝'
+        prepare: '准备环境'
+      }
+    },
+    approval: {
+      status: {
+        '': '待审核',
+        reject: '拒绝',
+        approve: '通过'
       }
     },
     project: {
@@ -84,7 +90,15 @@ export function colorTranslate (word, category, subitem = '') {
           passed: 'color-passed',
           timeout: 'color-timeout',
           cancelled: 'color-cancelled',
-          reject: 'color-failed'
+          reject: 'color-failed',
+          approve: 'color-passed'
+        }
+      },
+      approval: {
+        status: {
+          '': 'color-created',
+          reject: 'color-failed',
+          approve: 'color-passed'
         }
       },
       environment: {
