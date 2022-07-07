@@ -1,6 +1,6 @@
 <template>
   <div class="custom-workflow">
-    <el-form label-width="150px">
+    <el-form label-width="120px">
       <el-collapse v-model="activeName">
         <div v-for="(stage) in payload.stages" :key="stage.name">
           <el-collapse-item v-for="(job) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="job.name" class="mg-l8">
@@ -51,9 +51,6 @@
                       <el-tag v-if="pro.production" type="danger" size="mini" effect="light">生产</el-tag>
                     </span>
                   </el-option>
-                  <!-- <el-option v-if="currentProjectEnvs.length===0" label value>
-                    <router-link style="color: #909399;" :to="`/v1/projects/detail/${targetProject}/envs/create`">{{`(环境不存在或者没有权限，点击创建环境)`}}</router-link>
-                  </el-option>-->
                 </el-select>
                 <el-tooltip v-if="specificEnv" effect="dark" content="该工作流已指定环境运行，可通过修改 工作流->基本信息 来解除指定环境绑定" placement="top">
                   <span>
@@ -82,7 +79,7 @@
                 </el-select>
               </el-form-item>
               <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label="$utils.tailCut( `${item.service_name}(${item.service_module})`,20 )">
+                <el-form-item :label=" `${item.service_name}`">
                   <el-select
                     v-model="item.image"
                     filterable
