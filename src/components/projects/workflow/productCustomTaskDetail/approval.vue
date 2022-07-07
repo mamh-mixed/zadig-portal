@@ -6,7 +6,7 @@
           <span class="approval-type">人工审核</span>
         </el-col>
         <el-col :span="6" class="text">
-          <span>开始时间:</span>
+          <span>开始时间：</span>
           <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
         </el-col>
         <el-col :span="6" class="text" v-if="!isDisabled">
@@ -14,7 +14,7 @@
           <span>后审核超时</span>
         </el-col>
         <el-col :span="6" class="text" v-else>
-          <span>完成时间</span>
+          <span>完成时间：</span>
           <span>{{$utils.convertTimestamp(approvalInfo.end_time)}}</span>
           <span
             :class="[`status-${$utils.taskElTagType(approvalInfo.approval.reject_or_approve)}`]"
