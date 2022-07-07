@@ -316,7 +316,7 @@ export default {
         }
       })
         .then(({ value }) => {
-          deleteWorkflowAPI(workflow.name).then(
+          deleteWorkflowAPI(workflow.name, this.projectName).then(
             res => {
               this.getWorkflows(this.projectName)
               this.$message.success(`${value}删除成功！`)
@@ -341,7 +341,7 @@ export default {
     },
     startCustomWorkflowBuild (workflow) {
       this.workflowToRun = {}
-      getCustomWorkfloweTaskPresetAPI(workflow.name)
+      getCustomWorkfloweTaskPresetAPI(workflow.name, this.projectName)
         .then(res => {
           this.isShowRunCustomWorkflowDialog = true
           this.workflowToRun = res

@@ -62,7 +62,7 @@
           :projectName="projectName"
         />
         <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
-        <Approval v-if="!curJob.type" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" @showFooter="showFooter" />
+        <Approval v-if="!curJob.type" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" :projectName="projectName" @showFooter="showFooter" />
       </footer>
     </Multipane>
   </div>
@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     getWorkflowTaskDetail (workflow_name, task_id) {
-      getCustomWorkflowTaskDetailAPI(workflow_name, task_id).then(res => {
+      getCustomWorkflowTaskDetailAPI(workflow_name, task_id, this.projectName).then(res => {
         this.payload = res
         this.adaptTaskDetail(res)
       })
@@ -168,7 +168,7 @@ export default {
       return wordTranslate(word, 'pipeline', 'task')
     },
     cancel () {
-      deleteWorkflowTaskAPI(this.workflowName, this.taskId).then(res => {
+      deleteWorkflowTaskAPI(this.workflowName, this.taskId, this.projectName).then(res => {
         this.$message.success(' 取消成功')
       })
     }

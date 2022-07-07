@@ -12,7 +12,7 @@
                 <label>工作流 {{`#${task.task_id}`}}</label>
                 <br />
                 <router-link
-                  :to="`/v1/projects/detail/${task.product_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}`"
+                  :to="`/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}`"
                 >
                   <span class="workflow-name">
                     <i class="el-icon-link"></i>
@@ -71,7 +71,7 @@
               <label>工作流 {{`#${task.task_id}`}}</label>
               <br />
               <router-link
-                :to="`/v1/projects/detail/${task.product_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}`"
+                :to="`/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}`"
               >
                 <span class="workflow-name">
                   <i class="el-icon-link"></i>

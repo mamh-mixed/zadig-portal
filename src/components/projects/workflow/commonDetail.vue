@@ -107,7 +107,8 @@ export default {
       const res = await getCustomWorkflowTaskListAPI(
         workflowName,
         pageStart,
-        pageSize
+        pageSize,
+        this.projectName
       )
       this.workflowTasks = res.workflow_list
       this.total = res.total
@@ -117,7 +118,7 @@ export default {
     },
     getCommonWorkflowTasks (start, max) {
       const workflowName = this.workflowName
-      getCustomWorkflowTaskListAPI(workflowName, start, max).then(
+      getCustomWorkflowTaskListAPI(workflowName, start, max, this.projectName).then(
         res => {
           this.workflowTasks = res.workflow_list
           this.total = res.total

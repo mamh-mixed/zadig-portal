@@ -166,7 +166,7 @@ export default {
       this.getWorkflowPresetInfo(this.workflowName)
     },
     getWorkflowPresetInfo (workflowName) {
-      getCustomWorkfloweTaskPresetAPI(workflowName).then(res => {
+      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(res => {
         res.stages.forEach(stage => {
           stage.jobs.forEach(job => {
             if (
@@ -336,7 +336,7 @@ export default {
           }
         })
       })
-      runCustomWorkflowTaskAPI(payload)
+      runCustomWorkflowTaskAPI(payload, this.projectName)
         .then(res => {
           const taskId = res.task_id || 1
           this.$message.success('创建成功')

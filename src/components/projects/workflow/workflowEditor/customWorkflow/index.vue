@@ -39,7 +39,7 @@
               <div class="line"></div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')"  size="small" class="stage-add">+ Stage</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ Stage</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -47,8 +47,8 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{ minHeight: '350px',maxHeight: '560px'}" v-if="isShowFooter">
-          <el-card >
+        <footer :style="{ minHeight: '400px',maxHeight: '500px'}" v-if="isShowFooter">
+          <el-card>
             <div slot="header">
               <span>基本配置</span>
             </div>
@@ -90,7 +90,7 @@
                   ref="buildEnv"
                   :workflowInfo="payload"
                 ></BuildEnv>
-                <el-button class="mg-t16 mg-b24" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
+                <el-button class="mg-t16 mg-b64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
               </el-form>
             </div>
           </el-card>
@@ -320,7 +320,11 @@ export default {
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
       if (this.$route.fullPath.includes('edit')) {
-        updateCustomWorkflowAPI(workflowName, yamlParams).then(res => {
+        updateCustomWorkflowAPI(
+          workflowName,
+          yamlParams,
+          this.projectName
+        ).then(res => {
           this.$message.success('编辑成功')
           this.getWorkflowDetail(this.payload.name)
           this.$router.push(
@@ -328,7 +332,7 @@ export default {
           )
         })
       } else {
-        addCustomWorkflowAPI(yamlParams).then(res => {
+        addCustomWorkflowAPI(yamlParams, this.projectName).then(res => {
           this.$message.success('新建成功')
           this.getWorkflowDetail(this.payload.name)
           this.$router.push(
@@ -350,7 +354,7 @@ export default {
       this.isShowRunWorkflowDialog = true
     },
     getWorkflowDetail (workflow_name) {
-      getCustomWorkflowDetailAPI(workflow_name).then(res => {
+      getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
         this.$store.dispatch('setWorkflowInfo', this.payload)
       })
@@ -622,6 +626,7 @@ export default {
               right: 20%;
               color: #666;
               font-size: 16px;
+              cursor: pointer;
             }
 
             &:hover {

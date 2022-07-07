@@ -185,6 +185,7 @@ export default {
 
   .add {
     width: 7em;
+    margin-top: 8px;
     font-size: 14px;
     border: 2px dotted @borderGray;
   }
