@@ -131,7 +131,7 @@ export default {
     },
     openBuildLog (buildType) {
       this.buildv4AnyLog = []
-      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.jobInfo.name}/999999`
+      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.jobInfo.name}/999999?projectName=${this.projectName}`
       if (typeof window.msgServer === 'undefined') {
         window.msgServer = {}
         window.msgServer[
@@ -173,7 +173,8 @@ export default {
       return getHistoryLogsAPI(
         this.workflowName,
         this.taskId,
-        this.jobInfo.name
+        this.jobInfo.name,
+        this.projectName
       ).then(response => {
         this.buildv4AnyLog = response.split('\n').map(element => {
           return element + '\n'

@@ -72,6 +72,10 @@ export default {
     workflowName: {
       type: String,
       default: ''
+    },
+    projectName: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -113,7 +117,7 @@ export default {
         approve: approvalable,
         comment: this.form.comment
       }
-      approvalCustomWorkflowTaskAPI(payload).then(res => {
+      approvalCustomWorkflowTaskAPI(payload, this.projectName).then(res => {
         this.isShowCommentDialog = false
       })
     },

@@ -203,15 +203,11 @@ export default {
       })
     },
     fetchHistory (start, max) {
-      const queryType = this.filterInfo.type
-      const filters = this.filterInfo.list
       getCustomWorkflowTaskListAPI(
         this.workflowName,
         start,
         max,
-        '',
-        queryType,
-        filters
+        this.projectName
       ).then(res => {
         this.processTestData(res.workflow_list)
         this.workflowTasks = res.workflow_list
@@ -319,7 +315,7 @@ export default {
       this.stages = stages
     },
     getCustomWorkflowDetail () {
-      getCustomWorkflowDetailAPI(this.workflowName).then(res => {
+      getCustomWorkflowDetailAPI(this.workflowName, this.projectName).then(res => {
         this.detail = jsyaml.load(res)
       })
     }
