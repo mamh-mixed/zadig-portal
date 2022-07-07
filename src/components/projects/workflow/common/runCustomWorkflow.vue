@@ -82,7 +82,7 @@
                 </el-select>
               </el-form-item>
               <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label="`${item.service_name}(${item.service_module})`">
+                <el-form-item :label="$utils.tailCut( `${item.service_name}(${item.service_module})`,20 )">
                   <el-select
                     v-model="item.image"
                     filterable

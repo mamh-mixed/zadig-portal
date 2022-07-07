@@ -2,7 +2,7 @@
   <div class="build-console workflow-task-detail">
     <el-card class="box-card task-process">
       <div slot="header" class="mg-b8">
-        <el-col :span="4">
+        <el-col :span="6">
           <span class="build-console-type">构建</span>
           <span>{{jobInfo.name}}</span>
         </el-col>

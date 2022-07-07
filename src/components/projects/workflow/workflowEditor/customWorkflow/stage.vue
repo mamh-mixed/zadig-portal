@@ -18,7 +18,7 @@
         <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <el-button @click="addJob" v-if="isShowJobAddBtn" type="primary" size="small" class="add">+ Job</el-button>
+    <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ Job</el-button>
   </div>
 </template>
 
@@ -140,8 +140,15 @@ export default {
   text-align: center;
 
   &-name {
+    margin-right: 16px;
+    margin-left: 16px;
+    padding-left: -8px;
     overflow: hidden;
-    font-size: 16px;
+    color: #121212;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: left;
+    border-bottom: 1px solid @borderGray;
     cursor: pointer;
   }
 
@@ -156,6 +163,7 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     border: 1px solid @borderGray;
+    border-radius: 2px;
     cursor: pointer;
 
     .del {
@@ -178,6 +186,7 @@ export default {
   .add {
     width: 7em;
     font-size: 14px;
+    border: 2px dotted @borderGray;
   }
 }
 </style>
