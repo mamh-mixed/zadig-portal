@@ -1,9 +1,9 @@
 <template>
   <div class="service-build-val">
     <el-row :gutter="24" class="mg-b16">
-      <el-col :span="6">服务组件</el-col>
-      <el-col :span="6">构建名称</el-col>
-      <el-col :span="6">构建变量</el-col>
+      <el-col :span="6" class="title">服务组件</el-col>
+      <el-col :span="6" class="title">构建名称</el-col>
+      <el-col :span="6" class="title">构建变量</el-col>
     </el-row>
     <el-form :model="form" ref="ruleForm" size="small">
       <el-row :gutter="24" v-for="(item,index) in serviceAndBuilds" :key="index" >
@@ -134,5 +134,9 @@ export default {
   width: 70%;
   color: #606266;
   font-size: 14px;
+
+  .title {
+    font-weight: 500;
+  }
 }
 </style>

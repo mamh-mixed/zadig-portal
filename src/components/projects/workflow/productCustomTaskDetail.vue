@@ -38,9 +38,9 @@
               <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="stage.name">
                 <div class="stage-name">{{$utils.tailCut(stage.name,15)}}</div>
               </el-tooltip>
-              <div class="jobs" v-for="job in stage.jobs" :key="job.name">
-                <span class="job" @click="setCurJob(job)">
-                  <span :class="$translate.calcTaskStatusColor(job.status)">•</span>
+              <div class="jobs" v-for="(job,index) in stage.jobs" :key="job.name">
+                <span class="job" @click="setCurJob(job,index,curStageIndex)">
+                  <span class="job-status" :class="$translate.calcTaskStatusColor(job.status)">•</span>
                   <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
                     <span class="job-name">{{job.name}}</span>
                   </el-tooltip>
@@ -53,7 +53,7 @@
         </div>
       </main>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{ minHeight: '500px',maxHeight: '600px'}" v-if="isShowConsoleFooter">
+      <footer :style="{ minHeight: '460px',maxHeight: '550px'}" v-if="isShowConsoleFooter">
         <BuildConsole
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"
@@ -121,6 +121,12 @@ export default {
     curStage () {
       return this.payload.stages[this.curStageIndex]
     }
+    // curJob: {
+    //   get () {
+    //     return this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+    //   },
+    //   set () {}
+    // }
   },
   created () {
     this.getWorkflowTaskDetail(this.workflowName, this.taskId)
@@ -132,9 +138,10 @@ export default {
         this.adaptTaskDetail(res)
       })
     },
-    setCurJob (item) {
+    setCurJob (item, index, curStageIndex) {
       this.isShowConsoleFooter = true
       this.curJob = item
+      this.curJobIndex = index
     },
     async refreshHistoryTaskDetail () {
       await this.getWorkflowTaskDetail(this.workflowName, this.taskId)
@@ -204,9 +211,9 @@ export default {
 
   header {
     padding: 0 8px;
+    color: #121212;
     line-height: 40px;
-    background: #f6f6f6;
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
   }
 
   main {
@@ -233,28 +240,46 @@ export default {
           width: 140px;
           margin: -6px 4px;
           padding: 8px 0 16px 0;
-          border: 1px dotted @borderGray;
+          border: 2px dotted @borderGray;
           border-radius: 4px;
           cursor: pointer;
+
+          &-name {
+            margin-right: 16px;
+            margin-left: 16px;
+            padding-left: -8px;
+            color: #121212;
+            font-size: 14px;
+            line-height: 24px;
+            text-align: left;
+            border-bottom: 1px solid @borderGray;
+            cursor: pointer;
+          }
         }
 
         .jobs {
-          height: 40px;
+          height: 30px;
           margin-top: 8px;
           padding: 0 8px;
-          line-height: 40px;
+          line-height: 30px;
 
           .job {
             display: inline-block;
-            width: 100px;
+            box-sizing: border-box;
+            width: 7em;
             padding: 0 8px;
             overflow: hidden;
             font-weight: 400;
             font-size: 14px;
             white-space: nowrap;
             text-overflow: ellipsis;
-            border: 1px dotted @borderGray;
+            border: 1px solid @borderGray;
             cursor: pointer;
+
+            &-status {
+              font-size: 18px;
+              vertical-align: -3px;
+            }
           }
         }
       }
