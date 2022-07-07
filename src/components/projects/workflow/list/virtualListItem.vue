@@ -20,7 +20,7 @@
     <template v-if="workflow.workflow_type === 'common_workflow'" slot="operations">
       <el-button
         type="primary"
-        v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'run_workflow',resource:{type:'workflow',name:workflow.name}})"
+        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'run_workflow',resource:{type:'workflow',name:workflow.name}})"
         class="button-exec"
         @click="startCustomWorkflowBuild(workflow)"
       >
@@ -32,15 +32,15 @@
         </el-button>
       </el-tooltip>
       <router-link
-        v-if="checkPermissionSyncMixin({projectName: workflow.project_name, action: 'edit_workflow', action: 'run_workflow', resource:{type:'workflow',name:workflow.name}})"
-        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.project_name}&id=${workflow.id}`"
+        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', action: 'run_workflow', resource:{type:'workflow',name:workflow.name}})"
+        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.projectName}&id=${workflow.id}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
       <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
         <span class="permission-disabled menu-item iconfont icondeploy"></span>
       </el-tooltip>
-      <el-dropdown v-hasPermi="{projectName: workflow.project_name, action:'delete_workflow', resource:{type:'workflow',name:workflow.name}, isBtn: true}">
+      <el-dropdown v-hasPermi="{projectName: workflow.projectName, action:'delete_workflow', resource:{type:'workflow',name:workflow.name}, isBtn: true}">
         <span class="el-dropdown-link">
           <i class="iconfont iconmorelist more-operation"></i>
         </span>
