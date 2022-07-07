@@ -2,7 +2,7 @@
   <div class="build-console">
     <el-card>
       <div slot="header" class="mg-b8">
-        <el-col :span="4">
+        <el-col :span="6">
           <span class="build-console-type">部署</span>
           <span>{{jobInfo.name}}</span>
         </el-col>

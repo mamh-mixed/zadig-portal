@@ -6,9 +6,6 @@
           <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
           <CanInput v-model="payload.description" :from="activeName" placeholder="描述" />
         </div>
-        <!-- <el-tabs v-model="activeName" type="card" class="tab">
-          <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabList" :key="item.name"></el-tab-pane>
-        </el-tabs>-->
         <div class="tab">
           <span
             class="tab-item"
@@ -21,7 +18,7 @@
         <div>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
           <!-- <el-button type="success" size="small" :disabled="Object.keys(workflowInfo).length === 0" @click="runWorkflow">执行</el-button> -->
-          <el-button type="default" size="small" @click="cancelWorkflow">取消</el-button>
+          <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
       <Multipane layout="horizontal">
@@ -42,7 +39,7 @@
               <div class="line"></div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" type="primary" size="small" class="stage-add">+ Stage</el-button>
+              <el-button @click="showStageOperateDialog('add')"  size="small" class="stage-add">+ Stage</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -50,8 +47,8 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{ minHeight: '350px',maxHeight: '600px'}" v-if="isShowFooter">
-          <el-card :body-style="{padding: '4px 16px', margin: '0' }">
+        <footer :style="{ minHeight: '350px',maxHeight: '560px'}" v-if="isShowFooter">
+          <el-card >
             <div slot="header">
               <span>基本配置</span>
             </div>
@@ -607,7 +604,7 @@ export default {
               width: 140px;
               margin: -6px 4px;
               padding: 8px 0;
-              border: 1px dotted @borderGray;
+              border: 2px dotted @borderGray;
               border-radius: 4px;
             }
 
@@ -621,8 +618,9 @@ export default {
 
             .edit {
               position: absolute;
-              top: 4px;
+              top: 6px;
               right: 20%;
+              color: #666;
               font-size: 16px;
             }
 
@@ -637,6 +635,7 @@ export default {
         .stage-add {
           margin: 0 4px;
           font-size: 16px;
+          border: 2px dotted @borderGray;
         }
       }
     }
