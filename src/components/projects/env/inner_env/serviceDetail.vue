@@ -323,7 +323,7 @@
                           </el-tooltip>
                           <el-badge v-else value="alpha" class="ephemeral-badge">
                           <el-button @click="openEphemeralContainersDialog(activePod[scope.$index].name)"
-                                     v-hasPermi="{projectName: projectName, action: isProd?'production:debug_pod':'debug_pod',resource:{name:envName,type:'env'},isBtn:true}"
+                                     v-hasPermi="{projectName: projectName, action: isProd?'production:debug_pod':'debug_pod',resource:{name:envName,type:'env'},isBtn:true, disabled: activePod[scope.$index].enable_debug_container || !activePod[scope.$index].canOperate}"
                                      :disabled="activePod[scope.$index].enable_debug_container || !activePod[scope.$index].canOperate"
                                      size="small">启动调试容器</el-button>
                           </el-badge>
