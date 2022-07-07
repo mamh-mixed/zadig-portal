@@ -862,8 +862,12 @@ export default {
     webhookRepos: {
       get: function () {
         let repos = []
-        this.presets.forEach(element => {
-          repos = repos.concat(element.repos)
+        this.workflowToRun.build_stage.modules.forEach(item => {
+          this.presets.forEach(element => {
+            if (item.target.build_name === element.target.build_name) {
+              repos = repos.concat(element.repos)
+            }
+          })
         })
         repos = uniqBy(repos, value => value.repo_owner + '/' + value.repo_name)
         repos.forEach(repo => {
