@@ -126,7 +126,17 @@ export default {
     getRepoList (buildName, projectName) {
       if (!buildName) return
       getBuildConfigDetailAPI(buildName, projectName).then(res => {
-        this.originRepoList = [...res.repos] || []
+        if (res.template_id) {
+          const { service_name, service_module } = this.value.target
+          const current = res.targets.find(
+            target =>
+              `${target.service_name}/${target.service_module}` ===
+              `${service_name}/${service_module}`
+          )
+          this.originRepoList = current ? current.repos : []
+        } else {
+          this.originRepoList = [...res.repos] || []
+        }
         this.filter()
       })
     },
