@@ -93,7 +93,7 @@ export default {
     }),
     isDisabled () {
       const curUser = this.approvalInfo.approval.approve_users.find(
-        item => item.user_name === this.userInfo.name
+        item => item.user_id === this.userInfo.uid
       )
       if (!curUser) {
         return true
@@ -143,7 +143,7 @@ export default {
 
   .text {
     color: #8d9199;
-    font-size: 14px;
+    font-size: 12px;
 
     .red {
       color: red;
