@@ -1,6 +1,6 @@
 <template>
   <div class="custom-workflow">
-    <el-form label-width="120px">
+    <el-form label-width="120px" size="small">
       <el-collapse v-model="activeName">
         <div v-for="(stage) in payload.stages" :key="stage.name">
           <el-collapse-item v-for="(job) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="job.name" class="mg-l8">
@@ -103,7 +103,7 @@
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t24">{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
+      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
     </el-form>
   </div>
 </template>

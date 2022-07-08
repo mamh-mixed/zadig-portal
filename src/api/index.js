@@ -615,8 +615,8 @@ export function deleteProductWorkflowAPI (projectName, name) {
   return http.delete(`/api/aslan/workflow/workflow/${name}?projectName=${projectName}`)
 }
 
-export function getAssociatedBuildsAPI (projectName) {
-  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}`)
+export function getAssociatedBuildsAPI (projectName, excludeJenkins = false) {
+  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}&excludeJenkins=${excludeJenkins}`)
 }
 
 export function checkRegularAPI (payload) { // {regular: '', branches: []}
