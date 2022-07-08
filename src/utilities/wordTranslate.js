@@ -40,6 +40,16 @@ export function wordTranslate (word, category, subitem = '') {
     approval: {
       status: {
         '': '待审核',
+        waiting: '排队中',
+        running: '正在运行',
+        failed: '失败',
+        passed: '成功',
+        timeout: '超时',
+        cancelled: '取消',
+        blocked: '阻塞',
+        queued: '队列中',
+        skipped: '跳过',
+        prepare: '准备环境',
         reject: '拒绝',
         approve: '通过'
       }
@@ -99,7 +109,13 @@ export function colorTranslate (word, category, subitem = '') {
         status: {
           '': 'color-created',
           reject: 'color-failed',
-          approve: 'color-passed'
+          approve: 'color-passed',
+          waiting: 'color-created',
+          running: 'color-running',
+          failed: 'color-failed',
+          passed: 'color-passed',
+          timeout: 'color-timeout',
+          cancelled: 'color-cancelled'
         }
       },
       environment: {
