@@ -2166,3 +2166,12 @@ export function getPendingStatusCustomWorkflowListAPI () {
 export function approvalCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask/approve?projectName=${projectName}`, payload)
 }
+
+// count the number of users
+export function getUserNumberAPI () {
+  return http.get(`/api/v1/user/count`)
+}
+
+export function uploadUserNumberAPI (payload) {
+  return http.post(`/api/operation/upload/user`, payload)
+}

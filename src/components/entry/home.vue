@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { getAnnouncementsAPI, checkEmailHostAPI, getPublicKeyAPI } from '@api'
+import { getAnnouncementsAPI, checkEmailHostAPI, getPublicKeyAPI, getUserNumberAPI, uploadUserNumberAPI } from '@api'
+import Encrypt from '@/utilities/encrypt'
 import Sidebar from './home/sidebar.vue'
 import Topbar from './home/topbar.vue'
 import BottomBar from './home/bottomBar.vue'
@@ -60,6 +61,15 @@ export default {
       } else {
         this.SMTPDisabled = true
       }
+    },
+    updateUsers () {
+      getUserNumberAPI().then(res => {
+        const data = {
+          domain: window.location.hostname,
+          user_count: res
+        }
+        uploadUserNumberAPI(Encrypt(data)).catch(err => console.log(err))
+      })
     }
   },
   computed: {
@@ -78,6 +88,8 @@ export default {
         if (val) {
           // 检查 SMTP 配置
           this.checkSMTP()
+          // upload users
+          this.updateUsers()
         }
       },
       immediate: true
