@@ -9,7 +9,8 @@ const specialAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifac
 const ignoreErrReq = '/api/aslan/services/validateUpdate/'
 const ignoreErrResponse = 'the following services are modified since last update:'
 const reqExps = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloads/, /api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/groups/]
-const analyticsReq = 'https://api.koderover.com/api/operation/upload'
+const analyticsPrefix = 'https://api.koderover.com'
+const analyticsReq = `${analyticsPrefix}/api/operation/upload`
 const userInitEnvRoute = '/v1/projects/initialize/'
 const http = axios.create()
 const CancelToken = axios.CancelToken
@@ -63,7 +64,7 @@ http.interceptors.request.use((config) => {
     config.headers.Authorization = 'Bearer ' + config.data.token
   }
   // Set Authorization Header.
-  if (store.get('userInfo') && store.get('userInfo') !== 'undefined' && config.url !== analyticsReq) {
+  if (store.get('userInfo') && store.get('userInfo') !== 'undefined' && !config.url.startsWith(analyticsPrefix)) {
     config.headers.Authorization = 'Bearer ' + store.get('userInfo').token
   }
   return config
@@ -122,7 +123,7 @@ http.interceptors.response.use(
     // Don't expose analysis API errors
     if (
       error.response &&
-      error.response.config.url !== analyticsReq &&
+      !error.response.config.url.startsWith(analyticsPrefix) &&
       !error.response.config.url.includes(ignoreErrReq)) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
@@ -2173,5 +2174,5 @@ export function getUserNumberAPI () {
 }
 
 export function uploadUserNumberAPI (payload) {
-  return http.post(`/api/operation/upload/user`, payload)
+  return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
 }

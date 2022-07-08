@@ -25,7 +25,7 @@
 
 <script>
 import { getAnnouncementsAPI, checkEmailHostAPI, getPublicKeyAPI, getUserNumberAPI, uploadUserNumberAPI } from '@api'
-import Encrypt from '@/utilities/encrypt'
+import encrypt from '@/utilities/encrypt'
 import Sidebar from './home/sidebar.vue'
 import Topbar from './home/topbar.vue'
 import BottomBar from './home/bottomBar.vue'
@@ -64,11 +64,11 @@ export default {
     },
     updateUsers () {
       getUserNumberAPI().then(res => {
-        const data = {
+        const payload = encrypt({
           domain: window.location.hostname,
           user_count: res
-        }
-        uploadUserNumberAPI(Encrypt(data)).catch(err => console.log(err))
+        })
+        uploadUserNumberAPI(payload).catch(err => console.log(err))
       })
     }
   },

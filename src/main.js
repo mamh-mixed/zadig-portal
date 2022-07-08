@@ -21,7 +21,7 @@ import directive from '@/directive'
 
 import App from './App.vue'
 import { analyticsRequestAPI } from '@api'
-import Encrypt from './utilities/encrypt'
+import encrypt from './utilities/encrypt'
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill'
 global.EventSource = EventSourcePolyfill || NativeEventSource
 
@@ -59,14 +59,14 @@ const userName = () => {
 const analyticsRequest = (to, from) => {
   const hostname = window.location.hostname
   if (to.path !== from.path && !utils.isPrivateIP(hostname)) {
-    const data = {
+    const payload = encrypt({
       domain: hostname,
       username: userName(),
       url: to.path,
       createdAt: Math.floor(Date.now() / 1000)
-    }
+    })
 
-    analyticsRequestAPI(Encrypt(data))
+    analyticsRequestAPI(payload)
       .then()
       .catch((err) => {
         console.log(err)
