@@ -31,7 +31,12 @@
             value-key="user_id"
             style="width: 100%;"
           >
-            <el-option v-for="user in userList" :key="user.user_id" :value="user" :label="user.user_name">{{user.user_name}}</el-option>
+            <el-option v-for="user in userList" :key="user.user_id" :value="user" :label="user.user_name">
+              <span v-if="user.identity_type">
+                <i class="iconfont" :class="'icon'+user.identity_type"></i>
+                <span>{{user.user_name ? `${user.user_name}(${user.account})` : user.account}}</span>
+              </span>
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="需要审核人数">
@@ -113,7 +118,9 @@ export default {
         this.userList = res.users.map(item => {
           const obj = {
             user_id: item.uid,
-            user_name: item.name
+            user_name: item.name,
+            account: item.account,
+            identity_type: item.identity_type
           }
           return obj
         })

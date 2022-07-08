@@ -464,7 +464,7 @@ export default {
     },
     getRegistryWhenBuild () {
       const projectName = this.projectName
-      getRegistryWhenBuildAPI(projectName).then(res => {
+      getRegistryWhenBuildAPI(projectName, true).then(res => {
         this.dockerList = res
       })
     },
