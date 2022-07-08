@@ -164,19 +164,6 @@ export default {
     },
     getWorkflowPresetInfo (workflowName) {
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(res => {
-        res.stages.forEach(stage => {
-          stage.jobs.forEach(job => {
-            if (
-              job.spec.service_and_builds &&
-              job.spec.service_and_builds.length > 0
-            ) {
-              job.pickedTargets = job.spec.service_and_builds
-              job.pickedTargets.forEach(build => {
-                this.getRepoInfo(build.repos)
-              })
-            }
-          })
-        })
         this.payload = res
       })
     },
