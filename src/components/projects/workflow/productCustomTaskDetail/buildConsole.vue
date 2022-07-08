@@ -82,7 +82,8 @@ export default {
     return {
       buildv4AnyLog: [],
       wsBuildDataBuffer: [],
-      buildLogStarted: true
+      buildLogStarted: true,
+      window: window
     }
   },
   props: {
@@ -198,10 +199,22 @@ export default {
   },
   watch: {
     jobInfo: {
-      handler (val) {
+      handler (val, oldVal) {
         if (val) {
           this.getLog()
           this.adaptTaskDetail(val)
+        }
+        const currentSSE = `${val.spec.service_module}_${val.spec.service_name}`
+        if (this.window.msgServer) {
+          for (const SSE in this.window.msgServer) {
+            if (
+              Object.hasOwnProperty.call(this.window.msgServer, SSE) &&
+              SSE !== currentSSE
+            ) {
+              this.window.msgServer[SSE].close()
+              delete this.window.msgServer[SSE]
+            }
+          }
         }
       },
       deep: true,
