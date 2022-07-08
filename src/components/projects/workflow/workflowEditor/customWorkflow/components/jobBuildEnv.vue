@@ -1,6 +1,6 @@
 <template>
   <div class="build-env">
-    <el-form :label-width="formLabelWidth" :model="form" ref="ruleForm">
+    <el-form :label-width="formLabelWidth" :model="form" :rules="rules" ref="ruleForm">
       <el-form-item label="环境" prop="env" required>
         <!-- <el-select v-model="form.runtime" placeholder="请选择" size="small">
           <el-option label="运行时输入"></el-option>
@@ -46,7 +46,30 @@ export default {
   data () {
     return {
       formLabelWidth: '90px',
-      envList: []
+      envList: [],
+      rules: {
+        env: [
+          {
+            required: true,
+            trigger: 'blur',
+            message: '请选择环境'
+          }
+        ],
+        source: [
+          {
+            required: true,
+            trigger: 'blur',
+            message: '请选择服务类型'
+          }
+        ],
+        job_name: [
+          {
+            required: true,
+            trigger: 'blur',
+            message: '请选择 Job'
+          }
+        ]
+      }
     }
   },
   computed: {

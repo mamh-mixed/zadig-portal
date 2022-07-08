@@ -33,7 +33,8 @@ export function wordTranslate (word, category, subitem = '') {
         blocked: '阻塞',
         queued: '队列中',
         skipped: '跳过',
-        prepare: '准备环境'
+        prepare: '准备环境',
+        reject: '拒绝'
       }
     },
     approval: {
