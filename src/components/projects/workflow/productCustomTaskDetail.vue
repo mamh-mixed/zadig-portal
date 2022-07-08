@@ -165,7 +165,7 @@ export default {
       this.isShowConsoleFooter = val
     },
     translateStatus (word) {
-      return wordTranslate(word, 'pipeline', 'task')
+      return wordTranslate(word, 'approval', 'status')
     },
     cancel () {
       deleteWorkflowTaskAPI(this.workflowName, this.taskId, this.projectName).then(res => {
