@@ -54,7 +54,7 @@ export default {
   },
   watch: {
     logs: function (new_val, old_val) {
-      if (new_val !== old_val && this.from === 'custom') {
+      if (this.from === 'custom' && new_val !== old_val) {
         this.term.clear()
         this.index = 0
       }
