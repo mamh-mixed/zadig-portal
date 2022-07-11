@@ -252,8 +252,7 @@ export default {
 
         .name-span {
           display: inline-block;
-          // width: 160px;
-          max-width: 160px;
+          max-width: 200px;
           margin-right: 8px;
           overflow: hidden;
           white-space: nowrap;
@@ -284,6 +283,7 @@ export default {
   .desc {
     flex: 1 0 20%;
     color: @fontLightGray;
+    font-size: 13px;
   }
 
   .time-rate {

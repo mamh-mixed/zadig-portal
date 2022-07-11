@@ -1,6 +1,6 @@
 <template>
   <div class="approval">
-    <el-card class="box-card task-process">
+    <el-card style="position: relative;">
       <div slot="header" class="mg-b8">
         <el-col :span="2" class>
           <span class="approval-type">人工审核</span>
@@ -131,7 +131,6 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import '~@assets/css/component/subtask.less';
 
 .approval {
   background: #fff;

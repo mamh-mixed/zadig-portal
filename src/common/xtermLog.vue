@@ -46,11 +46,15 @@ export default {
     fontSize: {
       required: false,
       default: '13'
+    },
+    from: {
+      type: String,
+      default: 'product'
     }
   },
   watch: {
     logs: function (new_val, old_val) {
-      if (new_val !== old_val) {
+      if (new_val !== old_val && this.from === 'custom') {
         this.term.clear()
         this.index = 0
       }
