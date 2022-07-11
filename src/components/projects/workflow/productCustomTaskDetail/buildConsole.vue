@@ -1,5 +1,5 @@
 <template>
-  <div class="build-console workflow-task-detail">
+  <div class="build-console">
     <el-card style="position: relative;">
       <div slot="header" class="mg-b8">
         <el-col :span="6">
@@ -127,7 +127,7 @@ export default {
   },
   methods: {
     leaveLog () {
-      const el = document.querySelector('.workflow-task-detail').style
+      const el = document.querySelector('.build-console').style
       el.overflow = 'auto'
     },
     openBuildLog (buildType) {
