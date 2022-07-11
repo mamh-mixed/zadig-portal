@@ -1,6 +1,6 @@
 <template>
   <div class="build-console workflow-task-detail">
-    <el-card class="box-card task-process">
+    <el-card style="position: relative;">
       <div slot="header" class="mg-b8">
         <el-col :span="6">
           <span class="build-console-type">构建</span>
@@ -66,7 +66,7 @@
         </el-col>
       </el-row>
       <div class="log-content mg-t8">
-        <XtermLog :id="jobInfo.spec.service_name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" />
+        <XtermLog :id="jobInfo.spec.service_name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom"/>
       </div>
     </el-card>
   </div>
@@ -227,7 +227,6 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import '~@assets/css/component/subtask.less';
 
 .build-console {
   height: 100%;
