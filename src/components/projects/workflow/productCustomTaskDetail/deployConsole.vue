@@ -1,6 +1,6 @@
 <template>
   <div class="build-console">
-    <el-card>
+    <el-card style="position: relative;">
       <div slot="header" class="mg-b8">
         <el-col :span="6">
           <span class="build-console-type">部署</span>
