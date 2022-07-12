@@ -68,7 +68,7 @@
                 </el-form-item>
                 <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
                   <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
-                  <el-select size="small" v-model="service">
+                  <el-select size="small" v-model="service" multiple>
                     <el-option
                       v-for="service in serviceAndBuilds"
                       :key="service.service_name"
@@ -86,7 +86,7 @@
                 <BuildEnv
                   :projectName="projectName"
                   v-if="job.type === jobType.deploy"
-                  v-model="job.spec"
+                  v-model="job"
                   ref="buildEnv"
                   :workflowInfo="payload"
                 ></BuildEnv>
@@ -305,10 +305,12 @@ export default {
         this.$message.error(' 请至少填写一个 Stage')
         return
       }
-      if (this.payload.stages.find(item => item.jobs.length === 0)) {
-        this.$message.error(' 请填写 Stage 中的 Job')
-        return
-      }
+      this.payload.stages.forEach(item => {
+        if (item.jobs.length === 0) {
+          this.$message.error(`请填写 ${item.name} 中的 Job`)
+          throw Error()
+        }
+      })
       if (this.isShowFooter) {
         this.$message.error('请先保存 Job 配置')
         return
@@ -476,15 +478,18 @@ export default {
       })
     },
     addServiceAndBuild (val) {
-      const curService = this.serviceAndBuilds.find(
-        item => item.service_name === this.service
-      )
-      val.push(cloneDeep(curService))
+      let curService
+      this.service.forEach(service => {
+        curService = this.serviceAndBuilds.find(
+          item => item.service_name === service
+        )
+        val.push(cloneDeep(curService))
+      })
       // added need to del
       this.serviceAndBuilds = this.serviceAndBuilds.filter(item => {
         return item.service_name !== curService.service_name
       })
-      this.service = ''
+      this.service = []
     },
     hideAfterSuccess () {
       this.isShowRunWorkflowDialog = false

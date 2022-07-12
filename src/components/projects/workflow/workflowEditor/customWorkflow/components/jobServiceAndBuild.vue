@@ -6,7 +6,7 @@
       <el-col :span="6" class="title">构建变量</el-col>
     </el-row>
     <el-form :model="form" ref="ruleForm" size="small">
-      <el-row :gutter="24" v-for="(item,index) in serviceAndBuilds" :key="index" >
+      <el-row :gutter="24" v-for="(item,index) in serviceAndBuilds" :key="index">
         <el-col :span="6">
           <span>{{item.service_name}}/{{item.service_module}}</span>
         </el-col>
@@ -112,8 +112,9 @@ export default {
     handleBuildChange (item) {
       const res = item.module_builds.find(
         build => build.name === item.build_name
-      ).key_vals
-      this.$set(item, 'key_vals', res)
+      )
+      const keyVals = res ? res.key_vals : []
+      this.$set(item, 'key_vals', keyVals)
     },
     validate () {
       return this.serviceAndBuilds.length > 0
