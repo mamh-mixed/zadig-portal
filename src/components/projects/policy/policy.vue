@@ -53,7 +53,7 @@
         <el-table-column label="配置">
           <template slot-scope="{ row }">
             <el-radio-group v-model="row.collaboration_type" @change="updateCollaborationType($event, 'workflow', row)">
-              <el-tooltip effect="dark" content="成员基于此基准工作流新建一个工作流" placement="top">
+              <el-tooltip effect="dark" content="成员基于此基准工作流新建一个工作流" placement="top" v-if="showUniqueConfig">
                 <el-radio label="new">独享</el-radio>
               </el-tooltip>
               <el-tooltip effect="dark" content="成员共享一个基准工作流" placement="top">
@@ -120,7 +120,7 @@
         <el-table-column label="配置">
           <template slot-scope="{ row }">
             <el-radio-group v-model="row.collaboration_type" @change="updateCollaborationType($event, 'environment', row)">
-              <el-tooltip effect="dark" content="成员基于此基准环境新建一个环境" placement="top">
+              <el-tooltip effect="dark" content="成员基于此基准环境新建一个环境" placement="top" v-if="showUniqueConfig">
                 <el-radio label="new">独享</el-radio>
               </el-tooltip>
               <el-tooltip effect="dark" content="成员共享一个基准环境" placement="top">
@@ -261,6 +261,9 @@ export default {
         workflow,
         environment
       }
+    },
+    showUniqueConfig () {
+      return ['k8s', 'helm'].includes(this.collaborationData.deploy_type)
     }
   },
   methods: {
