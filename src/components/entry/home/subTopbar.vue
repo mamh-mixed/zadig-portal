@@ -131,7 +131,7 @@
             </el-dropdown-item>
             <el-dropdown-item icon="el-icon-lock" @click.native="$router.push(`/v1/projects/detail/${projectName}/rbac`)">权限</el-dropdown-item>
             <el-dropdown-item
-              v-if="deployType === 'k8s' || deployType === 'helm'"
+              v-if="deployType !== 'cloud_host'"
               icon="item-icon iconfont iconvery-collaboratiom"
               @click.native="$router.push(`/v1/projects/detail/${projectName}/policy`)"
             >协作模式</el-dropdown-item>
