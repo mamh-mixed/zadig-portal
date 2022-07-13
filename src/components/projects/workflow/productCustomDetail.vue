@@ -325,7 +325,6 @@ export default {
     clearTimeout(this.timerId)
   },
   mounted () {
-    console.log(this.$route.params)
     this.refreshHistoryTask()
     this.getCustomWorkflowDetail()
     bus.$emit('set-topbar-title', {

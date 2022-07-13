@@ -145,7 +145,7 @@ import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
-import { cloneDeep, differenceWith } from 'lodash'
+import { cloneDeep, differenceWith, isEqual } from 'lodash'
 const validateName = (rule, value, callback) => {
   const reg = /^[a-z][a-z0-9-]{0,32}$/
   if (value === '') {
@@ -158,6 +158,46 @@ const validateName = (rule, value, callback) => {
     )
   } else {
     callback()
+  }
+}
+const strategy = {
+  name: function (val, msg) {
+    console.log(val)
+    if (!val) {
+      return msg
+    }
+  },
+  stages: function (val, msg) {
+    if (val.stages.length === 0) {
+      return msg
+    }
+  },
+  jobs: function (val, msg) {
+    for (let i = 0; i < val.stages.length; i++) {
+      if (val.stages[i].jobs.length === 0) {
+        return `请填写 ${val.stages[i].name} 中的 Job`
+      }
+    }
+  },
+  jobModifing: function (val, msg) {
+    val
+      .saveJobConfig()
+      .then(valid => {
+        if (valid) {
+          if (val.isShowFooter) {
+            const res = isEqual(val.job, val.curJob)
+            if (!res) {
+              return msg
+            }
+          }
+        } else {
+          return msg
+        }
+      })
+      .catch(err => {
+        console.log(msg)
+        return msg
+      })
   }
 }
 export default {
@@ -188,7 +228,6 @@ export default {
           docker_registry_id: ''
         }
       },
-      curJobName: '',
       stageOperateType: 'add',
       payload: {
         name: 'untitled',
@@ -198,7 +237,6 @@ export default {
       },
       curStageIndex: 0,
       curJobIndex: 0,
-      isShowDrawer: false,
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
@@ -293,28 +331,88 @@ export default {
         ]
       })
     },
+    Validate () {
+      this.rules = []
+      this.add = function (value, rule, msg) {
+        const args = rule.split(':')
+        const func = args.shift()
+        args.push(msg)
+        args.unshift(value)
+        const obj = {
+          func,
+          args
+        }
+        this.rules.push(obj)
+        console.log(this.rules)
+      }
+      this.check = function () {
+        const errors = []
+        for (let i = 0; i < this.rules.length; i++) {
+          console.log(this.rules[i].args)
+          const error = strategy[this.rules[i].func].apply(
+            strategy,
+            this.rules[i].args
+          )
+          console.log(error)
+          if (error) {
+            console.log(error)
+            errors.push(error)
+          }
+        }
+        return errors
+      }
+    },
     operateWorkflow () {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
-      if (!this.payload.name) {
-        this.$message.error(' 请填写工作流名称')
+      const validate = new this.Validate()
+      validate.add(this.payload, 'name', '请填写工作流名称')
+      validate.add(this.payload, 'stages', '请至少填写一个 Stage')
+      validate.add(this.payload, 'jobs')
+      const obj = {
+        isShowFooter: this.isShowFooter,
+        job: this.job,
+        curJob: this.payload.stages[this.curStageIndex]
+          ? this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+          : {},
+        saveJobConfig: this.saveJobConfig
+      }
+      validate.add(obj, 'jobModifing', '请先保存 Job 配置')
+      const res = validate.check()
+      console.log(res)
+      if (res.length) {
+        this.$message.error(res.toString())
         return
       }
-      if (this.payload.stages.length === 0) {
-        this.$message.error(' 请至少填写一个 Stage')
-        return
-      }
-      this.payload.stages.forEach(item => {
-        if (item.jobs.length === 0) {
-          this.$message.error(`请填写 ${item.name} 中的 Job`)
-          throw Error()
-        }
-      })
-      if (this.isShowFooter) {
-        this.$message.error('请先保存 Job 配置')
-        return
-      }
+      // if (!this.payload.name) {
+      //   this.$message.error(' 请填写工作流名称')
+      //   return
+      // }
+      // if (this.payload.stages.length === 0) {
+      //   this.$message.error(' 请至少填写一个 Stage')
+      //   return
+      // }
+      // this.payload.stages.forEach(item => {
+      //   if (item.jobs.length === 0) {
+      //     this.$message.error(`请填写 ${item.name} 中的 Job`)
+      //     throw Error()
+      //   }
+      // })
+      // if (this.isShowFooter) {
+      //   this.saveJobConfig().then(valid => {
+      //     console.log(valid)
+      //     if (valid) {
+      //       const res = isEqual(
+      //         this.job,
+      //         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+      //       )
+      //       if (!res) {
+      //         this.$message.error('请先保存 Job 配置')
+      //       }
+      //     }
+      //   })
+      // }
       this.saveWorkflow()
     },
     saveWorkflow () {
@@ -409,7 +507,7 @@ export default {
         }
       })
     },
-    delStage (index, item) {
+    delStage (item) {
       this.$confirm(`确定删除 Stage [${item.name}]？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -428,34 +526,39 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
-      return this.$refs.jobRuleForm.validate().then(valid => {
-        if (valid) {
-          if (this.job.type === jobType.deploy) {
-            this.$refs.buildEnv.validate().then(valid => {
-              if (valid) {
+      return new Promise((resolve, reject) => {
+        this.$refs.jobRuleForm.validate().then(valid => {
+          if (valid) {
+            if (this.job.type === jobType.deploy) {
+              this.$refs.buildEnv.validate().then(valid => {
+                if (valid) {
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    this.job
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                  resolve()
+                }
+              })
+              reject()
+            } else {
+              if (this.$refs.serviceAndbuild.validate()) {
+                this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
                 this.$set(
                   this.payload.stages[this.curStageIndex].jobs,
                   this.curJobIndex,
                   this.job
                 )
                 this.$store.dispatch('setIsShowFooter', false)
+                reject()
+              } else {
+                this.$message.error('请至少选择一个服务组件')
+                reject()
               }
-            })
-          } else {
-            if (this.$refs.serviceAndbuild.validate()) {
-              this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
-              this.$set(
-                this.payload.stages[this.curStageIndex].jobs,
-                this.curJobIndex,
-                this.job
-              )
-              this.$store.dispatch('setIsShowFooter', false)
-            } else {
-              this.$message.error('请至少选择一个服务组件')
-              Promise.reject()
             }
           }
-        }
+        })
       })
     },
     setJob () {
