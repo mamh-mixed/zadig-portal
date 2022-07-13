@@ -6,6 +6,8 @@
       </div> -->
       <div class="content-wrap">
         <div class="side-bar-container" :class="{'small-sidebar': !showSidebar}">
+          <el-button @click="$router.push('/plutus')">TEST</el-button>
+          <el-button @click="$router.push('/404')">404</el-button>
           <Sidebar class="side-bar-component" />
         </div>
         <div class="main-content-container" :class="{'small-sidebar': !showSidebar}">
@@ -16,6 +18,7 @@
           </div>
           <FloatLink class="main-float" />
           <router-view></router-view>
+          <div id="container"></div>
           <div class="content-mask" v-show="showMask"></div>
         </div>
       </div>
@@ -24,6 +27,8 @@
 </template>
 
 <script>
+import { start } from 'qiankun'
+
 import { getAnnouncementsAPI, checkEmailHostAPI, getPublicKeyAPI } from '@api'
 import Sidebar from './home/sidebar.vue'
 import Topbar from './home/topbar.vue'
@@ -105,6 +110,9 @@ export default {
     this.$store.dispatch('getGlobalPermission')
     this.getAnnouncements()
     this.getPublicKey()
+  },
+  mounted () {
+    start()
   }
 }
 </script>
@@ -189,6 +197,11 @@ body {
             right: 20px;
             bottom: 20px;
             z-index: 2;
+          }
+
+          #container {
+            max-height: 100%;
+            overflow: auto;
           }
 
           .content-mask {

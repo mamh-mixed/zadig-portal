@@ -1020,6 +1020,18 @@ const routes = [
     }
   },
   {
+    path: '/plutus',
+    component: onboarding_home,
+    meta: {
+      requiresAuth: true
+    },
+    children: [
+      {
+        path: '*'
+      }
+    ]
+  },
+  {
     path: '*',
     component: () => import('@/components/entry/404.vue'),
     meta: {
