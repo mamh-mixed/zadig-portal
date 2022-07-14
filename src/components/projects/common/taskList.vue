@@ -201,7 +201,7 @@ export default {
     },
     async rerun (task) {
       const projectName = task.product_name
-      const workflowName = task.pipeline_name
+      const workflowName = task.pipeline_name || task.workflow_name
       const taskId = task.task_id
       if (this.workflowType === 'buildv4') {
         const customDetail = await getCustomCloneDetailAPI(workflowName, taskId)

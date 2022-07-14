@@ -2167,7 +2167,7 @@ export function checkCustomWorkflowYaml (payload) {
   return http.post(`/api/aslan/workflow/v4/lint`, payload)
 }
 export function getCustomCloneDetailAPI (workflow_name, task_id) {
-  return http.get(`/api/workflow/v4/workflowtask/clone/workflow/${workflow_name}/task/${task_id}`)
+  return http.get(`/api/aslan/workflow/v4/workflowtask/clone/workflow/${workflow_name}/task/${task_id}`)
 }
 // approval
 export function approvalCustomWorkflowTaskAPI (payload, projectName) {

@@ -67,7 +67,19 @@
                 </el-form-item>
                 <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
                   <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
-                  <el-select size="small" v-model="service" multiple>
+                  <el-select size="small" v-model="service" multiple filterable clearable>
+                    <el-option
+                      disabled
+                      label="全选"
+                      value="ALL"
+                      :class="{selected: service.length === serviceAndBuilds.length}"
+                      style="color: #606266;"
+                    >
+                      <span
+                        style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                        @click="service = serviceAndBuilds.map(item=>item.service_name)"
+                      >全选</span>
+                    </el-option>
                     <el-option
                       v-for="service in serviceAndBuilds"
                       :key="service.service_name"
@@ -100,15 +112,15 @@
         <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions" @blur="checkYaml"></codemirror>
       </section>
     </div>
-    <!-- <div class="right">
+    <div class="right">
       <div v-for="item in configList" :key="item.label" class="right-tab" @click="isShowDrawer=true">{{item.label}}</div>
     </div>
     <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer">
       <span>
-        <h5>运行策略</h5>
-        <el-form>
-          <el-form-item :show-message="false">
-            <span slot="label">
+        <h4>运行策略</h4>
+        <el-form :model="payload">
+          <el-form-item prop="multi_run">
+            <span style="margin-right: 16px;">
               <span>并发运行</span>
               <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
                 <i class="pointer el-icon-question"></i>
@@ -118,7 +130,7 @@
           </el-form-item>
         </el-form>
       </span>
-    </el-drawer>-->
+    </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
@@ -804,6 +816,7 @@ export default {
 
     &-tab {
       margin: 16px;
+      font-size: 14px;
       cursor: pointer;
 
       &:hover {
@@ -813,8 +826,10 @@ export default {
   }
 
   .drawer {
-    .el-drawer__body {
-      padding: 20px;
+    color: #555;
+
+    /deep/.el-drawer__body {
+      padding: 24px;
     }
 
     /deep/ .el-drawer.rtl,

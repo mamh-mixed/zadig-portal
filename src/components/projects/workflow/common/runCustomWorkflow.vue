@@ -154,6 +154,10 @@ export default {
     projectName: {
       type: String,
       default: ''
+    },
+    cloneWorkflow: {
+      type: Object,
+      default: () => ({})
     }
   },
   components: {
@@ -166,7 +170,24 @@ export default {
     init () {
       this.getEnvList()
       this.getRegistryWhenBuild()
-      this.getWorkflowPresetInfo(this.workflowName)
+      if (Object.keys(this.cloneWorkflow).length > 0) {
+        this.cloneWorkflow.stages.forEach(stage => {
+          stage.jobs.forEach(job => {
+            if (
+              job.spec.service_and_builds &&
+              job.spec.service_and_builds.length > 0
+            ) {
+              job.pickedTargets = job.spec.service_and_builds
+              job.pickedTargets.forEach(build => {
+                this.getRepoInfo(build.repos)
+              })
+            }
+          })
+        })
+        this.payload = this.cloneWorkflow
+      } else {
+        this.getWorkflowPresetInfo(this.workflowName)
+      }
     },
     getWorkflowPresetInfo (workflowName) {
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(

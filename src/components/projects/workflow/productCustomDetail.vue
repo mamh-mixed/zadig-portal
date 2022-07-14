@@ -74,6 +74,7 @@
         v-if="taskDialogVisible"
         :workflowName="workflowName"
         :projectName="projectName"
+        :cloneWorkflow="cloneWorkflow"
         @success="hideAndFetchHistory"
       />
     </el-dialog>
@@ -82,7 +83,6 @@
 
 <script>
 import {
-  deleteProductWorkflowAPI,
   getCustomWorkflowTaskListAPI,
   getWorkflowFilterListAPI,
   getCustomWorkflowDetailAPI
@@ -124,6 +124,7 @@ export default {
         ]
       },
       workflow: {},
+      cloneWorkflow: {},
       detail: {},
       stages: [],
       workflowTasks: [],
@@ -148,19 +149,6 @@ export default {
     },
     taskId () {
       return this.$route.params.task_id
-    },
-    testReportExists () {
-      const items = []
-      this.workflowTasks.forEach(element => {
-        if (element.test_reports) {
-          items.push(element.task_id)
-        }
-      })
-      if (items.length > 0) {
-        return true
-      } else {
-        return false
-      }
     }
   },
   methods: {
@@ -230,46 +218,8 @@ export default {
       this.taskDialogVisible = true
       this.forcedUserInput = {}
     },
-    removeWorkflow () {
-      const name = this.workflowName
-      if (this.usedInPolicy.length) {
-        this.$alert(
-          `工作流 ${name} 已在协作模式 ${this.usedInPolicy.join(
-            '、'
-          )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
-          '删除工作流',
-          {
-            confirmButtonText: '确定',
-            type: 'warning'
-          }
-        )
-        return
-      }
-      this.$prompt('输入工作流名称确认', '删除工作流 ' + name, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        confirmButtonClass: 'el-button el-button--danger',
-        inputValidator: pipe_name => {
-          if (pipe_name === name) {
-            return true
-          } else if (pipe_name === '') {
-            return '请输入工作流名称'
-          } else {
-            return '名称不相符'
-          }
-        }
-      }).then(({ value }) => {
-        deleteProductWorkflowAPI(this.$route.params.project_name, name).then(
-          () => {
-            this.$message.success('删除成功')
-            this.$router.push(
-              `/v1/projects/detail/${this.projectName}/pipelines`
-            )
-          }
-        )
-      })
-    },
     rerun (task) {
+      this.cloneWorkflow = task
       this.taskDialogVisible = true
       this.forcedUserInput = task.workflow_args
     },
@@ -291,29 +241,6 @@ export default {
       this.currentPage = 1
       this.pageStart = 0
       this.fetchHistory(this.pageStart, this.pageSize)
-    },
-    fetchStages (workflow) {
-      const isEmpty = this.$utils.isEmpty
-      const stages = []
-      if (!isEmpty(workflow.build_stage) && workflow.build_stage.enabled) {
-        stages.push('构建部署')
-      }
-      if (
-        !isEmpty(workflow.artifact_stage) &&
-        workflow.artifact_stage.enabled
-      ) {
-        stages.push('交付物部署')
-      }
-      if (!isEmpty(workflow.test_stage) && workflow.test_stage.enabled) {
-        stages.push('测试')
-      }
-      if (
-        !isEmpty(workflow.distribute_stage) &&
-        workflow.distribute_stage.enabled
-      ) {
-        stages.push('分发部署')
-      }
-      this.stages = stages
     },
     getCustomWorkflowDetail () {
       getCustomWorkflowDetailAPI(this.workflowName, this.projectName).then(res => {
