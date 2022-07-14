@@ -198,7 +198,7 @@
 </template>
 
 <script>
-import { cloneDeep, uniqBy } from 'lodash'
+import { cloneDeep, uniqBy, difference } from 'lodash'
 import PolicyDialog from './policyDialog.vue'
 import { queryRoleBindingsAPI, usersAPI } from '@api'
 export default {
@@ -553,7 +553,9 @@ export default {
             let updated = false
             Object.keys(del).forEach(k => {
               if (
-                (Array.isArray(del[k]) && del[k].length !== data[k].length) ||
+                (Array.isArray(del[k]) &&
+                  (del[k].length !== data[k].length ||
+                    difference(del[k], data[k]).length)) ||
                 (!Array.isArray(del[k]) && del[k] !== data[k])
               ) {
                 updated = true
