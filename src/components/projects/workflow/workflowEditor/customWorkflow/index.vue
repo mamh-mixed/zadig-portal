@@ -17,13 +17,12 @@
         </div>
         <div>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
-          <!-- <el-button type="success" size="small" :disabled="Object.keys(workflowInfo).length === 0" @click="runWorkflow">执行</el-button> -->
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal">
+      <Multipane layout="horizontal" v-show="activeName === 'ui'">
         <main class="mg-t16">
-          <section v-show="activeName === 'ui'" class="ui">
+          <section class="ui">
             <span class="ui-text mg-r8">Start</span>
             <div class="line"></div>
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
@@ -97,7 +96,8 @@
         </footer>
       </Multipane>
       <section v-show="activeName === 'yaml'" class="yaml">
-        <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
+        <div class="yaml-error">{{yamlError}}</div>
+        <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions" @blur="checkYaml"></codemirror>
       </section>
     </div>
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
@@ -131,7 +131,8 @@ import {
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
   getCustomWorkflowDetailAPI,
-  getRegistryWhenBuildAPI
+  getRegistryWhenBuildAPI,
+  checkCustomWorkflowYaml
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
@@ -162,7 +163,6 @@ const validateName = (rule, value, callback) => {
 }
 const strategy = {
   name: function (val, msg) {
-    console.log(val)
     if (!val) {
       return msg
     }
@@ -195,7 +195,6 @@ const strategy = {
         }
       })
       .catch(err => {
-        console.log(msg)
         return msg
       })
   }
@@ -243,6 +242,7 @@ export default {
       dockerList: [],
       service: '',
       yaml: '',
+      yamlError: '',
       JobConfigrules: {
         name: [
           {
@@ -343,24 +343,29 @@ export default {
           args
         }
         this.rules.push(obj)
-        console.log(this.rules)
       }
       this.check = function () {
         const errors = []
         for (let i = 0; i < this.rules.length; i++) {
-          console.log(this.rules[i].args)
           const error = strategy[this.rules[i].func].apply(
             strategy,
             this.rules[i].args
           )
-          console.log(error)
           if (error) {
-            console.log(error)
             errors.push(error)
           }
         }
         return errors
       }
+    },
+    checkYaml () {
+      checkCustomWorkflowYaml(this.yaml)
+        .then(res => {
+          this.yamlError = ''
+        })
+        .catch(error => {
+          this.yamlError = error.response.data.description
+        })
     },
     operateWorkflow () {
       if (this.activeName === 'yaml') {
@@ -370,49 +375,33 @@ export default {
       validate.add(this.payload, 'name', '请填写工作流名称')
       validate.add(this.payload, 'stages', '请至少填写一个 Stage')
       validate.add(this.payload, 'jobs')
-      const obj = {
-        isShowFooter: this.isShowFooter,
-        job: this.job,
-        curJob: this.payload.stages[this.curStageIndex]
-          ? this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-          : {},
-        saveJobConfig: this.saveJobConfig
-      }
-      validate.add(obj, 'jobModifing', '请先保存 Job 配置')
+      // const obj = {
+      //   isShowFooter: this.isShowFooter,
+      //   job: this.job,
+      //   curJob: this.payload.stages[this.curStageIndex]
+      //     ? this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+      //     : {},
+      //   saveJobConfig: this.saveJobConfig
+      // }
+      // validate.add(obj, 'jobModifing', '请先保存 Job 配置')
       const res = validate.check()
-      console.log(res)
       if (res.length) {
         this.$message.error(res.toString())
         return
       }
-      // if (!this.payload.name) {
-      //   this.$message.error(' 请填写工作流名称')
-      //   return
-      // }
-      // if (this.payload.stages.length === 0) {
-      //   this.$message.error(' 请至少填写一个 Stage')
-      //   return
-      // }
-      // this.payload.stages.forEach(item => {
-      //   if (item.jobs.length === 0) {
-      //     this.$message.error(`请填写 ${item.name} 中的 Job`)
-      //     throw Error()
-      //   }
-      // })
-      // if (this.isShowFooter) {
-      //   this.saveJobConfig().then(valid => {
-      //     console.log(valid)
-      //     if (valid) {
-      //       const res = isEqual(
-      //         this.job,
-      //         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-      //       )
-      //       if (!res) {
-      //         this.$message.error('请先保存 Job 配置')
-      //       }
-      //     }
-      //   })
-      // }
+      if (this.isShowFooter) {
+        this.saveJobConfig().then(valid => {
+          if (valid) {
+            const res = isEqual(
+              this.job,
+              this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+            )
+            if (!res) {
+              this.$message.error('请先保存 Job 配置')
+            }
+          }
+        })
+      }
       this.saveWorkflow()
     },
     saveWorkflow () {
@@ -755,13 +744,18 @@ export default {
 
     .yaml {
       .vue-codemirror {
-        width: calc(~'100% - 10px');
         border: 1px solid #dcdfe6;
         border-radius: 4px;
 
         /deep/ .CodeMirror {
           height: 70vh;
         }
+      }
+
+      &-error {
+        color: red;
+        font-size: 14px;
+        line-height: 40px;
       }
     }
 

@@ -173,7 +173,7 @@
 <script>
 import RepoJump from '@/components/projects/workflow/common/repoJump.vue'
 import { wordTranslate } from '@utils/wordTranslate.js'
-import { workflowTaskDetailAPI } from '@api'
+import { workflowTaskDetailAPI, getCustomCloneDetailAPI } from '@api'
 import moment from 'moment'
 export default {
   data () {
@@ -203,9 +203,20 @@ export default {
       const projectName = task.product_name
       const workflowName = task.pipeline_name
       const taskId = task.task_id
-      const taskDetail = await workflowTaskDetailAPI(projectName, workflowName, taskId)
-      if (taskDetail) {
-        this.$emit('cloneTask', taskDetail)
+      if (this.workflowType === 'buildv4') {
+        const customDetail = await getCustomCloneDetailAPI(workflowName, taskId)
+        if (customDetail) {
+          this.$emit('cloneTask', customDetail)
+        }
+      } else {
+        const taskDetail = await workflowTaskDetailAPI(
+          projectName,
+          workflowName,
+          taskId
+        )
+        if (taskDetail) {
+          this.$emit('cloneTask', taskDetail)
+        }
       }
     }
   },

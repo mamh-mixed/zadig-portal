@@ -64,7 +64,8 @@
         :functionTestBaseUrl="`/v1/projects/detail/${projectName}/pipelines/multi/testcase/${workflowName}`"
         @cloneTask="rerun"
         @currentChange="changeTaskPage"
-        :workflowType="!$utils.isEmpty(workflow.build_stage) && workflow.build_stage.enabled ? `buildv2` : ''"
+        workflowType="buildv4"
+        showOperation
       ></TaskList>
     </el-card>
 
