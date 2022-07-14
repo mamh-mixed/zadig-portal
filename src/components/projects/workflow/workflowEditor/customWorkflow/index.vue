@@ -100,6 +100,25 @@
         <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions" @blur="checkYaml"></codemirror>
       </section>
     </div>
+    <!-- <div class="right">
+      <div v-for="item in configList" :key="item.label" class="right-tab" @click="isShowDrawer=true">{{item.label}}</div>
+    </div>
+    <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer">
+      <span>
+        <h5>运行策略</h5>
+        <el-form>
+          <el-form-item :show-message="false">
+            <span slot="label">
+              <span>并发运行</span>
+              <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
+                <i class="pointer el-icon-question"></i>
+              </el-tooltip>
+            </span>
+            <el-switch v-model="payload.multi_run"></el-switch>
+          </el-form-item>
+        </el-form>
+      </span>
+    </el-drawer>-->
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
@@ -178,26 +197,26 @@ const strategy = {
         return `请填写 ${val.stages[i].name} 中的 Job`
       }
     }
-  },
-  jobModifing: function (val, msg) {
-    val
-      .saveJobConfig()
-      .then(valid => {
-        if (valid) {
-          if (val.isShowFooter) {
-            const res = isEqual(val.job, val.curJob)
-            if (!res) {
-              return msg
-            }
-          }
-        } else {
-          return msg
-        }
-      })
-      .catch(err => {
-        return msg
-      })
   }
+  // jobModifing: function (val, msg) {
+  //   val
+  //     .saveJobConfig()
+  //     .then(valid => {
+  //       if (valid) {
+  //         if (val.isShowFooter) {
+  //           const res = isEqual(val.job, val.curJob)
+  //           if (!res) {
+  //             return msg
+  //           }
+  //         }
+  //       } else {
+  //         return msg
+  //       }
+  //     })
+  //     .catch(err => {
+  //       return msg
+  //     })
+  // }
 }
 export default {
   name: 'CustomWorkflow',
@@ -232,6 +251,7 @@ export default {
         name: 'untitled',
         project: '',
         description: '',
+        multi_run: false,
         stages: []
       },
       curStageIndex: 0,
@@ -243,6 +263,7 @@ export default {
       service: '',
       yaml: '',
       yamlError: '',
+      isShowDrawer: false,
       JobConfigrules: {
         name: [
           {
@@ -770,6 +791,37 @@ export default {
         bottom: 24px;
         left: 50%;
       }
+    }
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    border: 1px solid @borderGray;
+
+    &-tab {
+      margin: 16px;
+      cursor: pointer;
+
+      &:hover {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .drawer {
+    .el-drawer__body {
+      padding: 20px;
+    }
+
+    /deep/ .el-drawer.rtl,
+    .el-drawer__container {
+      top: auto;
+      bottom: 0;
+      height: 82% !important;
     }
   }
 
