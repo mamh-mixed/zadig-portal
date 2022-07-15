@@ -36,7 +36,7 @@
               </el-select>
               <el-input
                 v-model="scope.row.value"
-                type="passsword"
+                :type="scope.row.is_credential ? 'passsword' : ''"
                 show-password
                 v-if="scope.row.type === 'string'"
                 size="small"

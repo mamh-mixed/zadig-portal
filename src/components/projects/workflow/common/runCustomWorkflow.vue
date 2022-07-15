@@ -193,6 +193,19 @@ export default {
       const key = this.$utils.rsaEncrypt()
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName, key).then(
         res => {
+          res.stages.forEach(stage => {
+            stage.jobs.forEach(job => {
+              if (job.spec && job.spec.service_and_builds) {
+                job.spec.service_and_builds.forEach(service => {
+                  service.key_vals.forEach(key => {
+                    if (key.is_credential) {
+                      key.value = this.$utils.aesDecrypt(key.value)
+                    }
+                  })
+                })
+              }
+            })
+          })
           this.payload = res
         }
       )
