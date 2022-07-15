@@ -190,7 +190,8 @@ export default {
       }
     },
     getWorkflowPresetInfo (workflowName) {
-      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
+      const key = this.$utils.rsaEncrypt()
+      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName, key).then(
         res => {
           this.payload = res
         }

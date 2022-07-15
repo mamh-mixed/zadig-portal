@@ -615,8 +615,8 @@ export function deleteProductWorkflowAPI (projectName, name) {
   return http.delete(`/api/aslan/workflow/workflow/${name}?projectName=${projectName}`)
 }
 
-export function getAssociatedBuildsAPI (projectName, excludeJenkins = false) {
-  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}&excludeJenkins=${excludeJenkins}`)
+export function getAssociatedBuildsAPI (projectName, excludeJenkins = false, key = '') {
+  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}&excludeJenkins=${excludeJenkins}&encryptedKey=${key}`)
 }
 
 export function checkRegularAPI (payload) { // {regular: '', branches: []}
@@ -2130,14 +2130,14 @@ export function updateCustomWorkflowAPI (workflow_name, payload, projectName) {
 export function getCustomWorkflowListAPI (projectName, page_num = 1, page_size = 20) {
   return http.get(`/api/aslan/workflow/v4?project=${projectName}&page_num=${page_num}&page_size=${page_size}&projectName=${projectName}`)
 }
-export function getCustomWorkflowDetailAPI (workflow_name, projectName) {
-  return http.get(`/api/aslan/workflow/v4/name/${workflow_name}?projectName=${projectName}`)
+export function getCustomWorkflowDetailAPI (workflow_name, projectName, key = '') {
+  return http.get(`/api/aslan/workflow/v4/name/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
 }
 export function deleteWorkflowAPI (workflow_name, projectName) {
   return http.delete(`/api/aslan/workflow/v4/${workflow_name}?projectName=${projectName}`)
 }
-export function getCustomWorkfloweTaskPresetAPI (workflow_name, projectName) {
-  return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}?projectName=${projectName}`)
+export function getCustomWorkfloweTaskPresetAPI (workflow_name, projectName, key = '') {
+  return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
 }
 export function runCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask?projectName=${projectName}`, payload)

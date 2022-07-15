@@ -476,6 +476,7 @@ export default {
       this.isShowRunWorkflowDialog = true
     },
     getWorkflowDetail (workflow_name) {
+      // const key = this.$utils.rsaEncrypt()
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
         this.$store.dispatch('setWorkflowInfo', this.payload)
@@ -591,13 +592,14 @@ export default {
     },
     getRegistryWhenBuild () {
       const projectName = this.projectName
-      getRegistryWhenBuildAPI(projectName, true).then(res => {
+      getRegistryWhenBuildAPI(projectName).then(res => {
         this.dockerList = res
       })
     },
     getServiceAndBuildList () {
       const projectName = this.projectName
-      getAssociatedBuildsAPI(projectName).then(res => {
+      const key = this.$utils.rsaEncrypt()
+      getAssociatedBuildsAPI(projectName, true, key).then(res => {
         this.serviceAndBuilds = res
         this.originServiceAndBuilds = res
       })

@@ -34,7 +34,14 @@
               <el-select size="small" v-model="scope.row.value" v-if="scope.row.type === 'choice'" style="width: 220px;">
                 <el-option v-for="option in scope.row.choice_option" :key="option" :label="option" :value="option">{{option}}</el-option>
               </el-select>
-              <el-input v-model="scope.row.value" v-if="scope.row.type === 'string'" size="small" style="width: 220px;"></el-input>
+              <el-input
+                v-model="scope.row.value"
+                type="passsword"
+                show-password
+                v-if="scope.row.type === 'string'"
+                size="small"
+                style="width: 220px;"
+              ></el-input>
             </template>
           </el-table-column>
         </el-table>
@@ -91,6 +98,7 @@ export default {
     },
     getServiceAndBuild () {
       const projectName = this.projectName
+      // const key = this.$utils.rsaEncrypt()
       getAssociatedBuildsAPI(projectName, true).then(res => {
         this.originServiceAndBuilds = res
         this.setServiceBuilds()
@@ -113,6 +121,13 @@ export default {
       const res = item.module_builds.find(
         build => build.name === item.build_name
       )
+      if (res) {
+        res.key_vals.forEach(item => {
+          if (item.is_credential) {
+            item.value = this.$utils.aesDecrypt(item.value)
+          }
+        })
+      }
       const keyVals = res ? res.key_vals : []
       this.$set(item, 'key_vals', keyVals)
     },

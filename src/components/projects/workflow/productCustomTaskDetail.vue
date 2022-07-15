@@ -62,7 +62,14 @@
           :projectName="projectName"
         />
         <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
-        <Approval v-if="!curJob.type" :approvalInfo="curStage" :workflowName="workflowName" :taskId="taskId" :projectName="projectName" @showFooter="showFooter" />
+        <Approval
+          v-if="!curJob.type"
+          :approvalInfo="curStage"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          :projectName="projectName"
+          @showFooter="showFooter"
+        />
       </footer>
     </Multipane>
   </div>
@@ -133,7 +140,18 @@ export default {
   },
   methods: {
     getWorkflowTaskDetail (workflow_name, task_id) {
-      getCustomWorkflowTaskDetailAPI(workflow_name, task_id, this.projectName).then(res => {
+      getCustomWorkflowTaskDetailAPI(
+        workflow_name,
+        task_id,
+        this.projectName
+      ).then(res => {
+        // show approval detail when init data
+        res.stages.forEach(item => {
+          if (item.approval && item.status === 'running') {
+            this.curJob.type = ''
+            this.isShowConsoleFooter = true
+          }
+        })
         this.payload = res
         this.adaptTaskDetail(res)
       })
@@ -168,7 +186,11 @@ export default {
       return wordTranslate(word, 'approval', 'status')
     },
     cancel () {
-      deleteWorkflowTaskAPI(this.workflowName, this.taskId, this.projectName).then(res => {
+      deleteWorkflowTaskAPI(
+        this.workflowName,
+        this.taskId,
+        this.projectName
+      ).then(res => {
         this.$message.success(' 取消成功')
       })
     }
