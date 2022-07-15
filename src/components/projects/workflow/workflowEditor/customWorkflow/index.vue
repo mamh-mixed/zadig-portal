@@ -812,7 +812,7 @@ export default {
     align-items: center;
     justify-content: center;
     width: 100px;
-    border: 1px solid @borderGray;
+    border-left: 1px solid @borderGray;
 
     &-tab {
       margin: 16px;
