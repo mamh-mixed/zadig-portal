@@ -115,7 +115,7 @@
     <div class="right">
       <div v-for="item in configList" :key="item.label" class="right-tab" @click="isShowDrawer=true">{{item.label}}</div>
     </div>
-    <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer">
+    <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
       <span>
         <h4>运行策略</h4>
         <el-form :model="payload">
@@ -836,7 +836,7 @@ export default {
     .el-drawer__container {
       top: auto;
       bottom: 0;
-      height: 82% !important;
+      height: calc(~'100% - 174px') !important;
     }
   }
 
