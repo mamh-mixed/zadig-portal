@@ -85,7 +85,6 @@ export default {
         ...cloneDeep(collaborationInfo),
         initName: ''
       }
-      console.log('computed', this.activeName, res)
       this.$refs.policyRef && this.$refs.policyRef.clearValidate()
       return res
     }
@@ -145,17 +144,12 @@ export default {
                 ...rule,
                 icon: this.selectIcon(rule.action)
               }
-            })
-          this.policy[key].newPermi = current.filter(
-            rule => !rule.action.startsWith('create_') &&
+            }).filter(
+              rule => !rule.action.startsWith('create_') &&
               !rule.action.startsWith('delete_')
-          )
-
-          this.policy[key].sharePermi = current.filter(
-            rule =>
-              !rule.action.startsWith('create_') &&
-              !rule.action.startsWith('delete_')
-          )
+            )
+          this.policy[key].newPermi = current
+          this.policy[key].sharePermi = current
         })
       }
     },

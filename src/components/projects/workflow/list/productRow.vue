@@ -7,8 +7,9 @@
           <el-tooltip effect="dark" :content="name" placement="top">
             <span class="name-span">{{ name }}</span>
           </el-tooltip>
+          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" size="mini" class="custom">自定义</el-tag>
         </router-link>
-        <el-tag v-if="type === 'common'" size="mini">通用</el-tag>
+        <!-- <el-tag v-if="type === 'common'" size="mini">通用</el-tag> -->
       </div>
       <div class="gray-desc" style="margin-top: 4px;">
         <span style="display: inline-block; margin-right: 10px;">
@@ -127,14 +128,14 @@ export default {
       return this.$route.params.project_name
     },
     pipelineLink () {
-      return this.type === 'common'
-        ? `/v1/projects/detail/${this.projectName}/pipelines/common/${this.name}?id=${this.workflowInfo.id}`
+      return this.type === 'common_workflow'
+        ? `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}`
         : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}`
     }
   },
   methods: {
     setFavorite (projectName, workflowName, type) {
-      if (type === 'common') {
+      if (type === 'common_workflow') {
         this.$message.info('通用工作流暂不支持收藏！')
         return
       }
@@ -237,7 +238,7 @@ export default {
 
   .product-header {
     flex: 0 0 200px;
-    max-width: 200px;
+    max-width: 240px;
     cursor: auto;
 
     .workflow-name {
@@ -245,13 +246,14 @@ export default {
       align-items: center;
 
       a {
+        display: flex;
         color: @themeColor;
         font-weight: 500;
 
         .name-span {
           display: inline-block;
-          width: 160px;
-          max-width: 160px;
+          max-width: 240px;
+          margin-right: 8px;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
@@ -275,11 +277,13 @@ export default {
 
   .stages {
     flex: 0 0 18%;
+    margin-left: 80px;
   }
 
   .desc {
     flex: 1 0 20%;
     color: @fontLightGray;
+    font-size: 13px;
   }
 
   .time-rate {

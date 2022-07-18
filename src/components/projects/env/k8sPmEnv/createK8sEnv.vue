@@ -598,7 +598,7 @@ export default {
           payload.namespace = payload.defaultNamespace
           payload.is_existed = this.nsIsExisted
 
-          payload.env_config_yamls = this.$refs.envConfigRef.getAllYaml()
+          payload.env_configs = this.$refs.envConfigRef.getEnvConfig()
 
           if (this.createShare && this.baseEnvName) {
             payload.share_env = {

@@ -309,7 +309,7 @@
                           <span class="content">{{ activePod[scope.$index].age }}</span>
                           <div>
                             <span class="title">节点信息：</span>
-                            <span class="content">{{ activePod[scope.$index].ip }}( {{activePod[scope.$index].node_name}} )</span>
+                            <span class="content">{{ activePod[scope.$index].host_ip }}( {{activePod[scope.$index].node_name}} )</span>
                           </div>
                         </el-col>
                         <el-col :span="6"
@@ -323,7 +323,7 @@
                           </el-tooltip>
                           <el-badge v-else value="alpha" class="ephemeral-badge">
                           <el-button @click="openEphemeralContainersDialog(activePod[scope.$index].name)"
-                                     v-hasPermi="{projectName: projectName, action: isProd?'production:debug_pod':'debug_pod',resource:{name:envName,type:'env'},isBtn:true}"
+                                     v-hasPermi="{projectName: projectName, action: isProd?'production:debug_pod':'debug_pod',resource:{name:envName,type:'env'},isBtn:true, disabled: activePod[scope.$index].enable_debug_container || !activePod[scope.$index].canOperate}"
                                      :disabled="activePod[scope.$index].enable_debug_container || !activePod[scope.$index].canOperate"
                                      size="small">启动调试容器</el-button>
                           </el-badge>
