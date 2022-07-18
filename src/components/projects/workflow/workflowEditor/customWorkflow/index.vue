@@ -118,16 +118,17 @@
     <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
       <span>
         <h4>运行策略</h4>
-        <el-form :model="payload">
-          <el-form-item prop="multi_run">
+        <el-form>
+          <el-form-item>
             <span style="margin-right: 16px;">
               <span>并发运行</span>
               <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
                 <i class="pointer el-icon-question"></i>
               </el-tooltip>
             </span>
-            <el-switch v-model="payload.multi_run"></el-switch>
+            <el-switch v-model="multi_run"></el-switch>
           </el-form-item>
+          <el-button type="primary" size="small" @click="setMuitlRun">确定</el-button>
         </el-form>
       </span>
     </el-drawer>
@@ -210,25 +211,6 @@ const strategy = {
       }
     }
   }
-  // jobModifing: function (val, msg) {
-  //   val
-  //     .saveJobConfig()
-  //     .then(valid => {
-  //       if (valid) {
-  //         if (val.isShowFooter) {
-  //           const res = isEqual(val.job, val.curJob)
-  //           if (!res) {
-  //             return msg
-  //           }
-  //         }
-  //       } else {
-  //         return msg
-  //       }
-  //     })
-  //     .catch(err => {
-  //       return msg
-  //     })
-  // }
 }
 export default {
   name: 'CustomWorkflow',
@@ -276,6 +258,7 @@ export default {
       yaml: '',
       yamlError: '',
       isShowDrawer: false,
+      multi_run: false,
       JobConfigrules: {
         name: [
           {
@@ -476,9 +459,9 @@ export default {
       this.isShowRunWorkflowDialog = true
     },
     getWorkflowDetail (workflow_name) {
-      // const key = this.$utils.rsaEncrypt()
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
+        this.multi_run = this.payload.multi_run
         this.$store.dispatch('setWorkflowInfo', this.payload)
       })
     },
@@ -620,6 +603,11 @@ export default {
     },
     hideAfterSuccess () {
       this.isShowRunWorkflowDialog = false
+    },
+    setMuitlRun () {
+      this.$set(this.payload, 'multi_run', this.multi_run)
+      this.$message.success('设置成功')
+      this.isShowDrawer = false
     }
   },
   watch: {
