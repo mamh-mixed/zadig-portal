@@ -4,6 +4,7 @@
 
 const path = require('path');
 const backEndAddr = '';
+const baseURLBackEndAddr = '';
 
 module.exports = {
   dev: {
@@ -18,6 +19,14 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api',
         },
+      },
+      '/baseURL': {
+        target: baseURLBackEndAddr,
+        changeOrigin: true,
+        ws: true,
+        pathRewrite: {
+          '^/baseURL': ''
+        }
       }
     },
 

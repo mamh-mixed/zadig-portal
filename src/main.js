@@ -23,7 +23,6 @@ import App from './App.vue'
 import { analyticsRequestAPI } from '@api'
 import { JSEncrypt } from 'jsencrypt'
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill'
-import './register'
 import { setCurrentRunningApp } from 'qiankun/es/sandbox/common'
 
 global.EventSource = EventSourcePolyfill || NativeEventSource

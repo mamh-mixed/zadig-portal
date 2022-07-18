@@ -43,7 +43,7 @@
               </a>
             </div>
             <el-tooltip v-else effect="dark" :content="nav.name" placement="right" :disabled="showSidebar">
-              <router-link class="nav-item" active-class="active" :to="`/v1/${nav.url}`">
+              <router-link class="nav-item" active-class="active" :to="navList[index].start ? `/${nav.url}`: `/v1/${nav.url}`">
                 <div class="nav-item-icon">
                   <i :class="nav.icon"></i>
                 </div>
@@ -183,6 +183,27 @@ export default {
               name: '交付中心',
               url: 'delivery',
               icon: 'iconfont iconvery-deli'
+            }
+          ]
+        },
+        {
+          category_name: '私有化交付', // TODO: 存在有无的test
+          start: 'plutus',
+          items: [
+            {
+              name: '交付看板',
+              icon: 'iconfont iconBoardList',
+              url: 'plutus/deliveryBoard'
+            },
+            {
+              name: '版本',
+              icon: 'iconfont iconbanben1',
+              url: 'plutus/version'
+            },
+            {
+              name: '客户',
+              icon: 'iconfont iconCustomermanagement',
+              url: 'plutus/customer'
             }
           ]
         },
