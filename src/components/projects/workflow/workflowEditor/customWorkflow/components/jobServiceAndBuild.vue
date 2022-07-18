@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import { getAssociatedBuildsAPI } from '@api'
-
 export default {
   name: 'ServiceAndBuild',
   props: {
@@ -63,11 +61,14 @@ export default {
     projectName: {
       type: String,
       default: ''
+    },
+    originServiceAndBuilds: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
     return {
-      originServiceAndBuilds: [],
       form: {}
     }
   },
@@ -78,9 +79,6 @@ export default {
           item.isShowVals = false
         })
         return this.value
-      },
-      set (val) {
-        this.$emit('input', val)
       }
     },
     isShowFooter () {
@@ -88,21 +86,13 @@ export default {
     }
   },
   created () {
-    this.getServiceAndBuild()
+    this.setServiceBuilds()
   },
   methods: {
     toggleIsShowVals (item) {
       this.$set(item, 'isShowVals', !item.isShowVals)
       // $set is unuseful to the new attr
       this.$forceUpdate()
-    },
-    getServiceAndBuild () {
-      const projectName = this.projectName
-      // const key = this.$utils.rsaEncrypt()
-      getAssociatedBuildsAPI(projectName, true).then(res => {
-        this.originServiceAndBuilds = res
-        this.setServiceBuilds()
-      })
     },
     delServiceAndBuild (index) {
       this.serviceAndBuilds.splice(index, 1)

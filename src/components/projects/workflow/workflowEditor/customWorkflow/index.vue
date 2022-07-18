@@ -3,8 +3,8 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
-          <CanInput v-model="payload.description" :from="activeName" placeholder="描述" />
+          <CanInput v-model="payload.name" placeholder="请填写工作流名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
+          <CanInput v-model="payload.description" :from="activeName" placeholder="请填写工作流描述" />
         </div>
         <div class="tab">
           <span
@@ -66,7 +66,13 @@
                   </el-select>
                 </el-form-item>
                 <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
-                  <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
+                  <ServiceAndBuild
+                    :projectName="projectName"
+                    v-model="job.spec.service_and_builds"
+                    :originServiceAndBuilds="originServiceAndBuilds"
+                    class="mg-b24"
+                    ref="serviceAndbuild"
+                  />
                   <el-select size="small" v-model="service" multiple filterable clearable>
                     <el-option
                       disabled
@@ -139,14 +145,6 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="isShowRunWorkflowDialog" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog">
-      <RunCustomWorkflow
-        v-if="isShowRunWorkflowDialog"
-        :workflowName="payload.name"
-        :projectName="projectName"
-        @success="hideAfterSuccess"
-      />
-    </el-dialog>
   </div>
 </template>
 
@@ -193,25 +191,6 @@ const validateName = (rule, value, callback) => {
     callback()
   }
 }
-const strategy = {
-  name: function (val, msg) {
-    if (!val) {
-      return msg
-    }
-  },
-  stages: function (val, msg) {
-    if (val.stages.length === 0) {
-      return msg
-    }
-  },
-  jobs: function (val, msg) {
-    for (let i = 0; i < val.stages.length; i++) {
-      if (val.stages[i].jobs.length === 0) {
-        return `请填写 ${val.stages[i].name} 中的 Job`
-      }
-    }
-  }
-}
 export default {
   name: 'CustomWorkflow',
   data () {
@@ -242,7 +221,7 @@ export default {
       },
       stageOperateType: 'add',
       payload: {
-        name: 'untitled',
+        name: '',
         project: '',
         description: '',
         multi_run: false,
@@ -276,8 +255,7 @@ export default {
             }
           ]
         }
-      },
-      isShowRunWorkflowDialog: false
+      }
     }
   },
   components: {
@@ -292,11 +270,6 @@ export default {
     Service,
     RunCustomWorkflow,
     codemirror
-  },
-  provide () {
-    return {
-      saveJobConfig: this.saveJobConfig
-    }
   },
   computed: {
     projectName () {
@@ -314,7 +287,6 @@ export default {
   },
   created () {
     this.init()
-    this.$store.dispatch('setIsShowFooter', false)
   },
   methods: {
     init () {
@@ -325,6 +297,7 @@ export default {
       if (this.isEdit) {
         this.getWorkflowDetail(this.$route.params.workflow_name)
       }
+      this.$store.dispatch('setIsShowFooter', false)
     },
     setTitle () {
       bus.$emit('set-topbar-title', {
@@ -347,33 +320,6 @@ export default {
         ]
       })
     },
-    Validate () {
-      this.rules = []
-      this.add = function (value, rule, msg) {
-        const args = rule.split(':')
-        const func = args.shift()
-        args.push(msg)
-        args.unshift(value)
-        const obj = {
-          func,
-          args
-        }
-        this.rules.push(obj)
-      }
-      this.check = function () {
-        const errors = []
-        for (let i = 0; i < this.rules.length; i++) {
-          const error = strategy[this.rules[i].func].apply(
-            strategy,
-            this.rules[i].args
-          )
-          if (error) {
-            errors.push(error)
-          }
-        }
-        return errors
-      }
-    },
     checkYaml () {
       checkCustomWorkflowYaml(this.yaml)
         .then(res => {
@@ -387,23 +333,16 @@ export default {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
-      const validate = new this.Validate()
-      validate.add(this.payload, 'name', '请填写工作流名称')
-      validate.add(this.payload, 'stages', '请至少填写一个 Stage')
-      validate.add(this.payload, 'jobs')
-      // const obj = {
-      //   isShowFooter: this.isShowFooter,
-      //   job: this.job,
-      //   curJob: this.payload.stages[this.curStageIndex]
-      //     ? this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-      //     : {},
-      //   saveJobConfig: this.saveJobConfig
-      // }
-      // validate.add(obj, 'jobModifing', '请先保存 Job 配置')
-      const res = validate.check()
-      if (res.length) {
-        this.$message.error(res.toString())
+      if (!this.payload.name) {
+        this.$message.error(' 请填写工作流名称')
         return
+      }
+      if (this.payload.stages.length === 0) {
+        this.$message.error(' 请至少填写一个 Stage')
+        return
+      }
+      if (this.payload.stages.find(item => item.jobs.length === 0)) {
+        this.$message.error(' 请填写 Stage 中的 Job')
       }
       if (this.isShowFooter) {
         this.saveJobConfig().then(valid => {
@@ -454,9 +393,6 @@ export default {
       } else {
         this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines`)
       }
-    },
-    runWorkflow () {
-      this.isShowRunWorkflowDialog = true
     },
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
@@ -600,9 +536,6 @@ export default {
         return item.service_name !== curService.service_name
       })
       this.service = []
-    },
-    hideAfterSuccess () {
-      this.isShowRunWorkflowDialog = false
     },
     setMuitlRun () {
       this.$set(this.payload, 'multi_run', this.multi_run)
@@ -825,8 +758,9 @@ export default {
     /deep/ .el-drawer.rtl,
     .el-drawer__container {
       top: auto;
+      right: 100px !important;
       bottom: 0;
-      height: calc(~'100% - 174px') !important;
+      height: calc(~'100% - 102px') !important;
     }
   }
 

@@ -11,7 +11,13 @@
           <el-option label="运行时输入" value="runtime"></el-option>
           <el-option label="其他 Job 输出" value="fromjob"></el-option>
         </el-select>
-        <el-form-item prop="job_name" required v-if="form.source==='fromjob'&&allJobList.length > 0">
+        <el-form-item
+          prop="job_name"
+          required
+          v-if="form.source==='fromjob'&&allJobList.length > 0"
+          style="display: inline-block; width: 220px;"
+          class="mg-l16"
+        >
           <el-select v-model="form.job_name" placeholder="请选择" size="small" style="width: 220px;">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
