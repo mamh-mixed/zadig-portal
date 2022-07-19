@@ -3,8 +3,8 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="请填写工作流名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
-          <CanInput v-model="payload.description" :from="activeName" placeholder="请填写工作流描述" />
+          <CanInput v-model="payload.name" placeholder="工作流名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
+          <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
           <span
