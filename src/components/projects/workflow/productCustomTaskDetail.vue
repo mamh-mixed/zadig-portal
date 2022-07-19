@@ -147,7 +147,7 @@ export default {
       ).then(res => {
         // show approval detail when init data
         res.stages.forEach(item => {
-          if (item.approval && item.status === 'running') {
+          if (item.approval && item.approval.enabled && item.status === 'running') {
             this.curJob.type = ''
             this.isShowConsoleFooter = true
           }
