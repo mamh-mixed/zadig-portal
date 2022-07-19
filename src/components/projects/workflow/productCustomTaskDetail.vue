@@ -126,7 +126,11 @@ export default {
       return this.colorTranslation(this.buildOverallStatus, 'pipeline', 'task')
     },
     curStage () {
-      return this.payload.stages[this.curStageIndex]
+      if (this.payload.stages) {
+        return this.payload.stages[this.curStageIndex]
+      } else {
+        return {}
+      }
     }
     // curJob: {
     //   get () {
@@ -146,10 +150,13 @@ export default {
         this.projectName
       ).then(res => {
         // show approval detail when init data
-        res.stages.forEach(item => {
-          if (item.approval && item.approval.enabled && item.status === 'running') {
-            this.curJob.type = ''
-            this.isShowConsoleFooter = true
+        res.stages.forEach((item, index) => {
+          if (
+            item.approval &&
+            item.approval.enabled &&
+            item.status === 'running'
+          ) {
+            this.handleApprovalChange(item, index)
           }
         })
         this.payload = res

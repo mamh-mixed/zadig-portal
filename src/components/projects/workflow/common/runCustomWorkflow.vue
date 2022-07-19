@@ -182,6 +182,12 @@ export default {
                 this.getRepoInfo(build.repos)
               })
             }
+            if (
+              job.spec.service_and_images &&
+              job.spec.service_and_images.length > 0
+            ) {
+              job.pickedTargets = job.spec.service_and_images
+            }
           })
         })
         this.payload = this.cloneWorkflow

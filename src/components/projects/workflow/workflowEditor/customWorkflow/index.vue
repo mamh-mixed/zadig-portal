@@ -176,7 +176,7 @@ import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
-import { cloneDeep, differenceWith, isEqual } from 'lodash'
+import { cloneDeep, differenceWith } from 'lodash'
 const validateName = (rule, value, callback) => {
   const reg = /^[a-z][a-z0-9-]{0,32}$/
   if (value === '') {
@@ -341,21 +341,26 @@ export default {
         this.$message.error(' 请至少填写一个 Stage')
         return
       }
-      if (this.payload.stages.find(item => item.jobs.length === 0)) {
-        this.$message.error(' 请填写 Stage 中的 Job')
-      }
+      this.payload.stages.forEach(item => {
+        if (item.jobs.length === 0) {
+          this.$message.error(`请填写 ${item.name} 中的 Job`)
+          throw Error()
+        }
+      })
       if (this.isShowFooter) {
-        this.saveJobConfig().then(valid => {
-          if (valid) {
-            const res = isEqual(
-              this.job,
-              this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-            )
-            if (!res) {
-              this.$message.error('请先保存 Job 配置')
-            }
-          }
-        })
+        // this.saveJobConfig().then(valid => {
+        //   if (valid) {
+        //     const res = isEqual(
+        //       this.job,
+        //       this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+        //     )
+        //     if (!res) {
+        //       this.$message.error('请先保存 Job 配置')
+        //     }
+        //   }
+        // })
+        this.$message.error('请先保存 Job 配置')
+        return
       }
       this.saveWorkflow()
     },
@@ -449,7 +454,7 @@ export default {
         }
       })
     },
-    delStage (item) {
+    delStage (index, item) {
       this.$confirm(`确定删除 Stage [${item.name}]？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

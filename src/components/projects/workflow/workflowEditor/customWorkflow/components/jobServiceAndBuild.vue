@@ -104,7 +104,6 @@ export default {
           build => build.service_name === item.service_name
         )
         this.$set(item, 'module_builds', res.module_builds)
-        this.handleBuildChange(item)
       })
     },
     handleBuildChange (item) {
