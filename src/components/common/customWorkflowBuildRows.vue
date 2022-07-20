@@ -10,7 +10,14 @@
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
                   <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
                 </el-select>
-                <el-input v-else v-model="scope.row.value" size="small"  style="width: 220px;"></el-input>
+                <el-input
+                  v-else
+                  v-model="scope.row.value"
+                  size="small"
+                  :type="scope.row.is_credential ? 'passsword' : ''"
+                  show-password
+                  style="width: 220px;"
+                ></el-input>
               </template>
             </el-table-column>
           </el-table>

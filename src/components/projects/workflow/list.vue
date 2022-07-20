@@ -346,9 +346,8 @@ export default {
           this.isShowRunCustomWorkflowDialog = true
           this.workflowToRun = res
         })
-        .catch(err => {
+        .catch(() => {
           this.isShowRunCustomWorkflowDialog = false
-          console.log(err)
         })
     },
     hideProductTaskDialog () {

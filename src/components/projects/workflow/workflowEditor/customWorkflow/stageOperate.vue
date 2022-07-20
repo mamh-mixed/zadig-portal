@@ -57,21 +57,11 @@ import { cloneDeep } from 'lodash'
 export default {
   name: 'StageOperate',
   data () {
-    const validateName = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入 Stage 名称'))
-      } else if (!/^[A-Za-z0-9\u4e00-\u9fa5]{1,16}$/.test(value)) {
-        callback(new Error('支持中文和大小写英文字母，字节长度小于 16 位'))
-      } else {
-        callback()
-      }
-    }
     return {
       formLabelWidth: '120px',
       rules: {
         name: [
           {
-            validator: validateName,
             required: true,
             trigger: 'blur'
           }

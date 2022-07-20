@@ -3,8 +3,8 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
-          <CanInput v-model="payload.description" :from="activeName" placeholder="描述" />
+          <CanInput v-model="payload.name" placeholder="工作流名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
+          <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
           <span
@@ -17,13 +17,12 @@
         </div>
         <div>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
-          <!-- <el-button type="success" size="small" :disabled="Object.keys(workflowInfo).length === 0" @click="runWorkflow">执行</el-button> -->
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal">
+      <Multipane layout="horizontal" v-show="activeName === 'ui'">
         <main class="mg-t16">
-          <section v-show="activeName === 'ui'" class="ui">
+          <section class="ui">
             <span class="ui-text mg-r8">Start</span>
             <div class="line"></div>
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
@@ -67,8 +66,26 @@
                   </el-select>
                 </el-form-item>
                 <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
-                  <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
-                  <el-select size="small" v-model="service">
+                  <ServiceAndBuild
+                    :projectName="projectName"
+                    v-model="job.spec.service_and_builds"
+                    :originServiceAndBuilds="originServiceAndBuilds"
+                    class="mg-b24"
+                    ref="serviceAndbuild"
+                  />
+                  <el-select size="small" v-model="service" multiple filterable clearable>
+                    <el-option
+                      disabled
+                      label="全选"
+                      value="ALL"
+                      :class="{selected: service.length === serviceAndBuilds.length}"
+                      style="color: #606266;"
+                    >
+                      <span
+                        style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                        @click="service = serviceAndBuilds.map(item=>item.service_name)"
+                      >全选</span>
+                    </el-option>
                     <el-option
                       v-for="service in serviceAndBuilds"
                       :key="service.service_name"
@@ -86,7 +103,7 @@
                 <BuildEnv
                   :projectName="projectName"
                   v-if="job.type === jobType.deploy"
-                  v-model="job.spec"
+                  v-model="job"
                   ref="buildEnv"
                   :workflowInfo="payload"
                 ></BuildEnv>
@@ -97,23 +114,36 @@
         </footer>
       </Multipane>
       <section v-show="activeName === 'yaml'" class="yaml">
-        <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
+        <div class="yaml-error">{{yamlError}}</div>
+        <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions" @blur="checkYaml"></codemirror>
       </section>
     </div>
+    <div class="right">
+      <div v-for="item in configList" :key="item.label" class="right-tab" @click="isShowDrawer=true">{{item.label}}</div>
+    </div>
+    <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
+      <span>
+        <h4>运行策略</h4>
+        <el-form>
+          <el-form-item>
+            <span style="margin-right: 16px;">
+              <span>并发运行</span>
+              <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
+                <i class="pointer el-icon-question"></i>
+              </el-tooltip>
+            </span>
+            <el-switch v-model="multi_run"></el-switch>
+          </el-form-item>
+          <el-button type="primary" size="small" @click="setMuitlRun">确定</el-button>
+        </el-form>
+      </span>
+    </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
       </div>
-    </el-dialog>
-    <el-dialog :visible.sync="isShowRunWorkflowDialog" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog">
-      <RunCustomWorkflow
-        v-if="isShowRunWorkflowDialog"
-        :workflowName="payload.name"
-        :projectName="projectName"
-        @success="hideAfterSuccess"
-      />
     </el-dialog>
   </div>
 </template>
@@ -131,7 +161,8 @@ import {
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
   getCustomWorkflowDetailAPI,
-  getRegistryWhenBuildAPI
+  getRegistryWhenBuildAPI,
+  checkCustomWorkflowYaml
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
@@ -188,23 +219,25 @@ export default {
           docker_registry_id: ''
         }
       },
-      curJobName: '',
       stageOperateType: 'add',
       payload: {
-        name: 'untitled',
+        name: '',
         project: '',
         description: '',
+        multi_run: false,
         stages: []
       },
       curStageIndex: 0,
       curJobIndex: 0,
-      isShowDrawer: false,
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
       dockerList: [],
       service: '',
       yaml: '',
+      yamlError: '',
+      isShowDrawer: false,
+      multi_run: false,
       JobConfigrules: {
         name: [
           {
@@ -222,8 +255,7 @@ export default {
             }
           ]
         }
-      },
-      isShowRunWorkflowDialog: false
+      }
     }
   },
   components: {
@@ -238,11 +270,6 @@ export default {
     Service,
     RunCustomWorkflow,
     codemirror
-  },
-  provide () {
-    return {
-      saveJobConfig: this.saveJobConfig
-    }
   },
   computed: {
     projectName () {
@@ -260,7 +287,6 @@ export default {
   },
   created () {
     this.init()
-    this.$store.dispatch('setIsShowFooter', false)
   },
   methods: {
     init () {
@@ -271,6 +297,7 @@ export default {
       if (this.isEdit) {
         this.getWorkflowDetail(this.$route.params.workflow_name)
       }
+      this.$store.dispatch('setIsShowFooter', false)
     },
     setTitle () {
       bus.$emit('set-topbar-title', {
@@ -293,6 +320,15 @@ export default {
         ]
       })
     },
+    checkYaml () {
+      checkCustomWorkflowYaml(this.yaml)
+        .then(res => {
+          this.yamlError = ''
+        })
+        .catch(error => {
+          this.yamlError = error.response.data.description
+        })
+    },
     operateWorkflow () {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
@@ -305,11 +341,24 @@ export default {
         this.$message.error(' 请至少填写一个 Stage')
         return
       }
-      if (this.payload.stages.find(item => item.jobs.length === 0)) {
-        this.$message.error(' 请填写 Stage 中的 Job')
-        return
-      }
+      this.payload.stages.forEach(item => {
+        if (item.jobs.length === 0) {
+          this.$message.error(`请填写 ${item.name} 中的 Job`)
+          throw Error()
+        }
+      })
       if (this.isShowFooter) {
+        // this.saveJobConfig().then(valid => {
+        //   if (valid) {
+        //     const res = isEqual(
+        //       this.job,
+        //       this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+        //     )
+        //     if (!res) {
+        //       this.$message.error('请先保存 Job 配置')
+        //     }
+        //   }
+        // })
         this.$message.error('请先保存 Job 配置')
         return
       }
@@ -350,12 +399,10 @@ export default {
         this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines`)
       }
     },
-    runWorkflow () {
-      this.isShowRunWorkflowDialog = true
-    },
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
+        this.multi_run = this.payload.multi_run
         this.$store.dispatch('setWorkflowInfo', this.payload)
       })
     },
@@ -426,34 +473,39 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
-      return this.$refs.jobRuleForm.validate().then(valid => {
-        if (valid) {
-          if (this.job.type === jobType.deploy) {
-            this.$refs.buildEnv.validate().then(valid => {
-              if (valid) {
+      return new Promise((resolve, reject) => {
+        this.$refs.jobRuleForm.validate().then(valid => {
+          if (valid) {
+            if (this.job.type === jobType.deploy) {
+              this.$refs.buildEnv.validate().then(valid => {
+                if (valid) {
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    this.job
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                  resolve()
+                }
+              })
+              reject()
+            } else {
+              if (this.$refs.serviceAndbuild.validate()) {
+                this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
                 this.$set(
                   this.payload.stages[this.curStageIndex].jobs,
                   this.curJobIndex,
                   this.job
                 )
                 this.$store.dispatch('setIsShowFooter', false)
+                reject()
+              } else {
+                this.$message.error('请至少选择一个服务组件')
+                reject()
               }
-            })
-          } else {
-            if (this.$refs.serviceAndbuild.validate()) {
-              this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
-              this.$set(
-                this.payload.stages[this.curStageIndex].jobs,
-                this.curJobIndex,
-                this.job
-              )
-              this.$store.dispatch('setIsShowFooter', false)
-            } else {
-              this.$message.error('请至少选择一个服务组件')
-              Promise.reject()
             }
           }
-        }
+        })
       })
     },
     setJob () {
@@ -464,30 +516,36 @@ export default {
     },
     getRegistryWhenBuild () {
       const projectName = this.projectName
-      getRegistryWhenBuildAPI(projectName, true).then(res => {
+      getRegistryWhenBuildAPI(projectName).then(res => {
         this.dockerList = res
       })
     },
     getServiceAndBuildList () {
       const projectName = this.projectName
-      getAssociatedBuildsAPI(projectName).then(res => {
+      const key = this.$utils.rsaEncrypt()
+      getAssociatedBuildsAPI(projectName, true, key).then(res => {
         this.serviceAndBuilds = res
         this.originServiceAndBuilds = res
       })
     },
     addServiceAndBuild (val) {
-      const curService = this.serviceAndBuilds.find(
-        item => item.service_name === this.service
-      )
-      val.push(cloneDeep(curService))
+      let curService
+      this.service.forEach(service => {
+        curService = this.serviceAndBuilds.find(
+          item => item.service_name === service
+        )
+        val.push(cloneDeep(curService))
+      })
       // added need to del
       this.serviceAndBuilds = this.serviceAndBuilds.filter(item => {
         return item.service_name !== curService.service_name
       })
-      this.service = ''
+      this.service = []
     },
-    hideAfterSuccess () {
-      this.isShowRunWorkflowDialog = false
+    setMuitlRun () {
+      this.$set(this.payload, 'multi_run', this.multi_run)
+      this.$message.success('设置成功')
+      this.isShowDrawer = false
     }
   },
   watch: {
@@ -647,13 +705,18 @@ export default {
 
     .yaml {
       .vue-codemirror {
-        width: calc(~'100% - 10px');
         border: 1px solid #dcdfe6;
         border-radius: 4px;
 
         /deep/ .CodeMirror {
           height: 70vh;
         }
+      }
+
+      &-error {
+        color: red;
+        font-size: 14px;
+        line-height: 40px;
       }
     }
 
@@ -668,6 +731,41 @@ export default {
         bottom: 24px;
         left: 50%;
       }
+    }
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    border-left: 1px solid @borderGray;
+
+    &-tab {
+      margin: 16px;
+      font-size: 14px;
+      cursor: pointer;
+
+      &:hover {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .drawer {
+    color: #555;
+
+    /deep/.el-drawer__body {
+      padding: 24px;
+    }
+
+    /deep/ .el-drawer.rtl,
+    .el-drawer__container {
+      top: auto;
+      right: 100px !important;
+      bottom: 0;
+      height: calc(~'100% - 102px') !important;
     }
   }
 

@@ -44,7 +44,6 @@ export default {
       default: true
     }
   },
-  inject: ['saveJobConfig'],
   data () {
     return {
       jobType,

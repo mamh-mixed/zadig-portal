@@ -46,10 +46,10 @@ const jobTypeList = [
   }
 ]
 const configList = [
-  {
-    label: '变量',
-    value: 'var'
-  }
+  // {
+  //   label: '变量',
+  //   value: 'var'
+  // },
   // {
   //   label: '触发器',
   //   value: 'webhook'
@@ -57,7 +57,11 @@ const configList = [
   // {
   //   label: '通知',
   //   value: 'notify'
-  // }
+  // },
+  {
+    label: '高级配置',
+    value: 'high'
+  }
 ]
 const jobType = {
   build: 'zadig-build',
