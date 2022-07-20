@@ -94,7 +94,7 @@
                   <span v-else>暂无 Issue</span>
                 </template>
               </el-table-column>
-              <el-table-column label="环境变量" width="100">
+              <el-table-column label="构建变量" width="100">
                 <template slot-scope="{ row }">
                   <el-popover placement="left" width="400" trigger="hover">
                     <el-table :data="row.envs" class="blank-background-header">
