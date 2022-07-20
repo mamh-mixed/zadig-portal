@@ -8,9 +8,9 @@ export const microApps = [
     name: 'plutusVendor',
     entry: '/plutus-vendor/', // //localhost:10000   /plutus-vendor/   http://test34-vendor-test.test.8slan.com/plutus-vendor/
     container: '#container',
-    activeRule: '/plutus',
+    activeRule: '/v1/plutus',
     props: {
-      routerBase: '/plutus',
+      routerBase: '/v1/plutus',
       //   mainStore: store,
       //   user: utils.getStorage('user'),
       mainAppRouter: router

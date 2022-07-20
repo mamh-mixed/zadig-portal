@@ -1052,7 +1052,7 @@ const routes = [
     }
   },
   {
-    path: '/plutus', //  TODO: 存在有无的test
+    path: '/v1/plutus', //  TODO: 存在有无的test
     component: onboarding_home,
     meta: {
       requiresAuth: true
