@@ -57,7 +57,7 @@
           </el-form-item>
         </div>
       </el-form>
-      <div class="dashed-container">
+      <div class="dashed-container" v-if="post_script_enabled && shell">
         <div class="primary-title">
           Shell 脚本执行
           <el-tooltip effect="dark" content="构建运行完成后执行的 Shell 脚本" placement="top">
