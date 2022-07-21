@@ -611,10 +611,13 @@ export default {
       this.addFirstBuildRepo()
   },
   watch: {
-    config (new_val, old_val) {
-      if (new_val.repos.length > 0) {
-        this.getInitRepoInfo(new_val.repos)
-      }
+    config: {
+      handler (new_val, old_val) {
+        if (new_val.repos.length > 0) {
+          this.getInitRepoInfo(new_val.repos)
+        }
+      },
+      immediate: true
     },
     'config.repos': {
       handler (new_val) {

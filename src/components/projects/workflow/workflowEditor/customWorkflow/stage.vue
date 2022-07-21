@@ -65,6 +65,66 @@ export default {
             source: '',
             job_name: ''
           }
+        },
+        freestyle: {
+          name: 'default',
+          type: 'freestyle',
+          spec: {
+            properties: {
+              timeout: 60,
+              res_req: 'low', // high/medium/low/min/define
+              res_req_spec: {
+                cpu_limit: 1000,
+                memory_limit: 512
+              },
+              cluster_id: '',
+              build_os: 'focal', // 与 image_id 对应
+              image_id: '',
+              image_from: 'koderover', // custom/koderover
+              envs: [],
+              cache_enable: true,
+              cache_dir_type: 'workspace', // workspace/user_defined
+              cache_user_dir: ''
+            },
+            outputs: [
+              {
+                name: 'output',
+                description: 'value pass to other job'
+              }
+            ],
+            steps: [
+              {
+                name: 'tools',
+                type: 'tools',
+                spec: {
+                  installs: [] // name: 'go', version: '1.13'
+                }
+              },
+              {
+                name: 'git',
+                type: 'git',
+                spec: {
+                  repos: []
+                }
+              }
+              // 添加步骤时的数据结构，新建时无
+              // {
+              //   name: 'shell',
+              //   type: 'shell',
+              //   spec: {
+              //     script: '#!/bin/bash\nset -e'
+              //   }
+              // },
+              // {
+              //   name: 'archive',
+              //   type: 'archive',
+              //   spec: {
+              //     object_storage_id: 'xxxxxxx',
+              //     upload_detail: [] // { file_path: '', dest_path: '' }
+              //   }
+              // }
+            ]
+          }
         }
       },
       jobInfo: {},
