@@ -557,7 +557,7 @@ export default {
       this.job = cloneDeep(
         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       )
-      if (this.job.type === this.jobType.freestyle) {
+      if (this.job && this.job.type === this.jobType.freestyle) {
         this.$nextTick(() => {
           this.$refs.jobCommonBuildRef && this.$refs.jobCommonBuildRef.initOpe()
         })
