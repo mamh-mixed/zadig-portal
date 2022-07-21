@@ -541,6 +541,7 @@ export default {
                   this.job
                 )
                 this.$store.dispatch('setIsShowFooter', false)
+                this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
                 resolve()
               }).catch(err => {
                 console.log('common build valid error', err)
@@ -611,8 +612,10 @@ export default {
       },
       deep: true
     },
-    curJobIndex () {
-      this.setJob()
+    curJobIndex (val) {
+      if (val !== -2) { // 保存构建后设置为-2，什么都不执行，目的是为了两次点击同一个stage，能触发这个函数（有初始化动作 没有地方能看到触发的）
+        this.setJob()
+      }
     },
     curStageIndex () {
       this.setJob()
