@@ -5,9 +5,6 @@
         <div class="dashed-container" v-if="post_script_enabled && step.name === 'shell'">
           <div class="primary-title">
             Shell 脚本执行
-            <el-tooltip effect="dark" content="构建运行完成后执行的 Shell 脚本" placement="top">
-              <i class="el-icon-question" style="color: #a0a0a0;"></i>
-            </el-tooltip>
             <el-button type="text" @click="removeScript" icon="el-icon-delete"></el-button>
           </div>
           <div class="script-content">
