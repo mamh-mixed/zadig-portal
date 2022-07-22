@@ -179,6 +179,7 @@ export default {
   flex-grow: 1;
   align-items: center;
   justify-content: space-between;
+  box-sizing: border-box;
   width: 100%;
   height: 80px;
   margin-bottom: 8px;
@@ -237,7 +238,7 @@ export default {
   }
 
   .product-header {
-    flex: 0 0 200px;
+    flex: 0 0 240px;
     max-width: 240px;
     cursor: auto;
 
