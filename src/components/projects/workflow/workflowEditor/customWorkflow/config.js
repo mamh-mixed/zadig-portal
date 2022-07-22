@@ -43,11 +43,6 @@ const jobTypeList = [
     label: '测试',
     name: '',
     tip: 'coming soon'
-  },
-  {
-    label: '自定义',
-    name: '',
-    tip: 'coming soon'
   }
 ]
 const configList = [
