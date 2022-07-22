@@ -63,8 +63,16 @@
         />
         <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
         <Approval
-          v-if="!curJob.type"
+          v-if="curJob.type === jobType.approval"
           :approvalInfo="curStage"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          :projectName="projectName"
+          @showFooter="showFooter"
+        />
+        <CommonTask
+          v-if="curJob.type === jobType.common"
+          :commonInfo="curJob"
           :workflowName="workflowName"
           :taskId="taskId"
           :projectName="projectName"
@@ -81,6 +89,7 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
 import Approval from './productCustomTaskDetail/approval.vue'
+import CommonTask from './productCustomTaskDetail/commonTask.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -104,7 +113,8 @@ export default {
     MultipaneResizer,
     BuildConsole,
     DeployConsole,
-    Approval
+    Approval,
+    CommonTask
   },
   computed: {
     taskId () {
@@ -183,7 +193,7 @@ export default {
     },
     handleApprovalChange (stage, index) {
       this.curStageIndex = index
-      this.curJob.type = ''
+      this.curJob.type = 'zadig-approval'
       this.isShowConsoleFooter = true
     },
     showFooter (val) {

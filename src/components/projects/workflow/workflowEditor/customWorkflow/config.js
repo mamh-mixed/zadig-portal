@@ -65,7 +65,9 @@ const configList = [
 ]
 const jobType = {
   build: 'zadig-build',
-  deploy: 'zadig-deploy'
+  deploy: 'zadig-deploy',
+  approval: 'zadig-approval',
+  common: 'freestyle'
 }
 const editorOptions = {
   mode: 'yaml',
