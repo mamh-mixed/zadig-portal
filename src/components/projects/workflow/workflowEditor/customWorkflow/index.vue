@@ -134,7 +134,7 @@
                     <el-input v-model="job.name" size="small"></el-input>
                   </el-form-item>
                 </el-form>
-                <JobCommonBuild ref="jobCommonBuildRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
+                <JobCommonBuild :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
               </div>
               <el-button class="mg-t16 mg-b64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
             </div>
@@ -284,7 +284,8 @@ export default {
             }
           ]
         }
-      }
+      },
+      beInitCompRef: 'beInitCompRef'
     }
   },
   components: {
@@ -535,7 +536,7 @@ export default {
                 reject()
               }
             } else if (this.job.type === jobType.freestyle) {
-              this.$refs.jobCommonBuildRef.validate().then(() => {
+              this.$refs[this.beInitCompRef].validate().then(() => {
                 delete this.job.isCreate // 去除新建状态
                 this.$set(
                   this.payload.stages[this.curStageIndex].jobs,
@@ -559,9 +560,9 @@ export default {
       this.job = cloneDeep(
         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       )
-      if (this.job && this.job.type === this.jobType.freestyle) {
+      if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
         this.$nextTick(() => {
-          this.$refs.jobCommonBuildRef && this.$refs.jobCommonBuildRef.initOpe()
+          this.$refs[this.beInitCompRef] && this.$refs[this.beInitCompRef].initOpe()
         })
       }
     },
