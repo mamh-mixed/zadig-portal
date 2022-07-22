@@ -257,7 +257,7 @@ export default {
         stages: []
       },
       curStageIndex: 0,
-      curJobIndex: 0,
+      curJobIndex: -2, // 不指向 job
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
@@ -478,6 +478,7 @@ export default {
           } else {
             this.stage = this.$refs.stageOperate.getData()
             this.$set(this.payload.stages, this.curStageIndex, this.stage)
+            this.curJobIndex = -2
           }
           this.$refs.stageOperate.reset()
           this.isShowStageOperateDialog = false
@@ -493,7 +494,7 @@ export default {
         const stages = this.payload.stages.filter(
           stage => stage.name !== item.name
         )
-        this.curJobIndex = 0
+        this.curJobIndex = -2
         this.curStageIndex = 0
         this.$set(this.payload, 'stages', stages)
       })
@@ -535,6 +536,7 @@ export default {
               }
             } else if (this.job.type === jobType.freestyle) {
               this.$refs.jobCommonBuildRef.validate().then(() => {
+                delete this.job.isCreate // 去除新建状态
                 this.$set(
                   this.payload.stages[this.curStageIndex].jobs,
                   this.curJobIndex,

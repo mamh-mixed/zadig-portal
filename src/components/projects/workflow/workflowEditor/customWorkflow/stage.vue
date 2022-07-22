@@ -69,6 +69,7 @@ export default {
         freestyle: {
           name: 'default',
           type: 'freestyle',
+          isCreate: true, // 保存时删掉
           spec: {
             properties: {
               timeout: 60,
@@ -183,7 +184,7 @@ export default {
       }).then(res => {
         this.stageInfo.jobs.splice(index, 1)
         this.$store.dispatch('setIsShowFooter', false)
-        this.JobIndex = 0
+        this.JobIndex = -2
       })
     },
     setCurIndex (index) {

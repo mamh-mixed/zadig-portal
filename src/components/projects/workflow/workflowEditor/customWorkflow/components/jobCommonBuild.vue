@@ -69,10 +69,6 @@ export default {
     }
   },
   props: {
-    isCreate: {
-      type: Boolean,
-      default: false
-    },
     value: {
       type: Object,
       default: () => ({})
@@ -89,6 +85,9 @@ export default {
         obj[step.name] = step.spec
         return obj
       }, {})
+    },
+    isCreate () {
+      return this.value.isCreate
     }
   },
   methods: {
