@@ -33,7 +33,7 @@
                 size="small"
                 v-model="archive.object_storage_id"
                 placeholder="请选择对象存储"
-                @change="$refs.objectStorageRef.clearValidate()"
+                @change="$refs.objectStorageRef[0].clearValidate()"
               >
                 <el-option v-for="(item,index) in objectStorageList" :key="index" :label="`${item.endpoint}/${item.bucket}`" :value="item.id"></el-option>
               </el-select>
@@ -151,24 +151,28 @@ export default {
     addExtra (command) {
       if (command === 'script') {
         this.post_script_enabled = true
-        this.steps.push({
-          name: 'shell',
-          type: 'shell',
-          spec: {
-            script: '#!/bin/bash\nset -e'
-          }
-        })
+        if (!this.shell) {
+          this.steps.push({
+            name: 'shell',
+            type: 'shell',
+            spec: {
+              script: '#!/bin/bash\nset -e'
+            }
+          })
+        }
       }
       if (command === 'object') {
         this.object_storage_upload_enabled = true
-        this.steps.push({
-          name: 'archive',
-          type: 'archive',
-          spec: {
-            object_storage_id: '',
-            upload_detail: [] // { file_path: '', dest_path: '' }
-          }
-        })
+        if (!this.archive) {
+          this.steps.push({
+            name: 'archive',
+            type: 'archive',
+            spec: {
+              object_storage_id: '',
+              upload_detail: [] // { file_path: '', dest_path: '' }
+            }
+          })
+        }
       }
     },
     removeScript () {
@@ -199,7 +203,7 @@ export default {
     validate () {
       const valid = []
       if (this.object_storage_upload_enabled) {
-        valid.push(this.$refs.objectStorageRef.validate())
+        valid.push(this.$refs.objectStorageRef[0].validate())
       }
       return Promise.all(valid)
     }
