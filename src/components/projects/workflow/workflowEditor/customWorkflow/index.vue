@@ -49,10 +49,18 @@
         <footer :style="{ minHeight: '400px',maxHeight: '500px'}" v-if="isShowFooter">
           <el-card>
             <div slot="header">
-              <span>基本配置</span>
+              <span>{{ job.type === jobType.freestyle ? '通用任务' : '基本配置' }}</span>
             </div>
             <div v-if="payload.stages.length > 0 && job">
-              <el-form :rules="JobConfigrules" ref="jobRuleForm" label-width="90px" :model="job" class="mg-t24" size="small">
+              <el-form
+                v-if="job.type !== jobType.freestyle"
+                :rules="JobConfigRules"
+                ref="jobRuleForm"
+                label-width="90px"
+                :model="job"
+                class="mg-t24"
+                size="small"
+              >
                 <el-form-item
                   label="Job 名称"
                   prop="name"
@@ -107,8 +115,28 @@
                   ref="buildEnv"
                   :workflowInfo="payload"
                 ></BuildEnv>
-                <el-button class="mg-t16 mg-b64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
               </el-form>
+              <div v-else>
+                <el-form
+                  :rules="JobConfigRules"
+                  ref="jobRuleForm"
+                  label-width="120px"
+                  :model="job"
+                  class="primary-form"
+                  size="small"
+                  label-position="left"
+                >
+                  <el-form-item
+                    label="任务名称"
+                    prop="name"
+                    v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
+                  >
+                    <el-input v-model="job.name" size="small"></el-input>
+                  </el-form-item>
+                </el-form>
+                <JobCommonBuild :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
+              </div>
+              <el-button class="mg-t16 mg-b64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
             </div>
           </el-card>
         </footer>
@@ -170,6 +198,7 @@ import Stage from './stage.vue'
 import StageOperate from './stageOperate.vue'
 import ServiceAndBuild from './components/jobServiceAndBuild'
 import BuildEnv from './components/jobBuildEnv.vue'
+import JobCommonBuild from './components/jobCommonBuild.vue'
 import DockerList from './components/dockerList.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
@@ -228,7 +257,7 @@ export default {
         stages: []
       },
       curStageIndex: 0,
-      curJobIndex: 0,
+      curJobIndex: -2, // 不指向 job
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
@@ -238,7 +267,7 @@ export default {
       yamlError: '',
       isShowDrawer: false,
       multi_run: false,
-      JobConfigrules: {
+      JobConfigRules: {
         name: [
           {
             required: true,
@@ -255,7 +284,8 @@ export default {
             }
           ]
         }
-      }
+      },
+      beInitCompRef: 'beInitCompRef'
     }
   },
   components: {
@@ -266,6 +296,7 @@ export default {
     MultipaneResizer,
     ServiceAndBuild,
     BuildEnv,
+    JobCommonBuild,
     DockerList,
     Service,
     RunCustomWorkflow,
@@ -448,6 +479,7 @@ export default {
           } else {
             this.stage = this.$refs.stageOperate.getData()
             this.$set(this.payload.stages, this.curStageIndex, this.stage)
+            this.curJobIndex = -2
           }
           this.$refs.stageOperate.reset()
           this.isShowStageOperateDialog = false
@@ -463,7 +495,7 @@ export default {
         const stages = this.payload.stages.filter(
           stage => stage.name !== item.name
         )
-        this.curJobIndex = 0
+        this.curJobIndex = -2
         this.curStageIndex = 0
         this.$set(this.payload, 'stages', stages)
       })
@@ -489,7 +521,7 @@ export default {
                 }
               })
               reject()
-            } else {
+            } else if (this.job.type === jobType.build) {
               if (this.$refs.serviceAndbuild.validate()) {
                 this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
                 this.$set(
@@ -503,6 +535,21 @@ export default {
                 this.$message.error('请至少选择一个服务组件')
                 reject()
               }
+            } else if (this.job.type === jobType.freestyle) {
+              this.$refs[this.beInitCompRef].validate().then(() => {
+                delete this.job.isCreate // 去除新建状态
+                this.$set(
+                  this.payload.stages[this.curStageIndex].jobs,
+                  this.curJobIndex,
+                  this.job
+                )
+                this.$store.dispatch('setIsShowFooter', false)
+                this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
+                resolve()
+              }).catch(err => {
+                console.log('common build valid error', err)
+                reject(err)
+              })
             }
           }
         })
@@ -513,6 +560,11 @@ export default {
       this.job = cloneDeep(
         this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       )
+      if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
+        this.$nextTick(() => {
+          this.$refs[this.beInitCompRef] && this.$refs[this.beInitCompRef].initOpe()
+        })
+      }
     },
     getRegistryWhenBuild () {
       const projectName = this.projectName
@@ -563,8 +615,10 @@ export default {
       },
       deep: true
     },
-    curJobIndex () {
-      this.setJob()
+    curJobIndex (val) {
+      if (val !== -2) { // 保存构建后设置为-2，什么都不执行，目的是为了两次点击同一个stage，能触发这个函数（有初始化动作 没有地方能看到触发的）
+        this.setJob()
+      }
     },
     curStageIndex () {
       this.setJob()

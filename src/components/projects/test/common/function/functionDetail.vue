@@ -24,7 +24,7 @@
 
       <section>
         <div class="primary-title not-first-child">测试变量</div>
-        <EnvVariable :preEnvs="test.pre_test" :validObj="validObj" isTest />
+        <EnvVariable :preEnvs="test.pre_test" :validObj="validObj" :fromWhere="fromWhere" />
         <div class="primary-title not-first-child">测试脚本</div>
         <div class="deploy-script">
           <Resize :resize="'both'">
@@ -162,7 +162,12 @@ export default {
       },
       validateTestName,
       validObj: new ValidateSubmit(),
-      configDataLoading: false
+      configDataLoading: false,
+      fromWhere: {
+        origin: 'test',
+        title: '测试',
+        vars: []
+      }
     }
   },
   computed: {
