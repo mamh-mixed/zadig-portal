@@ -156,7 +156,7 @@ export default {
       title: '',
       routerList: []
     })
-    // this.getEnterpriseInfo()
+    this.getEnterpriseInfo()
   }
 }
 </script>
