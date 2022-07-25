@@ -106,7 +106,6 @@ export default {
         file.type === 'image/png' ||
         file.type === 'image/svg+xml'
       const isLt1M = file.size / 1024 / 1024 < 1
-      const reader = new FileReader()
       if (!formate) {
         this.$message.error('上传 logo 只能是 JPG、PNG、SVG 格式!')
       } else if (!isLt1M) {

@@ -366,25 +366,19 @@ export default {
         return cloneMenu
       }
     },
-    smallLogoUrl: {
-      get: function () {
-        if (this.enterpriseInfo && this.enterpriseInfo.small_logo) {
-          return this.enterpriseInfo.small_logo
-        } else {
-          return ''
-        }
-      },
-      set: function (newValue) {}
+    smallLogoUrl () {
+      if (this.enterpriseInfo && this.enterpriseInfo.small_logo) {
+        return this.enterpriseInfo.small_logo
+      } else {
+        return ''
+      }
     },
-    bigLogoUrl: {
-      get: function () {
-        if (this.enterpriseInfo && this.enterpriseInfo.big_logo) {
-          return this.enterpriseInfo.small_logo
-        } else {
-          return ''
-        }
-      },
-      set: function (newValue) {}
+    bigLogoUrl () {
+      if (this.enterpriseInfo && this.enterpriseInfo.big_logo) {
+        return this.enterpriseInfo.small_logo
+      } else {
+        return ''
+      }
     }
   },
   watch: {
