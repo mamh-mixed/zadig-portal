@@ -187,6 +187,26 @@ export default {
           ]
         },
         {
+          category_name: '私有化交付', // TODO: 存在有无的test
+          items: [
+            {
+              name: '交付看板',
+              icon: 'iconfont iconBoardList',
+              url: 'plutus/deliveryBoard'
+            },
+            {
+              name: '版本',
+              icon: 'iconfont iconbanben1',
+              url: 'plutus/version'
+            },
+            {
+              name: '客户',
+              icon: 'iconfont iconCustomermanagement',
+              url: 'plutus/customer'
+            }
+          ]
+        },
+        {
           category_name: '数据视图',
           items: [
             {

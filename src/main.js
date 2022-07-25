@@ -23,6 +23,8 @@ import App from './App.vue'
 import { analyticsRequestAPI } from '@api'
 import encrypt from './utilities/encrypt'
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill'
+import { setCurrentRunningApp } from 'qiankun/es/sandbox/common'
+
 global.EventSource = EventSourcePolyfill || NativeEventSource
 
 Vue.prototype.$utils = utils
@@ -74,6 +76,7 @@ const analyticsRequest = (to, from) => {
   }
 }
 router.beforeEach(async (to, from, next) => {
+  setCurrentRunningApp(null)
   if (to.params.project_name) {
     const projectName = to.params.project_name
     await store.dispatch('checkingPermission', projectName)

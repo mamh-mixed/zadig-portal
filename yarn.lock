@@ -176,6 +176,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.10.5", "@babel/runtime@^7.7.2":
+  version "7.18.6"
+  resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.18.6.tgz#6a1ef59f838debd670421f8c7f2cbb8da9751580"
+  integrity sha512-t9wi7/AW6XtKahAe20Yw0/mMljKq0B1r2fPdvaAdV/KPDZewFXdaaa6K7lxmZBZ8FBNpCiAT6iHPmd6QO9bKfQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.12.13":
   version "7.12.13"
   resolved "https://registry.npmmirror.com/@babel/template/download/@babel/template-7.12.13.tgz#530265be8a2589dbb37523844c5bcb55947fb327"
@@ -4911,6 +4918,13 @@ import-from@^2.1.0:
   dependencies:
     resolve-from "^3.0.0"
 
+import-html-entry@^1.9.0:
+  version "1.12.0"
+  resolved "https://registry.npmmirror.com/import-html-entry/-/import-html-entry-1.12.0.tgz#460dff3cd86a9774f2ae9fc44bdce3577d30a235"
+  integrity sha512-wloMEMwupKJ8DWvKsEzJTXhHVieEH8ylu9ebeQg7T9JUsPTo0Zwa1EkuSKgKJvOiA2MxAFkeYYvd/E2pKiFtWQ==
+  dependencies:
+    "@babel/runtime" "^7.7.2"
+
 import-lazy@^3.1.0:
   version "3.1.0"
   resolved "https://registry.npmmirror.com/import-lazy/download/import-lazy-3.1.0.tgz#891279202c8a2280fdbd6674dbd8da1a1dfc67cc"
@@ -8156,6 +8170,17 @@ q@^1.1.2:
   resolved "https://registry.npmmirror.com/q/download/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
+qiankun@^2.7.3:
+  version "2.7.3"
+  resolved "https://registry.npmmirror.com/qiankun/-/qiankun-2.7.3.tgz#76461ffc21a6bcad5abf3fcafac08d7ee243c0e0"
+  integrity sha512-o0hEXgpMxkmlADiiEfQBMFo1cp84LfsEP6xhMT5R7QbGa3uGFR/T8EtyeOlvmhzjAaGExP6+r1bxiF8w4JV71A==
+  dependencies:
+    "@babel/runtime" "^7.10.5"
+    import-html-entry "^1.9.0"
+    lodash "^4.17.11"
+    single-spa "^5.9.2"
+    tslib "^1.10.0"
+
 qrcode.vue@1.7.0:
   version "1.7.0"
   resolved "https://registry.npmmirror.com/qrcode.vue/download/qrcode.vue-1.7.0.tgz#c54b2934f0650c10d92785d08aaad36c55e0fc56"
@@ -9037,6 +9062,11 @@ simple-swizzle@^0.2.2:
   integrity sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo=
   dependencies:
     is-arrayish "^0.3.1"
+
+single-spa@^5.9.2:
+  version "5.9.4"
+  resolved "https://registry.npmmirror.com/single-spa/-/single-spa-5.9.4.tgz#2a995b0784867a3f60ceb458de295ee67f045077"
+  integrity sha512-QkEoh0AzGuU82qnbUUk0ydF78QbU5wMKqKKJn7uUQfBiOYlRQEfIOpLM4m23Sab+kTOLI1kbYhYeiQ7fX5KVVw==
 
 slash@^1.0.0:
   version "1.0.0"
@@ -9994,7 +10024,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1.9.0:
+tslib@^1.10.0, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.npmmirror.com/tslib/download/tslib-1.14.1.tgz?cache=0&sync_timestamp=1618847132149&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Ftslib%2Fdownload%2Ftslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha1-zy04vcNKE0vK8QkcQfZhni9nLQA=
