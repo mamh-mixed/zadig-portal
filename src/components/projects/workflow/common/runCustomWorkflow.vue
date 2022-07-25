@@ -106,6 +106,11 @@
                 </el-form-item>
               </div>
             </div>
+            <div v-if="job.type === 'freestyle'">
+              <div>
+                <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
+              </div>
+            </div>
           </el-collapse-item>
         </div>
       </el-collapse>
@@ -116,6 +121,7 @@
 
 <script>
 import CustomWorkflowBuildRows from '@/components/common/customWorkflowBuildRows.vue'
+import CustomWorkflowCommonRows from '@/components/common/customWorkflowCommonRows.vue'
 import {
   listProductAPI,
   getAllBranchInfoAPI,
@@ -161,7 +167,8 @@ export default {
     }
   },
   components: {
-    CustomWorkflowBuildRows
+    CustomWorkflowBuildRows,
+    CustomWorkflowCommonRows
   },
   created () {
     this.init()
@@ -208,6 +215,13 @@ export default {
                       key.value = this.$utils.aesDecrypt(key.value)
                     }
                   })
+                })
+              }
+              if (job.type === 'freestyle') {
+                job.spec.steps.forEach(step => {
+                  if (step.type === 'git') {
+                    this.getRepoInfo(step.spec.repos)
+                  }
                 })
               }
             })
@@ -362,7 +376,22 @@ export default {
               }
             })
           }
-
+          if (job.type === 'freestyle') {
+            job.spec.steps.forEach(step => {
+              if (step.type === 'git') {
+                step.spec.repos.forEach(repo => {
+                  if (repo.branchOrTag) {
+                    if (repo.branchOrTag.type === 'branch') {
+                      repo.branch = repo.branchOrTag.name
+                    }
+                    if (repo.branchOrTag.type === 'tag') {
+                      repo.tag = repo.branchOrTag.name
+                    }
+                  }
+                })
+              }
+            })
+          }
           if (job.type === 'zadig-deploy') {
             job.spec.service_and_images = job.spec.service_and_builds
             delete job.spec.service_and_builds

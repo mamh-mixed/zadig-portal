@@ -811,7 +811,7 @@ export default {
     color: #555;
 
     /deep/.el-drawer__body {
-      padding: 24px;
+      padding: 0 24px;
     }
 
     /deep/ .el-drawer.rtl,

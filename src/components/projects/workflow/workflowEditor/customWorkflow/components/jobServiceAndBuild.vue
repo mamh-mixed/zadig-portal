@@ -24,7 +24,7 @@
         <el-col :span="4">
           <el-button type="danger" size="mini" @click="delServiceAndBuild(index)">删除</el-button>
         </el-col>
-        <el-table :data="item.key_vals" v-if="item.isShowVals" size="small" style="width: 75%;">
+        <el-table :data="item.key_vals" v-if="item.isShowVals" size="small" style="width: 80%; padding-left: 10px;" class="mg-b16">
           <el-table-column prop="key" label="键"></el-table-column>
           <el-table-column label="类型">
             <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
@@ -136,7 +136,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .service-build-val {
-  width: 70%;
+  width: 80%;
   color: #606266;
   font-size: 14px;
 
