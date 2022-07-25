@@ -108,7 +108,7 @@
             </div>
             <div v-if="job.type === 'freestyle'">
               <div>
-                <CustomWorkflowCommonRows :jobInfo="job" :commonTask="true"></CustomWorkflowCommonRows>
+                <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
               </div>
             </div>
           </el-collapse-item>

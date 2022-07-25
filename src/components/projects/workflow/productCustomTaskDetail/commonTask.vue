@@ -208,8 +208,5 @@ export default {
       color: #8d9199;
     }
   }
-  // /deep/ .el-card__body {
-  //   overflow: auto;
-  // }
 }
 </style>
