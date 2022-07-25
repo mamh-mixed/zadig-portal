@@ -91,7 +91,7 @@ const buildEnvs = [
     desc: '工作流任务 ID'
   },
   {
-    variable: 'BUILD_URL',
+    variable: '$BUILD_URL',
     desc: '构建任务的 URL'
   },
   {
