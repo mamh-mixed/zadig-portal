@@ -5,8 +5,10 @@
     </a>
     <div class="sidebar-header" :style="{ width: showSidebar ? '100%' : 'auto'}">
       <router-link to="/v1/status">
-        <img v-if="showSidebar&&!showBackPath" class="logo" src="@assets/icons/logo/logo.svg" />
-        <img v-if="!showSidebar&&!showBackPath" class="logo" src="@assets/icons/logo/small-logo.png" />
+        <img v-if="showSidebar&&!showBackPath&&bigLogoUrl" class="logo" :src="bigLogoUrl" />
+        <img v-if="showSidebar&&!showBackPath&&!bigLogoUrl" class="logo" src="@assets/icons/logo/logo.svg" />
+        <img v-if="!showSidebar&&!showBackPath&&smallLogoUrl" class="logo" :src="smallLogoUrl" />
+        <img v-if="!showSidebar&&!showBackPath&&!smallLogoUrl" class="logo" src="@assets/icons/logo/small-logo.png" />
       </router-link>
       <router-link class="sidebar-header-item back-to" v-show="showSidebar&&showBackPath" :to="backUrl">
         <div class="sidebar-header__icon">
@@ -76,12 +78,30 @@
 <script>
 import bus from '@utils/eventBus'
 import _ from 'lodash'
+import { getEnterpriseInfoAPI } from '@api'
 export default {
   data () {
     return {
       showSidebar: true,
       backTitle: '',
       backUrl: '/v1/status',
+      enterpriseInfo: null,
+      enterpriseMenu: [
+        {
+          items: [
+            {
+              name: '企业信息',
+              icon: 'iconfont iconcompany-info',
+              url: 'enterprise/info'
+            },
+            {
+              name: '许可证',
+              icon: 'iconfont iconxukezheng',
+              url: 'enterprise/license'
+            }
+          ]
+        }
+      ],
       systemMenu: [
         {
           category_name: '集成管理',
@@ -230,6 +250,11 @@ export default {
               name: '系统设置',
               icon: 'iconfont iconvery-setting',
               url: 'system'
+            },
+            {
+              name: '企业管理',
+              icon: 'iconfont iconcompany-info',
+              url: 'enterprise'
             }
           ]
         }
@@ -249,6 +274,11 @@ export default {
     },
     collapseMenu (nav) {
       nav.isOpened = !nav.isOpened
+    },
+    getEnterpriseInfo () {
+      getEnterpriseInfoAPI().then(res => {
+        this.enterpriseInfo = res
+      })
     }
   },
   computed: {
@@ -259,6 +289,9 @@ export default {
         return true
       } else if (path.includes('/v1/system')) {
         this.backTitle = '系统设置'
+        return true
+      } else if (path.includes('/v1/enterprise')) {
+        this.backTitle = '企业管理'
         return true
       } else {
         return false
@@ -302,34 +335,56 @@ export default {
     },
     navList () {
       const path = this.$route.path
-      if (path.includes('/v1/system')) {
+      if (path.includes('/v1/enterprise')) {
+        return this.enterpriseMenu
+      } else if (path.includes('/v1/system')) {
         return this.systemMenu
       } else if (this.isAdmin) {
         return this.defaultMenu.concat(this.adminMenu)
       } else {
         const cloneMenu = _.cloneDeep(this.defaultMenu)
         if (!this.showTestCenter) {
-          _.remove(cloneMenu[0].items, (item) => {
+          _.remove(cloneMenu[0].items, item => {
             return item.name === '测试中心'
           })
         }
         if (!this.showDataOverview) {
-          _.remove(cloneMenu[1].items, (item) => {
+          _.remove(cloneMenu[1].items, item => {
             return item.name === '数据概览'
           })
         }
         if (!this.showEfficiencyInsight) {
-          _.remove(cloneMenu[1].items, (item) => {
+          _.remove(cloneMenu[1].items, item => {
             return item.name === '效能洞察'
           })
         }
         if (!this.showDeliveryCenter) {
-          _.remove(cloneMenu[0].items, (item) => {
+          _.remove(cloneMenu[0].items, item => {
             return item.name === '交付中心'
           })
         }
         return cloneMenu
       }
+    },
+    smallLogoUrl: {
+      get: function () {
+        if (this.enterpriseInfo && this.enterpriseInfo.small_logo) {
+          return this.enterpriseInfo.small_logo
+        } else {
+          return ''
+        }
+      },
+      set: function (newValue) {}
+    },
+    bigLogoUrl: {
+      get: function () {
+        if (this.enterpriseInfo && this.enterpriseInfo.big_logo) {
+          return this.enterpriseInfo.small_logo
+        } else {
+          return ''
+        }
+      },
+      set: function (newValue) {}
     }
   },
   watch: {
@@ -338,6 +393,7 @@ export default {
     }
   },
   created () {
+    this.getEnterpriseInfo()
     bus.$on('show-sidebar', params => {
       this.showSidebar = params
     })
