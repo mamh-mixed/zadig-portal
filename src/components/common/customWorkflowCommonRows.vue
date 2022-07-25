@@ -1,6 +1,6 @@
 <template>
   <div class="workflow-build-rows">
-    <el-table :data="jobInfo.spec.steps">
+    <el-table :data="jobInfo.spec.steps.filter(item=>item.type==='git')">
       <el-table-column label="代码库">
         <template slot-scope="scope" v-if="scope.row.type === 'git'">
           <el-row v-for="build of scope.row.spec.repos" class="build-row" :key="build.code_host_id">
@@ -91,7 +91,7 @@
             v-model="scope.row.value"
             size="small"
             :type="scope.row.is_credential ? 'passsword' : ''"
-            show-password
+            :show-password="scope.row.is_credential ? true : false"
             style="width: 220px;"
           ></el-input>
         </template>
