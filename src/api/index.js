@@ -615,8 +615,8 @@ export function deleteProductWorkflowAPI (projectName, name) {
   return http.delete(`/api/aslan/workflow/workflow/${name}?projectName=${projectName}`)
 }
 
-export function getAssociatedBuildsAPI (projectName, excludeJenkins = false) {
-  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}&excludeJenkins=${excludeJenkins}`)
+export function getAssociatedBuildsAPI (projectName, excludeJenkins = false, key = '') {
+  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}&excludeJenkins=${excludeJenkins}&encryptedKey=${key}`)
 }
 
 export function checkRegularAPI (payload) { // {regular: '', branches: []}
@@ -1373,7 +1373,7 @@ export function deleteHostAPI (id) {
 export function importHostAPI (payload) {
   return http.post(`/api/aslan/system/privateKey/batch`, payload)
 }
-// project host
+// Project Host
 export function getProjectHostListAPI (key, projectName = '', keyword = '') {
   return http.get(`/api/aslan/project/pms?encryptedKey=${key}&projectName=${projectName}&keyword=${keyword}`)
 }
@@ -2130,14 +2130,14 @@ export function updateCustomWorkflowAPI (workflow_name, payload, projectName) {
 export function getCustomWorkflowListAPI (projectName, page_num = 1, page_size = 20) {
   return http.get(`/api/aslan/workflow/v4?project=${projectName}&page_num=${page_num}&page_size=${page_size}&projectName=${projectName}`)
 }
-export function getCustomWorkflowDetailAPI (workflow_name, projectName) {
-  return http.get(`/api/aslan/workflow/v4/name/${workflow_name}?projectName=${projectName}`)
+export function getCustomWorkflowDetailAPI (workflow_name, projectName, key = '') {
+  return http.get(`/api/aslan/workflow/v4/name/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
 }
 export function deleteWorkflowAPI (workflow_name, projectName) {
   return http.delete(`/api/aslan/workflow/v4/${workflow_name}?projectName=${projectName}`)
 }
-export function getCustomWorkfloweTaskPresetAPI (workflow_name, projectName) {
-  return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}?projectName=${projectName}`)
+export function getCustomWorkfloweTaskPresetAPI (workflow_name, projectName, key = '') {
+  return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
 }
 export function runCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask?projectName=${projectName}`, payload)
@@ -2163,6 +2163,12 @@ export function getRunningStatusCustomWorkflowListAPI () {
 export function getPendingStatusCustomWorkflowListAPI () {
   return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/pending`)
 }
+export function checkCustomWorkflowYaml (payload) {
+  return http.post(`/api/aslan/workflow/v4/lint`, payload)
+}
+export function getCustomCloneDetailAPI (workflow_name, task_id) {
+  return http.get(`/api/aslan/workflow/v4/workflowtask/clone/workflow/${workflow_name}/task/${task_id}`)
+}
 // approval
 export function approvalCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask/approve?projectName=${projectName}`, payload)
@@ -2179,4 +2185,29 @@ export function uploadUserNumberAPI (payload) {
 
 export function checkPlutusAPI () {
   return http.get(`/api/plutus/health`)
+}
+
+// ----- Enterprise -----
+export function getEnterpriseInfoAPI () {
+  return http.get(`/api/plutus/organization`)
+}
+
+export function createEnterpriseInfoAPI (payload) {
+  return http.post(`/api/plutus/organization`, payload)
+}
+
+export function updateEnterpriseInfoAPI (payload) {
+  return http.post(`/api/plutus/organization`, payload)
+}
+
+export function getLicenseAPI () {
+  return http.get(`/api/plutus/signature`)
+}
+
+export function createLicenseAPI (payload) {
+  return http.post(`/api/plutus/signature`, payload)
+}
+
+export function updateLicenseAPI (payload) {
+  return http.post(`/api/plutus/signature`, payload)
 }

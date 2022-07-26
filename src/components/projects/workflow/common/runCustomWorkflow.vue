@@ -2,8 +2,14 @@
   <div class="custom-workflow">
     <el-form label-width="120px" size="small">
       <el-collapse v-model="activeName">
-        <div v-for="(stage) in payload.stages" :key="stage.name">
-          <el-collapse-item v-for="(job) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="job.name" class="mg-l8">
+        <div v-for="(stage,stageIndex) in payload.stages" :key="stage.name">
+          <el-collapse-item
+            v-for="(job,jobIndex) in stage.jobs"
+            :title="`${job.name}`"
+            :key="job.name"
+            :name="`${stageIndex}${jobIndex}`"
+            class="mg-l8"
+          >
             <div v-show="job.type === 'zadig-build'">
               <el-form-item label="服务组件">
                 <el-select
@@ -128,7 +134,7 @@ export default {
       dockerList: [],
       specificEnv: true,
       startTaskLoading: false,
-      activeName: '',
+      activeName: '00',
       payload: {
         workflow_name: '',
         stages: [
@@ -148,6 +154,10 @@ export default {
     projectName: {
       type: String,
       default: ''
+    },
+    cloneWorkflow: {
+      type: Object,
+      default: () => ({})
     }
   },
   components: {
@@ -160,12 +170,51 @@ export default {
     init () {
       this.getEnvList()
       this.getRegistryWhenBuild()
-      this.getWorkflowPresetInfo(this.workflowName)
+      if (Object.keys(this.cloneWorkflow).length > 0) {
+        this.cloneWorkflow.stages.forEach(stage => {
+          stage.jobs.forEach(job => {
+            if (
+              job.spec.service_and_builds &&
+              job.spec.service_and_builds.length > 0
+            ) {
+              job.pickedTargets = job.spec.service_and_builds
+              job.pickedTargets.forEach(build => {
+                this.getRepoInfo(build.repos)
+              })
+            }
+            if (
+              job.spec.service_and_images &&
+              job.spec.service_and_images.length > 0
+            ) {
+              job.pickedTargets = job.spec.service_and_images
+            }
+          })
+        })
+        this.payload = this.cloneWorkflow
+      } else {
+        this.getWorkflowPresetInfo(this.workflowName)
+      }
     },
     getWorkflowPresetInfo (workflowName) {
-      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(res => {
-        this.payload = res
-      })
+      const key = this.$utils.rsaEncrypt()
+      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName, key).then(
+        res => {
+          res.stages.forEach(stage => {
+            stage.jobs.forEach(job => {
+              if (job.spec && job.spec.service_and_builds) {
+                job.spec.service_and_builds.forEach(service => {
+                  service.key_vals.forEach(key => {
+                    if (key.is_credential) {
+                      key.value = this.$utils.aesDecrypt(key.value)
+                    }
+                  })
+                })
+              }
+            })
+          })
+          this.payload = res
+        }
+      )
     },
     getEnvList () {
       const projectName = this.projectName

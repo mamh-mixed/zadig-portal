@@ -116,7 +116,7 @@
         </template>
       </el-table-column>
       <el-table-column width="100px"
-                       :label="pickedTargets[0].jenkins_build_args ? '变量': '环境变量'">
+                       label="变量">
         <template slot-scope="scope">
           <el-popover placement="left"
                       width="450"
