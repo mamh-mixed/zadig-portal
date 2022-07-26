@@ -10,7 +10,7 @@
             :name="`${stageIndex}${jobIndex}`"
             class="mg-l8"
           >
-            <div v-show="job.type === 'zadig-build'">
+            <div v-if="job.type === 'zadig-build'">
               <el-form-item label="服务组件">
                 <el-select
                   v-model="job.pickedTargets"
@@ -107,9 +107,10 @@
               </div>
             </div>
             <div v-if="job.type === 'freestyle'">
-              <div>
-                <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
-              </div>
+              <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
+            </div>
+            <div v-if="job.type === 'plugin'">
+              <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
             </div>
           </el-collapse-item>
         </div>

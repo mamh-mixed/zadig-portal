@@ -78,6 +78,14 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
+        <Plugin
+          v-if="curJob.type === jobType.plugin"
+          :pluginInfo="curJob"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          :projectName="projectName"
+          @showFooter="showFooter"
+        />
       </footer>
     </Multipane>
   </div>
@@ -90,6 +98,7 @@ import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
 import Approval from './productCustomTaskDetail/approval.vue'
 import CommonTask from './productCustomTaskDetail/commonTask.vue'
+import Plugin from './productCustomTaskDetail/plugin.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -114,7 +123,8 @@ export default {
     BuildConsole,
     DeployConsole,
     Approval,
-    CommonTask
+    CommonTask,
+    Plugin
   },
   computed: {
     taskId () {

@@ -73,7 +73,7 @@
                     <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                   </el-select>
                 </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
+                <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build" class="mg-t40">
                   <ServiceAndBuild
                     :projectName="projectName"
                     v-model="job.spec.service_and_builds"
@@ -107,6 +107,9 @@
                     :disabled="Object.keys(service).length === 0"
                     @click="addServiceAndBuild(job.spec.service_and_builds)"
                   >+ 添加</el-button>
+                </div>
+                <div v-if="job.type === 'plugin'">
+                  <Plugin  v-model="job" ref="plugin"/>
                 </div>
                 <BuildEnv
                   :projectName="projectName"
@@ -147,10 +150,10 @@
       </section>
     </div>
     <div class="right">
-      <div v-for="item in configList" :key="item.label" class="right-tab" @click="isShowDrawer=true">{{item.label}}</div>
+      <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
     <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
-      <span>
+      <span v-if="curDrawer === 'high'">
         <h4>运行策略</h4>
         <el-form>
           <el-form-item>
@@ -196,10 +199,11 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
 import Stage from './stage.vue'
 import StageOperate from './stageOperate.vue'
+// import JobOperate from './jobOperate.vue'
 import ServiceAndBuild from './components/jobServiceAndBuild'
 import BuildEnv from './components/jobBuildEnv.vue'
 import JobCommonBuild from './components/jobCommonBuild.vue'
-import DockerList from './components/dockerList.vue'
+import Plugin from './components/plugin.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
@@ -258,6 +262,7 @@ export default {
       },
       curStageIndex: 0,
       curJobIndex: -2, // 不指向 job
+      curDrawer: 'high',
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
@@ -297,10 +302,10 @@ export default {
     ServiceAndBuild,
     BuildEnv,
     JobCommonBuild,
-    DockerList,
     Service,
     RunCustomWorkflow,
-    codemirror
+    codemirror,
+    Plugin
   },
   computed: {
     projectName () {
@@ -550,6 +555,15 @@ export default {
                 console.log('common build valid error', err)
                 reject(err)
               })
+            } else if (this.job.type === jobType.plugin) {
+              this.$refs.plugin.validate().then((res) => {
+                this.$set(
+                  this.payload.stages[this.curStageIndex].jobs,
+                  this.curJobIndex,
+                  res
+                )
+              })
+              this.$store.dispatch('setIsShowFooter', false)
             }
           }
         })
@@ -598,6 +612,10 @@ export default {
       this.$set(this.payload, 'multi_run', this.multi_run)
       this.$message.success('设置成功')
       this.isShowDrawer = false
+    },
+    setCurDrawer (val) {
+      this.isShowDrawer = true
+      this.curDrawer = val
     }
   },
   watch: {
@@ -628,7 +646,7 @@ export default {
         if (val) {
           this.serviceAndBuilds = this.originServiceAndBuilds
           if (
-            val.spec.service_and_builds &&
+            val.spec && val.spec.service_and_builds &&
             val.spec.service_and_builds.length > 0
           ) {
             this.serviceAndBuilds = differenceWith(

@@ -3,7 +3,7 @@
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
     </el-tooltip>
-    <div v-for="(item,index) in stageInfo.jobs" :key="item.value" @click="setCurIndex(index,item)" class="job-wrap">
+    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job-wrap">
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
         <span class="job-name">{{item.name}}</span>
       </el-tooltip>
@@ -11,13 +11,17 @@
         <i class="el-icon-close"></i>
       </div>
     </div>
-    <el-dialog title="新建 Job" :visible.sync="isShowJobOperateDialog" width="30%">
-      <JobOperate v-model="jobInfo" ref="jobOperate" />
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="isShowJobOperateDialog = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
-      </div>
-    </el-dialog>
+    <el-drawer
+      title="新建 Job"
+      :visible.sync="isShowJobOperateDialog"
+      direction="rtl"
+      :modal-append-to-body="false"
+      class="drawer"
+      size="24%"
+    >
+      <JobOperate @jobInfo="getJobInfo" ref="jobOperate" />
+      <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
+    </el-drawer>
     <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ Job</el-button>
   </div>
 </template>
@@ -126,9 +130,28 @@ export default {
               // }
             ]
           }
+        },
+        plugin: {
+          type: 'plugin',
+          name: 'default',
+          isCreate: true,
+          description: '',
+          properties: {
+            timeout: 60,
+            res_req: 'low', // high/medium/low/min/define
+            res_req_spec: {
+              cpu_limit: 1000,
+              memory_limit: 512
+            },
+            cluster_id: ''
+          },
+          is_offical: true
         }
       },
-      jobInfo: {},
+      jobInfo: {
+        type: '',
+        spec: {}
+      },
       isShowJobOperateDialog: false
     }
   },
@@ -155,15 +178,29 @@ export default {
   },
   methods: {
     operateJob () {
-      this.$refs.jobOperate.$refs.ruleForm.validate(valid => {
-        if (valid) {
-          this.stageInfo.jobs.push(this.jobInfos[this.jobInfo.type])
-          this.JobIndex = this.stageInfo.jobs.length - 1
-          this.isShowJobOperateDialog = false
-          this.$store.dispatch('setIsShowFooter', true)
-          this.jobInfo = { type: '' }
+      if (this.jobInfo.type === 'plugin') {
+        this.jobInfo.name = 'default'
+        this.jobInfo.spec.properties = {
+          timeout: 60,
+          res_req: 'low', // high/medium/low/min/define
+          res_req_spec: {
+            cpu_limit: 1000,
+            memory_limit: 512
+          },
+          cluster_id: ''
         }
-      })
+        this.stageInfo.jobs.push(this.jobInfo)
+      } else {
+        this.stageInfo.jobs.push(this.jobInfos[this.jobInfo.type])
+      }
+      this.JobIndex = this.stageInfo.jobs.length - 1
+      this.isShowJobOperateDialog = false
+      this.$store.dispatch('setIsShowFooter', true)
+      // this.jobInfo.type = ''
+    },
+    getJobInfo (val) {
+      this.jobInfo.type = 'plugin'
+      this.jobInfo.spec.plugin = val
     },
     addJob () {
       if (this.stageInfo.jobs.length > 0) {
@@ -198,6 +235,22 @@ export default {
 <style lang="less" scoped>
 .stage {
   text-align: center;
+
+  .drawer {
+    color: #555;
+
+    /deep/.el-drawer__body {
+      padding: 24px;
+    }
+
+    /deep/ .el-drawer.rtl,
+    .el-drawer__container {
+      top: auto;
+      right: 100px !important;
+      bottom: 0;
+      height: calc(~'100% - 102px') !important;
+    }
+  }
 
   &-name {
     margin-right: 16px;
