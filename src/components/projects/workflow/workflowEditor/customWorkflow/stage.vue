@@ -178,6 +178,7 @@ export default {
   },
   methods: {
     operateJob () {
+      console.log(this.jobInfo)
       if (this.jobInfo.type === 'plugin') {
         this.jobInfo.name = 'default'
         this.jobInfo.spec.properties = {
@@ -199,7 +200,7 @@ export default {
       // this.jobInfo.type = ''
     },
     getJobInfo (val) {
-      this.jobInfo.type = 'plugin'
+      this.jobInfo.type = val.type ? val.type : 'plugin'
       this.jobInfo.spec.plugin = val
     },
     addJob () {
