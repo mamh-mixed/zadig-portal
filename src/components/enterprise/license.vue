@@ -24,7 +24,7 @@
           <el-col :span="12">
             <div class="text value">
               {{license.available_num}}
-              <span v-if="license.user_num">（{{license.user_num}} 人已用）</span>
+              <span>（{{license.user_num}} 人已用）</span>
             </div>
           </el-col>
         </el-row>
