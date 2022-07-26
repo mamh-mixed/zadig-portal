@@ -2183,6 +2183,10 @@ export function uploadUserNumberAPI (payload) {
   return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
 }
 
+export function checkPlutusAPI () {
+  return http.get(`/api/plutus/health`)
+}
+
 // ----- Enterprise -----
 export function getEnterpriseInfoAPI () {
   return http.get(`/api/plutus/organization`)
