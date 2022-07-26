@@ -1373,7 +1373,7 @@ export function deleteHostAPI (id) {
 export function importHostAPI (payload) {
   return http.post(`/api/aslan/system/privateKey/batch`, payload)
 }
-// project host
+// Project Host
 export function getProjectHostListAPI (key, projectName = '', keyword = '') {
   return http.get(`/api/aslan/project/pms?encryptedKey=${key}&projectName=${projectName}&keyword=${keyword}`)
 }
@@ -2181,4 +2181,29 @@ export function getUserNumberAPI () {
 
 export function uploadUserNumberAPI (payload) {
   return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
+}
+
+// ----- Enterprise -----
+export function getEnterpriseInfoAPI () {
+  return http.get(`/api/plutus/organization`)
+}
+
+export function createEnterpriseInfoAPI (payload) {
+  return http.post(`/api/plutus/organization`, payload)
+}
+
+export function updateEnterpriseInfoAPI (payload) {
+  return http.post(`/api/plutus/organization`, payload)
+}
+
+export function getLicenseAPI () {
+  return http.get(`/api/plutus/signature`)
+}
+
+export function createLicenseAPI (payload) {
+  return http.post(`/api/plutus/signature`, payload)
+}
+
+export function updateLicenseAPI (payload) {
+  return http.post(`/api/plutus/signature`, payload)
 }
