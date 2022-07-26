@@ -71,8 +71,6 @@ export default {
       default: () => ({})
     }
   },
-  computed: {},
-  created () {},
   methods: {
     async validate () {
       const valid = []

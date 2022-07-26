@@ -104,9 +104,6 @@ export default {
       this.isCanInput = true
     },
     getInitRepoInfo (source) {
-      const codehostId = source.codehostId
-      const repoOwner = source.repoOwner
-      const repoName = source.repoName
       this.$set(this, 'codeInfo', {
         repoOwners: [],
         repos: [],
