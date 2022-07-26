@@ -7,9 +7,9 @@
       :class="{'active':curTaskIndex===index}"
       @click="setCurTask(index,item)"
     >
-      <div class="mg-b8">
+      <div class="mg-b16">
         <span class="item-title">{{item.label || item.name}}</span>
-        <el-tag size="small" v-if="item.is_offical">官方</el-tag>
+        <el-tag size="small" class="mg-l8" v-if="item.is_offical">官方</el-tag>
       </div>
       <span class="item-dec">{{item.description}}</span>
     </div>
@@ -77,18 +77,21 @@ export default {
     cursor: pointer;
 
     &-title {
-      font-weight: 500;
       font-size: 16px;
     }
 
     &-dec {
+      color: #555;
       font-size: 14px;
+    }
+
+    &:hover {
+      background: rgba(0, 102, 255, 0.07);
     }
   }
 
   .active {
-    color: #fff;
-    background: #3370ff;
+    background: rgba(0, 102, 255, 0.07);
   }
 }
 </style>

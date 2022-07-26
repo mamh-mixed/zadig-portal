@@ -2,7 +2,7 @@
   <section class="plugin">
     <section class="common-parcel-block">
       <span class="title">变量</span>
-      <el-table :data="value.spec.plugin.inputs">
+      <el-table :data="value.spec.plugin.inputs" class="mg-t8">
         <el-table-column label="键" prop="name"></el-table-column>
         <el-table-column label="值">
           <template slot-scope="scope">

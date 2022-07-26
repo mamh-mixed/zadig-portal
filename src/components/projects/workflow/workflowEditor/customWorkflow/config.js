@@ -46,13 +46,6 @@ const jobTypeList = [
     description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
   },
   {
-    label: '插件',
-    name: 'plugin',
-    type: 'plugin',
-    is_offical: true,
-    description: ''
-  },
-  {
     label: '测试',
     is_offical: true,
     name: '',

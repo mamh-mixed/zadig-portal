@@ -835,7 +835,7 @@ export default {
     /deep/ .el-drawer.rtl,
     .el-drawer__container {
       top: auto;
-      right: 100px !important;
+      right: 0;
       bottom: 0;
       height: calc(~'100% - 102px') !important;
     }

@@ -178,7 +178,6 @@ export default {
   },
   methods: {
     operateJob () {
-      console.log(this.jobInfo)
       if (this.jobInfo.type === 'plugin') {
         this.jobInfo.name = 'default'
         this.jobInfo.spec.properties = {
@@ -197,7 +196,6 @@ export default {
       this.JobIndex = this.stageInfo.jobs.length - 1
       this.isShowJobOperateDialog = false
       this.$store.dispatch('setIsShowFooter', true)
-      // this.jobInfo.type = ''
     },
     getJobInfo (val) {
       this.jobInfo.type = val.type ? val.type : 'plugin'
@@ -239,17 +237,18 @@ export default {
 
   .drawer {
     color: #555;
-
-    /deep/.el-drawer__body {
-      padding: 24px;
-    }
+    text-align: left;
 
     /deep/ .el-drawer.rtl,
     .el-drawer__container {
       top: auto;
-      right: 100px !important;
+      right: 0;
       bottom: 0;
       height: calc(~'100% - 102px') !important;
+    }
+
+    /deep/.el-drawer__body {
+      padding: 0 24px;
     }
   }
 
