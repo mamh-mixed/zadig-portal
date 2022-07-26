@@ -367,15 +367,15 @@ export default {
       }
     },
     smallLogoUrl () {
-      if (this.enterpriseInfo && this.enterpriseInfo.small_logo) {
+      if (this.enterpriseInfo) {
         return this.enterpriseInfo.small_logo
       } else {
         return ''
       }
     },
     bigLogoUrl () {
-      if (this.enterpriseInfo && this.enterpriseInfo.big_logo) {
-        return this.enterpriseInfo.small_logo
+      if (this.enterpriseInfo) {
+        return this.enterpriseInfo.big_logo
       } else {
         return ''
       }

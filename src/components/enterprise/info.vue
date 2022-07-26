@@ -23,14 +23,14 @@
         </el-form-item>
         <el-form-item label="企业 Logo" prop="logo">
           <span class="desc">登录页面使用的图标和侧边栏展开后右上角使用的图标，格式：JPEG/PNG，推荐大小：200px * 60px</span>
-          <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeAvatarUpload">
+          <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeBigLogoUpload">
             <img v-if="enterpriseInfo.big_logo" :src="enterpriseInfo.big_logo" class="avatar" />
             <img v-else src="@assets/icons/logo/default-logo.png" class="avatar" />
           </el-upload>
           <span class="desc">侧边栏收缩后右上角使用的图标，格式：JPEG/PNG，推荐大小：60px * 60px</span>
-          <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeAvatarUpload">
-            <img v-if="enterpriseInfo.small_logo" :src="enterpriseInfo.small_logo" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <el-upload class="avatar-uploader" action="#" :show-file-list="false" :before-upload="beforeSmallLogoUpload">
+            <img v-if="enterpriseInfo.small_logo" :src="enterpriseInfo.small_logo" class="avatar small" />
+            <i v-else class="el-icon-plus avatar-uploader-icon small"></i>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -100,7 +100,7 @@ export default {
         }
       })
     },
-    beforeAvatarUpload (file) {
+    beforeBigLogoUpload (file) {
       const formate =
         file.type === 'image/jpeg' ||
         file.type === 'image/png' ||
@@ -121,7 +121,34 @@ export default {
 
         if (file) {
           toBase64(file).then(value => {
-            this.enterpriseInfo.logo = value
+            this.enterpriseInfo.big_logo = value
+          })
+        }
+      }
+      return formate && isLt1M
+    },
+    beforeSmallLogoUpload (file) {
+      const formate =
+        file.type === 'image/jpeg' ||
+        file.type === 'image/png' ||
+        file.type === 'image/svg+xml'
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (!formate) {
+        this.$message.error('上传 logo 只能是 JPG、PNG、SVG 格式!')
+      } else if (!isLt1M) {
+        this.$message.error('上传 logo 大小不能超过 1MB!')
+      } else {
+        const toBase64 = file =>
+          new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.readAsDataURL(file)
+            reader.onload = () => resolve(reader.result)
+            reader.onerror = error => reject(error)
+          })
+
+        if (file) {
+          toBase64(file).then(value => {
+            this.enterpriseInfo.small_logo = value
           })
         }
       }
@@ -198,12 +225,22 @@ export default {
     font-size: 28px;
     line-height: 60px;
     text-align: center;
+
+    &.small {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   .avatar {
     display: block;
     width: 200px;
     height: 60px;
+
+    &.small {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   .pointer {
