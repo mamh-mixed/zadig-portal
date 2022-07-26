@@ -1059,7 +1059,7 @@ const routes = [
     },
     children: [
       {
-        path: '/*',
+        path: '*',
         component: () => import(/* webpackChunkName: "micro-app" */ '@/components/micro/index.vue'),
         meta: {
           title: '微应用'

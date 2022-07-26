@@ -3,6 +3,10 @@ import { registerMicroApps, start } from 'qiankun'
 // import utils from '@/assets/js/utils'
 import router from '@/router/index.js'
 
+export const currentInfo = {
+  mount: false
+}
+
 export const microApps = [
   {
     name: 'plutusVendor',
@@ -13,7 +17,8 @@ export const microApps = [
       routerBase: '/v1/plutus',
       //   mainStore: store,
       //   user: utils.getStorage('user'),
-      mainAppRouter: router
+      mainAppRouter: router,
+      currentInfo
     }
   }
 ]
@@ -33,6 +38,11 @@ export const registerApps = () => {
       (app) => {
         // store.commit('app/loadingMicro', false)
         console.log('[LifeCycle] after mount %c%s', 'color: green;', app.name)
+      }
+    ],
+    beforeUnmount: [
+      (app) => {
+        console.log('[LifeCycle] before unmount %c%s', 'color: green;', app.name)
       }
     ],
     afterUnmount: [

@@ -1,20 +1,29 @@
 <template>
-  <div class="micro-container">
+  <div
+    class="micro-container"
+    v-loading="!hasMounted"
+    element-loading-text="加载中..."
+  >
     <div id="container"></div>
   </div>
 </template>
 
 <script>
 import { /* loadMicroApp */ addGlobalUncaughtErrorHandler } from 'qiankun'
-import { /* microApps, */ registerApps } from './index'
+import { /* microApps, */ registerApps, currentInfo } from './index'
 import bus from '@utils/eventBus'
 
+// hack
+let rawAppendChild = null
+let rawAddEventListener = null
+
 export default {
-  // data () {
-  //   return {
-  //     microList: {}
-  //   }
-  // },
+  data () {
+    return {
+      // microList: {}
+      currentInfo
+    }
+  },
   // methods: {
   //   async activationHandleChange (path) {
   //     const activeRules = microApps.map((app) => app.activeRule)
@@ -38,6 +47,11 @@ export default {
   //     this.activationHandleChange(newValue)
   //   }
   // },
+  computed: {
+    hasMounted () {
+      return this.currentInfo.mount
+    }
+  },
   mounted () {
     addGlobalUncaughtErrorHandler(event => console.log('global error: ', event))
     // if (window.qiankunStarted) return
@@ -48,6 +62,16 @@ export default {
       title: '',
       breadcrumb: [{ title: '微应用', url: '' }]
     })
+  },
+  beforeRouteEnter (to, from, next) {
+    rawAppendChild = HTMLHeadElement.prototype.appendChild
+    rawAddEventListener = window.addEventListener
+    next()
+  },
+  beforeRouteLeave (to, from, next) {
+    HTMLHeadElement.prototype.appendChild = rawAppendChild
+    window.addEventListener = rawAddEventListener
+    next()
   }
   // destroyed () {
   //   window.qiankunStarted = false
@@ -70,4 +94,9 @@ export default {
     overflow: hidden;
   }
 }
+</style>
+
+<style lang="less">
+// popover style
+@import url('./css/popover-pcc.less');
 </style>
