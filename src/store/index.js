@@ -32,6 +32,9 @@ import globalPermission from './modules/globalPermission'
 // new Workflow
 import customWorkflow from './modules/customWorkflow'
 
+// plutus
+import checkPlutus from './modules/checkPlutus'
+
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -48,7 +51,8 @@ export default new Vuex.Store({
     k8sService,
     externalLink,
     commonWorkflow,
-    customWorkflow
+    customWorkflow,
+    checkPlutus
   },
   strict: debug
 })

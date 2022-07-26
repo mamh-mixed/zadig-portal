@@ -85,6 +85,12 @@ router.beforeEach(async (to, from, next) => {
   } else {
     document.title = 'Zadig'
   }
+
+  if (!store.state.checkPlutus.plutusChecked) {
+    await store.dispatch('checkPlutusStatus')
+    next(to)
+  }
+
   if (to.meta.requiresSuperAdmin) {
     if (!isSuperAdmin()) {
       Element.Notification({

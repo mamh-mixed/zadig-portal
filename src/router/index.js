@@ -1052,22 +1052,6 @@ const routes = [
     }
   },
   {
-    path: '/v1/plutus', //  TODO: 存在有无的test
-    component: onboarding_home,
-    meta: {
-      requiresAuth: true
-    },
-    children: [
-      {
-        path: '*',
-        component: () => import(/* webpackChunkName: "micro-app" */ '@/components/micro/index.vue'),
-        meta: {
-          title: '微应用'
-        }
-      }
-    ]
-  },
-  {
     path: '*',
     component: () => import('@/components/entry/404.vue'),
     meta: {

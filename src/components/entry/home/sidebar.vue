@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import bus from '@utils/eventBus'
 import _ from 'lodash'
 export default {
@@ -187,26 +188,6 @@ export default {
           ]
         },
         {
-          category_name: '私有化交付', // TODO: 存在有无的test
-          items: [
-            {
-              name: '交付看板',
-              icon: 'iconfont iconBoardList',
-              url: 'plutus/deliveryBoard'
-            },
-            {
-              name: '版本',
-              icon: 'iconfont iconbanben1',
-              url: 'plutus/version'
-            },
-            {
-              name: '客户',
-              icon: 'iconfont iconCustomermanagement',
-              url: 'plutus/customer'
-            }
-          ]
-        },
-        {
           category_name: '数据视图',
           items: [
             {
@@ -230,6 +211,28 @@ export default {
               name: '系统设置',
               icon: 'iconfont iconvery-setting',
               url: 'system'
+            }
+          ]
+        }
+      ],
+      plutusMenu: [
+        {
+          category_name: '私有化交付',
+          items: [
+            {
+              name: '交付看板',
+              icon: 'iconfont iconBoardList',
+              url: 'plutus/deliveryBoard'
+            },
+            {
+              name: '版本',
+              icon: 'iconfont iconbanben1',
+              url: 'plutus/version'
+            },
+            {
+              name: '客户',
+              icon: 'iconfont iconCustomermanagement',
+              url: 'plutus/customer'
             }
           ]
         }
@@ -271,6 +274,9 @@ export default {
         return false
       }
     },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    }),
     showEfficiencyInsight () {
       const showEfficiencyInsight = this.checkPermissionSyncMixin({
         type: 'system',
@@ -304,7 +310,11 @@ export default {
       const path = this.$route.path
       if (path.includes('/v1/system')) {
         return this.systemMenu
-      } else if (this.isAdmin) {
+      }
+      if (this.hasPlutus && this.defaultMenu[1] !== this.plutusMenu[0]) {
+        this.defaultMenu.splice(1, 0, ...this.plutusMenu)
+      }
+      if (this.isAdmin) {
         return this.defaultMenu.concat(this.adminMenu)
       } else {
         const cloneMenu = _.cloneDeep(this.defaultMenu)
