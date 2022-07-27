@@ -12,7 +12,7 @@
       </div>
     </div>
     <el-drawer
-      title="新建任务"
+      title="选择任务"
       :visible.sync="isShowJobOperateDialog"
       direction="rtl"
       :modal-append-to-body="false"
