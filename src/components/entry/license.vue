@@ -1,5 +1,8 @@
 <template >
   <div class="setup-license">
+    <div class="header">
+      <img src="@assets/icons/logo/default-logo.png" alt />
+    </div>
     <el-row class="main-container">
       <el-col :span="8">
         <div class="step-container">
@@ -16,7 +19,7 @@
           </el-form-item>
         </el-form>
         <div class="operation">
-          <el-button size="small" type="primary" @click="submitForm('license')"  plain>保存</el-button>
+          <el-button size="small" type="primary" @click="submitForm('license')" plain>保存</el-button>
         </div>
       </el-col>
     </el-row>
@@ -63,19 +66,29 @@ export default {
 <style lang="less">
 .setup-license {
   display: flex;
-  flex-direction: row;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+
+  .header {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: flex-start;
+    height: 60px;
+    border-bottom: 1px solid #f7f8fa;
+    box-shadow: 0 1px 4px 0 #dcdfe6;
+
+    img {
+      display: flex;
+      height: 40px;
+    }
+  }
 
   .main-container {
     display: flex;
-    width: 800px;
-    padding: 40px;
-    background: #fff;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-    box-shadow: 0 0 6px 1px #dcdfe6;
+    flex: 1;
+    width: 100%;
+    padding: 100px;
 
     .el-col {
       height: 100%;
