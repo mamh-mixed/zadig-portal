@@ -6,7 +6,10 @@
           <div class="login-inner-form" v-show="!showForgotPassword && !showSignUp">
             <div class="details">
               <header>
-                <a href="#"><img src="@assets/icons/logo/default-logo.png" alt="logo"></a>
+                <a href="#">
+                  <img v-if="bigLogoUrl" :src="bigLogoUrl" alt="logo" />
+                  <img v-else src="@assets/icons/logo/default-logo.png" alt="logo" />
+                </a>
               </header>
               <section>
                 <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" hide-required-asterisk>
@@ -68,7 +71,7 @@
 <script>
 import moment from 'moment'
 import { isMobile } from 'mobile-device-detect'
-import { checkConnectorsAPI, checkRegistrationAPI } from '@api'
+import { checkConnectorsAPI, checkRegistrationAPI, getEnterpriseInfoAPI } from '@api'
 import ForgetPassword from './components/forgetPassword.vue'
 import SignUp from './components/signUp.vue'
 import store from 'storejs'
@@ -86,6 +89,7 @@ export default {
       showRegistration: false,
       retrieveToken: '',
       loading: false,
+      enterpriseInfo: null,
       loginForm: {
         account: '',
         password: ''
@@ -155,6 +159,11 @@ export default {
           this.$router.push('/v1/projects')
         }
       }
+    },
+    getEnterpriseInfo () {
+      getEnterpriseInfoAPI().then(res => {
+        this.enterpriseInfo = res
+      })
     }
   },
   computed: {
@@ -163,9 +172,17 @@ export default {
     },
     showCopywriting () {
       return this.copywriting.common
+    },
+    bigLogoUrl () {
+      if (this.enterpriseInfo) {
+        return this.enterpriseInfo.big_logo
+      } else {
+        return ''
+      }
     }
   },
   async mounted () {
+    this.getEnterpriseInfo()
     const token = this.$route.query.token
     // 邮箱通过 Token 设置新密码接收参数
     const retrieveToken = this.$route.query.idtoken
@@ -279,7 +296,9 @@ export default {
         }
 
         img {
+          width: 200px;
           height: 60px;
+          object-fit: contain;
         }
 
         h3 {

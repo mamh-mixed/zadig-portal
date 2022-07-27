@@ -236,6 +236,7 @@ export default {
     display: block;
     width: 200px;
     height: 60px;
+    object-fit: contain;
 
     &.small {
       width: 60px;
