@@ -72,7 +72,7 @@ export default {
       } else {
         this.$emit('change', item)
       }
-      this.curTaskIndex = index
+      this.curTaskIndex = -1
     }
   }
 }
