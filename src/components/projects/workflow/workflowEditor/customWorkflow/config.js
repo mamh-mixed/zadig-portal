@@ -44,13 +44,13 @@ const jobTypeList = [
     type: 'freestyle',
     is_offical: true,
     description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
-  },
-  {
-    label: '测试',
-    is_offical: true,
-    name: '',
-    description: 'coming soon'
   }
+  // {
+  //   label: '测试',
+  //   is_offical: true,
+  //   name: '',
+  //   description: 'coming soon'
+  // }
 ]
 const configList = [
   // {

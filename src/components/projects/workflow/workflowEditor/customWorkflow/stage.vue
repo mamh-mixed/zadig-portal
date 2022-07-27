@@ -19,8 +19,7 @@
       class="drawer"
       size="24%"
     >
-      <JobOperate @jobInfo="getJobInfo" ref="jobOperate" />
-      <el-button type="primary" @click="operateJob" size="small">确 定</el-button>
+      <JobOperate v-model="jobInfo" ref="jobOperate" />
     </el-drawer>
     <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ Job</el-button>
   </div>
@@ -148,10 +147,7 @@ export default {
           is_offical: true
         }
       },
-      jobInfo: {
-        type: '',
-        spec: {}
-      },
+      jobInfo: {},
       isShowJobOperateDialog: false
     }
   },
@@ -177,30 +173,6 @@ export default {
     }
   },
   methods: {
-    operateJob () {
-      if (this.jobInfo.type === 'plugin') {
-        this.jobInfo.name = 'default'
-        this.jobInfo.spec.properties = {
-          timeout: 60,
-          res_req: 'low', // high/medium/low/min/define
-          res_req_spec: {
-            cpu_limit: 1000,
-            memory_limit: 512
-          },
-          cluster_id: ''
-        }
-        this.stageInfo.jobs.push(this.jobInfo)
-      } else {
-        this.stageInfo.jobs.push(this.jobInfos[this.jobInfo.type])
-      }
-      this.JobIndex = this.stageInfo.jobs.length - 1
-      this.isShowJobOperateDialog = false
-      this.$store.dispatch('setIsShowFooter', true)
-    },
-    getJobInfo (val) {
-      this.jobInfo.type = val.type ? val.type : 'plugin'
-      this.jobInfo.spec.plugin = val
-    },
     addJob () {
       if (this.stageInfo.jobs.length > 0) {
         if (this.isShowFooter) {
@@ -226,6 +198,24 @@ export default {
     setCurIndex (index) {
       this.JobIndex = index
       this.$store.dispatch('setIsShowFooter', true)
+    }
+  },
+  watch: {
+    jobInfo: {
+      handler (newVal, oldVal) {
+        if (Object.keys(newVal).length === 0) {
+          return
+        }
+        if (newVal.type === 'plugin') {
+          this.stageInfo.jobs.push(this.jobInfo)
+        } else {
+          this.stageInfo.jobs.push(this.jobInfos[this.jobInfo.type])
+        }
+        this.JobIndex = this.stageInfo.jobs.length - 1
+        this.isShowJobOperateDialog = false
+        this.$store.dispatch('setIsShowFooter', true)
+      },
+      deep: true
     }
   }
 }

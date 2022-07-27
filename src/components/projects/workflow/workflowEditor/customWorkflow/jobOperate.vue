@@ -26,14 +26,12 @@ export default {
     return {
       jobTypeList,
       plugins: [],
-      curTaskIndex: 0,
-      jobInfo: {
-        type: 'zadig-build'
-      },
-      rules: {
-        type: [{ required: true, message: '请选择 Job 类型', trigger: 'blur' }]
-      }
+      curTaskIndex: -1
     }
+  },
+  model: {
+    prop: 'value',
+    event: 'change'
   },
   computed: {
     taskList () {
@@ -53,16 +51,28 @@ export default {
       })
     },
     setCurTask (index, item) {
+      if (item.type === 'plugin') {
+        const obj = {
+          name: 'default',
+          type: 'plugin',
+          spec: {
+            properties: {
+              timeout: 60,
+              res_req: 'low', // high/medium/low/min/define
+              res_req_spec: {
+                cpu_limit: 1000,
+                memory_limit: 512
+              },
+              cluster_id: ''
+            },
+            plugin: item
+          }
+        }
+        this.$emit('change', obj)
+      } else {
+        this.$emit('change', item)
+      }
       this.curTaskIndex = index
-      this.$emit('jobInfo', item)
-    }
-  },
-  watch: {
-    jobInfo: {
-      handler () {
-        this.$emit('jobInfo', this.jobInfo)
-      },
-      immediate: true
     }
   }
 }
@@ -81,7 +91,7 @@ export default {
     }
 
     &-dec {
-      color: #555;
+      color: #888;
       font-size: 14px;
     }
 
