@@ -1,7 +1,7 @@
 <template>
   <div class="stage-operate">
     <el-form :model="form" :rules="rules" ref="ruleForm" :label-width="formLabelWidth" size="small">
-      <el-form-item label="Stage 名称" prop="name">
+      <el-form-item label="阶段名称" prop="name">
         <el-input v-model="form.name" size="small"></el-input>
       </el-form-item>
       <el-form-item label="并发执行" prop="parallel">
@@ -63,6 +63,7 @@ export default {
         name: [
           {
             required: true,
+            message: '请填写阶段名称',
             trigger: 'blur'
           }
         ]

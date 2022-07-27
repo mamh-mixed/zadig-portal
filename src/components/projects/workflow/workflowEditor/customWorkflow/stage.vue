@@ -12,7 +12,7 @@
       </div>
     </div>
     <el-drawer
-      title="新建 Job"
+      title="新建任务"
       :visible.sync="isShowJobOperateDialog"
       direction="rtl"
       :modal-append-to-body="false"
@@ -21,7 +21,7 @@
     >
       <JobOperate v-model="jobInfo" ref="jobOperate" />
     </el-drawer>
-    <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ Job</el-button>
+    <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ 任务</el-button>
   </div>
 </template>
 
@@ -176,7 +176,7 @@ export default {
     addJob () {
       if (this.stageInfo.jobs.length > 0) {
         if (this.isShowFooter) {
-          this.$message.error('请先保存上一个 Job 配置')
+          this.$message.error('请先保存上一个任务配置')
         } else {
           this.isShowJobOperateDialog = true
         }
@@ -185,7 +185,7 @@ export default {
       }
     },
     delJob (item, index) {
-      this.$confirm(`确定删除 Job [${item.name}]？`, '确认', {
+      this.$confirm(`确定删除任务 [${item.name}]？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

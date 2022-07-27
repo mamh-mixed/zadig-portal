@@ -38,7 +38,7 @@
               <div class="line"></div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ Stage</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -62,7 +62,7 @@
                 size="small"
               >
                 <el-form-item
-                  label="Job 名称"
+                  label="任务名称"
                   prop="name"
                   v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
                 >
@@ -169,7 +169,7 @@
         </el-form>
       </span>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
+    <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
@@ -213,7 +213,7 @@ import { cloneDeep, differenceWith } from 'lodash'
 const validateName = (rule, value, callback) => {
   const reg = /^[a-z][a-z0-9-]{0,32}$/
   if (value === '') {
-    callback(new Error('请输入 Job 名称'))
+    callback(new Error('请输入任务名称'))
   } else if (!reg.test(value)) {
     callback(
       new Error(
@@ -374,12 +374,12 @@ export default {
         return
       }
       if (this.payload.stages.length === 0) {
-        this.$message.error(' 请至少填写一个 Stage')
+        this.$message.error(' 请至少填写一个阶段')
         return
       }
       this.payload.stages.forEach(item => {
         if (item.jobs.length === 0) {
-          this.$message.error(`请填写 ${item.name} 中的 Job`)
+          this.$message.error(`请填写 ${item.name} 中的任务`)
           throw Error()
         }
       })
@@ -395,7 +395,7 @@ export default {
         //     }
         //   }
         // })
-        this.$message.error('请先保存 Job 配置')
+        this.$message.error('请先保存任务配置')
         return
       }
       this.saveWorkflow()
@@ -449,11 +449,11 @@ export default {
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {
-        this.$message.error('请至少创建一个 Job')
+        this.$message.error('请至少创建一个任务')
         return
       }
       if (this.isShowFooter) {
-        this.$message.error('请先保存上一个 Job 配置')
+        this.$message.error('请先保存上一个任务配置')
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -492,7 +492,7 @@ export default {
       })
     },
     delStage (index, item) {
-      this.$confirm(`确定删除 Stage [${item.name}]？`, '确认', {
+      this.$confirm(`确定删除阶段 [${item.name}]？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

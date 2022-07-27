@@ -9,7 +9,7 @@
       <el-form-item label="服务" prop="source" required>
         <el-select v-model="form.source" placeholder="请选择" size="small" style="width: 220px;">
           <el-option label="运行时输入" value="runtime"></el-option>
-          <el-option label="其他 Job 输出" value="fromjob"></el-option>
+          <el-option label="其他任务输出" value="fromjob"></el-option>
         </el-select>
         <el-form-item
           prop="job_name"
@@ -69,7 +69,7 @@ export default {
           {
             required: true,
             trigger: 'blur',
-            message: '请选择 Job'
+            message: '请选择任务'
           }
         ]
       }
