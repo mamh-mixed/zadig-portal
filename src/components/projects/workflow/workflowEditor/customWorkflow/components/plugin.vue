@@ -3,7 +3,13 @@
     <section class="common-parcel-block">
       <span class="title">变量</span>
       <el-table :data="value.spec.plugin.inputs" class="mg-t8">
-        <el-table-column label="键" prop="name"></el-table-column>
+        <el-table-column label="键">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="scope.row.description" placement="top-start">
+             <span>{{scope.row.name}}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column label="值">
           <template slot-scope="scope">
             <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
