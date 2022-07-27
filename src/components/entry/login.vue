@@ -71,7 +71,7 @@
 <script>
 import moment from 'moment'
 import { isMobile } from 'mobile-device-detect'
-import { checkConnectorsAPI, checkRegistrationAPI, getEnterpriseInfoAPI } from '@api'
+import { checkConnectorsAPI, checkRegistrationAPI, getLicenseAPI } from '@api'
 import ForgetPassword from './components/forgetPassword.vue'
 import SignUp from './components/signUp.vue'
 import store from 'storejs'
@@ -89,7 +89,7 @@ export default {
       showRegistration: false,
       retrieveToken: '',
       loading: false,
-      enterpriseInfo: null,
+      license: null,
       loginForm: {
         account: '',
         password: ''
@@ -160,10 +160,11 @@ export default {
         }
       }
     },
-    getEnterpriseInfo () {
-      getEnterpriseInfoAPI().then(res => {
-        this.enterpriseInfo = res
-      })
+    async getLicense () {
+      this.license = await getLicenseAPI()
+      if (this.license && !this.license.token) {
+        this.$router.replace('/license')
+      }
     }
   },
   computed: {
@@ -174,15 +175,15 @@ export default {
       return this.copywriting.common
     },
     bigLogoUrl () {
-      if (this.enterpriseInfo) {
-        return this.enterpriseInfo.big_logo
+      if (this.license) {
+        return this.license.big_logo
       } else {
         return ''
       }
     }
   },
   async mounted () {
-    this.getEnterpriseInfo()
+    this.getLicense()
     const token = this.$route.query.token
     // 邮箱通过 Token 设置新密码接收参数
     const retrieveToken = this.$route.query.idtoken
