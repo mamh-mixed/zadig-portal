@@ -15,7 +15,7 @@
                   v-model="scope.row.value"
                   size="small"
                   :type="scope.row.is_credential ? 'passsword' : ''"
-                  show-password
+                  :show-password="scope.row.is_credential ? true : false"
                   style="width: 220px;"
                 ></el-input>
               </template>
