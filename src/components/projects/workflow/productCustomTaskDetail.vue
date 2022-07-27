@@ -108,6 +108,7 @@ export default {
     return {
       jobType,
       isShowConsoleFooter: false,
+      firstLoad: true,
       curJobIndex: 0,
       curJob: {},
       payload: {},
@@ -174,9 +175,11 @@ export default {
           if (
             item.approval &&
             item.approval.enabled &&
-            item.status === 'running'
+            item.status === 'running' &&
+            this.firstLoad
           ) {
             this.handleApprovalChange(item, index)
+            this.firstLoad = false
           }
         })
         this.payload = res
