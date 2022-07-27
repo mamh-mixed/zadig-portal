@@ -160,10 +160,11 @@ export default {
         }
       }
     },
-    getEnterpriseInfo () {
-      getEnterpriseInfoAPI().then(res => {
-        this.enterpriseInfo = res
-      })
+    async getEnterpriseInfo () {
+      this.enterpriseInfo = await getEnterpriseInfoAPI()
+      if (this.enterpriseInfo && !this.enterpriseInfo.token) {
+        this.$router.replace('/license')
+      }
     }
   },
   computed: {

@@ -1090,6 +1090,13 @@ const routes = [
     }
   },
   {
+    path: '/license',
+    component: () => import('@/components/entry/license.vue'),
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
     path: '*',
     component: () => import('@/components/entry/404.vue'),
     meta: {
