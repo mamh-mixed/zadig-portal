@@ -6,7 +6,7 @@
         <el-table-column label="键">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="scope.row.description" placement="top-start">
-             <span>{{scope.row.name}}</span>
+              <span>{{scope.row.name}}</span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -23,6 +23,11 @@
               :show-password="scope.row.is_credential ? true : false"
               style="width: 220px;"
             ></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否加密">
+          <template slot-scope="scope">
+            <el-checkbox v-model="scope.row.is_credential">是否加密</el-checkbox>
           </template>
         </el-table-column>
       </el-table>

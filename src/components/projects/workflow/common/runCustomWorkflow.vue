@@ -204,8 +204,8 @@ export default {
       }
     },
     getWorkflowPresetInfo (workflowName) {
-      const key = this.$utils.rsaEncrypt()
-      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName, key).then(
+      // const key = this.$utils.rsaEncrypt()
+      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
