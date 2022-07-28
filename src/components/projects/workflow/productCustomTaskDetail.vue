@@ -78,6 +78,14 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
+        <Plugin
+          v-if="curJob.type === jobType.plugin"
+          :pluginInfo="curJob"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          :projectName="projectName"
+          @showFooter="showFooter"
+        />
       </footer>
     </Multipane>
   </div>
@@ -90,6 +98,7 @@ import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
 import Approval from './productCustomTaskDetail/approval.vue'
 import CommonTask from './productCustomTaskDetail/commonTask.vue'
+import Plugin from './productCustomTaskDetail/plugin.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -99,6 +108,7 @@ export default {
     return {
       jobType,
       isShowConsoleFooter: false,
+      firstLoad: true,
       curJobIndex: 0,
       curJob: {},
       payload: {},
@@ -114,7 +124,8 @@ export default {
     BuildConsole,
     DeployConsole,
     Approval,
-    CommonTask
+    CommonTask,
+    Plugin
   },
   computed: {
     taskId () {
@@ -164,9 +175,11 @@ export default {
           if (
             item.approval &&
             item.approval.enabled &&
-            item.status === 'running'
+            item.status === 'running' &&
+            this.firstLoad
           ) {
             this.handleApprovalChange(item, index)
+            this.firstLoad = false
           }
         })
         this.payload = res

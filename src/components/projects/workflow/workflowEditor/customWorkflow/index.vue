@@ -38,7 +38,7 @@
               <div class="line"></div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ Stage</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -62,7 +62,7 @@
                 size="small"
               >
                 <el-form-item
-                  label="Job 名称"
+                  label="任务名称"
                   prop="name"
                   v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
                 >
@@ -73,7 +73,7 @@
                     <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                   </el-select>
                 </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
+                <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build" class="mg-t40">
                   <ServiceAndBuild
                     :projectName="projectName"
                     v-model="job.spec.service_and_builds"
@@ -107,6 +107,9 @@
                     :disabled="Object.keys(service).length === 0"
                     @click="addServiceAndBuild(job.spec.service_and_builds)"
                   >+ 添加</el-button>
+                </div>
+                <div v-if="job.type === 'plugin'">
+                  <Plugin  v-model="job" ref="plugin"/>
                 </div>
                 <BuildEnv
                   :projectName="projectName"
@@ -147,10 +150,10 @@
       </section>
     </div>
     <div class="right">
-      <div v-for="item in configList" :key="item.label" class="right-tab" @click="isShowDrawer=true">{{item.label}}</div>
+      <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
     <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
-      <span>
+      <span v-if="curDrawer === 'high'">
         <h4>运行策略</h4>
         <el-form>
           <el-form-item>
@@ -166,7 +169,7 @@
         </el-form>
       </span>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
+    <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
@@ -196,10 +199,11 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
 import Stage from './stage.vue'
 import StageOperate from './stageOperate.vue'
+// import JobOperate from './jobOperate.vue'
 import ServiceAndBuild from './components/jobServiceAndBuild'
 import BuildEnv from './components/jobBuildEnv.vue'
 import JobCommonBuild from './components/jobCommonBuild.vue'
-import DockerList from './components/dockerList.vue'
+import Plugin from './components/plugin.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import jsyaml from 'js-yaml'
@@ -209,7 +213,7 @@ import { cloneDeep, differenceWith } from 'lodash'
 const validateName = (rule, value, callback) => {
   const reg = /^[a-z][a-z0-9-]{0,32}$/
   if (value === '') {
-    callback(new Error('请输入 Job 名称'))
+    callback(new Error('请输入任务名称'))
   } else if (!reg.test(value)) {
     callback(
       new Error(
@@ -258,6 +262,7 @@ export default {
       },
       curStageIndex: 0,
       curJobIndex: -2, // 不指向 job
+      curDrawer: 'high',
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
@@ -297,10 +302,10 @@ export default {
     ServiceAndBuild,
     BuildEnv,
     JobCommonBuild,
-    DockerList,
     Service,
     RunCustomWorkflow,
-    codemirror
+    codemirror,
+    Plugin
   },
   computed: {
     projectName () {
@@ -369,12 +374,12 @@ export default {
         return
       }
       if (this.payload.stages.length === 0) {
-        this.$message.error(' 请至少填写一个 Stage')
+        this.$message.error(' 请至少填写一个阶段')
         return
       }
       this.payload.stages.forEach(item => {
         if (item.jobs.length === 0) {
-          this.$message.error(`请填写 ${item.name} 中的 Job`)
+          this.$message.error(`请填写 ${item.name} 中的任务`)
           throw Error()
         }
       })
@@ -390,7 +395,7 @@ export default {
         //     }
         //   }
         // })
-        this.$message.error('请先保存 Job 配置')
+        this.$message.error('请先保存任务配置')
         return
       }
       this.saveWorkflow()
@@ -444,11 +449,11 @@ export default {
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {
-        this.$message.error('请至少创建一个 Job')
+        this.$message.error('请至少创建一个任务')
         return
       }
       if (this.isShowFooter) {
-        this.$message.error('请先保存上一个 Job 配置')
+        this.$message.error('请先保存上一个任务配置')
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -487,7 +492,7 @@ export default {
       })
     },
     delStage (index, item) {
-      this.$confirm(`确定删除 Stage [${item.name}]？`, '确认', {
+      this.$confirm(`确定删除阶段 [${item.name}]？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -550,6 +555,15 @@ export default {
                 console.log('common build valid error', err)
                 reject(err)
               })
+            } else if (this.job.type === jobType.plugin) {
+              this.$refs.plugin.validate().then((res) => {
+                this.$set(
+                  this.payload.stages[this.curStageIndex].jobs,
+                  this.curJobIndex,
+                  res
+                )
+              })
+              this.$store.dispatch('setIsShowFooter', false)
             }
           }
         })
@@ -598,6 +612,10 @@ export default {
       this.$set(this.payload, 'multi_run', this.multi_run)
       this.$message.success('设置成功')
       this.isShowDrawer = false
+    },
+    setCurDrawer (val) {
+      this.isShowDrawer = true
+      this.curDrawer = val
     }
   },
   watch: {
@@ -628,7 +646,7 @@ export default {
         if (val) {
           this.serviceAndBuilds = this.originServiceAndBuilds
           if (
-            val.spec.service_and_builds &&
+            val.spec && val.spec.service_and_builds &&
             val.spec.service_and_builds.length > 0
           ) {
             this.serviceAndBuilds = differenceWith(
@@ -817,7 +835,7 @@ export default {
     /deep/ .el-drawer.rtl,
     .el-drawer__container {
       top: auto;
-      right: 100px !important;
+      right: 0;
       bottom: 0;
       height: calc(~'100% - 102px') !important;
     }

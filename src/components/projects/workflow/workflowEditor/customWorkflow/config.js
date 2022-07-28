@@ -27,23 +27,30 @@ const jobTypeList = [
   {
     label: '构建',
     name: 'zadig-build',
-    tip: '可直接引用「项目」-「构建」模块中的配置'
+    type: 'zadig-build',
+    is_offical: true,
+    description: '可直接引用「项目」-「构建」模块中的配置'
   },
   {
     label: '部署',
     name: 'zadig-deploy',
-    tip: '可更新容器形态的服务镜像'
+    type: 'zadig-deploy',
+    is_offical: true,
+    description: '可更新容器形态的服务镜像'
   },
   {
     label: '通用任务',
     name: 'freestyle',
-    tip: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
-  },
-  {
-    label: '测试',
-    name: '',
-    tip: 'coming soon'
+    type: 'freestyle',
+    is_offical: true,
+    description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
   }
+  // {
+  //   label: '测试',
+  //   is_offical: true,
+  //   name: '',
+  //   description: 'coming soon'
+  // }
 ]
 const configList = [
   // {
@@ -68,7 +75,8 @@ const jobType = {
   deploy: 'zadig-deploy',
   approval: 'zadig-approval',
   common: 'freestyle',
-  freestyle: 'freestyle'
+  freestyle: 'freestyle',
+  plugin: 'plugin'
 }
 const editorOptions = {
   mode: 'yaml',

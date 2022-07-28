@@ -110,7 +110,7 @@ export default {
         getPendingStatusCustomWorkflowListAPI()
           .then(res => {
             this.customWorkflowTasks.pending = res.data
-            this.task.customRunning = res.data.length
+            this.task.customPending = res.data.length
           })
           .closeWhenDestroy(this)
       }

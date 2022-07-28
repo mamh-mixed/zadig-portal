@@ -1,6 +1,6 @@
 <template>
   <div class="workflow-build-rows">
-    <el-table :data="job.spec.steps.filter(item=>item.type==='git')">
+    <el-table :data="job.spec.steps.filter(item=>item.type==='git')" v-if="type!=='plugin'">
       <el-table-column label="代码库">
         <template slot-scope="scope" v-if="scope.row.type === 'git'">
           <el-row v-for="build of scope.row.spec.repos" class="build-row" :key="build.code_host_id">
@@ -79,8 +79,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-table :data="job.spec.properties.envs">
-      <el-table-column label="键" prop="key"></el-table-column>
+    <el-table :data="type === 'plugin' ? job.spec.plugin.inputs : job.spec.properties.envs">
+      <el-table-column label="键" :prop="type === 'plugin'?'name':'key'"></el-table-column>
       <el-table-column label="值">
         <template slot-scope="scope">
           <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
@@ -107,6 +107,10 @@ export default {
     job: {
       type: Object,
       default: () => ({})
+    },
+    type: {
+      type: String,
+      default: ''
     }
   },
   data () {

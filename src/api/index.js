@@ -2182,3 +2182,7 @@ export function getUserNumberAPI () {
 export function uploadUserNumberAPI (payload) {
   return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
 }
+// plugins
+export function getPluginsAPI () {
+  return http.get(`/api/aslan/workflow/plugin/template`)
+}
