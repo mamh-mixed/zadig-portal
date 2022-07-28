@@ -37,7 +37,7 @@
               <span style="display: inlne-block;">{{expiredTime}}</span>
               <template v-if="expiredTime">
                 <span v-if="isExpired" class="alert error-alert">许可证已过期，联系 Zadig 获取新的许可证</span>
-                <span v-else-if="expireSoon" class="alert warning-alert">许可证将在 {{leftTime}} 天后过期，联系 Zadig 获取新的许可证</span>
+                <span v-else-if="expireSoon" class="alert warning-alert">许可证将在 {{leftTime}}后过期，联系 Zadig 获取新的许可证</span>
               </template>
             </div>
           </el-col>
@@ -64,6 +64,7 @@
 import bus from '@utils/eventBus'
 import { getLicenseAPI, updateLicenseAPI } from '@api'
 import moment from 'moment'
+import 'moment/locale/zh-cn'
 export default {
   data () {
     return {
@@ -127,7 +128,7 @@ export default {
     },
     leftTime () {
       if (this.license.expire_timestamp > 0) {
-        return moment.unix(this.license.expire_timestamp).fromNow()
+        return moment.unix(this.license.expire_timestamp).fromNow(true)
       } else {
         return 'N/A'
       }
