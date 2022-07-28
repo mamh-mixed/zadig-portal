@@ -16,7 +16,16 @@
               <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
             </el-select>
             <el-input
+              v-if="scope.row.type === 'text'"
+              v-model="scope.row.value"
+              size="small"
+              type="textarea"
+              :rows="2"
+              style="width: 220px;"
+            ></el-input>
+            <el-input
               v-else
+              class="password"
               v-model="scope.row.value"
               size="small"
               :type="scope.row.is_credential ? 'passsword' : ''"
@@ -27,7 +36,7 @@
         </el-table-column>
         <el-table-column label="是否加密">
           <template slot-scope="scope">
-            <el-checkbox v-model="scope.row.is_credential">是否加密</el-checkbox>
+            <el-checkbox v-model="scope.row.is_credential" :disabled="scope.row.type === 'text'">是否加密</el-checkbox>
           </template>
         </el-table-column>
       </el-table>
@@ -108,6 +117,12 @@ export default {
       font-weight: 300;
       font-size: 14px;
       line-height: 28px;
+    }
+  }
+
+  .password {
+    /deep/.el-input__suffix {
+      display: none !important;
     }
   }
 }
