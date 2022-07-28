@@ -101,11 +101,6 @@ export default {
               icon: 'iconfont iconjingxiang',
               url: 'system/imgs'
             }
-            // {
-            //   name: '插件管理',
-            //   icon: 'iconfont el-icon-sell',
-            //   url: 'system/plugins'
-            // }
           ]
         },
         {
