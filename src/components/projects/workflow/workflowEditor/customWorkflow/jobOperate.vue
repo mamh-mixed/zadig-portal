@@ -7,7 +7,7 @@
       :class="{'active':curTaskIndex===index}"
       @click="setCurTask(index,item)"
     >
-      <div class="mg-b16">
+      <div class="mg-b8">
         <span class="item-title">{{item.label || item.name}}</span>
         <el-tag size="small" class="mg-l8" v-if="item.is_offical">官方</el-tag>
       </div>
@@ -80,10 +80,9 @@ export default {
 <style lang="less" scoped>
 .job-operate {
   .item {
-    margin: 24px 0;
-    padding: 8px;
+    padding: 16px;
     text-align: left;
-    border-radius: 6px;
+    border-bottom: 1px solid #ebedef;
     cursor: pointer;
 
     &-title {
