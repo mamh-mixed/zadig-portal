@@ -80,7 +80,13 @@
       </el-table-column>
     </el-table>
     <el-table :data="type === 'plugin' ? job.spec.plugin.inputs : job.spec.properties.envs">
-      <el-table-column label="键" :prop="type === 'plugin'?'name':'key'"></el-table-column>
+      <el-table-column label="键" :prop="type === 'plugin'?'name':'key'">
+        <template slot-scope="scope">
+          <el-tooltip class="item" effect="dark" :content="scope.row.description" placement="top-start">
+            <span>{{type === 'plugin'?scope.row.name:scope.row.key}}</span>
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column label="值">
         <template slot-scope="scope">
           <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
