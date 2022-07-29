@@ -217,9 +217,9 @@ export default {
               if (job.spec && job.spec.service_and_builds) {
                 job.spec.service_and_builds.forEach(service => {
                   service.key_vals.forEach(key => {
-                    if (key.is_credential) {
-                      key.value = this.$utils.aesDecrypt(key.value)
-                    }
+                    // if (key.is_credential) {
+                    //   key.value = this.$utils.aesDecrypt(key.value)
+                    // }
                   })
                 })
               }
