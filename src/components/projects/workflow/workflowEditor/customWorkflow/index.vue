@@ -95,15 +95,15 @@
                     >
                       <span
                         style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
-                        @click="service = serviceAndBuilds.map(item=>item.service_name)"
+                        @click="service = serviceAndBuilds.map(item=>item.value)"
                       >全选</span>
                     </el-option>
                     <el-option
-                      v-for="service in serviceAndBuilds"
-                      :key="service.service_name"
-                      :value="service.service_name"
-                      :label="`${service.service_name}(${service.service_module})`"
-                    >{{service.service_name}}/{{service.service_module}}</el-option>
+                      v-for="(service,index) in serviceAndBuilds"
+                      :key="index"
+                      :value="service.value"
+                      :label="service.value"
+                    >{{service.value}}</el-option>
                   </el-select>
                   <el-button
                     type="success"
@@ -595,6 +595,9 @@ export default {
       const projectName = this.projectName
       // const key = this.$utils.rsaEncrypt()
       getAssociatedBuildsAPI(projectName, true).then(res => {
+        res.forEach(item => {
+          item.value = `${item.service_name}/${item.service_module}`
+        })
         this.serviceAndBuilds = res
         this.originServiceAndBuilds = res
       })
@@ -603,13 +606,13 @@ export default {
       let curService
       this.service.forEach(service => {
         curService = this.serviceAndBuilds.find(
-          item => item.service_name === service
+          item => item.value === service
         )
         val.push(cloneDeep(curService))
       })
       // added need to del
       this.serviceAndBuilds = this.serviceAndBuilds.filter(item => {
-        return item.service_name !== curService.service_name
+        return item.value !== curService.value
       })
       this.service = []
     },
@@ -662,7 +665,7 @@ export default {
               this.originServiceAndBuilds,
               val.spec.service_and_builds,
               (a, b) => {
-                return a.service_name === b.service_name
+                return a.value === `${b.service_name}/${b.service_module}`
               }
             )
           }

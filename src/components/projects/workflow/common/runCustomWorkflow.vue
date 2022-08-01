@@ -22,7 +22,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
+                  value-key="value"
                   size="medium"
                   style="width: 220px;"
                   @change="handleServiceBuildChange"
@@ -30,7 +30,7 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
                     :key="index"
-                    :label="service.service_name"
+                    :label="service.value"
                     :value="service"
                   >
                     <span>{{service.service_module}}</span>
@@ -216,6 +216,7 @@ export default {
               job.checked = true
               if (job.spec && job.spec.service_and_builds) {
                 job.spec.service_and_builds.forEach(service => {
+                  service.value = `${service.service_name}/${service.service_module}`
                   service.key_vals.forEach(key => {
                     // if (key.is_credential) {
                     //   key.value = this.$utils.aesDecrypt(key.value)
