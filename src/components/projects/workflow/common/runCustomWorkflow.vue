@@ -11,7 +11,7 @@
             class="mg-l8"
           >
             <template slot="title">
-              <el-checkbox v-model="job.checked" ></el-checkbox>
+              <el-checkbox v-model="job.checked"></el-checkbox>
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
@@ -352,15 +352,7 @@ export default {
       // 数据处理
       const payload = cloneDeep(this.payload)
       payload.stages.forEach(stage => {
-        const tmp = []
-        stage.jobs.forEach(job => {
-          if (job.checked) {
-            tmp.push(job)
-          }
-        })
-        stage.jobs = tmp
-      })
-      payload.stages.forEach(stage => {
+        stage.jobs = stage.jobs.filter(job => job.checked)
         stage.jobs.forEach(job => {
           job.spec.service_and_builds = job.pickedTargets
           delete job.pickedTargets
