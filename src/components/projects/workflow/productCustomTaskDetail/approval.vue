@@ -1,6 +1,6 @@
 <template>
   <div class="approval">
-    <el-card style="position: relative;">
+    <el-card class="card">
       <div slot="header" class="mg-b8">
         <el-col :span="2" class>
           <span class="approval-type">人工审核</span>
@@ -19,6 +19,11 @@
           <span
             :class="[`status-${$utils.taskElTagType(approvalInfo.approval.reject_or_approve)}`]"
           >{{ wordTranslation(approvalInfo.approval.reject_or_approve,'pipeline','task') }}</span>
+        </el-col>
+        <el-col :span="1" class="approval-close">
+          <span @click="$emit('showFooter',false)">
+            <i class="el-icon-close"></i>
+          </span>
         </el-col>
       </div>
       <el-table :data="approvalInfo.approval.approve_users" size="small">
@@ -131,13 +136,18 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-
 .approval {
   background: #fff;
 
   &-type {
     margin-right: 8px;
     font-weight: 500;
+  }
+
+  &-close {
+    float: right;
+    font-size: 16px;
+    cursor: pointer;
   }
 
   .text {
@@ -147,6 +157,20 @@ export default {
     .red {
       color: red;
     }
+  }
+
+  .card {
+    /deep/ .el-card__header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fff;
+      box-shadow: inset 0 1px 2px #ddd;
+    }
+  }
+
+  /deep/ .el-card {
+    overflow: visible !important;
   }
 }
 </style>

@@ -1,18 +1,21 @@
 <template>
   <div class="common-task">
-    <el-card style="position: relative;">
+    <el-card class="card">
       <div slot="header" class="mg-b8">
         <el-col :span="6">
           <span class="common-task-type">通用任务</span>
           <span>{{commonInfo.name}}</span>
         </el-col>
         <el-col :span="2">
-          <div class="grid-content item-desc">
-            <a :class="buildOverallColor" href="#buildv4-log">{{commonInfo.status?buildOverallStatusZh:"未运行"}}</a>
-          </div>
+          <a :class="buildOverallColor" href="#buildv4-log">{{commonInfo.status?buildOverallStatusZh:"未运行"}}</a>
         </el-col>
         <el-col :span="2">
-          <span class="item-desc">{{commonInfo.interval}}</span>
+          <span>{{commonInfo.interval}}</span>
+        </el-col>
+        <el-col :span="1" class="common-task-close">
+          <span @click="$emit('showFooter',false)">
+            <i class="el-icon-close"></i>
+          </span>
         </el-col>
       </div>
       <div class="error-wrapper">
@@ -33,7 +36,7 @@
         </el-col>
       </el-row>
       <div class="log-content mg-t8">
-        <XtermLog :id="commonInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom"/>
+        <XtermLog :id="commonInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom" />
       </div>
     </el-card>
   </div>
@@ -203,10 +206,30 @@ export default {
     font-weight: 500;
   }
 
+  &-close {
+    float: right;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
   .item {
     &-title {
       color: #8d9199;
     }
+  }
+
+  .card {
+    /deep/ .el-card__header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fff;
+      box-shadow: inset 0 1px 2px #ddd;
+    }
+  }
+
+  /deep/ .el-card {
+    overflow: visible !important;
   }
 }
 </style>

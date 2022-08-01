@@ -1,6 +1,6 @@
 <template>
   <div class="plugin">
-    <el-card style="position: relative;">
+    <el-card class="card">
       <div slot="header" class="mg-b8">
         <el-col :span="6">
           <span class="plugin-type">{{pluginInfo.spec.name}}</span>
@@ -13,6 +13,11 @@
         </el-col>
         <el-col :span="2">
           <span class="item-desc">{{pluginInfo.interval}}</span>
+        </el-col>
+        <el-col :span="1" class="plugin-close">
+          <span @click="$emit('showFooter',false)">
+            <i class="el-icon-close"></i>
+          </span>
         </el-col>
       </div>
       <div class="error-wrapper">
@@ -207,10 +212,30 @@ export default {
     font-weight: 500;
   }
 
+  &-close {
+    float: right;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
   .item {
     &-title {
       color: #8d9199;
     }
+  }
+
+  .card {
+    /deep/ .el-card__header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fff;
+      box-shadow: inset 0 1px 2px #ddd;
+    }
+  }
+
+  /deep/ .el-card {
+    overflow: visible !important;
   }
 }
 </style>

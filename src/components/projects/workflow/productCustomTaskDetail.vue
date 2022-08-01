@@ -60,6 +60,8 @@
           :taskId="taskId"
           :workflowName="workflowName"
           :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
         <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
         <Approval
@@ -223,6 +225,9 @@ export default {
       ).then(res => {
         this.$message.success(' 取消成功')
       })
+    },
+    closeFooter () {
+      this.isShowConsoleFooter = false
     }
   },
   mounted () {
@@ -339,7 +344,8 @@ export default {
   }
 
   footer {
-    overflow-y: auto;
+    height: 100%;
+    // overflow-y: auto;
   }
 
   .multipane-resizer {

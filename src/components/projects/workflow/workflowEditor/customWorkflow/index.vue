@@ -47,9 +47,13 @@
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
         <footer :style="{ minHeight: '400px',maxHeight: '500px'}" v-if="isShowFooter">
-          <el-card>
-            <div slot="header">
-              <span>{{ job.type === jobType.freestyle ? '通用任务' : '基本配置' }}</span>
+          <el-card class="card">
+            <div slot="header" class="card-header">
+              <span>{{curJobType}}</span>
+              <div>
+                <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
+                <el-button  size="mini" @click="closeFooter">取消</el-button>
+              </div>
             </div>
             <div v-if="payload.stages.length > 0 && job">
               <el-form
@@ -139,7 +143,6 @@
                 </el-form>
                 <JobCommonBuild :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
               </div>
-              <el-button class="mg-t16 mg-b64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
             </div>
           </el-card>
         </footer>
@@ -185,7 +188,8 @@ import {
   configList,
   jobTabList,
   editorOptions,
-  jobType
+  jobType,
+  jobTypeList
 } from './config'
 import {
   getAssociatedBuildsAPI,
@@ -314,11 +318,12 @@ export default {
     isShowFooter () {
       return this.$store.state.customWorkflow.isShowFooter
     },
-    workflowInfo () {
-      return this.$store.state.customWorkflow.workflowInfo
-    },
     isEdit () {
       return this.$route.params.workflow_name
+    },
+    curJobType () {
+      const curType = jobTypeList.find(item => item.type === this.job.type)
+      return curType ? curType.label : '插件'
     }
   },
   created () {
@@ -439,7 +444,7 @@ export default {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
         this.multi_run = this.payload.multi_run
-        this.$store.dispatch('setWorkflowInfo', this.payload)
+        // this.$store.dispatch('setWorkflowInfo', Object.assign({}, this.payload))
       })
     },
     showStageOperateDialog (type, row) {
@@ -616,6 +621,10 @@ export default {
     setCurDrawer (val) {
       this.isShowDrawer = true
       this.curDrawer = val
+    },
+    closeFooter () {
+      this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+      this.$store.dispatch('setIsShowFooter', false)
     }
   },
   watch: {
@@ -802,6 +811,27 @@ export default {
         position: absolute;
         bottom: 24px;
         left: 50%;
+      }
+
+      .card {
+        &-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        /deep/ .el-card__header {
+          position: sticky;
+          top: 0;
+          z-index: 1;
+          padding: 8px 20px;
+          background: #fff;
+          box-shadow: inset 0 1px 2px #ddd;
+        }
+      }
+
+      /deep/ .el-card {
+        overflow: visible !important;
       }
     }
   }
