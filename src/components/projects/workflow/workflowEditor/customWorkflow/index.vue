@@ -66,15 +66,21 @@
                     <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                   </el-select>
                 </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
-                  <ServiceAndBuild :projectName="projectName" v-model="job.spec.service_and_builds" class="mg-b24" ref="serviceAndbuild" />
-                  <el-select size="small" v-model="service">
+                <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build" class="mg-t40">
+                  <ServiceAndBuild
+                    :projectName="projectName"
+                    v-model="job.spec.service_and_builds"
+                    :originServiceAndBuilds="originServiceAndBuilds"
+                    class="mg-b24"
+                    ref="serviceAndbuild"
+                  />
+                  <el-select size="small" v-model="service" multiple filterable clearable>
                     <el-option
-                      v-for="service in serviceAndBuilds"
-                      :key="service.service_name"
-                      :value="service.service_name"
-                      :label="`${service.service_name}(${service.service_module})`"
-                    >{{service.service_name}}/{{service.service_module}}</el-option>
+                      v-for="(service,index) in serviceAndBuilds"
+                      :key="index"
+                      :value="service.value"
+                      :label="service.value"
+                    >{{service.value}}</el-option>
                   </el-select>
                   <el-button
                     type="success"
@@ -471,18 +477,24 @@ export default {
     getServiceAndBuildList () {
       const projectName = this.projectName
       getAssociatedBuildsAPI(projectName).then(res => {
+        res.forEach(item => {
+          item.value = `${item.service_name}/${item.service_module}`
+        })
         this.serviceAndBuilds = res
         this.originServiceAndBuilds = res
       })
     },
     addServiceAndBuild (val) {
-      const curService = this.serviceAndBuilds.find(
-        item => item.service_name === this.service
-      )
-      val.push(cloneDeep(curService))
+      let curService
+      this.service.forEach(service => {
+        curService = this.serviceAndBuilds.find(
+          item => item.value === service
+        )
+        val.push(cloneDeep(curService))
+      })
       // added need to del
       this.serviceAndBuilds = this.serviceAndBuilds.filter(item => {
-        return item.service_name !== curService.service_name
+        return item.value !== curService.value
       })
       this.service = ''
     },
@@ -523,7 +535,7 @@ export default {
               this.originServiceAndBuilds,
               val.spec.service_and_builds,
               (a, b) => {
-                return a.service_name === b.service_name
+                return a.value === `${b.service_name}/${b.service_module}`
               }
             )
           }
