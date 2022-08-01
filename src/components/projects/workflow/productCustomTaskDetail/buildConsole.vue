@@ -1,18 +1,21 @@
 <template>
   <div class="build-console">
-    <el-card style="position: relative;">
+    <el-card class="card">
       <div slot="header" class="mg-b8">
         <el-col :span="6">
           <span class="build-console-type">构建</span>
           <span>{{jobInfo.name}}</span>
         </el-col>
         <el-col :span="2">
-          <div class="grid-content item-desc">
-            <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
-          </div>
+          <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
         </el-col>
         <el-col :span="2">
-          <span class="item-desc">{{jobInfo.interval}}</span>
+          <span>{{jobInfo.interval}}</span>
+        </el-col>
+        <el-col :span="1" class="build-console-close">
+          <span @click="$emit('showFooter',false)">
+            <i class="el-icon-close"></i>
+          </span>
         </el-col>
       </div>
       <div class="error-wrapper">
@@ -37,7 +40,7 @@
           <div class="item-title">服务名称</div>
         </el-col>
         <el-col :span="8">
-          <span class="item-desc">{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
+          <span>{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
         </el-col>
         <el-col :span="4">
           <div class="item-title">
@@ -61,12 +64,12 @@
         </el-col>
         <el-col :span="8">
           <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-            <span class="item-desc">{{jobInfo.spec.image.split('/').pop()}}</span>
+            <span>{{jobInfo.spec.image.split('/').pop()}}</span>
           </el-tooltip>
         </el-col>
       </el-row>
       <div class="log-content mg-t8">
-        <XtermLog :id="jobInfo.spec.service_name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom"/>
+        <XtermLog :id="jobInfo.spec.service_name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom" />
       </div>
     </el-card>
   </div>
@@ -102,6 +105,10 @@ export default {
     workflowName: {
       type: String,
       default: ''
+    },
+    isShowConsoleFooter: {
+      type: Boolean,
+      default: false
     }
   },
   mixins: [mixin],
@@ -195,6 +202,9 @@ export default {
           ? Math.round(new Date().getTime() / 1000)
           : detail.end_time) - detail.start_time
       detail.interval = this.$utils.timeFormat(detail.intervalSec)
+    },
+    closeConsole () {
+      this.isShowConsoleFooter = false
     }
   },
   watch: {
@@ -227,7 +237,6 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-
 .build-console {
   height: 100%;
   font-size: 14px;
@@ -237,10 +246,32 @@ export default {
     font-weight: 500;
   }
 
+  &-close {
+    float: right;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
   .item {
     &-title {
       color: #8d9199;
     }
+  }
+
+  .card {
+    height: 100%;
+
+    /deep/ .el-card__header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fff;
+      box-shadow: inset 0 1px 2px #ddd;
+    }
+  }
+
+  /deep/ .el-card {
+    overflow: visible !important;
   }
 }
 </style>

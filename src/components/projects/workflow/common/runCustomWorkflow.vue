@@ -10,6 +10,10 @@
             :name="`${stageIndex}${jobIndex}`"
             class="mg-l8"
           >
+            <template slot="title">
+              <el-checkbox v-model="job.checked"></el-checkbox>
+              <span class="mg-l8">{{job.name}}</span>
+            </template>
             <div v-if="job.type === 'zadig-build'">
               <el-form-item label="服务组件">
                 <el-select
@@ -18,7 +22,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
+                  value-key="value"
                   size="medium"
                   style="width: 220px;"
                   @change="handleServiceBuildChange"
@@ -26,7 +30,7 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
                     :key="index"
-                    :label="service.service_name"
+                    :label="service.value"
                     :value="service"
                   >
                     <span>{{service.service_module}}</span>
@@ -204,17 +208,19 @@ export default {
       }
     },
     getWorkflowPresetInfo (workflowName) {
-      const key = this.$utils.rsaEncrypt()
-      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName, key).then(
+      // const key = this.$utils.rsaEncrypt()
+      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
+              job.checked = true
               if (job.spec && job.spec.service_and_builds) {
                 job.spec.service_and_builds.forEach(service => {
+                  service.value = `${service.service_name}/${service.service_module}`
                   service.key_vals.forEach(key => {
-                    if (key.is_credential) {
-                      key.value = this.$utils.aesDecrypt(key.value)
-                    }
+                    // if (key.is_credential) {
+                    //   key.value = this.$utils.aesDecrypt(key.value)
+                    // }
                   })
                 })
               }
@@ -347,9 +353,11 @@ export default {
       // 数据处理
       const payload = cloneDeep(this.payload)
       payload.stages.forEach(stage => {
+        stage.jobs = stage.jobs.filter(job => job.checked)
         stage.jobs.forEach(job => {
           job.spec.service_and_builds = job.pickedTargets
           delete job.pickedTargets
+          delete job.checked
           if (
             job.spec.service_and_images &&
             job.spec.service_and_images.length > 0

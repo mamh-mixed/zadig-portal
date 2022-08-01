@@ -1,6 +1,6 @@
 <template>
   <div class="build-console">
-    <el-card style="position: relative;">
+    <el-card class="card">
       <div slot="header" class="mg-b8">
         <el-col :span="6">
           <span class="build-console-type">部署</span>
@@ -13,6 +13,11 @@
         </el-col>
         <el-col v-if="jobInfo.status!=='running'" :span="2">
           <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
+        </el-col>
+        <el-col :span="1" class="build-console-close">
+          <span @click="$emit('showFooter',false)">
+            <i class="el-icon-close"></i>
+          </span>
         </el-col>
       </div>
       <div class="error-wrapper">
@@ -116,6 +121,12 @@ export default {
     font-weight: 500;
   }
 
+  &-close {
+    float: right;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
   .item {
     &-title {
       color: #8d9199;
@@ -124,6 +135,20 @@ export default {
 
   .env-link {
     color: @themeColor;
+  }
+
+  .card {
+    /deep/ .el-card__header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #fff;
+      box-shadow: inset 0 1px 2px #ddd;
+    }
+  }
+
+  /deep/ .el-card {
+    overflow: visible !important;
   }
 }
 </style>
