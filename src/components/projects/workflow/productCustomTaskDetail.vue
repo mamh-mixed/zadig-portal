@@ -63,7 +63,7 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
-        <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
+        <DeployConsole  @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
         <Approval
           v-if="curJob.type === jobType.approval"
           :approvalInfo="curStage"
