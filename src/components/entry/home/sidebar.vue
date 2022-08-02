@@ -242,7 +242,7 @@ export default {
       ],
       plutusMenu: [
         {
-          category_name: '私有化交付',
+          category_name: '客户交付',
           items: [
             {
               name: '交付看板',
