@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="micro-container"
-    v-loading="!hasMounted"
-    element-loading-text="加载中..."
-  >
+  <div class="micro-container" v-loading="!hasMounted" element-loading-text="加载中...">
     <div id="container"></div>
   </div>
 </template>
@@ -60,7 +56,7 @@ export default {
     // this.activationHandleChange(this.$route.path)
     bus.$emit(`set-topbar-title`, {
       title: '',
-      breadcrumb: [{ title: '微应用', url: '' }]
+      breadcrumb: [{ title: '客户交付', url: '' }]
     })
   },
   beforeRouteEnter (to, from, next) {
