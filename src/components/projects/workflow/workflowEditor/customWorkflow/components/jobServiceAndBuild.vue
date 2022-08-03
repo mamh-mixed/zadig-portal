@@ -64,7 +64,7 @@
                 <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
                 <el-table-column prop="branch" label="默认分支">
                   <template slot-scope="scope">
-                    <el-select size="small" v-model="scope.row.branch" style="width: 220px;">
+                    <el-select size="small" v-model="scope.row.branch" filterable style="width: 220px;">
                       <el-option
                         v-for="option in scope.row.branches"
                         :key="option.name"
@@ -124,8 +124,7 @@ export default {
   data () {
     return {
       form: {},
-      buildTabList,
-      originRepoList: []
+      buildTabList
     }
   },
   computed: {
