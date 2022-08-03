@@ -86,7 +86,7 @@
                 </el-select>
                 <el-button
                   @click="addRepo(item)"
-                  :disabled="item.originRepos.length === 0"
+                  :disabled="item.originRepos && item.originRepos.length === 0"
                   type="primary"
                   size="mini"
                   icon="el-icon-plus"
@@ -167,10 +167,14 @@ export default {
         const result = item.module_builds.find(
           build => build.name === item.build_name
         )
-        const originRepos = differenceWith(result.repos, item.repos, (a, b) => {
-          return a.repo_name === b.repo_name
-        })
-        this.$set(item, 'originRepos', originRepos)
+        const originRepos = differenceWith(
+          result.repos || [],
+          item.repos,
+          (a, b) => {
+            return a.repo_name === b.repo_name
+          }
+        )
+        this.$set(item, 'originRepos', originRepos || [])
       })
     },
     handleBuildChange (item) {
