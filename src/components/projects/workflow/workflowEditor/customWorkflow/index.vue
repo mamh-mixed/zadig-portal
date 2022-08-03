@@ -323,7 +323,7 @@ export default {
     },
     curJobType () {
       const curType = jobTypeList.find(item => item.type === this.job.type)
-      return curType ? curType.label : '插件'
+      return curType ? curType.label : this.job.spec.plugin.name
     }
   },
   created () {
