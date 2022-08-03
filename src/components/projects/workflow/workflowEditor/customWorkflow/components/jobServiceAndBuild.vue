@@ -3,7 +3,7 @@
     <el-row :gutter="24" class="mg-b16">
       <el-col :span="6" class="title">服务组件</el-col>
       <el-col :span="6" class="title">构建名称</el-col>
-      <el-col :span="6" class="title">构建变量</el-col>
+      <el-col :span="6" class="title">构建配置</el-col>
     </el-row>
     <el-form :model="form" ref="ruleForm" size="small">
       <div v-for="(item,index) in serviceAndBuilds" :key="index">
