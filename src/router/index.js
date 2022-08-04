@@ -831,6 +831,15 @@ const routes = [
         }
       },
       {
+        path: 'plugins',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/plugins/manage.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: '插件管理'
+        }
+      },
+      {
         path: 'registry',
         component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/registry/manage.vue'),
         meta: {

@@ -2186,3 +2186,13 @@ export function uploadUserNumberAPI (payload) {
 export function getPluginsAPI () {
   return http.get(`/api/aslan/workflow/plugin/template`)
 }
+// settings plugins
+export function updatePlugin (payload) {
+  return http.post(`/api/aslan/workflow/plugin`, payload)
+}
+export function delPlugin (id) {
+  return http.delete(`/api/aslan/workflow/plugin/${id}`)
+}
+export function getPlugins () {
+  return http.get(`/api/aslan/workflow/plugin`)
+}
