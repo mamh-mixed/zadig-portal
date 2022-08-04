@@ -94,7 +94,7 @@
           </el-select>
           <el-input v-if="scope.row.type === 'text'" v-model="scope.row.value" size="small" type="textarea" :rows="2" style="width: 220px;"></el-input>
           <el-input
-            v-else
+            v-if="scope.row.type === 'string'"
             class="password"
             v-model="scope.row.value"
             size="small"
