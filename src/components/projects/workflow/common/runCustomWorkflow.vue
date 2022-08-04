@@ -203,6 +203,13 @@ export default {
             ) {
               job.pickedTargets = job.spec.service_and_images
             }
+            if (job.type === 'freestyle') {
+              job.spec.steps.forEach(step => {
+                if (step.type === 'git') {
+                  this.getRepoInfo(step.spec.repos)
+                }
+              })
+            }
           })
         })
         this.payload = this.cloneWorkflow
