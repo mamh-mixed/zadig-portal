@@ -22,7 +22,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="value"
+                  value-key="service_name"
                   size="medium"
                   style="width: 220px;"
                   @change="handleServiceBuildChange"
@@ -30,11 +30,11 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
                     :key="index"
-                    :label="service.value"
+                    :label="service.service_name"
                     :value="service"
                   >
-                    <span>{{service.service_module}}</span>
-                    <span style="color: #ccc;">({{service.service_name}})</span>
+                    <span>{{service.service_name}}</span>
+                    <span style="color: #ccc;">({{service.service_module}})</span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -85,7 +85,10 @@
                     :key="index"
                     :label="service.service_name"
                     :value="service"
-                  ></el-option>
+                  >
+                    <span>{{service.service_name}}</span>
+                    <span style="color: #ccc;">({{service.service_module}})</span>
+                  </el-option>
                 </el-select>
               </el-form-item>
               <div v-for="(item,index) in job.pickedTargets" :key="index">
