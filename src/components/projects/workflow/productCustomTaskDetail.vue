@@ -345,7 +345,7 @@ export default {
 
   footer {
     height: 100%;
-    // overflow-y: auto;
+    overflow-y: auto;
   }
 
   .multipane-resizer {
