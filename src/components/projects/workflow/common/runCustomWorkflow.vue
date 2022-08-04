@@ -188,6 +188,7 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
+            job.checked = true
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
