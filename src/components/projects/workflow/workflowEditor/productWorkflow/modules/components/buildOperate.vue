@@ -26,7 +26,14 @@
           </el-table-column>
           <el-table-column prop="default_branch" label="默认分支" width="200px">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.default_branch" filterable size="small" placeholder="请选择默认分支" style="width: 160px;">
+              <el-select
+                v-model="scope.row.default_branch"
+                filterable
+                size="small"
+                placeholder="请选择默认分支"
+                style="width: 160px;"
+                @change="handleBranchChange"
+              >
                 <el-option v-for="branch of scope.row.matchedBranches" :key="branch" :label="branch" :value="branch"></el-option>
               </el-select>
             </template>
@@ -107,7 +114,7 @@ export default {
   },
   mounted () {
     this.value.branch_filter.forEach(item => {
-      item.filter_regexp = item.filter_regexp || '.*'
+      item.filter_regexp = item.filter_regexp || ' .*'
       this.checkRegular(item.filter_regexp, item)
     })
   },
@@ -127,7 +134,7 @@ export default {
     },
     addBuild () {
       if (Object.keys(this.form.repo).length > 0) {
-        this.form.repo.filter_regexp = '.*'
+        this.form.repo.filter_regexp = ' .*'
         this.checkRegular(this.form.repo.filter_regexp, this.form.repo)
         this.value.branch_filter.push(this.form.repo)
         this.form.repo = {}
@@ -156,6 +163,7 @@ export default {
     },
     setRow (regular, row) {
       if (!regular) return
+      regular = regular.trim()
       const { branches, tags } = row
       if (tags && tags.length > 0) {
         const payload = {
@@ -177,8 +185,13 @@ export default {
       }
     },
     inputCheck: function (regular, row) {
+      // input事件不能删除最后一个字符 这里用空格填充一下
+      regular = ' ' + regular
       row.default_branch = ''
       debounce(() => this.checkRegular(regular, row), 500)()
+    },
+    handleBranchChange () {
+      this.$forceUpdate()
     },
     checkRegular: function (regular, row) {
       const { codehost_id, repo_namespace, repo_name, branches, tags } = row
