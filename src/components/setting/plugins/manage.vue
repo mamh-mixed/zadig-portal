@@ -20,9 +20,9 @@
                 <el-option
                   v-for="(host,index) in allCodeHosts"
                   :key="index"
-                  :label="host.address + '('+host.alias+')'"
+                  :label="`${host.address}${host.alias?'('+host.alias+')':''}`"
                   :value="host.id"
-                >{{host.address + '('+host.alias+')'}}</el-option>
+                > {{ `${host.address}${host.alias?'('+host.alias+')':''}`}}</el-option>
               </el-select>
             </el-form-item>
           </el-col>
