@@ -107,7 +107,7 @@ export default {
   },
   mounted () {
     this.value.branch_filter.forEach(item => {
-      item.filter_regexp = '.*'
+      item.filter_regexp = item.filter_regexp || '.*'
       this.checkRegular(item.filter_regexp, item)
     })
   },
