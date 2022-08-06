@@ -5,7 +5,7 @@
         <el-col :span="2">
           <div>插件源</div>
         </el-col>
-        <el-button type="primary" size="small" v-if="plugins.length===0&&!isShowOperateForm" @click="isShowOperateForm=true">+ 添加</el-button>
+        <el-button type="primary" plain size="small" v-if="plugins.length===0&&!isShowOperateForm" @click="isShowOperateForm=true">+ 添加</el-button>
         <div v-else>
           <el-col :span="3">
             <el-form-item prop="codehost_id" :rules="{required: true, message: '代码源不能为空', trigger: ['blur', 'change']}">
@@ -85,10 +85,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="6" class="mg-t4">
-            <el-button type="primary" size="small" v-if="!isSaved" @click="submit('save')">保存</el-button>
-            <el-button type="primary" size="small" v-if="isSaved" @click="isSaved=false">编辑</el-button>
-            <el-button type="success" size="small" :disabled="!isSaved" @click="submit('sync')">同步</el-button>
-            <el-button type="danger" size="small" v-if="plugins.length>0" @click="del">删除</el-button>
+            <el-button type="primary" plain size="small" v-if="!isSaved" @click="submit('save')">保存</el-button>
+            <el-button type="primary" plain size="small" v-if="isSaved" @click="isSaved=false">编辑</el-button>
+            <el-button type="success" plain size="small" :disabled="!isSaved" @click="submit('sync')">同步</el-button>
+            <el-button type="danger" plain size="small" v-if="plugins.length>0" @click="del">删除</el-button>
           </el-col>
         </div>
       </el-form>
