@@ -1,46 +1,48 @@
 <template>
   <div class="plugin">
-    <el-card class="card">
-      <div slot="header" class="mg-b8">
-        <el-col :span="6">
-          <span class="plugin-type">{{pluginInfo.spec.name}}</span>
-          <span>{{pluginInfo.name}}</span>
-        </el-col>
-        <el-col :span="2">
-          <div class="grid-content item-desc">
-            <a :class="buildOverallColor" href="#buildv4-log">{{pluginInfo.status?buildOverallStatusZh:"未运行"}}</a>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <span class="item-desc">{{pluginInfo.interval}}</span>
-        </el-col>
-        <el-col :span="1" class="plugin-close">
-          <span @click="$emit('showFooter',false)">
-            <i class="el-icon-close"></i>
-          </span>
-        </el-col>
-      </div>
-      <div class="error-wrapper">
-        <el-alert v-if="pluginInfo.error" title="错误信息" :description="pluginInfo.error" type="error" close-text="知道了"></el-alert>
-      </div>
-      <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in pluginInfo.spec.repos" :key="index">
-        <el-col :span="4">
-          <div class="grid-content item-title">代码库({{build.source}})</div>
-        </el-col>
-        <el-col :span="8">
-          <div>{{build.repo_name}}</div>
-        </el-col>
-        <el-col :span="4">
-          <div class="item-title">代码信息</div>
-        </el-col>
-        <el-col :span="8">
-          <RepoJump :build="build" showIcon />
-        </el-col>
-      </el-row>
-      <div class="log-content mg-t8">
+    <header class="mg-b8">
+      <el-col :span="6">
+        <span class="type">{{pluginInfo.spec.name}}</span>
+        <span>{{pluginInfo.name}}</span>
+      </el-col>
+      <el-col :span="2">
+        <div class="grid-content item-desc">
+          <a :class="buildOverallColor" href="#buildv4-log">{{pluginInfo.status?buildOverallStatusZh:"未运行"}}</a>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <span class="item-desc">{{pluginInfo.interval}}</span>
+      </el-col>
+      <el-col :span="1" class="close">
+        <span @click="$emit('showFooter',false)">
+          <i class="el-icon-close"></i>
+        </span>
+      </el-col>
+    </header>
+    <main>
+      <section>
+        <div class="error-wrapper">
+          <el-alert v-if="pluginInfo.error" title="错误信息" :description="pluginInfo.error" type="error" close-text="知道了"></el-alert>
+        </div>
+        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in pluginInfo.spec.repos" :key="index">
+          <el-col :span="4">
+            <div class="grid-content item-title">代码库({{build.source}})</div>
+          </el-col>
+          <el-col :span="8">
+            <div>{{build.repo_name}}</div>
+          </el-col>
+          <el-col :span="4">
+            <div class="item-title">代码信息</div>
+          </el-col>
+          <el-col :span="8">
+            <RepoJump :build="build" showIcon />
+          </el-col>
+        </el-row>
+      </section>
+      <section class="log-content mg-t8">
         <XtermLog :id="pluginInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom" />
-      </div>
-    </el-card>
+      </section>
+    </main>
   </div>
 </template>
 
@@ -204,38 +206,42 @@ export default {
 </script>
 <style lang="less" scoped>
 .plugin {
+  position: relative;
   height: 100%;
   font-size: 14px;
+  background: #fff;
+  box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
 
-  &-type {
-    margin-right: 8px;
-    font-weight: 500;
-  }
+  header {
+    height: 42px;
+    padding: 0 24px;
+    line-height: 42px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 
-  &-close {
-    float: right;
-    font-size: 16px;
-    cursor: pointer;
-  }
+    .type {
+      margin-right: 8px;
+      font-weight: 500;
+    }
 
-  .item {
-    &-title {
-      color: #8d9199;
+    .close {
+      float: right;
+      font-size: 16px;
+      cursor: pointer;
     }
   }
 
-  .card {
-    /deep/ .el-card__header {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      background: #fff;
-      box-shadow: inset 0 1px 2px #ddd;
-    }
-  }
+  main {
+    min-height: 400px;
+    max-height: 600px;
+    padding: 0 24px;
+    overflow-y: scroll;
 
-  /deep/ .el-card {
-    overflow: visible !important;
+    .item {
+      &-title {
+        color: #8d9199;
+      }
+    }
   }
 }
 </style>

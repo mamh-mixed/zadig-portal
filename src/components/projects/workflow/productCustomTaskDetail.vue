@@ -24,7 +24,7 @@
         </el-col>
       </el-row>
     </header>
-    <Multipane layout="horizontal">
+    <Multipane layout="horizontal" style="height: 100%;">
       <main>
         <div class="content">
           <span class="text mg-r8">Start</span>
@@ -53,7 +53,7 @@
         </div>
       </main>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{ minHeight: '460px',maxHeight: '550px'}" v-if="isShowConsoleFooter">
+      <footer :style="{minHeight:'600px'}" v-if="isShowConsoleFooter">
         <BuildConsole
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"
@@ -63,7 +63,7 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
-        <DeployConsole  @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
+        <DeployConsole @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
         <Approval
           v-if="curJob.type === jobType.approval"
           :approvalInfo="curStage"
@@ -262,19 +262,20 @@ export default {
 <style lang="less" scoped>
 .product-custom-detail {
   height: 100%;
-  padding: 24px;
   font-size: 14px;
   background: #fff;
 
   header {
-    padding: 0 8px;
+    height: 42px;
+    margin: 24px;
+    padding: 0 24px;
     color: #121212;
-    line-height: 40px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+    line-height: 42px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
   }
 
   main {
-    margin-top: 40px;
+    padding: 0 24px;
 
     .content {
       display: flex;
@@ -345,7 +346,6 @@ export default {
 
   footer {
     height: 100%;
-    overflow-y: auto;
   }
 
   .multipane-resizer {
