@@ -61,7 +61,7 @@
               ref="jobRuleForm"
               label-width="90px"
               :model="job"
-              class="mg-t24"
+              class="mg-t24 mg-b24"
               size="small"
             >
               <el-form-item
@@ -812,8 +812,7 @@ export default {
       }
 
       .main {
-        min-height: 500px;
-        max-height: 600px;
+        max-height: 500px;
         padding: 0 24px;
         overflow-y: scroll;
       }
