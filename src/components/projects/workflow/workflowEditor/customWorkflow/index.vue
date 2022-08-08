@@ -59,7 +59,6 @@
               v-if="job.type !== jobType.freestyle"
               :rules="JobConfigRules"
               ref="jobRuleForm"
-              label-width="90px"
               :model="job"
               class="mg-t24 mg-b24"
               size="small"
@@ -717,7 +716,6 @@ export default {
 
     main {
       width: 100%;
-      margin-top: 40px;
       padding: 0 24px;
 
       .ui {
@@ -812,7 +810,7 @@ export default {
       }
 
       .main {
-        max-height: 500px;
+        max-height: 400px;
         padding: 0 24px;
         overflow-y: scroll;
       }
