@@ -20,7 +20,7 @@
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal" v-show="activeName === 'ui'">
+      <Multipane layout="horizontal" v-show="activeName === 'ui'" style="height: 100%;">
         <main class="mg-t16">
           <section class="ui">
             <span class="ui-text mg-r8">Start</span>
@@ -46,105 +46,102 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{ minHeight: '400px',maxHeight: '500px'}" v-if="isShowFooter">
-          <el-card class="card">
-            <div slot="header" class="card-header">
-              <span>{{curJobType}}</span>
-              <div>
-                <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
-                <el-button  size="mini" @click="closeFooter">取消</el-button>
-              </div>
+        <footer :style="{minHeight:'600px'}" v-if="isShowFooter">
+          <div  class="header">
+            <span>{{curJobType}}</span>
+            <div>
+              <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
+              <el-button  size="mini" @click="closeFooter">取消</el-button>
             </div>
-            <div v-if="payload.stages.length > 0 && job">
+          </div>
+          <div v-if="payload.stages.length > 0 && job" class="main">
+            <el-form
+              v-if="job.type !== jobType.freestyle"
+              :rules="JobConfigRules"
+              ref="jobRuleForm"
+              :model="job"
+              class="mg-t24 mg-b24"
+              size="small"
+            >
+              <el-form-item
+                label="任务名称"
+                prop="name"
+                v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
+              >
+                <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+              </el-form-item>
+              <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
+                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
+                  <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build" class="mg-t40">
+                <ServiceAndBuild
+                  :projectName="projectName"
+                  v-model="job.spec.service_and_builds"
+                  :originServiceAndBuilds="originServiceAndBuilds"
+                  class="mg-b24"
+                  ref="serviceAndbuild"
+                />
+                <el-select size="small" v-model="service" multiple filterable clearable>
+                  <el-option
+                    disabled
+                    label="全选"
+                    value="ALL"
+                    :class="{selected: service.length === serviceAndBuilds.length}"
+                    style="color: #606266;"
+                  >
+                    <span
+                      style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                      @click="service = serviceAndBuilds.map(item=>item.value)"
+                    >全选</span>
+                  </el-option>
+                  <el-option
+                    v-for="(service,index) in serviceAndBuilds"
+                    :key="index"
+                    :value="service.value"
+                    :label="service.value"
+                  >{{service.value}}</el-option>
+                </el-select>
+                <el-button
+                  type="success"
+                  size="mini"
+                  :disabled="Object.keys(service).length === 0"
+                  @click="addServiceAndBuild(job.spec.service_and_builds)"
+                >+ 添加</el-button>
+              </div>
+              <div v-if="job.type === 'plugin'">
+                <Plugin  v-model="job" ref="plugin"/>
+              </div>
+              <BuildEnv
+                :projectName="projectName"
+                v-if="job.type === jobType.deploy"
+                v-model="job"
+                ref="buildEnv"
+                :workflowInfo="payload"
+              ></BuildEnv>
+            </el-form>
+            <div v-else>
               <el-form
-                v-if="job.type !== jobType.freestyle"
                 :rules="JobConfigRules"
                 ref="jobRuleForm"
-                label-width="90px"
+                label-width="120px"
                 :model="job"
-                class="mg-t24"
+                class="primary-form"
                 size="small"
+                label-position="left"
               >
                 <el-form-item
                   label="任务名称"
                   prop="name"
                   v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
                 >
-                  <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+                  <el-input v-model="job.name" size="small"></el-input>
                 </el-form-item>
-                <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
-                  <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
-                    <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
-                  </el-select>
-                </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build" class="mg-t40">
-                  <ServiceAndBuild
-                    :projectName="projectName"
-                    v-model="job.spec.service_and_builds"
-                    :originServiceAndBuilds="originServiceAndBuilds"
-                    class="mg-b24"
-                    ref="serviceAndbuild"
-                  />
-                  <el-select size="small" v-model="service" multiple filterable clearable>
-                    <el-option
-                      disabled
-                      label="全选"
-                      value="ALL"
-                      :class="{selected: service.length === serviceAndBuilds.length}"
-                      style="color: #606266;"
-                    >
-                      <span
-                        style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
-                        @click="service = serviceAndBuilds.map(item=>item.value)"
-                      >全选</span>
-                    </el-option>
-                    <el-option
-                      v-for="(service,index) in serviceAndBuilds"
-                      :key="index"
-                      :value="service.value"
-                      :label="service.value"
-                    >{{service.value}}</el-option>
-                  </el-select>
-                  <el-button
-                    type="success"
-                    size="mini"
-                    :disabled="Object.keys(service).length === 0"
-                    @click="addServiceAndBuild(job.spec.service_and_builds)"
-                  >+ 添加</el-button>
-                </div>
-                <div v-if="job.type === 'plugin'">
-                  <Plugin  v-model="job" ref="plugin"/>
-                </div>
-                <BuildEnv
-                  :projectName="projectName"
-                  v-if="job.type === jobType.deploy"
-                  v-model="job"
-                  ref="buildEnv"
-                  :workflowInfo="payload"
-                ></BuildEnv>
               </el-form>
-              <div v-else>
-                <el-form
-                  :rules="JobConfigRules"
-                  ref="jobRuleForm"
-                  label-width="120px"
-                  :model="job"
-                  class="primary-form"
-                  size="small"
-                  label-position="left"
-                >
-                  <el-form-item
-                    label="任务名称"
-                    prop="name"
-                    v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
-                  >
-                    <el-input v-model="job.name" size="small"></el-input>
-                  </el-form-item>
-                </el-form>
-                <JobCommonBuild :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
-              </div>
+              <JobCommonBuild :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
             </div>
-          </el-card>
+          </div>
         </footer>
       </Multipane>
       <section v-show="activeName === 'yaml'" class="yaml">
@@ -203,7 +200,6 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
 import Stage from './stage.vue'
 import StageOperate from './stageOperate.vue'
-// import JobOperate from './jobOperate.vue'
 import ServiceAndBuild from './components/jobServiceAndBuild'
 import BuildEnv from './components/jobBuildEnv.vue'
 import JobCommonBuild from './components/jobCommonBuild.vue'
@@ -389,17 +385,6 @@ export default {
         }
       })
       if (this.isShowFooter) {
-        // this.saveJobConfig().then(valid => {
-        //   if (valid) {
-        //     const res = isEqual(
-        //       this.job,
-        //       this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-        //     )
-        //     if (!res) {
-        //       this.$message.error('请先保存 Job 配置')
-        //     }
-        //   }
-        // })
         this.$message.error('请先保存任务配置')
         return
       }
@@ -444,7 +429,6 @@ export default {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
         this.multi_run = this.payload.multi_run
-        // this.$store.dispatch('setWorkflowInfo', Object.assign({}, this.payload))
       })
     },
     showStageOperateDialog (type, row) {
@@ -688,14 +672,17 @@ export default {
 
   .left {
     flex: 1;
-    padding: 24px;
 
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px;
-      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+      height: 42px;
+      margin: 24px;
+      padding: 0 24px;
+      color: #121212;
+      line-height: 42px;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 
       .name {
         display: flex;
@@ -729,8 +716,7 @@ export default {
 
     main {
       width: 100%;
-      height: 100%;
-      margin-top: 40px;
+      padding: 0 24px;
 
       .ui {
         display: flex;
@@ -807,34 +793,26 @@ export default {
     footer {
       position: relative;
       z-index: 1;
-      overflow-y: auto;
+      height: 100%;
+      font-size: 14px;
       background: #fff;
+      box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
 
-      .confirm {
-        position: absolute;
-        bottom: 24px;
-        left: 50%;
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 42px;
+        padding: 0 24px;
+        line-height: 42px;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
       }
 
-      .card {
-        &-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        /deep/ .el-card__header {
-          position: sticky;
-          top: 0;
-          z-index: 1;
-          padding: 8px 20px;
-          background: #fff;
-          box-shadow: inset 0 1px 2px #ddd;
-        }
-      }
-
-      /deep/ .el-card {
-        overflow: visible !important;
+      .main {
+        max-height: 400px;
+        padding: 0 24px;
+        overflow-y: scroll;
       }
     }
   }

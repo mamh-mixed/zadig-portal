@@ -212,6 +212,14 @@ export default {
           desc: '构建的服务名称'
         },
         {
+          variable: '$SERVICE_MODULE',
+          desc: '构建的服务组件名称'
+        },
+        {
+          variable: '$DIST_DIR',
+          desc: '构建出的 Tar 包的目的目录'
+        },
+        {
           variable: '$ENV_NAME',
           desc: '执行的环境名称'
         },

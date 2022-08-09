@@ -281,6 +281,8 @@ export default {
             // source:other  init options data
             if (build.source === 'other') {
               this.searchRepoInfo(build, '')
+            } else {
+              this.searchRepoInfo(build)
             }
           })
         })

@@ -1,77 +1,79 @@
 <template>
   <div class="build-console">
-    <el-card class="card">
-      <div slot="header" class="mg-b8">
-        <el-col :span="6">
-          <span class="build-console-type">构建</span>
-          <span>{{jobInfo.name}}</span>
-        </el-col>
-        <el-col :span="2">
-          <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
-        </el-col>
-        <el-col :span="2">
-          <span>{{jobInfo.interval}}</span>
-        </el-col>
-        <el-col :span="1" class="build-console-close">
-          <span @click="$emit('showFooter',false)">
-            <i class="el-icon-close"></i>
-          </span>
-        </el-col>
-      </div>
-      <div class="error-wrapper">
-        <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
-      </div>
-      <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
-        <el-col :span="4">
-          <div class="grid-content item-title">代码库({{build.source}})</div>
-        </el-col>
-        <el-col :span="8">
-          <div>{{build.repo_name}}</div>
-        </el-col>
-        <el-col :span="4">
-          <div class="item-title">代码信息</div>
-        </el-col>
-        <el-col :span="8">
-          <RepoJump :build="build" showIcon />
-        </el-col>
-      </el-row>
-      <el-row :gutter="0" class="mg-t8">
-        <el-col :span="4">
-          <div class="item-title">服务名称</div>
-        </el-col>
-        <el-col :span="8">
-          <span>{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
-        </el-col>
-        <el-col :span="4">
-          <div class="item-title">
-            镜像名称
-            <el-tooltip effect="dark" placement="top">
-              <div slot="content">
-                构建镜像标签生成规则 ：
-                <br />选择 Tag 进行构建 ： 构建时间戳 -
-                Tag
-                <br />只选择分支进行构建：构建时间戳
-                - 任务 ID - 分支名称
-                <br />选择分支和 PR 进行构建：构建时间戳 - 任务 ID - 分支名称 - PR ID
-                <br />只选择 PR
-                进行构建：构建时间戳 - 任务 ID - PR ID
-              </div>
-              <span>
-                <i class="el-icon-question"></i>
-              </span>
+    <header class="mg-b8">
+      <el-col :span="6">
+        <span class="type">构建</span>
+        <span>{{jobInfo.name}}</span>
+      </el-col>
+      <el-col :span="2">
+        <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
+      </el-col>
+      <el-col :span="2">
+        <span>{{jobInfo.interval}}</span>
+      </el-col>
+      <el-col :span="1" class="close">
+        <span @click="$emit('showFooter',false)">
+          <i class="el-icon-close"></i>
+        </span>
+      </el-col>
+    </header>
+    <main>
+      <section>
+        <div class="error-wrapper">
+          <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+        </div>
+        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
+          <el-col :span="4">
+            <div class="grid-content item-title">代码库({{build.source}})</div>
+          </el-col>
+          <el-col :span="8">
+            <div>{{build.repo_name}}</div>
+          </el-col>
+          <el-col :span="4">
+            <div class="item-title">代码信息</div>
+          </el-col>
+          <el-col :span="8">
+            <RepoJump :build="build" showIcon />
+          </el-col>
+        </el-row>
+        <el-row :gutter="0" class="mg-t8">
+          <el-col :span="4">
+            <div class="item-title">服务名称</div>
+          </el-col>
+          <el-col :span="8">
+            <span>{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
+          </el-col>
+          <el-col :span="4">
+            <div class="item-title">
+              镜像名称
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  构建镜像标签生成规则 ：
+                  <br />选择 Tag 进行构建 ： 构建时间戳 -
+                  Tag
+                  <br />只选择分支进行构建：构建时间戳
+                  - 任务 ID - 分支名称
+                  <br />选择分支和 PR 进行构建：构建时间戳 - 任务 ID - 分支名称 - PR ID
+                  <br />只选择 PR
+                  进行构建：构建时间戳 - 任务 ID - PR ID
+                </div>
+                <span>
+                  <i class="el-icon-question"></i>
+                </span>
+              </el-tooltip>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
+              <span>{{jobInfo.spec.image.split('/').pop()}}</span>
             </el-tooltip>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-            <span>{{jobInfo.spec.image.split('/').pop()}}</span>
-          </el-tooltip>
-        </el-col>
-      </el-row>
-      <div class="log-content mg-t8">
+          </el-col>
+        </el-row>
+      </section>
+      <section class="log-content mg-t8">
         <XtermLog :id="jobInfo.spec.service_name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom" />
-      </div>
-    </el-card>
+      </section>
+    </main>
   </div>
 </template>
 
@@ -238,40 +240,42 @@ export default {
 </script>
 <style lang="less" scoped>
 .build-console {
+  position: relative;
   height: 100%;
   font-size: 14px;
+  background: #fff;
+  box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
 
-  &-type {
-    margin-right: 8px;
-    font-weight: 500;
-  }
+  header {
+    height: 42px;
+    padding: 0 24px;
+    line-height: 42px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 
-  &-close {
-    float: right;
-    font-size: 16px;
-    cursor: pointer;
-  }
+    .type {
+      margin-right: 8px;
+      font-weight: 500;
+    }
 
-  .item {
-    &-title {
-      color: #8d9199;
+    .close {
+      float: right;
+      font-size: 16px;
+      cursor: pointer;
     }
   }
 
-  .card {
-    height: 100%;
+  main {
+    min-height: 400px;
+    max-height: 600px;
+    padding: 0 24px;
+    overflow-y: scroll;
 
-    /deep/ .el-card__header {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      background: #fff;
-      box-shadow: inset 0 1px 2px #ddd;
+    .item {
+      &-title {
+        color: #8d9199;
+      }
     }
-  }
-
-  /deep/ .el-card {
-    overflow: visible !important;
   }
 }
 </style>
