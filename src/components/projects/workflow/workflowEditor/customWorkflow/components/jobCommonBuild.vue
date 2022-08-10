@@ -9,7 +9,7 @@
       </div>
       <section>
         <div class="primary-title not-first-child">变量</div>
-        <EnvVariable :preEnvs="value.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="envs"></EnvVariable>
+        <EnvVariable :preEnvs="value.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv"></EnvVariable>
       </section>
     </section>
     <div>
@@ -50,7 +50,7 @@ import EnvVariable from '@/components/projects/build/envVariable.vue'
 import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import OtherSteps from './otherSteps.vue'
 
-import { buildEnvs, globalConstEnvs } from '../config.js'
+import { buildEnvs } from '../config.js'
 
 import { getCodeSourceMaskedAPI } from '@api'
 
@@ -65,8 +65,7 @@ export default {
         title: '',
         vars: buildEnvs
       },
-      allCodeHosts: [],
-      globalConstEnvs
+      allCodeHosts: []
     }
   },
   props: {
@@ -93,15 +92,6 @@ export default {
     },
     isCreate () {
       return this.value.isCreate
-    },
-    envs () {
-      let res = []
-      if (this.globalEnv.length > 0) {
-        res = this.globalEnv.map(item => {
-          return `{{.workflow.params.${item.key}}}`
-        })
-      }
-      return this.globalConstEnvs.concat(res)
     }
   },
   methods: {

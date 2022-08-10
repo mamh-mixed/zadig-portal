@@ -44,7 +44,7 @@
             ></el-input>
             <el-form-item required v-if="scope.row.command === 'other'" style="display: inline-block; width: 220px;">
               <el-select v-model="scope.row.value" placeholder="请选择" size="small" style="width: 220px;">
-                <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
+                <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
               </el-select>
             </el-form-item>
             <EnvTypeSelect v-model="scope.row.command" style="display: inline-block;" />
@@ -85,7 +85,7 @@ import ValidateSubmit from '@utils/validateAsync'
 import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import EnvTypeSelect from './envTypeSelect.vue'
 
-import { buildEnvs, globalConstEnvs } from '../config.js'
+import { buildEnvs } from '../config.js'
 
 export default {
   name: 'commonBuild',
@@ -98,8 +98,7 @@ export default {
         title: '',
         vars: buildEnvs
       },
-      allCodeHosts: [],
-      globalConstEnvs
+      allCodeHosts: []
     }
   },
   components: { AdvancedConfig, EnvTypeSelect },
@@ -111,14 +110,6 @@ export default {
     globalEnv: {
       type: Array,
       default: () => []
-    }
-  },
-  computed: {
-    envs () {
-      const res = this.globalEnv.map(item => {
-        return `{{.workflow.params.${item.key}}}`
-      })
-      return this.globalConstEnvs.concat(res)
     }
   },
   methods: {

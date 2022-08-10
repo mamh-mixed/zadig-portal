@@ -7,7 +7,7 @@
         </el-select>
         <el-form-item prop="env" required v-if="form.envType === 'other'" style="display: inline-block; width: 220px;">
           <el-select v-model="form.env" placeholder="请选择" size="small" style="width: 220px;">
-            <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
+            <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
         <EnvTypeSelect v-model="form.envType" isFixed isRuntime isOther style="display: inline-block;" />
@@ -87,7 +87,6 @@ export default {
     return {
       formLabelWidth: '90px',
       envList: [],
-      globalConstEnvs,
       rules: {
         env: [
           {
@@ -136,15 +135,6 @@ export default {
         })
         .flat()
       return allJobList.filter(job => job.name !== this.value.name)
-    },
-    envs () {
-      let res = []
-      if (this.globalEnv.length > 0) {
-        res = this.globalEnv.map(item => {
-          return `{{.workflow.params.${item.name}}}`
-        })
-      }
-      return this.globalConstEnvs.concat(res)
     }
   },
   created () {

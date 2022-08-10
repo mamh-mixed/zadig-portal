@@ -77,7 +77,7 @@
                   v-model="job.spec.service_and_builds"
                   :originServiceAndBuilds="originServiceAndBuilds"
                   class="mg-b24"
-                  :globalEnv="payload.params"
+                  :globalEnv="globalEnv"
                   ref="serviceAndbuild"
                 />
                 <el-select size="small" v-model="service" multiple filterable clearable>
@@ -108,7 +108,7 @@
                 >+ 添加</el-button>
               </div>
               <div v-if="job.type === 'plugin'">
-                <Plugin v-model="job" ref="plugin" :globalEnv="payload.params" />
+                <Plugin v-model="job" ref="plugin" :globalEnv="globalEnv" />
               </div>
               <BuildEnv
                 :projectName="projectName"
@@ -116,7 +116,7 @@
                 v-model="job"
                 ref="buildEnv"
                 :originServiceAndBuilds="originServiceAndBuilds"
-                :globalEnv="payload.params"
+                :globalEnv="globalEnv"
                 :workflowInfo="payload"
               ></BuildEnv>
             </el-form>
@@ -138,7 +138,7 @@
                   <el-input v-model="job.name" size="small"></el-input>
                 </el-form-item>
               </el-form>
-              <JobCommonBuild :globalEnv="payload.params" :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
+              <JobCommonBuild :globalEnv="globalEnv" :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
             </div>
           </div>
         </footer>
@@ -188,7 +188,8 @@ import {
   jobTabList,
   editorOptions,
   jobType,
-  jobTypeList
+  jobTypeList,
+  globalConstEnvs
 } from './config'
 import {
   getAssociatedBuildsAPI,
@@ -234,6 +235,7 @@ export default {
       tabList,
       configList,
       jobTabList,
+      globalConstEnvs,
       activeName: 'ui',
       editorOptions,
       jobType,
@@ -325,6 +327,12 @@ export default {
     curJobType () {
       const curType = jobTypeList.find(item => item.type === this.job.type)
       return curType ? curType.label : this.job.spec.plugin.name
+    },
+    globalEnv () {
+      const res = this.payload.params.map(item => {
+        return `{{.workflow.params.${item.name}}}`
+      })
+      return this.globalConstEnvs.concat(res)
     }
   },
   created () {

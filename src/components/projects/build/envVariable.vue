@@ -70,7 +70,7 @@
         </el-col>
         <el-col :span="mini ? 4 : 3" v-show="preEnvs.envs[build_env_index].type!=='choice'" v-if="!isJenkins">
           <el-form-item prop="is_credential">
-            <div v-if="envs.length > 0" style="width: 50px;">{{preEnvs.envs[build_env_index].command}}
+            <div v-if="envs.length > 0" style="width: 50px;">
               <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther/>
             </div>
             <el-checkbox v-model="preEnvs.envs[build_env_index].is_credential">
