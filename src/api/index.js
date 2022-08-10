@@ -290,7 +290,7 @@ export function getEnvServicesAPI (projectName, envName) {
   return http.get(`/api/aslan/environment/environments/${envName}/groups?projectName=${projectName}`)
 }
 
-export function productEnvInfoAPI (projectName, envName) {
+export function getEnvInfoAPI (projectName, envName) {
   return http.get(`/api/aslan/environment/environments/${envName}?projectName=${projectName}`)
 }
 
@@ -1441,8 +1441,8 @@ export function updateEnvTemplateAPI (projectName, payload) {
 }
 
 // Env and Service
-export function createProductAPI (payload, envType = '') {
-  return http.post(`/api/aslan/environment/environments?projectName=${payload.product_name}`, payload)
+export function createEnvAPI (payload, envType = '', scene = '') {
+  return http.post(`/api/aslan/environment/environments?projectName=${payload.product_name}&scene=${scene}`, payload)
 }
 
 export function updateServiceAPI (projectName, serviceName, serviceType, envName, data, envType = '') {

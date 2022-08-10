@@ -97,7 +97,7 @@
 <script>
 import {
   getProjectInfoAPI,
-  productEnvInfoAPI,
+  getEnvInfoAPI,
   queryUserBindingsAPI,
   getProductWorkflowsInProjectAPI,
   listProductAPI,
@@ -139,7 +139,7 @@ export default {
       const projectName = this.projectName
       listProductAPI(projectName).then(res => {
         this.envList = res.map(element => {
-          productEnvInfoAPI(projectName, element.name).then(res => {
+          getEnvInfoAPI(projectName, element.name).then(res => {
             element.status = res.status
           })
           return element
