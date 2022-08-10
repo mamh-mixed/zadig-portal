@@ -10,9 +10,9 @@
     :recentSuccessID="workflow.recentSuccessfulTask?`#${workflow.recentSuccessfulTask.taskID}`:''"
     :avgRuntime="makeAvgRunTime(workflow.averageExecutionTime)"
     :avgSuccessRate="makeAvgSuccessRate(workflow.successRate)"
-    :recentSuccessLink="makeTaskDetailLink(workflow.projectName,workflow.recentSuccessfulTask)"
+    :recentSuccessLink="makeTaskDetailLink(workflow.projectName,workflow.recentSuccessfulTask,workflow.workflow_type)"
     :recentFailID="workflow.recentFailedTask?`#${workflow.recentFailedTask.taskID}`:''"
-    :recentFailLink="makeTaskDetailLink(workflow.projectName,workflow.recentFailedTask)"
+    :recentFailLink="makeTaskDetailLink(workflow.projectName,workflow.recentFailedTask,workflow.workflow_type)"
     :updateTime="$utils.convertTimestamp(workflow.update_time)"
     :description="workflow.description"
     @refreshWorkflow="refreshWorkflow"
@@ -172,9 +172,13 @@ export default {
         return ''
       }
     },
-    makeTaskDetailLink (projectName, taskInfo) {
+    makeTaskDetailLink (projectName, taskInfo, type) {
       if (taskInfo) {
-        return `/v1/projects/detail/${projectName}/pipelines/multi/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+        if (type === 'common_workflow') {
+          return `/v1/projects/detail/${projectName}/pipelines/custom/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+        } else {
+          return `/v1/projects/detail/${projectName}/pipelines/multi/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+        }
       } else {
         return ''
       }
