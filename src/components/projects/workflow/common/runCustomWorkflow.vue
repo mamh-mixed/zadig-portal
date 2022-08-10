@@ -114,7 +114,6 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_images"
                     :key="index"
-                    :disabled="service.disabled"
                     :label="service.service_name"
                     :value="service"
                   >
@@ -233,104 +232,78 @@ export default {
                 this.getRepoInfo(build.repos)
               })
             }
-            if (
-              job.spec.service_and_images &&
-              job.spec.service_and_images.length > 0
-            ) {
-              job.pickedTargets = job.spec.service_and_images
-            }
-            if (job.type === 'freestyle') {
-              job.spec.steps.forEach(step => {
-                if (step.type === 'git') {
-                  this.getRepoInfo(step.spec.repos)
-                }
-              })
-            }
           })
         })
         this.payload = this.cloneWorkflow
+        this.handleEnv()
       } else {
         this.getWorkflowPresetInfo(this.workflowName)
       }
+    },
+    handleEnv () {
+      this.payload.params.forEach(item => {
+        if (item.value.includes('fixed') || item.value.includes('{{')) {
+          item.isShow = false
+        } else {
+          item.isShow = true
+        }
+      })
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          job.checked = true
+          if (job.spec && job.spec.service_and_builds) {
+            job.spec.service_and_builds.forEach(service => {
+              service.key_vals.forEach(item => {
+                if (item.value.includes('fixed') || item.value.includes('{{')) {
+                  item.isShow = false
+                } else {
+                  item.isShow = true
+                }
+              })
+              service.value = `${service.service_name}/${service.service_module}`
+              service.key_vals.forEach(key => {
+                // if (key.is_credential) {
+                //   key.value = this.$utils.aesDecrypt(key.value)
+                // }
+              })
+            })
+          }
+          if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
+            job.pickedTargets = cloneDeep(job.spec.service_and_images)
+            job.spec.service_and_images = this.originServiceAndBuilds
+          }
+          if (job.type === 'freestyle') {
+            job.spec.steps.forEach(step => {
+              if (step.type === 'git') {
+                this.getRepoInfo(step.spec.repos)
+              }
+            })
+            job.spec.properties.envs.forEach(item => {
+              if (item.value.includes('fixed') || item.value.includes('{{')) {
+                item.isShow = false
+              } else {
+                item.isShow = true
+              }
+            })
+          }
+          if (job.type === 'plugin') {
+            job.spec.plugin.inputs.forEach(item => {
+              if (item.value.includes('fixed') || item.value.includes('{{')) {
+                item.isShow = false
+              } else {
+                item.isShow = true
+              }
+            })
+          }
+        })
+      })
     },
     getWorkflowPresetInfo (workflowName) {
       // const key = this.$utils.rsaEncrypt()
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
-          res.params.forEach(item => {
-            if (item.value.includes('fixed') || item.value.includes('{{')) {
-              item.isShow = false
-            } else {
-              item.isShow = true
-            }
-          })
-          res.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              job.checked = true
-              if (job.spec && job.spec.service_and_builds) {
-                job.spec.service_and_builds.forEach(service => {
-                  service.key_vals.forEach(item => {
-                    if (
-                      item.value.includes('fixed') ||
-                      item.value.includes('{{')
-                    ) {
-                      item.isShow = false
-                    } else {
-                      item.isShow = true
-                    }
-                  })
-                  service.value = `${service.service_name}/${service.service_module}`
-                  service.key_vals.forEach(key => {
-                    // if (key.is_credential) {
-                    //   key.value = this.$utils.aesDecrypt(key.value)
-                    // }
-                  })
-                })
-              }
-              if (
-                job.type === 'zadig-deploy' &&
-                job.spec.source === 'runtime'
-              ) {
-                job.spec.service_and_images.forEach(item => {
-                  item.disabled = true
-                })
-                job.pickedTargets = cloneDeep(job.spec.service_and_images)
-                job.spec.service_and_images = cloneDeep(
-                  job.spec.service_and_images
-                ).concat(this.originServiceAndBuilds)
-              }
-              if (job.type === 'freestyle') {
-                job.spec.steps.forEach(step => {
-                  if (step.type === 'git') {
-                    this.getRepoInfo(step.spec.repos)
-                  }
-                })
-                job.spec.properties.envs.forEach(item => {
-                  if (
-                    item.value.includes('fixed') ||
-                    item.value.includes('{{')
-                  ) {
-                    item.isShow = false
-                  } else {
-                    item.isShow = true
-                  }
-                })
-              }
-              if (job.type === 'plugin') {
-                job.spec.plugin.inputs.forEach(item => {
-                  if (
-                    item.value.includes('fixed') ||
-                    item.value.includes('{{')
-                  ) {
-                    item.isShow = false
-                  } else {
-                    item.isShow = true
-                  }
-                })
-              }
-            })
-          })
           this.payload = res
+          this.handleEnv()
         }
       )
     },

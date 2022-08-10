@@ -53,8 +53,8 @@
               v-model="preEnvs.envs[build_env_index].value"
               size="small"
             ></el-input>
-            <el-form-item required v-if="preEnvs.envs[build_env_index].command === 'other'" style="display: inline-block; width: 220px;">
-              <el-select v-model="preEnvs.envs[build_env_index].value" placeholder="请选择" size="small" style="width: 220px;">
+            <el-form-item required v-if="preEnvs.envs[build_env_index].command === 'other'" style="display: inline-block;">
+              <el-select v-model="preEnvs.envs[build_env_index].value" placeholder="请选择" size="small">
                 <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
               </el-select>
             </el-form-item>
@@ -70,7 +70,7 @@
         </el-col>
         <el-col :span="mini ? 4 : 3" v-show="preEnvs.envs[build_env_index].type!=='choice'" v-if="!isJenkins">
           <el-form-item prop="is_credential">
-            <div v-if="envs.length > 0" style="width: 50px;">
+            <div v-if="envs.length > 0" style="display: inline-block; width: 20px;">
               <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther/>
             </div>
             <el-checkbox v-model="preEnvs.envs[build_env_index].is_credential">

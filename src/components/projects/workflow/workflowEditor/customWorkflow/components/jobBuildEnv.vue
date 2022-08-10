@@ -1,12 +1,26 @@
 <template>
   <div class="build-env">
-    <el-form :label-width="formLabelWidth" :model="form" :rules="rules" ref="ruleForm">
-      <el-form-item label="环境" prop="env" required>
-        <el-select v-model="form.env" placeholder="请选择" v-if="form.envType !== 'other'" size="small" style=" width: 220px;">
-          <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
-        </el-select>
-        <el-form-item prop="env" required v-if="form.envType === 'other'" style="display: inline-block; width: 220px;">
-          <el-select v-model="form.env" placeholder="请选择" size="small" style="width: 220px;">
+    <el-form :label-width="formLabelWidth" :model="form" ref="ruleForm">
+      <el-form-item label="环境" required>
+        <el-form-item
+          prop="env"
+          required
+          v-if="form.envType !== 'other'"
+          class="form-item"
+          :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
+        >
+          <el-select v-model="form.env" placeholder="请选择" size="small">
+            <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          prop="env"
+          required
+          v-if="form.envType === 'other'"
+          class="form-item"
+          :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
+        >
+          <el-select v-model="form.env" placeholder="请选择" size="small">
             <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
@@ -17,31 +31,26 @@
           prop="service_and_images"
           required
           v-if="!form.serviceType || form.serviceType === 'runtime'"
-          style="display: inline-block; width: 220px;"
+          class="form-item"
+          :rules="{required: true, message: '请选择服务', trigger: ['blur', 'change']}"
         >
-          <el-select size="small" v-model="form.service_and_images" multiple filterable clearable>
-            <!-- <el-option
-              disabled
-              label="全选"
-              value="ALL"
-              :class="{selected: form.service_and_images.length === originServiceAndBuilds.length}"
-              style="color: #606266;"
-            >
-              <span
-                style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
-                @click="service = serviceAndBuilds.map(item=>item.value)"
-              >全选</span>
-            </el-option>-->
+          <el-select size="small" v-model="form.service_and_images" multiple filterable clearable value-key="service_name">
             <el-option
               v-for="(service,index) in originServiceAndBuilds"
               :key="index"
               :value="service"
-              :label="service.value"
-            >{{service.value}}</el-option>
+              :label="`${service.service_name}/${service.service_module}`"
+            >{{`${service.service_name}/${service.service_module}`}}</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="job_name" v-if="form.serviceType === 'other'" required style="display: inline-block; width: 220px;">
-          <el-select v-model="form.job_name" placeholder="请选择" size="small" style="width: 220px;">
+        <el-form-item
+          prop="job_name"
+          v-if="form.serviceType === 'other'"
+          required
+          class="form-item"
+          :rules="{required: true, message: '请选择服务', trigger: ['blur', 'change']}"
+        >
+          <el-select v-model="form.job_name" placeholder="请选择" size="small">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>
@@ -54,7 +63,6 @@
 <script>
 import { listProductAPI } from '@/api'
 import EnvTypeSelect from './envTypeSelect.vue'
-import { globalConstEnvs } from '../config'
 
 export default {
   name: 'BuildEnv',
@@ -86,37 +94,7 @@ export default {
   data () {
     return {
       formLabelWidth: '90px',
-      envList: [],
-      rules: {
-        env: [
-          {
-            required: true,
-            trigger: ['blur', 'change'],
-            message: '请选择环境'
-          }
-        ],
-        // source: [
-        //   {
-        //     required: true,
-        //     trigger: 'blur',
-        //     message: '请选择服务类型'
-        //   }
-        // ],
-        job_name: [
-          {
-            required: true,
-            trigger: ['blur', 'change'],
-            message: '请选择任务'
-          }
-        ],
-        service_and_images: [
-          {
-            required: true,
-            trigger: ['blur', 'change'],
-            message: '请选择任务'
-          }
-        ]
-      }
+      envList: []
     }
   },
   computed: {
@@ -164,3 +142,11 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.build-env {
+  .form-item {
+    display: inline-block;
+    width: 220px;
+  }
+}
+</style>

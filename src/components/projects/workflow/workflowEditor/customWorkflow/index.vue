@@ -126,7 +126,7 @@
                 ref="jobRuleForm"
                 label-width="120px"
                 :model="job"
-                class="primary-form"
+                class="mg-t24"
                 size="small"
                 label-position="left"
               >
@@ -470,6 +470,12 @@ export default {
               }
               if (job.spec.env.includes('{{')) {
                 job.spec.envType = 'other'
+              }
+              if (job.spec.service_and_images.length > 0) {
+                job.spec.serviceType = 'runtime'
+              }
+              if (job.spec.job_name.includes('{{')) {
+                job.spec.serviceType = 'other'
               }
             }
             if (job.type === 'freestyle') {

@@ -47,7 +47,7 @@
                 <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
               </el-select>
             </el-form-item>
-            <EnvTypeSelect v-model="scope.row.command" style="display: inline-block;" />
+            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
         <el-table-column label="是否加密">
