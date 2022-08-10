@@ -63,10 +63,10 @@ const jobTypeList = [
   // }
 ]
 const configList = [
-  // {
-  //   label: '变量',
-  //   value: 'var'
-  // },
+  {
+    label: '变量',
+    value: 'env'
+  },
   // {
   //   label: '触发器',
   //   value: 'webhook'
@@ -156,6 +156,13 @@ const buildEnvs = [
     desc: '如使用 其他 代码源，$<REPO>_PR 和 $<REPO>_COMMIT_ID 变量不支持'
   }
 ]
+const globalConstEnvs = [
+  '{{.project}}',
+  '{{.workflow.name}}',
+  '{{.workflow.task.id}}',
+  '{{.workflow.task.creator}}',
+  '{{.workflow.task.timestamp}}'
+]
 export {
   tabList,
   buildTabList,
@@ -164,5 +171,6 @@ export {
   jobTypeList,
   editorOptions,
   jobType,
-  buildEnvs
+  buildEnvs,
+  globalConstEnvs
 }

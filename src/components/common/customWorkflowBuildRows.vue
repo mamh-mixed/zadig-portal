@@ -3,8 +3,10 @@
     <el-table :data="pickedTargets" v-if="pickedTargets.length > 0" empty-text="无">
       <el-table-column type="expand" prop="service_name" width="50px">
         <template slot-scope="props">
-          <el-table :data="props.row.key_vals" style="width: 70%; margin: 0 auto;" size="mini">
-            <el-table-column label="键" prop="key"></el-table-column>
+          <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
+            <el-table-column label="键">
+              <template slot-scope="scope">{{scope.row.key}}</template>
+            </el-table-column>
             <el-table-column label="值">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">

@@ -79,7 +79,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-table :data="type === 'plugin' ? job.spec.plugin.inputs : job.spec.properties.envs">
+    <el-table
+      :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"
+    >
       <el-table-column label="键" :prop="type === 'plugin'?'name':'key'">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" :content="scope.row.description" placement="top-start">

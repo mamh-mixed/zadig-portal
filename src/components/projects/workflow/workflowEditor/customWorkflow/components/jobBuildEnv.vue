@@ -2,26 +2,50 @@
   <div class="build-env">
     <el-form :label-width="formLabelWidth" :model="form" :rules="rules" ref="ruleForm">
       <el-form-item label="环境" prop="env" required>
-        <el-select v-model="form.env" placeholder="请选择" size="small" style="width: 220px;">
+        <el-select v-model="form.env" placeholder="请选择" v-if="form.envType !== 'other'" size="small" style=" width: 220px;">
           <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
         </el-select>
+        <el-form-item prop="env" required v-if="form.envType === 'other'" style="display: inline-block; width: 220px;">
+          <el-select v-model="form.env" placeholder="请选择" size="small" style="width: 220px;">
+            <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
+          </el-select>
+        </el-form-item>
+        <EnvTypeSelect v-model="form.envType" isFixed isRuntime isOther style="display: inline-block;" />
       </el-form-item>
-      <el-form-item label="服务" prop="source" required>
-        <el-select v-model="form.source" placeholder="请选择" size="small" style="width: 220px;">
-          <el-option label="运行时输入" value="runtime"></el-option>
-          <el-option label="其他任务输出" value="fromjob"></el-option>
-        </el-select>
+      <el-form-item label="服务" required>
         <el-form-item
-          prop="job_name"
+          prop="service_and_images"
           required
-          v-if="form.source==='fromjob'&&allJobList.length > 0"
+          v-if="!form.serviceType || form.serviceType === 'runtime'"
           style="display: inline-block; width: 220px;"
-          class="mg-l16"
         >
+          <el-select size="small" v-model="form.service_and_images" multiple filterable clearable>
+            <!-- <el-option
+              disabled
+              label="全选"
+              value="ALL"
+              :class="{selected: form.service_and_images.length === originServiceAndBuilds.length}"
+              style="color: #606266;"
+            >
+              <span
+                style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                @click="service = serviceAndBuilds.map(item=>item.value)"
+              >全选</span>
+            </el-option>-->
+            <el-option
+              v-for="(service,index) in originServiceAndBuilds"
+              :key="index"
+              :value="service"
+              :label="service.value"
+            >{{service.value}}</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="job_name" v-if="form.serviceType === 'other'" required style="display: inline-block; width: 220px;">
           <el-select v-model="form.job_name" placeholder="请选择" size="small" style="width: 220px;">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>
+        <EnvTypeSelect v-model="form.serviceType" isRuntime isOther isService style="display: inline-block;" />
       </el-form-item>
     </el-form>
   </div>
@@ -29,6 +53,8 @@
 
 <script>
 import { listProductAPI } from '@/api'
+import EnvTypeSelect from './envTypeSelect.vue'
+import { globalConstEnvs } from '../config'
 
 export default {
   name: 'BuildEnv',
@@ -44,31 +70,50 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    globalEnv: {
+      type: Array,
+      default: () => []
+    },
+    originServiceAndBuilds: {
+      type: Array,
+      default: () => []
     }
+  },
+  components: {
+    EnvTypeSelect
   },
   data () {
     return {
       formLabelWidth: '90px',
       envList: [],
+      globalConstEnvs,
       rules: {
         env: [
           {
             required: true,
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
             message: '请选择环境'
           }
         ],
-        source: [
-          {
-            required: true,
-            trigger: 'blur',
-            message: '请选择服务类型'
-          }
-        ],
+        // source: [
+        //   {
+        //     required: true,
+        //     trigger: 'blur',
+        //     message: '请选择服务类型'
+        //   }
+        // ],
         job_name: [
           {
             required: true,
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
+            message: '请选择任务'
+          }
+        ],
+        service_and_images: [
+          {
+            required: true,
+            trigger: ['blur', 'change'],
             message: '请选择任务'
           }
         ]
@@ -91,6 +136,15 @@ export default {
         })
         .flat()
       return allJobList.filter(job => job.name !== this.value.name)
+    },
+    envs () {
+      let res = []
+      if (this.globalEnv.length > 0) {
+        res = this.globalEnv.map(item => {
+          return `{{.workflow.params.${item.name}}}`
+        })
+      }
+      return this.globalConstEnvs.concat(res)
     }
   },
   created () {
@@ -102,6 +156,17 @@ export default {
       listProductAPI(projectName).then(res => {
         this.envList = res
       })
+    },
+    getData () {
+      this.value.spec.service_and_images.forEach(item => {
+        delete item.module_builds
+      })
+      if (this.value.spec.envType === 'fixed') {
+        this.value.spec.env = '<+fixed>' + this.value.spec.env
+      }
+      this.value.spec.source =
+        this.value.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
+      return this.value
     },
     validate () {
       return this.$refs.ruleForm.validate()

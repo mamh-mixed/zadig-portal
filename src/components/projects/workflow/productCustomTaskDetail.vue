@@ -24,7 +24,11 @@
         </el-col>
       </el-row>
     </header>
-    <Multipane layout="horizontal" style="height: 100%;">
+    <div class="tab">
+      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">工作流</span>
+      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">变量</span>
+    </div>
+    <Multipane v-if="activeName==='workflow'" layout="horizontal" style="height: 100%;">
       <main>
         <div class="content">
           <span class="text mg-r8">Start</span>
@@ -90,6 +94,86 @@
         />
       </footer>
     </Multipane>
+    <div v-if="activeName==='env'" class="env">
+      <!-- <el-collapse v-model="activeEnvName">
+        <el-collapse-item title="工作流变量" name="env" v-if="payload.params && payload.params.length>0">
+          <el-table :data="payload.params">
+            <el-table-column label="键">
+              <template slot-scope="scope">{{scope.row.name}}</template>
+            </el-table-column>
+            <el-table-column label="值">
+              <template slot-scope="scope">{{scope.row.value}}</template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+        <div v-for="(stage,stageIndex) in payload.stages" :key="stage.name">
+          <el-collapse-item v-for="(job,jobIndex) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="`${stageIndex}${jobIndex}`">
+            <div v-if="job.type === 'zadig-build'">
+              <el-table :data="job.spec.envs">
+                <el-table-column label="键">
+                  <template slot-scope="scope">{{scope.row.key}}</template>
+                </el-table-column>
+                <el-table-column label="值">
+                  <template slot-scope="scope">{{scope.row.value}}</template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div v-if="job.type === 'freestyle'">
+              <el-table :data="job.spec.envs">
+                <el-table-column label="键">
+                  <template slot-scope="scope">{{scope.row.key}}</template>
+                </el-table-column>
+                <el-table-column label="值">
+                  <template slot-scope="scope">{{scope.row.value}}</template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <div v-if="job.type === 'plugin'">
+              <el-table :data="job.spec.inputs">
+                <el-table-column label="键">
+                  <template slot-scope="scope">{{scope.row.name}}</template>
+                </el-table-column>
+                <el-table-column label="值">
+                  <template slot-scope="scope">{{scope.row.value}}</template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-collapse-item>
+        </div>
+      </el-collapse>-->
+      <el-table :data="envList" v-if="envList.length>0" style="width: 100%;" class="table">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <div v-if="props.row.name==='工作流变量'">
+              <div v-for="(env,index) in props.row.envs" :key="index" class="table-env">
+                <span class="item">{{env.name}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type==='zadig-build'">
+              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                <span class="item">{{env.key}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type === 'freestyle'">
+              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                <span class="item">{{env.key}}{{env.name}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type === 'plugin'">
+              <div v-for="(env,index) in props.row.spec.inputs" :key="index" class="table-env">
+                <span class="item">{{env.name}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="键" prop="name"></el-table-column>
+        <el-table-column label="值"></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -116,7 +200,10 @@ export default {
       payload: {},
       curStageIndex: 0,
       timerId: null,
-      timeTimeoutFinishFlag: false
+      timeTimeoutFinishFlag: false,
+      activeName: 'workflow',
+      activeEnvName: 'env',
+      envList: []
     }
   },
   components: {
@@ -186,6 +273,13 @@ export default {
         })
         this.payload = res
         this.adaptTaskDetail(res)
+        if (this.envList.length === 0) {
+          const globalEnv = [{ name: '工作流变量', envs: this.payload.params }]
+          const jobs = this.payload.stages.map(item => {
+            return item.jobs.map(job => job)
+          })
+          this.envList = globalEnv.concat(jobs.flat())
+        }
       })
     },
     setCurJob (item, index, curStageIndex) {
@@ -330,6 +424,7 @@ export default {
             font-weight: 400;
             font-size: 14px;
             white-space: nowrap;
+            text-align: left;
             text-overflow: ellipsis;
             border: 1px solid @borderGray;
             cursor: pointer;
@@ -394,6 +489,55 @@ export default {
       border: 1px solid @themeColor;
       border-radius: 50%;
       content: '';
+    }
+  }
+
+  .tab {
+    margin: 24px 0;
+    padding: 0 24px;
+    color: @projectNameColor;
+    font-size: 14px;
+    cursor: pointer;
+
+    span:first-child {
+      position: relative;
+      margin-right: 16px;
+
+      &::after {
+        position: absolute;
+        top: 0;
+        right: -10px;
+        width: 2px;
+        height: 100%;
+        background: @borderGray;
+        content: '';
+      }
+    }
+
+    .active {
+      color: @themeColor;
+    }
+  }
+
+  .env {
+    width: 50%;
+    // margin: 24px auto;
+    height: 80%;
+    padding: 0 24px;
+    overflow-y: scroll;
+
+    .table {
+      &-env {
+        height: 30px;
+        padding: 0 60px;
+        line-height: 30px;
+        background: #eaeaea;
+
+        .item {
+          display: inline-block;
+          width: 40%;
+        }
+      }
     }
   }
 }

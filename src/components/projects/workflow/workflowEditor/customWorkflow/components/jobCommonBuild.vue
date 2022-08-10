@@ -9,7 +9,7 @@
       </div>
       <section>
         <div class="primary-title not-first-child">变量</div>
-        <EnvVariable :preEnvs="value.spec.properties" :validObj="validObj" :fromWhere="fromWhere"></EnvVariable>
+        <EnvVariable :preEnvs="value.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="envs"></EnvVariable>
       </section>
     </section>
     <div>
@@ -50,7 +50,7 @@ import EnvVariable from '@/components/projects/build/envVariable.vue'
 import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import OtherSteps from './otherSteps.vue'
 
-import { buildEnvs } from '../config.js'
+import { buildEnvs, globalConstEnvs } from '../config.js'
 
 import { getCodeSourceMaskedAPI } from '@api'
 
@@ -65,7 +65,8 @@ export default {
         title: '',
         vars: buildEnvs
       },
-      allCodeHosts: []
+      allCodeHosts: [],
+      globalConstEnvs
     }
   },
   props: {
@@ -76,6 +77,10 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    globalEnv: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -88,6 +93,15 @@ export default {
     },
     isCreate () {
       return this.value.isCreate
+    },
+    envs () {
+      let res = []
+      if (this.globalEnv.length > 0) {
+        res = this.globalEnv.map(item => {
+          return `{{.workflow.params.${item.key}}}`
+        })
+      }
+      return this.globalConstEnvs.concat(res)
     }
   },
   methods: {
@@ -102,7 +116,12 @@ export default {
       }
       return Promise.all(valid).then(() => {
         const payload = this.$utils.cloneObj(this.value)
-
+        console.log(payload)
+        payload.spec.properties.envs.forEach(item => {
+          if (item.command === 'fixed') {
+            item.value = '<+fixed>' + item.value
+          }
+        })
         const git = this.value.spec.steps.find(step => step.name === 'git')
         if (git) {
           git.spec.repos.forEach(repo => {

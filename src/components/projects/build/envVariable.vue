@@ -38,7 +38,7 @@
         <el-col :span="4">
           <el-form-item>
             <el-select
-              v-if="preEnvs.envs[build_env_index].type==='choice'"
+              v-if="preEnvs.envs[build_env_index].command !== 'other'&&preEnvs.envs[build_env_index].type==='choice'"
               v-model="preEnvs.envs[build_env_index].value"
               placeholder="默认值"
               size="small"
@@ -47,12 +47,17 @@
               <el-option v-for="option in preEnvs.envs[build_env_index].choice_option" :key="option" :label="option" :value="option"></el-option>
             </el-select>
             <el-input
-              v-else
+              v-if="preEnvs.envs[build_env_index].type==='string' && preEnvs.envs[build_env_index].command !== 'other'"
               :disabled="isJenkins&&preEnvs.envs[build_env_index].auto_generate"
               placeholder="值"
               v-model="preEnvs.envs[build_env_index].value"
               size="small"
             ></el-input>
+            <el-form-item required v-if="preEnvs.envs[build_env_index].command === 'other'" style="display: inline-block; width: 220px;">
+              <el-select v-model="preEnvs.envs[build_env_index].value" placeholder="请选择" size="small" style="width: 220px;">
+                <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
+              </el-select>
+            </el-form-item>
           </el-form-item>
         </el-col>
         <el-col :span="12" v-if="isJenkins&&preEnvs.envs[build_env_index].name==='IMAGE'" class="tip">
@@ -65,6 +70,9 @@
         </el-col>
         <el-col :span="mini ? 4 : 3" v-show="preEnvs.envs[build_env_index].type!=='choice'" v-if="!isJenkins">
           <el-form-item prop="is_credential">
+            <div v-if="envs.length > 0" style="width: 50px;">{{preEnvs.envs[build_env_index].command}}
+              <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther/>
+            </div>
             <el-checkbox v-model="preEnvs.envs[build_env_index].is_credential">
               敏感信息
               <el-tooltip effect="dark" content="设置为敏感信息变量后，系统会将变量进行加密，使用时进行解密，同时在工作流运行日志里不可见" placement="top">
@@ -125,8 +133,10 @@
 
 <script>
 import { cloneDeep } from 'lodash'
+import EnvTypeSelect from '../workflow/workflowEditor/customWorkflow/components/envTypeSelect.vue'
+
 export default {
-  components: {},
+  components: { EnvTypeSelect },
   props: {
     preEnvs: Object,
     isTest: {
@@ -163,6 +173,10 @@ export default {
           vars: []
         }
       }
+    },
+    envs: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
