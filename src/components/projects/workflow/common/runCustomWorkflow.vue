@@ -250,7 +250,6 @@ export default {
       })
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
-          job.checked = true
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
@@ -302,6 +301,11 @@ export default {
       // const key = this.$utils.rsaEncrypt()
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
+          res.stages.forEach(stage => {
+            stage.jobs.forEach(job => {
+              job.checked = true
+            })
+          })
           this.payload = res
           this.handleEnv()
         }
