@@ -1,21 +1,21 @@
 <template>
-  <el-dropdown @command="handleCommand($event,value)">
+  <el-dropdown @command="handleCommand($event,value)" class="dropdown">
     <span class="el-dropdown-link">
-      <i class="el-icon-edit-outline" v-if="!value || value === 'runtime'"></i>
-      <i class="el-icon-lock" v-if="value === 'fixed'"></i>
-      <i class="el-icon-crop" v-if="value === 'other'"></i>
+      <i class="iconfont iconyunhangshipeizhi" v-if="!value || value === 'runtime'"></i>
+      <i class="iconfont icongudingzhi" v-if="value === 'fixed'"></i>
+      <i class="iconfont iconhanshu" v-if="value === 'other'"></i>
     </span>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item command="runtime" v-if="isRuntime">
-        <span class="icon el-icon-edit-outline"></span>
+        <span class="iconfont iconyunhangshipeizhi"></span>
         运行时输入
       </el-dropdown-item>
       <el-dropdown-item command="fixed" v-if="isFixed">
-        <span class="icon el-icon-lock"></span>
+        <span class="iconfont icongudingzhi"></span>
         固定值
       </el-dropdown-item>
       <el-dropdown-item command="other" v-if="isOther">
-        <span class="icon el-icon-crop"></span>
+        <span class="iconfont iconhanshu"></span>
         {{isService?'其他任务输出':'全局变量'}}
       </el-dropdown-item>
     </el-dropdown-menu>
@@ -58,3 +58,13 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.dropdown {
+  color: #06f;
+  cursor: pointer;
+
+  .iconfont {
+    cursor: pointer;
+  }
+}
+</style>

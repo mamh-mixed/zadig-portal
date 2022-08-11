@@ -29,10 +29,8 @@
       <el-form-item label="服务" required>
         <el-form-item
           prop="service_and_images"
-          required
           v-if="!form.serviceType || form.serviceType === 'runtime'"
           class="form-item"
-          :rules="{required: true, message: '请选择服务', trigger: ['blur', 'change']}"
         >
           <el-select size="small" v-model="form.service_and_images" multiple filterable clearable value-key="service_name">
             <el-option

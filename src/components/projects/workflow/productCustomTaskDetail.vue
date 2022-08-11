@@ -95,53 +95,7 @@
       </footer>
     </Multipane>
     <div v-if="activeName==='env'" class="env">
-      <!-- <el-collapse v-model="activeEnvName">
-        <el-collapse-item title="工作流变量" name="env" v-if="payload.params && payload.params.length>0">
-          <el-table :data="payload.params">
-            <el-table-column label="键">
-              <template slot-scope="scope">{{scope.row.name}}</template>
-            </el-table-column>
-            <el-table-column label="值">
-              <template slot-scope="scope">{{scope.row.value}}</template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-        <div v-for="(stage,stageIndex) in payload.stages" :key="stage.name">
-          <el-collapse-item v-for="(job,jobIndex) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="`${stageIndex}${jobIndex}`">
-            <div v-if="job.type === 'zadig-build'">
-              <el-table :data="job.spec.envs">
-                <el-table-column label="键">
-                  <template slot-scope="scope">{{scope.row.key}}</template>
-                </el-table-column>
-                <el-table-column label="值">
-                  <template slot-scope="scope">{{scope.row.value}}</template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <div v-if="job.type === 'freestyle'">
-              <el-table :data="job.spec.envs">
-                <el-table-column label="键">
-                  <template slot-scope="scope">{{scope.row.key}}</template>
-                </el-table-column>
-                <el-table-column label="值">
-                  <template slot-scope="scope">{{scope.row.value}}</template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <div v-if="job.type === 'plugin'">
-              <el-table :data="job.spec.inputs">
-                <el-table-column label="键">
-                  <template slot-scope="scope">{{scope.row.name}}</template>
-                </el-table-column>
-                <el-table-column label="值">
-                  <template slot-scope="scope">{{scope.row.value}}</template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-collapse-item>
-        </div>
-      </el-collapse>-->
-      <el-table :data="envList" v-if="envList.length>0" style="width: 100%;" class="table">
+      <el-table :data="envList" v-if="envList.length>0" class="table">
         <el-table-column type="expand">
           <template slot-scope="props">
             <div v-if="props.row.name==='工作流变量'">
@@ -158,14 +112,14 @@
             </div>
             <div v-if="props.row.type === 'freestyle'">
               <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
-                <span class="item">{{env.key}}{{env.name}}</span>
-                <span class="item">{{env.value}}</span>
+                <span class="item" v-if="env">{{env.key}}</span>
+                <span class="item" v-if="env">{{env.value}}</span>
               </div>
             </div>
             <div v-if="props.row.type === 'plugin'">
               <div v-for="(env,index) in props.row.spec.inputs" :key="index" class="table-env">
-                <span class="item">{{env.name}}</span>
-                <span class="item">{{env.value}}</span>
+                <span class="item" v-if="env">{{env.name}}</span>
+                <span class="item" v-if="env">{{env.value}}</span>
               </div>
             </div>
           </template>
@@ -274,12 +228,59 @@ export default {
         this.payload = res
         this.adaptTaskDetail(res)
         if (this.envList.length === 0) {
+          this.handleEnv()
           const globalEnv = [{ name: '工作流变量', envs: this.payload.params }]
           const jobs = this.payload.stages.map(item => {
             return item.jobs.map(job => job)
           })
           this.envList = globalEnv.concat(jobs.flat())
         }
+      })
+    },
+    handleEnv () {
+      for (let i = 0; i < this.payload.params.length; i++) {
+        if (
+          this.payload.params[i].value.includes('fixed') ||
+          this.payload.params[i].value.includes('{{')
+        ) {
+          this.$delete(this.payload.params, i)
+        }
+      }
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.spec && job.spec.service_and_builds) {
+            job.spec.service_and_builds.forEach(service => {
+              for (let i = 0; i < service.key_vals.length; i++) {
+                if (
+                  service.key_vals[i].value.includes('fixed') ||
+                  service.key_vals[i].value.includes('{{')
+                ) {
+                  this.$delete(service.key_vals, i)
+                }
+              }
+            })
+          }
+          if (job.type === 'freestyle') {
+            for (let i = 0; i < job.spec.envs.length; i++) {
+              if (
+                job.spec.envs[i].value.includes('fixed') ||
+                job.spec.envs[i].value.includes('{{')
+              ) {
+                this.$delete(job.spec.envs, i)
+              }
+            }
+          }
+          if (job.type === 'plugin') {
+            for (let i = 0; i < job.spec.inputs.length; i++) {
+              if (
+                job.spec.inputs[i].value.includes('fixed') ||
+                job.spec.inputs[i].value.includes('{{')
+              ) {
+                this.$delete(job.spec.inputs, i)
+              }
+            }
+          }
+        })
       })
     },
     setCurJob (item, index, curStageIndex) {
@@ -521,10 +522,9 @@ export default {
 
   .env {
     width: 50%;
-    // margin: 24px auto;
     height: 80%;
     padding: 0 24px;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     .table {
       &-env {

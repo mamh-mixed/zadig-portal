@@ -103,6 +103,7 @@
                 <el-button
                   type="success"
                   size="mini"
+                  plain
                   :disabled="Object.keys(service).length === 0"
                   @click="addServiceAndBuild(job.spec.service_and_builds)"
                 >+ 添加</el-button>
@@ -151,7 +152,7 @@
     <div class="right">
       <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
-    <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="40%">
+    <el-drawer :title="drawerTitle" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="40%">
       <span v-if="curDrawer === 'high'">
         <h4>运行策略</h4>
         <el-form>
@@ -333,6 +334,12 @@ export default {
         return `{{.workflow.params.${item.name}}}`
       })
       return this.globalConstEnvs.concat(res)
+    },
+    drawerTitle () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.label
     }
   },
   created () {
@@ -905,7 +912,6 @@ export default {
   .right {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     width: 100px;
     border-left: 1px solid @borderGray;

@@ -23,7 +23,7 @@
             </el-button>
           </el-col>
           <el-col :span="4">
-            <el-button type="danger" size="mini" @click="delServiceAndBuild(index)">删除</el-button>
+            <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
           </el-col>
         </el-row>
         <el-row>
@@ -56,7 +56,7 @@
                     class="password"
                     v-model="scope.row.value"
                     :type="scope.row.is_credential ? 'passsword' : ''"
-                    show-password
+                    :show-password="scope.row.is_credential ? true : false"
                     v-if="scope.row.command !== 'other'&&scope.row.type === 'string'"
                     size="small"
                     style="width: 220px;"
@@ -100,6 +100,7 @@
                   :disabled="item.originRepos && item.originRepos.length === 0"
                   type="primary"
                   size="mini"
+                  plain
                   icon="el-icon-plus"
                 >添加</el-button>
               </div>
@@ -255,7 +256,7 @@ export default {
         })
         item.key_vals.forEach(key => {
           if (key.command === 'fixed') {
-            item.value = '<+fixed>' + item.value
+            key.value = '<+fixed>' + key.value
           }
         })
       })
