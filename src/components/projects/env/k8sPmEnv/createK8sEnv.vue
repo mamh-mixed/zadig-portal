@@ -482,7 +482,7 @@ export default {
         return availableServices.indexOf(item.service_name) >= 0
       })
       const clusterId = envInfo.cluster_id
-      this.projectConfig.selectedService = availableServices
+
       const containerMap = {}
       const containerNames = []
       for (const ser of serviceImages) {
@@ -506,7 +506,7 @@ export default {
       }
       this.containerNames = containerNames
       this.containerMap = containerMap
-      this.projectConfig.selectedService = Object.keys(containerMap)
+      this.$set(this.projectConfig, 'selectedService', Object.keys(containerMap))
       this.projectConfig.cluster_id = clusterId
       this.projectConfig.vars = vars
       this.projectConfig.registry_id = envInfo.registry_id
@@ -645,6 +645,9 @@ export default {
               const containers = ser.containers
               if (containers && ser.picked && ser.type === 'k8s') {
                 if (selectedServiceNames.includes(ser.service_name)) {
+                  if (this.projectConfig.source === 'copy') {
+                    ser.containers = this.containerMap[ser.service_name][ser.type].containers
+                  }
                   currentGroup.push(ser)
                 }
                 for (const con of ser.containers) {
@@ -659,7 +662,6 @@ export default {
           }
 
           const payload = this.$utils.cloneObj(this.projectConfig)
-
           if (this.projectConfig.source !== 'versionBack') {
             payload.services = cloneDeep(selectedServices) // full service to partial service
           }
