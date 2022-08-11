@@ -482,8 +482,10 @@ export default {
       const res = this.allCodeHosts.find(item => {
         return item.id === id
       })
-      row.source = res.type
-      row.auth_type = res.auth_type
+      if (row && res) {
+        row.source = res.type
+        row.auth_type = res.auth_type
+      }
       if (!key) {
         if (this.codeInfo[index]) {
           this.codeInfo[index].repo_owners = []
@@ -609,10 +611,13 @@ export default {
       this.addFirstBuildRepo()
   },
   watch: {
-    config (new_val, old_val) {
-      if (new_val.repos.length > 0) {
-        this.getInitRepoInfo(new_val.repos)
-      }
+    config: {
+      handler (new_val, old_val) {
+        if (new_val.repos.length > 0) {
+          this.getInitRepoInfo(new_val.repos)
+        }
+      },
+      immediate: true
     },
     'config.repos': {
       handler (new_val) {

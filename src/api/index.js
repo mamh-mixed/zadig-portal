@@ -9,7 +9,8 @@ const specialAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifac
 const ignoreErrReq = '/api/aslan/services/validateUpdate/'
 const ignoreErrResponse = 'the following services are modified since last update:'
 const reqExps = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloads/, /api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/groups/]
-const analyticsReq = 'https://api.koderover.com/api/operation/upload'
+const analyticsPrefix = 'https://api.koderover.com'
+const analyticsReq = `${analyticsPrefix}/api/operation/upload`
 const userInitEnvRoute = '/v1/projects/initialize/'
 const http = axios.create()
 const CancelToken = axios.CancelToken
@@ -63,7 +64,7 @@ http.interceptors.request.use((config) => {
     config.headers.Authorization = 'Bearer ' + config.data.token
   }
   // Set Authorization Header.
-  if (store.get('userInfo') && store.get('userInfo') !== 'undefined' && config.url !== analyticsReq) {
+  if (store.get('userInfo') && store.get('userInfo') !== 'undefined' && !config.url.startsWith(analyticsPrefix)) {
     config.headers.Authorization = 'Bearer ' + store.get('userInfo').token
   }
   return config
@@ -122,7 +123,7 @@ http.interceptors.response.use(
     // Don't expose analysis API errors
     if (
       error.response &&
-      error.response.config.url !== analyticsReq &&
+      !error.response.config.url.startsWith(analyticsPrefix) &&
       !error.response.config.url.includes(ignoreErrReq)) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
@@ -614,8 +615,8 @@ export function deleteProductWorkflowAPI (projectName, name) {
   return http.delete(`/api/aslan/workflow/workflow/${name}?projectName=${projectName}`)
 }
 
-export function getAssociatedBuildsAPI (projectName) {
-  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}`)
+export function getAssociatedBuildsAPI (projectName, excludeJenkins = false, key = '') {
+  return http.get(`/api/aslan/build/build/serviceModule?projectName=${projectName}&excludeJenkins=${excludeJenkins}&encryptedKey=${key}`)
 }
 
 export function checkRegularAPI (payload) { // {regular: '', branches: []}
@@ -2106,8 +2107,8 @@ export function addConfigObjectAPI (projectName, payload) {
   return http.post(`/api/aslan/environment/envcfgs/${payload.env_name}?projectName=${projectName}`, payload)
 }
 
-export function updateConfigObjectAPI (projectName, payload) {
-  return http.put(`/api/aslan/environment/envcfgs/${payload.env_name}?projectName=${projectName}`, payload)
+export function updateConfigObjectAPI (projectName, rollback = false, payload) {
+  return http.put(`/api/aslan/environment/envcfgs/${payload.env_name}?projectName=${projectName}&rollback=${rollback}`, payload)
 }
 
 export function deleteConfigObjectAPI ({ objectName, projectName, envName, commonEnvCfgType }) {
@@ -2117,4 +2118,81 @@ export function deleteConfigObjectAPI ({ objectName, projectName, envName, commo
 
 export function getObjectHistoryVersionAPI ({ objectName, projectName, envName, commonEnvCfgType }) {
   return http.get(`/api/aslan/environment/envcfgs/${envName}/cfg/${objectName}?projectName=${projectName}&commonEnvCfgType=${commonEnvCfgType}`)
+}
+
+// new workflow
+export function addCustomWorkflowAPI (payload, projectName) {
+  return http.post(`/api/aslan/workflow/v4?projectName=${projectName} `, payload)
+}
+export function updateCustomWorkflowAPI (workflow_name, payload, projectName) {
+  return http.put(` /api/aslan/workflow/v4/${workflow_name}?projectName=${projectName} `, payload)
+}
+export function getCustomWorkflowListAPI (projectName, page_num = 1, page_size = 20) {
+  return http.get(`/api/aslan/workflow/v4?project=${projectName}&page_num=${page_num}&page_size=${page_size}&projectName=${projectName}`)
+}
+export function getCustomWorkflowDetailAPI (workflow_name, projectName, key = '') {
+  return http.get(`/api/aslan/workflow/v4/name/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
+}
+export function deleteWorkflowAPI (workflow_name, projectName) {
+  return http.delete(`/api/aslan/workflow/v4/${workflow_name}?projectName=${projectName}`)
+}
+export function getCustomWorkfloweTaskPresetAPI (workflow_name, projectName, key = '') {
+  return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
+}
+export function runCustomWorkflowTaskAPI (payload, projectName) {
+  return http.post(`/api/aslan/workflow/v4/workflowtask?projectName=${projectName}`, payload)
+}
+export function getCustomWorkflowTaskListAPI (workflow_name, page_num = 1, page_size = 20, projectName) {
+  return http.get(`/api/aslan/workflow/v4/workflowtask?workflow_name=${workflow_name}&page_num=${page_num}&page_size=${page_size}&projectName=${projectName}`)
+}
+export function getCustomWorkflowTaskDetailAPI (workflow_name, task_id, projectName) {
+  return http.get(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${task_id}?projectName=${projectName}`)
+}
+export function deleteWorkflowTaskAPI (workflow_name, id, projectName) {
+  return http.delete(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${id}?projectName=${projectName}`)
+}
+export function getHistoryLogsAPI (workflow_name, task_id, job_name, projectName) {
+  return http.get(`/api/aslan/logs/log/v4/workflow/${workflow_name}/tasks/${task_id}/jobs/${job_name}?projectName=${projectName}`)
+}
+export function getRunningLogAPI (workflow_name, task_id, job_name, lines, projectName) {
+  return http.get(`/api/aslan/logs/log/v4/workflow/${workflow_name}/${task_id}/jobs/${job_name}/${lines}?projectName=${projectName}`)
+}
+export function getRunningStatusCustomWorkflowListAPI () {
+  return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/running`)
+}
+export function getPendingStatusCustomWorkflowListAPI () {
+  return makeEventSource(`/api/aslan/workflow/sse/workflowTasks/pending`)
+}
+export function checkCustomWorkflowYaml (payload) {
+  return http.post(`/api/aslan/workflow/v4/lint`, payload)
+}
+export function getCustomCloneDetailAPI (workflow_name, task_id) {
+  return http.get(`/api/aslan/workflow/v4/workflowtask/clone/workflow/${workflow_name}/task/${task_id}`)
+}
+// approval
+export function approvalCustomWorkflowTaskAPI (payload, projectName) {
+  return http.post(`/api/aslan/workflow/v4/workflowtask/approve?projectName=${projectName}`, payload)
+}
+
+// count the number of users
+export function getUserNumberAPI () {
+  return http.get(`/api/v1/user/count`)
+}
+
+export function uploadUserNumberAPI (payload) {
+  return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
+}
+// plugins
+export function getPluginsAPI () {
+  return http.get(`/api/aslan/workflow/plugin/template`)
+}
+// settings plugins
+export function updatePlugin (payload) {
+  return http.post(`/api/aslan/workflow/plugin`, payload)
+}
+export function delPlugin (id) {
+  return http.delete(`/api/aslan/workflow/plugin/${id}`)
+}
+export function getPlugins () {
+  return http.get(`/api/aslan/workflow/plugin`)
 }

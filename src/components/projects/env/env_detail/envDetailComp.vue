@@ -1175,6 +1175,10 @@ export default {
       this.showStartProductBuild = false
     },
     deleteHostingEnv (project_name, env_name) {
+      if (this.usedInPolicy.length) {
+        this.cantDelete(false)
+        return
+      }
       const envType = this.isProd ? 'prod' : ''
       this.$prompt(
         '请输入环境名称以确认',
@@ -1233,9 +1237,9 @@ export default {
         `环境 ${this.envName} 已在协作模式 ${this.usedInPolicy.join(
           '、'
         )} 中被定义为基准环境，如需${
-          isDelete ? '删除' : '配置回收策略'
+          isDelete ? '删除' : '取消托管'
         }请先修改协作模式！`,
-        `${isDelete ? '删除' : '回收'}环境`,
+        isDelete ? '删除环境' : '取消托管',
         {
           confirmButtonText: '确定',
           type: 'warning'
