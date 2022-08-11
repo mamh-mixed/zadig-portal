@@ -31,7 +31,7 @@
             <el-option v-if="currentProductDeliveryVersions.length > 0" label="回溯" value="versionBack"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="projectConfig.source==='copy'" label="复制来源">
+        <el-form-item v-if="projectConfig.source==='copy'" label="复制来源" prop="base_env_name">
           <el-select @change="changeSourceEnv" placeholder="请选择环境" size="small" v-model="projectConfig.base_env_name" value-key="version">
             <el-option v-for="(item,index) in envNameList" :key="index" :label="item.name" :value="item.name"></el-option>
           </el-select>
@@ -284,6 +284,7 @@ export default {
         env_name: [
           { required: true, trigger: 'change', validator: validateEnvName }
         ],
+        base_env_name: [{ required: true, trigger: 'change', message: '请选择来源' }],
         selectedService: {
           type: 'array',
           required: true,
@@ -611,7 +612,7 @@ export default {
 
           const selectedServices = [] // filtered service: keep the same format as the original services
           const selectedServiceNames = this.projectConfig.selectedService
-          if (this.projectConfig !== 'copy') {
+          if (this.projectConfig.source !== 'copy') {
             for (const group of this.projectConfig.services) {
               const currentGroup = []
               for (const ser of group) {
