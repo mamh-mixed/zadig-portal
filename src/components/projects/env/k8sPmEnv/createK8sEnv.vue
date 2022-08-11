@@ -225,7 +225,7 @@ import {
   getRegistryWhenBuildAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { uniq, cloneDeep, intersection } from 'lodash'
+import { uniq, cloneDeep, intersection, flattenDeep, pick, pickBy } from 'lodash'
 import { serviceTypeMap } from '@utils/wordTranslate'
 
 const validateEnvName = (rule, value, callback) => {
@@ -474,15 +474,41 @@ export default {
     },
     async changeSourceEnv (envName) {
       const projectName = this.projectName
-      // const template = await initProjectEnvAPI(projectName)
       const envInfo = await getEnvInfoAPI(projectName, envName)
       const envRevision = await envRevisionsAPI(projectName, envName)
       const vars = envInfo.vars
-      const services = envRevision[0].services
+      const availableServices = flattenDeep(envInfo.services)
+      const serviceImages = envRevision[0].services.filter((item) => {
+        return availableServices.indexOf(item.service_name) >= 0
+      })
       const clusterId = envInfo.cluster_id
+      this.projectConfig.selectedService = availableServices
+      const containerMap = {}
+      const containerNames = []
+      for (const ser of serviceImages) {
+        if (ser.type === 'k8s') {
+          containerMap[ser.service_name] =
+              containerMap[ser.service_name] || {}
+          containerMap[ser.service_name][ser.type] = ser
+          ser.picked = true
+          const containers = ser.containers
+          if (containers) {
+            for (const con of containers) {
+              containerNames.push(con.image_name)
+              Object.defineProperty(con, 'defaultImage', {
+                value: con.image,
+                enumerable: false,
+                writable: false
+              })
+            }
+          }
+        }
+      }
+      this.containerNames = containerNames
+      this.containerMap = containerMap
+      this.projectConfig.selectedService = Object.keys(containerMap)
       this.projectConfig.cluster_id = clusterId
       this.projectConfig.vars = vars
-      this.projectConfig.services = services
       this.projectConfig.registry_id = envInfo.registry_id
     },
     async getTemplateAndImg () {
@@ -588,6 +614,7 @@ export default {
       }
       if (val === 'system') {
         this.projectConfig.base_env_name = ''
+        this.getTemplateAndImg()
       }
       this.selection = ''
     },
@@ -612,30 +639,28 @@ export default {
 
           const selectedServices = [] // filtered service: keep the same format as the original services
           const selectedServiceNames = this.projectConfig.selectedService
-          if (this.projectConfig.source !== 'copy') {
-            for (const group of this.projectConfig.services) {
-              const currentGroup = []
-              for (const ser of group) {
-                const containers = ser.containers
-                if (containers && ser.picked && ser.type === 'k8s') {
-                  if (selectedServiceNames.includes(ser.service_name)) {
-                    currentGroup.push(ser)
-                  }
-                  for (const con of ser.containers) {
-                    if (!con.image) {
-                      this.$message.warning(`${con.name}未选择镜像`)
-                      return
-                    }
+          for (const group of this.projectConfig.services) {
+            const currentGroup = []
+            for (const ser of group) {
+              const containers = ser.containers
+              if (containers && ser.picked && ser.type === 'k8s') {
+                if (selectedServiceNames.includes(ser.service_name)) {
+                  currentGroup.push(ser)
+                }
+                for (const con of ser.containers) {
+                  if (!con.image) {
+                    this.$message.warning(`${con.name}未选择镜像`)
+                    return
                   }
                 }
               }
-              selectedServices.push(currentGroup)
             }
+            selectedServices.push(currentGroup)
           }
 
           const payload = this.$utils.cloneObj(this.projectConfig)
 
-          if (this.projectConfig.source !== 'versionBack' && this.projectConfig.source !== 'copy') {
+          if (this.projectConfig.source !== 'versionBack') {
             payload.services = cloneDeep(selectedServices) // full service to partial service
           }
 
