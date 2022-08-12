@@ -92,7 +92,7 @@
 <script>
 import {
   initProjectEnvAPI,
-  createProductAPI,
+  createEnvAPI,
   getHostListAPI,
   getProjectHostListAPI,
   getHostLabelListAPI
@@ -235,7 +235,7 @@ export default {
             return new Promise(resolve => setTimeout(resolve, time))
           }
           this.$store.commit('SET_MASK_STATUS', true)
-          createProductAPI(payload).then(
+          createEnvAPI(payload).then(
             res => {
               // Add delay to solve the back-end permission synchronization problem
               sleep(5000).then(() => {

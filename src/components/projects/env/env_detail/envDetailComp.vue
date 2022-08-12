@@ -472,7 +472,7 @@
 import { translateEnvStatus, serviceTypeMap } from '@utils/wordTranslate'
 import {
   envRevisionsAPI,
-  productEnvInfoAPI,
+  getEnvInfoAPI,
   productServicesAPI,
   listProductAPI,
   updateServiceAPI,
@@ -995,7 +995,7 @@ export default {
     async getProductEnvInfo (projectName, envName) {
       this.envLoading = true
       this.serviceLoading = true
-      const envInfo = await productEnvInfoAPI(projectName, envName)
+      const envInfo = await getEnvInfoAPI(projectName, envName)
       if (envInfo) {
         if (!envInfo.registry_id) {
           envInfo.registry_id = ''
