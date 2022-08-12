@@ -52,8 +52,7 @@ export default {
   },
   methods: {
     handleCommand (val, item) {
-      item = val
-      this.$emit('change', item)
+      this.$emit('change', val)
     }
   }
 }

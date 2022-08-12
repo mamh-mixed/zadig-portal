@@ -25,7 +25,7 @@
                   class="password"
                   v-model="scope.row.value"
                   size="small"
-                  :type="text"
+                  type="text"
                   style="width: 220px;"
                 ></el-input>
               </template>
@@ -268,7 +268,9 @@ export default {
           }
           if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
             job.pickedTargets = cloneDeep(job.spec.service_and_images)
-            job.spec.service_and_images = this.originServiceAndBuilds
+            setTimeout(() => {
+              job.spec.service_and_images = this.originServiceAndBuilds
+            }, 1000)
           }
           if (job.type === 'freestyle') {
             job.spec.steps.forEach(step => {
