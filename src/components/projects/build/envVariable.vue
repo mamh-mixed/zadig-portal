@@ -53,7 +53,7 @@
               v-model="preEnvs.envs[build_env_index].value"
               size="small"
             ></el-input>
-            <el-select v-if="preEnvs.envs[build_env_index].command === 'other'" style="display: inline-block;"  v-model="preEnvs.envs[build_env_index].value" filterable placeholder="请选择" size="small">
+            <el-select v-if="preEnvs.envs[build_env_index].command === 'other'" v-model="preEnvs.envs[build_env_index].value" filterable placeholder="请选择" size="small"  style="max-width: 176px;">
               <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
           </el-form-item>
