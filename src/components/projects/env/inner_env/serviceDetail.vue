@@ -437,7 +437,7 @@
                    ref="debug"/>
       <div class="download-content">
         <el-input v-model="downloadFilePath" placeholder="输入文件在容器中的绝对路径"></el-input>
-        <el-button type="primary" @click="downloadFile(execModal.podName)" :disabled="!downloadFilePath" plain>下载</el-button>
+        <el-button type="primary" @click="downloadFile(execModal.podName, execModal.containerName)" :disabled="!downloadFilePath" plain>下载</el-button>
       </div>
     </el-dialog>
 
@@ -652,10 +652,10 @@ export default {
   },
 
   methods: {
-    downloadFile (podName) {
+    downloadFile (podName, containerName) {
       const url = `/api/aslan/environment/kube/pods/${podName}/file?projectName=${
         this.projectName
-      }&envName=${this.envName}&path=${encodeURIComponent(
+      }&envName=${this.envName}&container=${containerName}&path=${encodeURIComponent(
         this.downloadFilePath
       )}`
       const aEle = document.createElement('a')
