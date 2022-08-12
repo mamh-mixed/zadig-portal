@@ -435,6 +435,10 @@
                    :clusterId="clusterId"
                    :visible="execModal.visible"
                    ref="debug"/>
+      <div class="download-content">
+        <el-input v-model="downloadFilePath" placeholder="输入文件在容器中的绝对路径"></el-input>
+        <el-button type="primary" @click="downloadFile(execModal.podName)" :disabled="!downloadFilePath" plain>下载</el-button>
+      </div>
     </el-dialog>
 
     <el-dialog :visible.sync="exportModal.visible"
@@ -587,7 +591,8 @@ export default {
         visible: false,
         source: 'builtin',
         image: ''
-      }
+      },
+      downloadFilePath: ''
     }
   },
 
@@ -647,6 +652,21 @@ export default {
   },
 
   methods: {
+    downloadFile (podName) {
+      const url = `/api/aslan/environment/kube/pods/${podName}/file?projectName=${
+        this.projectName
+      }&envName=${this.envName}&path=${encodeURIComponent(
+        this.downloadFilePath
+      )}`
+      const aEle = document.createElement('a')
+      if (aEle.download !== undefined) {
+        aEle.setAttribute('href', url)
+        aEle.setAttribute('download', this.downloadFilePath)
+        document.body.appendChild(aEle)
+        aEle.click()
+        document.body.removeChild(aEle)
+      }
+    },
     copyCommandSuccess (event) {
       this.$message({
         message: '地址已成功复制到剪贴板',
