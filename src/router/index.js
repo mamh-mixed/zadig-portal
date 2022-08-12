@@ -351,6 +351,14 @@ const routes = [
                 }
               },
               {
+                path: ':env_name/log',
+                component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/changeLog.vue'),
+                meta: {
+                  requiresAuth: true,
+                  title: '变更记录'
+                }
+              },
+              {
                 path: 'externalConfig',
                 component: () => import(/* webpackChunkName: "Project Hosting Env" */ '@/components/projects/env/hostEnv/editExternalConfig.vue'),
                 meta: {
