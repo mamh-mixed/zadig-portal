@@ -71,7 +71,7 @@
         </el-row>
       </section>
       <section class="log-content mg-t8">
-        <XtermLog :id="jobInfo.spec.service_name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom" />
+        <XtermLog :id="jobInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" from="custom" />
       </section>
     </main>
   </div>
@@ -267,7 +267,7 @@ export default {
 
   main {
     min-height: 400px;
-    max-height: 600px;
+    max-height: 60%;
     padding: 0 24px;
     overflow-y: scroll;
 
