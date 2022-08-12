@@ -225,7 +225,7 @@ import {
   getRegistryWhenBuildAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { uniq, cloneDeep, intersection, flattenDeep, pick, pickBy } from 'lodash'
+import { uniq, cloneDeep, intersection, flattenDeep } from 'lodash'
 import { serviceTypeMap } from '@utils/wordTranslate'
 
 const validateEnvName = (rule, value, callback) => {
@@ -284,7 +284,9 @@ export default {
         env_name: [
           { required: true, trigger: 'change', validator: validateEnvName }
         ],
-        base_env_name: [{ required: true, trigger: 'change', message: '请选择来源' }],
+        base_env_name: [
+          { required: true, trigger: 'change', message: '请选择来源' }
+        ],
         selectedService: {
           type: 'array',
           required: true,
@@ -368,7 +370,11 @@ export default {
   },
   methods: {
     changeEnvName (value) {
-      if ((this.projectConfig.source === 'system' || this.projectConfig.source === 'copy') && !this.nsIsExisted) {
+      if (
+        (this.projectConfig.source === 'system' ||
+          this.projectConfig.source === 'copy') &&
+        !this.nsIsExisted
+      ) {
         this.projectConfig.defaultNamespace = this.projectName + '-env-' + value
       }
     },
@@ -478,35 +484,72 @@ export default {
       const envRevision = await envRevisionsAPI(projectName, envName)
       const vars = envInfo.vars
       const availableServices = flattenDeep(envInfo.services)
-      const serviceImages = envRevision[0].services.filter((item) => {
+      const serviceImages = envRevision[0].services.filter(item => {
         return availableServices.indexOf(item.service_name) >= 0
       })
       const clusterId = envInfo.cluster_id
+      for (
+        let groupIndex = 0;
+        groupIndex < envInfo.services.length;
+        groupIndex++
+      ) {
+        const group = envInfo.services[groupIndex]
+        for (
+          let serviceIndex = 0;
+          serviceIndex < group.length;
+          serviceIndex++
+        ) {
+          const service = group[serviceIndex]
+          const currnt = serviceImages.find(elemnet => {
+            return elemnet.service_name === service
+          })
+          group[serviceIndex] = currnt
+        }
+      }
+      for (const group of envInfo.services) {
+        group.sort((a, b) => {
+          if (a.service_name !== b.service_name) {
+            return a.service_name.charCodeAt(0) - b.service_name.charCodeAt(0)
+          }
+          if (a.type === 'k8s' || b.type === 'k8s') {
+            return a.type === 'k8s' ? 1 : -1
+          }
+          return 0
+        })
+      }
 
       const containerMap = {}
       const containerNames = []
-      for (const ser of serviceImages) {
-        if (ser.type === 'k8s') {
-          containerMap[ser.service_name] =
+      for (const group of envInfo.services) {
+        for (const ser of group) {
+          if (ser.type === 'k8s') {
+            containerMap[ser.service_name] =
               containerMap[ser.service_name] || {}
-          containerMap[ser.service_name][ser.type] = ser
-          ser.picked = true
-          const containers = ser.containers
-          if (containers) {
-            for (const con of containers) {
-              containerNames.push(con.image_name)
-              Object.defineProperty(con, 'defaultImage', {
-                value: con.image,
-                enumerable: false,
-                writable: false
-              })
+            containerMap[ser.service_name][ser.type] = ser
+            ser.picked = true
+            const containers = ser.containers
+            if (containers) {
+              for (const con of containers) {
+                containerNames.push(con.image_name)
+                Object.defineProperty(con, 'defaultImage', {
+                  value: con.image,
+                  enumerable: false,
+                  writable: false
+                })
+              }
             }
           }
         }
       }
-      this.containerNames = containerNames
       this.containerMap = containerMap
-      this.$set(this.projectConfig, 'selectedService', Object.keys(containerMap))
+      this.projectConfig.services = envInfo.services
+      this.containerNames = uniq(containerNames)
+      this.getImages()
+      this.$set(
+        this.projectConfig,
+        'selectedService',
+        Object.keys(containerMap)
+      )
       this.projectConfig.cluster_id = clusterId
       this.projectConfig.vars = vars
       this.projectConfig.registry_id = envInfo.registry_id
@@ -584,7 +627,7 @@ export default {
               image.full = `${image.host}/${image.owner}/${image.name}:${image.tag}`
             }
             this.imageMap = this.makeMapOfArray(images, 'name')
-            if (!this.rollbackMode) {
+            if (!this.rollbackMode && this.projectConfig.source !== 'copy') {
               this.quickSelection = 'latest'
               this.quickInitImage()
             }
@@ -646,7 +689,9 @@ export default {
               if (containers && ser.picked && ser.type === 'k8s') {
                 if (selectedServiceNames.includes(ser.service_name)) {
                   if (this.projectConfig.source === 'copy') {
-                    ser.containers = this.containerMap[ser.service_name][ser.type].containers
+                    ser.containers = this.containerMap[ser.service_name][
+                      ser.type
+                    ].containers
                   }
                   currentGroup.push(ser)
                 }
@@ -692,7 +737,11 @@ export default {
             return new Promise(resolve => setTimeout(resolve, time))
           }
           this.$store.commit('SET_MASK_STATUS', true)
-          createEnvAPI(payload, '', this.projectConfig.source === 'copy' ? 'copy' : '').then(
+          createEnvAPI(
+            payload,
+            '',
+            this.projectConfig.source === 'copy' ? 'copy' : ''
+          ).then(
             res => {
               // Add delay to solve the back-end permission synchronization problem
               sleep(5000).then(() => {
