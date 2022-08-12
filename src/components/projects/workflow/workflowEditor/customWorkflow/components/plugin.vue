@@ -43,7 +43,7 @@
               style="width: 220px;"
             ></el-input>
             <el-form-item required v-if="scope.row.command === 'other'" style="display: inline-block; width: 220px;">
-              <el-select v-model="scope.row.value" placeholder="请选择" size="small" style="width: 220px;">
+              <el-select v-model="scope.row.value" placeholder="请选择" filterable size="small" style="width: 220px;">
                 <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
               </el-select>
             </el-form-item>

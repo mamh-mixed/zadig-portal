@@ -15,8 +15,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.iconyunhangshipeizhi:before {
-  content: "\e6a0";
+.iconshuru:before {
+  content: "\e6c7";
 }
 
 .iconhanshu:before {

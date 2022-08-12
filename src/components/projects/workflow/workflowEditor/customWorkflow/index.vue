@@ -154,10 +154,10 @@
     </div>
     <el-drawer :title="drawerTitle" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="40%">
       <span v-if="curDrawer === 'high'">
-        <h4>运行策略</h4>
+        <div class="mg-b16">运行策略</div>
         <el-form>
           <el-form-item>
-            <span style="margin-right: 16px;">
+            <span class="mg-r16">
               <span>并发运行</span>
               <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
                 <i class="pointer el-icon-question"></i>
@@ -470,7 +470,6 @@ export default {
               })
             }
             if (job.type === 'zadig-deploy') {
-              console.log(job)
               if (job.spec.env.includes('fixed')) {
                 job.spec.envType = 'fixed'
                 job.spec.env = job.spec.env.slice(8)

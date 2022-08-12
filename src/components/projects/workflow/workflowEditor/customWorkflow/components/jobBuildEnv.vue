@@ -20,7 +20,7 @@
           class="form-item"
           :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="form.env" placeholder="请选择" size="small">
+          <el-select v-model="form.env" placeholder="请选择" filterable size="small">
             <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>

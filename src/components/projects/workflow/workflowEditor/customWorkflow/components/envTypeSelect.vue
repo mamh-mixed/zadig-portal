@@ -1,13 +1,13 @@
 <template>
   <el-dropdown @command="handleCommand($event,value)" class="dropdown">
     <span class="el-dropdown-link">
-      <i class="iconfont iconyunhangshipeizhi" v-if="!value || value === 'runtime'"></i>
+      <i class="iconfont iconshuru" v-if="!value || value === 'runtime'"></i>
       <i class="iconfont icongudingzhi" v-if="value === 'fixed'"></i>
       <i class="iconfont iconhanshu" v-if="value === 'other'"></i>
     </span>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item command="runtime" v-if="isRuntime">
-        <span class="iconfont iconyunhangshipeizhi"></span>
+        <span class="iconfont iconshuru"></span>
         运行时输入
       </el-dropdown-item>
       <el-dropdown-item command="fixed" v-if="isFixed">

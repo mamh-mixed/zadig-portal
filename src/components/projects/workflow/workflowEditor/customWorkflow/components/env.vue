@@ -69,15 +69,31 @@
             <EnvTypeSelect v-model="preEnvs.params[build_env_index].command" isFixed isRuntime />
           </el-form-item>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="4">
           <el-form-item>
             <div class="app-operation">
-              <el-button v-if="preEnvs.params.length >= 1" @click="deleteBuildEnv(build_env_index)" type="danger" size="small" plain>删除</el-button>
+              <el-button
+                v-if="preEnvs.params.length >= 1"
+                @click="deleteBuildEnv(build_env_index)"
+                type="danger"
+                size="mini"
+                icon="el-icon-minus"
+                circle
+                plain
+              ></el-button>
+              <el-button
+                v-if="build_env_index===preEnvs.params.length-1"
+                @click="addBuildEnv()"
+                type="primary"
+                size="mini"
+                icon="el-icon-plus"
+                circle
+                plain
+              ></el-button>
             </div>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-button v-if="preEnvs.params" @click="addBuildEnv()" type="primary" size="mini" plain class="mg-b48">新增</el-button>
     </el-form>
     <el-dialog :visible.sync="dialogVisible" title="枚举" width="600px" :close-on-click-modal="false" :show-close="false" append-to-body>
       <el-form ref="form" :model="currentVars" label-width="90px">
@@ -169,7 +185,6 @@ export default {
     },
     addBuildEnv () {
       this.validate().then(valid => {
-        console.log(valid)
         this.preEnvs.params.push({
           name: '',
           value: '',
