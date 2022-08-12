@@ -54,6 +54,9 @@
         element-loading-spinner="el-icon-loading"
         class="common-parcel-block basic-info-content"
       >
+        <el-tooltip effect="dark" content="变更记录" placement="top">
+          <i class="change-log el-icon-document" @click="$router.push(`/v1/projects/detail/${projectName}/envs/${envName}/log`)"></i>
+        </el-tooltip>
         <el-row :gutter="10">
           <el-col v-if="!pmServiceList.length" :span="12">
             <div class="grid-title">K8s 集群</div>
