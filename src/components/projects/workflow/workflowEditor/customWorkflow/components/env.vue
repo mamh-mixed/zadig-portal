@@ -6,6 +6,14 @@
         <el-col :span="4" class="th-title">键</el-col>
         <el-col :span="6" class="th-title">值</el-col>
       </el-row>
+      <el-button
+        v-if="preEnvs.params && preEnvs.params.length===0"
+        @click="addFirstBuildEnv()"
+        type="primary"
+        size="mini"
+        plain
+        class="mg-b16"
+      >+ 添加</el-button>
       <el-row v-for="(app,build_env_index) in preEnvs.params" :key="build_env_index" :gutter="2">
         <el-col :span="8">
           <el-form-item class="display-flex">
@@ -182,6 +190,14 @@ export default {
         }
       })
       return this.preEnvs.params
+    },
+    addFirstBuildEnv () {
+      this.preEnvs.params.push({
+        key: '',
+        value: '',
+        type: 'string',
+        is_credential: true
+      })
     },
     addBuildEnv () {
       this.validate().then(valid => {

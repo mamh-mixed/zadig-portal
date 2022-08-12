@@ -152,7 +152,14 @@
     <div class="right">
       <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
-    <el-drawer :title="drawerTitle" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="40%">
+    <el-drawer :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" :show-close="false" class="drawer" size="40%">
+      <span slot="title" class="drawer-title">
+        <span>{{drawerTitle}}</span>
+        <div>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">确定</el-button>
+          <el-button size="mini" plain @click="isShowDrawer=false">取消</el-button>
+        </div>
+      </span>
       <span v-if="curDrawer === 'high'">
         <div class="mg-b16">运行策略</div>
         <el-form>
@@ -170,7 +177,6 @@
       <div v-if="curDrawer === 'env'">
         <Env :preEnvs="payload" ref="env" />
       </div>
-      <el-button type="primary" size="small" @click="handleDrawerChange">确定</el-button>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
@@ -928,6 +934,11 @@ export default {
 
   .drawer {
     color: #555;
+
+    &-title {
+      display: flex;
+      justify-content: space-between;
+    }
 
     /deep/.el-drawer__body {
       padding: 0 24px;
