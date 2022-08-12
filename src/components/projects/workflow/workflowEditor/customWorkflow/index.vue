@@ -136,7 +136,7 @@
                   prop="name"
                   v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
                 >
-                  <el-input v-model="job.name" size="small"></el-input>
+                  <el-input v-model="job.name" size="small"  style="width: 220px;"></el-input>
                 </el-form-item>
               </el-form>
               <JobCommonBuild :globalEnv="globalEnv" :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
@@ -620,12 +620,12 @@ export default {
             } else if (this.job.type === jobType.freestyle) {
               this.$refs[this.beInitCompRef]
                 .validate()
-                .then(() => {
+                .then((job) => {
                   delete this.job.isCreate // 去除新建状态
                   this.$set(
                     this.payload.stages[this.curStageIndex].jobs,
                     this.curJobIndex,
-                    this.job
+                    job
                   )
                   this.$store.dispatch('setIsShowFooter', false)
                   this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化

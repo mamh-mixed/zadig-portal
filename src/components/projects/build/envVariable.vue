@@ -53,12 +53,13 @@
               v-model="preEnvs.envs[build_env_index].value"
               size="small"
             ></el-input>
-            <el-form-item required v-if="preEnvs.envs[build_env_index].command === 'other'" style="display: inline-block;">
-              <el-select v-model="preEnvs.envs[build_env_index].value" filterable placeholder="请选择" size="small">
-                <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
-              </el-select>
-            </el-form-item>
+            <el-select v-if="preEnvs.envs[build_env_index].command === 'other'" style="display: inline-block;"  v-model="preEnvs.envs[build_env_index].value" filterable placeholder="请选择" size="small">
+              <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
+            </el-select>
           </el-form-item>
+        </el-col>
+        <el-col :span="1" v-if="envs.length > 0" class="mg-t16">
+          <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther/>
         </el-col>
         <el-col :span="12" v-if="isJenkins&&preEnvs.envs[build_env_index].name==='IMAGE'" class="tip">
           <el-checkbox v-model="preEnvs.envs[build_env_index].auto_generate"></el-checkbox>
@@ -70,9 +71,6 @@
         </el-col>
         <el-col :span="mini ? 4 : 3" v-show="preEnvs.envs[build_env_index].type!=='choice'" v-if="!isJenkins">
           <el-form-item prop="is_credential">
-            <div v-if="envs.length > 0" style="display: inline-block; width: 20px;">
-              <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther/>
-            </div>
             <el-checkbox v-model="preEnvs.envs[build_env_index].is_credential">
               敏感信息
               <el-tooltip effect="dark" content="设置为敏感信息变量后，系统会将变量进行加密，使用时进行解密，同时在工作流运行日志里不可见" placement="top">
