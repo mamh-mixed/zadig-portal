@@ -179,7 +179,7 @@ export default {
       dockerList: [],
       specificEnv: true,
       startTaskLoading: false,
-      activeName: '00',
+      activeName: ['env', '00'],
       payload: {
         workflow_name: '',
         stages: [
