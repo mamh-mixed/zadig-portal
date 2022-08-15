@@ -377,6 +377,7 @@ export default {
           }
           updatePlugin(payload).then(res => {
             this.loading = false
+            this.$message.success('操作完成')
             this.getPlugins()
           })
         }
