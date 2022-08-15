@@ -267,7 +267,8 @@ export default {
             })
           }
           if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
-            job.pickedTargets = cloneDeep(job.spec.service_and_images)
+            job.pickedTargets = job.spec.service_and_images
+            this.handleServiceDeployChange(job.pickedTargets)
             setTimeout(() => {
               job.spec.service_and_images = this.originServiceAndBuilds
             }, 1000)

@@ -7,7 +7,7 @@
     </el-row>
     <el-form :model="form" ref="ruleForm" size="small">
       <div v-for="(item,index) in serviceAndBuilds" :key="index">
-        <el-row :gutter="24" class="mg-t24">
+        <el-row :gutter="24">
           <el-col :span="6">
             <span>{{item.service_name}}/{{item.service_module}}</span>
           </el-col>
@@ -27,7 +27,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-card class="box-card" v-if="item.isShowVals" style="width: 80%;">
+          <el-card class="box-card mg-b8" v-if="item.isShowVals" style="width: 80%;">
             <div class="tab">
               <span
                 class="tab-item"

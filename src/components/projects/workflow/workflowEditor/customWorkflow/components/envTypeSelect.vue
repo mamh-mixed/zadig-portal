@@ -1,9 +1,9 @@
 <template>
   <el-dropdown @command="handleCommand($event,value)" class="dropdown">
     <span class="el-dropdown-link">
-      <i class="iconfont iconshuru" v-if="!value || value === 'runtime'"></i>
-      <i class="iconfont icongudingzhi" v-if="value === 'fixed'"></i>
-      <i class="iconfont iconhanshu" v-if="value === 'other'"></i>
+      <i class="iconfont iconshuru" v-if="!type || type === 'runtime'"></i>
+      <i class="iconfont icongudingzhi" v-if="type === 'fixed'"></i>
+      <i class="iconfont iconhanshu" v-if="type === 'other'"></i>
     </span>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item command="runtime" v-if="isRuntime">
@@ -50,9 +50,23 @@ export default {
       default: false
     }
   },
+  data () {
+    return {
+      type: ''
+    }
+  },
   methods: {
-    handleCommand (val, item) {
+    handleCommand (val) {
+      this.type = val
       this.$emit('change', val)
+    }
+  },
+  watch: {
+    value: {
+      handler (val) {
+        this.type = val
+      },
+      immediate: true
     }
   }
 }

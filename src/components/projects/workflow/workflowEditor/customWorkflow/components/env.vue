@@ -37,12 +37,18 @@
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-form-item :prop="'params.' + build_env_index + '.name'" :rules="{required: true, message: '键 不能为空', trigger: 'blur'}">
+          <el-form-item
+            :prop="'params.' + build_env_index + '.name'"
+            :rules="{required: true, message: '键 不能为空', trigger: ['blur','change']}"
+          >
             <el-input placeholder="键" v-model="preEnvs.params[build_env_index].name" size="small" @input="updateKeyParams(build_env_index)"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item :prop="'params.' + build_env_index + '.value'" :rules="{required: true, message: '值 不能为空', trigger: 'blur'}">
+          <el-form-item
+            :prop="'params.' + build_env_index + '.value'"
+            :rules="{required: true, message: '值 不能为空', trigger: ['blur','change']}"
+          >
             <el-select
               v-if="preEnvs.params[build_env_index].type==='choice'"
               v-model="preEnvs.params[build_env_index].value"
@@ -244,7 +250,7 @@ export default {
       const env = this.preEnvs.params[index]
       const choice_option = this.currentVars.choice_option.split(',')
       env.choice_option = choice_option
-      env.name = this.currentVars.name
+      this.$set(env, 'name', this.currentVars.name)
       if (!choice_option.includes(env.value)) {
         env.value = ''
       }

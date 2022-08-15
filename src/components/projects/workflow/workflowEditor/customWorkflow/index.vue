@@ -136,7 +136,7 @@
                   prop="name"
                   v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
                 >
-                  <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+                  <el-input v-model="job.name" size="small" style="width: 400px;"></el-input>
                 </el-form-item>
               </el-form>
               <JobCommonBuild :globalEnv="globalEnv" :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
@@ -687,12 +687,16 @@ export default {
     handleDrawerChange () {
       if (this.curDrawer === 'high') {
         this.$set(this.payload, 'multi_run', this.multi_run)
+        this.$message.success('设置成功')
+        this.isShowDrawer = false
       }
       if (this.curDrawer === 'env') {
-        this.$set(this.payload, 'params', this.$refs.env.getData())
+        this.$refs.env.validate(() => {
+          this.$set(this.payload, 'params', this.$refs.env.getData())
+          this.$message.success('设置成功')
+          this.isShowDrawer = false
+        })
       }
-      this.$message.success('设置成功')
-      this.isShowDrawer = false
     },
     setCurDrawer (val) {
       this.isShowDrawer = true
