@@ -2192,22 +2192,10 @@ export function getEnterpriseInfoAPI () {
   return http.get(`/api/plutus/organization`)
 }
 
-export function createEnterpriseInfoAPI (payload) {
-  return http.post(`/api/plutus/organization`, payload)
-}
-
-export function updateEnterpriseInfoAPI (payload) {
-  return http.post(`/api/plutus/organization`, payload)
-}
-
 export function getLicenseAPI () {
   return http.get(`/api/plutus/signature`)
 }
 
 export function createLicenseAPI (payload) {
-  return http.post(`/api/plutus/signature`, payload)
-}
-
-export function updateLicenseAPI (payload) {
   return http.post(`/api/plutus/signature`, payload)
 }

@@ -235,7 +235,7 @@ export default {
             {
               name: '企业管理',
               icon: 'iconfont iconcompany-info',
-              url: 'enterprise'
+              url: 'enterprise/'
             }
           ]
         }
