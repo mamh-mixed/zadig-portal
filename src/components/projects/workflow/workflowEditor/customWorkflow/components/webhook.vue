@@ -4,7 +4,7 @@
     <el-row :gutter="20" class="webhook-row" v-for="(item,index) in webhooks" :key="index">
       <el-col :span="2">
         <div class="content">
-          <el-switch v-model="item.enabled" active-color="#13ce66"></el-switch>
+          <el-switch v-model="item.enabled" active-color="#13ce66" @change="changeWebhookStatus(item)"></el-switch>
         </div>
       </el-col>
       <el-col :span="2">
@@ -24,7 +24,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="8">
         <div class="content">
           <div class="cate">
             <span class="title">目标分支：</span>
@@ -34,21 +34,22 @@
             <span class="title">触发事件：</span>
             <span class="desc">
               <div v-if="item.main_repo.events.length">
-                <div v-for="event in item.main_repo.events" :key="event">
+                <span v-for="(event,index) in item.main_repo.events" :key="index">
                   <span
                     v-if="item.main_repo.source === 'gerrit'"
                   >{{ triggerMethods.gerrit.find(tri => tri.value === event)?triggerMethods.gerrit.find(tri => tri.value === event).label: 'N/A' }}</span>
                   <span
                     v-else
                   >{{ triggerMethods.git.find(tri => tri.value === event)?triggerMethods.git.find(tri => tri.value === event).label: 'N/A' }}</span>
-                </div>
+                  <span v-if="index !== item.main_repo.events.length - 1">,</span>
+                </span>
               </div>
               <span v-else>{{ 'N/A' }}</span>
             </span>
           </div>
         </div>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="4">
         <div class="content">
           <div class="cate">
             <span class="title">描述：</span>
@@ -329,6 +330,7 @@ export default {
       })
       webhookRepos.forEach(repo => {
         repo.key = `${repo.repo_owner}/${repo.repo_name}`
+        delete repo.branch
       })
       return webhookRepos
     }
@@ -336,6 +338,15 @@ export default {
   methods: {
     validate () {
       return this.$refs.buildEnvRef.validate()
+    },
+    changeWebhookStatus (webhook) {
+      const workflowName = this.workflowName
+      updateCustomWebhookAPI(workflowName, webhook).then(() => {
+        this.$message.success(
+          `${webhook.name} 已${webhook.enabled ? '启用' : '禁用'}`
+        )
+        this.getWebhooks()
+      })
     },
     getWebhooks () {
       getCustomWebhooksAPI(this.workflowName).then(res => {
@@ -377,7 +388,6 @@ export default {
     },
     removeWebhook (index, triggerName) {
       const workflowName = this.workflowName
-      this.webhooks.splice(index, 1)
       removeCustomWebhookAPI(workflowName, triggerName).then(res => {
         this.$message.success('删除成功')
         this.getWebhooks()
@@ -390,7 +400,7 @@ export default {
           payload.main_repo.match_folders = payload.main_repo.match_folders.split(
             '\n'
           )
-          payload.main_repo = Object.assign({}, payload.main_repo, payload.repo)
+          payload.main_repo = Object.assign(payload.main_repo, payload.repo)
           payload.workflow_arg = this.config
           delete payload.repo
           const workflowName = this.workflowName
