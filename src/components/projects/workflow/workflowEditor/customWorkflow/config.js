@@ -70,7 +70,9 @@ const configList = [
   {
     label: '触发器',
     value: 'webhook',
-    drawerSize: '60%'
+    drawerSize: '60%',
+    drawerConfirmText: '保存',
+    drawerCancelText: '取消'
   },
   // {
   //   label: '通知',

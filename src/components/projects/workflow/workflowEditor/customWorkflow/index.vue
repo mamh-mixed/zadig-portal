@@ -156,8 +156,8 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div>
-          <el-button type="primary" size="mini" plain @click="handleDrawerChange">确定</el-button>
-          <el-button size="mini" plain @click="isShowDrawer=false">取消</el-button>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
+          <el-button size="mini" plain @click="isShowDrawer=false">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
@@ -352,6 +352,18 @@ export default {
         return item.value === this.curDrawer
       })
       return res.drawerSize
+    },
+    drawerConfirmText () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerConfirmText
+    },
+    drawerCancelText () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerCancelText
     }
   },
   created () {

@@ -73,7 +73,6 @@
       :title="editMode?'编辑触发器':'添加触发器'"
       width="700px"
       :close-on-click-modal="false"
-      :show-close="false"
       append-to-body
     >
       <el-form ref="webhookForm" :model="currentWebhook" label-width="90px" :rules="rules">
@@ -490,7 +489,7 @@ export default {
       .cate {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         margin-bottom: 6px;
 
         &:last-child {
