@@ -7,7 +7,7 @@
           <el-switch v-model="item.enabled" active-color="#13ce66" @change="changeWebhookStatus(item)"></el-switch>
         </div>
       </el-col>
-      <el-col :span="2">
+      <el-col :span="1">
         <div class="content">
           <span class="iconfont icongit"></span>
         </div>
@@ -24,7 +24,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="9">
         <div class="content">
           <div class="cate">
             <span class="title">目标分支：</span>
@@ -467,7 +467,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@secondaryColor: #888888;
+@secondaryColor: #b1b1b2;
 @primaryColor: #000;
 
 .webhook {
