@@ -2179,6 +2179,23 @@ export function approvalCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask/approve?projectName=${projectName}`, payload)
 }
 
+// Webhook
+export function addCustomWebhookAPI (workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/webhook/${workflowName}`, payload)
+}
+
+export function getCustomWebhooksAPI (workflowName) {
+  return http.get(`/api/aslan/workflow/v4/webhook?workflowName=${workflowName}`)
+}
+
+export function removeCustomWebhookAPI (workflowName, triggerName) {
+  return http.delete(`/api/aslan/workflow/v4/webhook/${workflowName}/trigger/${triggerName}`)
+}
+
+export function updateCustomWebhookAPI (workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/webhook/${workflowName}`, payload)
+}
+
 // count the number of users
 export function getUserNumberAPI () {
   return http.get(`/api/v1/user/count`)

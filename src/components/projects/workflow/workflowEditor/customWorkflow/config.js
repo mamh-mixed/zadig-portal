@@ -67,10 +67,11 @@ const configList = [
     label: '变量',
     value: 'env'
   },
-  // {
-  //   label: '触发器',
-  //   value: 'webhook'
-  // },
+  {
+    label: '触发器',
+    value: 'webhook',
+    drawerSize: '60%'
+  },
   // {
   //   label: '通知',
   //   value: 'notify'
