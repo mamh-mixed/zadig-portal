@@ -383,9 +383,18 @@
     }
   }
 
-  .log-dialog {
+  /deep/.log-dialog {
     .el-dialog__body {
       padding-top: 15px;
+
+      .download-content {
+        display: flex;
+        margin: 10px 0;
+
+        .el-button {
+          margin-left: 10px;
+        }
+      }
     }
   }
 
