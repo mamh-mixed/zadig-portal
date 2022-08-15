@@ -830,7 +830,9 @@ export default {
       createClusterAPI(payload).then(res => {
         this.getCluster()
         this.accessCluster = res
-        this.dialogClusterAccessVisible = true
+        if (payload.type === 'agent') {
+          this.dialogClusterAccessVisible = true
+        }
         this.$message({
           type: 'success',
           message: '新增成功'
