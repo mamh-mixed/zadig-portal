@@ -7,9 +7,9 @@
     </el-row>
     <el-form :model="form" ref="ruleForm" size="small">
       <div v-for="(item,index) in serviceAndBuilds" :key="index">
-        <el-row :gutter="24">
+        <el-row :gutter="24" style="line-height: 40px;" class="mg-b8">
           <el-col :span="6">
-            <span>{{item.service_name}}/{{item.service_module}}</span>
+            <div>{{item.service_name}}/{{item.service_module}}</div>
           </el-col>
           <el-col :span="6">
             <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
@@ -259,11 +259,6 @@ export default {
         delete item.module_builds
         item.repos.forEach(repo => {
           delete repo.branches
-        })
-        item.key_vals.forEach(key => {
-          if (key.command === 'fixed') {
-            key.value = '<+fixed>' + key.value
-          }
         })
       })
       return this.serviceAndBuilds

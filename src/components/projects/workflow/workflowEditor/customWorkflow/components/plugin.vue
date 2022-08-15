@@ -125,11 +125,6 @@ export default {
         valid.push(Promise.reject())
       }
       return Promise.all(valid).then(() => {
-        this.value.spec.plugin.inputs.forEach(item => {
-          if (item.command === 'fixed') {
-            item.value = '<+fixed>' + item.value
-          }
-        })
         const payload = this.$utils.cloneObj(this.value)
         return payload
       })

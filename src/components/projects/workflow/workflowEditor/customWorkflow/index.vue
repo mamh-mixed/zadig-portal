@@ -411,6 +411,49 @@ export default {
       this.saveWorkflow()
     },
     saveWorkflow () {
+      this.payload.params.forEach(item => {
+        if (item.command === 'fixed') {
+          item.value = '<+fixed>' + item.value
+        }
+      })
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.spec && job.spec.service_and_builds) {
+            job.spec.service_and_builds.forEach(service => {
+              service.key_vals.forEach(item => {
+                if (item.command === 'fixed') {
+                  item.value = '<+fixed>' + item.value
+                }
+              })
+            })
+          }
+          if (job.type === 'zadig-deploy') {
+            if (job.spec.envType === 'fixed') {
+              job.spec.env = '<+fixed>' + job.spec.env
+            }
+            job.spec.source =
+              job.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
+          }
+          if (job.type === 'freestyle') {
+            console.log(job.spec.properties)
+            if (job.spec.properties.envs.length > 0) {
+              job.spec.properties.envs.forEach(item => {
+                if (item.command === 'fixed') {
+                  item.value = '<+fixed>' + item.value
+                }
+              })
+            }
+          }
+          if (job.type === 'plugin') {
+            job.spec.plugin.inputs.forEach(item => {
+              if (item.command === 'fixed') {
+                item.value = '<+fixed>' + item.value
+              }
+            })
+          }
+        })
+      })
+
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
@@ -585,12 +628,17 @@ export default {
           if (valid) {
             if (this.job.type === jobType.deploy) {
               this.$refs.buildEnv.validate().then(valid => {
-                this.job = this.$refs.buildEnv.getData()
+                const curJob = this.$refs.buildEnv.getData()
                 if (valid) {
+                  // if (curJob.spec.envType === 'fixed') {
+                  //   curJob.spec.env = '<+fixed>' + curJob.spec.env
+                  // }
+                  // curJob.spec.source =
+                  //   curJob.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
                   this.$set(
                     this.payload.stages[this.curStageIndex].jobs,
                     this.curJobIndex,
-                    this.job
+                    curJob
                   )
                   this.$store.dispatch('setIsShowFooter', false)
                   resolve()
@@ -687,13 +735,11 @@ export default {
     handleDrawerChange () {
       if (this.curDrawer === 'high') {
         this.$set(this.payload, 'multi_run', this.multi_run)
-        this.$message.success('设置成功')
         this.isShowDrawer = false
       }
       if (this.curDrawer === 'env') {
         this.$refs.env.validate().then(() => {
           this.$set(this.payload, 'params', this.$refs.env.getData())
-          this.$message.success('设置成功')
           this.isShowDrawer = false
         })
       }

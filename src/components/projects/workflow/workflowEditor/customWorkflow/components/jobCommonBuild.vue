@@ -106,12 +106,6 @@ export default {
       }
       return Promise.all(valid).then(() => {
         const payload = this.$utils.cloneObj(this.value)
-        console.log(payload)
-        payload.spec.properties.envs.forEach(item => {
-          if (item.command === 'fixed') {
-            item.value = '<+fixed>' + item.value
-          }
-        })
         const git = this.value.spec.steps.find(step => step.name === 'git')
         if (git) {
           git.spec.repos.forEach(repo => {

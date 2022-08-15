@@ -190,11 +190,6 @@ export default {
       return this.$refs.buildEnvRef.validate()
     },
     getData () {
-      this.preEnvs.params.forEach(item => {
-        if (item.command === 'fixed') {
-          item.value = '<+fixed>' + item.value
-        }
-      })
       return this.preEnvs.params
     },
     addFirstBuildEnv () {
@@ -272,6 +267,7 @@ export default {
     }
   },
   created () {
+    console.log(1)
     this.validObj &&
       this.validObj.addValidate({
         name: 'envVariable',

@@ -127,11 +127,6 @@ export default {
       this.value.spec.service_and_images.forEach(item => {
         delete item.module_builds
       })
-      if (this.value.spec.envType === 'fixed') {
-        this.value.spec.env = '<+fixed>' + this.value.spec.env
-      }
-      this.value.spec.source =
-        this.value.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
       return this.value
     },
     validate () {
