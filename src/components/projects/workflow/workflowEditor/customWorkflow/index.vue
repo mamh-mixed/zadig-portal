@@ -769,7 +769,6 @@ export default {
     },
     payload: {
       handler (val, oldVal) {
-        console.log(val)
         let res = []
         if (val.params.length > 0) {
           res = val.params.map(item => {
