@@ -285,6 +285,7 @@ export default {
       yamlError: '',
       isShowDrawer: false,
       multi_run: false,
+      globalEnv: [],
       JobConfigRules: {
         name: [
           {
@@ -411,11 +412,13 @@ export default {
       this.saveWorkflow()
     },
     saveWorkflow () {
-      this.payload.params.forEach(item => {
-        if (item.command === 'fixed') {
-          item.value = '<+fixed>' + item.value
-        }
-      })
+      if (this.payload.params && this.payload.params.length > 0) {
+        this.payload.params.forEach(item => {
+          if (item.command === 'fixed') {
+            item.value = '<+fixed>' + item.value
+          }
+        })
+      }
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
           if (job.spec && job.spec.service_and_builds) {
@@ -435,7 +438,10 @@ export default {
               job.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
           }
           if (job.type === 'freestyle') {
-            if (job.spec.properties.envs && job.spec.properties.envs.length > 0) {
+            if (
+              job.spec.properties.envs &&
+              job.spec.properties.envs.length > 0
+            ) {
               job.spec.properties.envs.forEach(item => {
                 if (item.command === 'fixed') {
                   item.value = '<+fixed>' + item.value
@@ -763,9 +769,13 @@ export default {
     },
     payload: {
       handler (val, oldVal) {
-        const res = val.params.map(item => {
-          return `{{.workflow.params.${item.name}}}`
-        })
+        console.log(val)
+        let res = []
+        if (val.params.length > 0) {
+          res = val.params.map(item => {
+            return `{{.workflow.params.${item.name}}}`
+          })
+        }
         this.globalEnv = this.globalConstEnvs.concat(res)
         this.setJob()
       },
