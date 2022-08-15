@@ -267,7 +267,6 @@ export default {
     }
   },
   created () {
-    console.log(1)
     this.validObj &&
       this.validObj.addValidate({
         name: 'envVariable',
