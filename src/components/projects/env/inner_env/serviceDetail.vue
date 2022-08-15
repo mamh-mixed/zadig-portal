@@ -530,6 +530,7 @@ import { restartPodAPI, restartServiceAPI, scaleServiceAPI, scaleEventAPI, podEv
 import moment from 'moment'
 import Editor from 'vue2-ace-bind'
 import bus from '@utils/eventBus'
+import store from 'storejs'
 import { fullScreen } from '@/utilities/fullScreen'
 export default {
   data () {
@@ -653,11 +654,14 @@ export default {
 
   methods: {
     downloadFile (podName, containerName) {
+      const token = store.get('userInfo').token
       const url = `/api/aslan/environment/kube/pods/${podName}/file?projectName=${
         this.projectName
-      }&envName=${this.envName}&container=${containerName}&path=${encodeURIComponent(
+      }&envName=${
+        this.envName
+      }&container=${containerName}&path=${encodeURIComponent(
         this.downloadFilePath
-      )}`
+      )}&token=${token}`
       const aEle = document.createElement('a')
       if (aEle.download !== undefined) {
         aEle.setAttribute('href', url)
