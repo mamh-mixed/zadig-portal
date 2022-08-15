@@ -147,7 +147,6 @@ import {
   createHelmEnvAPI,
   getEnvironmentsAPI,
   getEnvInfoAPI,
-  envRevisionsAPI,
   getRegistryWhenBuildAPI,
   productHostingNamespaceAPI
 } from '@api'
