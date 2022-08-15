@@ -136,7 +136,7 @@ import {
   getRegistryWhenBuildAPI,
   getAssociatedBuildsAPI
 } from '@api'
-import { keyBy, orderBy, cloneDeep } from 'lodash'
+import { keyBy, orderBy } from 'lodash'
 
 export default {
   data () {

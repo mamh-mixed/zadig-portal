@@ -176,7 +176,7 @@
 </template>
 
 <script>
-import { cloneDeep, uniqBy } from 'lodash'
+import { cloneDeep } from 'lodash'
 import WebhookRunConfig from './webhookRunConfig.vue'
 import {
   getBranchInfoByIdAPI,
