@@ -2188,6 +2188,10 @@ export function getCustomWebhooksAPI (workflowName) {
   return http.get(`/api/aslan/workflow/v4/webhook?workflowName=${workflowName}`)
 }
 
+export function getCustomWebhookPresetAPI (workflowName, triggerName = '') {
+  return http.get(`/api/aslan/workflow/v4/webhook/preset?workflowName=${workflowName}&triggerName=${triggerName}`)
+}
+
 export function removeCustomWebhookAPI (workflowName, triggerName) {
   return http.delete(`/api/aslan/workflow/v4/webhook/${workflowName}/trigger/${triggerName}`)
 }

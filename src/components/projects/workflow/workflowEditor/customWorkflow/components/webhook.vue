@@ -71,7 +71,7 @@
     <el-dialog
       :visible.sync="dialogVisible"
       :title="editMode?'编辑触发器':'添加触发器'"
-      width="600px"
+      width="700px"
       :close-on-click-modal="false"
       :show-close="false"
       append-to-body
@@ -165,6 +165,7 @@
       </el-form>
       <div>
         <span>工作流执行变量</span>
+        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentWebhook.workflow_arg" />
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
@@ -175,14 +176,15 @@
 </template>
 
 <script>
-import { cloneDeep } from 'lodash'
+import { cloneDeep, uniqBy } from 'lodash'
+import WebhookRunConfig from './webhookRunConfig.vue'
 import {
   getBranchInfoByIdAPI,
-  getAllBranchInfoAPI,
   addCustomWebhookAPI,
   getCustomWebhooksAPI,
   removeCustomWebhookAPI,
-  updateCustomWebhookAPI
+  updateCustomWebhookAPI,
+  getCustomWebhookPresetAPI
 } from '@api'
 const validateName = (rule, value, callback) => {
   if (!/^[a-zA-Z0-9]([a-zA-Z0-9_\-\.]*[a-zA-Z0-9])?$/.test(value)) {
@@ -208,6 +210,7 @@ const webhookInfo = {
   auto_cancel: false,
   enabled: true,
   description: '',
+  repos: [],
   main_repo: {
     source: '',
     repo_owner: '',
@@ -224,7 +227,8 @@ const webhookInfo = {
       // # gerrit 类型 codehost: patchset-created,change-merged,剩余类型 codehost: push, pull_request,tag
     ]
   },
-  repo: {}
+  repo: {},
+  workflow_arg: {}
 }
 export default {
   data () {
@@ -234,6 +238,7 @@ export default {
       webhooks: [],
       currentWebhook: cloneDeep(webhookInfo),
       webhookBranches: {},
+      webhookRepos: [],
       triggerMethods: {
         git: [
           {
@@ -310,29 +315,6 @@ export default {
     },
     workflowName () {
       return this.config.name
-    },
-    webhookRepos () {
-      const webhookRepos = []
-      this.config.stages.forEach(stage => {
-        stage.jobs.forEach(job => {
-          if (
-            job.spec.service_and_builds &&
-            job.spec.service_and_builds.length > 0 &&
-            job.type === 'zadig-build'
-          ) {
-            job.spec.service_and_builds.forEach(serviceBuild => {
-              serviceBuild.repos.forEach(repo => {
-                webhookRepos.push(repo)
-              })
-            })
-          }
-        })
-      })
-      webhookRepos.forEach(repo => {
-        repo.key = `${repo.repo_owner}/${repo.repo_name}`
-        delete repo.branch
-      })
-      return webhookRepos
     }
   },
   methods: {
@@ -353,13 +335,35 @@ export default {
         this.webhooks = res
       })
     },
-    addWebhook () {
-      this.editMode = false
-      this.dialogVisible = true
+    async addWebhook () {
+      const workflowName = this.workflowName
+      this.currentWebhook = cloneDeep(webhookInfo)
+      const preset = await getCustomWebhookPresetAPI(workflowName)
+      if (preset) {
+        this.$set(this.currentWebhook, 'workflow_arg', cloneDeep(preset.workflow_arg))
+        this.webhookRepos = preset.repos.map(item => {
+          item.key = `${item.repo_owner}/${item.repo_name}`
+          delete item.branch
+          return item
+        })
+        this.editMode = false
+        this.dialogVisible = true
+      }
     },
-    editWebhook (item) {
+    async editWebhook (item) {
+      const workflowName = this.workflowName
       this.editMode = true
       const currentWebhook = cloneDeep(item)
+      const triggerName = currentWebhook.name
+      const preset = await getCustomWebhookPresetAPI(workflowName, triggerName)
+      if (preset) {
+        this.webhookRepos = preset.repos.map(item => {
+          item.key = `${item.repo_owner}/${item.repo_name}`
+          delete item.branch
+          return item
+        })
+        this.$set(this.currentWebhook, 'workflow_arg', cloneDeep(preset.workflow_arg))
+      }
       if (
         currentWebhook.main_repo.codehost_id &&
         currentWebhook.main_repo.repo_namespace &&
@@ -401,7 +405,6 @@ export default {
             '\n'
           )
           payload.main_repo = Object.assign(payload.main_repo, payload.repo)
-          payload.workflow_arg = this.config
           delete payload.repo
           const workflowName = this.workflowName
           if (this.editMode) {
@@ -457,6 +460,9 @@ export default {
         name: 'webhook',
         valid: this.validate
       })
+  },
+  components: {
+    WebhookRunConfig
   }
 }
 </script>
