@@ -47,11 +47,11 @@
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
         <footer :style="{minHeight:'600px'}" v-if="isShowFooter">
-          <div  class="header">
+          <div class="header">
             <span>{{curJobType}}</span>
             <div>
               <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
-              <el-button  size="mini" @click="closeFooter">取消</el-button>
+              <el-button size="mini" @click="closeFooter">取消</el-button>
             </div>
           </div>
           <div v-if="payload.stages.length > 0 && job" class="main">
@@ -63,11 +63,7 @@
               class="mg-t24 mg-b24"
               size="small"
             >
-              <el-form-item
-                label="任务名称"
-                prop="name"
-                v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
-              >
+              <el-form-item label="任务名称" prop="name" v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0">
                 <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
               </el-form-item>
               <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
@@ -81,6 +77,7 @@
                   v-model="job.spec.service_and_builds"
                   :originServiceAndBuilds="originServiceAndBuilds"
                   class="mg-b24"
+                  :globalEnv="globalEnv"
                   ref="serviceAndbuild"
                 />
                 <el-select size="small" v-model="service" multiple filterable clearable>
@@ -106,18 +103,21 @@
                 <el-button
                   type="success"
                   size="mini"
+                  plain
                   :disabled="Object.keys(service).length === 0"
                   @click="addServiceAndBuild(job.spec.service_and_builds)"
                 >+ 添加</el-button>
               </div>
               <div v-if="job.type === 'plugin'">
-                <Plugin  v-model="job" ref="plugin"/>
+                <Plugin v-model="job" ref="plugin" :globalEnv="globalEnv" />
               </div>
               <BuildEnv
                 :projectName="projectName"
                 v-if="job.type === jobType.deploy"
                 v-model="job"
                 ref="buildEnv"
+                :originServiceAndBuilds="originServiceAndBuilds"
+                :globalEnv="globalEnv"
                 :workflowInfo="payload"
               ></BuildEnv>
             </el-form>
@@ -127,7 +127,7 @@
                 ref="jobRuleForm"
                 label-width="120px"
                 :model="job"
-                class="primary-form"
+                class="mg-t24"
                 size="small"
                 label-position="left"
               >
@@ -136,10 +136,10 @@
                   prop="name"
                   v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
                 >
-                  <el-input v-model="job.name" size="small"></el-input>
+                  <el-input v-model="job.name" size="small" style="width: 400px;"></el-input>
                 </el-form-item>
               </el-form>
-              <JobCommonBuild :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
+              <JobCommonBuild :globalEnv="globalEnv" :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
             </div>
           </div>
         </footer>
@@ -152,12 +152,19 @@
     <div class="right">
       <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
-    <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
-      <span v-if="curDrawer === 'high'">
-        <h4>运行策略</h4>
+    <el-drawer :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" :show-close="false" class="drawer" size="40%">
+      <span slot="title" class="drawer-title">
+        <span>{{drawerTitle}}</span>
+        <div>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">确定</el-button>
+          <el-button size="mini" plain @click="isShowDrawer=false">取消</el-button>
+        </div>
+      </span>
+      <div v-if="curDrawer === 'high'">
+        <div class="mg-b16">运行策略</div>
         <el-form>
           <el-form-item>
-            <span style="margin-right: 16px;">
+            <span class="mg-r16">
               <span>并发运行</span>
               <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
                 <i class="pointer el-icon-question"></i>
@@ -165,9 +172,11 @@
             </span>
             <el-switch v-model="multi_run"></el-switch>
           </el-form-item>
-          <el-button type="primary" size="small" @click="setMuitlRun">确定</el-button>
         </el-form>
-      </span>
+      </div>
+      <div v-if="curDrawer === 'env'">
+        <Env :preEnvs="payload" ref="env" />
+      </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
@@ -186,7 +195,8 @@ import {
   jobTabList,
   editorOptions,
   jobType,
-  jobTypeList
+  jobTypeList,
+  globalConstEnvs
 } from './config'
 import {
   getAssociatedBuildsAPI,
@@ -206,6 +216,7 @@ import JobCommonBuild from './components/jobCommonBuild.vue'
 import Plugin from './components/plugin.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
+import Env from './components/env.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -231,6 +242,7 @@ export default {
       tabList,
       configList,
       jobTabList,
+      globalConstEnvs,
       activeName: 'ui',
       editorOptions,
       jobType,
@@ -258,7 +270,8 @@ export default {
         project: '',
         description: '',
         multi_run: false,
-        stages: []
+        stages: [],
+        params: []
       },
       curStageIndex: 0,
       curJobIndex: -2, // 不指向 job
@@ -272,6 +285,7 @@ export default {
       yamlError: '',
       isShowDrawer: false,
       multi_run: false,
+      globalEnv: [],
       JobConfigRules: {
         name: [
           {
@@ -305,7 +319,8 @@ export default {
     Service,
     RunCustomWorkflow,
     codemirror,
-    Plugin
+    Plugin,
+    Env
   },
   computed: {
     projectName () {
@@ -320,6 +335,12 @@ export default {
     curJobType () {
       const curType = jobTypeList.find(item => item.type === this.job.type)
       return curType ? curType.label : this.job.spec.plugin.name
+    },
+    drawerTitle () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.label
     }
   },
   created () {
@@ -391,6 +412,53 @@ export default {
       this.saveWorkflow()
     },
     saveWorkflow () {
+      if (this.payload.params && this.payload.params.length > 0) {
+        this.payload.params.forEach(item => {
+          if (item.command === 'fixed') {
+            item.value = '<+fixed>' + item.value
+          }
+        })
+      }
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.spec && job.spec.service_and_builds) {
+            job.spec.service_and_builds.forEach(service => {
+              service.key_vals.forEach(item => {
+                if (item.command === 'fixed') {
+                  item.value = '<+fixed>' + item.value
+                }
+              })
+            })
+          }
+          if (job.type === 'zadig-deploy') {
+            if (job.spec.envType === 'fixed') {
+              job.spec.env = '<+fixed>' + job.spec.env
+            }
+            job.spec.source =
+              job.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
+          }
+          if (job.type === 'freestyle') {
+            if (
+              job.spec.properties.envs &&
+              job.spec.properties.envs.length > 0
+            ) {
+              job.spec.properties.envs.forEach(item => {
+                if (item.command === 'fixed') {
+                  item.value = '<+fixed>' + item.value
+                }
+              })
+            }
+          }
+          if (job.type === 'plugin') {
+            job.spec.plugin.inputs.forEach(item => {
+              if (item.command === 'fixed') {
+                item.value = '<+fixed>' + item.value
+              }
+            })
+          }
+        })
+      })
+
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
@@ -428,7 +496,68 @@ export default {
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
+        this.payload.params.forEach(item => {
+          if (item.value.includes('fixed')) {
+            item.command = 'fixed'
+            item.value = item.value.slice(8)
+          }
+        })
+        this.payload.stages.forEach(stage => {
+          stage.jobs.forEach(job => {
+            if (job.spec && job.spec.service_and_builds) {
+              job.spec.service_and_builds.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.value.includes('fixed')) {
+                    item.command = 'fixed'
+                    item.value = item.value.slice(8)
+                  }
+                  if (item.value.includes('{{')) {
+                    item.command = 'other'
+                  }
+                })
+              })
+            }
+            if (job.type === 'zadig-deploy') {
+              if (job.spec.env.includes('fixed')) {
+                job.spec.envType = 'fixed'
+                job.spec.env = job.spec.env.slice(8)
+              }
+              if (job.spec.env.includes('{{')) {
+                job.spec.envType = 'other'
+              }
+              if (job.spec.service_and_images.length > 0) {
+                job.spec.serviceType = 'runtime'
+              }
+              if (job.spec.source === 'fromjob') {
+                job.spec.serviceType = 'other'
+              }
+            }
+            if (job.type === 'freestyle') {
+              job.spec.properties.envs.forEach(item => {
+                if (item.value.includes('fixed')) {
+                  item.command = 'fixed'
+                  item.value = item.value.slice(8)
+                }
+                if (item.value.includes('{{')) {
+                  item.command = 'other'
+                }
+              })
+            }
+            if (job.type === 'plugin') {
+              job.spec.plugin.inputs.forEach(item => {
+                if (item.value && item.value.includes('fixed')) {
+                  item.command = 'fixed'
+                  item.value = item.value.slice(8)
+                }
+                if (item.value && item.value.includes('{{')) {
+                  item.command = 'other'
+                }
+              })
+            }
+          })
+        })
         this.multi_run = this.payload.multi_run
+        this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
       })
     },
     showStageOperateDialog (type, row) {
@@ -504,11 +633,17 @@ export default {
           if (valid) {
             if (this.job.type === jobType.deploy) {
               this.$refs.buildEnv.validate().then(valid => {
+                const curJob = this.$refs.buildEnv.getData()
                 if (valid) {
+                  // if (curJob.spec.envType === 'fixed') {
+                  //   curJob.spec.env = '<+fixed>' + curJob.spec.env
+                  // }
+                  // curJob.spec.source =
+                  //   curJob.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
                   this.$set(
                     this.payload.stages[this.curStageIndex].jobs,
                     this.curJobIndex,
-                    this.job
+                    curJob
                   )
                   this.$store.dispatch('setIsShowFooter', false)
                   resolve()
@@ -530,22 +665,25 @@ export default {
                 reject()
               }
             } else if (this.job.type === jobType.freestyle) {
-              this.$refs[this.beInitCompRef].validate().then(() => {
-                delete this.job.isCreate // 去除新建状态
-                this.$set(
-                  this.payload.stages[this.curStageIndex].jobs,
-                  this.curJobIndex,
-                  this.job
-                )
-                this.$store.dispatch('setIsShowFooter', false)
-                this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
-                resolve()
-              }).catch(err => {
-                console.log('common build valid error', err)
-                reject(err)
-              })
+              this.$refs[this.beInitCompRef]
+                .validate()
+                .then(job => {
+                  delete this.job.isCreate // 去除新建状态
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    job
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                  this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
+                  resolve()
+                })
+                .catch(err => {
+                  console.log('common build valid error', err)
+                  reject(err)
+                })
             } else if (this.job.type === jobType.plugin) {
-              this.$refs.plugin.validate().then((res) => {
+              this.$refs.plugin.validate().then(res => {
                 this.$set(
                   this.payload.stages[this.curStageIndex].jobs,
                   this.curJobIndex,
@@ -565,7 +703,8 @@ export default {
       )
       if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
         this.$nextTick(() => {
-          this.$refs[this.beInitCompRef] && this.$refs[this.beInitCompRef].initOpe()
+          this.$refs[this.beInitCompRef] &&
+            this.$refs[this.beInitCompRef].initOpe()
         })
       }
     },
@@ -589,9 +728,7 @@ export default {
     addServiceAndBuild (val) {
       let curService
       this.service.forEach(service => {
-        curService = this.serviceAndBuilds.find(
-          item => item.value === service
-        )
+        curService = this.serviceAndBuilds.find(item => item.value === service)
         val.push(cloneDeep(curService))
       })
       // added need to del
@@ -600,10 +737,17 @@ export default {
       })
       this.service = []
     },
-    setMuitlRun () {
-      this.$set(this.payload, 'multi_run', this.multi_run)
-      this.$message.success('设置成功')
-      this.isShowDrawer = false
+    handleDrawerChange () {
+      if (this.curDrawer === 'high') {
+        this.$set(this.payload, 'multi_run', this.multi_run)
+        this.isShowDrawer = false
+      }
+      if (this.curDrawer === 'env') {
+        this.$refs.env.validate().then(() => {
+          this.$set(this.payload, 'params', this.$refs.env.getData())
+          this.isShowDrawer = false
+        })
+      }
     },
     setCurDrawer (val) {
       this.isShowDrawer = true
@@ -625,12 +769,21 @@ export default {
     },
     payload: {
       handler (val, oldVal) {
+        console.log(val)
+        let res = []
+        if (val.params.length > 0) {
+          res = val.params.map(item => {
+            return `{{.workflow.params.${item.name}}}`
+          })
+        }
+        this.globalEnv = this.globalConstEnvs.concat(res)
         this.setJob()
       },
       deep: true
     },
     curJobIndex (val) {
-      if (val !== -2) { // 保存构建后设置为-2，什么都不执行，目的是为了两次点击同一个stage，能触发这个函数（有初始化动作 没有地方能看到触发的）
+      if (val !== -2) {
+        // 保存构建后设置为-2，什么都不执行，目的是为了两次点击同一个stage，能触发这个函数（有初始化动作 没有地方能看到触发的）
         this.setJob()
       }
     },
@@ -642,7 +795,8 @@ export default {
         if (val) {
           this.serviceAndBuilds = this.originServiceAndBuilds
           if (
-            val.spec && val.spec.service_and_builds &&
+            val.spec &&
+            val.spec.service_and_builds &&
             val.spec.service_and_builds.length > 0
           ) {
             this.serviceAndBuilds = differenceWith(
@@ -820,7 +974,6 @@ export default {
   .right {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     width: 100px;
     border-left: 1px solid @borderGray;
@@ -838,6 +991,11 @@ export default {
 
   .drawer {
     color: #555;
+
+    &-title {
+      display: flex;
+      justify-content: space-between;
+    }
 
     /deep/.el-drawer__body {
       padding: 0 24px;

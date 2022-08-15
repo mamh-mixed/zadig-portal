@@ -38,7 +38,7 @@
         <el-col :span="4">
           <el-form-item>
             <el-select
-              v-if="preEnvs.envs[build_env_index].type==='choice'"
+              v-if="preEnvs.envs[build_env_index].command !== 'other'&&preEnvs.envs[build_env_index].type==='choice'"
               v-model="preEnvs.envs[build_env_index].value"
               placeholder="默认值"
               size="small"
@@ -47,13 +47,19 @@
               <el-option v-for="option in preEnvs.envs[build_env_index].choice_option" :key="option" :label="option" :value="option"></el-option>
             </el-select>
             <el-input
-              v-else
+              v-if="preEnvs.envs[build_env_index].type==='string' && preEnvs.envs[build_env_index].command !== 'other'"
               :disabled="isJenkins&&preEnvs.envs[build_env_index].auto_generate"
               placeholder="值"
               v-model="preEnvs.envs[build_env_index].value"
               size="small"
             ></el-input>
+            <el-select v-if="preEnvs.envs[build_env_index].command === 'other'" v-model="preEnvs.envs[build_env_index].value" filterable placeholder="请选择" size="small"  style="max-width: 176px;">
+              <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
+            </el-select>
           </el-form-item>
+        </el-col>
+        <el-col :span="1" v-if="envs.length > 0" class="mg-t16">
+          <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther/>
         </el-col>
         <el-col :span="12" v-if="isJenkins&&preEnvs.envs[build_env_index].name==='IMAGE'" class="tip">
           <el-checkbox v-model="preEnvs.envs[build_env_index].auto_generate"></el-checkbox>
@@ -125,8 +131,10 @@
 
 <script>
 import { cloneDeep } from 'lodash'
+import EnvTypeSelect from '../workflow/workflowEditor/customWorkflow/components/envTypeSelect.vue'
+
 export default {
-  components: {},
+  components: { EnvTypeSelect },
   props: {
     preEnvs: Object,
     isTest: {
@@ -163,6 +171,10 @@ export default {
           vars: []
         }
       }
+    },
+    envs: {
+      type: Array,
+      default: () => []
     }
   },
   data () {

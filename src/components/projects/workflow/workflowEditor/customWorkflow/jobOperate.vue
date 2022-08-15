@@ -29,9 +29,11 @@ export default {
       curTaskIndex: -1
     }
   },
-  model: {
-    prop: 'value',
-    event: 'change'
+  props: {
+    jobInfo: {
+      type: Object,
+      default: () => ({})
+    }
   },
   computed: {
     taskList () {

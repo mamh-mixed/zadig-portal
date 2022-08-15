@@ -9,7 +9,7 @@
       </div>
       <section>
         <div class="primary-title not-first-child">变量</div>
-        <EnvVariable :preEnvs="value.spec.properties" :validObj="validObj" :fromWhere="fromWhere"></EnvVariable>
+        <EnvVariable :preEnvs="value.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv"></EnvVariable>
       </section>
     </section>
     <div>
@@ -76,6 +76,10 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    globalEnv: {
+      type: Array,
+      default: () => []
     }
   },
   computed: {
@@ -102,7 +106,6 @@ export default {
       }
       return Promise.all(valid).then(() => {
         const payload = this.$utils.cloneObj(this.value)
-
         const git = this.value.spec.steps.find(step => step.name === 'git')
         if (git) {
           git.spec.repos.forEach(repo => {

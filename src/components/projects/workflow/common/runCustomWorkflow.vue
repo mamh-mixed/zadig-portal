@@ -2,6 +2,36 @@
   <div class="custom-workflow">
     <el-form label-width="120px" size="small">
       <el-collapse v-model="activeName">
+        <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0">
+          <el-table :data="payload.params.filter(item=>item.isShow)">
+            <el-table-column label="键">
+              <template slot-scope="scope">{{scope.row.name}}</template>
+            </el-table-column>
+            <el-table-column label="值">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
+                  <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
+                </el-select>
+                <el-input
+                  v-if="scope.row.type === 'text'"
+                  v-model="scope.row.value"
+                  size="small"
+                  type="textarea"
+                  :rows="2"
+                  style="width: 220px;"
+                ></el-input>
+                <el-input
+                  v-if="scope.row.type === 'string'"
+                  class="password"
+                  v-model="scope.row.value"
+                  size="small"
+                  type="text"
+                  style="width: 220px;"
+                ></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
         <div v-for="(stage,stageIndex) in payload.stages" :key="stage.name">
           <el-collapse-item
             v-for="(job,jobIndex) in stage.jobs"
@@ -48,7 +78,7 @@
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
-              <el-form-item prop="productName" label="环境">
+              <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('fixed')||job.spec.env.includes('{{'))">
                 <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
@@ -136,7 +166,8 @@ import {
   runCustomWorkflowTaskAPI,
   imagesAPI,
   getCustomWorkfloweTaskPresetAPI,
-  getRegistryWhenBuildAPI
+  getRegistryWhenBuildAPI,
+  getAssociatedBuildsAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
 
@@ -157,7 +188,8 @@ export default {
             jobs: []
           }
         ]
-      }
+      },
+      originServiceAndBuilds: []
     }
   },
   props: {
@@ -185,6 +217,7 @@ export default {
     init () {
       this.getEnvList()
       this.getRegistryWhenBuild()
+      this.getServiceAndBuildList()
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
@@ -198,25 +231,73 @@ export default {
                 this.getRepoInfo(build.repos)
               })
             }
-            if (
-              job.spec.service_and_images &&
-              job.spec.service_and_images.length > 0
-            ) {
-              job.pickedTargets = job.spec.service_and_images
-            }
-            if (job.type === 'freestyle') {
-              job.spec.steps.forEach(step => {
-                if (step.type === 'git') {
-                  this.getRepoInfo(step.spec.repos)
-                }
-              })
-            }
           })
         })
         this.payload = this.cloneWorkflow
+        this.handleEnv()
       } else {
         this.getWorkflowPresetInfo(this.workflowName)
       }
+    },
+    handleEnv () {
+      this.payload.params.forEach(item => {
+        if (item.value.includes('fixed') || item.value.includes('{{')) {
+          item.isShow = false
+        } else {
+          item.isShow = true
+        }
+      })
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.spec && job.spec.service_and_builds) {
+            job.spec.service_and_builds.forEach(service => {
+              service.key_vals.forEach(item => {
+                if (item.value.includes('fixed') || item.value.includes('{{')) {
+                  item.isShow = false
+                } else {
+                  item.isShow = true
+                }
+              })
+              service.value = `${service.service_name}/${service.service_module}`
+              service.key_vals.forEach(key => {
+                // if (key.is_credential) {
+                //   key.value = this.$utils.aesDecrypt(key.value)
+                // }
+              })
+            })
+          }
+          if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
+            job.pickedTargets = job.spec.service_and_images
+            this.handleServiceDeployChange(job.pickedTargets)
+            setTimeout(() => {
+              job.spec.service_and_images = this.originServiceAndBuilds
+            }, 1000)
+          }
+          if (job.type === 'freestyle') {
+            job.spec.steps.forEach(step => {
+              if (step.type === 'git') {
+                this.getRepoInfo(step.spec.repos)
+              }
+            })
+            job.spec.properties.envs.forEach(item => {
+              if (item.value.includes('fixed') || item.value.includes('{{')) {
+                item.isShow = false
+              } else {
+                item.isShow = true
+              }
+            })
+          }
+          if (job.type === 'plugin') {
+            job.spec.plugin.inputs.forEach(item => {
+              if (item.value.includes('fixed') || item.value.includes('{{')) {
+                item.isShow = false
+              } else {
+                item.isShow = true
+              }
+            })
+          }
+        })
+      })
     },
     getWorkflowPresetInfo (workflowName) {
       // const key = this.$utils.rsaEncrypt()
@@ -225,26 +306,10 @@ export default {
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
               job.checked = true
-              if (job.spec && job.spec.service_and_builds) {
-                job.spec.service_and_builds.forEach(service => {
-                  service.value = `${service.service_name}/${service.service_module}`
-                  service.key_vals.forEach(key => {
-                    // if (key.is_credential) {
-                    //   key.value = this.$utils.aesDecrypt(key.value)
-                    // }
-                  })
-                })
-              }
-              if (job.type === 'freestyle') {
-                job.spec.steps.forEach(step => {
-                  if (step.type === 'git') {
-                    this.getRepoInfo(step.spec.repos)
-                  }
-                })
-              }
             })
           })
           this.payload = res
+          this.handleEnv()
         }
       )
     },
@@ -463,6 +528,15 @@ export default {
     handleServiceBuildChange (services) {
       services.forEach(service => {
         this.getRepoInfo(service.repos)
+      })
+    },
+    getServiceAndBuildList () {
+      const projectName = this.projectName
+      getAssociatedBuildsAPI(projectName, true).then(res => {
+        res.forEach(item => {
+          item.value = `${item.service_name}/${item.service_module}`
+        })
+        this.originServiceAndBuilds = res
       })
     }
   },

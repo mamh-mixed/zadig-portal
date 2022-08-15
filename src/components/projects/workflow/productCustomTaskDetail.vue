@@ -24,7 +24,11 @@
         </el-col>
       </el-row>
     </header>
-    <Multipane layout="horizontal" style="height: 100%;">
+    <div class="tab">
+      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">工作流</span>
+      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">变量</span>
+    </div>
+    <Multipane v-if="activeName==='workflow'" layout="horizontal" style="height: 100%;">
       <main>
         <div class="content">
           <span class="text mg-r8">Start</span>
@@ -90,6 +94,40 @@
         />
       </footer>
     </Multipane>
+    <div v-if="activeName==='env'" class="env">
+      <el-table :data="envList" v-if="envList.length>0" class="table">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <div v-if="props.row.name==='工作流变量'">
+              <div v-for="(env,index) in props.row.envs" :key="index" class="table-env">
+                <span class="item">{{env.name}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type==='zadig-build'">
+              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                <span class="item">{{env.key}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type === 'freestyle'">
+              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                <span class="item" v-if="env">{{env.key}}</span>
+                <span class="item" v-if="env">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type === 'plugin'">
+              <div v-for="(env,index) in props.row.spec.inputs" :key="index" class="table-env">
+                <span class="item" v-if="env">{{env.name}}</span>
+                <span class="item" v-if="env">{{env.value}}</span>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="键" prop="name"></el-table-column>
+        <el-table-column label="值"></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -116,7 +154,10 @@ export default {
       payload: {},
       curStageIndex: 0,
       timerId: null,
-      timeTimeoutFinishFlag: false
+      timeTimeoutFinishFlag: false,
+      activeName: 'workflow',
+      activeEnvName: 'env',
+      envList: []
     }
   },
   components: {
@@ -186,6 +227,60 @@ export default {
         })
         this.payload = res
         this.adaptTaskDetail(res)
+        if (this.envList.length === 0) {
+          this.handleEnv()
+          const globalEnv = [{ name: '工作流变量', envs: this.payload.params }]
+          const jobs = this.payload.stages.map(item => {
+            return item.jobs.map(job => job)
+          })
+          this.envList = globalEnv.concat(jobs.flat())
+        }
+      })
+    },
+    handleEnv () {
+      for (let i = 0; i < this.payload.params.length; i++) {
+        if (
+          this.payload.params[i].value.includes('fixed') ||
+          this.payload.params[i].value.includes('{{')
+        ) {
+          this.$delete(this.payload.params, i)
+        }
+      }
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.spec && job.spec.service_and_builds) {
+            job.spec.service_and_builds.forEach(service => {
+              for (let i = 0; i < service.key_vals.length; i++) {
+                if (
+                  service.key_vals[i].value.includes('fixed') ||
+                  service.key_vals[i].value.includes('{{')
+                ) {
+                  this.$delete(service.key_vals, i)
+                }
+              }
+            })
+          }
+          if (job.type === 'freestyle') {
+            for (let i = 0; i < job.spec.envs.length; i++) {
+              if (
+                job.spec.envs[i].value.includes('fixed') ||
+                job.spec.envs[i].value.includes('{{')
+              ) {
+                this.$delete(job.spec.envs, i)
+              }
+            }
+          }
+          if (job.type === 'plugin') {
+            for (let i = 0; i < job.spec.inputs.length; i++) {
+              if (
+                job.spec.inputs[i].value.includes('fixed') ||
+                job.spec.inputs[i].value.includes('{{')
+              ) {
+                this.$delete(job.spec.inputs, i)
+              }
+            }
+          }
+        })
       })
     },
     setCurJob (item, index, curStageIndex) {
@@ -330,6 +425,7 @@ export default {
             font-weight: 400;
             font-size: 14px;
             white-space: nowrap;
+            text-align: left;
             text-overflow: ellipsis;
             border: 1px solid @borderGray;
             cursor: pointer;
@@ -394,6 +490,54 @@ export default {
       border: 1px solid @themeColor;
       border-radius: 50%;
       content: '';
+    }
+  }
+
+  .tab {
+    margin: 24px 0;
+    padding: 0 24px;
+    color: @projectNameColor;
+    font-size: 14px;
+    cursor: pointer;
+
+    span:first-child {
+      position: relative;
+      margin-right: 16px;
+
+      &::after {
+        position: absolute;
+        top: 0;
+        right: -10px;
+        width: 2px;
+        height: 100%;
+        background: @borderGray;
+        content: '';
+      }
+    }
+
+    .active {
+      color: @themeColor;
+    }
+  }
+
+  .env {
+    width: 50%;
+    height: 80%;
+    padding: 0 24px;
+    overflow-y: auto;
+
+    .table {
+      &-env {
+        height: 30px;
+        padding: 0 60px;
+        line-height: 30px;
+        background: #eaeaea;
+
+        .item {
+          display: inline-block;
+          width: 40%;
+        }
+      }
     }
   }
 }

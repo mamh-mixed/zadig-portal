@@ -7,9 +7,9 @@
     </el-row>
     <el-form :model="form" ref="ruleForm" size="small">
       <div v-for="(item,index) in serviceAndBuilds" :key="index">
-        <el-row :gutter="24" class="mg-t24">
+        <el-row :gutter="24" style="line-height: 40px;" class="mg-b8">
           <el-col :span="6">
-            <span>{{item.service_name}}/{{item.service_module}}</span>
+            <div>{{item.service_name}}/{{item.service_module}}</div>
           </el-col>
           <el-col :span="6">
             <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
@@ -23,11 +23,11 @@
             </el-button>
           </el-col>
           <el-col :span="4">
-            <el-button type="danger" size="mini" @click="delServiceAndBuild(index)">删除</el-button>
+            <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
           </el-col>
         </el-row>
         <el-row>
-          <el-card class="box-card" v-if="item.isShowVals" style="width: 80%;">
+          <el-card class="box-card mg-b8" v-if="item.isShowVals" style="width: 80%;">
             <div class="tab">
               <span
                 class="tab-item"
@@ -42,20 +42,37 @@
               <el-table-column label="类型">
                 <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
               </el-table-column>
-              <el-table-column label="值" width="300">
+              <el-table-column label="值" width="400">
                 <template slot-scope="scope">
-                  <el-select size="small" v-model="scope.row.value" v-if="scope.row.type === 'choice'" style="width: 220px;">
+                  <el-select
+                    size="small"
+                    v-model="scope.row.value"
+                    v-if="scope.row.command !== 'other'&&scope.row.type === 'choice'"
+                    style="width: 220px;"
+                  >
                     <el-option v-for="option in scope.row.choice_option" :key="option" :label="option" :value="option">{{option}}</el-option>
                   </el-select>
                   <el-input
                     class="password"
                     v-model="scope.row.value"
                     :type="scope.row.is_credential ? 'passsword' : ''"
-                    show-password
-                    v-if="scope.row.type === 'string'"
+                    :show-password="scope.row.is_credential ? true : false"
+                    v-if="scope.row.command !== 'other'&&scope.row.type === 'string'"
                     size="small"
                     style="width: 220px;"
                   ></el-input>
+                  <el-select
+                    v-model="scope.row.value"
+                    placeholder="请选择"
+                    filterable
+                    size="small"
+                    required
+                    v-if="scope.row.command === 'other'"
+                    style="display: inline-block; width: 220px;"
+                  >
+                    <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
+                  </el-select>
+                  <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
                 </template>
               </el-table-column>
             </el-table>
@@ -89,6 +106,7 @@
                   :disabled="item.originRepos && item.originRepos.length === 0"
                   type="primary"
                   size="mini"
+                  plain
                   icon="el-icon-plus"
                 >添加</el-button>
               </div>
@@ -104,7 +122,7 @@
 import { getAllBranchInfoAPI } from '@api'
 import { buildTabList } from '../config'
 import { differenceWith } from 'lodash'
-
+import EnvTypeSelect from './envTypeSelect.vue'
 export default {
   name: 'ServiceAndBuild',
   props: {
@@ -119,8 +137,13 @@ export default {
     originServiceAndBuilds: {
       type: Array,
       default: () => []
+    },
+    globalEnv: {
+      type: Array,
+      default: () => []
     }
   },
+  components: { EnvTypeSelect },
   data () {
     return {
       form: {},

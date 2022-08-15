@@ -10,13 +10,23 @@
             </el-tooltip>
           </template>
         </el-table-column>
+        <el-table-column label="类型">
+          <template slot-scope="scope">
+            <span>{{scope.row.type === 'string' ? '字符串':scope.row.type==='text'?'多行文本':'枚举'}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="值">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
+            <el-select
+              v-model="scope.row.value"
+              v-if="scope.row.type === 'choice'&&scope.row.command !== 'other'"
+              size="small"
+              style="width: 220px;"
+            >
               <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
             </el-select>
             <el-input
-              v-if="scope.row.type === 'text'"
+              v-if="scope.row.type === 'text'&&scope.row.command !== 'other'"
               v-model="scope.row.value"
               size="small"
               type="textarea"
@@ -24,7 +34,7 @@
               style="width: 220px;"
             ></el-input>
             <el-input
-              v-else
+              v-if="scope.row.type === 'string'&&scope.row.command !== 'other'"
               class="password"
               v-model="scope.row.value"
               size="small"
@@ -32,6 +42,17 @@
               :show-password="scope.row.is_credential ? true : false"
               style="width: 220px;"
             ></el-input>
+            <el-select
+              v-if="scope.row.command === 'other'"
+              style="display: inline-block; width: 220px;"
+              v-model="scope.row.value"
+              placeholder="请选择"
+              filterable
+              size="small"
+            >
+              <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
+            </el-select>
+            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
         <el-table-column label="是否加密">
@@ -67,6 +88,7 @@
 <script>
 import ValidateSubmit from '@utils/validateAsync'
 import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
+import EnvTypeSelect from './envTypeSelect.vue'
 
 import { buildEnvs } from '../config.js'
 
@@ -84,11 +106,15 @@ export default {
       allCodeHosts: []
     }
   },
-  components: { AdvancedConfig },
+  components: { AdvancedConfig, EnvTypeSelect },
   props: {
     value: {
       type: Object,
       default: () => ({})
+    },
+    globalEnv: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {

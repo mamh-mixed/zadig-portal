@@ -1,5 +1,5 @@
 <template>
-  <div class="plugins">
+  <div class="plugins" v-loading="loading">
     <el-row class="mg-b48">
       <el-form :model="source" label-position="left" ref="sourceForm" label-width="130px" inline class="form">
         <el-col :span="2">
@@ -97,7 +97,7 @@
       <span>最新更新时间：</span>
       <span>{{$utils.convertTimestamp(source.update_time)}}</span>
     </div>
-    <div class="tip">
+    <div class="tip" v-if="source.error">
       <span>错误信息：</span>
       <span>{{source.error}}</span>
     </div>
@@ -132,7 +132,8 @@ export default {
       searchRepoNameLoading: false,
       isShowOperateForm: false,
       plugins: [],
-      isSaved: false
+      isSaved: false,
+      loading: false
     }
   },
   created () {
@@ -352,6 +353,7 @@ export default {
       })
     },
     submit (type) {
+      this.loading = true
       this.$refs.sourceForm.validate(valid => {
         if (valid) {
           if (type === 'save') {
@@ -374,6 +376,8 @@ export default {
             codehost_id
           }
           updatePlugin(payload).then(res => {
+            this.loading = false
+            this.$message.success('操作完成')
             this.getPlugins()
           })
         }

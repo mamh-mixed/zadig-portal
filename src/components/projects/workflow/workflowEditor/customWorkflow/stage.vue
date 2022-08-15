@@ -11,15 +11,8 @@
         <i class="el-icon-close"></i>
       </div>
     </div>
-    <el-drawer
-      title="选择任务"
-      :visible.sync="isShowJobOperateDialog"
-      direction="rtl"
-      :modal-append-to-body="false"
-      class="drawer"
-      size="24%"
-    >
-      <JobOperate v-model="jobInfo" ref="jobOperate" />
+    <el-drawer title="选择任务" :visible.sync="isShowJobOperateDialog" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
+      <JobOperate :jobInfo="jobInfo" @change="setJob" ref="jobOperate" />
     </el-drawer>
     <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ 任务</el-button>
   </div>
@@ -198,24 +191,19 @@ export default {
     setCurIndex (index) {
       this.JobIndex = index
       this.$store.dispatch('setIsShowFooter', true)
-    }
-  },
-  watch: {
-    jobInfo: {
-      handler (newVal, oldVal) {
-        if (Object.keys(newVal).length === 0) {
-          return
-        }
-        if (newVal.type === 'plugin') {
-          this.stageInfo.jobs.push(this.jobInfo)
-        } else {
-          this.stageInfo.jobs.push(this.jobInfos[this.jobInfo.type])
-        }
-        this.JobIndex = this.stageInfo.jobs.length - 1
-        this.isShowJobOperateDialog = false
-        this.$store.dispatch('setIsShowFooter', true)
-      },
-      deep: true
+    },
+    setJob (newVal) {
+      if (Object.keys(newVal).length === 0) {
+        return
+      }
+      if (newVal.type === 'plugin') {
+        this.stageInfo.jobs.push(newVal)
+      } else {
+        this.stageInfo.jobs.push(this.jobInfos[newVal.type])
+      }
+      this.JobIndex = this.stageInfo.jobs.length - 1
+      this.isShowJobOperateDialog = false
+      this.$store.dispatch('setIsShowFooter', true)
     }
   }
 }
