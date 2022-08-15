@@ -435,8 +435,7 @@ export default {
               job.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
           }
           if (job.type === 'freestyle') {
-            console.log(job.spec.properties)
-            if (job.spec.properties.envs.length > 0) {
+            if (job.spec.properties.envs && job.spec.properties.envs.length > 0) {
               job.spec.properties.envs.forEach(item => {
                 if (item.command === 'fixed') {
                   item.value = '<+fixed>' + item.value
