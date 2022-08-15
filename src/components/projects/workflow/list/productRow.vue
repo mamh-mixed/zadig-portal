@@ -278,7 +278,7 @@ export default {
 
   .stages {
     flex: 0 0 18%;
-    margin-left: 80px;
+    width: 200px;
   }
 
   .desc {
