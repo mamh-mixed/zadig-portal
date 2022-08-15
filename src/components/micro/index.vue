@@ -80,8 +80,10 @@ export default {
 
 <style lang="less" scoped>
 .micro-container {
+  box-sizing: border-box;
   height: calc(~'100% - 41px');
   max-height: calc(~'100% - 41px');
+  padding: 15px 24px;
 
   #container {
     position: relative;
