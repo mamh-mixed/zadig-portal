@@ -29,6 +29,7 @@
       <el-table-column prop="service_name" label="服务" width="100px"></el-table-column>
       <el-table-column label="代码库">
         <template slot-scope="scope">
+          <span v-if="fromWebhook && scope.row.repos.length === 0" style="color: #909399; font-size: 12px; line-height: 33px;">使用变更的代码执行</span>
           <el-row v-for="build of scope.row.repos" class="build-row" :key="build.code_host_id">
             <template>
               <el-col :span="7">
