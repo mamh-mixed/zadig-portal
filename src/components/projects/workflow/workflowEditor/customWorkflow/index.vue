@@ -691,7 +691,7 @@ export default {
         this.isShowDrawer = false
       }
       if (this.curDrawer === 'env') {
-        this.$refs.env.validate(() => {
+        this.$refs.env.validate().then(() => {
           this.$set(this.payload, 'params', this.$refs.env.getData())
           this.$message.success('设置成功')
           this.isShowDrawer = false
