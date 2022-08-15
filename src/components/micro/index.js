@@ -10,11 +10,11 @@ export const currentInfo = {
 export const microApps = [
   {
     name: 'plutusVendor',
-    entry: '/plutus-vendor/', // //localhost:10000   /plutus-vendor/   http://test34-vendor-test.test.8slan.com/plutus-vendor/
+    entry: '/plutus-vendor/plutus/', // //localhost:10000   /plutus-vendor/   http://test34-vendor-test.test.8slan.com/plutus-vendor/
     container: '#container',
     activeRule: '/v1/plutus',
     props: {
-      routerBase: '/v1/plutus',
+      routerBase: '/v1',
       //   mainStore: store,
       //   user: utils.getStorage('user'),
       mainAppRouter: router,

@@ -9,7 +9,7 @@ export const plutusRoute = [{
       path: '*',
       component: () => import(/* webpackChunkName: "micro-app" */ '@/components/micro/index.vue'),
       meta: {
-        title: '微应用'
+        title: '客户交付'
       }
     }
   ]
