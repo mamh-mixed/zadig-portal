@@ -44,7 +44,7 @@
                 </el-select>
               </el-form-item>
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" fromWebhook></CustomWorkflowBuildRows>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" />
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
@@ -114,10 +114,10 @@
               </div>
             </div>
             <div v-if="job.type === 'freestyle'">
-              <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
+              <CustomWorkflowCommonRows :job="job" />
             </div>
             <div v-if="job.type === 'plugin'">
-              <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
+              <CustomWorkflowCommonRows :job="job" type="plugin" />
             </div>
           </el-collapse-item>
         </div>
@@ -171,6 +171,10 @@ export default {
     cloneWorkflow: {
       type: Object,
       default: () => ({})
+    },
+    webhookSelectedRepo: {
+      type: Object,
+      default: () => ({})
     }
   },
   components: {
@@ -196,6 +200,15 @@ export default {
               job.pickedTargets = job.spec.service_and_builds
               job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
+                build.repos.forEach(repo => {
+                  if (
+                    repo.codehost_id === this.webhookSelectedRepo.codehost_id &&
+                    repo.repo_name === this.webhookSelectedRepo.repo_name &&
+                    repo.repo_owner === this.webhookSelectedRepo.repo_owner
+                  ) {
+                    repo.showTip = true
+                  }
+                })
               })
             }
           })
@@ -399,6 +412,15 @@ export default {
     handleServiceBuildChange (services) {
       services.forEach(service => {
         this.getRepoInfo(service.repos)
+        service.repos.forEach(repo => {
+          if (
+            repo.codehost_id === this.webhookSelectedRepo.codehost_id &&
+            repo.repo_name === this.webhookSelectedRepo.repo_name &&
+            repo.repo_owner === this.webhookSelectedRepo.repo_owner
+          ) {
+            repo.showTip = true
+          }
+        })
       })
       this.$forceUpdate()
     },
@@ -412,6 +434,34 @@ export default {
       })
     }
   },
-  watch: {}
+  watch: {
+    webhookSelectedRepo: {
+      handler (val) {
+        if (val) {
+          this.payload.stages.forEach(stage => {
+            stage.jobs.forEach(job => {
+              if (job.pickedTargets && job.pickedTargets.length > 0) {
+                job.pickedTargets.forEach(build => {
+                  build.repos.forEach(repo => {
+                    if (
+                      repo.codehost_id === val.codehost_id &&
+                      repo.repo_name === val.repo_name &&
+                      repo.repo_owner === val.repo_owner
+                    ) {
+                      repo.showTip = true
+                    } else {
+                      repo.showTip = false
+                    }
+                  })
+                })
+              }
+            })
+          })
+        }
+      },
+      immediate: false,
+      deep: true
+    }
+  }
 }
 </script>

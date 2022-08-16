@@ -164,7 +164,7 @@
       </el-form>
       <div>
         <span>工作流执行变量</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentWebhook.workflow_arg" />
+        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentWebhook.workflow_arg" :webhookSelectedRepo="currentWebhook.repo" />
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
@@ -361,7 +361,7 @@ export default {
           delete item.branch
           return item
         })
-        this.$set(this.currentWebhook, 'workflow_arg', cloneDeep(preset.workflow_arg))
+        this.$set(currentWebhook, 'workflow_arg', cloneDeep(preset.workflow_arg))
       }
       if (
         currentWebhook.main_repo.codehost_id &&
