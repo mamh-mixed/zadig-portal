@@ -54,6 +54,21 @@
         </el-form-item>
         <EnvTypeSelect v-model="form.serviceType" isRuntime isOther isService style="display: inline-block;" />
       </el-form-item>
+      <el-form-item label="服务运行状态">
+          <span slot="label">
+            服务运行状态
+          <el-tooltip effect="dark" content="开启后，部署任务会轮询服务运行状态，待服务正常运行，任务状态才为成功。" placement="top">
+              <i class="el-icon-question" style="cursor: pointer;"></i>
+          </el-tooltip>
+        </span>
+        <el-form-item
+          prop="skip_check_run_status"
+          class="form-item"
+          :rules="{required: false}"
+        >
+        <el-switch v-model="form.skip_check_run_status" active-color="#13ce66"></el-switch>
+        </el-form-item>
+      </el-form-item>
     </el-form>
   </div>
 </template>
@@ -91,7 +106,7 @@ export default {
   },
   data () {
     return {
-      formLabelWidth: '90px',
+      formLabelWidth: '135px',
       envList: []
     }
   },
