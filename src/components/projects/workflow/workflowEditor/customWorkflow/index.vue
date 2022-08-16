@@ -635,11 +635,6 @@ export default {
               this.$refs.buildEnv.validate().then(valid => {
                 const curJob = this.$refs.buildEnv.getData()
                 if (valid) {
-                  // if (curJob.spec.envType === 'fixed') {
-                  //   curJob.spec.env = '<+fixed>' + curJob.spec.env
-                  // }
-                  // curJob.spec.source =
-                  //   curJob.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
                   this.$set(
                     this.payload.stages[this.curStageIndex].jobs,
                     this.curJobIndex,
