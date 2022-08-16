@@ -152,12 +152,12 @@
     <div class="right">
       <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
-    <el-drawer :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" :show-close="false" class="drawer" size="40%">
+    <el-drawer :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" :show-close="false" class="drawer" :size="drawerSize?drawerSize:'40%'">
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div>
-          <el-button type="primary" size="mini" plain @click="handleDrawerChange">确定</el-button>
-          <el-button size="mini" plain @click="isShowDrawer=false">取消</el-button>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
+          <el-button size="mini" plain @click="isShowDrawer=false">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
@@ -176,6 +176,9 @@
       </div>
       <div v-if="curDrawer === 'env'">
         <Env :preEnvs="payload" ref="env" />
+      </div>
+      <div v-if="curDrawer === 'webhook'">
+        <Webhook :config="payload" ref="webhook" />
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
@@ -217,6 +220,7 @@ import Plugin from './components/plugin.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import Env from './components/env.vue'
+import Webhook from './components/webhook.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -320,7 +324,8 @@ export default {
     RunCustomWorkflow,
     codemirror,
     Plugin,
-    Env
+    Env,
+    Webhook
   },
   computed: {
     projectName () {
@@ -341,6 +346,24 @@ export default {
         return item.value === this.curDrawer
       })
       return res.label
+    },
+    drawerSize () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerSize
+    },
+    drawerConfirmText () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerConfirmText
+    },
+    drawerCancelText () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerCancelText
     }
   },
   created () {
