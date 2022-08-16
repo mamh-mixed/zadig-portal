@@ -346,7 +346,7 @@ export default {
       } else if (path.includes('/v1/system')) {
         return this.systemMenu
       }
-      if (this.hasPlutus && this.defaultMenu[1] !== this.plutusMenu[0]) {
+      if (this.isAdmin && this.hasPlutus && this.defaultMenu[1] !== this.plutusMenu[0]) {
         this.defaultMenu.splice(1, 0, ...this.plutusMenu)
       }
       if (this.isAdmin) {

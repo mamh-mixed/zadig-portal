@@ -141,7 +141,7 @@
                       <span class="profile-list__text">系统设置</span>
                     </li>
                   </router-link>
-                  <router-link to="/v1/enterprise">
+                  <router-link to="/v1/enterprise/">
                     <li class="profile-list__item">
                       <i class="iconfont iconcompany-info"></i>
                       <span class="profile-list__text">企业管理</span>
