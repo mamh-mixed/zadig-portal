@@ -426,14 +426,18 @@ export default {
       }
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
-          if (job.spec && job.spec.service_and_builds) {
-            job.spec.service_and_builds.forEach(service => {
-              service.key_vals.forEach(item => {
-                if (item.command === 'fixed') {
-                  item.value = '<+fixed>' + item.value
+          if (job.type === 'zadig-build') {
+            if (job.spec && job.spec.service_and_builds) {
+              job.spec.service_and_builds.forEach(service => {
+                if (service.key_vals) {
+                  service.key_vals.forEach(item => {
+                    if (item.command === 'fixed') {
+                      item.value = '<+fixed>' + item.value
+                    }
+                  })
                 }
               })
-            })
+            }
           }
           if (job.type === 'zadig-deploy') {
             if (job.spec.envType === 'fixed') {
@@ -771,7 +775,6 @@ export default {
     },
     payload: {
       handler (val, oldVal) {
-        console.log(val)
         let res = []
         if (val.params.length > 0) {
           res = val.params.map(item => {
