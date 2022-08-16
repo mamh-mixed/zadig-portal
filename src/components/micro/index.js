@@ -6,13 +6,15 @@ import router from '@/router/index.js'
 export const currentInfo = {
   mount: false
 }
+// debug address
+const prefix = process.env.NODE_ENV === 'development' ? '//localhost:10000' : ''
 
 export const microApps = [
   {
     name: 'plutusVendor',
-    entry: '/plutus-vendor/plutus/', // //localhost:10000   /plutus-vendor/   http://test34-vendor-test.test.8slan.com/plutus-vendor/
+    entry: `${prefix}/plutus-vendor/`,
     container: '#container',
-    activeRule: '/v1/plutus',
+    activeRule: ['/v1/plutus', '/v1/enterprise'],
     props: {
       routerBase: '/v1',
       //   mainStore: store,

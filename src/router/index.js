@@ -951,44 +951,6 @@ const routes = [
     ]
   },
   {
-    path: '/v1/enterprise',
-    component: onboarding_home,
-    meta: {
-      requiresAuth: true,
-      requiresSuperAdmin: true,
-      title: '企业管理'
-    },
-    children: [
-      {
-        path: '',
-        component: () => import(/* webpackChunkName: "Enterprise" */ '@/components/enterprise/home.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: '企业管理'
-        }
-      },
-      {
-        path: 'info',
-        component: () => import(/* webpackChunkName: "Enterprise" */ '@/components/enterprise/info.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: '企业信息'
-        }
-      },
-      {
-        path: 'license',
-        component: () => import(/* webpackChunkName: "Enterprise" */ '@/components/enterprise/license.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: '许可证'
-        }
-      }
-    ]
-  },
-  {
     path: '/mobile',
     component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/index.vue'),
     meta: {
@@ -1087,13 +1049,6 @@ const routes = [
     component: () => import('@/components/entry/passwordLogin.vue'),
     meta: {
       title: '登录'
-    }
-  },
-  {
-    path: '/license',
-    component: () => import('@/components/entry/license.vue'),
-    meta: {
-      requiresAuth: false
     }
   },
   {

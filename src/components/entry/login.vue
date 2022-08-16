@@ -163,7 +163,8 @@ export default {
     async getLicense () {
       this.license = await getLicenseAPI()
       if (this.license && !this.license.token) {
-        this.$router.replace('/license')
+        // this.$router.replace('/license')
+        window.location.href = '/plutus-vendor/license'
       }
     }
   },

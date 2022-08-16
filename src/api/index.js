@@ -12,6 +12,8 @@ const reqExps = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloa
 const analyticsPrefix = 'https://api.koderover.com'
 const analyticsReq = `${analyticsPrefix}/api/operation/upload`
 const userInitEnvRoute = '/v1/projects/initialize/'
+const ignorePrefix = '/api/plutus/'
+
 const http = axios.create()
 const CancelToken = axios.CancelToken
 let source = null
@@ -137,6 +139,8 @@ http.interceptors.response.use(
           window.location.href = `/signin?redirect=${redirectPath}`
         } else if (error.response.status === 403) {
           Element.Message.error('暂无权限')
+        } else if (error.response.status === 404 && error.response.config.url.includes(ignorePrefix)) {
+          return Promise.reject(error)
         }
         if (error.response.data && (error.response.data.code === 6168 || error.response.data.code === 6094 || error.response.data.description.includes(ignoreErrResponse))) {
           return Promise.reject(error)
@@ -2183,31 +2187,15 @@ export function uploadUserNumberAPI (payload) {
   return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
 }
 
+// ----- Enterprise -----
 export function checkPlutusAPI () {
   return http.get(`/api/plutus/health`)
 }
 
-// ----- Enterprise -----
 export function getEnterpriseInfoAPI () {
   return http.get(`/api/plutus/organization`)
 }
 
-export function createEnterpriseInfoAPI (payload) {
-  return http.post(`/api/plutus/organization`, payload)
-}
-
-export function updateEnterpriseInfoAPI (payload) {
-  return http.post(`/api/plutus/organization`, payload)
-}
-
 export function getLicenseAPI () {
   return http.get(`/api/plutus/signature`)
-}
-
-export function createLicenseAPI (payload) {
-  return http.post(`/api/plutus/signature`, payload)
-}
-
-export function updateLicenseAPI (payload) {
-  return http.post(`/api/plutus/signature`, payload)
 }
