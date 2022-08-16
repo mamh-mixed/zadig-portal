@@ -179,7 +179,7 @@
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
-      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
+      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" @submitEvent="operateStage('',stage)"/>
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
