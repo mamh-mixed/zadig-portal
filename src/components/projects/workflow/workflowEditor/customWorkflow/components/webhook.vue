@@ -115,7 +115,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="currentWebhook.main_repo.source==='gerrit'" label="触发事件" prop="main_repo.events">
+        <el-form-item v-if="currentWebhook.repo.source==='gerrit'" label="触发事件" prop="main_repo.events">
           <el-checkbox-group v-model="currentWebhook.main_repo.events">
             <el-checkbox style="display: block;" label="change-merged">Change merged</el-checkbox>
             <el-checkbox style="display: block;" label="patchset-created">
@@ -127,7 +127,7 @@
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item v-else-if="currentWebhook.main_repo.source!=='gerrit'" label="触发事件" prop="main_repo.events">
+        <el-form-item v-else-if="currentWebhook.repo.source!=='gerrit'" label="触发事件" prop="main_repo.events">
           <el-checkbox-group v-model="currentWebhook.main_repo.events">
             <el-checkbox v-for="tri in triggerMethods.git" :key="tri.value" :label="tri.value">{{ tri.label }}</el-checkbox>
           </el-checkbox-group>
@@ -139,7 +139,7 @@
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-checkbox>
-          <el-checkbox v-if="currentWebhook.main_repo.source==='gerrit'" v-model="currentWebhook.check_patch_set_change">
+          <el-checkbox v-if="currentWebhook.repo.source==='gerrit'" v-model="currentWebhook.check_patch_set_change">
             <span>代码无变化时不触发工作流</span>
             <el-tooltip effect="dark" content="例外情况说明：当目标代码仓配置为 Gerrit 的情况下，受限于其 API 的能力，当单行代码有变化时也不被触发" placement="top">
               <i class="el-icon-question"></i>
@@ -306,12 +306,6 @@ export default {
     projectName () {
       return this.$route.params.project_name
     },
-    checkGitRepo () {
-      return (
-        this.currentWebhook &&
-        ['gitlab', 'github'].includes(this.currentWebhook.source)
-      )
-    },
     workflowName () {
       return this.config.name
     }
@@ -376,7 +370,7 @@ export default {
       }
       currentWebhook.repo = {
         key: `${currentWebhook.main_repo.repo_owner}/${currentWebhook.main_repo.repo_name}`,
-        label: `${currentWebhook.main_repo.repo_owner}/${currentWebhook.main_repo.repo_name}`,
+        source: currentWebhook.main_repo.source,
         repo_namespace: currentWebhook.main_repo.repo_namespace,
         repo_name: currentWebhook.main_repo.repo_name,
         repo_owner: currentWebhook.main_repo.repo_owner,
