@@ -206,7 +206,7 @@ export default {
                     repo.repo_name === this.webhookSelectedRepo.repo_name &&
                     repo.repo_owner === this.webhookSelectedRepo.repo_owner
                   ) {
-                    repo.showTip = true
+                    this.$set(repo, 'showTip', true)
                   }
                 })
               })
@@ -418,7 +418,7 @@ export default {
             repo.repo_name === this.webhookSelectedRepo.repo_name &&
             repo.repo_owner === this.webhookSelectedRepo.repo_owner
           ) {
-            repo.showTip = true
+            this.$set(repo, 'showTip', true)
           }
         })
       })
@@ -448,9 +448,9 @@ export default {
                       repo.repo_name === val.repo_name &&
                       repo.repo_owner === val.repo_owner
                     ) {
-                      repo.showTip = true
+                      this.$set(repo, 'showTip', true)
                     } else {
-                      repo.showTip = false
+                      this.$set(repo, 'showTip', false)
                     }
                   })
                 })
