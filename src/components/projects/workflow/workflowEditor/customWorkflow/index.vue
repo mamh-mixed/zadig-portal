@@ -182,7 +182,7 @@
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
-      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
+      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" @submitEvent="operateStage('',stage)" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
@@ -264,6 +264,7 @@ export default {
       },
       job: {
         name: '',
+        type: '',
         spec: {
           docker_registry_id: ''
         }
@@ -338,8 +339,12 @@ export default {
       return this.$route.params.workflow_name
     },
     curJobType () {
-      const curType = jobTypeList.find(item => item.type === this.job.type)
-      return curType ? curType.label : this.job.spec.plugin.name
+      if (this.job) {
+        const curType = jobTypeList.find(item => item.type === this.job.type)
+        return curType ? curType.label : this.job.spec.plugin.name
+      } else {
+        return ''
+      }
     },
     drawerTitle () {
       const res = this.configList.find(item => {
@@ -658,11 +663,6 @@ export default {
               this.$refs.buildEnv.validate().then(valid => {
                 const curJob = this.$refs.buildEnv.getData()
                 if (valid) {
-                  // if (curJob.spec.envType === 'fixed') {
-                  //   curJob.spec.env = '<+fixed>' + curJob.spec.env
-                  // }
-                  // curJob.spec.source =
-                  //   curJob.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
                   this.$set(
                     this.payload.stages[this.curStageIndex].jobs,
                     this.curJobIndex,
@@ -674,19 +674,21 @@ export default {
               })
               reject()
             } else if (this.job.type === jobType.build) {
-              if (this.$refs.serviceAndbuild.validate()) {
-                this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
-                this.$set(
-                  this.payload.stages[this.curStageIndex].jobs,
-                  this.curJobIndex,
-                  this.job
-                )
-                this.$store.dispatch('setIsShowFooter', false)
-                reject()
-              } else {
+              if (this.$refs.serviceAndbuild.getData().length === 0) {
                 this.$message.error('请至少选择一个服务组件')
-                reject()
+                return
               }
+              this.$refs.serviceAndbuild.validate().then(valid => {
+                if (valid) {
+                  this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    this.job
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                }
+              })
             } else if (this.job.type === jobType.freestyle) {
               this.$refs[this.beInitCompRef]
                 .validate()

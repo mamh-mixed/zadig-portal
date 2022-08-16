@@ -233,6 +233,8 @@ export default {
   }
 
   main {
+    box-sizing: border-box;
+    width: 100%;
     min-height: 400px;
     max-height: 60%;
     padding: 0 24px;

@@ -5,16 +5,18 @@
       <el-col :span="6" class="title">构建名称</el-col>
       <el-col :span="6" class="title">构建配置</el-col>
     </el-row>
-    <el-form :model="form" ref="ruleForm" size="small">
-      <div v-for="(item,index) in serviceAndBuilds" :key="index">
+    <div v-for="(item,index) in serviceAndBuilds" :key="index">
+      <el-form :model="item" :ref="`ruleForm${index}`" size="small">
         <el-row :gutter="24" style="line-height: 40px;" class="mg-b8">
           <el-col :span="6">
             <div>{{item.service_name}}/{{item.service_module}}</div>
           </el-col>
           <el-col :span="6">
-            <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
-              <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
-            </el-select>
+            <el-form-item prop="build_name" :rules="{required: true, message: '构建不能为空', trigger: ['blur','change']}">
+              <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
+                <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-button type="text" @click="toggleIsShowVals(item,index)">
@@ -113,8 +115,8 @@
             </div>
           </el-card>
         </el-row>
-      </div>
-    </el-form>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -146,7 +148,6 @@ export default {
   components: { EnvTypeSelect },
   data () {
     return {
-      form: {},
       buildTabList
     }
   },
@@ -154,6 +155,14 @@ export default {
     serviceAndBuilds: {
       get () {
         this.value.forEach(val => {
+          if (
+            !val.build_name &&
+            val.module_builds &&
+            val.module_builds.length > 0
+          ) {
+            // default select first build
+            val.build_name = val.module_builds[0].name
+          }
           if (val.repos) {
             val.repos.forEach(repo => {
               this.getBranch(repo)
@@ -249,7 +258,11 @@ export default {
       }
     },
     validate () {
-      return this.serviceAndBuilds.length > 0
+      const valid = []
+      this.serviceAndBuilds.forEach((item, index) => {
+        valid.push(this.$refs[`ruleForm${index}`][0].validate())
+      })
+      return Promise.all(valid)
     },
     getData () {
       this.serviceAndBuilds.forEach(item => {
@@ -257,9 +270,11 @@ export default {
         delete item.isShowVals
         delete item.originRepos
         delete item.module_builds
-        item.repos.forEach(repo => {
-          delete repo.branches
-        })
+        if (item.repos && item.repos.length > 0) {
+          item.repos.forEach(repo => {
+            delete repo.branches
+          })
+        }
       })
       return this.serviceAndBuilds
     }
