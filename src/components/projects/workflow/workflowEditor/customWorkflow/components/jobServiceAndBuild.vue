@@ -154,6 +154,13 @@ export default {
     serviceAndBuilds: {
       get () {
         this.value.forEach(val => {
+          if (
+            !val.build_name &&
+            val.module_builds &&
+            val.module_builds.length > 0
+          ) {
+            val.build_name = val.module_builds[0].name
+          }
           if (val.repos) {
             val.repos.forEach(repo => {
               this.getBranch(repo)
