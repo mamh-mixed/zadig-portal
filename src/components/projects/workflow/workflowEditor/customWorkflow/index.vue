@@ -179,7 +179,7 @@
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
-      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" @submitEvent="operateStage('',stage)"/>
+      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" @submitEvent="operateStage('',stage)" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
@@ -260,6 +260,7 @@ export default {
       },
       job: {
         name: '',
+        type: '',
         spec: {
           docker_registry_id: ''
         }
@@ -333,8 +334,12 @@ export default {
       return this.$route.params.workflow_name
     },
     curJobType () {
-      const curType = jobTypeList.find(item => item.type === this.job.type)
-      return curType ? curType.label : this.job.spec.plugin.name
+      if (this.job) {
+        const curType = jobTypeList.find(item => item.type === this.job.type)
+        return curType ? curType.label : this.job.spec.plugin.name
+      } else {
+        return ''
+      }
     },
     drawerTitle () {
       const res = this.configList.find(item => {
