@@ -38,12 +38,12 @@
                   </el-tooltip>
                 </div>
               </el-col>
-              <template v-if="build.showTip">
+              <div v-if="build.showTip">
                 <el-col :span="7">
                  <span style="color: #909399; font-size: 12px; line-height: 33px;">使用变更的代码执行</span>
                 </el-col>
-              </template>
-              <template v-else>
+              </div>
+              <div v-else>
                 <el-col :span="7">
                   <el-select
                     v-model="build.branchOrTag"
@@ -106,7 +106,7 @@
                     <i class="el-icon-question repo-warning"></i>
                   </el-tooltip>
                 </el-col>
-              </template>
+              </div>
 
             </template>
           </el-row>
@@ -215,9 +215,7 @@ export default {
             })
           }
         })
-        this.$forceUpdate()
-      },
-      deep: true
+      }
     }
   }
 }
