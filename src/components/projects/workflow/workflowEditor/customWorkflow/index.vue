@@ -646,19 +646,21 @@ export default {
               })
               reject()
             } else if (this.job.type === jobType.build) {
-              if (this.$refs.serviceAndbuild.validate()) {
-                this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
-                this.$set(
-                  this.payload.stages[this.curStageIndex].jobs,
-                  this.curJobIndex,
-                  this.job
-                )
-                this.$store.dispatch('setIsShowFooter', false)
-                reject()
-              } else {
+              if (this.$refs.serviceAndbuild.getData().length === 0) {
                 this.$message.error('请至少选择一个服务组件')
-                reject()
+                return
               }
+              this.$refs.serviceAndbuild.validate().then(valid => {
+                if (valid) {
+                  this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    this.job
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                }
+              })
             } else if (this.job.type === jobType.freestyle) {
               this.$refs[this.beInitCompRef]
                 .validate()
