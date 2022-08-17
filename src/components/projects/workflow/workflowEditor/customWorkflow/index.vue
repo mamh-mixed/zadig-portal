@@ -248,7 +248,7 @@ export default {
       jobType,
       stage: {
         name: '',
-        parallel: false,
+        parallel: true,
         approval: {
           enabled: false,
           approve_users: [],
