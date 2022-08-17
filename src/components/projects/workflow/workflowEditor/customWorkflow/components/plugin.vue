@@ -55,9 +55,9 @@
             <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
-        <el-table-column label="是否加密">
+        <el-table-column label="敏感信息">
           <template slot-scope="scope">
-            <el-checkbox v-model="scope.row.is_credential" :disabled="scope.row.type === 'text'">是否加密</el-checkbox>
+            <el-checkbox v-model="scope.row.is_credential" :disabled="scope.row.type === 'text'"></el-checkbox>
           </template>
         </el-table-column>
       </el-table>
