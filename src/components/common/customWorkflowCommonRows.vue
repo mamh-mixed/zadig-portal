@@ -80,7 +80,6 @@
       </el-table-column>
     </el-table>
     <el-table
-      v-if="isShow"
       :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"
     >
       <el-table-column label="键" :prop="type === 'plugin'?'name':'key'">
