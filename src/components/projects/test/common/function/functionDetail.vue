@@ -286,6 +286,11 @@ export default {
             return i
           })
         }
+        if (this.test.pre_test.envs) {
+          this.test.pre_test.envs.forEach(element => {
+            element.disabledKey = true
+          })
+        }
         this.configDataLoading = false
       })
     }

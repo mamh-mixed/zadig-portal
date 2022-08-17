@@ -146,11 +146,12 @@ import {
   getClusterListAPI,
   createHelmEnvAPI,
   getEnvironmentsAPI,
+  getEnvInfoAPI,
   getRegistryWhenBuildAPI,
   productHostingNamespaceAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, flattenDeep } from 'lodash'
 import HelmEnvTemplate from '../env_detail/components/updateHelmEnvTemp.vue'
 import EnvConfig from '../env_detail/common/envConfig.vue'
 
@@ -307,11 +308,20 @@ export default {
         if (!this.projectConfig.baseEnvName) {
           this.projectConfig.baseEnvName = this.projectEnvNames[0]
         }
-        this.changeBaseEnv()
+        this.changeBaseEnv(this.projectEnvNames[0])
       }
     },
-    changeBaseEnv () {
-      this.projectConfig.selectedService = this.projectChartNames
+    async changeBaseEnv (envName) {
+      const projectName = this.projectName
+      const envInfo = await getEnvInfoAPI(projectName, envName)
+      const availableServices = flattenDeep(envInfo.services)
+      const projectChartNames = this.projectChartNames.filter(item => {
+        return availableServices.indexOf(item.serviceName) >= 0
+      })
+      this.projectChartNames = projectChartNames
+      this.projectConfig.registry_id = envInfo.registry_id
+      this.projectConfig.cluster_id = envInfo.cluster_id
+      this.projectConfig.selectedService = projectChartNames
       this.envNames = [this.projectConfig.baseEnvName]
       this.envName = this.projectConfig.baseEnvName
     },

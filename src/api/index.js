@@ -290,12 +290,17 @@ export function getEnvServicesAPI (projectName, envName) {
   return http.get(`/api/aslan/environment/environments/${envName}/groups?projectName=${projectName}`)
 }
 
-export function productEnvInfoAPI (projectName, envName) {
+export function getEnvInfoAPI (projectName, envName) {
   return http.get(`/api/aslan/environment/environments/${envName}?projectName=${projectName}`)
 }
 
 export function updateEnvImageRegistry (projectName, envName, payload) {
   return http.put(`/api/aslan/environment/environments/${envName}/registry?projectName=${projectName}`, payload)
+}
+
+export function getTheEnvChangeLogAPI (payload) {
+  // payload: projectName, envName, page, pageSize, status, username, function, detail
+  return http.get(`/api/aslan/environment/operations`, { params: payload })
 }
 
 // Project
@@ -1441,8 +1446,8 @@ export function updateEnvTemplateAPI (projectName, payload) {
 }
 
 // Env and Service
-export function createProductAPI (payload, envType = '') {
-  return http.post(`/api/aslan/environment/environments?projectName=${payload.product_name}`, payload)
+export function createEnvAPI (payload, envType = '', scene = '') {
+  return http.post(`/api/aslan/environment/environments?projectName=${payload.product_name}&scene=${scene}`, payload)
 }
 
 export function updateServiceAPI (projectName, serviceName, serviceType, envName, data, envType = '') {
@@ -2172,6 +2177,27 @@ export function getCustomCloneDetailAPI (workflow_name, task_id) {
 // approval
 export function approvalCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask/approve?projectName=${projectName}`, payload)
+}
+
+// Webhook
+export function addCustomWebhookAPI (workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/webhook/${workflowName}`, payload)
+}
+
+export function getCustomWebhooksAPI (workflowName) {
+  return http.get(`/api/aslan/workflow/v4/webhook?workflowName=${workflowName}`)
+}
+
+export function getCustomWebhookPresetAPI (workflowName, triggerName = '') {
+  return http.get(`/api/aslan/workflow/v4/webhook/preset?workflowName=${workflowName}&triggerName=${triggerName}`)
+}
+
+export function removeCustomWebhookAPI (workflowName, triggerName) {
+  return http.delete(`/api/aslan/workflow/v4/webhook/${workflowName}/trigger/${triggerName}`)
+}
+
+export function updateCustomWebhookAPI (workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/webhook/${workflowName}`, payload)
 }
 
 // count the number of users
