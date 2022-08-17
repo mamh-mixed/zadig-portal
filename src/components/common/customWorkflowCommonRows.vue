@@ -79,7 +79,6 @@
         </template>
       </el-table-column>
     </el-table>
-    {{isShow}}
     <el-table
       v-if="isShow"
       :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"
@@ -123,31 +122,6 @@ export default {
     type: {
       type: String,
       default: ''
-    }
-  },
-  computed: {
-    isShow () {
-      let res
-      if (this.type === 'plugin') {
-        if (this.job.spec.plugin.inputs) {
-          const len = this.job.spec.plugin.inputs.filter(item => item.isShow)
-          res =
-            len.length !== 0 &&
-            len.length !== this.job.spec.plugin.inputs.length
-          console.log(len)
-          console.log(res)
-        } else {
-          res = false
-        }
-      } else {
-        if (this.job.spec.properties.envs) {
-          const len = this.job.spec.properties.envs.filter(item => item.isShow)
-          res = len.length !== this.job.spec.properties.envs.length
-        } else {
-          res = false
-        }
-      }
-      return res
     }
   },
   data () {
