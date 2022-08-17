@@ -2,7 +2,7 @@
   <div class="custom-workflow">
     <el-form label-width="120px" size="small">
       <el-collapse v-model="activeName">
-        <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0">
+        <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">
             <el-table-column label="键">
               <template slot-scope="scope">{{scope.row.name}}</template>
@@ -92,11 +92,6 @@
                     </span>
                   </el-option>
                 </el-select>
-                <el-tooltip v-if="specificEnv" effect="dark" content="该工作流已指定环境运行，可通过修改 工作流->基本信息 来解除指定环境绑定" placement="top">
-                  <span>
-                    <i style="color: #909399;" class="el-icon-question"></i>
-                  </span>
-                </el-tooltip>
               </el-form-item>
               <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
                 <el-select
@@ -177,7 +172,6 @@ export default {
       registry_id: '',
       currentProjectEnvs: [],
       dockerList: [],
-      specificEnv: true,
       startTaskLoading: false,
       activeName: ['env', '00'],
       payload: {
@@ -209,6 +203,16 @@ export default {
   components: {
     CustomWorkflowBuildRows,
     CustomWorkflowCommonRows
+  },
+  computed: {
+    isShowParams () {
+      if (this.payload.params) {
+        const len = this.payload.params.filter(item => item.isShow)
+        return len.length !== this.payload.params.length
+      } else {
+        return false
+      }
+    }
   },
   created () {
     this.init()

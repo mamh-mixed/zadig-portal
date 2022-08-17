@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="构建设置" :visible.sync="isShowBuildOperateDialog" width="50%" center>
+  <el-dialog title="构建设置" :visible.sync="isShowBuildOperateDialog" width="50%" center @close="handleClose">
     <template>
       <div class="build-configs">
         <h4>代码信息</h4>
@@ -223,6 +223,11 @@ export default {
           )
         }
       }
+    },
+    handleClose () {
+      this.value.branch_filter.forEach(item => {
+        item.filter_regexp = item.filter_regexp.trim()
+      })
     }
   }
 }

@@ -132,7 +132,7 @@ export default {
     reset () {
       this.form = {
         name: '',
-        parallel: false,
+        parallel: true,
         approval: {
           enabled: false,
           approve_users: [],

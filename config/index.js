@@ -4,7 +4,6 @@
 
 const path = require('path');
 const backEndAddr = '';
-
 module.exports = {
   dev: {
     // Paths
