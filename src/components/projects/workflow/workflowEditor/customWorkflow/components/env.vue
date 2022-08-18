@@ -197,7 +197,7 @@ export default {
         key: '',
         value: '',
         type: 'string',
-        is_credential: true
+        is_credential: false
       })
     },
     addBuildEnv () {
@@ -206,7 +206,7 @@ export default {
           name: '',
           value: '',
           type: 'string',
-          is_credential: true
+          is_credential: false
         })
         this.$forceUpdate()
       })
@@ -218,10 +218,10 @@ export default {
       const current = this.preEnvs.params[index]
       current.value = ''
       if (current.type === 'string' || current.type === 'text') {
-        current.is_credential = true
+        // current.is_credential = true
         this.updateKeyParams(index)
       } else {
-        current.is_credential = false
+        // current.is_credential = false
         this.updateParams(index)
       }
     },
