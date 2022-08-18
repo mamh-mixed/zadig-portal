@@ -317,5 +317,9 @@ export default {
       cursor: pointer;
     }
   }
+
+  /deep/.el-form-item {
+    margin-bottom: 8px;
+  }
 }
 </style>
