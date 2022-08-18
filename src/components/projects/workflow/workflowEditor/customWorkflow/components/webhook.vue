@@ -325,8 +325,9 @@ export default {
       return this.$refs.buildEnvRef.validate()
     },
     changeWebhookStatus (webhook) {
+      const projectName = this.projectName
       const workflowName = this.workflowName
-      updateCustomWebhookAPI(workflowName, webhook).then(() => {
+      updateCustomWebhookAPI(projectName, workflowName, webhook).then(() => {
         this.$message.success(
           `${webhook.name} 已${webhook.enabled ? '启用' : '禁用'}`
         )
@@ -334,12 +335,13 @@ export default {
       })
     },
     async getWebhooks () {
-      this.webhooks = await getCustomWebhooksAPI(this.workflowName)
+      this.webhooks = await getCustomWebhooksAPI(this.projectName, this.workflowName)
     },
     async addWebhook () {
+      const projectName = this.projectName
       const workflowName = this.workflowName
       this.currentWebhook = cloneDeep(webhookInfo)
-      const preset = await getCustomWebhookPresetAPI(workflowName)
+      const preset = await getCustomWebhookPresetAPI(projectName, workflowName)
       if (preset) {
         this.$set(
           this.currentWebhook,
@@ -356,11 +358,12 @@ export default {
       }
     },
     async editWebhook (item) {
+      const projectName = this.projectName
       const workflowName = this.workflowName
       this.editMode = true
       const currentWebhook = cloneDeep(item)
       const triggerName = currentWebhook.name
-      const preset = await getCustomWebhookPresetAPI(workflowName, triggerName)
+      const preset = await getCustomWebhookPresetAPI(projectName, workflowName, triggerName)
       if (preset) {
         this.webhookRepos = preset.repos.map(item => {
           item.key = `${item.repo_owner}/${item.repo_name}`
@@ -400,8 +403,9 @@ export default {
       this.dialogVisible = true
     },
     removeWebhook (index, triggerName) {
+      const projectName = this.projectName
       const workflowName = this.workflowName
-      removeCustomWebhookAPI(workflowName, triggerName).then(res => {
+      removeCustomWebhookAPI(projectName, workflowName, triggerName).then(res => {
         this.$message.success('删除成功')
         this.getWebhooks()
       })
@@ -416,8 +420,9 @@ export default {
           payload.main_repo = Object.assign(payload.main_repo, payload.repo)
           delete payload.repo
           const workflowName = this.workflowName
+          const projectName = this.projectName
           if (this.editMode) {
-            const result = await updateCustomWebhookAPI(workflowName, payload)
+            const result = await updateCustomWebhookAPI(projectName, workflowName, payload)
             if (result) {
               this.$message.success('修改成功')
               this.$refs.webhookForm.resetFields()
@@ -425,7 +430,7 @@ export default {
               this.getWebhooks()
             }
           } else {
-            const result = await addCustomWebhookAPI(workflowName, payload)
+            const result = await addCustomWebhookAPI(projectName, workflowName, payload)
             if (result) {
               this.$message.success('添加成功')
               this.$refs.webhookForm.resetFields()
@@ -521,8 +526,8 @@ export default {
               })
           }
           if (this.isEdit) {
-            this.webhooks = await getCustomWebhooksAPI(this.workflowName)
-            const test = await getCustomWebhookPresetAPI(this.workflowName)
+            this.webhooks = await getCustomWebhooksAPI(this.projectName, this.workflowName)
+            const test = await getCustomWebhookPresetAPI(this.projectName, this.workflowName)
             if (this.webhooks && this.webhooks.length > 0 && test) {
               this.checkingBuildStageChanged(
                 cloneDeep(this.config),
