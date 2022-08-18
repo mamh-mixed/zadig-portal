@@ -2180,24 +2180,24 @@ export function approvalCustomWorkflowTaskAPI (payload, projectName) {
 }
 
 // Webhook
-export function addCustomWebhookAPI (workflowName, payload) {
-  return http.post(`/api/aslan/workflow/v4/webhook/${workflowName}`, payload)
+export function addCustomWebhookAPI (projectName, workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/webhook/${workflowName}?projectName=${projectName}`, payload)
 }
 
-export function getCustomWebhooksAPI (workflowName) {
-  return http.get(`/api/aslan/workflow/v4/webhook?workflowName=${workflowName}`)
+export function getCustomWebhooksAPI (projectName, workflowName) {
+  return http.get(`/api/aslan/workflow/v4/webhook?projectName=${projectName}&workflowName=${workflowName}`)
 }
 
-export function getCustomWebhookPresetAPI (workflowName, triggerName = '') {
-  return http.get(`/api/aslan/workflow/v4/webhook/preset?workflowName=${workflowName}&triggerName=${triggerName}`)
+export function getCustomWebhookPresetAPI (projectName, workflowName, triggerName = '') {
+  return http.get(`/api/aslan/workflow/v4/webhook/preset?projectName=${projectName}&workflowName=${workflowName}&triggerName=${triggerName}`)
 }
 
-export function removeCustomWebhookAPI (workflowName, triggerName) {
-  return http.delete(`/api/aslan/workflow/v4/webhook/${workflowName}/trigger/${triggerName}`)
+export function removeCustomWebhookAPI (projectName, workflowName, triggerName) {
+  return http.delete(`/api/aslan/workflow/v4/webhook/${workflowName}/trigger/${triggerName}?projectName=${projectName}`)
 }
 
-export function updateCustomWebhookAPI (workflowName, payload) {
-  return http.put(`/api/aslan/workflow/v4/webhook/${workflowName}`, payload)
+export function updateCustomWebhookAPI (projectName, workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/webhook/${workflowName}?projectName=${projectName}`, payload)
 }
 
 // count the number of users
