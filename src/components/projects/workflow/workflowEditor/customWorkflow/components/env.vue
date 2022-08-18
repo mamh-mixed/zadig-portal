@@ -21,7 +21,7 @@
               v-model="preEnvs.params[build_env_index].type"
               placeholder="类型"
               size="small"
-              :class="{'partial-width': preEnvs.params[build_env_index].type !== 'string'}"
+              :class="{'partial-width': preEnvs.params[build_env_index].type === 'choice'}"
               style="margin-right: 6px;"
               @change="changeEnvType(build_env_index)"
             >

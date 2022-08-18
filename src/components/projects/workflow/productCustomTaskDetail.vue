@@ -249,6 +249,9 @@ export default {
         ) {
           this.$delete(this.payload.params, i)
         }
+        if (this.payload.params[i].is_credential) {
+          this.payload.params[i].value = '******'
+        }
       }
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
@@ -261,6 +264,9 @@ export default {
                 ) {
                   this.$delete(service.key_vals, i)
                 }
+                if (service.key_vals[i].is_credential) {
+                  service.key_vals[i].value = '******'
+                }
               }
             })
           }
@@ -272,6 +278,9 @@ export default {
               ) {
                 this.$delete(job.spec.envs, i)
               }
+              if (job.spec.envs[i].is_credential) {
+                job.spec.envs[i].value = '******'
+              }
             }
           }
           if (job.type === 'plugin') {
@@ -281,6 +290,9 @@ export default {
                 job.spec.inputs[i].value.includes('{{')
               ) {
                 this.$delete(job.spec.inputs, i)
+              }
+              if (job.spec.inputs[i].is_credential) {
+                job.spec.inputs[i].value = '******'
               }
             }
           }
