@@ -844,7 +844,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '插件管理'
+          title: '工作流任务'
         }
       },
       {
