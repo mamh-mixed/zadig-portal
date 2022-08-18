@@ -102,7 +102,7 @@ export default {
               url: 'system/imgs'
             },
             {
-              name: '插件管理',
+              name: '工作流任务',
               icon: 'iconfont el-icon-sell',
               url: 'system/plugins'
             }
