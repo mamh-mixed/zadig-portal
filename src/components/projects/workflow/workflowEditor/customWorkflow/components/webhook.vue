@@ -68,13 +68,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-dialog
-      :visible.sync="dialogVisible"
-      :title="editMode?'编辑触发器':'添加触发器'"
-      width="700px"
-      :close-on-click-modal="false"
-      append-to-body
-    >
+    <el-dialog :visible.sync="dialogVisible" :title="editMode?'编辑触发器':'添加触发器'" width="700px" :close-on-click-modal="false" append-to-body>
       <el-form ref="webhookForm" :model="currentWebhook" label-width="90px" :rules="rules">
         <el-form-item label="名称" prop="name">
           <el-input size="small" autofocus ref="webhookNamedRef" :disabled="editMode" v-model="currentWebhook.name" placeholder="请输入名称"></el-input>
@@ -164,7 +158,12 @@
       </el-form>
       <div>
         <span>工作流执行变量</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentWebhook.workflow_arg" :webhookSelectedRepo="currentWebhook.repo" />
+        <WebhookRunConfig
+          :workflowName="workflowName"
+          :projectName="projectName"
+          :cloneWorkflow="currentWebhook.workflow_arg"
+          :webhookSelectedRepo="currentWebhook.repo"
+        />
       </div>
       <div slot="footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
@@ -175,7 +174,7 @@
 </template>
 
 <script>
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 import WebhookRunConfig from './webhookRunConfig.vue'
 import {
   getBranchInfoByIdAPI,
@@ -294,7 +293,18 @@ export default {
   props: {
     config: {
       type: Object,
+      required: true,
       default: () => ({})
+    },
+    isEdit: {
+      type: String,
+      required: true,
+      default: ''
+    },
+    isShowDrawer: {
+      type: Boolean,
+      required: true,
+      default: false
     },
     validObj: {
       required: false,
@@ -323,17 +333,19 @@ export default {
         this.getWebhooks()
       })
     },
-    getWebhooks () {
-      getCustomWebhooksAPI(this.workflowName).then(res => {
-        this.webhooks = res
-      })
+    async getWebhooks () {
+      this.webhooks = await getCustomWebhooksAPI(this.workflowName)
     },
     async addWebhook () {
       const workflowName = this.workflowName
       this.currentWebhook = cloneDeep(webhookInfo)
       const preset = await getCustomWebhookPresetAPI(workflowName)
       if (preset) {
-        this.$set(this.currentWebhook, 'workflow_arg', cloneDeep(preset.workflow_arg))
+        this.$set(
+          this.currentWebhook,
+          'workflow_arg',
+          cloneDeep(preset.workflow_arg)
+        )
         this.webhookRepos = preset.repos.map(item => {
           item.key = `${item.repo_owner}/${item.repo_name}`
           delete item.branch
@@ -355,7 +367,11 @@ export default {
           delete item.branch
           return item
         })
-        this.$set(currentWebhook, 'workflow_arg', cloneDeep(preset.workflow_arg))
+        this.$set(
+          currentWebhook,
+          'workflow_arg',
+          cloneDeep(preset.workflow_arg)
+        )
       }
       if (
         currentWebhook.main_repo.codehost_id &&
@@ -434,6 +450,48 @@ export default {
         currentRepo.repo_namespace,
         currentRepo.repo_name
       )
+    },
+    checkingBuildStageChanged (config, webhook) {
+      const originStages = config.stages
+      const webhookStages = webhook.workflow_arg.stages
+      originStages.forEach(stage => {
+        delete stage.approval
+        stage.jobs.forEach(job => {
+          if (job.type === 'zadig-build') {
+            job.spec.service_and_builds.forEach(build => {
+              build.repos = []
+              delete build.package
+              delete build.image
+            })
+          }
+        })
+      })
+      webhookStages.forEach(stage => {
+        delete stage.approval
+        stage.jobs.forEach(job => {
+          if (job.type === 'zadig-build') {
+            job.spec.service_and_builds.forEach(build => {
+              build.repos = []
+              delete build.package
+              delete build.image
+            })
+          }
+        })
+      })
+      if (!isEqual(originStages, webhookStages)) {
+        this.$confirm('保存当前工作流配置后才可配置触发器?', '确认', {
+          confirmButtonText: '保存',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.$emit('closeDrawer')
+            this.$emit('saveWorkflow')
+          })
+          .catch(() => {
+            this.$emit('closeDrawer')
+          })
+      }
     }
   },
   watch: {
@@ -444,10 +502,41 @@ export default {
         }
       },
       deep: true
+    },
+    isShowDrawer: {
+      async handler (newValue, oldValue) {
+        if (newValue) {
+          if (!this.isEdit) {
+            this.$confirm('保存当前工作流配置后才可配置触发器?', '确认', {
+              confirmButtonText: '保存',
+              cancelButtonText: '取消',
+              type: 'warning'
+            })
+              .then(() => {
+                this.$emit('closeDrawer')
+                this.$emit('saveWorkflow')
+              })
+              .catch(() => {
+                this.$emit('closeDrawer')
+              })
+          }
+          if (this.isEdit) {
+            this.webhooks = await getCustomWebhooksAPI(this.workflowName)
+            const test = await getCustomWebhookPresetAPI(this.workflowName)
+            if (this.webhooks && this.webhooks.length > 0 && test) {
+              this.checkingBuildStageChanged(
+                cloneDeep(this.config),
+                cloneDeep(test)
+              )
+            }
+          }
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
   created () {
-    this.getWebhooks()
     this.validObj &&
       this.validObj.addValidate({
         name: 'webhook',
