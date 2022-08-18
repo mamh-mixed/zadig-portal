@@ -208,7 +208,9 @@ export default {
     isShowParams () {
       if (this.payload.params) {
         const len = this.payload.params.filter(item => item.isShow)
-        return len.length !== this.payload.params.length
+        return len.length === 0
+          ? false
+          : len.length !== this.payload.params.length
       } else {
         return false
       }
@@ -225,7 +227,6 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            job.checked = true
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
@@ -253,6 +254,7 @@ export default {
       })
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
+          job.checked = true
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
@@ -307,11 +309,6 @@ export default {
       // const key = this.$utils.rsaEncrypt()
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
-          res.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              job.checked = true
-            })
-          })
           this.payload = res
           this.handleEnv()
         }
