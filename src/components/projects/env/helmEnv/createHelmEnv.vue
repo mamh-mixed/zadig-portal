@@ -359,12 +359,14 @@ export default {
             registry_id: this.projectConfig.registry_id,
             baseEnvName: isCopy ? baseEnvName : '',
             chartValues: valueInfo.chartInfo,
-            defaultValues: valueInfo.envInfo[defaultEnv] || '',
-            valuesData: {
-              autoSync: valueInfo.gitInfo.autoSync,
-              yamlSource: 'repo',
-              gitRepoConfig: valueInfo.gitInfo
-            },
+            defaultValues: valueInfo.envInfo[defaultEnv].envValue || '',
+            valuesData: valueInfo.envInfo[defaultEnv].gitRepoConfig
+              ? {
+                autoSync: valueInfo.envInfo[defaultEnv].gitRepoConfig.autoSync,
+                yamlSource: 'repo',
+                gitRepoConfig: valueInfo.envInfo[defaultEnv].gitRepoConfig
+              }
+              : null,
             namespace: this.projectConfig.defaultNamespace,
             is_existed: this.nsIsExisted,
             env_configs: this.$refs.envConfigRef.getEnvConfig()
@@ -376,6 +378,7 @@ export default {
               base_env: this.baseEnvName
             }
           }
+
           this.startDeployLoading = true
           function sleep (time) {
             return new Promise(resolve => setTimeout(resolve, time))
