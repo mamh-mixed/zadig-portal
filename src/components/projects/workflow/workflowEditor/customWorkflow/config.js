@@ -72,7 +72,8 @@ const configList = [
     value: 'webhook',
     drawerSize: '70%',
     drawerConfirmText: '保存',
-    drawerCancelText: '取消'
+    drawerCancelText: '取消',
+    drawerHideButton: true
   },
   // {
   //   label: '通知',

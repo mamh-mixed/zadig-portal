@@ -155,7 +155,10 @@
     <el-drawer :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" :show-close="false" class="drawer" :size="drawerSize?drawerSize:'40%'">
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
-        <div>
+        <div v-if="drawerHideButton">
+          <el-button size="mini" plain icon="el-icon-circle-close" @click="isShowDrawer=false"></el-button>
+        </div>
+        <div v-else>
           <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
           <el-button size="mini" plain @click="isShowDrawer=false">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
         </div>
@@ -369,6 +372,12 @@ export default {
         return item.value === this.curDrawer
       })
       return res.drawerCancelText
+    },
+    drawerHideButton () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerHideButton
     }
   },
   created () {
