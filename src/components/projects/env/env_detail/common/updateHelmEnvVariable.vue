@@ -103,7 +103,7 @@ export default {
   watch: {
     envName: {
       handler (newV, oldV) {
-        if (newV === '' || this.overrideData.envValue || this.baseEnvObj) {
+        if (newV === '' || (this.overrideData && this.overrideData.envValue) || this.baseEnvObj) {
           this.initEnvVariableInfo()
         } else {
           this.getEnvVariablesYaml(newV)
