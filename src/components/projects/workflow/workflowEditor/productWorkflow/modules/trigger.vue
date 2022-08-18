@@ -888,7 +888,7 @@ export default {
               element.target.service_module + '/' + element.target.service_name
           })
         })
-        return targets
+        return uniqBy(targets, value => value.key)
       }
     },
     isK8sEnv () {
