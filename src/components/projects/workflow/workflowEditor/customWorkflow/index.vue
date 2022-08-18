@@ -181,7 +181,7 @@
         <Env :preEnvs="payload" ref="env" />
       </div>
       <div v-if="curDrawer === 'webhook'">
-        <Webhook :config="payload" ref="webhook" />
+        <Webhook :config="payload" :isEdit="isEdit" :isShowDrawer="isShowDrawer" @saveWorkflow="operateWorkflow" @closeDrawer="isShowDrawer=false" ref="webhook" />
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
