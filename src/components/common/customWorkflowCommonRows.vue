@@ -1,8 +1,8 @@
 <template>
   <div class="workflow-build-rows">
-    <el-table :data="job.spec.steps.filter(item=>item.type==='git')" v-if="type!=='plugin'">
+    <el-table :data="repoList" v-if="type!=='plugin'&&repoList.length>0">
       <el-table-column label="代码库">
-        <template slot-scope="scope" v-if="scope.row.type === 'git'">
+        <template slot-scope="scope">
           <el-row v-for="build of scope.row.spec.repos" class="build-row" :key="build.code_host_id">
             <template>
               <el-col :span="7">
@@ -124,7 +124,9 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      repoList: []
+    }
   },
   methods: {
     async searchRepoInfo (build, query) {
@@ -203,8 +205,10 @@ export default {
     'job.spec': {
       handler (value) {
         if (value.steps) {
+          this.repoList = []
           value.steps.forEach(item => {
-            if (item.spec.repos && item.spec.repos.length > 0) {
+            if (item.type === 'git' && item.spec.repos.length > 0) {
+              this.repoList.push(item)
               item.spec.repos.forEach(build => {
                 this.searchRepoInfo(build, '')
               })

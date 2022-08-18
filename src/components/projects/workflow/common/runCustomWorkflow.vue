@@ -141,7 +141,7 @@
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
             </div>
-            <div v-if="job.type === 'plugin'">
+            <div v-if="job.type === 'plugin'&&isShowPlugin">
               <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
             </div>
           </el-collapse-item>
@@ -183,7 +183,9 @@ export default {
           }
         ]
       },
-      originServiceAndBuilds: []
+      originServiceAndBuilds: [],
+      isShowPlugin: true,
+      isShowParams: true
     }
   },
   props: {
@@ -204,18 +206,6 @@ export default {
     CustomWorkflowBuildRows,
     CustomWorkflowCommonRows
   },
-  computed: {
-    isShowParams () {
-      if (this.payload.params) {
-        const len = this.payload.params.filter(item => item.isShow)
-        return len.length === 0
-          ? false
-          : len.length !== this.payload.params.length
-      } else {
-        return false
-      }
-    }
-  },
   created () {
     this.init()
   },
@@ -227,6 +217,7 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
+            job.checked = true
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
@@ -251,10 +242,11 @@ export default {
         } else {
           item.isShow = true
         }
+        const len = this.payload.params.filter(item => item.isShow)
+        this.isShowParams = len.length !== 0
       })
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
-          job.checked = true
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
@@ -301,6 +293,9 @@ export default {
                 item.isShow = true
               }
             })
+            const len = job.spec.plugin.inputs.filter(item => item.isShow)
+            this.isShowPlugin =
+              len.length !== 0
           }
         })
       })
@@ -309,6 +304,11 @@ export default {
       // const key = this.$utils.rsaEncrypt()
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
+          res.stages.forEach(stage => {
+            stage.jobs.forEach(job => {
+              job.checked = true
+            })
+          })
           this.payload = res
           this.handleEnv()
         }
