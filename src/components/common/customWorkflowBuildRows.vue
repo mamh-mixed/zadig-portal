@@ -202,6 +202,13 @@ export default {
     changeBranchOrTag (build) {
       if (build.branchOrTag) {
         build[build.prNumberPropName] = null
+        if (build.branchOrTag.type === 'branch') {
+          build.branch = build.branchOrTag.name
+        }
+        if (build.branchOrTag.type === 'tag') {
+          build.tag = build.branchOrTag.name
+        }
+        // Todo: enhance this logic for pr
       }
     }
   },
