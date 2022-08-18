@@ -7,7 +7,7 @@
     </el-row>
     <div v-for="(item,index) in serviceAndBuilds" :key="index">
       <el-form :model="item" :ref="`ruleForm${index}`" size="small">
-        <el-row :gutter="24" style="line-height: 40px;" class="mg-b8">
+        <el-row :gutter="24" style="line-height: 30px;">
           <el-col :span="6">
             <div>{{item.service_name}}/{{item.service_module}}</div>
           </el-col>
