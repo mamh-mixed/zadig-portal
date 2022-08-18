@@ -3,7 +3,14 @@
     <el-row class="mg-b48">
       <el-form :model="source" label-position="left" ref="sourceForm" label-width="130px" inline class="form">
         <el-col :span="2">
-          <div>插件源</div>
+          <span style="font-size: 14px;">来源</span>
+          <el-link
+            style="font-size: 14px; vertical-align: baseline;"
+            type="primary"
+            :href="`https://docs.koderover.com/zadig/settings/custom-task`"
+            :underline="false"
+            target="_blank"
+          >帮助</el-link>
         </el-col>
         <el-button type="primary" plain size="small" v-if="plugins.length===0&&!isShowOperateForm" @click="isShowOperateForm=true">+ 添加</el-button>
         <div v-else>
@@ -22,7 +29,7 @@
                   :key="index"
                   :label="`${host.address}${host.alias?'('+host.alias+')':''}`"
                   :value="host.id"
-                > {{ `${host.address}${host.alias?'('+host.alias+')':''}`}}</el-option>
+                >{{ `${host.address}${host.alias?'('+host.alias+')':''}`}}</el-option>
               </el-select>
             </el-form-item>
           </el-col>
