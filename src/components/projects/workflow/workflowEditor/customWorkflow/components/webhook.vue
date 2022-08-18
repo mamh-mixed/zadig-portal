@@ -306,6 +306,11 @@ export default {
       required: true,
       default: false
     },
+    originalWorkflow: {
+      required: true,
+      type: Object,
+      default: null
+    },
     validObj: {
       required: false,
       type: Object,
@@ -456,34 +461,8 @@ export default {
         currentRepo.repo_name
       )
     },
-    checkingBuildStageChanged (config, webhook) {
-      const originStages = config.stages
-      const webhookStages = webhook.workflow_arg.stages
-      originStages.forEach(stage => {
-        delete stage.approval
-        stage.jobs.forEach(job => {
-          if (job.type === 'zadig-build') {
-            job.spec.service_and_builds.forEach(build => {
-              build.repos = []
-              delete build.package
-              delete build.image
-            })
-          }
-        })
-      })
-      webhookStages.forEach(stage => {
-        delete stage.approval
-        stage.jobs.forEach(job => {
-          if (job.type === 'zadig-build') {
-            job.spec.service_and_builds.forEach(build => {
-              build.repos = []
-              delete build.package
-              delete build.image
-            })
-          }
-        })
-      })
-      if (!isEqual(originStages, webhookStages)) {
+    checkingBuildStageChanged (newConfig, oldConfig) {
+      if (!isEqual(newConfig, oldConfig)) {
         this.$confirm('保存当前工作流配置后才可配置触发器?', '确认', {
           confirmButtonText: '保存',
           cancelButtonText: '取消',
@@ -526,14 +505,14 @@ export default {
               })
           }
           if (this.isEdit) {
-            this.webhooks = await getCustomWebhooksAPI(this.projectName, this.workflowName)
-            const test = await getCustomWebhookPresetAPI(this.projectName, this.workflowName)
-            if (this.webhooks && this.webhooks.length > 0 && test) {
-              this.checkingBuildStageChanged(
-                cloneDeep(this.config),
-                cloneDeep(test)
-              )
-            }
+            this.webhooks = await getCustomWebhooksAPI(
+              this.projectName,
+              this.workflowName
+            )
+            this.checkingBuildStageChanged(
+              cloneDeep(this.config),
+              cloneDeep(this.originalWorkflow)
+            )
           }
         }
       },
