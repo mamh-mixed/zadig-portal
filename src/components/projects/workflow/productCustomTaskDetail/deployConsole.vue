@@ -13,6 +13,14 @@
       <el-col v-if="jobInfo.status!=='running'" :span="2">
         <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
       </el-col>
+      <el-col v-if="jobInfo" :span="6">
+        <span class="item-desc">
+          <i class="el-icon-question"></i>
+          <span v-if="jobInfo.skip_check_run_status">未开启服务状态检测</span>
+          <span v-else-if="!jobInfo.skip_check_run_status && jobInfo.status ==='passed'">服务状态检测通过</span>
+          <span v-else-if="!jobInfo.skip_check_run_status && jobInfo.status ==='failed'">服务状态检测未通过</span>
+        </span>
+      </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">
           <i class="el-icon-close"></i>

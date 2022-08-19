@@ -66,7 +66,7 @@ export default {
   name: 'StageOperate',
   data () {
     return {
-      formLabelWidth: '120px',
+      formLabelWidth: '135px',
       rules: {
         name: [
           {
