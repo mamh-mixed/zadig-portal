@@ -137,7 +137,7 @@ export default {
         this.form.repo.filter_regexp = ' .*'
         this.checkRegular(this.form.repo.filter_regexp, this.form.repo)
         // set default branch from build
-        // this.form.repo.default_branch = this.form.repo.branch
+        this.$set(this.form.repo, 'default_branch', this.form.repo.branch)
         this.value.branch_filter.push(this.form.repo)
         this.form.repo = {}
       }
