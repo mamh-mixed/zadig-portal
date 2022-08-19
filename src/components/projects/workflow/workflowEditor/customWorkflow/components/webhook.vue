@@ -353,11 +353,16 @@ export default {
           'workflow_arg',
           cloneDeep(preset.workflow_arg)
         )
-        this.webhookRepos = preset.repos.map(item => {
-          item.key = `${item.repo_owner}/${item.repo_name}`
-          delete item.branch
-          return item
-        })
+        if (preset.repos && preset.repos.length > 0) {
+          this.webhookRepos = preset.repos.map(item => {
+            item.key = `${item.repo_owner}/${item.repo_name}`
+            delete item.branch
+            return item
+          })
+        } else {
+          this.webhookRepos = []
+        }
+
         this.editMode = false
         this.dialogVisible = true
       }
@@ -370,11 +375,15 @@ export default {
       const triggerName = currentWebhook.name
       const preset = await getCustomWebhookPresetAPI(projectName, workflowName, triggerName)
       if (preset) {
-        this.webhookRepos = preset.repos.map(item => {
-          item.key = `${item.repo_owner}/${item.repo_name}`
-          delete item.branch
-          return item
-        })
+        if (preset.repos && preset.repos.length > 0) {
+          this.webhookRepos = preset.repos.map(item => {
+            item.key = `${item.repo_owner}/${item.repo_name}`
+            delete item.branch
+            return item
+          })
+        } else {
+          this.webhookRepos = []
+        }
         this.$set(
           currentWebhook,
           'workflow_arg',
