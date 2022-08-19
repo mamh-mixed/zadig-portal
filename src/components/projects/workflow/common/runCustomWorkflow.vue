@@ -141,7 +141,7 @@
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
             </div>
-            <div v-if="job.type === 'plugin'&&isShowPlugin">
+            <div v-if="job.type === 'plugin'&&job.isShowPlugin">
               <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
             </div>
           </el-collapse-item>
@@ -184,7 +184,6 @@ export default {
         ]
       },
       originServiceAndBuilds: [],
-      isShowPlugin: true,
       isShowParams: true
     }
   },
@@ -304,7 +303,7 @@ export default {
               }
             })
             const len = job.spec.plugin.inputs.filter(item => item.isShow)
-            this.isShowPlugin = len.length !== 0
+            job.isShowPlugin = len.length !== 0
           }
         })
       })
