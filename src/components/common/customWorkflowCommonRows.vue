@@ -80,7 +80,6 @@
       </el-table-column>
     </el-table>
     <el-table
-      v-if="isShowEnvs"
       :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"
     >
       <el-table-column label="键" :prop="type === 'plugin'?'name':'key'">
@@ -224,8 +223,6 @@ export default {
               item.isShow = true
             }
           })
-          const len = value.properties.envs.filter(item => item.isShow)
-          this.isShowEnvs = len.length !== 0
         }
         // plugin
         if (value.plugin) {
@@ -236,8 +233,6 @@ export default {
               item.isShow = true
             }
           })
-          const len = value.plugin.inputs.filter(item => item.isShow)
-          this.isShowEnvs = len.length !== 0
         }
       },
       immediate: true
