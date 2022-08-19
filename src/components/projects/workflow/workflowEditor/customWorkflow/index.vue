@@ -61,6 +61,7 @@
               ref="jobRuleForm"
               :model="job"
               class="mg-t24 mg-b24"
+              label-width="135px"
               size="small"
             >
               <el-form-item label="任务名称" prop="name" v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0">
