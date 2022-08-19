@@ -2,6 +2,36 @@
   <div class="custom-workflow">
     <el-form label-width="120px" size="small">
       <el-collapse v-model="activeName">
+        <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
+          <el-table :data="payload.params.filter(item=>item.isShow)">
+            <el-table-column label="键">
+              <template slot-scope="scope">{{scope.row.name}}</template>
+            </el-table-column>
+            <el-table-column label="值">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
+                  <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
+                </el-select>
+                <el-input
+                  v-if="scope.row.type === 'text'"
+                  v-model="scope.row.value"
+                  size="small"
+                  type="textarea"
+                  :rows="2"
+                  style="width: 220px;"
+                ></el-input>
+                <el-input
+                  v-if="scope.row.type === 'string'"
+                  class="password"
+                  v-model="scope.row.value"
+                  size="small"
+                  type="text"
+                  style="width: 220px;"
+                ></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
         <div v-for="(stage,stageIndex) in payload.stages" :key="stage.name">
           <el-collapse-item
             v-for="(job,jobIndex) in stage.jobs"
@@ -49,7 +79,7 @@
             </div>
             <div v-if="job.type === 'zadig-deploy'">
               <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('fixed')||job.spec.env.includes('{{'))">
-                <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
+                <el-select v-model="job.spec.env" size="small" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
                     :key="`${pro.projectName} / ${pro.name}`"
@@ -76,7 +106,7 @@
                   clearable
                   reserve-keyword
                   value-key="service_name"
-                  size="medium"
+                  size="small"
                   style="width: 220px;"
                   @change="handleServiceDeployChange"
                 >
@@ -99,7 +129,7 @@
                     clearable
                     reserve-keyword
                     value-key="service_name"
-                    size="medium"
+                    size="small"
                     style="width: 220px;"
                     placeholder="请选择镜像"
                   >
@@ -213,7 +243,8 @@ export default {
             }
           })
         })
-        this.$set(this, 'payload', this.cloneWorkflow)
+        this.payload = this.cloneWorkflow
+        // this.$set(this, 'payload', this.cloneWorkflow)
         this.handleEnv()
       }
     },
@@ -461,6 +492,19 @@ export default {
       },
       immediate: false,
       deep: true
+    }
+  },
+  computed: {
+    isShowParams () {
+      // if (this.payload.params) {
+      //   const len = this.payload.params.filter(item => item.isShow)
+      //   return len.length === 0
+      //     ? false
+      //     : len.length !== this.payload.params.length
+      // } else {
+      //   return false
+      // }
+      return true
     }
   }
 }
