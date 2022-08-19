@@ -80,6 +80,7 @@
       </el-table-column>
     </el-table>
     <el-table
+      v-if="isShowEnvs"
       :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"
     >
       <el-table-column label="键" :prop="type === 'plugin'?'name':'key'">
@@ -125,7 +126,8 @@ export default {
   },
   data () {
     return {
-      repoList: []
+      repoList: [],
+      isShowEnvs: true
     }
   },
   methods: {
@@ -204,6 +206,7 @@ export default {
   watch: {
     'job.spec': {
       handler (value) {
+        // freestyle
         if (value.steps) {
           this.repoList = []
           value.steps.forEach(item => {
@@ -214,6 +217,27 @@ export default {
               })
             }
           })
+          value.properties.envs.forEach(item => {
+            if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+              item.isShow = false
+            } else {
+              item.isShow = true
+            }
+          })
+          const len = value.properties.envs.filter(item => item.isShow)
+          this.isShowEnvs = len.length !== 0
+        }
+        // plugin
+        if (value.plugin) {
+          value.plugin.inputs.forEach(item => {
+            if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+              item.isShow = false
+            } else {
+              item.isShow = true
+            }
+          })
+          const len = value.plugin.inputs.filter(item => item.isShow)
+          this.isShowEnvs = len.length !== 0
         }
       },
       immediate: true

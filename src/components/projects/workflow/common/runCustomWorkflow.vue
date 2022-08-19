@@ -237,7 +237,7 @@ export default {
     },
     handleEnv () {
       this.payload.params.forEach(item => {
-        if (item.value.includes('fixed') || item.value.includes('{{')) {
+        if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
           item.isShow = false
         } else {
           item.isShow = true
@@ -250,7 +250,7 @@ export default {
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
-                if (item.value.includes('fixed') || item.value.includes('{{')) {
+                if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
                   item.isShow = false
                 } else {
                   item.isShow = true
@@ -278,7 +278,7 @@ export default {
               }
             })
             job.spec.properties.envs.forEach(item => {
-              if (item.value.includes('fixed') || item.value.includes('{{')) {
+              if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
                 item.isShow = false
               } else {
                 item.isShow = true
@@ -287,7 +287,7 @@ export default {
           }
           if (job.type === 'plugin') {
             job.spec.plugin.inputs.forEach(item => {
-              if (item.value.includes('fixed') || item.value.includes('{{')) {
+              if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
                 item.isShow = false
               } else {
                 item.isShow = true
