@@ -245,12 +245,16 @@ export default {
         const len = this.payload.params.filter(item => item.isShow)
         this.isShowParams = len.length !== 0
       })
-      this.payload.stages.forEach(stage => {
-        stage.jobs.forEach(job => {
+      this.payload.stages.forEach((stage, stageIndex) => {
+        stage.jobs.forEach((job, jobIndex) => {
+          this.activeName.push(`${stageIndex}${jobIndex}`)
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
-                if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+                if (
+                  item.value.includes('<+fixed>') ||
+                  item.value.includes('{{')
+                ) {
                   item.isShow = false
                 } else {
                   item.isShow = true
@@ -278,7 +282,10 @@ export default {
               }
             })
             job.spec.properties.envs.forEach(item => {
-              if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+              if (
+                item.value.includes('<+fixed>') ||
+                item.value.includes('{{')
+              ) {
                 item.isShow = false
               } else {
                 item.isShow = true
@@ -287,15 +294,17 @@ export default {
           }
           if (job.type === 'plugin') {
             job.spec.plugin.inputs.forEach(item => {
-              if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+              if (
+                item.value.includes('<+fixed>') ||
+                item.value.includes('{{')
+              ) {
                 item.isShow = false
               } else {
                 item.isShow = true
               }
             })
             const len = job.spec.plugin.inputs.filter(item => item.isShow)
-            this.isShowPlugin =
-              len.length !== 0
+            this.isShowPlugin = len.length !== 0
           }
         })
       })
@@ -544,3 +553,10 @@ export default {
   watch: {}
 }
 </script>
+<style lang="less" scoped>
+.custom-workflow {
+  /deep/.el-collapse-item__header {
+    font-weight: 700;
+  }
+}
+</style>

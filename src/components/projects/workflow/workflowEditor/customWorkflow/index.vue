@@ -502,25 +502,29 @@ export default {
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
       if (this.$route.fullPath.includes('edit')) {
-        updateCustomWorkflowAPI(
-          workflowName,
-          yamlParams,
-          this.projectName
-        ).then(res => {
-          this.$message.success('编辑成功')
-          this.getWorkflowDetail(this.payload.name)
-          this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
-          )
-        })
+        updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
+          .then(res => {
+            this.$message.success('编辑成功')
+            this.getWorkflowDetail(this.payload.name)
+            this.$router.push(
+              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+            )
+          })
+          .catch(() => {
+            this.getWorkflowDetail(this.payload.name)
+          })
       } else {
-        addCustomWorkflowAPI(yamlParams, this.projectName).then(res => {
-          this.$message.success('新建成功')
-          this.getWorkflowDetail(this.payload.name)
-          this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
-          )
-        })
+        addCustomWorkflowAPI(yamlParams, this.projectName)
+          .then(res => {
+            this.$message.success('新建成功')
+            this.getWorkflowDetail(this.payload.name)
+            this.$router.push(
+              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+            )
+          })
+          .catch(() => {
+            this.getWorkflowDetail(this.payload.name)
+          })
       }
     },
     cancelWorkflow () {
