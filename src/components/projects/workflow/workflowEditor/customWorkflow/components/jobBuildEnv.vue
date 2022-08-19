@@ -66,7 +66,7 @@
           class="form-item"
           :rules="{required: false}"
         >
-        <el-switch v-model="form.skip_check_run_status" active-color="#13ce66"></el-switch>
+        <el-switch v-model="form.skip_check_run_status" active-text="检测" inactive-text="不检测" :active-value="false" :inactive-value="true"  active-color="#0066ff"></el-switch>
         </el-form-item>
       </el-form-item>
     </el-form>
