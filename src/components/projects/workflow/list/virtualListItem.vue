@@ -32,7 +32,7 @@
         </el-button>
       </el-tooltip>
       <router-link
-        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', action: 'run_workflow', resource:{type:'workflow',name:workflow.name}})"
+        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
         :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.projectName}&id=${workflow.id}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
