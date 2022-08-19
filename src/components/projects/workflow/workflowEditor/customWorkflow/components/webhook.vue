@@ -435,6 +435,60 @@ export default {
           delete payload.repo
           const workflowName = this.workflowName
           const projectName = this.projectName
+          payload.workflow_arg.stages.forEach(stage => {
+            stage.jobs.forEach(job => {
+              job.spec.service_and_builds = job.pickedTargets
+              delete job.pickedTargets
+              delete job.checked
+              if (
+                job.spec.service_and_images &&
+            job.spec.service_and_images.length > 0
+              ) {
+                job.spec.service_and_images.forEach(item => {
+                  delete item.images
+                })
+              }
+              if (
+                job.spec.service_and_builds &&
+            job.spec.service_and_builds.length > 0
+              ) {
+                job.spec.service_and_builds.forEach(item => {
+                  if (item.repos) {
+                    item.repos.forEach(repo => {
+                      if (repo.branchOrTag) {
+                        if (repo.branchOrTag.type === 'branch') {
+                          repo.branch = repo.branchOrTag.name
+                        }
+                        if (repo.branchOrTag.type === 'tag') {
+                          repo.tag = repo.branchOrTag.name
+                        }
+                      }
+                    })
+                  }
+                })
+              }
+              if (job.type === 'freestyle') {
+                job.spec.steps.forEach(step => {
+                  if (step.type === 'git') {
+                    step.spec.repos.forEach(repo => {
+                      if (repo.branchOrTag) {
+                        if (repo.branchOrTag.type === 'branch') {
+                          repo.branch = repo.branchOrTag.name
+                        }
+                        if (repo.branchOrTag.type === 'tag') {
+                          repo.tag = repo.branchOrTag.name
+                        }
+                      }
+                    })
+                  }
+                })
+              }
+              if (job.type === 'zadig-deploy') {
+                job.spec.service_and_images = job.spec.service_and_builds
+                delete job.spec.service_and_builds
+              }
+            })
+          })
           if (this.editMode) {
             const result = await updateCustomWebhookAPI(projectName, workflowName, payload)
             if (result) {
