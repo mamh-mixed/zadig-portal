@@ -152,7 +152,14 @@
     <div class="right">
       <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
-    <el-drawer :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" :show-close="false" class="drawer" :size="drawerSize?drawerSize:'40%'">
+    <el-drawer
+      :visible.sync="isShowDrawer"
+      direction="rtl"
+      :modal-append-to-body="false"
+      :show-close="false"
+      class="drawer"
+      :size="drawerSize?drawerSize:'40%'"
+    >
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div>
@@ -529,9 +536,9 @@ export default {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
         this.payload.params.forEach(item => {
-          if (item.value.includes('fixed')) {
+          if (item.value.includes('<+fixed>')) {
             item.command = 'fixed'
-            item.value = item.value.slice(8)
+            item.value = item.value.replaceAll('<+fixed>', '')
           }
         })
         this.payload.stages.forEach(stage => {
@@ -539,9 +546,9 @@ export default {
             if (job.spec && job.spec.service_and_builds) {
               job.spec.service_and_builds.forEach(service => {
                 service.key_vals.forEach(item => {
-                  if (item.value.includes('fixed')) {
+                  if (item.value.includes('<+fixed>')) {
                     item.command = 'fixed'
-                    item.value = item.value.slice(8)
+                    item.value = item.value.replaceAll('<+fixed>', '')
                   }
                   if (item.value.includes('{{')) {
                     item.command = 'other'
@@ -552,7 +559,7 @@ export default {
             if (job.type === 'zadig-deploy') {
               if (job.spec.env.includes('fixed')) {
                 job.spec.envType = 'fixed'
-                job.spec.env = job.spec.env.slice(8)
+                job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
               }
               if (job.spec.env.includes('{{')) {
                 job.spec.envType = 'other'
@@ -566,9 +573,9 @@ export default {
             }
             if (job.type === 'freestyle') {
               job.spec.properties.envs.forEach(item => {
-                if (item.value.includes('fixed')) {
+                if (item.value.includes('<+fixed>')) {
                   item.command = 'fixed'
-                  item.value = item.value.slice(8)
+                  item.value = item.value.replaceAll('<+fixed>', '')
                 }
                 if (item.value.includes('{{')) {
                   item.command = 'other'
@@ -577,9 +584,9 @@ export default {
             }
             if (job.type === 'plugin') {
               job.spec.plugin.inputs.forEach(item => {
-                if (item.value && item.value.includes('fixed')) {
+                if (item.value && item.value.includes('<+fixed>')) {
                   item.command = 'fixed'
-                  item.value = item.value.slice(8)
+                  item.value = item.value.replaceAll('<+fixed>', '')
                 }
                 if (item.value && item.value.includes('{{')) {
                   item.command = 'other'
