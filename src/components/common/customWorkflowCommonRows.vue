@@ -216,6 +216,23 @@ export default {
               })
             }
           })
+          value.properties.envs.forEach(item => {
+            if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+              item.isShow = false
+            } else {
+              item.isShow = true
+            }
+          })
+        }
+        // plugin
+        if (value.plugin) {
+          value.plugin.inputs.forEach(item => {
+            if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+              item.isShow = false
+            } else {
+              item.isShow = true
+            }
+          })
         }
       },
       immediate: true

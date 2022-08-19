@@ -78,7 +78,7 @@
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
-              <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('fixed')||job.spec.env.includes('{{'))">
+              <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('<+fixed>')||job.spec.env.includes('{{'))">
                 <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
