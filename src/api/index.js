@@ -130,7 +130,9 @@ http.interceptors.response.use(
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log(error.response)
-      if (document.title !== '登录') {
+      if (error.response.config.url.includes(ignorePrefix) && error.response.status === 404) {
+        return Promise.reject(error)
+      } else if (document.title !== '登录') {
         // unauthorized 401
         if (error.response.status === 401) {
           const redirectPath = window.location.pathname + window.location.search
@@ -139,8 +141,6 @@ http.interceptors.response.use(
           window.location.href = `/signin?redirect=${redirectPath}`
         } else if (error.response.status === 403) {
           Element.Message.error('暂无权限')
-        } else if (error.response.status === 404 && error.response.config.url.includes(ignorePrefix)) {
-          return Promise.reject(error)
         }
         if (error.response.data && (error.response.data.code === 6168 || error.response.data.code === 6094 || error.response.data.description.includes(ignoreErrResponse))) {
           return Promise.reject(error)
