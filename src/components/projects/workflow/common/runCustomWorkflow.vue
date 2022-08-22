@@ -514,11 +514,13 @@ export default {
         })
     },
     getRegistryId (val) {
-      const namespace = val.split('/')[1].trim()
-      const res = this.currentProjectEnvs.find(item => {
-        return item.name === namespace
-      })
-      this.registry_id = res.registry_id
+      if (val) {
+        const namespace = val.split('/')[1]
+        const res = this.currentProjectEnvs.find(item => {
+          return item.name === namespace
+        })
+        this.registry_id = res ? res.registry_id : ''
+      }
     },
     getRegistryList (name, id, item) {
       return imagesAPI(name, id).then(res => {
@@ -533,6 +535,7 @@ export default {
           }
         )
       })
+      this.$forceUpdate()
     },
     handleServiceBuildChange (services) {
       services.forEach(service => {
