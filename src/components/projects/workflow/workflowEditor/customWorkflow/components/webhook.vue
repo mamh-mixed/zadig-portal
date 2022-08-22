@@ -439,7 +439,6 @@ export default {
             stage.jobs.forEach(job => {
               job.spec.service_and_builds = job.pickedTargets
               delete job.pickedTargets
-              delete job.checked
               if (
                 job.spec.service_and_images &&
             job.spec.service_and_images.length > 0
