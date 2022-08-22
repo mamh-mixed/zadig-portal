@@ -162,6 +162,7 @@ export default {
           ) {
             // default select first build
             val.build_name = val.module_builds[0].name
+            this.handleBuildChange(val)
           }
           if (val.repos) {
             val.repos.forEach(repo => {
