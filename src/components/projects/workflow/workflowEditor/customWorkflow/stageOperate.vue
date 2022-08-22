@@ -61,7 +61,16 @@
 <script>
 import { getUsersAPI } from '@api'
 import { cloneDeep } from 'lodash'
-
+const validateName = (rule, value, callback) => {
+  const stageNames = rule.workflowInfo.stages.map(stage => stage.name)
+  if (!value) {
+    callback(new Error('请填写阶段名称'))
+  } else if (stageNames.includes(value)) {
+    callback(new Error('阶段名称不能重复'))
+  } else {
+    callback()
+  }
+}
 export default {
   name: 'StageOperate',
   data () {
@@ -71,8 +80,9 @@ export default {
         name: [
           {
             required: true,
-            message: '请填写阶段名称',
-            trigger: 'blur'
+            trigger: 'blur',
+            validator: validateName,
+            workflowInfo: this.workflowInfo
           }
         ]
       },
@@ -100,6 +110,10 @@ export default {
     type: {
       type: String,
       default: 'add'
+    },
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
     }
   },
   created () {

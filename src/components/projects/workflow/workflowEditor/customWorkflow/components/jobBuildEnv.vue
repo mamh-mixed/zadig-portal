@@ -2,10 +2,15 @@
   <div class="build-env">
     <el-form :label-width="formLabelWidth" :model="form" ref="ruleForm">
       <el-form-item label="环境" required>
+        <el-form-item prop="env" v-if="!form.envType ||form.envType === 'runtime'" class="form-item">
+          <el-select v-model="form.env" placeholder="请选择" size="small">
+            <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item
           prop="env"
           required
-          v-if="form.envType !== 'other'"
+          v-if="form.envType === 'fixed'"
           class="form-item"
           :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
         >
