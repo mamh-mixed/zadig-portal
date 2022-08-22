@@ -79,10 +79,13 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-desc">
-              <router-link v-if="deploy.service_type === 'pm'" class="env-link"
-                           :to="`/v1/projects/detail/${deploy.product_name}/envs/detail/${deploy.service_name}/pm?envName=${deploy.env_name}&projectName=${deploy.product_name}&namespace=${deploy.namespace}`">{{$utils.showServiceName(deploy.service_name)}}</router-link>
-              <router-link v-else class="env-link"
-                           :to="`/v1/projects/detail/${deploy.product_name}/envs/detail/${deploy.service_name}?envName=${deploy.env_name}&projectName=${deploy.product_name}&namespace=${deploy.namespace}`">{{$utils.showServiceName(deploy.service_name)}}</router-link>
+              <span v-if="deploy.service_type==='helm'">
+                {{`${$utils.showServiceName(deploy.container_name,deploy.service_name)}`}}
+              </span>
+              <router-link v-else
+                           class="env-link"
+                           :to="serviceUrl(deploy)">
+                {{$utils.showServiceName(deploy.service_name)}}</router-link>
             </div>
           </el-col>
         </el-row>
@@ -106,6 +109,7 @@
 
 <script>
 import mixin from '@/mixin/killSSELogMixin'
+import qs from 'qs'
 import { getWorkflowHistoryBuildLogAPI } from '@api'
 
 export default {
@@ -138,6 +142,21 @@ export default {
     }
   },
   methods: {
+    serviceUrl (deploy) {
+      const serviceName = deploy.service_name.split('_')[0]
+      const path = `/v1/projects/detail/${deploy.product_name}/envs/detail/${serviceName}`
+      const query = {
+        envName: deploy.env_name,
+        projectName: deploy.product_name,
+        namespace: deploy.namespace,
+        clusterId: deploy.cluster_id ? deploy.cluster_id : ''
+      }
+      if (deploy.service_type === 'pm') {
+        return path + '/pm?' + qs.stringify(query)
+      } else {
+        return path + '?' + qs.stringify(query)
+      }
+    },
     getArtifactDeployLog () {
       this.artifactDeployLogStarted = true
     },
