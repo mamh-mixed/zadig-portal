@@ -78,7 +78,7 @@
 <script>
 import { mapState } from 'vuex'
 import bus from '@utils/eventBus'
-import _ from 'lodash'
+import { debounce, cloneDeep, remove } from 'lodash'
 import { getEnterpriseInfoAPI } from '@api'
 export default {
   data () {
@@ -265,10 +265,10 @@ export default {
     }
   },
   methods: {
-    enterSidebar: _.debounce(function () {
+    enterSidebar: debounce(function () {
       // this.showSidebar = true
     }, 300),
-    leaveSidebar: _.debounce(function () {
+    leaveSidebar: debounce(function () {
       // this.showSidebar = false
     }, 100),
     changeSidebar () {
@@ -341,39 +341,46 @@ export default {
     },
     navList () {
       const path = this.$route.path
+      const defaultMenu = cloneDeep(this.defaultMenu)
       if (path.includes('/v1/enterprise')) {
         return this.enterpriseMenu
       } else if (path.includes('/v1/system')) {
         return this.systemMenu
       }
-      if (this.isAdmin && this.hasPlutus && this.defaultMenu[1] !== this.plutusMenu[0]) {
-        this.defaultMenu.splice(1, 0, ...this.plutusMenu)
+      if (
+        this.isAdmin &&
+        this.hasPlutus &&
+        !defaultMenu.find(menu => menu.category_name === '客户交付')
+      ) {
+        defaultMenu.splice(1, 0, ...this.plutusMenu)
       }
       if (this.isAdmin) {
-        return this.defaultMenu.concat(this.adminMenu)
+        return defaultMenu.concat(this.adminMenu)
       } else {
-        const cloneMenu = _.cloneDeep(this.defaultMenu)
         if (!this.showTestCenter) {
-          _.remove(cloneMenu[0].items, item => {
+          remove(defaultMenu[0].items, item => {
             return item.name === '测试中心'
           })
         }
+        if (!this.showDeliveryCenter) {
+          remove(defaultMenu[0].items, item => {
+            return item.name === '交付中心'
+          })
+        }
+        const dataReview = defaultMenu.find(
+          menu => menu.category_name === '数据视图'
+        )
         if (!this.showDataOverview) {
-          _.remove(cloneMenu[1].items, item => {
+          remove(dataReview.items, item => {
             return item.name === '数据概览'
           })
         }
         if (!this.showEfficiencyInsight) {
-          _.remove(cloneMenu[1].items, item => {
+          remove(dataReview.items, item => {
             return item.name === '效能洞察'
           })
         }
-        if (!this.showDeliveryCenter) {
-          _.remove(cloneMenu[0].items, item => {
-            return item.name === '交付中心'
-          })
-        }
-        return cloneMenu
+        return defaultMenu
       }
     },
     smallLogoUrl () {
