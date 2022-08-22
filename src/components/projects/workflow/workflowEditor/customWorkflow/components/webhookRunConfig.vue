@@ -41,7 +41,8 @@
             class="mg-l8"
           >
             <template slot="title">
-              <el-checkbox v-model="job.checked"></el-checkbox>
+              <!-- <el-checkbox v-model="job.skipped"></el-checkbox> -->
+              <el-switch v-model="job.skipped" :active-value="false" :inactive-value="true" @click.stop.native></el-switch>
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
@@ -222,7 +223,6 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            job.checked = true
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
