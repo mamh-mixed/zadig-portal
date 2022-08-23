@@ -7,7 +7,7 @@
           <el-link
             style="font-size: 14px; vertical-align: baseline;"
             type="primary"
-            :href="`https://docs.koderover.com/zadig/settings/custom-task`"
+            :href="`https://docs.koderover.com/zadig/settings/custom-task/`"
             :underline="false"
             target="_blank"
           >帮助</el-link>
