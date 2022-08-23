@@ -19,111 +19,104 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-button type="text" @click="toggleIsShowVals(item,index)">
-              <span>设置</span>
-              <span :class="{'el-icon-caret-bottom':item.isShowVals,'el-icon-caret-top': !item.isShowVals}"></span>
-            </el-button>
+            <span class="iconfont iconbianliang" @click="handleVarBranchChange('var',item)"></span>
+            <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
           </el-col>
           <el-col :span="4">
             <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
           </el-col>
         </el-row>
-        <el-row>
-          <el-card class="box-card mg-b8" v-if="item.isShowVals" style="width: 80%;">
-            <div class="tab">
-              <span
-                class="tab-item"
-                :class="{'active': item.currentTab===tab.name}"
-                v-for="(tab) in buildTabList"
-                :key="tab.name"
-                @click="item.currentTab = tab.name"
-              >{{tab.label}}</span>
-            </div>
-            <el-table :data="item.key_vals" size="small" v-if="item.currentTab===`env`">
-              <el-table-column prop="key" label="键"></el-table-column>
-              <el-table-column label="类型">
-                <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
-              </el-table-column>
-              <el-table-column label="值" width="400">
-                <template slot-scope="scope">
-                  <el-select
-                    size="small"
-                    v-model="scope.row.value"
-                    v-if="scope.row.command !== 'other'&&scope.row.type === 'choice'"
-                    style="width: 220px;"
-                  >
-                    <el-option v-for="option in scope.row.choice_option" :key="option" :label="option" :value="option">{{option}}</el-option>
-                  </el-select>
-                  <el-input
-                    class="password"
-                    v-model="scope.row.value"
-                    :type="scope.row.is_credential ? 'passsword' : ''"
-                    :show-password="scope.row.is_credential ? true : false"
-                    v-if="scope.row.command !== 'other'&&scope.row.type === 'string'"
-                    size="small"
-                    style="width: 220px;"
-                  ></el-input>
-                  <el-select
-                    v-model="scope.row.value"
-                    placeholder="请选择"
-                    filterable
-                    size="small"
-                    required
-                    v-if="scope.row.command === 'other'"
-                    style="display: inline-block; width: 220px;"
-                  >
-                    <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
-                  </el-select>
-                  <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
-                </template>
-              </el-table-column>
-            </el-table>
-            <div v-if="item.currentTab==='branch'">
-              <el-table :data="item.repos" size="small">
-                <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
-                <el-table-column prop="branch" label="默认分支">
-                  <template slot-scope="scope">
-                    <el-select size="small" v-model="scope.row.branch" filterable style="width: 220px;">
-                      <el-option
-                        v-for="option in scope.row.branches"
-                        :key="option.name"
-                        :label="option.name"
-                        :value="option.name"
-                      >{{option.name}}</el-option>
-                    </el-select>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="100px">
-                  <template slot-scope="scope">
-                    <el-button @click="delRepo(item,scope.row)" type="danger" icon="el-icon-delete" size="mini">删除</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <div class="mg-t16">
-                <el-select v-model="item.curRepo" value-key="repo_name" filterable size="small" placeholder="请选择代码库">
-                  <el-option v-for="repo of item.originRepos" :key="repo.repo_name" :label="repo.repo_name" :value="repo"></el-option>
-                </el-select>
-                <el-button
-                  @click="addRepo(item)"
-                  :disabled="item.originRepos && item.originRepos.length === 0"
-                  type="primary"
-                  size="mini"
-                  plain
-                  icon="el-icon-plus"
-                >添加</el-button>
-              </div>
-            </div>
-          </el-card>
-        </el-row>
       </el-form>
     </div>
+    <el-dialog
+      :title="`${curItem.service_name}/${curItem.service_module}变量配置`"
+      :visible.sync="isShowVarDialog"
+      :append-to-body="true"
+      width="40%"
+    >
+      <el-table :data="curItem.key_vals" size="small">
+        <el-table-column prop="key" label="键"></el-table-column>
+        <el-table-column label="类型">
+          <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
+        </el-table-column>
+        <el-table-column label="值" width="260">
+          <template slot-scope="scope">
+            <el-select
+              size="small"
+              v-model="scope.row.value"
+              v-if="scope.row.command !== 'other'&&scope.row.type === 'choice'"
+              style="width: 220px;"
+            >
+              <el-option v-for="option in scope.row.choice_option" :key="option" :label="option" :value="option">{{option}}</el-option>
+            </el-select>
+            <el-input
+              class="password"
+              v-model="scope.row.value"
+              :type="scope.row.is_credential ? 'passsword' : ''"
+              :show-password="scope.row.is_credential ? true : false"
+              v-if="scope.row.command !== 'other'&&scope.row.type === 'string'"
+              size="small"
+              style="width: 220px;"
+            ></el-input>
+            <el-select
+              v-model="scope.row.value"
+              placeholder="请选择"
+              filterable
+              size="small"
+              required
+              v-if="scope.row.command === 'other'"
+              style="display: inline-block; width: 220px;"
+            >
+              <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
+            </el-select>
+            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+          </template>
+        </el-table-column>
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isShowVarDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveCurSetting('var',curItem)" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :title="`${curItem.service_name}/${curItem.service_module}分支配置`"
+      :visible.sync="isShowBranchDialog"
+      :append-to-body="true"
+      width="40%"
+    >
+      <el-table :data="curItem.repos" size="small">
+        <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
+        <el-table-column prop="branch" label="默认分支">
+          <template slot-scope="scope">
+            <el-select size="small" v-model="scope.row.branch" filterable style="width: 220px;">
+              <el-option v-for="option in scope.row.branches" :key="option.name" :label="option.name" :value="option.name">{{option.name}}</el-option>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100px">
+          <template slot-scope="scope">
+            <el-button @click="delRepo(scope.row)" type="danger" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="mg-t16">
+        <el-select v-model="curItem.curRepo" value-key="repo_name" filterable size="small" placeholder="请选择代码库">
+          <el-option v-for="repo of curItem.originRepos" :key="repo.repo_name" :label="repo.repo_name" :value="repo"></el-option>
+        </el-select>
+        <el-button @click="addRepo" :disabled="curItem.originRepos && curItem.originRepos.length === 0" type="primary" size="mini" plain>添加</el-button>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isShowBranchDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getAllBranchInfoAPI } from '@api'
 import { buildTabList } from '../config'
-import { differenceWith } from 'lodash'
+import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from './envTypeSelect.vue'
 export default {
   name: 'ServiceAndBuild',
@@ -148,7 +141,10 @@ export default {
   components: { EnvTypeSelect },
   data () {
     return {
-      buildTabList
+      buildTabList,
+      isShowBranchDialog: false,
+      isShowVarDialog: false,
+      curItem: {}
     }
   },
   computed: {
@@ -181,10 +177,6 @@ export default {
     this.setServiceBuilds()
   },
   methods: {
-    toggleIsShowVals (item) {
-      this.$set(item, 'isShowVals', !item.isShowVals)
-      this.$set(item, 'currentTab', 'env')
-    },
     delServiceAndBuild (index) {
       this.serviceAndBuilds.splice(index, 1)
       this.$emit('input', this.serviceAndBuilds)
@@ -225,21 +217,23 @@ export default {
       this.$set(item, 'originRepos', res.repos || [])
       this.$set(item, 'repos', [])
     },
-    addRepo (item) {
-      if (item.repos) {
-        item.repos.push(item.curRepo)
+    addRepo () {
+      if (this.curItem.repos) {
+        this.curItem.repos.push(this.curItem.curRepo)
       } else {
-        this.$set(item, 'repos', [item.curRepo])
+        this.$set(this.curItem, 'repos', [this.curItem.curRepo])
       }
-      item.originRepos = item.originRepos.filter(
-        repo => repo.repo_name !== item.curRepo.repo_name
+      this.curItem.originRepos = this.curItem.originRepos.filter(
+        repo => repo.repo_name !== this.curItem.curRepo.repo_name
       )
-      this.getBranch(item.curRepo)
-      item.curRepo = {}
+      this.getBranch(this.curItem.curRepo)
+      this.curItem.curRepo = {}
     },
-    delRepo (item, row) {
-      item.repos = item.repos.filter(repo => repo.repo_name !== row.repo_name)
-      item.originRepos.push(row)
+    delRepo (row) {
+      this.curItem.repos = this.curItem.repos.filter(
+        repo => repo.repo_name !== row.repo_name
+      )
+      this.curItem.originRepos.push(row)
     },
     async getBranch (item) {
       const repo = [
@@ -256,6 +250,26 @@ export default {
       const res = await getAllBranchInfoAPI(payload)
       if (res) {
         this.$set(item, 'branches', res[0].branches)
+      }
+    },
+    handleVarBranchChange (type, item) {
+      if (type === 'var') {
+        this.isShowVarDialog = true
+      } else {
+        this.isShowBranchDialog = true
+      }
+      this.curItem = cloneDeep(item)
+    },
+    saveCurSetting (type) {
+      this.serviceAndBuilds.forEach((item, index) => {
+        if (item.build_name === this.curItem.build_name) {
+          this.$set(this.serviceAndBuilds, index, this.curItem)
+        }
+      })
+      if (type === 'var') {
+        this.isShowVarDialog = false
+      } else {
+        this.isShowBranchDialog = false
       }
     },
     validate () {
@@ -297,35 +311,15 @@ export default {
     font-weight: 500;
   }
 
+  .iconfont {
+    margin-right: 8px;
+    color: #06f;
+    cursor: pointer;
+  }
+
   .password {
     /deep/.el-input__suffix {
       display: none !important;
-    }
-  }
-
-  .tab {
-    margin: 16px 0;
-    color: @projectNameColor;
-    font-size: 14px;
-    cursor: pointer;
-
-    span:first-child {
-      position: relative;
-      margin-right: 16px;
-
-      &::after {
-        position: absolute;
-        top: 0;
-        right: -10px;
-        width: 2px;
-        height: 100%;
-        background: @borderGray;
-        content: '';
-      }
-    }
-
-    .active {
-      color: @themeColor;
     }
   }
 }
