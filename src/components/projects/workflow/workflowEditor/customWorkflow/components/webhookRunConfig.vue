@@ -123,7 +123,7 @@
                 </el-select>
               </el-form-item>
               <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label=" `${item.service_name}`">
+                <el-form-item :label="`${item.service_name}`">
                   <el-select
                     v-model="item.image"
                     filterable
@@ -240,6 +240,14 @@ export default {
                   }
                 })
               })
+            }
+            if (job.type === 'zadig-deploy') {
+              // Mapping for value-key
+              if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+                job.spec.service_and_images.forEach(service => {
+                  service.value = `${service.service_name}/${service.service_module}`
+                })
+              }
             }
           })
         })

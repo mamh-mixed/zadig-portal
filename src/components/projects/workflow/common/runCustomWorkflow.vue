@@ -315,6 +315,14 @@ export default {
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
               job.checked = true
+              if (job.type === 'zadig-deploy') {
+                // Mapping for value-key
+                if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+                  job.spec.service_and_images.forEach(service => {
+                    service.value = `${service.service_name}/${service.service_module}`
+                  })
+                }
+              }
             })
           })
           this.payload = res
