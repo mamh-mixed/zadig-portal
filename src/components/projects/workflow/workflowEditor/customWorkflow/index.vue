@@ -38,7 +38,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" />
+                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal"/>
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -330,7 +330,7 @@ export default {
         }
       },
       beInitCompRef: 'beInitCompRef',
-      scal: 1
+      scal: '1'
     }
   },
   components: {
@@ -443,8 +443,7 @@ export default {
           if (this.scal < 0.5) return
           this.scal = (parseFloat(this.scal) - 0.1).toFixed(2)
         }
-        main.style.transform = 'scale(' + this.scal + ')'
-        main.style.transformOrigin = '0 0'
+        main.style.zoom = this.scal
       })
     },
     checkYaml () {
@@ -958,6 +957,7 @@ export default {
 
     main {
       width: 100%;
+      height: 100%;
       padding: 0 24px;
 
       .ui {
