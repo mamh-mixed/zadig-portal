@@ -37,7 +37,7 @@
           v-if="!form.serviceType || form.serviceType === 'runtime'"
           class="form-item"
         >
-          <el-select size="small" v-model="form.service_and_images" multiple filterable clearable value-key="service_name">
+          <el-select size="small" v-model="form.service_and_images" multiple filterable clearable value-key="value">
             <el-option
               v-for="(service,index) in originServiceAndBuilds"
               :key="index"

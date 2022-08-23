@@ -1,7 +1,7 @@
 <template>
   <div class="workflow-build-rows">
     <el-table :data="pickedTargets" v-if="pickedTargets.length > 0" empty-text="无">
-      <el-table-column type="expand" prop="service_name" width="50px">
+      <el-table-column type="expand"  width="50px">
         <template slot-scope="props">
           <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
             <el-table-column label="键">
@@ -26,7 +26,7 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="service_name" label="服务" width="100px"></el-table-column>
+      <el-table-column prop="service_module" label="服务" width="100px"></el-table-column>
       <el-table-column label="代码库">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.repos" class="build-row" :key="build.code_host_id">
