@@ -1,6 +1,6 @@
 <template>
   <div class="custom-workflow">
-    <el-form label-width="120px" size="small">
+    <el-form label-width="140px" size="small">
       <el-collapse v-model="activeName">
         <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">
@@ -52,7 +52,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
+                  value-key="value"
                   size="medium"
                   style="width: 220px;"
                   @change="handleServiceBuildChange"
@@ -60,11 +60,11 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
                     :key="index"
-                    :label="service.service_name"
+                    :label="`${service.service_module}(${service.service_name})`"
                     :value="service"
                   >
-                    <span>{{service.service_name}}</span>
-                    <span style="color: #ccc;">({{service.service_module}})</span>
+                    <span>{{service.service_module}}</span>
+                    <span style="color: #ccc;">({{service.service_name}})</span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -100,7 +100,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
+                  value-key="value"
                   size="medium"
                   style="width: 220px;"
                   @change="handleServiceDeployChange"
@@ -108,16 +108,16 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_images"
                     :key="index"
-                    :label="service.service_name"
+                    :label="`${service.service_module}(${service.service_name})`"
                     :value="service"
                   >
-                    <span>{{service.service_name}}</span>
-                    <span style="color: #ccc;">({{service.service_module}})</span>
+                    <span>{{service.service_module}}</span>
+                    <span style="color: #ccc;">({{service.service_name}})</span>
                   </el-option>
                 </el-select>
               </el-form-item>
               <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label=" `${item.service_name}`">
+                <el-form-item :label="`${item.service_module}`">
                   <el-select
                     v-model="item.image"
                     filterable

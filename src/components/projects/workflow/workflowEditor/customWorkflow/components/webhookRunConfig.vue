@@ -53,7 +53,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
+                  value-key="value"
                   size="small"
                   style="width: 220px;"
                   @change="handleServiceBuildChange"
@@ -61,11 +61,11 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
                     :key="index"
-                    :label="service.service_name"
+                    :label="`${service.service_module}(${service.service_name})`"
                     :value="service"
                   >
-                    <span>{{service.service_name}}</span>
-                    <span style="color: #ccc;">({{service.service_module}})</span>
+                    <span>{{service.service_module}}</span>
+                    <span style="color: #ccc;">({{service.service_name}})</span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -106,7 +106,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
+                  value-key="value"
                   size="small"
                   style="width: 220px;"
                   @change="handleServiceDeployChange"
@@ -117,8 +117,8 @@
                     :label="service.service_name"
                     :value="service"
                   >
-                    <span>{{service.service_name}}</span>
-                    <span style="color: #ccc;">({{service.service_module}})</span>
+                    <span>{{service.service_module}}</span>
+                    <span style="color: #ccc;">({{service.service_name}})</span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -129,7 +129,7 @@
                     filterable
                     clearable
                     reserve-keyword
-                    value-key="service_name"
+                    value-key="value"
                     size="small"
                     style="width: 220px;"
                     placeholder="请选择镜像"
