@@ -265,6 +265,21 @@ export default {
               url: 'plutus/customer'
             }
           ]
+        },
+        {
+          category_name: '发布中心',
+          items: [
+            // {
+            //   name: '工作流',
+            //   icon: 'iconfont iconvery-pipeline',
+            //   url: 'release/workflow'
+            // },
+            {
+              name: '环境',
+              icon: 'iconfont iconvery-environ',
+              url: 'release/environment'
+            }
+          ]
         }
       ]
     }
