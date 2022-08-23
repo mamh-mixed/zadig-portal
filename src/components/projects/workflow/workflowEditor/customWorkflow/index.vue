@@ -585,6 +585,12 @@ export default {
               if (job.spec.source === 'fromjob') {
                 job.spec.serviceType = 'other'
               }
+              // Mapping for value-key
+              if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+                job.spec.service_and_images.forEach(service => {
+                  service.value = `${service.service_name}/${service.service_module}`
+                })
+              }
             }
             if (job.type === 'freestyle') {
               job.spec.properties.envs.forEach(item => {
