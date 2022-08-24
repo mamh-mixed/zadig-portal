@@ -54,14 +54,16 @@ export default {
   },
   watch: {
     logs: function (new_val, old_val) {
-      if (this.from === 'custom' && new_val !== old_val) {
-        this.term.clear()
-        this.index = 0
-      }
       for (let i = this.index; i < new_val.length; i++) {
         this.term.write(new_val[i] + '\r')
       }
       this.index = new_val.length
+    },
+    from: function (newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        this.term.clear()
+        this.index = 0
+      }
     }
   },
   mounted () {

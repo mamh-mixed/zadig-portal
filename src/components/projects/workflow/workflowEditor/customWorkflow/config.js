@@ -8,6 +8,16 @@ const tabList = [
     name: 'yaml'
   }
 ]
+const buildTabList = [
+  {
+    label: '变量',
+    name: 'env'
+  },
+  {
+    label: '分支配置',
+    name: 'branch'
+  }
+]
 const jobTabList = [
   {
     label: '基本配置',
@@ -27,33 +37,44 @@ const jobTypeList = [
   {
     label: '构建',
     name: 'zadig-build',
-    tip: '可直接引用「项目」-「构建」模块中的配置'
+    type: 'zadig-build',
+    is_offical: true,
+    description: '可直接引用「项目」-「构建」模块中的配置'
   },
   {
     label: '部署',
     name: 'zadig-deploy',
-    tip: '可更新容器形态的服务镜像'
+    type: 'zadig-deploy',
+    is_offical: true,
+    description: '可更新容器形态的服务镜像'
   },
   {
     label: '通用任务',
     name: 'freestyle',
-    tip: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
-  },
-  {
-    label: '测试',
-    name: '',
-    tip: 'coming soon'
+    type: 'freestyle',
+    is_offical: true,
+    description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
   }
+  // {
+  //   label: '测试',
+  //   is_offical: true,
+  //   name: '',
+  //   description: 'coming soon'
+  // }
 ]
 const configList = [
-  // {
-  //   label: '变量',
-  //   value: 'var'
-  // },
-  // {
-  //   label: '触发器',
-  //   value: 'webhook'
-  // },
+  {
+    label: '变量',
+    value: 'env'
+  },
+  {
+    label: '触发器',
+    value: 'webhook',
+    drawerSize: '70%',
+    drawerConfirmText: '保存',
+    drawerCancelText: '取消',
+    drawerHideButton: true
+  },
   // {
   //   label: '通知',
   //   value: 'notify'
@@ -66,7 +87,10 @@ const configList = [
 const jobType = {
   build: 'zadig-build',
   deploy: 'zadig-deploy',
-  freestyle: 'freestyle'
+  approval: 'zadig-approval',
+  common: 'freestyle',
+  freestyle: 'freestyle',
+  plugin: 'plugin'
 }
 const editorOptions = {
   mode: 'yaml',
@@ -91,7 +115,7 @@ const buildEnvs = [
     desc: '工作流任务 ID'
   },
   {
-    variable: 'BUILD_URL',
+    variable: '$BUILD_URL',
     desc: '构建任务的 URL'
   },
   {
@@ -113,22 +137,22 @@ const buildEnvs = [
   },
   {
     variable: '$<REPO>_PR',
-    // eslint-disable-next-line no-template-curly-in-string
+    // eslint-disable-next-line
     desc: '构建时使用的代码 Pull Request 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_<index> 变量使用，比如可以通过 eval PR=\\${${REPO_0}_PR} 方式获取第一个代码库的 Pull Request 信息'
   },
   {
     variable: '$<REPO>_BRANCH',
-    // eslint-disable-next-line no-template-curly-in-string
+    // eslint-disable-next-line
     desc: '构建时使用的代码分支信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval BRANCH=\\${${REPO_0}_BRANCH} 方式获取第一个代码库的分支信息'
   },
   {
     variable: '$<REPO>_TAG',
-    // eslint-disable-next-line no-template-curly-in-string
+    // eslint-disable-next-line
     desc: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的分支信息'
   },
   {
     variable: '$<REPO>_COMMIT_ID',
-    // eslint-disable-next-line no-template-curly-in-string
+    // eslint-disable-next-line
     desc: '构建时使用代码 Commit 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index]变量使用，比如可以通过 eval COMMITID=\\${${REPO_0}_COMMIT_ID} 方式获取第一个代码库的 COMMIT 信息'
   },
   {
@@ -136,12 +160,21 @@ const buildEnvs = [
     desc: '如使用 其他 代码源，$<REPO>_PR 和 $<REPO>_COMMIT_ID 变量不支持'
   }
 ]
+const globalConstEnvs = [
+  '{{.project}}',
+  '{{.workflow.name}}',
+  '{{.workflow.task.id}}',
+  '{{.workflow.task.creator}}',
+  '{{.workflow.task.timestamp}}'
+]
 export {
   tabList,
+  buildTabList,
   configList,
   jobTabList,
   jobTypeList,
   editorOptions,
   jobType,
-  buildEnvs
+  buildEnvs,
+  globalConstEnvs
 }

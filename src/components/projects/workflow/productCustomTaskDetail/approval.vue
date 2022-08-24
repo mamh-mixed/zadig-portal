@@ -1,27 +1,32 @@
 <template>
   <div class="approval">
-    <el-card style="position: relative;">
-      <div slot="header" class="mg-b8">
-        <el-col :span="2" class>
-          <span class="approval-type">人工审核</span>
-        </el-col>
-        <el-col :span="6" class="text">
-          <span>开始时间：</span>
-          <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
-        </el-col>
-        <el-col :span="6" class="text" v-if="!isDisabled">
-          <span class="red">{{approvalInfo.approval.timeout}} 分钟</span>
-          <span>后审核超时</span>
-        </el-col>
-        <el-col :span="6" class="text" v-else>
-          <span>完成时间：</span>
-          <span>{{$utils.convertTimestamp(approvalInfo.end_time)}}</span>
-          <span
-            :class="[`status-${$utils.taskElTagType(approvalInfo.approval.reject_or_approve)}`]"
-          >{{ wordTranslation(approvalInfo.approval.reject_or_approve,'pipeline','task') }}</span>
-        </el-col>
-      </div>
-      <el-table :data="approvalInfo.approval.approve_users" size="small">
+    <header class="mg-b8">
+      <el-col :span="2" class>
+        <span class="type">人工审核</span>
+      </el-col>
+      <el-col :span="6" class="text">
+        <span>开始时间：</span>
+        <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
+      </el-col>
+      <el-col :span="6" class="text" v-if="!isDisabled">
+        <span class="red">{{approvalInfo.approval.timeout}} 分钟</span>
+        <span>后审核超时</span>
+      </el-col>
+      <el-col :span="6" class="text" v-else>
+        <span>完成时间：</span>
+        <span>{{$utils.convertTimestamp(approvalInfo.end_time)}}</span>
+        <span
+          :class="[`status-${$utils.taskElTagType(approvalInfo.approval.reject_or_approve)}`]"
+        >{{ wordTranslation(approvalInfo.approval.reject_or_approve,'pipeline','task') }}</span>
+      </el-col>
+      <el-col :span="1" class="close">
+        <span @click="$emit('showFooter',false)">
+          <i class="el-icon-close"></i>
+        </span>
+      </el-col>
+    </header>
+    <main>
+      <el-table :data="approvalInfo.approval.approve_users" size="small" class="mg-t24">
         <el-table-column prop="user_name" label="审核人"></el-table-column>
         <el-table-column prop="reject_or_approve" label="审核结果">
           <template slot-scope="scope">
@@ -40,7 +45,7 @@
       <el-row class="mg-t24">
         <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审核</el-button>
       </el-row>
-    </el-card>
+    </main>
     <el-dialog title="评论信息" :visible.sync="isShowCommentDialog">
       <el-form :model="form">
         <el-input placeholder="输入评论信息" size="small" v-model="form.comment"></el-input>
@@ -131,21 +136,42 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-
 .approval {
+  position: relative;
+  height: 100%;
+  font-size: 14px;
   background: #fff;
+  box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
 
-  &-type {
-    margin-right: 8px;
-    font-weight: 500;
+  header {
+    height: 42px;
+    padding: 0 24px;
+    line-height: 42px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+
+    .type {
+      margin-right: 8px;
+      font-weight: 500;
+    }
+
+    .close {
+      float: right;
+      font-size: 16px;
+      cursor: pointer;
+    }
   }
 
-  .text {
-    color: #8d9199;
-    font-size: 12px;
+  main {
+    padding: 0 24px;
 
-    .red {
-      color: red;
+    .text {
+      color: #8d9199;
+      font-size: 12px;
+
+      .red {
+        color: red;
+      }
     }
   }
 }

@@ -1,21 +1,24 @@
 <template>
   <div class="workflow-build-rows">
     <el-table :data="pickedTargets" v-if="pickedTargets.length > 0" empty-text="无">
-      <el-table-column type="expand" prop="service_name" width="50px">
+      <el-table-column type="expand"  width="50px">
         <template slot-scope="props">
-          <el-table :data="props.row.key_vals" style="width: 70%; margin: 0 auto;" size="mini">
-            <el-table-column label="键" prop="key"></el-table-column>
+          <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
+            <el-table-column label="键">
+              <template slot-scope="scope">{{scope.row.key}}</template>
+            </el-table-column>
             <el-table-column label="值">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
                   <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
                 </el-select>
                 <el-input
+                  class="password"
                   v-else
                   v-model="scope.row.value"
                   size="small"
                   :type="scope.row.is_credential ? 'passsword' : ''"
-                  show-password
+                  :show-password="scope.row.is_credential ? true : false"
                   style="width: 220px;"
                 ></el-input>
               </template>
@@ -23,7 +26,7 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="service_name" label="服务" width="100px"></el-table-column>
+      <el-table-column prop="service_module" label="服务" width="100px"></el-table-column>
       <el-table-column label="代码库">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.repos" class="build-row" :key="build.code_host_id">
@@ -35,68 +38,76 @@
                   </el-tooltip>
                 </div>
               </el-col>
-              <el-col :span="7">
-                <el-select
-                  v-model="build.branchOrTag"
-                  remote
-                  :remote-method="(query)=>{searchRepoInfo(build,query)}"
-                  @clear="searchRepoInfo(build,'')"
-                  filterable
-                  clearable
-                  size="small"
-                  value-key="id"
-                  :placeholder="build.source==='other'?'请输入分支或标签':'请选择分支或标签'"
-                  @change="changeBranchOrTag(build)"
-                >
-                  <el-option-group v-for="group in build.branchAndTagList" :key="group.label" :label="group.label">
-                    <el-option v-for="(item, index) in group.options" :key="index" :label="item.name" :value="item"></el-option>
-                  </el-option-group>
-                </el-select>
-              </el-col>
-              <el-col :span="7" :offset="1" v-if="build.source!=='other'">
-                <el-select
-                  v-if="!$utils.isEmpty(build.branchPRsMap)"
-                  v-model.number="build[build.prNumberPropName]"
-                  size="small"
-                  placeholder="请选择 PR"
-                  filterable
-                  clearable
-                  :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
-                >
-                  <el-tooltip
-                    v-for="item in build.branchPRsMap[build.branchOrTag ? build.branchOrTag.name : '']"
-                    :key="item[build.prNumberPropName]"
-                    placement="left"
-                    popper-class="gray-popper"
-                  >
-                    <div slot="content">
-                      {{`创建人: ${$utils.tailCut(item.authorUsername,10)}`}}
-                      <br />
-                      {{`时间: ${$utils.convertTimestamp(item.createdAt)}`}}
-                      <br />
-                      {{`源分支: ${item.sourceBranch}`}}
-                      <br />
-                      {{`目标分支: ${item.targetBranch}`}}
-                    </div>
-                    <el-option :label="`#${item[build.prNumberPropName]} ${item.title}`" :value="item[build.prNumberPropName]"></el-option>
-                  </el-tooltip>
-                </el-select>
-                <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号" placement="top" popper-class="gray-popper">
-                  <el-input
-                    v-model.number="build[build.prNumberPropName]"
-                    class="short-input"
+              <div v-if="build.showTip">
+                <el-col :span="7">
+                 <span style="color: #909399; font-size: 12px; line-height: 33px;">使用变更的代码执行</span>
+                </el-col>
+              </div>
+              <div v-else>
+                <el-col :span="7">
+                  <el-select
+                    v-model="build.branchOrTag"
+                    remote
+                    :remote-method="(query)=>{searchRepoInfo(build,query)}"
+                    @clear="searchRepoInfo(build,'')"
+                    filterable
+                    clearable
                     size="small"
-                    placeholder="请填写 PR 号"
+                    value-key="id"
+                    :placeholder="build.source==='other'?'请输入分支或标签':'请选择分支或标签'"
+                    @change="changeBranchOrTag(build)"
+                  >
+                    <el-option-group v-for="group in build.branchAndTagList" :key="group.label" :label="group.label">
+                      <el-option v-for="(item, index) in group.options" :key="index" :label="item.name" :value="item"></el-option>
+                    </el-option-group>
+                  </el-select>
+                </el-col>
+                <el-col :span="7" :offset="1" v-if="build.source!=='other'">
+                  <el-select
+                    v-if="!$utils.isEmpty(build.branchPRsMap)"
+                    v-model.number="build[build.prNumberPropName]"
+                    size="small"
+                    placeholder="请选择 PR"
+                    filterable
+                    clearable
                     :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
-                  ></el-input>
-                </el-tooltip>
-              </el-col>
+                  >
+                    <el-tooltip
+                      v-for="item in build.branchPRsMap[build.branchOrTag ? build.branchOrTag.name : '']"
+                      :key="item[build.prNumberPropName]"
+                      placement="left"
+                      popper-class="gray-popper"
+                    >
+                      <div slot="content">
+                        {{`创建人: ${$utils.tailCut(item.authorUsername,10)}`}}
+                        <br />
+                        {{`时间: ${$utils.convertTimestamp(item.createdAt)}`}}
+                        <br />
+                        {{`源分支: ${item.sourceBranch}`}}
+                        <br />
+                        {{`目标分支: ${item.targetBranch}`}}
+                      </div>
+                      <el-option :label="`#${item[build.prNumberPropName]} ${item.title}`" :value="item[build.prNumberPropName]"></el-option>
+                    </el-tooltip>
+                  </el-select>
+                  <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号" placement="top" popper-class="gray-popper">
+                    <el-input
+                      v-model.number="build[build.prNumberPropName]"
+                      class="short-input"
+                      size="small"
+                      placeholder="请填写 PR 号"
+                      :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
+                    ></el-input>
+                  </el-tooltip>
+                </el-col>
 
-              <el-col :span="1">
-                <el-tooltip v-if="build.errorMsg" class="item" effect="dark" :content="build.errorMsg" placement="top">
-                  <i class="el-icon-question repo-warning"></i>
-                </el-tooltip>
-              </el-col>
+                <el-col :span="1">
+                  <el-tooltip v-if="build.errorMsg" class="item" effect="dark" :content="build.errorMsg" placement="top">
+                    <i class="el-icon-question repo-warning"></i>
+                  </el-tooltip>
+                </el-col>
+              </div>
+
             </template>
           </el-row>
         </template>
@@ -191,6 +202,13 @@ export default {
     changeBranchOrTag (build) {
       if (build.branchOrTag) {
         build[build.prNumberPropName] = null
+        if (build.branchOrTag.type === 'branch') {
+          build.branch = build.branchOrTag.name
+        }
+        if (build.branchOrTag.type === 'tag') {
+          build.tag = build.branchOrTag.name
+        }
+        // Todo: enhance this logic for pr
       }
     }
   },
@@ -210,6 +228,14 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @import '~@assets/css/common/build-row.less';
+
+.workflow-build-rows {
+  .password {
+    /deep/.el-input__suffix {
+      display: none !important;
+    }
+  }
+}
 </style>

@@ -1,20 +1,33 @@
 <template>
   <div class="build-console">
-    <el-card style="position: relative;">
-      <div slot="header" class="mg-b8">
-        <el-col :span="6">
-          <span class="build-console-type">部署</span>
-          <span>{{jobInfo.name}}</span>
-        </el-col>
-        <el-col v-if="jobInfo.status!=='running'" :span="2">
-          <div class="grid-content item-desc">
-            <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
-          </div>
-        </el-col>
-        <el-col v-if="jobInfo.status!=='running'" :span="2">
-          <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
-        </el-col>
-      </div>
+    <header class="mg-b8">
+      <el-col :span="6">
+        <span class="type">部署</span>
+        <span>{{jobInfo.name}}</span>
+      </el-col>
+      <el-col v-if="jobInfo.status!=='running'" :span="2">
+        <div class="grid-content item-desc">
+          <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
+        </div>
+      </el-col>
+      <el-col v-if="jobInfo.status!=='running'" :span="2">
+        <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
+      </el-col>
+      <el-col v-if="jobInfo" :span="6">
+        <span class="item-desc status">
+          <i class="el-icon-question"></i>
+          <span v-if="jobInfo.spec.skip_check_run_status">未开启服务状态检测</span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">服务状态检测通过</span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">服务状态检测未通过</span>
+        </span>
+      </el-col>
+      <el-col :span="1" class="close">
+        <span @click="$emit('showFooter',false)">
+          <i class="el-icon-close"></i>
+        </span>
+      </el-col>
+    </header>
+    <main>
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
       </div>
@@ -64,7 +77,7 @@
           </div>
         </el-col>
       </el-row>
-    </el-card>
+    </main>
   </div>
 </template>
 
@@ -108,22 +121,47 @@ export default {
 </script>
 <style lang="less" scoped>
 .build-console {
+  position: relative;
   height: 100%;
   font-size: 14px;
+  background: #fff;
+  box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
 
-  &-type {
-    margin-right: 8px;
-    font-weight: 500;
-  }
+  header {
+    height: 42px;
+    padding: 0 24px;
+    line-height: 42px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 
-  .item {
-    &-title {
-      color: #8d9199;
+    .type {
+      margin-right: 8px;
+      font-weight: 500;
+    }
+
+    .close {
+      float: right;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .status {
+      color: #888;
     }
   }
 
-  .env-link {
-    color: @themeColor;
+  main {
+    padding: 0 24px;
+
+    .item {
+      &-title {
+        color: #8d9199;
+      }
+    }
+
+    .env-link {
+      color: @themeColor;
+    }
   }
 }
 </style>

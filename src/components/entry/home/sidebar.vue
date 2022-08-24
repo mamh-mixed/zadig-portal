@@ -121,6 +121,11 @@ export default {
               name: '构建镜像管理',
               icon: 'iconfont iconjingxiang',
               url: 'system/imgs'
+            },
+            {
+              name: '工作流任务',
+              icon: 'iconfont el-icon-sell',
+              url: 'system/plugins'
             }
           ]
         },

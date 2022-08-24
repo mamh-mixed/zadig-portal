@@ -1,6 +1,6 @@
 <template>
   <div class="custom-workflow">
-    <el-form label-width="140px" size="small">
+    <el-form label-width="120px" size="small">
       <el-collapse v-model="activeName">
         <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">
@@ -41,7 +41,8 @@
             class="mg-l8"
           >
             <template slot="title">
-              <el-checkbox v-model="job.checked"></el-checkbox>
+              <!-- <el-checkbox v-model="job.skipped"></el-checkbox> -->
+              <el-switch v-model="job.skipped" :active-value="false" :inactive-value="true" @click.stop.native></el-switch>
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
@@ -53,7 +54,7 @@
                   clearable
                   reserve-keyword
                   value-key="value"
-                  size="medium"
+                  size="small"
                   style="width: 220px;"
                   @change="handleServiceBuildChange"
                 >
@@ -74,12 +75,12 @@
                 </el-select>
               </el-form-item>
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets"></CustomWorkflowBuildRows>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" />
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
-              <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('<+fixed>')||job.spec.env.includes('{{'))">
-                <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
+              <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('fixed')||job.spec.env.includes('{{'))">
+                <el-select v-model="job.spec.env" size="small" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
                     :key="`${pro.projectName} / ${pro.name}`"
@@ -92,6 +93,11 @@
                     </span>
                   </el-option>
                 </el-select>
+                <el-tooltip v-if="specificEnv" effect="dark" content="该工作流已指定环境运行，可通过修改 工作流->基本信息 来解除指定环境绑定" placement="top">
+                  <span>
+                    <i style="color: #909399;" class="el-icon-question"></i>
+                  </span>
+                </el-tooltip>
               </el-form-item>
               <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
                 <el-select
@@ -101,14 +107,14 @@
                   clearable
                   reserve-keyword
                   value-key="value"
-                  size="medium"
+                  size="small"
                   style="width: 220px;"
                   @change="handleServiceDeployChange"
                 >
                   <el-option
                     v-for="(service,index) of job.spec.service_and_images"
                     :key="index"
-                    :label="`${service.service_module}(${service.service_name})`"
+                    :label="service.service_name"
                     :value="service"
                   >
                     <span>{{service.service_module}}</span>
@@ -117,14 +123,14 @@
                 </el-select>
               </el-form-item>
               <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label="`${item.service_module}`">
+                <el-form-item :label="`${item.service_name}`">
                   <el-select
                     v-model="item.image"
                     filterable
                     clearable
                     reserve-keyword
-                    value-key="service_name"
-                    size="medium"
+                    value-key="value"
+                    size="small"
                     style="width: 220px;"
                     placeholder="请选择镜像"
                   >
@@ -139,15 +145,14 @@
               </div>
             </div>
             <div v-if="job.type === 'freestyle'">
-              <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
+              <CustomWorkflowCommonRows :job="job" />
             </div>
-            <div v-if="job.type === 'plugin'&&job.isShowPlugin">
-              <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
+            <div v-if="job.type === 'plugin'">
+              <CustomWorkflowCommonRows :job="job" type="plugin" />
             </div>
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
     </el-form>
   </div>
 </template>
@@ -158,13 +163,11 @@ import CustomWorkflowCommonRows from '@/components/common/customWorkflowCommonRo
 import {
   listProductAPI,
   getAllBranchInfoAPI,
-  runCustomWorkflowTaskAPI,
   imagesAPI,
-  getCustomWorkfloweTaskPresetAPI,
   getRegistryWhenBuildAPI,
   getAssociatedBuildsAPI
 } from '@api'
-import { keyBy, orderBy, cloneDeep } from 'lodash'
+import { keyBy, orderBy } from 'lodash'
 
 export default {
   data () {
@@ -172,8 +175,9 @@ export default {
       registry_id: '',
       currentProjectEnvs: [],
       dockerList: [],
+      specificEnv: true,
       startTaskLoading: false,
-      activeName: ['env', '00'],
+      activeName: '00',
       payload: {
         workflow_name: '',
         stages: [
@@ -183,8 +187,7 @@ export default {
           }
         ]
       },
-      originServiceAndBuilds: [],
-      isShowParams: true
+      originServiceAndBuilds: []
     }
   },
   props: {
@@ -197,6 +200,10 @@ export default {
       default: ''
     },
     cloneWorkflow: {
+      type: Object,
+      default: () => ({})
+    },
+    webhookSelectedRepo: {
       type: Object,
       default: () => ({})
     }
@@ -216,7 +223,6 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            job.checked = true
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
@@ -224,36 +230,46 @@ export default {
               job.pickedTargets = job.spec.service_and_builds
               job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
+                build.repos.forEach(repo => {
+                  if (
+                    repo.codehost_id === this.webhookSelectedRepo.codehost_id &&
+                    repo.repo_name === this.webhookSelectedRepo.repo_name &&
+                    repo.repo_owner === this.webhookSelectedRepo.repo_owner
+                  ) {
+                    this.$set(repo, 'showTip', true)
+                  }
+                })
               })
+            }
+            if (job.type === 'zadig-deploy') {
+              // Mapping for value-key
+              if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+                job.spec.service_and_images.forEach(service => {
+                  service.value = `${service.service_name}/${service.service_module}`
+                })
+              }
             }
           })
         })
         this.payload = this.cloneWorkflow
+        // this.$set(this, 'payload', this.cloneWorkflow)
         this.handleEnv()
-      } else {
-        this.getWorkflowPresetInfo(this.workflowName)
       }
     },
     handleEnv () {
       this.payload.params.forEach(item => {
-        if (item.value.includes('<+fixed>') || item.value.includes('{{')) {
+        if (item.value.includes('fixed') || item.value.includes('{{')) {
           item.isShow = false
         } else {
           item.isShow = true
         }
-        const len = this.payload.params.filter(item => item.isShow)
-        this.isShowParams = len.length !== 0
       })
-      this.payload.stages.forEach((stage, stageIndex) => {
-        stage.jobs.forEach((job, jobIndex) => {
-          this.activeName.push(`${stageIndex}${jobIndex}`)
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
-                if (
-                  item.value.includes('<+fixed>') ||
-                  item.value.includes('{{')
-                ) {
+                if (item.value.includes('fixed') || item.value.includes('{{')) {
                   item.isShow = false
                 } else {
                   item.isShow = true
@@ -281,10 +297,7 @@ export default {
               }
             })
             job.spec.properties.envs.forEach(item => {
-              if (
-                item.value.includes('<+fixed>') ||
-                item.value.includes('{{')
-              ) {
+              if (item.value.includes('fixed') || item.value.includes('{{')) {
                 item.isShow = false
               } else {
                 item.isShow = true
@@ -293,42 +306,15 @@ export default {
           }
           if (job.type === 'plugin') {
             job.spec.plugin.inputs.forEach(item => {
-              if (
-                item.value.includes('<+fixed>') ||
-                item.value.includes('{{')
-              ) {
+              if (item.value.includes('fixed') || item.value.includes('{{')) {
                 item.isShow = false
               } else {
                 item.isShow = true
               }
             })
-            const len = job.spec.plugin.inputs.filter(item => item.isShow)
-            job.isShowPlugin = len.length !== 0
           }
         })
       })
-    },
-    getWorkflowPresetInfo (workflowName) {
-      // const key = this.$utils.rsaEncrypt()
-      getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
-        res => {
-          res.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              job.checked = true
-              if (job.type === 'zadig-deploy') {
-                // Mapping for value-key
-                if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
-                  job.spec.service_and_images.forEach(service => {
-                    service.value = `${service.service_name}/${service.service_module}`
-                  })
-                }
-              }
-            })
-          })
-          this.payload = res
-          this.handleEnv()
-        }
-      )
     },
     getEnvList () {
       const projectName = this.projectName
@@ -441,94 +427,12 @@ export default {
         ])
       }
     },
-    runTask () {
-      this.startTaskLoading = true
-      // 数据处理
-      const payload = cloneDeep(this.payload)
-      payload.stages.forEach(stage => {
-        stage.jobs = stage.jobs.filter(job => job.checked)
-        stage.jobs.forEach(job => {
-          job.spec.service_and_builds = job.pickedTargets
-          delete job.pickedTargets
-          delete job.checked
-          if (
-            job.spec.service_and_images &&
-            job.spec.service_and_images.length > 0
-          ) {
-            job.spec.service_and_images.forEach(item => {
-              delete item.images
-            })
-          }
-          if (
-            job.spec.service_and_builds &&
-            job.spec.service_and_builds.length > 0
-          ) {
-            job.spec.service_and_builds.forEach(item => {
-              if (item.repos) {
-                item.repos.forEach(repo => {
-                  if (repo.branchOrTag) {
-                    if (repo.branchOrTag.type === 'branch') {
-                      repo.branch = repo.branchOrTag.name
-                    }
-                    if (repo.branchOrTag.type === 'tag') {
-                      repo.tag = repo.branchOrTag.name
-                    }
-                  }
-                })
-              }
-            })
-          }
-          if (job.type === 'freestyle') {
-            job.spec.steps.forEach(step => {
-              if (step.type === 'git') {
-                step.spec.repos.forEach(repo => {
-                  if (repo.branchOrTag) {
-                    if (repo.branchOrTag.type === 'branch') {
-                      repo.branch = repo.branchOrTag.name
-                    }
-                    if (repo.branchOrTag.type === 'tag') {
-                      repo.tag = repo.branchOrTag.name
-                    }
-                  }
-                })
-              }
-            })
-          }
-          if (job.type === 'zadig-deploy') {
-            job.spec.service_and_images = job.spec.service_and_builds
-            delete job.spec.service_and_builds
-          }
-        })
-      })
-      runCustomWorkflowTaskAPI(payload, this.projectName)
-        .then(res => {
-          const taskId = res.task_id || 1
-          this.$message.success('创建成功')
-          this.$emit('success')
-          this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running`
-          )
-        })
-        .catch(error => {
-          this.$message({
-            message: error.message,
-            type: 'warning',
-            dangerouslyUseHTMLString: true,
-            duration: 5000
-          })
-        })
-        .finally(() => {
-          this.startTaskLoading = false
-        })
-    },
     getRegistryId (val) {
-      if (val) {
-        const namespace = val.split('/')[1]
-        const res = this.currentProjectEnvs.find(item => {
-          return item.name === namespace
-        })
-        this.registry_id = res ? res.registry_id : ''
-      }
+      const namespace = val.split('/')[1].trim()
+      const res = this.currentProjectEnvs.find(item => {
+        return item.name === namespace
+      })
+      this.registry_id = res.registry_id
     },
     getRegistryList (name, id, item) {
       return imagesAPI(name, id).then(res => {
@@ -543,12 +447,21 @@ export default {
           }
         )
       })
-      this.$forceUpdate()
     },
     handleServiceBuildChange (services) {
       services.forEach(service => {
         this.getRepoInfo(service.repos)
+        service.repos.forEach(repo => {
+          if (
+            repo.codehost_id === this.webhookSelectedRepo.codehost_id &&
+            repo.repo_name === this.webhookSelectedRepo.repo_name &&
+            repo.repo_owner === this.webhookSelectedRepo.repo_owner
+          ) {
+            this.$set(repo, 'showTip', true)
+          }
+        })
       })
+      this.$forceUpdate()
     },
     getServiceAndBuildList () {
       const projectName = this.projectName
@@ -560,13 +473,47 @@ export default {
       })
     }
   },
-  watch: {}
-}
-</script>
-<style lang="less" scoped>
-.custom-workflow {
-  /deep/.el-collapse-item__header {
-    font-weight: 700;
+  watch: {
+    webhookSelectedRepo: {
+      handler (val) {
+        if (val) {
+          this.payload.stages.forEach(stage => {
+            stage.jobs.forEach(job => {
+              if (job.pickedTargets && job.pickedTargets.length > 0) {
+                job.pickedTargets.forEach(build => {
+                  build.repos.forEach(repo => {
+                    if (
+                      repo.codehost_id === val.codehost_id &&
+                      repo.repo_name === val.repo_name &&
+                      repo.repo_owner === val.repo_owner
+                    ) {
+                      this.$set(repo, 'showTip', true)
+                    } else {
+                      this.$set(repo, 'showTip', false)
+                    }
+                  })
+                })
+              }
+            })
+          })
+        }
+      },
+      immediate: false,
+      deep: true
+    }
+  },
+  computed: {
+    isShowParams () {
+      // if (this.payload.params) {
+      //   const len = this.payload.params.filter(item => item.isShow)
+      //   return len.length === 0
+      //     ? false
+      //     : len.length !== this.payload.params.length
+      // } else {
+      //   return false
+      // }
+      return true
+    }
   }
 }
-</style>
+</script>

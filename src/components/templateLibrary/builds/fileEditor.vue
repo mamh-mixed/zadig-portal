@@ -77,6 +77,7 @@ export default {
                   type: 'success',
                   message: '保存构建成功'
                 })
+                this.getCurrentBuild(id)
               })
               .catch(() => {
                 this.saveLoading = false
@@ -125,6 +126,11 @@ export default {
       ).catch(error => console.log(error))
       if (buildConfig) {
         this.buildConfig = buildConfig
+        if (this.buildConfig.pre_build.envs) {
+          this.buildConfig.pre_build.envs.forEach(element => {
+            element.disabledKey = true
+          })
+        }
       }
       this.$refs.zadigBuildForm.initData(this.buildConfig)
     },
