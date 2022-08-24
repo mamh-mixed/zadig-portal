@@ -24,13 +24,17 @@
         </el-col>
       </el-row>
     </header>
-    <Multipane layout="horizontal">
+    <div class="tab">
+      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">工作流</span>
+      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">变量</span>
+    </div>
+    <Multipane v-if="activeName==='workflow'" layout="horizontal" style="height: 100%;">
       <main>
         <div class="content">
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
-          <div class="stages" v-for="(stage,index) in payload.stages" :key="stage.label">
-            <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,index)">
+          <div class="stages" v-for="(stage,curStageIndex) in payload.stages" :key="stage.label">
+            <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,curStageIndex)">
               <el-button type="primary" size="small">人工审核</el-button>
               <div class="line"></div>
             </div>
@@ -53,18 +57,36 @@
         </div>
       </main>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{ minHeight: '460px',maxHeight: '550px'}" v-if="isShowConsoleFooter">
+      <footer :style="{minHeight:'600px'}" v-if="isShowConsoleFooter">
         <BuildConsole
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"
           :taskId="taskId"
           :workflowName="workflowName"
           :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
-        <DeployConsole v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
+        <DeployConsole @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
         <Approval
-          v-if="!curJob.type"
+          v-if="curJob.type === jobType.approval"
           :approvalInfo="curStage"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          :projectName="projectName"
+          @showFooter="showFooter"
+        />
+        <CommonTask
+          v-if="curJob.type === jobType.common"
+          :commonInfo="curJob"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          :projectName="projectName"
+          @showFooter="showFooter"
+        />
+        <Plugin
+          v-if="curJob.type === jobType.plugin"
+          :pluginInfo="curJob"
           :workflowName="workflowName"
           :taskId="taskId"
           :projectName="projectName"
@@ -72,6 +94,40 @@
         />
       </footer>
     </Multipane>
+    <div v-if="activeName==='env'" class="env">
+      <el-table :data="envList" v-if="envList.length>0" class="table">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <div v-if="props.row.name==='工作流变量'">
+              <div v-for="(env,index) in props.row.envs" :key="index" class="table-env">
+                <span class="item">{{env.name}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type==='zadig-build'">
+              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                <span class="item">{{env.key}}</span>
+                <span class="item">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type === 'freestyle'">
+              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                <span class="item" v-if="env">{{env.key}}</span>
+                <span class="item" v-if="env">{{env.value}}</span>
+              </div>
+            </div>
+            <div v-if="props.row.type === 'plugin'">
+              <div v-for="(env,index) in props.row.spec.inputs" :key="index" class="table-env">
+                <span class="item" v-if="env">{{env.name}}</span>
+                <span class="item" v-if="env">{{env.value}}</span>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="键" prop="name"></el-table-column>
+        <el-table-column label="值"></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -81,6 +137,8 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
 import Approval from './productCustomTaskDetail/approval.vue'
+import CommonTask from './productCustomTaskDetail/commonTask.vue'
+import Plugin from './productCustomTaskDetail/plugin.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -90,12 +148,16 @@ export default {
     return {
       jobType,
       isShowConsoleFooter: false,
+      firstLoad: true,
       curJobIndex: 0,
       curJob: {},
       payload: {},
       curStageIndex: 0,
       timerId: null,
-      timeTimeoutFinishFlag: false
+      timeTimeoutFinishFlag: false,
+      activeName: 'workflow',
+      activeEnvName: 'env',
+      envList: []
     }
   },
   components: {
@@ -104,7 +166,9 @@ export default {
     MultipaneResizer,
     BuildConsole,
     DeployConsole,
-    Approval
+    Approval,
+    CommonTask,
+    Plugin
   },
   computed: {
     taskId () {
@@ -132,15 +196,6 @@ export default {
         return {}
       }
     }
-    // curJob: {
-    //   get () {
-    //     return this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-    //   },
-    //   set () {}
-    // }
-  },
-  created () {
-    this.getWorkflowTaskDetail(this.workflowName, this.taskId)
   },
   methods: {
     getWorkflowTaskDetail (workflow_name, task_id) {
@@ -154,19 +209,101 @@ export default {
           if (
             item.approval &&
             item.approval.enabled &&
-            item.status === 'running'
+            item.status === 'running' &&
+            this.firstLoad
           ) {
             this.handleApprovalChange(item, index)
+            this.firstLoad = false
           }
         })
+        if (
+          this.curJob.type &&
+          this.curJob.type !== 'zadig-approval' &&
+          this.payload.stages &&
+          this.payload.stages.length > 0
+        ) {
+          // can't use computed hook because approval footer is stage level data but use job level data
+          this.curJob = this.payload.stages[this.curStageIndex].jobs[
+            this.curJobIndex
+          ]
+        }
         this.payload = res
         this.adaptTaskDetail(res)
+        if (this.envList.length === 0) {
+          // global env and stage are not in same level data,  so need to handle data
+          this.handleEnv()
+          const globalEnv = [{ name: '工作流变量', envs: this.payload.params }]
+          const jobs = this.payload.stages.map(item => {
+            return item.jobs.map(job => job)
+          })
+          this.envList = globalEnv.concat(jobs.flat())
+        }
+      })
+    },
+    handleEnv () {
+      // dont show env value includes 'fixed'/'{{'
+      for (let i = 0; i < this.payload.params.length; i++) {
+        if (
+          this.payload.params[i].value.includes('fixed') ||
+          this.payload.params[i].value.includes('{{')
+        ) {
+          this.$delete(this.payload.params, i)
+        }
+        if (this.payload.params[i].is_credential) {
+          this.payload.params[i].value = '******'
+        }
+      }
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.spec && job.spec.service_and_builds) {
+            job.spec.service_and_builds.forEach(service => {
+              for (let i = 0; i < service.key_vals.length; i++) {
+                if (
+                  service.key_vals[i].value.includes('fixed') ||
+                  service.key_vals[i].value.includes('{{')
+                ) {
+                  this.$delete(service.key_vals, i)
+                }
+                if (service.key_vals[i].is_credential) {
+                  service.key_vals[i].value = '******'
+                }
+              }
+            })
+          }
+          if (job.type === 'freestyle') {
+            for (let i = 0; i < job.spec.envs.length; i++) {
+              if (
+                job.spec.envs[i].value.includes('fixed') ||
+                job.spec.envs[i].value.includes('{{')
+              ) {
+                this.$delete(job.spec.envs, i)
+              }
+              if (job.spec.envs[i].is_credential) {
+                job.spec.envs[i].value = '******'
+              }
+            }
+          }
+          if (job.type === 'plugin') {
+            for (let i = 0; i < job.spec.inputs.length; i++) {
+              if (
+                job.spec.inputs[i].value.includes('fixed') ||
+                job.spec.inputs[i].value.includes('{{')
+              ) {
+                this.$delete(job.spec.inputs, i)
+              }
+              if (job.spec.inputs[i].is_credential) {
+                job.spec.inputs[i].value = '******'
+              }
+            }
+          }
+        })
       })
     },
     setCurJob (item, index, curStageIndex) {
       this.isShowConsoleFooter = true
       this.curJob = item
       this.curJobIndex = index
+      this.curStageIndex = curStageIndex
     },
     async refreshHistoryTaskDetail () {
       await this.getWorkflowTaskDetail(this.workflowName, this.taskId)
@@ -182,8 +319,9 @@ export default {
       detail.interval = this.$utils.timeFormat(detail.intervalSec)
     },
     handleApprovalChange (stage, index) {
+      // approval is stage level data, there use job ui
       this.curStageIndex = index
-      this.curJob.type = ''
+      this.curJob.type = 'zadig-approval'
       this.isShowConsoleFooter = true
     },
     showFooter (val) {
@@ -200,30 +338,36 @@ export default {
       ).then(res => {
         this.$message.success(' 取消成功')
       })
+    },
+    closeFooter () {
+      this.isShowConsoleFooter = false
+    },
+    setTitle () {
+      bus.$emit('set-topbar-title', {
+        title: '',
+        breadcrumb: [
+          { title: '项目', url: '/v1/projects' },
+          {
+            title: this.projectName,
+            isProjectName: true,
+            url: `/v1/projects/detail/${this.projectName}/detail`
+          },
+          {
+            title: '工作流',
+            url: `/v1/projects/detail/${this.projectName}/pipelines`
+          },
+          {
+            title: this.workflowName,
+            url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}`
+          },
+          { title: this.taskId, url: `` }
+        ]
+      })
     }
   },
   mounted () {
+    this.setTitle()
     this.refreshHistoryTaskDetail()
-    bus.$emit('set-topbar-title', {
-      title: '',
-      breadcrumb: [
-        { title: '项目', url: '/v1/projects' },
-        {
-          title: this.projectName,
-          isProjectName: true,
-          url: `/v1/projects/detail/${this.projectName}/detail`
-        },
-        {
-          title: '工作流',
-          url: `/v1/projects/detail/${this.projectName}/pipelines`
-        },
-        {
-          title: this.workflowName,
-          url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}`
-        },
-        { title: this.taskId, url: `` }
-      ]
-    })
   },
   beforeDestroy () {
     this.timeTimeoutFinishFlag = true
@@ -234,19 +378,20 @@ export default {
 <style lang="less" scoped>
 .product-custom-detail {
   height: 100%;
-  padding: 24px;
   font-size: 14px;
   background: #fff;
 
   header {
-    padding: 0 8px;
+    height: 42px;
+    margin: 24px;
+    padding: 0 24px;
     color: #121212;
-    line-height: 40px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+    line-height: 42px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
   }
 
   main {
-    margin-top: 40px;
+    padding: 0 24px;
 
     .content {
       display: flex;
@@ -301,6 +446,7 @@ export default {
             font-weight: 400;
             font-size: 14px;
             white-space: nowrap;
+            text-align: left;
             text-overflow: ellipsis;
             border: 1px solid @borderGray;
             cursor: pointer;
@@ -316,7 +462,7 @@ export default {
   }
 
   footer {
-    overflow-y: auto;
+    height: 100%;
   }
 
   .multipane-resizer {
@@ -365,6 +511,53 @@ export default {
       border: 1px solid @themeColor;
       border-radius: 50%;
       content: '';
+    }
+  }
+
+  .tab {
+    margin: 24px 0;
+    padding: 0 24px;
+    color: @projectNameColor;
+    font-size: 14px;
+    cursor: pointer;
+
+    span:first-child {
+      position: relative;
+      margin-right: 16px;
+
+      &::after {
+        position: absolute;
+        top: 0;
+        right: -10px;
+        width: 2px;
+        height: 100%;
+        background: @borderGray;
+        content: '';
+      }
+    }
+
+    .active {
+      color: @themeColor;
+    }
+  }
+
+  .env {
+    width: 50%;
+    height: 80%;
+    padding: 0 24px;
+    overflow-y: auto;
+
+    .table {
+      &-env {
+        height: 30px;
+        padding: 0 60px;
+        line-height: 30px;
+
+        .item {
+          display: inline-block;
+          width: 40%;
+        }
+      }
     }
   }
 }

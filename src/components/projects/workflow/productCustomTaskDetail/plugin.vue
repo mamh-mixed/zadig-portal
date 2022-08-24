@@ -1,15 +1,17 @@
 <template>
-  <div class="build-console">
+  <div class="plugin">
     <header class="mg-b8">
       <el-col :span="6">
-        <span class="type">构建</span>
-        <span>{{jobInfo.name}}</span>
+        <span class="type">{{pluginInfo.spec.name}}</span>
+        <span>{{pluginInfo.name}}</span>
       </el-col>
       <el-col :span="2">
-        <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
+        <div class="grid-content item-desc">
+          <a :class="buildOverallColor" href="#buildv4-log">{{pluginInfo.status?buildOverallStatusZh:"未运行"}}</a>
+        </div>
       </el-col>
       <el-col :span="2">
-        <span>{{jobInfo.interval}}</span>
+        <span class="item-desc">{{pluginInfo.interval}}</span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">
@@ -20,9 +22,9 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+          <el-alert v-if="pluginInfo.error" title="错误信息" :description="pluginInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
-        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
+        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in pluginInfo.spec.repos" :key="index">
           <el-col :span="4">
             <div class="grid-content item-title">代码库({{build.source}})</div>
           </el-col>
@@ -36,42 +38,9 @@
             <RepoJump :build="build" showIcon />
           </el-col>
         </el-row>
-        <el-row :gutter="0" class="mg-t8">
-          <el-col :span="4">
-            <div class="item-title">服务名称</div>
-          </el-col>
-          <el-col :span="8">
-            <span>{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
-          </el-col>
-          <el-col :span="4">
-            <div class="item-title">
-              镜像名称
-              <el-tooltip effect="dark" placement="top">
-                <div slot="content">
-                  构建镜像标签生成规则 ：
-                  <br />选择 Tag 进行构建 ： 构建时间戳 -
-                  Tag
-                  <br />只选择分支进行构建：构建时间戳
-                  - 任务 ID - 分支名称
-                  <br />选择分支和 PR 进行构建：构建时间戳 - 任务 ID - 分支名称 - PR ID
-                  <br />只选择 PR
-                  进行构建：构建时间戳 - 任务 ID - PR ID
-                </div>
-                <span>
-                  <i class="el-icon-question"></i>
-                </span>
-              </el-tooltip>
-            </div>
-          </el-col>
-          <el-col :span="8">
-            <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-              <span>{{jobInfo.spec.image.split('/').pop()}}</span>
-            </el-tooltip>
-          </el-col>
-        </el-row>
       </section>
       <section class="log-content mg-t8">
-        <XtermLog :id="jobInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="jobInfo.name" />
+        <XtermLog :id="pluginInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="pluginInfo.name" />
       </section>
     </main>
   </div>
@@ -93,7 +62,7 @@ export default {
     }
   },
   props: {
-    jobInfo: {
+    pluginInfo: {
       type: Object,
       default: () => ({})
     },
@@ -108,10 +77,6 @@ export default {
     workflowName: {
       type: String,
       default: ''
-    },
-    isShowConsoleFooter: {
-      type: Boolean,
-      default: false
     }
   },
   mixins: [mixin],
@@ -120,13 +85,13 @@ export default {
   },
   computed: {
     buildIsRunning () {
-      return this.jobInfo && this.jobInfo.status === 'running'
+      return this.pluginInfo && this.pluginInfo.status === 'running'
     },
     buildIsDone () {
-      return this.isSubTaskDone(this.jobInfo)
+      return this.isSubTaskDone(this.pluginInfo)
     },
     buildOverallStatus () {
-      return this.$utils.calcOverallBuildStatus(this.jobInfo, {})
+      return this.$utils.calcOverallBuildStatus(this.pluginInfo, {})
     },
     buildOverallStatusZh () {
       return this.$translate.translateTaskStatus(this.buildOverallStatus)
@@ -137,16 +102,16 @@ export default {
   },
   methods: {
     leaveLog () {
-      const el = document.querySelector('.build-console').style
+      const el = document.querySelector('.plugin').style
       el.overflow = 'auto'
     },
     openBuildLog (buildType) {
       this.buildv4AnyLog = []
-      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.jobInfo.name}/999999?projectName=${this.projectName}`
+      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.pluginInfo.name}/999999?projectName=${this.projectName}`
       if (typeof window.msgServer === 'undefined') {
         window.msgServer = {}
         window.msgServer[
-          `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
+          `${this.pluginInfo.spec.service_module}_${this.pluginInfo.spec.service_name}`
         ] = {}
       }
       this[`${buildType}IntervalHandle`] = setInterval(() => {
@@ -160,7 +125,7 @@ export default {
         .then(sse => {
           // Store SSE object at a higher scope
           window.msgServer[
-            `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
+            `${this.pluginInfo.spec.service_module}_${this.pluginInfo.spec.service_name}`
           ] = sse
           sse.onError(e => {
             console.error('lost connection; giving up!', e)
@@ -184,12 +149,16 @@ export default {
       return getHistoryLogsAPI(
         this.workflowName,
         this.taskId,
-        this.jobInfo.name,
+        this.pluginInfo.name,
         this.projectName
       ).then(response => {
-        this.buildv4AnyLog = response.split('\n').map(element => {
-          return element + '\n'
-        })
+        if (!response.toString().includes('\n')) {
+          this.buildv4AnyLog = [response]
+        } else {
+          this.buildv4AnyLog = response.split('\n').map(element => {
+            return element + '\n'
+          })
+        }
       })
     },
     getLog () {
@@ -205,16 +174,13 @@ export default {
           ? Math.round(new Date().getTime() / 1000)
           : detail.end_time) - detail.start_time
       detail.interval = this.$utils.timeFormat(detail.intervalSec)
-    },
-    closeConsole () {
-      this.isShowConsoleFooter = false
     }
   },
   watch: {
-    jobInfo: {
+    pluginInfo: {
       handler (val, oldVal) {
         if (val) {
-          if (oldVal && val.name !== oldVal.name) {
+          if (oldVal && val.spec.name !== oldVal.spec.name) {
             this.firstLoad = false
           }
           if (val.status && !this.firstLoad) {
@@ -246,7 +212,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.build-console {
+.plugin {
   position: relative;
   height: 100%;
   font-size: 14px;

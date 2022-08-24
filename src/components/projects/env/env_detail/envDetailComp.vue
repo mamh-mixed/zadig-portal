@@ -54,6 +54,15 @@
         element-loading-spinner="el-icon-loading"
         class="common-parcel-block basic-info-content"
       >
+        <el-tooltip v-if="envSource !== 'pm'" effect="dark" content="变更记录" placement="top">
+          <el-button
+            type="text"
+            v-hasPermi="{projectName: projectName,action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+            icon="el-icon-document"
+            class="change-log"
+            @click="$router.push(`/v1/projects/detail/${projectName}/envs/${envName}/log`)"
+          ></el-button>
+        </el-tooltip>
         <el-row :gutter="10">
           <el-col v-if="!pmServiceList.length" :span="12">
             <div class="grid-title">K8s 集群</div>
@@ -472,7 +481,7 @@
 import { translateEnvStatus, serviceTypeMap } from '@utils/wordTranslate'
 import {
   envRevisionsAPI,
-  productEnvInfoAPI,
+  getEnvInfoAPI,
   productServicesAPI,
   listProductAPI,
   updateServiceAPI,
@@ -995,7 +1004,7 @@ export default {
     async getProductEnvInfo (projectName, envName) {
       this.envLoading = true
       this.serviceLoading = true
-      const envInfo = await productEnvInfoAPI(projectName, envName)
+      const envInfo = await getEnvInfoAPI(projectName, envName)
       if (envInfo) {
         if (!envInfo.registry_id) {
           envInfo.registry_id = ''

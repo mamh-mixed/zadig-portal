@@ -351,6 +351,14 @@ const routes = [
                 }
               },
               {
+                path: ':env_name/log',
+                component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/changeLog.vue'),
+                meta: {
+                  requiresAuth: true,
+                  title: '变更记录'
+                }
+              },
+              {
                 path: 'externalConfig',
                 component: () => import(/* webpackChunkName: "Project Hosting Env" */ '@/components/projects/env/hostEnv/editExternalConfig.vue'),
                 meta: {
@@ -828,6 +836,15 @@ const routes = [
           requiresAuth: true,
           requiresSuperAdmin: true,
           title: '构建镜像管理'
+        }
+      },
+      {
+        path: 'plugins',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/plugins/manage.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: '工作流任务'
         }
       },
       {

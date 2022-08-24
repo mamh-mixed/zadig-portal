@@ -294,12 +294,17 @@ export function getEnvServicesAPI (projectName, envName) {
   return http.get(`/api/aslan/environment/environments/${envName}/groups?projectName=${projectName}`)
 }
 
-export function productEnvInfoAPI (projectName, envName) {
+export function getEnvInfoAPI (projectName, envName) {
   return http.get(`/api/aslan/environment/environments/${envName}?projectName=${projectName}`)
 }
 
 export function updateEnvImageRegistry (projectName, envName, payload) {
   return http.put(`/api/aslan/environment/environments/${envName}/registry?projectName=${projectName}`, payload)
+}
+
+export function getTheEnvChangeLogAPI (payload) {
+  // payload: projectName, envName, page, pageSize, status, username, function, detail
+  return http.get(`/api/aslan/environment/operations`, { params: payload })
 }
 
 // Project
@@ -1445,8 +1450,8 @@ export function updateEnvTemplateAPI (projectName, payload) {
 }
 
 // Env and Service
-export function createProductAPI (payload, envType = '') {
-  return http.post(`/api/aslan/environment/environments?projectName=${payload.product_name}`, payload)
+export function createEnvAPI (payload, envType = '', scene = '') {
+  return http.post(`/api/aslan/environment/environments?projectName=${payload.product_name}&scene=${scene}`, payload)
 }
 
 export function updateServiceAPI (projectName, serviceName, serviceType, envName, data, envType = '') {
@@ -2178,6 +2183,27 @@ export function approvalCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask/approve?projectName=${projectName}`, payload)
 }
 
+// Webhook
+export function addCustomWebhookAPI (projectName, workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/webhook/${workflowName}?projectName=${projectName}`, payload)
+}
+
+export function getCustomWebhooksAPI (projectName, workflowName) {
+  return http.get(`/api/aslan/workflow/v4/webhook?projectName=${projectName}&workflowName=${workflowName}`)
+}
+
+export function getCustomWebhookPresetAPI (projectName, workflowName, triggerName = '') {
+  return http.get(`/api/aslan/workflow/v4/webhook/preset?projectName=${projectName}&workflowName=${workflowName}&triggerName=${triggerName}`)
+}
+
+export function removeCustomWebhookAPI (projectName, workflowName, triggerName) {
+  return http.delete(`/api/aslan/workflow/v4/webhook/${workflowName}/trigger/${triggerName}?projectName=${projectName}`)
+}
+
+export function updateCustomWebhookAPI (projectName, workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/webhook/${workflowName}?projectName=${projectName}`, payload)
+}
+
 // count the number of users
 export function getUserNumberAPI () {
   return http.get(`/api/v1/user/count`)
@@ -2187,6 +2213,24 @@ export function uploadUserNumberAPI (payload) {
   return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
 }
 
+export function getLicenseAPI () {
+  return http.get(`/api/plutus/signature`)
+}
+// plugins
+export function getPluginsAPI () {
+  return http.get(`/api/aslan/workflow/plugin/template`)
+}
+// settings plugins
+export function updatePlugin (payload) {
+  return http.post(`/api/aslan/workflow/plugin`, payload)
+}
+export function delPlugin (id) {
+  return http.delete(`/api/aslan/workflow/plugin/${id}`)
+}
+export function getPlugins () {
+  return http.get(`/api/aslan/workflow/plugin`)
+}
+
 // ----- Enterprise -----
 export function checkPlutusAPI () {
   return http.get(`/api/plutus/health`)
@@ -2194,8 +2238,4 @@ export function checkPlutusAPI () {
 
 export function getEnterpriseInfoAPI () {
   return http.get(`/api/plutus/organization`)
-}
-
-export function getLicenseAPI () {
-  return http.get(`/api/plutus/signature`)
 }

@@ -102,7 +102,7 @@
 <script>
 import { Col, Collapse, CollapseItem, Row, NavBar, Tag, Panel, Loading, Button, Notify, Tab, Tabs, Cell, CellGroup, Icon, Divider, ActionSheet, List } from 'vant'
 import { translateEnvStatus, serviceTypeMap } from '@utils/wordTranslate'
-import { envRevisionsAPI, productEnvInfoAPI, productServicesAPI, listProductAPI } from '@api'
+import { envRevisionsAPI, getEnvInfoAPI, productServicesAPI, listProductAPI } from '@api'
 import _ from 'lodash'
 export default {
   components: {
@@ -191,7 +191,7 @@ export default {
       }
     },
     async getEnvInfo (projectName, envName) {
-      const envInfo = await productEnvInfoAPI(projectName, envName)
+      const envInfo = await getEnvInfoAPI(projectName, envName)
       if (envInfo) {
         this.envInfo = envInfo
       }

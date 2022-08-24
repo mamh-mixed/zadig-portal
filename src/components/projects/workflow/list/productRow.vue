@@ -31,7 +31,10 @@
       </div>
     </section>
     <section class="stages">
-      <CusTags :values="stages"></CusTags>
+      <el-tooltip effect="dark" placement="top-start">
+        <div slot="content">{{stages.toString()}}</div>
+        <CusTags :values="stages" ></CusTags>
+      </el-tooltip>
     </section>
     <section class="desc">{{ description }}</section>
     <section class="time-rate">
@@ -179,6 +182,7 @@ export default {
   flex-grow: 1;
   align-items: center;
   justify-content: space-between;
+  box-sizing: border-box;
   width: 100%;
   height: 80px;
   margin-bottom: 8px;
@@ -237,7 +241,7 @@ export default {
   }
 
   .product-header {
-    flex: 0 0 200px;
+    flex: 0 0 240px;
     max-width: 240px;
     cursor: auto;
 
@@ -276,8 +280,8 @@ export default {
   }
 
   .stages {
-    flex: 0 0 18%;
-    margin-left: 80px;
+    width: 400px;
+    overflow: hidden;
   }
 
   .desc {

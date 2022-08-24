@@ -10,9 +10,9 @@
     :recentSuccessID="workflow.recentSuccessfulTask?`#${workflow.recentSuccessfulTask.taskID}`:''"
     :avgRuntime="makeAvgRunTime(workflow.averageExecutionTime)"
     :avgSuccessRate="makeAvgSuccessRate(workflow.successRate)"
-    :recentSuccessLink="makeTaskDetailLink(workflow.projectName,workflow.recentSuccessfulTask)"
+    :recentSuccessLink="makeTaskDetailLink(workflow.projectName,workflow.recentSuccessfulTask,workflow.workflow_type)"
     :recentFailID="workflow.recentFailedTask?`#${workflow.recentFailedTask.taskID}`:''"
-    :recentFailLink="makeTaskDetailLink(workflow.projectName,workflow.recentFailedTask)"
+    :recentFailLink="makeTaskDetailLink(workflow.projectName,workflow.recentFailedTask,workflow.workflow_type)"
     :updateTime="$utils.convertTimestamp(workflow.update_time)"
     :description="workflow.description"
     @refreshWorkflow="refreshWorkflow"
@@ -32,7 +32,7 @@
         </el-button>
       </el-tooltip>
       <router-link
-        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', action: 'run_workflow', resource:{type:'workflow',name:workflow.name}})"
+        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
         :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.projectName}&id=${workflow.id}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
@@ -172,9 +172,13 @@ export default {
         return ''
       }
     },
-    makeTaskDetailLink (projectName, taskInfo) {
+    makeTaskDetailLink (projectName, taskInfo, type) {
       if (taskInfo) {
-        return `/v1/projects/detail/${projectName}/pipelines/multi/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+        if (type === 'common_workflow') {
+          return `/v1/projects/detail/${projectName}/pipelines/custom/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+        } else {
+          return `/v1/projects/detail/${projectName}/pipelines/multi/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+        }
       } else {
         return ''
       }

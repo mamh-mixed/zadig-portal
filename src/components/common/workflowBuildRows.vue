@@ -281,6 +281,8 @@ export default {
             // source:other  init options data
             if (build.source === 'other') {
               this.searchRepoInfo(build, '')
+            } else {
+              this.searchRepoInfo(build)
             }
           })
         })
@@ -317,6 +319,7 @@ export default {
             repo: build.repo_name,
             default_branch: build.branch,
             codehost_id: build.codehost_id,
+            filter_regexp: build.filter_regexp,
             repo_namespace: build.repo_namespace,
             key: query
           }

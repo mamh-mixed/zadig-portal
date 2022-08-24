@@ -20,7 +20,7 @@
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal" v-show="activeName === 'ui'">
+      <Multipane layout="horizontal" v-show="activeName === 'ui'" style="height: 100%;">
         <main class="mg-t16">
           <section class="ui">
             <span class="ui-text mg-r8">Start</span>
@@ -38,7 +38,7 @@
               <div class="line"></div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ Stage</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -46,99 +46,103 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{ minHeight: '400px',maxHeight: '500px'}" v-if="isShowFooter">
-          <el-card>
-            <div slot="header">
-              <span>{{ job.type === jobType.freestyle ? '通用任务' : '基本配置' }}</span>
+        <footer :style="{minHeight:'600px'}" v-if="isShowFooter">
+          <div class="header">
+            <span>{{curJobType}}</span>
+            <div>
+              <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
+              <el-button size="mini" @click="closeFooter">取消</el-button>
             </div>
-            <div v-if="payload.stages.length > 0 && job">
+          </div>
+          <div v-if="payload.stages.length > 0 && job" class="main">
+            <el-form
+              v-if="job.type !== jobType.freestyle"
+              :rules="JobConfigRules"
+              ref="jobRuleForm"
+              :model="job"
+              class="mg-t24 mg-b24"
+              label-width="90px"
+              size="small"
+            >
+              <el-form-item label="任务名称" prop="name" v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0">
+                <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+              </el-form-item>
+              <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
+                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
+                  <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build" class="mg-t40">
+                <ServiceAndBuild
+                  :projectName="projectName"
+                  v-model="job.spec.service_and_builds"
+                  :originServiceAndBuilds="originServiceAndBuilds"
+                  class="mg-b24"
+                  :globalEnv="globalEnv"
+                  ref="serviceAndbuild"
+                />
+                <el-select size="small" v-model="service" multiple filterable clearable>
+                  <el-option
+                    disabled
+                    label="全选"
+                    value="ALL"
+                    :class="{selected: service.length === serviceAndBuilds.length}"
+                    style="color: #606266;"
+                  >
+                    <span
+                      style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                      @click="service = serviceAndBuilds.map(item=>item.value)"
+                    >全选</span>
+                  </el-option>
+                  <el-option
+                    v-for="(service,index) in serviceAndBuilds"
+                    :key="index"
+                    :value="service.value"
+                    :label="service.value"
+                  >{{service.value}}</el-option>
+                </el-select>
+                <el-button
+                  type="success"
+                  size="mini"
+                  plain
+                  :disabled="Object.keys(service).length === 0"
+                  @click="addServiceAndBuild(job.spec.service_and_builds)"
+                >+ 添加</el-button>
+              </div>
+              <div v-if="job.type === 'plugin'">
+                <Plugin v-model="job" ref="plugin" :globalEnv="globalEnv" />
+              </div>
+              <BuildEnv
+                :projectName="projectName"
+                v-if="job.type === jobType.deploy"
+                v-model="job"
+                ref="buildEnv"
+                :originServiceAndBuilds="originServiceAndBuilds"
+                :globalEnv="globalEnv"
+                :workflowInfo="payload"
+              ></BuildEnv>
+            </el-form>
+            <div v-else>
               <el-form
-                v-if="job.type !== jobType.freestyle"
                 :rules="JobConfigRules"
                 ref="jobRuleForm"
-                label-width="90px"
+                label-width="120px"
                 :model="job"
                 class="mg-t24"
                 size="small"
+                label-position="left"
               >
                 <el-form-item
-                  label="Job 名称"
+                  label="任务名称"
                   prop="name"
                   v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
                 >
-                  <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+                  <el-input v-model="job.name" size="small" style="width: 400px;"></el-input>
                 </el-form-item>
-                <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
-                  <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
-                    <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
-                  </el-select>
-                </el-form-item>
-                <div v-if="payload.stages[curStageIndex].jobs.length > 0" v-show="job.type === jobType.build" class="mg-t40">
-                  <ServiceAndBuild
-                    :projectName="projectName"
-                    v-model="job.spec.service_and_builds"
-                    :originServiceAndBuilds="originServiceAndBuilds"
-                    class="mg-b24"
-                    ref="serviceAndbuild"
-                  />
-                  <el-select size="small" v-model="service" multiple filterable clearable>
-                    <el-option
-                      disabled
-                      label="全选"
-                      value="ALL"
-                      :class="{selected: service.length === serviceAndBuilds.length}"
-                      style="color: #606266;"
-                    >
-                      <span
-                        style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
-                        @click="service = serviceAndBuilds.map(item=>item.service_name)"
-                      >全选</span>
-                    </el-option>
-                    <el-option
-                      v-for="service in serviceAndBuilds"
-                      :key="service.service_name"
-                      :value="service.service_name"
-                      :label="`${service.service_name}(${service.service_module})`"
-                    >{{service.service_name}}/{{service.service_module}}</el-option>
-                  </el-select>
-                  <el-button
-                    type="success"
-                    size="mini"
-                    :disabled="Object.keys(service).length === 0"
-                    @click="addServiceAndBuild(job.spec.service_and_builds)"
-                  >+ 添加</el-button>
-                </div>
-                <BuildEnv
-                  :projectName="projectName"
-                  v-if="job.type === jobType.deploy"
-                  v-model="job"
-                  ref="buildEnv"
-                  :workflowInfo="payload"
-                ></BuildEnv>
               </el-form>
-              <div v-else>
-                <el-form
-                  :rules="JobConfigRules"
-                  ref="jobRuleForm"
-                  label-width="120px"
-                  :model="job"
-                  class="primary-form"
-                  size="small"
-                  label-position="left"
-                >
-                  <el-form-item
-                    label="任务名称"
-                    prop="name"
-                    v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
-                  >
-                    <el-input v-model="job.name" size="small"></el-input>
-                  </el-form-item>
-                </el-form>
-                <JobCommonBuild :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
-              </div>
-              <el-button class="mg-t16 mg-b64" type="primary" size="mini" @click="saveJobConfig">确定</el-button>
+              <JobCommonBuild :globalEnv="globalEnv" :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
             </div>
-          </el-card>
+          </div>
         </footer>
       </Multipane>
       <section v-show="activeName === 'yaml'" class="yaml">
@@ -147,14 +151,31 @@
       </section>
     </div>
     <div class="right">
-      <div v-for="item in configList" :key="item.label" class="right-tab" @click="isShowDrawer=true">{{item.label}}</div>
+      <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
     </div>
-    <el-drawer title="高级配置" :visible.sync="isShowDrawer" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
-      <span>
-        <h4>运行策略</h4>
+    <el-drawer
+      :visible.sync="isShowDrawer"
+      direction="rtl"
+      :modal-append-to-body="false"
+      :show-close="false"
+      class="drawer"
+      :size="drawerSize?drawerSize:'40%'"
+    >
+      <span slot="title" class="drawer-title">
+        <span>{{drawerTitle}}</span>
+        <div v-if="drawerHideButton">
+          <el-button size="mini" plain icon="el-icon-circle-close" @click="isShowDrawer=false"></el-button>
+        </div>
+        <div v-else>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
+          <el-button size="mini" plain @click="isShowDrawer=false">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
+        </div>
+      </span>
+      <div v-if="curDrawer === 'high'">
+        <div class="mg-b16">运行策略</div>
         <el-form>
           <el-form-item>
-            <span style="margin-right: 16px;">
+            <span class="mg-r16">
               <span>并发运行</span>
               <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
                 <i class="pointer el-icon-question"></i>
@@ -162,12 +183,17 @@
             </span>
             <el-switch v-model="multi_run"></el-switch>
           </el-form-item>
-          <el-button type="primary" size="small" @click="setMuitlRun">确定</el-button>
         </el-form>
-      </span>
+      </div>
+      <div v-if="curDrawer === 'env'">
+        <Env :preEnvs="payload" ref="env" />
+      </div>
+      <div v-if="curDrawer === 'webhook'">
+        <Webhook :config="payload" :isEdit="isEdit" :isShowDrawer="isShowDrawer" :originalWorkflow="originalWorkflow" @saveWorkflow="operateWorkflow" @closeDrawer="isShowDrawer=false" ref="webhook" />
+      </div>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? '新建 Stage' : '编辑 Stage'" :visible.sync="isShowStageOperateDialog" width="30%">
-      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" />
+    <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
+      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" :workflowInfo="payload" @submitEvent="operateStage('',stage)" />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
@@ -182,7 +208,9 @@ import {
   configList,
   jobTabList,
   editorOptions,
-  jobType
+  jobType,
+  jobTypeList,
+  globalConstEnvs
 } from './config'
 import {
   getAssociatedBuildsAPI,
@@ -199,9 +227,11 @@ import StageOperate from './stageOperate.vue'
 import ServiceAndBuild from './components/jobServiceAndBuild'
 import BuildEnv from './components/jobBuildEnv.vue'
 import JobCommonBuild from './components/jobCommonBuild.vue'
-import DockerList from './components/dockerList.vue'
+import Plugin from './components/plugin.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
+import Env from './components/env.vue'
+import Webhook from './components/webhook.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -209,7 +239,7 @@ import { cloneDeep, differenceWith } from 'lodash'
 const validateName = (rule, value, callback) => {
   const reg = /^[a-z][a-z0-9-]{0,32}$/
   if (value === '') {
-    callback(new Error('请输入 Job 名称'))
+    callback(new Error('请输入任务名称'))
   } else if (!reg.test(value)) {
     callback(
       new Error(
@@ -227,12 +257,13 @@ export default {
       tabList,
       configList,
       jobTabList,
+      globalConstEnvs,
       activeName: 'ui',
       editorOptions,
       jobType,
       stage: {
         name: '',
-        parallel: false,
+        parallel: true,
         approval: {
           enabled: false,
           approve_users: [],
@@ -244,6 +275,7 @@ export default {
       },
       job: {
         name: '',
+        type: '',
         spec: {
           docker_registry_id: ''
         }
@@ -254,10 +286,13 @@ export default {
         project: '',
         description: '',
         multi_run: false,
-        stages: []
+        stages: [],
+        params: []
       },
+      originalWorkflow: {},
       curStageIndex: 0,
       curJobIndex: -2, // 不指向 job
+      curDrawer: 'high',
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
@@ -267,6 +302,7 @@ export default {
       yamlError: '',
       isShowDrawer: false,
       multi_run: false,
+      globalEnv: [],
       JobConfigRules: {
         name: [
           {
@@ -297,10 +333,12 @@ export default {
     ServiceAndBuild,
     BuildEnv,
     JobCommonBuild,
-    DockerList,
     Service,
     RunCustomWorkflow,
-    codemirror
+    codemirror,
+    Plugin,
+    Env,
+    Webhook
   },
   computed: {
     projectName () {
@@ -309,11 +347,46 @@ export default {
     isShowFooter () {
       return this.$store.state.customWorkflow.isShowFooter
     },
-    workflowInfo () {
-      return this.$store.state.customWorkflow.workflowInfo
-    },
     isEdit () {
       return this.$route.params.workflow_name
+    },
+    curJobType () {
+      if (this.job) {
+        const curType = jobTypeList.find(item => item.type === this.job.type)
+        return curType ? curType.label : this.job.spec.plugin.name
+      } else {
+        return ''
+      }
+    },
+    drawerTitle () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.label
+    },
+    drawerSize () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerSize
+    },
+    drawerConfirmText () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerConfirmText
+    },
+    drawerCancelText () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerCancelText
+    },
+    drawerHideButton () {
+      const res = this.configList.find(item => {
+        return item.value === this.curDrawer
+      })
+      return res.drawerHideButton
     }
   },
   created () {
@@ -369,56 +442,100 @@ export default {
         return
       }
       if (this.payload.stages.length === 0) {
-        this.$message.error(' 请至少填写一个 Stage')
+        this.$message.error(' 请至少填写一个阶段')
         return
       }
       this.payload.stages.forEach(item => {
         if (item.jobs.length === 0) {
-          this.$message.error(`请填写 ${item.name} 中的 Job`)
+          this.$message.error(`请填写 ${item.name} 中的任务`)
           throw Error()
         }
       })
       if (this.isShowFooter) {
-        // this.saveJobConfig().then(valid => {
-        //   if (valid) {
-        //     const res = isEqual(
-        //       this.job,
-        //       this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
-        //     )
-        //     if (!res) {
-        //       this.$message.error('请先保存 Job 配置')
-        //     }
-        //   }
-        // })
-        this.$message.error('请先保存 Job 配置')
+        this.$message.error('请先保存任务配置')
         return
       }
       this.saveWorkflow()
     },
     saveWorkflow () {
+      if (this.payload.params && this.payload.params.length > 0) {
+        this.payload.params.forEach(item => {
+          if (item.command === 'fixed') {
+            item.value = '<+fixed>' + item.value
+          }
+        })
+      }
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.type === 'zadig-build') {
+            if (job.spec && job.spec.service_and_builds) {
+              job.spec.service_and_builds.forEach(service => {
+                if (service.key_vals) {
+                  service.key_vals.forEach(item => {
+                    if (item.command === 'fixed') {
+                      item.value = '<+fixed>' + item.value
+                    }
+                  })
+                }
+              })
+            }
+          }
+          if (job.type === 'zadig-deploy') {
+            if (job.spec.envType === 'fixed') {
+              job.spec.env = '<+fixed>' + job.spec.env
+            }
+            job.spec.source =
+              job.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
+          }
+          if (job.type === 'freestyle') {
+            if (
+              job.spec.properties.envs &&
+              job.spec.properties.envs.length > 0
+            ) {
+              job.spec.properties.envs.forEach(item => {
+                if (item.command === 'fixed') {
+                  item.value = '<+fixed>' + item.value
+                }
+              })
+            }
+          }
+          if (job.type === 'plugin') {
+            job.spec.plugin.inputs.forEach(item => {
+              if (item.command === 'fixed') {
+                item.value = '<+fixed>' + item.value
+              }
+            })
+          }
+        })
+      })
+
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
       if (this.$route.fullPath.includes('edit')) {
-        updateCustomWorkflowAPI(
-          workflowName,
-          yamlParams,
-          this.projectName
-        ).then(res => {
-          this.$message.success('编辑成功')
-          this.getWorkflowDetail(this.payload.name)
-          this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
-          )
-        })
+        updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
+          .then(res => {
+            this.$message.success('编辑成功')
+            this.getWorkflowDetail(this.payload.name)
+            this.$router.push(
+              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+            )
+          })
+          .catch(() => {
+            this.getWorkflowDetail(this.payload.name)
+          })
       } else {
-        addCustomWorkflowAPI(yamlParams, this.projectName).then(res => {
-          this.$message.success('新建成功')
-          this.getWorkflowDetail(this.payload.name)
-          this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
-          )
-        })
+        addCustomWorkflowAPI(yamlParams, this.projectName)
+          .then(res => {
+            this.$message.success('新建成功')
+            this.getWorkflowDetail(this.payload.name)
+            this.$router.push(
+              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+            )
+          })
+          .catch(() => {
+            this.getWorkflowDetail(this.payload.name)
+          })
       }
     },
     cancelWorkflow () {
@@ -433,8 +550,75 @@ export default {
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
+        this.payload.params.forEach(item => {
+          if (item.value.includes('<+fixed>')) {
+            item.command = 'fixed'
+            item.value = item.value.replaceAll('<+fixed>', '')
+          }
+        })
+        this.payload.stages.forEach(stage => {
+          stage.jobs.forEach(job => {
+            if (job.spec && job.spec.service_and_builds) {
+              job.spec.service_and_builds.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.value.includes('<+fixed>')) {
+                    item.command = 'fixed'
+                    item.value = item.value.replaceAll('<+fixed>', '')
+                  }
+                  if (item.value.includes('{{')) {
+                    item.command = 'other'
+                  }
+                })
+              })
+            }
+            if (job.type === 'zadig-deploy') {
+              if (job.spec.env.includes('fixed')) {
+                job.spec.envType = 'fixed'
+                job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
+              }
+              if (job.spec.env.includes('{{')) {
+                job.spec.envType = 'other'
+              }
+              if (job.spec.service_and_images.length > 0) {
+                job.spec.serviceType = 'runtime'
+              }
+              if (job.spec.source === 'fromjob') {
+                job.spec.serviceType = 'other'
+              }
+              // Mapping for value-key
+              if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+                job.spec.service_and_images.forEach(service => {
+                  service.value = `${service.service_name}/${service.service_module}`
+                })
+              }
+            }
+            if (job.type === 'freestyle') {
+              job.spec.properties.envs.forEach(item => {
+                if (item.value.includes('<+fixed>')) {
+                  item.command = 'fixed'
+                  item.value = item.value.replaceAll('<+fixed>', '')
+                }
+                if (item.value.includes('{{')) {
+                  item.command = 'other'
+                }
+              })
+            }
+            if (job.type === 'plugin') {
+              job.spec.plugin.inputs.forEach(item => {
+                if (item.value && item.value.includes('<+fixed>')) {
+                  item.command = 'fixed'
+                  item.value = item.value.replaceAll('<+fixed>', '')
+                }
+                if (item.value && item.value.includes('{{')) {
+                  item.command = 'other'
+                }
+              })
+            }
+          })
+        })
         this.multi_run = this.payload.multi_run
-        this.$store.dispatch('setWorkflowInfo', this.payload)
+        this.originalWorkflow = cloneDeep(this.payload)
+        this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
       })
     },
     showStageOperateDialog (type, row) {
@@ -444,11 +628,11 @@ export default {
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {
-        this.$message.error('请至少创建一个 Job')
+        this.$message.error('请至少创建一个任务')
         return
       }
       if (this.isShowFooter) {
-        this.$message.error('请先保存上一个 Job 配置')
+        this.$message.error('请先保存上一个任务配置')
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -487,7 +671,7 @@ export default {
       })
     },
     delStage (index, item) {
-      this.$confirm(`确定删除 Stage [${item.name}]？`, '确认', {
+      this.$confirm(`确定删除阶段 [${item.name}]？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -510,11 +694,12 @@ export default {
           if (valid) {
             if (this.job.type === jobType.deploy) {
               this.$refs.buildEnv.validate().then(valid => {
+                const curJob = this.$refs.buildEnv.getData()
                 if (valid) {
                   this.$set(
                     this.payload.stages[this.curStageIndex].jobs,
                     this.curJobIndex,
-                    this.job
+                    curJob
                   )
                   this.$store.dispatch('setIsShowFooter', false)
                   resolve()
@@ -522,34 +707,48 @@ export default {
               })
               reject()
             } else if (this.job.type === jobType.build) {
-              if (this.$refs.serviceAndbuild.validate()) {
-                this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
-                this.$set(
-                  this.payload.stages[this.curStageIndex].jobs,
-                  this.curJobIndex,
-                  this.job
-                )
-                this.$store.dispatch('setIsShowFooter', false)
-                reject()
-              } else {
+              if (this.$refs.serviceAndbuild.getData().length === 0) {
                 this.$message.error('请至少选择一个服务组件')
-                reject()
+                return
               }
+              this.$refs.serviceAndbuild.validate().then(valid => {
+                if (valid) {
+                  this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    this.job
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                }
+              })
             } else if (this.job.type === jobType.freestyle) {
-              this.$refs[this.beInitCompRef].validate().then(() => {
-                delete this.job.isCreate // 去除新建状态
+              this.$refs[this.beInitCompRef]
+                .validate()
+                .then(job => {
+                  delete this.job.isCreate // 去除新建状态
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    job
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                  this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
+                  resolve()
+                })
+                .catch(err => {
+                  console.log('common build valid error', err)
+                  reject(err)
+                })
+            } else if (this.job.type === jobType.plugin) {
+              this.$refs.plugin.validate().then(res => {
                 this.$set(
                   this.payload.stages[this.curStageIndex].jobs,
                   this.curJobIndex,
-                  this.job
+                  res
                 )
-                this.$store.dispatch('setIsShowFooter', false)
-                this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
-                resolve()
-              }).catch(err => {
-                console.log('common build valid error', err)
-                reject(err)
               })
+              this.$store.dispatch('setIsShowFooter', false)
             }
           }
         })
@@ -562,7 +761,8 @@ export default {
       )
       if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
         this.$nextTick(() => {
-          this.$refs[this.beInitCompRef] && this.$refs[this.beInitCompRef].initOpe()
+          this.$refs[this.beInitCompRef] &&
+            this.$refs[this.beInitCompRef].initOpe()
         })
       }
     },
@@ -574,8 +774,11 @@ export default {
     },
     getServiceAndBuildList () {
       const projectName = this.projectName
-      const key = this.$utils.rsaEncrypt()
-      getAssociatedBuildsAPI(projectName, true, key).then(res => {
+      // const key = this.$utils.rsaEncrypt()
+      getAssociatedBuildsAPI(projectName, true).then(res => {
+        res.forEach(item => {
+          item.value = `${item.service_name}/${item.service_module}`
+        })
         this.serviceAndBuilds = res
         this.originServiceAndBuilds = res
       })
@@ -583,21 +786,34 @@ export default {
     addServiceAndBuild (val) {
       let curService
       this.service.forEach(service => {
-        curService = this.serviceAndBuilds.find(
-          item => item.service_name === service
-        )
+        curService = this.serviceAndBuilds.find(item => item.value === service)
         val.push(cloneDeep(curService))
       })
       // added need to del
       this.serviceAndBuilds = this.serviceAndBuilds.filter(item => {
-        return item.service_name !== curService.service_name
+        return item.value !== curService.value
       })
       this.service = []
     },
-    setMuitlRun () {
-      this.$set(this.payload, 'multi_run', this.multi_run)
-      this.$message.success('设置成功')
-      this.isShowDrawer = false
+    handleDrawerChange () {
+      if (this.curDrawer === 'high') {
+        this.$set(this.payload, 'multi_run', this.multi_run)
+        this.isShowDrawer = false
+      }
+      if (this.curDrawer === 'env') {
+        this.$refs.env.validate().then(() => {
+          this.$set(this.payload, 'params', this.$refs.env.getData())
+          this.isShowDrawer = false
+        })
+      }
+    },
+    setCurDrawer (val) {
+      this.isShowDrawer = true
+      this.curDrawer = val
+    },
+    closeFooter () {
+      this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
+      this.$store.dispatch('setIsShowFooter', false)
     }
   },
   watch: {
@@ -611,12 +827,20 @@ export default {
     },
     payload: {
       handler (val, oldVal) {
+        let res = []
+        if (val.params.length > 0) {
+          res = val.params.map(item => {
+            return `{{.workflow.params.${item.name}}}`
+          })
+        }
+        this.globalEnv = this.globalConstEnvs.concat(res)
         this.setJob()
       },
       deep: true
     },
     curJobIndex (val) {
-      if (val !== -2) { // 保存构建后设置为-2，什么都不执行，目的是为了两次点击同一个stage，能触发这个函数（有初始化动作 没有地方能看到触发的）
+      if (val !== -2) {
+        // 保存构建后设置为-2，什么都不执行，目的是为了两次点击同一个stage，能触发这个函数（有初始化动作 没有地方能看到触发的）
         this.setJob()
       }
     },
@@ -628,6 +852,7 @@ export default {
         if (val) {
           this.serviceAndBuilds = this.originServiceAndBuilds
           if (
+            val.spec &&
             val.spec.service_and_builds &&
             val.spec.service_and_builds.length > 0
           ) {
@@ -635,7 +860,7 @@ export default {
               this.originServiceAndBuilds,
               val.spec.service_and_builds,
               (a, b) => {
-                return a.service_name === b.service_name
+                return a.value === `${b.service_name}/${b.service_module}`
               }
             )
           }
@@ -658,14 +883,17 @@ export default {
 
   .left {
     flex: 1;
-    padding: 24px;
 
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px;
-      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+      height: 42px;
+      margin: 24px;
+      padding: 0 24px;
+      color: #121212;
+      line-height: 42px;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 
       .name {
         display: flex;
@@ -699,8 +927,7 @@ export default {
 
     main {
       width: 100%;
-      height: 100%;
-      margin-top: 40px;
+      padding: 0 24px;
 
       .ui {
         display: flex;
@@ -777,13 +1004,26 @@ export default {
     footer {
       position: relative;
       z-index: 1;
-      overflow-y: auto;
+      height: 100%;
+      font-size: 14px;
       background: #fff;
+      box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
 
-      .confirm {
-        position: absolute;
-        bottom: 24px;
-        left: 50%;
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 42px;
+        padding: 0 24px;
+        line-height: 42px;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .main {
+        max-height: 400px;
+        padding: 0 24px;
+        overflow-y: scroll;
       }
     }
   }
@@ -791,7 +1031,6 @@ export default {
   .right {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     width: 100px;
     border-left: 1px solid @borderGray;
@@ -810,14 +1049,19 @@ export default {
   .drawer {
     color: #555;
 
+    &-title {
+      display: flex;
+      justify-content: space-between;
+    }
+
     /deep/.el-drawer__body {
-      padding: 24px;
+      padding: 0 24px;
     }
 
     /deep/ .el-drawer.rtl,
     .el-drawer__container {
       top: auto;
-      right: 100px !important;
+      right: 0;
       bottom: 0;
       height: calc(~'100% - 102px') !important;
     }

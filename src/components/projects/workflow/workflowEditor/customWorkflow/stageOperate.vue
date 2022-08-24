@@ -1,7 +1,15 @@
 <template>
   <div class="stage-operate">
-    <el-form :model="form" :rules="rules" ref="ruleForm" :label-width="formLabelWidth" size="small">
-      <el-form-item label="Stage 名称" prop="name">
+    <el-form
+      :model="form"
+      :rules="rules"
+      ref="ruleForm"
+      :label-width="formLabelWidth"
+      size="small"
+      @keydown.enter.native="$emit('submitEvent')"
+      @submit.native.prevent
+    >
+      <el-form-item label="阶段名称" prop="name">
         <el-input v-model="form.name" size="small"></el-input>
       </el-form-item>
       <el-form-item label="并发执行" prop="parallel">
@@ -53,24 +61,35 @@
 <script>
 import { getUsersAPI } from '@api'
 import { cloneDeep } from 'lodash'
-
+const validateName = (rule, value, callback) => {
+  const stageNames = rule.workflowInfo.stages.map(stage => stage.name)
+  if (!value) {
+    callback(new Error('请填写阶段名称'))
+  } else if (stageNames.includes(value)) {
+    callback(new Error('阶段名称不能重复'))
+  } else {
+    callback()
+  }
+}
 export default {
   name: 'StageOperate',
   data () {
     return {
-      formLabelWidth: '120px',
+      formLabelWidth: '135px',
       rules: {
         name: [
           {
             required: true,
-            trigger: 'blur'
+            trigger: 'blur',
+            validator: validateName,
+            workflowInfo: this.workflowInfo
           }
         ]
       },
       userList: [],
       form: {
         name: '',
-        parallel: false,
+        parallel: true,
         approval: {
           enabled: false,
           approve_users: [],
@@ -91,6 +110,10 @@ export default {
     type: {
       type: String,
       default: 'add'
+    },
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
     }
   },
   created () {
@@ -123,7 +146,7 @@ export default {
     reset () {
       this.form = {
         name: '',
-        parallel: false,
+        parallel: true,
         approval: {
           enabled: false,
           approve_users: [],

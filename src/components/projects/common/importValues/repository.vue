@@ -25,6 +25,7 @@
             :key="index"
             :label="host.address + '('+host.alias+')'"
             :value="host.id"
+            :disabled="host.type === 'gitee'"
           >{{ host.address + '('+host.alias+')'}}</el-option>
         </el-select>
       </el-form-item>

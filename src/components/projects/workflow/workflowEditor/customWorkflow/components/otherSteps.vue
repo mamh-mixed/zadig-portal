@@ -143,7 +143,8 @@ export default {
   methods: {
     initStepStatus (steps) {
       this.object_storage_upload_enabled = !!steps.archive
-      this.post_script_enabled = !!steps.shell
+      this.post_script_enabled = true
+      this.addExtra('script')
     },
     addExtra (command) {
       if (command === 'script') {
