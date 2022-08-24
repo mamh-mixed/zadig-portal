@@ -1,6 +1,6 @@
 export const plutusRoute = [
   {
-    path: '/v1/(plutus|enterprise)',
+    path: '/v1/(plutus|enterprise|release)',
     component: () => import(/* webpackChunkName: "micro-app" */ '@/components/entry/home.vue'),
     meta: {
       requiresAuth: true
