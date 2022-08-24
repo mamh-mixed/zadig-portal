@@ -23,6 +23,7 @@ import App from './App.vue'
 import { analyticsRequestAPI } from '@api'
 import encrypt from './utilities/encrypt'
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill'
+
 global.EventSource = EventSourcePolyfill || NativeEventSource
 
 Vue.prototype.$utils = utils
@@ -73,6 +74,7 @@ const analyticsRequest = (to, from) => {
       })
   }
 }
+
 router.beforeEach(async (to, from, next) => {
   if (to.params.project_name) {
     const projectName = to.params.project_name
@@ -83,6 +85,12 @@ router.beforeEach(async (to, from, next) => {
   } else {
     document.title = 'Zadig'
   }
+
+  if (!store.state.checkPlutus.plutusChecked) {
+    await store.dispatch('checkPlutusStatus')
+    next(to)
+  }
+
   if (to.meta.requiresSuperAdmin) {
     if (!isSuperAdmin()) {
       Element.Notification({
