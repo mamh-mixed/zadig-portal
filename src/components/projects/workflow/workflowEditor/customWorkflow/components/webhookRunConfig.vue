@@ -2,6 +2,36 @@
   <div class="custom-workflow">
     <el-form label-width="120px" size="small">
       <el-collapse v-model="activeName">
+        <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
+          <el-table :data="payload.params.filter(item=>item.isShow)">
+            <el-table-column label="键">
+              <template slot-scope="scope">{{scope.row.name}}</template>
+            </el-table-column>
+            <el-table-column label="值">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
+                  <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
+                </el-select>
+                <el-input
+                  v-if="scope.row.type === 'text'"
+                  v-model="scope.row.value"
+                  size="small"
+                  type="textarea"
+                  :rows="2"
+                  style="width: 220px;"
+                ></el-input>
+                <el-input
+                  v-if="scope.row.type === 'string'"
+                  class="password"
+                  v-model="scope.row.value"
+                  size="small"
+                  type="text"
+                  style="width: 220px;"
+                ></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
         <div v-for="(stage,stageIndex) in payload.stages" :key="stage.name">
           <el-collapse-item
             v-for="(job,jobIndex) in stage.jobs"
@@ -11,7 +41,8 @@
             class="mg-l8"
           >
             <template slot="title">
-              <el-checkbox v-model="job.checked"></el-checkbox>
+              <!-- <el-checkbox v-model="job.skipped"></el-checkbox> -->
+              <el-switch v-model="job.skipped" :active-value="false" :inactive-value="true" @click.stop.native></el-switch>
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
@@ -22,7 +53,7 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
+                  value-key="value"
                   size="small"
                   style="width: 220px;"
                   @change="handleServiceBuildChange"
@@ -30,11 +61,11 @@
                   <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
                     :key="index"
-                    :label="service.service_name"
+                    :label="`${service.service_module}(${service.service_name})`"
                     :value="service"
                   >
-                    <span>{{service.service_name}}</span>
-                    <span style="color: #ccc;">({{service.service_module}})</span>
+                    <span>{{service.service_module}}</span>
+                    <span style="color: #ccc;">({{service.service_name}})</span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -49,7 +80,7 @@
             </div>
             <div v-if="job.type === 'zadig-deploy'">
               <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('fixed')||job.spec.env.includes('{{'))">
-                <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
+                <el-select v-model="job.spec.env" size="small" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
                     :key="`${pro.projectName} / ${pro.name}`"
@@ -75,8 +106,8 @@
                   multiple
                   clearable
                   reserve-keyword
-                  value-key="service_name"
-                  size="medium"
+                  value-key="value"
+                  size="small"
                   style="width: 220px;"
                   @change="handleServiceDeployChange"
                 >
@@ -86,20 +117,20 @@
                     :label="service.service_name"
                     :value="service"
                   >
-                    <span>{{service.service_name}}</span>
-                    <span style="color: #ccc;">({{service.service_module}})</span>
+                    <span>{{service.service_module}}</span>
+                    <span style="color: #ccc;">({{service.service_name}})</span>
                   </el-option>
                 </el-select>
               </el-form-item>
               <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label=" `${item.service_name}`">
+                <el-form-item :label="`${item.service_name}`">
                   <el-select
                     v-model="item.image"
                     filterable
                     clearable
                     reserve-keyword
-                    value-key="service_name"
-                    size="medium"
+                    value-key="value"
+                    size="small"
                     style="width: 220px;"
                     placeholder="请选择镜像"
                   >
@@ -192,7 +223,6 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            job.checked = true
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
@@ -211,9 +241,18 @@ export default {
                 })
               })
             }
+            if (job.type === 'zadig-deploy') {
+              // Mapping for value-key
+              if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+                job.spec.service_and_images.forEach(service => {
+                  service.value = `${service.service_name}/${service.service_module}`
+                })
+              }
+            }
           })
         })
-        this.$set(this, 'payload', this.cloneWorkflow)
+        this.payload = this.cloneWorkflow
+        // this.$set(this, 'payload', this.cloneWorkflow)
         this.handleEnv()
       }
     },
@@ -461,6 +500,19 @@ export default {
       },
       immediate: false,
       deep: true
+    }
+  },
+  computed: {
+    isShowParams () {
+      // if (this.payload.params) {
+      //   const len = this.payload.params.filter(item => item.isShow)
+      //   return len.length === 0
+      //     ? false
+      //     : len.length !== this.payload.params.length
+      // } else {
+      //   return false
+      // }
+      return true
     }
   }
 }
