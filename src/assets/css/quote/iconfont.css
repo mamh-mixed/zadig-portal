@@ -15,6 +15,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icongerrit:before {
+  content: "\eb9f";
+}
+
+.iconbianliang1:before {
+  content: "\ee48";
+}
 .iconbianliang:before {
   content: "\e6a7";
 }

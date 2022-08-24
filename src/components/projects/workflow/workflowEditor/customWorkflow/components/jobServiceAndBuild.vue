@@ -19,7 +19,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <span class="iconfont iconbianliang" @click="handleVarBranchChange('var',item)"></span>
+            <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
             <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
           </el-col>
           <el-col :span="4">
@@ -29,7 +29,7 @@
       </el-form>
     </div>
     <el-dialog
-      :title="`${curItem.service_name}/${curItem.service_module}变量配置`"
+      :title="`${curItem.service_name}/${curItem.service_module} 变量配置`"
       :visible.sync="isShowVarDialog"
       :append-to-body="true"
       width="40%"
@@ -79,7 +79,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      :title="`${curItem.service_name}/${curItem.service_module}分支配置`"
+      :title="`${curItem.service_name}/${curItem.service_module} 分支配置`"
       :visible.sync="isShowBranchDialog"
       :append-to-body="true"
       width="40%"
@@ -88,7 +88,7 @@
         <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
         <el-table-column prop="branch" label="默认分支">
           <template slot-scope="scope">
-            <el-select size="small" v-model="scope.row.branch" filterable style="width: 220px;">
+            <el-select size="small" v-model="scope.row.branch" filterable>
               <el-option v-for="option in scope.row.branches" :key="option.name" :label="option.name" :value="option.name">{{option.name}}</el-option>
             </el-select>
           </template>
@@ -315,6 +315,10 @@ export default {
     margin-right: 8px;
     color: #06f;
     cursor: pointer;
+  }
+
+  .iconbianliang1 {
+    font-weight: 600;
   }
 
   .password {
