@@ -198,7 +198,10 @@ export default {
       const uuid = element.repo_uuid
       const key = this.$utils.rsaEncrypt()
       getCodeSourceMaskedAPI(key).then(res => {
-        this.allCodeHosts = res
+        this.allCodeHosts = res.filter(element => {
+          return element.type !== 'other'
+        })
+        // this.allCodeHosts = res
       })
       this.codeInfo = {
         repo_owners: [],
@@ -410,7 +413,7 @@ export default {
               this.$message.success('操作完成')
               this.getPlugins()
             })
-            .catch(err => {
+            .catch(() => {
               this.loading = false
             })
         }
