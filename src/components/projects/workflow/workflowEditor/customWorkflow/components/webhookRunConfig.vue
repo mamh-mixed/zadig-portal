@@ -507,7 +507,6 @@ export default {
                     })
                   }
                   if (job.type === 'freestyle') {
-                    console.log(job)
                     if (job.spec && job.spec.steps && job.spec.steps.length > 0) {
                       job.spec.steps.forEach(step => {
                         if (step.type === 'git') {
