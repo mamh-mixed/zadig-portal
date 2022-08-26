@@ -68,6 +68,7 @@
         </div>
       </el-col>
     </el-row>
+
     <el-dialog :visible.sync="dialogVisible" :title="editMode?'编辑触发器':'添加触发器'" width="700px" :close-on-click-modal="false" append-to-body>
       <el-form ref="webhookForm" :model="currentWebhook" label-width="90px" :rules="rules">
         <el-form-item label="名称" prop="name">
@@ -174,7 +175,7 @@
 </template>
 
 <script>
-import { cloneDeep, isEqual } from 'lodash'
+import { cloneDeep, isEqual, uniqBy } from 'lodash'
 import WebhookRunConfig from './webhookRunConfig.vue'
 import {
   getBranchInfoByIdAPI,
@@ -340,7 +341,12 @@ export default {
       })
     },
     async getWebhooks () {
-      this.webhooks = await getCustomWebhooksAPI(this.projectName, this.workflowName)
+      const projectName = this.projectName
+      const workflowName = this.workflowName
+      const result = await getCustomWebhooksAPI(projectName, workflowName)
+      if (result) {
+        this.webhooks = result
+      }
     },
     async addWebhook () {
       const projectName = this.projectName
@@ -354,11 +360,11 @@ export default {
           cloneDeep(preset.workflow_arg)
         )
         if (preset.repos && preset.repos.length > 0) {
-          this.webhookRepos = preset.repos.map(item => {
+          this.webhookRepos = uniqBy(preset.repos.map(item => {
             item.key = `${item.repo_owner}/${item.repo_name}`
             delete item.branch
             return item
-          })
+          }), 'key')
         } else {
           this.webhookRepos = []
         }
@@ -373,14 +379,18 @@ export default {
       this.editMode = true
       const currentWebhook = cloneDeep(item)
       const triggerName = currentWebhook.name
-      const preset = await getCustomWebhookPresetAPI(projectName, workflowName, triggerName)
+      const preset = await getCustomWebhookPresetAPI(
+        projectName,
+        workflowName,
+        triggerName
+      )
       if (preset) {
         if (preset.repos && preset.repos.length > 0) {
-          this.webhookRepos = preset.repos.map(item => {
+          this.webhookRepos = uniqBy(preset.repos.map(item => {
             item.key = `${item.repo_owner}/${item.repo_name}`
             delete item.branch
             return item
-          })
+          }), 'key')
         } else {
           this.webhookRepos = []
         }
@@ -419,10 +429,12 @@ export default {
     removeWebhook (index, triggerName) {
       const projectName = this.projectName
       const workflowName = this.workflowName
-      removeCustomWebhookAPI(projectName, workflowName, triggerName).then(res => {
-        this.$message.success('删除成功')
-        this.getWebhooks()
-      })
+      removeCustomWebhookAPI(projectName, workflowName, triggerName).then(
+        res => {
+          this.$message.success('删除成功')
+          this.getWebhooks()
+        }
+      )
     },
     saveWebhook () {
       this.$refs.webhookForm.validate(async valid => {
@@ -441,7 +453,7 @@ export default {
               delete job.pickedTargets
               if (
                 job.spec.service_and_images &&
-            job.spec.service_and_images.length > 0
+                job.spec.service_and_images.length > 0
               ) {
                 job.spec.service_and_images.forEach(item => {
                   delete item.images
@@ -449,7 +461,7 @@ export default {
               }
               if (
                 job.spec.service_and_builds &&
-            job.spec.service_and_builds.length > 0
+                job.spec.service_and_builds.length > 0
               ) {
                 job.spec.service_and_builds.forEach(item => {
                   if (item.repos) {
@@ -489,7 +501,11 @@ export default {
             })
           })
           if (this.editMode) {
-            const result = await updateCustomWebhookAPI(projectName, workflowName, payload)
+            const result = await updateCustomWebhookAPI(
+              projectName,
+              workflowName,
+              payload
+            )
             if (result) {
               this.$message.success('修改成功')
               this.$refs.webhookForm.resetFields()
@@ -497,7 +513,11 @@ export default {
               this.getWebhooks()
             }
           } else {
-            const result = await addCustomWebhookAPI(projectName, workflowName, payload)
+            const result = await addCustomWebhookAPI(
+              projectName,
+              workflowName,
+              payload
+            )
             if (result) {
               this.$message.success('添加成功')
               this.$refs.webhookForm.resetFields()

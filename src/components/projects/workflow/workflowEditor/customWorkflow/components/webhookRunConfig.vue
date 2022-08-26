@@ -243,7 +243,11 @@ export default {
             }
             if (job.type === 'zadig-deploy') {
               // Mapping for value-key
-              if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+              if (
+                job.spec &&
+                job.spec.service_and_images &&
+                job.spec.service_and_images.length > 0
+              ) {
                 job.spec.service_and_images.forEach(service => {
                   service.value = `${service.service_name}/${service.service_module}`
                 })
@@ -477,25 +481,57 @@ export default {
     webhookSelectedRepo: {
       handler (val) {
         if (val) {
-          this.payload.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              if (job.pickedTargets && job.pickedTargets.length > 0) {
-                job.pickedTargets.forEach(build => {
-                  build.repos.forEach(repo => {
-                    if (
-                      repo.codehost_id === val.codehost_id &&
-                      repo.repo_name === val.repo_name &&
-                      repo.repo_owner === val.repo_owner
-                    ) {
-                      this.$set(repo, 'showTip', true)
-                    } else {
-                      this.$set(repo, 'showTip', false)
+          if (this.payload.stages) {
+            this.payload.stages.forEach(stage => {
+              if (stage.jobs) {
+                stage.jobs.forEach(job => {
+                  if (
+                    job.type === 'zadig-build' &&
+                    job.pickedTargets &&
+                    job.pickedTargets.length > 0
+                  ) {
+                    job.pickedTargets.forEach(build => {
+                      if (build.repos) {
+                        build.repos.forEach(repo => {
+                          if (
+                            repo.codehost_id === val.codehost_id &&
+                            repo.repo_name === val.repo_name &&
+                            repo.repo_owner === val.repo_owner
+                          ) {
+                            this.$set(repo, 'showTip', true)
+                          } else {
+                            this.$set(repo, 'showTip', false)
+                          }
+                        })
+                      }
+                    })
+                  }
+                  if (job.type === 'freestyle') {
+                    console.log(job)
+                    if (job.spec && job.spec.steps && job.spec.steps.length > 0) {
+                      job.spec.steps.forEach(step => {
+                        if (step.type === 'git') {
+                          if (step.spec.repos && step.spec.repos.length > 0) {
+                            step.spec.repos.forEach(repo => {
+                              if (
+                                repo.codehost_id === val.codehost_id &&
+                                repo.repo_name === val.repo_name &&
+                                repo.repo_owner === val.repo_owner
+                              ) {
+                                this.$set(repo, 'showTip', true)
+                              } else {
+                                this.$set(repo, 'showTip', false)
+                              }
+                            })
+                          }
+                        }
+                      })
                     }
-                  })
+                  }
                 })
               }
             })
-          })
+          }
         }
       },
       immediate: false,
