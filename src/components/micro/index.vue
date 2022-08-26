@@ -5,7 +5,10 @@
 </template>
 
 <script>
-import { /* loadMicroApp */ addGlobalUncaughtErrorHandler } from 'qiankun'
+import {
+  /* loadMicroApp */ addGlobalUncaughtErrorHandler,
+  initGlobalState
+} from 'qiankun'
 import { /* microApps, */ registerApps, currentInfo } from './index'
 import bus from '@utils/eventBus'
 
@@ -17,7 +20,8 @@ export default {
   data () {
     return {
       // microList: {}
-      currentInfo
+      currentInfo,
+      currentInfo2: {}
     }
   },
   // methods: {
@@ -43,6 +47,26 @@ export default {
   //     this.activationHandleChange(newValue)
   //   }
   // },
+  methods: {
+    initGlobalStateFn () {
+      this.currentInfo2 = {
+        mount: false,
+        title: '',
+        breadcrumb: []
+      }
+      this.actions = initGlobalState(this.currentInfo2)
+      this.actions.onGlobalStateChange((state, prev) => {
+        console.log('onGlobalStateChange', state, prev)
+        this.currentInfo2 = state
+        if (!state.breadcrumb.filter(bc => !bc).length) {
+          bus.$emit(`set-topbar-title`, {
+            title: '',
+            breadcrumb: state.breadcrumb
+          })
+        }
+      })
+    }
+  },
   computed: {
     hasMounted () {
       return this.currentInfo.mount
@@ -50,6 +74,7 @@ export default {
   },
   mounted () {
     addGlobalUncaughtErrorHandler(event => console.log('global error: ', event))
+    this.initGlobalStateFn()
     // if (window.qiankunStarted) return
     // window.qiankunStarted = true
     registerApps()
@@ -70,10 +95,10 @@ export default {
     next()
   }
   // destroyed () {
-  //   window.qiankunStarted = false
-  //   Object.values(this.microList).forEach((mic) => {
-  //     mic.unmount()
-  //   })
+  // window.qiankunStarted = false
+  // Object.values(this.microList).forEach((mic) => {
+  //   mic.unmount()
+  // })
   // }
 }
 </script>

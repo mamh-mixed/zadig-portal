@@ -800,7 +800,8 @@ export default {
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         {
-          title: `${this.projectName}`,
+          title: this.projectName,
+          isProjectName: true,
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         { title: '环境', url: '' },

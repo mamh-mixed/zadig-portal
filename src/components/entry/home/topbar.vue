@@ -32,7 +32,29 @@
         <div class="breadcrumb-container">
           <div class="project-switcher"></div>
           <el-breadcrumb v-if="content.breadcrumb && content.breadcrumb.length > 0" separator=">">
-            <el-breadcrumb-item v-for="(item,index) in content.breadcrumb" :to="item.url" :key="index">{{parseTitle(item)}}</el-breadcrumb-item>
+            <el-breadcrumb-item v-for="(item,index) in content.breadcrumb" :to="item.url" :key="index">
+              <span> {{ item.title }}</span>
+              <el-popover placement="bottom" width="200" trigger="hover" v-if="item.list && item.list.length">
+                <div class="list-container">
+                  <div
+                    v-for="(proItem, index) in item.list"
+                    :key="index"
+                    class="project-item product-option"
+                    :class="{'active': proItem.title === item.title }"
+                    @click="$router.push(`/v1${proItem.url}`)"
+                  >
+                    <span style="float: left;">{{ proItem.title }}</span>
+                    <i
+                      style="float: right; line-height: 34px;"
+                      class="el-icon-close"
+                      v-if="proItem.deleteOpe"
+                      @click.stop="proItem.deleteOpe(proItem.name)"
+                    ></i>
+                  </div>
+                </div>
+                <i slot="reference" class="el-icon-caret-bottom list-popover-icon"></i>
+              </el-popover>
+            </el-breadcrumb-item>
           </el-breadcrumb>
         </div>
       </div>
@@ -197,7 +219,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['projectList', 'showSidebar']),
+    ...mapGetters(['projectList', 'showSidebar', 'projectAliasByName']),
     ...mapState({
       role: state => state.login.role,
       userInfo: state => state.login.userinfo,
@@ -244,23 +266,16 @@ export default {
     },
     changeTitle (params) {
       this.content = params
-    },
-    parseTitle (item) {
-      if (item.isProjectName) {
-        const project = this.projectList.find(i => {
-          return item.title === i.name
-        })
-        if (project) {
-          const alias = project.alias || project.name
-          return alias
-        }
-      } else {
-        return item.title
-      }
     }
   },
   created () {
     bus.$on('set-topbar-title', params => {
+      params.breadcrumb.forEach(bc => {
+        if (bc && bc.isProjectName) {
+          bc.name = bc.title
+          bc.title = this.projectAliasByName(bc.name)
+        }
+      })
       this.changeTitle(params)
     })
   },
@@ -447,6 +462,11 @@ export default {
       justify-content: flex-start;
       min-width: 0;
       margin-right: 10px;
+
+      .list-popover-icon {
+        color: @themeColor;
+        cursor: pointer;
+      }
 
       .logo-container {
         display: flex;

@@ -220,6 +220,7 @@ export default {
         { title: '项目', url: '/v1/projects' },
         {
           title: projectName,
+          isProjectName: true,
           url: `/v1/projects/detail/${projectName}`
         },
         {
