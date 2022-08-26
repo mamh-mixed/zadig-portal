@@ -132,7 +132,6 @@
 </template>
 <script>
 import { getCustomWorkflowTaskDetailAPI, deleteWorkflowTaskAPI } from '@api'
-import Stage from './workflowEditor/customWorkflow/stage.vue'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
@@ -161,7 +160,6 @@ export default {
     }
   },
   components: {
-    Stage,
     Multipane,
     MultipaneResizer,
     BuildConsole,
@@ -486,7 +484,7 @@ export default {
 
   .line {
     position: relative;
-    width: 70px;
+    min-width: 46px;
     height: 2px;
     margin-top: 24px;
     background: @themeColor;

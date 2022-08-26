@@ -21,8 +21,16 @@
         </div>
       </header>
       <Multipane layout="horizontal" v-show="activeName === 'ui'" style="height: 100%;">
-        <main class="mg-t16">
-          <section class="ui">
+        <div class="scale">
+          <el-tooltip class="item" effect="dark" content="缩小" placement="top">
+            <span class="icon el-icon-minus" @click="scale('narrow')"></span>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="放大" placement="top">
+            <span class="icon el-icon-plus" @click="scale('enlarge')"></span>
+          </el-tooltip>
+        </div>
+        <main class="mg-t16" id="main">
+          <section class="ui" id="ui">
             <span class="ui-text mg-r8">Start</span>
             <div class="line"></div>
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
@@ -30,7 +38,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" />
+                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal"/>
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -321,7 +329,8 @@ export default {
           ]
         }
       },
-      beInitCompRef: 'beInitCompRef'
+      beInitCompRef: 'beInitCompRef',
+      scal: '1'
     }
   },
   components: {
@@ -422,6 +431,19 @@ export default {
             url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
           }
         ]
+      })
+    },
+    scale (type) {
+      this.$nextTick(() => {
+        const main = document.getElementById('ui')
+        if (type === 'enlarge') {
+          if (this.scal > 1) return
+          this.scal = (parseFloat(this.scal) + 0.1).toFixed(2)
+        } else {
+          if (this.scal < 0.5) return
+          this.scal = (parseFloat(this.scal) - 0.1).toFixed(2)
+        }
+        main.style.zoom = this.scal
       })
     },
     checkYaml () {
@@ -874,15 +896,16 @@ export default {
 
 <style lang="less" scoped>
 .new-workflow-home {
-  display: flex;
-  justify-content: space-between;
   width: 100%;
   height: 100%;
   background: #fff;
   border-top: 1px solid @borderGray;
 
   .left {
-    flex: 1;
+    position: relative;
+    float: left;
+    width: calc(~'100%' - 120px);
+    height: 100%;
 
     header {
       display: flex;
@@ -925,8 +948,22 @@ export default {
       }
     }
 
+    .scale {
+      position: absolute;
+      right: 0;
+      bottom: 6%;
+      cursor: pointer;
+
+      .icon {
+        margin-right: 4px;
+        padding: 4px;
+        border: 1px solid #ddd;
+      }
+    }
+
     main {
       width: 100%;
+      height: 100%;
       padding: 0 24px;
 
       .ui {
@@ -1029,10 +1066,14 @@ export default {
   }
 
   .right {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    float: right;
     width: 100px;
+    height: 100%;
+    background: #fff;
     border-left: 1px solid @borderGray;
 
     &-tab {
@@ -1088,7 +1129,7 @@ export default {
 
   .line {
     position: relative;
-    width: 70px;
+    min-width: 46px;
     height: 2px;
     margin-top: 20px;
     background: @themeColor;

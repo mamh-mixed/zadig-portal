@@ -11,7 +11,16 @@
         <i class="el-icon-close"></i>
       </div>
     </div>
-    <el-drawer title="选择任务" :visible.sync="isShowJobOperateDialog" direction="rtl" :modal-append-to-body="false" class="drawer" size="24%">
+    <el-drawer
+      title="选择任务"
+      :visible.sync="isShowJobOperateDialog"
+      :modal-append-to-body="false"
+      direction="rtl"
+      class="drawer"
+      size="24%"
+      id="drawer"
+      :style="{'zoom':scal}"
+    >
       <JobOperate :jobInfo="jobInfo" @change="setJob" ref="jobOperate" />
     </el-drawer>
     <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ 任务</el-button>
@@ -38,6 +47,10 @@ export default {
     isShowJobAddBtn: {
       type: Boolean,
       default: true
+    },
+    scale: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -141,7 +154,8 @@ export default {
         }
       },
       jobInfo: {},
-      isShowJobOperateDialog: false
+      isShowJobOperateDialog: false,
+      scal: ''
     }
   },
   computed: {
@@ -204,6 +218,11 @@ export default {
       this.JobIndex = this.stageInfo.jobs.length - 1
       this.isShowJobOperateDialog = false
       this.$store.dispatch('setIsShowFooter', true)
+    }
+  },
+  watch: {
+    scale (val) {
+      this.scal = 1 / val
     }
   }
 }

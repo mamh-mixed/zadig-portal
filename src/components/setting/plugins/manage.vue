@@ -35,7 +35,15 @@
           </el-col>
           <el-col :span="3">
             <el-form-item prop="repo_owner" :rules="{required: true, message: '组织名/用户名不能为空', trigger: ['blur','change']}">
+              <el-input
+                v-if="source.source==='other'"
+                v-model.trim="source.repo_owner"
+                :disabled="plugins.length>0&&isSaved"
+                placeholder="请输入"
+                size="small"
+              ></el-input>
               <el-select
+                v-else
                 v-model="source.repo_owner"
                 size="small"
                 @change="getRepoNameById(source.codehost_id,source.repo_owner)"
@@ -53,7 +61,15 @@
           </el-col>
           <el-col :span="3">
             <el-form-item prop="repo_name" :rules="{required: true, message: '代码库不能为空', trigger: ['blur','change']}">
+              <el-input
+                v-if="source.source==='other'"
+                v-model.trim="source.repo_name"
+                :disabled="plugins.length>0&&isSaved"
+                placeholder="请输入"
+                size="small"
+              ></el-input>
               <el-select
+                v-else
                 @change="getBranchInfoById(source.codehost_id,source.repo_owner,source.repo_name,source)"
                 @clear="clearRepoName"
                 v-model.trim="source.repo_name"
@@ -73,7 +89,15 @@
           </el-col>
           <el-col :span="3">
             <el-form-item prop="branch" :rules="{required: true, message: '分支不能为空', trigger: ['blur','change']}">
+              <el-input
+                v-if="source.source==='other'"
+                v-model.trim="source.branch"
+                :disabled="plugins.length>0&&isSaved"
+                placeholder="请输入"
+                size="small"
+              ></el-input>
               <el-select
+                v-else
                 v-model.trim="source.branch"
                 :disabled="plugins.length>0&&isSaved"
                 placeholder="请选择分支"
@@ -177,6 +201,7 @@ export default {
         this.allCodeHosts = res.filter(element => {
           return element.type !== 'other'
         })
+        // this.allCodeHosts = res
       })
       this.codeInfo = {
         repo_owners: [],
@@ -382,11 +407,15 @@ export default {
             branch,
             codehost_id
           }
-          updatePlugin(payload).then(res => {
-            this.loading = false
-            this.$message.success('操作完成')
-            this.getPlugins()
-          })
+          updatePlugin(payload)
+            .then(res => {
+              this.loading = false
+              this.$message.success('操作完成')
+              this.getPlugins()
+            })
+            .catch(() => {
+              this.loading = false
+            })
         }
       })
     }
