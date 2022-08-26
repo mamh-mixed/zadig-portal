@@ -271,7 +271,7 @@ export default {
               //   url: 'release/workflow'
               // },
               {
-                name: '环境',
+                name: '环境组',
                 icon: 'iconfont iconvery-environ',
                 url: 'release/environment'
               }
