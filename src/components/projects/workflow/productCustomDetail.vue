@@ -69,7 +69,7 @@
       ></TaskList>
     </el-card>
 
-    <el-dialog :visible.sync="taskDialogVisible" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog">
+    <el-dialog :visible.sync="taskDialogVisible" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog" :before-close="close">
        <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
@@ -246,6 +246,10 @@ export default {
       getCustomWorkflowDetailAPI(this.workflowName, this.projectName).then(res => {
         this.detail = jsyaml.load(res)
       })
+    },
+    close () {
+      this.cloneWorkflow = {}
+      this.taskDialogVisible = false
     }
   },
   beforeDestroy () {
