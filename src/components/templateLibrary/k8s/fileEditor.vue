@@ -58,7 +58,7 @@ import 'codemirror/addon/dialog/dialog.js'
 import 'codemirror/addon/dialog/dialog.css'
 import 'codemirror/addon/search/searchcursor.js'
 import 'codemirror/addon/search/search.js'
-import { praseKubernetesTemplateAPI, createKubernetesTemplateAPI, updateKubernetesTemplateAPI, updateMulKubernetesTemplateAPI } from '@api'
+import { createKubernetesTemplateAPI, updateKubernetesTemplateAPI, updateMulKubernetesTemplateAPI } from '@api'
 
 export default {
   props: {
@@ -69,15 +69,6 @@ export default {
     fileContentChange: {
       type: Boolean,
       required: true
-    },
-    variablesChanged: {
-      type: Boolean,
-      required: true
-    },
-    inputVariables: {
-      required: false,
-      type: Array,
-      default: () => []
     }
   },
   data () {
@@ -92,9 +83,6 @@ export default {
         collapseIdentical: true
       },
       errors: [],
-      file: {
-        content: ''
-      },
       stagedFile: {},
       initFileContent: '',
       newCode: ''
@@ -112,12 +100,12 @@ export default {
       const fileName = this.fileContent.name
       const fileId = this.fileContent.id
       const content = this.fileContent.content
-      const variable = this.inputVariables
+      const variableYaml = this.fileContent.variable_yaml
       const status = this.fileStatus
       const payload = {
         name: fileName,
         content: content,
-        variable: variable
+        variable_yaml: variableYaml
       }
       if (status === 'added') {
         const res = await updateKubernetesTemplateAPI(
@@ -148,20 +136,11 @@ export default {
       this.errors = []
       this.fileContent.content = newCode
       if (this.fileContent.content) {
-        this.praseKubernetesTemplate(newCode)
         if (this.fileContent.status === 'named') {
           this.stagedFile[this.fileContent.name] = newCode
         }
       }
     }, 500),
-    praseKubernetesTemplate (code) {
-      const payload = {
-        content: code
-      }
-      praseKubernetesTemplateAPI(payload).then((res) => {
-        this.$emit('update:parseVariables', res)
-      })
-    },
     editorFocus () {
       this.codemirror.focus()
     },
@@ -196,7 +175,7 @@ export default {
       return this.fileContent.status
     },
     disabledSave () {
-      return this.errors.length > 0 || !this.fileContentChange || this.inputVariables.length === 0
+      return this.errors.length > 0 || !this.fileContentChange
     }
   },
   mounted () {

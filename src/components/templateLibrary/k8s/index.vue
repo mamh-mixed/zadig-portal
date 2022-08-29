@@ -11,7 +11,7 @@
               @onRefreshFile="getFiles"
               @onSelectFileChange="onSelectFileChange"
               @updateFile="updateFile($event)"
-            ></FileTree>
+           />
           </div>
           <template v-if="files.length >0">
             <template>
@@ -20,22 +20,18 @@
                 <FileEditor
                   ref="FileEditor"
                   :fileContent="fileContent"
-                  :parseVariables.sync="parseVariables"
-                  :inputVariables="inputVariables"
                   :fileContentChange="fileContentChange"
                   :variablesChanged="variablesChanged"
                   @onRefreshFile="getFiles"
                   @onUpdateFile="onUpdateFile"
-                ></FileEditor>
+                />
               </div>
               <multipane-resizer></multipane-resizer>
               <aside class="service-aside service-aside-right" :style="{ flexGrow: 1 }">
                 <FileAside
                   :fileContent="fileContent"
-                  :inputVariables.sync="inputVariables"
-                  :parseVariables="parseVariables"
                   :systemVariables="systemVariables"
-                ></FileAside>
+                />
               </aside>
             </template>
           </template>
@@ -70,7 +66,6 @@ export default {
         content: ''
       },
       files: [],
-      parseVariables: [],
       inputVariables: [],
       systemVariables: [],
       initFileContent: '',
@@ -151,12 +146,9 @@ export default {
           this.fileContent = {
             content: '',
             name: val.name,
-            status: 'named'
+            status: 'named',
+            variable_yaml: ''
           }
-          // if (this.stagedFile[val.name]) {
-          //   this.fileInTree.content = this.stagedFile[val.name]
-          // }
-          // this.$refs.myCm && this.editorFocus()
         }
       },
       immediate: false
