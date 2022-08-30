@@ -68,7 +68,7 @@
         </el-form-item>
       </el-form>
       <div v-if="previewYamlFile" class="preview-container">
-        <codemirror  v-model="renderedYaml" :options="importTemplateEditorOption" />
+        <codemirror v-model="renderedYaml" :options="importTemplateEditorOption" />
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button plain native-type="submit" @click="$emit('update:dialogImportFromYamlVisible', false)" size="small">取消</el-button>
@@ -182,9 +182,15 @@ export default {
       }
     },
     async openImportYamlDialog () {
-      this.importYaml.serviceName = ''
-      this.importYaml.id = ''
-      this.importYaml.auto_sync = false
+      if (this.currentUpdatedServiceName) {
+        this.importYaml.auto_sync = this.serviceInfo.service.auto_sync
+        this.importYaml.variable_yaml = this.serviceInfo.variable_yaml
+      } else {
+        this.importYaml.serviceName = ''
+        this.importYaml.id = ''
+        this.importYaml.auto_sync = false
+        this.importYaml.variable_yaml = ''
+      }
       const res = await getKubernetesTemplatesAPI(this.projectName)
       if (res) {
         this.importYaml.yamls = res.yaml_template
@@ -259,17 +265,11 @@ export default {
         this.importYaml.id = ''
       }
     },
-    serviceInfo: {
-      handler (val) {
-        // update from k8s service
-        this.importYaml.auto_sync = val.service.auto_sync
-        this.importYaml.variable_yaml = val.variable_yaml
-      },
-      deep: true
+    dialogImportFromYamlVisible (val) {
+      if (val) {
+        this.openImportYamlDialog()
+      }
     }
-  },
-  mounted () {
-    this.openImportYamlDialog()
   },
   components: {
     codemirror,
