@@ -24,7 +24,7 @@
           </el-button>
         </div>
         <AdvancedConfig
-          v-show="advanced_setting_modified"
+          v-if="advanced_setting_modified"
           ref="advancedConfigRef"
           class="common-parcel-block"
           :isCreate="isCreate"
