@@ -1800,8 +1800,8 @@ export function getKubernetesTemplateBuildReferenceAPI (id) {
   return http.get(`/api/aslan/template/yaml/${id}/reference`)
 }
 
-export function getKubernetesTemplatePreviewAPI (payload) {
-  return http.post(`/api/aslan/service/template/preview`, payload)
+export function getKubernetesTemplatePreviewAPI (payload, projectName) {
+  return http.post(`/api/aslan/service/template/preview?projectName=${projectName}`, payload)
 }
 
 export function loadServiceFromKubernetesTemplateAPI (payload, projectName = '') {

@@ -161,7 +161,7 @@ export default {
           template_id: this.importYaml.id,
           variable_yaml: this.importYaml.variable_yaml,
           service_name: this.importYaml.serviceName
-        }).then(res => {
+        }, this.projectName).then(res => {
           this.renderedYaml = res
         })
       }
