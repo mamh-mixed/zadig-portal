@@ -86,7 +86,6 @@
               <i class="iconfont iconaliyun"></i>
               <span>阿里云 ACK</span>
             </el-option>
-
             <el-option :value="2" label="腾讯云 TKE">
               <i class="iconfont icontengxunyun"></i>
               <span>腾讯云 TKE</span>
@@ -94,6 +93,10 @@
             <el-option :value="3" label="华为云 CCE">
               <i class="iconfont iconhuawei"></i>
               <span>华为云 CCE</span>
+            </el-option>
+            <el-option :value="4" label="Amazon EKS">
+              <i class="iconfont iconaws"></i>
+              <span>Amazon EKS</span>
             </el-option>
             <el-option :value="0" label="其他">
               <i class="iconfont iconqita"></i>
@@ -536,6 +539,10 @@ export default {
         3: {
           icon: 'iconfont logo iconhuawei',
           name: '华为云'
+        },
+        4: {
+          icon: 'iconfont logo iconaws',
+          name: 'Amazon EKS'
         }
       },
       accessCluster: {

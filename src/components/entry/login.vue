@@ -135,7 +135,7 @@ export default {
       } else {
         const connectorsCheck = await checkConnectorsAPI()
         if (connectorsCheck && connectorsCheck.enabled) {
-          window.location.href = '/api/v1/login'
+          // window.location.href = '/api/v1/login'
         }
       }
     },
