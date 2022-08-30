@@ -32,8 +32,9 @@
         <div
              class="controls__wrap">
           <div class="controls__right">
-            <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true}" type="primary"
+            <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true, disabled:disabledSave}" type="primary"
                        size="small"
+                       :disabled="disabledSave"
                        @click="updateFile">保存</el-button>
             <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true}" type="default"
                        size="small"
@@ -175,7 +176,7 @@ export default {
       return this.fileContent.status
     },
     disabledSave () {
-      return this.errors.length > 0 || !this.fileContentChange
+      return this.errors.length > 0 || !this.fileContentChange || this.fileContent.content === ''
     }
   },
   mounted () {
