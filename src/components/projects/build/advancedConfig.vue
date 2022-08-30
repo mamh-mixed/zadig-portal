@@ -194,10 +194,12 @@ export default {
       name: 'advancedConfigValid',
       valid: this.validate
     })
-    this.validObj.addValidate({
-      name: 'advancedConfigCacheValid',
-      valid: this.validateCache
-    })
+    if (!this.hiddenCache) {
+      this.validObj.addValidate({
+        name: 'advancedConfigCacheValid',
+        valid: this.validateCache
+      })
+    }
   }
 }
 </script>
