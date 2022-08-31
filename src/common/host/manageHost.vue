@@ -143,6 +143,10 @@ export default {
         3: {
           icon: 'iconfont logo iconhuawei',
           name: '华为云 OBS'
+        },
+        5: {
+          icon: 'iconfont logo iconaws',
+          name: 'Amazon S3'
         }
       },
       dialogHostFormVisible: false,
