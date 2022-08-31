@@ -143,6 +143,7 @@ export default {
         if (val.status === 'added') {
           this.getFile(val)
         } else if (val.status === 'named') {
+          this.initFileContent = ''
           this.fileContent = {
             content: '',
             name: val.name,
