@@ -21,7 +21,6 @@
                   ref="FileEditor"
                   :fileContent="fileContent"
                   :fileContentChange="fileContentChange"
-                  :variablesChanged="variablesChanged"
                   @onRefreshFile="getFiles"
                   @onUpdateFile="onUpdateFile"
                 />
@@ -30,6 +29,7 @@
               <aside class="service-aside service-aside-right" :style="{ flexGrow: 1 }">
                 <FileAside
                   :fileContent="fileContent"
+                  :initVariableYaml="initVariableYaml"
                   :systemVariables="systemVariables"
                 />
               </aside>
@@ -69,7 +69,7 @@ export default {
       inputVariables: [],
       systemVariables: [],
       initFileContent: '',
-      variablesChanged: false
+      initVariableYaml: ''
     }
   },
   methods: {
@@ -103,6 +103,7 @@ export default {
           res.status = 'added'
           this.fileContent = res
           this.initFileContent = res.content
+          this.initVariableYaml = res.variable_yaml
         }
       }
     },
@@ -153,11 +154,6 @@ export default {
         }
       },
       immediate: false
-    },
-    variables: {
-      handler (val, old_val) {
-        this.variablesChanged = true
-      }
     }
   },
   mounted () {

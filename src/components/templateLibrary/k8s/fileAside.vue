@@ -79,7 +79,7 @@
               </div>
               <div class="operation" v-else>
                 <el-button type="primary" size="small" @click="validateVariables" plain :disabled="variableYamlIsEmpty">校验</el-button>
-                <el-button type="primary" size="small" @click="saveKubernetesTemplateVariable" :disabled="variableYamlIsEmpty">保存</el-button>
+                <el-button type="primary" size="small" @click="saveKubernetesTemplateVariable" :disabled="variableYamlIsEmpty || variableNotChanged">保存</el-button>
               </div>
             </section>
           </div>
@@ -167,6 +167,10 @@ export default {
     systemVariables: {
       required: true,
       type: Array
+    },
+    initVariableYaml: {
+      required: true,
+      type: String
     }
   },
   computed: {
@@ -186,6 +190,9 @@ export default {
     },
     variableYamlIsEmpty () {
       return this.fileContent.variable_yaml === ''
+    },
+    variableNotChanged () {
+      return this.fileContent.variable_yaml === this.initVariableYaml
     }
   },
   watch: {
