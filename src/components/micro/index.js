@@ -1,11 +1,8 @@
 import { registerMicroApps, start } from 'qiankun'
 // import store from '@/store'
-// import utils from '@/assets/js/utils'
+// import utils from '@/utilities/utilities'
 import router from '@/router/index.js'
 
-export const currentInfo = {
-  mount: false
-}
 // debug address
 const prefix = process.env.NODE_ENV === 'development' ? '//localhost:10000' : ''
 
@@ -19,8 +16,7 @@ export const microApps = [
       routerBase: '/v1',
       //   mainStore: store,
       //   user: utils.getStorage('user'),
-      mainAppRouter: router,
-      currentInfo
+      mainAppRouter: router
     }
   }
 ]
