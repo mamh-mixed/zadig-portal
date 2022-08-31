@@ -74,8 +74,12 @@
                   @input="onCmCodeChange"
                 />
               </div>
-              <div class="operation">
-                <el-button type="primary" size="small" @click="validateVariables" plain>校验</el-button>
+              <div v-if="notSaved" class="alert-container">
+                <el-alert title="请先保存模板" type="info" :closable="false"></el-alert>
+              </div>
+              <div class="operation" v-else>
+                <el-button type="primary" size="small" @click="validateVariables" plain :disabled="variableYamlIsEmpty">校验</el-button>
+                <el-button type="primary" size="small" @click="saveKubernetesTemplateVariable" :disabled="variableYamlIsEmpty">保存</el-button>
               </div>
             </section>
           </div>
@@ -87,7 +91,8 @@
 <script>
 import {
   getKubernetesTemplateBuildReferenceAPI,
-  validateKubernetesTemplateVariableAPI
+  validateKubernetesTemplateVariableAPI,
+  saveKubernetesTemplateVariableAPI
 } from '@api'
 import { debounce } from 'lodash'
 import { codemirror } from 'vue-codemirror'
@@ -97,16 +102,7 @@ import 'codemirror/theme/neo.css'
 export default {
   data () {
     return {
-      referenceList: [],
-      cmOptions: {
-        tabSize: 5,
-        readOnly: false,
-        theme: 'neo',
-        mode: 'text/x-yaml',
-        lineNumbers: true,
-        line: true,
-        collapseIdentical: true
-      }
+      referenceList: []
     }
   },
   methods: {
@@ -146,6 +142,21 @@ export default {
         .catch(err => {
           this.$message.error(err.message)
         })
+    },
+    saveKubernetesTemplateVariable () {
+      const id = this.fileContent.id
+      const payload = {
+        variable_yaml: this.fileContent.variable_yaml
+      }
+      saveKubernetesTemplateVariableAPI(id, payload)
+        .then(res => {
+          if (res) {
+            this.$message.success('变量保存成功')
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
     }
   },
   props: {
@@ -156,6 +167,25 @@ export default {
     systemVariables: {
       required: true,
       type: Array
+    }
+  },
+  computed: {
+    notSaved () {
+      return this.fileContent.status === 'named'
+    },
+    cmOptions () {
+      return {
+        tabSize: 5,
+        readOnly: this.notSaved ? 'nocursor' : false,
+        theme: 'neo',
+        mode: 'text/x-yaml',
+        lineNumbers: true,
+        line: true,
+        collapseIdentical: true
+      }
+    },
+    variableYamlIsEmpty () {
+      return this.fileContent.variable_yaml === ''
     }
   },
   watch: {
@@ -177,8 +207,6 @@ export default {
 .aside__wrap {
   position: relative;
   display: flex;
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
   flex: 1;
   height: 100%;
 
@@ -198,6 +226,10 @@ export default {
     }
   }
 
+  .alert-container {
+    margin-top: 10px;
+  }
+
   .operation {
     margin-top: 10px;
   }
@@ -210,7 +242,6 @@ export default {
     width: 5px;
     height: 100%;
     border-left: 1px solid transparent;
-    -webkit-transition: border-color ease-in-out 200ms;
     transition: border-color ease-in-out 200ms;
 
     .capture-area__component {
@@ -219,7 +250,6 @@ export default {
       left: -6px;
       display: inline-block;
       height: 38px;
-      -webkit-transform: translateY(-50%);
       transform: translateY(-50%);
 
       .capture-area {
@@ -234,38 +264,22 @@ export default {
   }
 
   .aside__inner {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex: 1;
     flex: 1;
-    -ms-flex-direction: row-reverse;
     flex-direction: row-reverse;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: reverse;
-    -webkit-box-flex: 1;
 
     .aside__content {
-      -ms-flex: 1;
       flex: 1;
       width: 200px;
       overflow-x: hidden;
       background-color: #fff;
-      -webkit-box-flex: 1;
 
       .service-aside--variables {
-        display: -webkit-box;
-        display: -ms-flexbox;
         display: flex;
-        -ms-flex-direction: column;
         flex-direction: column;
         flex-grow: 1;
         height: 100%;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
 
         .service-aside-box__header {
           display: flex;
@@ -275,11 +289,6 @@ export default {
           width: 100%;
           height: 35px;
           padding: 10px 7px 10px 20px;
-          -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
-          -ms-flex-negative: 0;
 
           .service-aside-box__title {
             margin-right: 20px;
@@ -295,8 +304,6 @@ export default {
           flex-grow: 1;
           overflow-x: hidden;
           overflow-y: auto;
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
 
           .aside-section {
             position: relative;
@@ -317,19 +324,12 @@ export default {
         }
 
         .service-aside-help__content {
-          display: -webkit-box;
-          display: -ms-flexbox;
           display: flex;
-          -ms-flex: 1;
           flex: 1;
-          -ms-flex-direction: column;
           flex-direction: column;
           height: 100%;
           padding: 0 20px 10px 20px;
           overflow-y: auto;
-          -webkit-box-flex: 1;
-          -webkit-box-orient: vertical;
-          -webkit-box-direction: normal;
         }
       }
 
@@ -341,14 +341,11 @@ export default {
 
     .aside-bar {
       .tabs__wrap_vertical {
-        -ms-flex-direction: column;
         flex-direction: column;
         width: 47px;
         height: 100%;
         background-color: #f5f5f5;
         border: none;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
 
         .tabs__item {
           position: relative;
@@ -388,8 +385,6 @@ export default {
       }
 
       .tabs__wrap {
-        display: -webkit-box;
-        display: -ms-flexbox;
         display: flex;
         justify-content: flex-start;
         height: 56px;

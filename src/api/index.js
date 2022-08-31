@@ -1788,6 +1788,10 @@ export function validateKubernetesTemplateVariableAPI (payload) {
   return http.post(`/api/aslan/template/yaml/validateVariable`, payload)
 }
 
+export function saveKubernetesTemplateVariableAPI (templateId, payload) {
+  return http.put(`/api/aslan/template/yaml/${templateId}/variable`, payload)
+}
+
 export function getKubernetesTemplateDetailAPI (id, projectName = '') {
   return http.get(`/api/aslan/template/yaml/${id}?projectName=${projectName}`)
 }
