@@ -9,7 +9,7 @@ import {
   /* loadMicroApp */ addGlobalUncaughtErrorHandler,
   initGlobalState
 } from 'qiankun'
-import { /* microApps, */ registerApps, currentInfo } from './index'
+import { /* microApps, */ registerApps } from './index'
 import bus from '@utils/eventBus'
 
 // hack
@@ -20,8 +20,11 @@ export default {
   data () {
     return {
       // microList: {}
-      currentInfo,
-      currentInfo2: {}
+      currentInfo: {
+        mount: false,
+        title: '',
+        breadcrumb: []
+      }
     }
   },
   // methods: {
@@ -49,19 +52,20 @@ export default {
   // },
   methods: {
     initGlobalStateFn () {
-      this.currentInfo2 = {
-        mount: false,
-        title: '',
-        breadcrumb: []
-      }
-      this.actions = initGlobalState(this.currentInfo2)
+      this.actions = initGlobalState(this.currentInfo)
       this.actions.onGlobalStateChange((state, prev) => {
         console.log('onGlobalStateChange', state, prev)
-        this.currentInfo2 = state
+        this.currentInfo = state
         if (!state.breadcrumb.filter(bc => !bc).length) {
           bus.$emit(`set-topbar-title`, {
             title: '',
-            breadcrumb: state.breadcrumb
+            breadcrumb: state.breadcrumb.map(bc => {
+              return {
+                ...bc,
+                // 目前只有这里的url需要/v1前缀，其他的在跳转时在前面加上，这里后面可以改成非/v1开头
+                url: bc.url ? '/v1' + bc.url : ''
+              }
+            })
           })
         }
       })
@@ -79,21 +83,10 @@ export default {
     // window.qiankunStarted = true
     registerApps()
     // this.activationHandleChange(this.$route.path)
-  },
-  watch: {
-    $route (newVal, oldVal) {
-      if (newVal.fullPath.includes('release')) {
-        bus.$emit(`set-topbar-title`, {
-          title: '',
-          breadcrumb: [{ title: '发布中心', url: '' }]
-        })
-      } else {
-        bus.$emit(`set-topbar-title`, {
-          title: '',
-          breadcrumb: [{ title: '客户交付', url: '' }]
-        })
-      }
-    }
+    bus.$emit(`set-topbar-title`, {
+      title: '',
+      breadcrumb: [{ title: '客户交付', url: '' }]
+    })
   },
   beforeRouteEnter (to, from, next) {
     rawAppendChild = HTMLHeadElement.prototype.appendChild
