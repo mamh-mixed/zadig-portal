@@ -31,6 +31,7 @@
                   :fileContent="fileContent"
                   :initVariableYaml="initVariableYaml"
                   :systemVariables="systemVariables"
+                  @updateTemplate="updateTemplate"
                 />
               </aside>
             </template>
@@ -106,6 +107,9 @@ export default {
           this.initVariableYaml = res.variable_yaml
         }
       }
+    },
+    updateTemplate (content) {
+      this.getFile(content)
     },
     onUpdateFile ({ name, status, res }) {
       this.$router.replace({

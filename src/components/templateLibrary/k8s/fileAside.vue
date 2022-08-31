@@ -152,6 +152,7 @@ export default {
         .then(res => {
           if (res) {
             this.$message.success('变量保存成功')
+            this.$emit('updateTemplate', this.fileContent)
           }
         })
         .catch(err => {
