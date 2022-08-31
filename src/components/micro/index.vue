@@ -79,10 +79,21 @@ export default {
     // window.qiankunStarted = true
     registerApps()
     // this.activationHandleChange(this.$route.path)
-    bus.$emit(`set-topbar-title`, {
-      title: '',
-      breadcrumb: [{ title: '客户交付', url: '' }]
-    })
+  },
+  watch: {
+    $route (newVal, oldVal) {
+      if (newVal.fullPath.includes('release')) {
+        bus.$emit(`set-topbar-title`, {
+          title: '',
+          breadcrumb: [{ title: '发布中心', url: '' }]
+        })
+      } else {
+        bus.$emit(`set-topbar-title`, {
+          title: '',
+          breadcrumb: [{ title: '客户交付', url: '' }]
+        })
+      }
+    }
   },
   beforeRouteEnter (to, from, next) {
     rawAppendChild = HTMLHeadElement.prototype.appendChild
