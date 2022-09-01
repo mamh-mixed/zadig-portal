@@ -104,7 +104,6 @@ export default {
 
 /deep/ .cm-s-neo.CodeMirror {
   height: 100%;
-  padding-top: 10px;
 }
 
 /deep/ .CodeMirror-sizer {

@@ -69,7 +69,27 @@
             :saveFile="saveFile"
           />
         </div>
+
         <div class="code" v-if="page.expandFileList.length">
+          <div class="breadcrumb-nav">
+            <span v-if="currentCode.service_name">
+              <i class="iconfont iconhelmrepo"></i>
+              {{currentCode.service_name}}
+            </span>
+            <template v-if="currentCode.parent">
+              <span v-for="(path,index) in currentCode.parent.split('/')" :key="index">
+              <template v-if="path">
+                <span>></span>
+                  <i class="el-icon-folder"></i>
+                  {{path}}
+              </template>
+              </span>
+            </template>
+            <template v-if="currentCode.name">
+              <span>></span>
+              <span>{{currentCode.name}}</span>
+            </template>
+          </div>
           <component
             v-if="currentCode.type==='components'"
             :followUpFn="followUpFn"
@@ -628,6 +648,13 @@ export default {
       margin-top: 40px;
       overflow-y: scroll;
       background-color: #fff;
+
+      .breadcrumb-nav {
+        margin-top: 5px;
+        padding-left: 15px;
+        color: #a0a3a9;
+        font-size: 14px;
+      }
 
       .code-content {
         padding: 3px 3px 50px;
