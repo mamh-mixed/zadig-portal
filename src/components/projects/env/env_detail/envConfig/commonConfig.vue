@@ -1,6 +1,13 @@
 <template>
   <div class="env-common-config-container">
-    <el-button type="primary" size="small" plain @click="operateConfig('add')" style="margin-bottom: 12px;">添加</el-button>
+    <el-button
+      v-hasPermi="{projectName: projectName, actions: ['production:config_environment','config_environment'],operator:'or',isBtn:true}"
+      type="primary"
+      size="small"
+      plain
+      @click="operateConfig('add')"
+      style="margin-bottom: 12px;"
+    >添加</el-button>
     <div v-loading="configLoading">
       <ETable :tableData="currentInfos.tableData" :tableColumns="currentInfos.tableColumns" :id="currentInfos.id"></ETable>
     </div>
@@ -195,6 +202,8 @@ export default {
         <div>
           <el-button
             type="text"
+            size="mini"
+            v-hasPermi={{ projectName: this.projectName, actions: ['production:get_environment', 'get_environment'], operator: 'or', isBtn: true }}
             onClick={() => {
               this.operateConfig('view', scope.row, scope.$index)
             }}
@@ -203,6 +212,8 @@ export default {
           </el-button>
           <el-button
             type="text"
+            size="mini"
+            v-hasPermi={{ projectName: this.projectName, actions: ['production:config_environment', 'config_environment'], operator: 'or', isBtn: true }}
             onClick={() => {
               this.operateConfig('edit', scope.row, scope.$index)
             }}
@@ -212,6 +223,8 @@ export default {
           </el-button>
           <el-button
             type="text"
+            size="mini"
+            v-hasPermi={{ projectName: this.projectName, actions: ['production:get_environment', 'get_environment'], operator: 'or', isBtn: true }}
             onClick={() => {
               this.operateConfig('history', scope.row, scope.$index)
             }}
@@ -220,6 +233,8 @@ export default {
           </el-button>
           <el-button
             type="text"
+            size="mini"
+            v-hasPermi={{ projectName: this.projectName, actions: ['production:config_environment', 'config_environment'], operator: 'or', isBtn: true }}
             onClick={() => {
               this.deleteConfig(scope.row)
             }}
