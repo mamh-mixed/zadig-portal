@@ -1784,8 +1784,12 @@ export function updateMulKubernetesTemplateAPI (id, payload) {
   return http.post(`/api/aslan/template/yaml/${id}/reference`)
 }
 
-export function praseKubernetesTemplateAPI (payload) {
-  return http.post(`/api/aslan/template/yaml/getVariables`, payload)
+export function validateKubernetesTemplateVariableAPI (payload) {
+  return http.post(`/api/aslan/template/yaml/validateVariable`, payload)
+}
+
+export function saveKubernetesTemplateVariableAPI (templateId, payload) {
+  return http.put(`/api/aslan/template/yaml/${templateId}/variable`, payload)
 }
 
 export function getKubernetesTemplateDetailAPI (id, projectName = '') {
@@ -1798,6 +1802,10 @@ export function deleteKubernetesTemplateAPI (id) {
 
 export function getKubernetesTemplateBuildReferenceAPI (id) {
   return http.get(`/api/aslan/template/yaml/${id}/reference`)
+}
+
+export function getKubernetesTemplatePreviewAPI (payload, projectName) {
+  return http.post(`/api/aslan/service/template/preview?projectName=${projectName}`, payload)
 }
 
 export function loadServiceFromKubernetesTemplateAPI (payload, projectName = '') {
