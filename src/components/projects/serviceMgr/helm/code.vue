@@ -105,14 +105,16 @@
             :saveFile="saveFile"
             :changeCodeTxtCache="changeCodeTxtCache"
             :currentCode="currentCode"
+            :currentService = "currentService"
             class="service-editor-content"
           />
           <div class="modal-block" v-if="currentCode.type==='file' && currentCode.source==='chartTemplate' && showModal">
-            <el-button type="primary" size="small" @click="showModal = false">预览</el-button>
+            <el-button v-if="currentCode.name === 'values.yaml' && !currentService.auto_sync" type="primary" size="small" @click="showModal = false">预览/编辑</el-button>
+            <el-button v-else type="primary" size="small" @click="showModal = false">预览</el-button>
           </div>
         </div>
         <div class="footer" v-if="!isCreate">
-          <!-- <el-button size="small" type="primary" @click="commit" :disabled="!commitCache.length">保存</el-button> -->
+          <el-button v-if="currentCode && currentCode.name === 'values.yaml' && currentCode.type==='file' && currentCode.source==='chartTemplate' && !currentService.auto_sync" size="small" type="primary" :disabled="!contentChanged" @click="commit">保存</el-button>
           <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" size="small" type="primary" :disabled="!updateEnv.length || !envNameList.length" @click="update()">加入环境</el-button>
         </div>
       </div>
@@ -393,7 +395,7 @@ export default {
         this.updateData('currentCode', 'txt', newCode)
         this.updateData('currentCode', 'cacheTxt', '')
         this.updateData('currentCode', 'updated', true)
-        this.commitCache.push(this.currentCode)
+        this.commitCache.push(cloneDeep(this.currentCode))
       }
     },
     clearCommitCache () {
@@ -523,6 +525,13 @@ export default {
       return this.$store.state.serviceManage.chartNames.filter(
         chart => chart.type !== 'delete' && chart.serviceName === serviceName
       )
+    },
+    contentChanged () {
+      if (this.currentCode.txt !== this.currentCode.originalTxt) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted () {

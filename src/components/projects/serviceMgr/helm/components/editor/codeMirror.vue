@@ -29,20 +29,13 @@ export default {
   },
   props: {
     currentCode: Object,
+    currentService: Object,
     changeCodeTxtCache: Function,
     saveFile: Function
   },
   data () {
     return {
-      msg: '',
-      options: {
-        tabSize: 2,
-        theme: 'neo',
-        mode: 'text/yaml',
-        lineNumbers: true,
-        line: true,
-        readOnly: true
-      }
+      msg: ''
     }
   },
   methods: {
@@ -62,6 +55,18 @@ export default {
       if (e.keyCode === 83 && (navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey)) {
         e.preventDefault()
         this.saveFile()
+      }
+    }
+  },
+  computed: {
+    options () {
+      return {
+        tabSize: 2,
+        theme: 'neo',
+        mode: 'text/yaml',
+        lineNumbers: true,
+        line: true,
+        readOnly: !((this.currentCode.name === 'values.yaml' && this.currentCode.type === 'file' && this.currentCode.source === 'chartTemplate' && !this.currentService.auto_sync))
       }
     }
   },

@@ -121,18 +121,11 @@ export default {
     },
     async updateHelmChart ({ dispatch }, payload) {
       const params = {
-        helm_service_infos: []
+        file_path: payload.commitCache.slice(-1)[0].label,
+        file_content: payload.commitCache.slice(-1)[0].txt
       }
-      payload.commitCache.forEach(item => {
-        const data = {
-          service_name: item.service_name,
-          file_path: item.parent,
-          file_name: item.label,
-          file_content: item.txt
-        }
-        params.helm_service_infos.push(data)
-      })
-      const res = await Api.updateHelmChartAPI(payload.projectName, params).catch(error => console.log(error))
+      const serviceName = payload.commitCache.slice(-1)[0].service_name
+      const res = await Api.updateHelmChartAPI(serviceName, payload.projectName, params).catch(error => console.log(error))
       if (res) {
         dispatch('queryService', { projectName: payload.projectName })
         return Promise.resolve(res)

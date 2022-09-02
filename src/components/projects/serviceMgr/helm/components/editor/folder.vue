@@ -133,6 +133,7 @@ export default {
           this.$store.dispatch('queryFileContent', params).then(res => {
             if (res) {
               data.txt = res
+              data.originalTxt = res
             } else {
               data.txt = ''
             }
