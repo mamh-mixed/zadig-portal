@@ -2,8 +2,8 @@
   <div class="global-env">
     <el-form ref="buildEnvRef" :inline="true" :model="preEnvs" class="variable-form" label-position="top" label-width="80px">
       <el-row :gutter="2" class="th">
-        <el-col :span="8" class="th-title">类型</el-col>
-        <el-col :span="4" class="th-title">键</el-col>
+        <el-col :span="6" class="th-title">类型</el-col>
+        <el-col :span="6" class="th-title">键</el-col>
         <el-col :span="6" class="th-title">值</el-col>
       </el-row>
       <el-button
@@ -15,7 +15,7 @@
         class="mg-b16"
       >+ 添加</el-button>
       <el-row v-for="(app,build_env_index) in preEnvs.params" :key="build_env_index" :gutter="2">
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item class="display-flex">
             <el-select
               v-model="preEnvs.params[build_env_index].type"
@@ -36,7 +36,7 @@
             ></i>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
           <el-form-item
             :prop="'params.' + build_env_index + '.name'"
             :rules="{required: true, message: '键 不能为空', trigger: ['blur','change']}"
