@@ -167,16 +167,17 @@
       :modal-append-to-body="false"
       :show-close="false"
       class="drawer"
+      :before-close="closeDrawer"
       :size="drawerSize?drawerSize:'40%'"
     >
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain icon="el-icon-circle-close" @click="isShowDrawer=false"></el-button>
+          <el-button size="mini" plain icon="el-icon-circle-close" @click="closeDrawer"></el-button>
         </div>
         <div v-else>
           <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
-          <el-button size="mini" plain @click="isShowDrawer=false">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
@@ -197,7 +198,7 @@
         <Env :preEnvs="payload" ref="env" />
       </div>
       <div v-if="curDrawer === 'webhook'">
-        <Webhook :config="payload" :isEdit="isEdit" :isShowDrawer="isShowDrawer" :originalWorkflow="originalWorkflow" @saveWorkflow="operateWorkflow" @closeDrawer="isShowDrawer=false" ref="webhook" />
+        <Webhook :config="payload" :isEdit="isEdit" :isShowDrawer="isShowDrawer" :originalWorkflow="originalWorkflow" @saveWorkflow="operateWorkflow" @closeDrawer="closeDrawer" ref="webhook" />
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
@@ -371,31 +372,31 @@ export default {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.label
+      return res ? res.label : ''
     },
     drawerSize () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerSize
+      return res ? res.drawerSize : '30%'
     },
     drawerConfirmText () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerConfirmText
+      return res ? res.drawerConfirmText : ''
     },
     drawerCancelText () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerCancelText
+      return res ? res.drawerCancelText : ''
     },
     drawerHideButton () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerHideButton
+      return res ? res.drawerHideButton : false
     }
   },
   created () {
@@ -537,11 +538,13 @@ export default {
       if (this.$route.fullPath.includes('edit')) {
         updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
           .then(res => {
-            this.$message.success('编辑成功')
+            this.$message.success('保存成功')
             this.getWorkflowDetail(this.payload.name)
-            this.$router.push(
-              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
-            )
+            if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
+              this.$router.push(
+                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+              )
+            }
           })
           .catch(() => {
             this.getWorkflowDetail(this.payload.name)
@@ -832,6 +835,10 @@ export default {
     setCurDrawer (val) {
       this.isShowDrawer = true
       this.curDrawer = val
+    },
+    closeDrawer () {
+      this.isShowDrawer = false
+      this.curDrawer = ''
     },
     closeFooter () {
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]

@@ -5,12 +5,12 @@
         <span class="type">部署</span>
         <span>{{jobInfo.name}}</span>
       </el-col>
-      <el-col v-if="jobInfo.status!=='running'" :span="2">
+      <el-col :span="2">
         <div class="grid-content item-desc">
           <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
         </div>
       </el-col>
-      <el-col v-if="jobInfo.status!=='running'" :span="2">
+      <el-col :span="2">
         <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
       </el-col>
       <el-col v-if="jobInfo" :span="6">

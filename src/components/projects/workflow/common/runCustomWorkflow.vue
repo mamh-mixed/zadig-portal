@@ -141,7 +141,7 @@
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
             </div>
-            <div v-if="job.type === 'plugin'&&job.isShowPlugin">
+            <div v-if="job.type === 'plugin'">
               <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
             </div>
           </el-collapse-item>
@@ -265,6 +265,10 @@ export default {
                 //   key.value = this.$utils.aesDecrypt(key.value)
                 // }
               })
+              // 如果只有一个组件 默认选上
+              if (job.spec.service_and_builds.length === 1) {
+                job.pickedTargets = job.spec.service_and_builds
+              }
             })
           }
           if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
@@ -290,6 +294,9 @@ export default {
                 item.isShow = true
               }
             })
+            // 判断是否展示(固定值和全局变量不展示)一个都没有的话则不展示表头
+            const len = job.spec.properties.envs.filter(item => item.isShow)
+            job.isShowCommon = len.length !== 0
           }
           if (job.type === 'plugin') {
             job.spec.plugin.inputs.forEach(item => {
@@ -549,6 +556,7 @@ export default {
       services.forEach(service => {
         this.getRepoInfo(service.repos)
       })
+      this.$forceUpdate()
     },
     getServiceAndBuildList () {
       const projectName = this.projectName
