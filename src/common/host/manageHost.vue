@@ -144,7 +144,7 @@ export default {
           icon: 'iconfont logo iconhuawei',
           name: '华为云 OBS'
         },
-        5: {
+        4: {
           icon: 'iconfont logo iconaws',
           name: 'Amazon S3'
         }
