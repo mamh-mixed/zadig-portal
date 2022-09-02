@@ -108,13 +108,13 @@
             :currentService = "currentService"
             class="service-editor-content"
           />
-          <div class="modal-block" v-if="currentCode.type==='file' && currentCode.source==='chartTemplate' && showModal">
+          <div class="modal-block" v-if="currentCode.type==='file' && (currentCode.source==='chartTemplate'|| currentCode.source==='customEdit') && showModal">
             <el-button v-if="currentCode.name === 'values.yaml' && !currentService.auto_sync" type="primary" size="small" @click="showModal = false">预览/编辑</el-button>
             <el-button v-else type="primary" size="small" @click="showModal = false">预览</el-button>
           </div>
         </div>
         <div class="footer" v-if="!isCreate">
-          <el-button v-if="currentCode && currentCode.name === 'values.yaml' && currentCode.type==='file' && currentCode.source==='chartTemplate' && !currentService.auto_sync" size="small" type="primary" :disabled="!contentChanged" @click="commit">保存</el-button>
+          <el-button v-if="currentCode && currentCode.name === 'values.yaml' && currentCode.type==='file' && (currentCode.source==='chartTemplate'||currentCode.source==='customEdit') && !currentService.auto_sync" size="small" type="primary" :disabled="!contentChanged" @click="commit">保存</el-button>
           <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" size="small" type="primary" :disabled="!updateEnv.length || !envNameList.length" @click="update()">加入环境</el-button>
         </div>
       </div>

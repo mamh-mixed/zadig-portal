@@ -70,14 +70,17 @@ export default {
                   style={this.showHover[data.id] ? 'visibility: visible' : 'visibility: hidden'}
                   class="el-icon-close icon"
                   onClick = {() => this.deleteServer(data)}
-                ></el-button><el-button
-                  v-hasPermi={{ projectName: this.$route.params.project_name, action: 'edit_service', isBtn: true }}
-                  type="text"
-                  size="mini"
-                  style={this.showHover[data.id] ? 'visibility: visible' : 'visibility: hidden'}
-                  class="el-icon-refresh icon"
-                  onClick = {() => this.openRepoModal(data.source, data)}
-                ></el-button></span>}
+                ></el-button>
+                {data.source !== 'customEdit'
+                  ? <el-button
+                    v-hasPermi={{ projectName: this.$route.params.project_name, action: 'edit_service', isBtn: true }}
+                    type="text"
+                    size="mini"
+                    style={this.showHover[data.id] ? 'visibility: visible' : 'visibility: hidden'}
+                    class="el-icon-refresh icon"
+                    onClick = {() => this.openRepoModal(data.source, data)}
+                  ></el-button>
+                  : ''} </span>}
               </span>
             )}
         </span>
