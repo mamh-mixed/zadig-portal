@@ -32,9 +32,9 @@
             <i class="iconfont iconhuawei"></i>
             <span>华为云</span>
           </el-option>
-          <el-option :value="4" label="Amazon EKS">
+          <el-option :value="4" label="Amazon">
             <i class="iconfont iconaws"></i>
-            <span>Amazon EKS</span>
+            <span>Amazon</span>
           </el-option>
           <el-option :value="0" label="其他">
             <i class="iconfont iconwuliji"></i>
