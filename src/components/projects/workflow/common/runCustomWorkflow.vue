@@ -138,6 +138,44 @@
                 </el-form-item>
               </div>
             </div>
+            <div v-if="job.type === 'custom-deploy'">
+              <el-form-item label="选择容器" v-if="job.spec.source === 'runtime'">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="target"
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleContainerChange($event,job)"
+                >
+                  <el-option v-for="(item,index) of job.spec.targets" :key="index" :label="item.target" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-for="(item,index) in job.pickedTargets" :key="index">
+                <el-form-item :label="item.service">
+                  <el-select
+                    v-model="item.image"
+                    filterable
+                    clearable
+                    @change="handleCurImageChange"
+                    reserve-keyword
+                    size="medium"
+                    style="width: 220px;"
+                    placeholder="请选择镜像"
+                  >
+                    <el-option
+                      v-for="(image,index) of item.images"
+                      :key="index"
+                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                      :label="image.tag"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
             </div>
@@ -247,6 +285,13 @@ export default {
       this.payload.stages.forEach((stage, stageIndex) => {
         stage.jobs.forEach((job, jobIndex) => {
           this.activeName.push(`${stageIndex}${jobIndex}`)
+          if (job.type === 'custom-deploy') {
+            job.spec.targets.forEach(item => {
+              item.service = item.target.split('/')[2]
+            })
+            job.pickedTargets = cloneDeep(job.spec.targets)
+            this.handleContainerChange(job.pickedTargets, job)
+          }
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
@@ -324,7 +369,11 @@ export default {
               job.checked = true
               if (job.type === 'zadig-deploy') {
                 // Mapping for value-key
-                if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+                if (
+                  job.spec &&
+                  job.spec.service_and_images &&
+                  job.spec.service_and_images.length > 0
+                ) {
                   job.spec.service_and_images.forEach(service => {
                     service.value = `${service.service_name}/${service.service_module}`
                   })
@@ -456,7 +505,6 @@ export default {
         stage.jobs = stage.jobs.filter(job => job.checked)
         stage.jobs.forEach(job => {
           job.spec.service_and_builds = job.pickedTargets
-          delete job.pickedTargets
           delete job.checked
           if (
             job.spec.service_and_images &&
@@ -465,6 +513,7 @@ export default {
             job.spec.service_and_images.forEach(item => {
               delete item.images
             })
+            delete job.pickedTargets
           }
           if (
             job.spec.service_and_builds &&
@@ -504,6 +553,10 @@ export default {
           if (job.type === 'zadig-deploy') {
             job.spec.service_and_images = job.spec.service_and_builds
             delete job.spec.service_and_builds
+          }
+          if (job.type === 'custom-deploy' && job.spec.source === 'runtime') {
+            job.spec.targets = job.pickedTargets
+            delete job.pickedTargets
           }
         })
       })
@@ -556,6 +609,22 @@ export default {
       services.forEach(service => {
         this.getRepoInfo(service.repos)
       })
+      this.$forceUpdate()
+    },
+    handleContainerChange (val, job) {
+      val.forEach(item => {
+        this.getRegistryList([item.service], job.spec.docker_registry_id).then(
+          res => {
+            this.$set(item, 'images', res)
+            this.$forceUpdate()
+          }
+        )
+      })
+    },
+    handleImageChange (job) {
+      this.handleContainerChange(job.pickedTargets, job)
+    },
+    handleCurImageChange () {
       this.$forceUpdate()
     },
     getServiceAndBuildList () {

@@ -38,7 +38,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal"/>
+                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" />
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -117,6 +117,15 @@
                   @click="addServiceAndBuild(job.spec.service_and_builds)"
                 >+ 添加</el-button>
               </div>
+              <K8sDeploy
+                :projectName="projectName"
+                v-if="job.type === jobType.customDeploy"
+                v-model="job"
+                ref="customDeploy"
+                :originServiceAndBuilds="originServiceAndBuilds"
+                :globalEnv="globalEnv"
+                :workflowInfo="payload"
+              ></K8sDeploy>
               <div v-if="job.type === 'plugin'">
                 <Plugin v-model="job" ref="plugin" :globalEnv="globalEnv" />
               </div>
@@ -198,11 +207,25 @@
         <Env :preEnvs="payload" ref="env" />
       </div>
       <div v-if="curDrawer === 'webhook'">
-        <Webhook :config="payload" :isEdit="isEdit" :isShowDrawer="isShowDrawer" :originalWorkflow="originalWorkflow" @saveWorkflow="operateWorkflow" @closeDrawer="closeDrawer" ref="webhook" />
+        <Webhook
+          :config="payload"
+          :isEdit="isEdit"
+          :isShowDrawer="isShowDrawer"
+          :originalWorkflow="originalWorkflow"
+          @saveWorkflow="operateWorkflow"
+          @closeDrawer="closeDrawer"
+          ref="webhook"
+        />
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
-      <StageOperate ref="stageOperate" :stageInfo="stage" :type="stageOperateType" :workflowInfo="payload" @submitEvent="operateStage('',stage)" />
+      <StageOperate
+        ref="stageOperate"
+        :stageInfo="stage"
+        :type="stageOperateType"
+        :workflowInfo="payload"
+        @submitEvent="operateStage('',stage)"
+      />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
@@ -241,6 +264,7 @@ import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import Env from './components/env.vue'
 import Webhook from './components/webhook.vue'
+import K8sDeploy from './components/k8sDeploy.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -348,7 +372,8 @@ export default {
     codemirror,
     Plugin,
     Env,
-    Webhook
+    Webhook,
+    K8sDeploy
   },
   computed: {
     projectName () {
@@ -611,7 +636,11 @@ export default {
                 job.spec.serviceType = 'other'
               }
               // Mapping for value-key
-              if (job.spec && job.spec.service_and_images && job.spec.service_and_images.length > 0) {
+              if (
+                job.spec &&
+                job.spec.service_and_images &&
+                job.spec.service_and_images.length > 0
+              ) {
                 job.spec.service_and_images.forEach(service => {
                   service.value = `${service.service_name}/${service.service_module}`
                 })
@@ -717,7 +746,20 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs.jobRuleForm.validate().then(valid => {
           if (valid) {
-            if (this.job.type === jobType.deploy) {
+            if (this.job.type === jobType.customDeploy) {
+              this.$refs.customDeploy.validate().then(valid => {
+                const curJob = this.$refs.customDeploy.getData()
+                console.log(curJob)
+                if (valid) {
+                  this.$set(
+                    this.payload.stages[this.curStageIndex].jobs,
+                    this.curJobIndex,
+                    curJob
+                  )
+                  this.$store.dispatch('setIsShowFooter', false)
+                }
+              })
+            } else if (this.job.type === jobType.deploy) {
               this.$refs.buildEnv.validate().then(valid => {
                 const curJob = this.$refs.buildEnv.getData()
                 if (valid) {

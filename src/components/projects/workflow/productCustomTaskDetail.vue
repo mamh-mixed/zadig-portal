@@ -92,6 +92,7 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
+        <CustomConsole @showFooter="showFooter" v-if="curJob.type=== jobType.customDeploy" :jobInfo="curJob" :projectName="projectName" />
       </footer>
     </Multipane>
     <div v-if="activeName==='env'" class="env">
@@ -136,6 +137,7 @@ import { Multipane, MultipaneResizer } from 'vue-multipane'
 import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
 import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
 import Approval from './productCustomTaskDetail/approval.vue'
+import CustomConsole from './productCustomTaskDetail/customConsole.vue'
 import CommonTask from './productCustomTaskDetail/commonTask.vue'
 import Plugin from './productCustomTaskDetail/plugin.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
@@ -166,7 +168,8 @@ export default {
     DeployConsole,
     Approval,
     CommonTask,
-    Plugin
+    Plugin,
+    CustomConsole
   },
   computed: {
     taskId () {

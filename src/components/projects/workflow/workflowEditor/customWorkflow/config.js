@@ -54,13 +54,14 @@ const jobTypeList = [
     type: 'freestyle',
     is_offical: true,
     description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
+  },
+  {
+    label: 'Kubernetes 部署',
+    name: 'custom-deploy',
+    type: 'custom-deploy',
+    is_offical: true,
+    description: '可更新 Kubernetes 中容器镜像'
   }
-  // {
-  //   label: '测试',
-  //   is_offical: true,
-  //   name: '',
-  //   description: 'coming soon'
-  // }
 ]
 const configList = [
   {
@@ -90,7 +91,9 @@ const jobType = {
   approval: 'zadig-approval',
   common: 'freestyle',
   freestyle: 'freestyle',
-  plugin: 'plugin'
+  plugin: 'plugin',
+  customDeploy: 'custom-deploy'
+
 }
 const editorOptions = {
   mode: 'yaml',

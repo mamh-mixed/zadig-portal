@@ -75,6 +75,15 @@ export default {
             job_name: ''
           }
         },
+        'custom-deploy': {
+          name: 'default',
+          type: 'custom-deploy',
+          spec: {
+            timeout: '60',
+            source: 'runtime',
+            targets: []
+          }
+        },
         freestyle: {
           name: 'default',
           type: 'freestyle',
