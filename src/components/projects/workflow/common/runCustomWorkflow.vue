@@ -554,8 +554,8 @@ export default {
             job.spec.service_and_images = job.spec.service_and_builds
             delete job.spec.service_and_builds
           }
-          if (job.type === 'custom-deploy' && job.spec.source === 'runtime') {
-            job.spec.targets = job.pickedTargets
+          if (job.type === 'custom-deploy') {
+            job.spec.targets = cloneDeep(job.pickedTargets)
             delete job.pickedTargets
           }
         })

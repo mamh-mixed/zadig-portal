@@ -308,7 +308,10 @@ export default {
     },
     async refreshHistoryTaskDetail () {
       await this.getWorkflowTaskDetail(this.workflowName, this.taskId)
-      if (!this.timeTimeoutFinishFlag) {
+      if (
+        !this.timeTimeoutFinishFlag &&
+        this.$route.query.status === 'running'
+      ) {
         this.timerId = setTimeout(this.refreshHistoryTaskDetail, 3000) // 保证内存中只有一个定时器
       }
     },

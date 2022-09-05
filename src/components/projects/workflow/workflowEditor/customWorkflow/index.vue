@@ -953,7 +953,7 @@ export default {
   .left {
     position: relative;
     float: left;
-    width: calc(~'100%' - 120px);
+    width: calc(~'100%' - 102px);
     height: 100%;
 
     header {
