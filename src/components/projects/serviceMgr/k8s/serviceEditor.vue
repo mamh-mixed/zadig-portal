@@ -12,7 +12,8 @@
               <CodeMirror style="width: 100%; height: 100%;" ref="myCm" :value="service.yaml" :options="cmOptions" @input="onCmCodeChange"/>
             </div>
             <div class="modal-block" v-if="service.source === 'template' && showModal">
-              <el-button type="primary" size="small" @click="showModal = false">预览/编辑</el-button>
+              <el-button v-if="service.auto_sync" type="primary" size="small" @click="showModal = false">预览</el-button>
+              <el-button v-else type="primary" size="small" @click="showModal = false">预览/编辑</el-button>
             </div>
           </div>
         </div>
@@ -250,7 +251,8 @@ export default {
         this.service.source === 'github' ||
         this.service.source === 'gerrit' ||
         (this.service.visibility === 'public' &&
-          this.service.product_name !== this.projectName)
+          this.service.product_name !== this.projectName) ||
+        (this.service.source === 'template' && this.service.auto_sync)
       ) {
         return true
       } else {
