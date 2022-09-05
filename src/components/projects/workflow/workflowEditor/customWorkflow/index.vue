@@ -12,7 +12,7 @@
             :class="{'active': activeName===item.name}"
             v-for="item in tabList"
             :key="item.name"
-            @click="activeName = item.name"
+            @click="handleTabChange(item.name)"
           >{{item.label}}</span>
         </div>
         <div>
@@ -38,7 +38,13 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" />
+                <Stage
+                  v-model="payload.stages[index]"
+                  :curJobIndex.sync="curJobIndex"
+                  :scale="scal"
+                  :isShowCurJobDrawer.sync="isShowCurJobDrawer"
+                  :handleCurJobDrawer="handleCurJobDrawer"
+                />
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -231,6 +237,7 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
       </div>
     </el-dialog>
+    <ConfirmJobDialog :isShowCurJobDrawer="isShowCurJobDrawer" />
   </div>
 </template>
 
@@ -265,6 +272,7 @@ import Service from '../../../guide/helm/service.vue'
 import Env from './components/env.vue'
 import Webhook from './components/webhook.vue'
 import K8sDeploy from './components/k8sDeploy.vue'
+import ConfirmJobDialog from './components/confirmJobDialog'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -355,7 +363,8 @@ export default {
         }
       },
       beInitCompRef: 'beInitCompRef',
-      scal: '1'
+      scal: '1',
+      isShowCurJobDrawer: false
     }
   },
   components: {
@@ -373,7 +382,13 @@ export default {
     Plugin,
     Env,
     Webhook,
-    K8sDeploy
+    K8sDeploy,
+    ConfirmJobDialog
+  },
+  provide () {
+    return {
+      handleCurJobDrawer: this.handleCurJobDrawer
+    }
   },
   computed: {
     projectName () {
@@ -481,6 +496,20 @@ export default {
           this.yamlError = error.response.data.description
         })
     },
+    handleTabChange (name) {
+      if (name === 'yaml') {
+        if (this.isShowFooter) {
+          this.isShowCurJobDrawer = true
+          return
+        } else {
+          this.yaml = jsyaml.dump(this.payload)
+          this.$store.dispatch('setIsShowFooter', false)
+        }
+      } else {
+        this.payload = jsyaml.load(this.yaml)
+      }
+      this.activeName = name
+    },
     operateWorkflow () {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
@@ -500,7 +529,7 @@ export default {
         }
       })
       if (this.isShowFooter) {
-        this.$message.error('请先保存任务配置')
+        this.isShowCurJobDrawer = true
         return
       }
       this.saveWorkflow()
@@ -608,18 +637,20 @@ export default {
         })
         this.payload.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            if (job.spec && job.spec.service_and_builds) {
-              job.spec.service_and_builds.forEach(service => {
-                service.key_vals.forEach(item => {
-                  if (item.value.includes('<+fixed>')) {
-                    item.command = 'fixed'
-                    item.value = item.value.replaceAll('<+fixed>', '')
-                  }
-                  if (item.value.includes('{{')) {
-                    item.command = 'other'
-                  }
+            if (job.type === 'zadig-build') {
+              if (job.spec && job.spec.service_and_builds) {
+                job.spec.service_and_builds.forEach(service => {
+                  service.key_vals.forEach(item => {
+                    if (item.value.includes('<+fixed>')) {
+                      item.command = 'fixed'
+                      item.value = item.value.replaceAll('<+fixed>', '')
+                    }
+                    if (item.value.includes('{{')) {
+                      item.command = 'other'
+                    }
+                  })
                 })
-              })
+              }
             }
             if (job.type === 'zadig-deploy') {
               if (job.spec.env.includes('fixed')) {
@@ -686,7 +717,7 @@ export default {
         return
       }
       if (this.isShowFooter) {
-        this.$message.error('请先保存上一个任务配置')
+        this.isShowCurJobDrawer = true
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -703,6 +734,18 @@ export default {
         }
         this.stage = cloneDeep(row)
       }
+    },
+    // 当有 Job 抽屉打开时候 切换其他操作的确认弹框
+    handleCurJobDrawer (type) {
+      if (type === 'confirm') {
+        this.saveJobConfig()
+      } else if (type === 'abort') {
+        // 放弃修改 都关闭
+        this.closeFooter()
+        this.isShowDrawer = false
+        this.$store.dispatch('setIsShowFooter', false)
+      }
+      this.isShowCurJobDrawer = false
     },
     operateStage () {
       this.$refs.stageOperate.validate().then(valid => {
@@ -888,14 +931,6 @@ export default {
     }
   },
   watch: {
-    activeName (newVal, oldVal) {
-      if (newVal === 'yaml') {
-        this.yaml = jsyaml.dump(this.payload)
-        this.$store.dispatch('setIsShowFooter', false)
-      } else {
-        this.payload = jsyaml.load(this.yaml)
-      }
-    },
     payload: {
       handler (val, oldVal) {
         let res = []

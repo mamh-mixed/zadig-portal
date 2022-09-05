@@ -3,9 +3,9 @@
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
     </el-tooltip>
-    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job-wrap">
+    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job">
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
-        <span class="job-name">{{item.name}}</span>
+        <span>{{item.name}}</span>
       </el-tooltip>
       <div class="del" @click="delJob(item,index)" v-if="isShowJobAddBtn">
         <i class="el-icon-close"></i>
@@ -51,6 +51,10 @@ export default {
     scale: {
       type: String,
       default: ''
+    },
+    isShowCurJobDrawer: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -192,7 +196,7 @@ export default {
     addJob () {
       if (this.stageInfo.jobs.length > 0) {
         if (this.isShowFooter) {
-          this.$message.error('请先保存上一个任务配置')
+          this.$emit('update:isShowCurJobDrawer', true)
         } else {
           this.isShowJobOperateDialog = true
         }
@@ -212,8 +216,12 @@ export default {
       })
     },
     setCurIndex (index) {
-      this.JobIndex = index
-      this.$store.dispatch('setIsShowFooter', true)
+      if (this.isShowFooter) {
+        this.$emit('update:isShowCurJobDrawer', true)
+      } else {
+        this.JobIndex = index
+        this.$store.dispatch('setIsShowFooter', true)
+      }
     },
     setJob (newVal) {
       if (Object.keys(newVal).length === 0) {
@@ -271,7 +279,7 @@ export default {
     cursor: pointer;
   }
 
-  .job-wrap {
+  .job {
     position: relative;
     width: 7em;
     margin: 8px auto;
