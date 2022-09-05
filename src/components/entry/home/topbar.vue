@@ -33,23 +33,24 @@
           <div class="project-switcher"></div>
           <el-breadcrumb v-if="content.breadcrumb && content.breadcrumb.length > 0" separator=">">
             <el-breadcrumb-item v-for="(item,index) in content.breadcrumb" :to="item.url" :key="index">
-              <span> {{ item.title }}</span>
-              <el-popover placement="bottom" width="200" trigger="hover" v-if="item.list && item.list.length">
-                <div class="list-container">
+              <span>{{ item.title }}</span>
+              <el-popover
+                placement="bottom"
+                width="180"
+                trigger="hover"
+                v-if="item.list && item.list.length"
+                popper-class="sub-project-list-popover"
+              >
+                <div class="option-list-container">
                   <div
                     v-for="(proItem, index) in item.list"
                     :key="index"
-                    class="project-item product-option"
+                    class="product-option"
                     :class="{'active': proItem.title === item.title }"
-                    @click="$router.push(`/v1${proItem.url}`)"
+                    @click="toggleSubUrl(item, proItem)"
                   >
-                    <span style="float: left;">{{ proItem.title }}</span>
-                    <i
-                      style="float: right; line-height: 34px;"
-                      class="el-icon-close"
-                      v-if="proItem.deleteOpe"
-                      @click.stop="proItem.deleteOpe(proItem.name)"
-                    ></i>
+                    <span class="left">{{ proItem.title }}</span>
+                    <i class="el-icon-close" v-if="proItem.deleteOpe" @click.stop="proItem.deleteOpe(proItem.name)"></i>
                   </div>
                 </div>
                 <i slot="reference" class="el-icon-caret-bottom list-popover-icon"></i>
@@ -266,6 +267,12 @@ export default {
     },
     changeTitle (params) {
       this.content = params
+    },
+    toggleSubUrl (item, proItem) {
+      item.title = proItem.title
+      item.name = proItem.name || ''
+      item.url = proItem.url ? '/v1' + proItem.url : ''
+      this.$router.push(`/v1${proItem.url}`)
     }
   },
   created () {
@@ -627,6 +634,37 @@ export default {
             color: @themeColor;
           }
         }
+      }
+    }
+  }
+}
+
+.sub-project-list-popover {
+  // ::-webkit-scrollbar-track {
+  //   width: 5px;
+  //   height: 5px;
+  //   background-color: #fff;
+  //   border-radius: 6px;
+  // }
+
+  .option-list-container {
+    height: 300px;
+    overflow: auto;
+
+    .product-option {
+      display: flex;
+      align-items: center;
+      padding: 5px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+
+      .left {
+        flex: 1 1 auto;
+      }
+
+      &:hover,
+      &.active {
+        background: rgba(0, 102, 255, 0.07);
       }
     }
   }
