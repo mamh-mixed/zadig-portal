@@ -85,7 +85,7 @@
               <el-input
                 size="mini"
                 style="display: inline-block;"
-                :value="currentService.release_naming"
+                :value="currentService && currentService.release_naming"
                 @input="handleInputChange"
                 placeholder="请输入 Release 名称"
               ></el-input>
