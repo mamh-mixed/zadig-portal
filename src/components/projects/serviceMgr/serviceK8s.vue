@@ -148,7 +148,7 @@
         </div>
       </div>
       <div v-if="isOnboarding" class="controls__wrap">
-          <div class="controls__right">
+          <div class="controls__right onboarding">
             <el-button type="primary"
                        size="small"
                        @click="showOnboardingNext">下一步</el-button>
