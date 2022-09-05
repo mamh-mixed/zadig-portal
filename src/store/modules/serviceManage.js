@@ -85,7 +85,7 @@ export default {
             service.push(item)
           })
           service[0].children = res.file_infos.map((child, index) => {
-            child.id = child.name + index
+            child.id = res.serviceInfos[0].service_name + '-' + child.name + '-' + index
             child.label = child.name
             child.service_name = service[0].service_name
             child.txt = ''
@@ -135,7 +135,7 @@ export default {
       const res = await Api.getHelmChartServiceFilePath(payload).catch(error => console.log(error))
       if (res) {
         res.map((child, index) => {
-          child.id = child.name + index
+          child.id = payload.serviceName + '-' + child.name + '-' + index
           child.label = child.name
           child.service_name = payload.serviceName
           child.txt = ''

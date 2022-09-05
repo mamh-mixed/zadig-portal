@@ -285,7 +285,7 @@ export default {
         )
         const length = this.page.expandFileList.length
         if (method === 'add') {
-          if (resIndex < 0) {
+          if (resIndex === -1) {
             this.page.expandFileList.push(item)
             this.$refs.pageNav.changePage(length, item)
           } else {
