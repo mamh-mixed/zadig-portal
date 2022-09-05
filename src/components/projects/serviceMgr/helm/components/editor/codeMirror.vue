@@ -29,7 +29,6 @@ export default {
   },
   props: {
     currentCode: Object,
-    currentService: Object,
     changeCodeTxtCache: Function,
     saveFile: Function
   },
@@ -66,7 +65,7 @@ export default {
         mode: 'text/yaml',
         lineNumbers: true,
         line: true,
-        readOnly: !((this.currentCode.name === 'values.yaml' && this.currentCode.type === 'file' && (this.currentCode.source === 'chartTemplate' || this.currentCode.source === 'customEdit') && !this.currentService.auto_sync))
+        readOnly: !((this.currentCode && this.currentCode.name === 'values.yaml' && this.currentCode.type === 'file' && (this.currentCode.source === 'chartTemplate' || this.currentCode.source === 'customEdit') && !this.currentCode.autoSync))
       }
     }
   },

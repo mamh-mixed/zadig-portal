@@ -135,6 +135,8 @@ export default {
           }
           this.$store.dispatch('queryFileContent', params).then(res => {
             if (res) {
+              const autoSync = this.nodeData.find(ele => ele.service_name === data.service_name).auto_sync
+              data.autoSync = autoSync
               data.txt = res
               data.originalTxt = res
             } else {
