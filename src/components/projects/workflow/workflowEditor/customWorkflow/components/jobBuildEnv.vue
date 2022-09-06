@@ -1,7 +1,7 @@
 <template>
   <div class="build-env">
     <el-form :label-width="formLabelWidth" :model="form" ref="ruleForm">
-      <el-form-item label="环境" required>
+      <el-form-item label="环境" :required="form.envType && form.envType !== 'runtime'">
         <el-form-item prop="env" v-if="!form.envType ||form.envType === 'runtime'" class="form-item">
           <el-select v-model="form.env" placeholder="请选择" size="small">
             <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
@@ -31,12 +31,8 @@
         </el-form-item>
         <EnvTypeSelect v-model="form.envType" isFixed isRuntime isOther style="display: inline-block;" />
       </el-form-item>
-      <el-form-item label="服务" required>
-        <el-form-item
-          prop="service_and_images"
-          v-if="!form.serviceType || form.serviceType === 'runtime'"
-          class="form-item"
-        >
+      <el-form-item label="服务" :required="form.serviceType && form.serviceType!=='runtime'">
+        <el-form-item prop="service_and_images" v-if="!form.serviceType || form.serviceType === 'runtime'" class="form-item">
           <el-select size="small" v-model="form.service_and_images" multiple filterable clearable value-key="value">
             <el-option
               v-for="(service,index) in originServiceAndBuilds"
@@ -60,18 +56,14 @@
         <EnvTypeSelect v-model="form.serviceType" isRuntime isOther isService style="display: inline-block;" />
       </el-form-item>
       <el-form-item label="服务状态检测" class="status-check">
-          <span slot="label" >
-            服务状态检测
+        <span slot="label">
+          服务状态检测
           <el-tooltip effect="dark" content="开启后，部署任务会轮询服务运行状态，待服务正常运行，任务状态才为成功。" placement="top">
-              <i class="el-icon-question" style="cursor: pointer;"></i>
+            <i class="el-icon-question" style="cursor: pointer;"></i>
           </el-tooltip>
         </span>
-        <el-form-item
-          prop="skip_check_run_status"
-          class="form-item"
-          :rules="{required: false}"
-        >
-        <el-switch v-model="form.skip_check_run_status"  :active-value="false" :inactive-value="true"  active-color="#0066ff"></el-switch>
+        <el-form-item prop="skip_check_run_status" class="form-item" :rules="{required: false}">
+          <el-switch v-model="form.skip_check_run_status" :active-value="false" :inactive-value="true" active-color="#0066ff"></el-switch>
         </el-form-item>
       </el-form-item>
     </el-form>

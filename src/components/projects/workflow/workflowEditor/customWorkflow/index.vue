@@ -364,7 +364,8 @@ export default {
       },
       beInitCompRef: 'beInitCompRef',
       scal: '1',
-      isShowCurJobDrawer: false
+      isShowCurJobDrawer: false,
+      workflowCurJobLength: 1 // 取消时候判断此字段
     }
   },
   components: {
@@ -792,7 +793,6 @@ export default {
             if (this.job.type === jobType.customDeploy) {
               this.$refs.customDeploy.validate().then(valid => {
                 const curJob = this.$refs.customDeploy.getData()
-                console.log(curJob)
                 if (valid) {
                   this.$set(
                     this.payload.stages[this.curStageIndex].jobs,
@@ -800,6 +800,9 @@ export default {
                     curJob
                   )
                   this.$store.dispatch('setIsShowFooter', false)
+                  this.workflowCurJobLength = this.payload.stages[
+                    this.curStageIndex
+                  ].jobs.length
                 }
               })
             } else if (this.job.type === jobType.deploy) {
@@ -812,6 +815,10 @@ export default {
                     curJob
                   )
                   this.$store.dispatch('setIsShowFooter', false)
+                  this.workflowCurJobLength = this.payload.stages[
+                    this.curStageIndex
+                  ].jobs.length
+
                   resolve()
                 }
               })
@@ -830,6 +837,9 @@ export default {
                     this.job
                   )
                   this.$store.dispatch('setIsShowFooter', false)
+                  this.workflowCurJobLength = this.payload.stages[
+                    this.curStageIndex
+                  ].jobs.length
                 }
               })
             } else if (this.job.type === jobType.freestyle) {
@@ -844,6 +854,10 @@ export default {
                   )
                   this.$store.dispatch('setIsShowFooter', false)
                   this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
+                  this.workflowCurJobLength = this.payload.stages[
+                    this.curStageIndex
+                  ].jobs.length
+
                   resolve()
                 })
                 .catch(err => {
@@ -857,6 +871,9 @@ export default {
                   this.curJobIndex,
                   res
                 )
+                this.workflowCurJobLength = this.payload.stages[
+                  this.curStageIndex
+                ].jobs.length
               })
               this.$store.dispatch('setIsShowFooter', false)
             }
@@ -926,6 +943,14 @@ export default {
       this.curDrawer = ''
     },
     closeFooter () {
+      // 放弃修改时候删除当前 Job
+      if (
+        this.workflowCurJobLength !==
+        this.payload.stages[this.curStageIndex].jobs.length
+      ) {
+        this.payload.stages[this.curStageIndex].jobs.pop()
+      }
+      this.curJobIndex = this.curJobIndex - 1
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
     }
@@ -950,7 +975,8 @@ export default {
         this.setJob()
       }
     },
-    curStageIndex () {
+    curStageIndex (val) {
+      this.workflowCurJobLength = this.payload.stages[val].jobs.length
       this.setJob()
     },
     job: {
