@@ -60,7 +60,7 @@
         </el-col>
         <el-col :span="8">
           <el-tooltip effect="dark" :content="build.image" placement="top">
-            <span class="file-name">{{ $utils.tailCut(build.image, 40) }}</span>
+            <span class="file-name">{{ build.image.split('/')[2]}}</span>
           </el-tooltip>
         </el-col>
       </el-row>
