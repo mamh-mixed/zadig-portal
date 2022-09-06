@@ -640,21 +640,16 @@ export default {
 }
 
 .sub-project-list-popover {
-  // ::-webkit-scrollbar-track {
-  //   width: 5px;
-  //   height: 5px;
-  //   background-color: #fff;
-  //   border-radius: 6px;
-  // }
-
   .option-list-container {
     height: 300px;
+    margin: -5px -12px -5px -5px;
+    padding-right: 5px;
     overflow: auto;
 
     .product-option {
       display: flex;
       align-items: center;
-      padding: 5px 8px;
+      padding: 6px 10px;
       border-radius: 4px;
       cursor: pointer;
 
