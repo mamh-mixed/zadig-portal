@@ -65,7 +65,7 @@
             <span>{{curJobType}}</span>
             <div>
               <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
-              <el-button size="mini" @click="closeFooter">取消</el-button>
+              <el-button size="mini" @click.stop="closeFooter">取消</el-button>
             </div>
           </div>
           <div v-if="payload.stages.length > 0 && job" class="main">
@@ -630,7 +630,9 @@ export default {
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
-        this.workflowCurJobLength = this.payload.stages[this.curStageIndex].jobs.length
+        this.workflowCurJobLength = this.payload.stages[
+          this.curStageIndex
+        ].jobs.length
         this.payload.params.forEach(item => {
           if (item.value.includes('<+fixed>')) {
             item.command = 'fixed'
@@ -950,8 +952,8 @@ export default {
         this.payload.stages[this.curStageIndex].jobs.length
       ) {
         this.payload.stages[this.curStageIndex].jobs.pop()
+        this.curJobIndex = this.curJobIndex - 1
       }
-      this.curJobIndex = this.curJobIndex - 1
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
     }

@@ -3,11 +3,17 @@
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
     </el-tooltip>
-    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job">
+    <div
+      v-for="(item,index) in stageInfo.jobs"
+      :key="index"
+      @click="setCurIndex(index,item)"
+      class="job"
+      :class="{'active':JobIndex===index}"
+    >
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
         <span>{{item.name}}</span>
       </el-tooltip>
-      <div class="del" @click="delJob(item,index)" v-if="isShowJobAddBtn">
+      <div class="del" @click.stop="delJob(item,index)" v-if="isShowJobAddBtn">
         <i class="el-icon-close"></i>
       </div>
     </div>
@@ -308,6 +314,10 @@ export default {
         display: block;
       }
     }
+  }
+
+  .active {
+    border: 1px solid #06f;
   }
 
   .add {
