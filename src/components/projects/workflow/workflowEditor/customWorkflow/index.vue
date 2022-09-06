@@ -630,6 +630,7 @@ export default {
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
+        this.workflowCurJobLength = this.payload.stages[this.curStageIndex].jobs.length
         this.payload.params.forEach(item => {
           if (item.value.includes('<+fixed>')) {
             item.command = 'fixed'
