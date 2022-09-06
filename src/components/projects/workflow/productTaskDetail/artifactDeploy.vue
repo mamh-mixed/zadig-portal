@@ -29,7 +29,7 @@
           </el-col>
           <el-col :span="6">
             <div class="item-title">
-              <i class="iconfont iconjiqun1"></i> 部署环境
+              <i class="iconfont iconvery-environ"></i> 部署环境
             </div>
           </el-col>
           <el-col :span="6">
@@ -50,6 +50,17 @@
           <el-col :span="6" v-if="deploy.artifact_info">
             <div>{{deploy.artifact_info.file_name}}</div>
           </el-col>
+          <el-col :span="6">
+            <div class="item-title">
+              <i class="iconfont iconvery-service"></i> 服务名称
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div class="item-desc">
+              <span v-if="deploy.service_type==='helm'">{{`${$utils.showServiceName(deploy.container_name,deploy.service_name)}`}}</span>
+              <router-link v-else class="env-link" :to="serviceUrl(deploy)">{{$utils.showServiceName(deploy.service_name)}}</router-link>
+            </div>
+          </el-col>
           <el-col :span="6" v-if="!deploy.artifact_info">
             <div class="item-title">
               <i class="iconfont iconSliceCopy"></i> 镜像信息
@@ -59,17 +70,6 @@
             <el-tooltip effect="dark" :content="deploy.image" placement="top">
               <div class="item-desc image-name">{{deploy.image?deploy.image.split('/')[2]:"*"}}</div>
             </el-tooltip>
-          </el-col>
-          <el-col :span="6">
-            <div class="item-title">
-              <i class="iconfont iconfuwu"></i> 服务名称
-            </div>
-          </el-col>
-          <el-col :span="6">
-            <div class="item-desc">
-              <span v-if="deploy.service_type==='helm'">{{`${$utils.showServiceName(deploy.container_name,deploy.service_name)}`}}</span>
-              <router-link v-else class="env-link" :to="serviceUrl(deploy)">{{$utils.showServiceName(deploy.service_name)}}</router-link>
-            </div>
           </el-col>
         </el-row>
       </div>
