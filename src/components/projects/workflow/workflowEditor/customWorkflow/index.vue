@@ -42,6 +42,7 @@
                   v-model="payload.stages[index]"
                   :curJobIndex.sync="curJobIndex"
                   :scale="scal"
+                  :workflowInfo="payload"
                   :isShowCurJobDrawer.sync="isShowCurJobDrawer"
                   :handleCurJobDrawer="handleCurJobDrawer"
                 />
@@ -332,6 +333,7 @@ export default {
       },
       originalWorkflow: {},
       curStageIndex: 0,
+      tempStageIndex: 0,
       curJobIndex: -2, // 不指向 job
       curDrawer: 'high',
       isShowStageOperateDialog: false,
@@ -742,12 +744,25 @@ export default {
     // 当有 Job 抽屉打开时候 切换其他操作的确认弹框
     handleCurJobDrawer (type) {
       if (type === 'confirm') {
+        if (!this.job) {
+          this.isShowCurJobDrawer = false
+          this.$store.dispatch('setIsShowFooter', false)
+          return
+        }
         this.saveJobConfig()
       } else if (type === 'abort') {
+        if (!this.job) {
+          this.isShowCurJobDrawer = false
+          this.$store.dispatch('setIsShowFooter', false)
+          return
+        }
         // 放弃修改 都关闭
         this.closeFooter()
         this.isShowDrawer = false
-        this.$store.dispatch('setIsShowFooter', false)
+      } else {
+        if (!this.job) {
+          this.curStageIndex = this.tempStageIndex
+        }
       }
       this.isShowCurJobDrawer = false
     },
@@ -978,9 +993,10 @@ export default {
         this.setJob()
       }
     },
-    curStageIndex (val) {
+    curStageIndex (val, oldVal) {
       this.workflowCurJobLength = this.payload.stages[val].jobs.length
       this.setJob()
+      this.tempStageIndex = oldVal
     },
     job: {
       handler (val) {

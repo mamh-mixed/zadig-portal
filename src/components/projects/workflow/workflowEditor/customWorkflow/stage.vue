@@ -3,13 +3,7 @@
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
     </el-tooltip>
-    <div
-      v-for="(item,index) in stageInfo.jobs"
-      :key="index"
-      @click="setCurIndex(index,item)"
-      class="job"
-      :class="{'active':JobIndex===index}"
-    >
+    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job" :class="{'active':item.active}">
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
         <span>{{item.name}}</span>
       </el-tooltip>
@@ -43,6 +37,10 @@ export default {
   },
   props: {
     value: {
+      type: Object,
+      default: () => ({})
+    },
+    workflowInfo: {
       type: Object,
       default: () => ({})
     },
@@ -225,9 +223,24 @@ export default {
       if (this.isShowFooter) {
         this.$emit('update:isShowCurJobDrawer', true)
       } else {
-        this.JobIndex = index
         this.$store.dispatch('setIsShowFooter', true)
       }
+      this.JobIndex = index
+      this.workflowInfo.stages.forEach(stage => {
+        if (stage.name === this.stageInfo.name) {
+          stage.jobs.forEach((job, i) => {
+            if (index === i) {
+              this.$set(stage.jobs[i], 'active', true)
+            } else {
+              this.$set(stage.jobs[i], 'active', false)
+            }
+          })
+        } else {
+          stage.jobs.forEach((job, i) => {
+            this.$set(stage.jobs[i], 'active', false)
+          })
+        }
+      })
     },
     setJob (newVal) {
       if (Object.keys(newVal).length === 0) {
