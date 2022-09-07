@@ -21,7 +21,7 @@
       id="drawer"
       :style="{'zoom':scal}"
     >
-      <JobOperate :jobInfo="jobInfo" @change="setJob" ref="jobOperate" />
+      <JobOperate @change="setJob" ref="jobOperate" />
     </el-drawer>
     <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ 任务</el-button>
   </div>
@@ -68,11 +68,11 @@ export default {
         'zadig-deploy': {
           name: 'default',
           type: 'zadig-deploy',
-          env: '',
           spec: {
             env: '',
             source: '',
-            job_name: ''
+            job_name: '',
+            service_and_images: []
           }
         },
         freestyle: {
@@ -151,9 +151,46 @@ export default {
             cluster_id: ''
           },
           is_offical: true
+        },
+        'canary-deploy': {
+          name: 'default',
+          type: 'k8s-canary-deploy',
+          spec: {
+            cluster_id: '',
+            namespace: '',
+            targets: [],
+            docker_registry_id: '',
+            deploy_timeout: 10
+          }
+        },
+        'canary-confirm': {
+          name: 'default',
+          type: 'canary-confirm',
+          spec: {
+            from_job: '',
+            deploy_timeout: 10
+          }
+        },
+        'blue-green-deploy': {
+          name: 'default',
+          type: 'blue-green-deploy',
+          spec: {
+            cluster_id: '',
+            namespace: '',
+            targets: [],
+            docker_registry_id: '',
+            deploy_timeout: 10
+          }
+        },
+        'blue-green-confirm': {
+          name: 'default',
+          type: 'blue-green-confirm',
+          spec: {
+            from_job: '',
+            deploy_timeout: 10
+          }
         }
       },
-      jobInfo: {},
       isShowJobOperateDialog: false,
       scal: ''
     }

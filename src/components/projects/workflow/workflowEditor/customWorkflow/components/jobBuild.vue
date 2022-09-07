@@ -1,33 +1,43 @@
 <template>
   <div class="service-build-val">
-    <el-row :gutter="24" class="mg-b16">
-      <el-col :span="6" class="title">服务组件</el-col>
-      <el-col :span="6" class="title">构建名称</el-col>
-      <el-col :span="6" class="title">构建配置</el-col>
-    </el-row>
-    <div v-for="(item,index) in serviceAndBuilds" :key="index">
-      <el-form :model="item" :ref="`ruleForm${index}`" size="small">
-        <el-row :gutter="24" style="line-height: 30px;">
-          <el-col :span="6">
-            <div>{{item.service_name}}/{{item.service_module}}</div>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item prop="build_name" :rules="{required: true, message: '构建不能为空', trigger: ['blur','change']}">
-              <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
-                <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
-            <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
-          </el-col>
-          <el-col :span="4">
-            <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
+      <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
+        <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+      </el-form-item>
+      <el-form-item label="镜像仓库" :rules="{required: true, message: '请选择镜像仓库', trigger: ['blur', 'change']}" prop="spec.docker_registry_id">
+        <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
+          <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-row :gutter="24" class="mg-b16">
+        <el-col :span="6" class="title">服务组件</el-col>
+        <el-col :span="6" class="title">构建名称</el-col>
+        <el-col :span="6" class="title">构建配置</el-col>
+      </el-row>
+      <div v-for="(item,index) in serviceAndBuilds" :key="index">
+        <el-form :model="item" :ref="`ruleForm${index}`" size="small">
+          <el-row :gutter="24" style="line-height: 30px;">
+            <el-col :span="6">
+              <div>{{item.service_name}}/{{item.service_module}}</div>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item prop="build_name" :rules="{required: true, message: '构建不能为空', trigger: ['blur','change']}">
+                <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
+                  <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
+              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
+            </el-col>
+            <el-col :span="4">
+              <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </el-form>
     <el-dialog
       :title="`${curItem.service_name}/${curItem.service_module} 变量配置`"
       :visible.sync="isShowVarDialog"
@@ -114,17 +124,13 @@
 </template>
 
 <script>
-import { getAllBranchInfoAPI } from '@api'
-import { buildTabList } from '../config'
+import { jobType, buildTabList, validateJobName } from '../config'
+import { getAllBranchInfoAPI, getRegistryWhenBuildAPI } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from './envTypeSelect.vue'
 export default {
   name: 'ServiceAndBuild',
   props: {
-    value: {
-      type: Array,
-      default: () => []
-    },
     projectName: {
       type: String,
       default: ''
@@ -136,21 +142,28 @@ export default {
     globalEnv: {
       type: Array,
       default: () => []
+    },
+    job: {
+      type: Object,
+      default: () => ({})
     }
   },
   components: { EnvTypeSelect },
   data () {
     return {
+      validateJobName,
+      jobType,
       buildTabList,
       isShowBranchDialog: false,
       isShowVarDialog: false,
-      curItem: {}
+      curItem: {},
+      dockerList: []
     }
   },
   computed: {
     serviceAndBuilds: {
       get () {
-        this.value.forEach(val => {
+        this.job.spec.service_and_builds.forEach(val => {
           if (
             !val.build_name &&
             val.module_builds &&
@@ -166,7 +179,7 @@ export default {
             })
           }
         })
-        return this.value
+        return this.job.spec.service_and_builds
       }
     },
     isShowFooter () {
@@ -175,11 +188,19 @@ export default {
   },
   created () {
     this.setServiceBuilds()
+    this.getRegistryWhenBuild()
   },
   methods: {
+    // validateJob: validateJobName,
     delServiceAndBuild (index) {
       this.serviceAndBuilds.splice(index, 1)
       this.$emit('input', this.serviceAndBuilds)
+    },
+    getRegistryWhenBuild () {
+      const projectName = this.projectName
+      getRegistryWhenBuildAPI(projectName).then(res => {
+        this.dockerList = res
+      })
     },
     setServiceBuilds () {
       this.serviceAndBuilds.forEach(item => {
@@ -274,10 +295,14 @@ export default {
     },
     validate () {
       const valid = []
-      this.serviceAndBuilds.forEach((item, index) => {
-        valid.push(this.$refs[`ruleForm${index}`][0].validate())
+      return this.$refs.ruleForm.validate().then(val => {
+        if (val) {
+          this.serviceAndBuilds.forEach((item, index) => {
+            valid.push(this.$refs[`ruleForm${index}`][0].validate())
+          })
+          return Promise.all(valid)
+        }
       })
-      return Promise.all(valid)
     },
     getData () {
       this.serviceAndBuilds.forEach(item => {
