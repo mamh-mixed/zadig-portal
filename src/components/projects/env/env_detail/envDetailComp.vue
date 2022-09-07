@@ -2,12 +2,12 @@
   <div class="env-detail-container" ref="envContainer">
     <PmHostList ref="pmHostList" :currentPmServiceData="currentPmServiceData" @success="refreshServiceList"></PmHostList>
     <el-dialog title="通过工作流升级服务" :visible.sync="showStartProductBuild" custom-class="run-workflow" width="60%">
-      <run-workflow
+      <RunWorkflow
         v-if="showStartProductBuild"
         :workflows="currentServiceWorkflows"
         :currentServiceMeta="currentServiceMeta"
         @success="hideProductTaskDialog"
-      ></run-workflow>
+      />
     </el-dialog>
     <div class="envs-container">
       <ChromeTabs v-model="envName" :tabList="envNameList" :label="'name'" :name="'name'">
