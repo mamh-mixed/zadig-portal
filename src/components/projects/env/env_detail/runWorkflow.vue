@@ -41,9 +41,8 @@
         <div v-if="artifactDeployEnabled">
           <!-- K8s Artifact Deploy -->
           <K8sArtifactDeploy
-            v-if="!isPm"
+            v-if="!isPm && forcedUserInput.artifact_args.length > 0"
             ref="k8sArtifactRef"
-            v-loading="precreateLoading"
             :allServices="allServiceNames"
             :showCreateVersion="showCreateVersion"
             :k8sArtifactDeployData.sync="k8sArtifactDeployData"
@@ -52,8 +51,7 @@
           />
           <!-- Pm Artifact Deploy -->
           <PmArtifactDeploy
-            v-if="isPm"
-            v-loading="precreateLoading"
+            v-if="isPm && forcedUserInput.artifact_args.length > 0"
             :projectName="projectName"
             :allServices="allServiceNames"
             :forcedUserInput="forcedUserInput"
@@ -221,122 +219,121 @@ export default {
         })
       }
     },
-    precreate (proNameAndNamespace) {
+    async precreate (proNameAndNamespace) {
       const [, namespace] = proNameAndNamespace.split(' / ')
       this.precreateLoading = true
-      precreateWorkflowTaskAPI(this.projectName, this.workflowName, namespace)
+      const res = await precreateWorkflowTaskAPI(
+        this.projectName,
+        this.workflowName,
+        namespace
+      )
+      // prepare targets for view
+      for (let i = 0; i < res.targets.length; i++) {
+        const maybeNew = res.targets[i]
+        const targetIndex = this.currentServiceMeta.targets.findIndex(t => {
+          return t.service_name === maybeNew.service_name
+        })
+        if (targetIndex >= 0) {
+          maybeNew.picked = true
+        } else {
+          maybeNew.picked = false
+        }
+      }
+      // prepare deploys for view
+      for (const tar of res.targets) {
+        for (const dep of tar.deploy) {
+          this.$set(dep, 'picked', true)
+        }
+      }
+      this.runner = res
+      this.precreateLoading = false
+      getAllBranchInfoAPI({ infos: this.allReposForQuery })
         .then(res => {
-          // prepare targets for view
-          for (let i = 0; i < res.targets.length; i++) {
-            const maybeNew = res.targets[i]
-            const targetIndex = this.currentServiceMeta.targets.findIndex(t => {
-              return t.service_name === maybeNew.service_name
-            })
-            if (targetIndex >= 0) {
-              maybeNew.picked = true
-            } else {
-              maybeNew.picked = false
-            }
-          }
-          // prepare deploys for view
-          for (const tar of res.targets) {
-            for (const dep of tar.deploy) {
-              this.$set(dep, 'picked', true)
-            }
-          }
-          this.runner = res
-          this.precreateLoading = false
-          getAllBranchInfoAPI({ infos: this.allReposForQuery })
-            .then(res => {
-              // make these repo info more friendly
-              res.forEach(repo => {
-                if (repo.prs) {
-                  repo.prs.forEach(element => {
-                    element.pr = element.id
-                  })
-                  repo.branchPRsMap = this.$utils.arrayToMapOfArrays(
-                    repo.prs,
-                    'targetBranch'
-                  )
-                } else {
-                  repo.branchPRsMap = {}
-                }
-                if (repo.branches) {
-                  repo.branchNames = repo.branches.map(b => b.name)
-                } else {
-                  repo.branchNames = []
-                }
+          // make these repo info more friendly
+          res.forEach(repo => {
+            if (repo.prs) {
+              repo.prs.forEach(element => {
+                element.pr = element.id
               })
-              // and make a map
-              this.repoInfoMap = this.$utils.arrayToMap(
-                res,
-                re => `${re.repo_owner}/${re.repo}`
+              repo.branchPRsMap = this.$utils.arrayToMapOfArrays(
+                repo.prs,
+                'targetBranch'
               )
+            } else {
+              repo.branchPRsMap = {}
+            }
+            if (repo.branches) {
+              repo.branchNames = repo.branches.map(b => b.name)
+            } else {
+              repo.branchNames = []
+            }
+          })
+          // and make a map
+          this.repoInfoMap = this.$utils.arrayToMap(
+            res,
+            re => `${re.repo_owner}/${re.repo}`
+          )
 
-              /* prepare build/test repo for view
-             see watcher for allRepos */
-              for (const repo of this.allRepos) {
-                this.$set(repo, '_id_', `${repo.repo_owner}/${repo.repo_name}`)
-                const repoInfo = this.repoInfoMap[repo._id_]
-                this.$set(repo, 'branchNames', repoInfo && repoInfo.branchNames)
-                this.$set(
-                  repo,
-                  'branchPRsMap',
-                  repoInfo && repoInfo.branchPRsMap
-                )
-                this.$set(repo, 'tags', repoInfo.tags ? repoInfo.tags : [])
-                this.$set(repo, 'prNumberPropName', 'pr')
-                this.$set(repo, 'errorMsg', repoInfo.error_msg || '')
-                // make sure branch/pr/tag is reactive
-                this.$set(repo, 'branch', repo.branch || '')
-                this.$set(
-                  repo,
-                  repo.prNumberPropName,
-                  repo[repo.prNumberPropName] || null
-                )
-                this.$set(repo, 'tag', repo.tag || '')
-                let branchOrTag = null
-                if (repo.branch) {
-                  branchOrTag = {
-                    type: 'branch',
-                    id: `branch-${repo.branch}`,
-                    name: repo.branch
-                  }
-                } else if (repo.tag) {
-                  branchOrTag = {
-                    type: 'tag',
-                    id: `tag-${repo.tag}`,
-                    name: repo.tag
-                  }
-                }
-                this.$set(repo, 'branchOrTag', branchOrTag)
-                this.$set(repo, 'branchAndTagList', [
-                  {
-                    label: 'Branches',
-                    options: (repo.branchNames || []).map(name => {
-                      return {
-                        type: 'branch',
-                        id: `branch-${name}`,
-                        name
-                      }
-                    })
-                  },
-                  {
-                    label: 'Tags',
-                    options: (repo.tags || []).map(tag => {
-                      return {
-                        type: 'tag',
-                        id: `tag-${tag.name}`,
-                        name: tag.name
-                      }
-                    })
-                  }
-                ])
+          /* prepare build/test repo for view
+         see watcher for allRepos */
+          for (const repo of this.allRepos) {
+            this.$set(repo, '_id_', `${repo.repo_owner}/${repo.repo_name}`)
+            const repoInfo = this.repoInfoMap[repo._id_]
+            this.$set(repo, 'branchNames', repoInfo && repoInfo.branchNames)
+            this.$set(
+              repo,
+              'branchPRsMap',
+              repoInfo && repoInfo.branchPRsMap
+            )
+            this.$set(repo, 'tags', repoInfo.tags ? repoInfo.tags : [])
+            this.$set(repo, 'prNumberPropName', 'pr')
+            this.$set(repo, 'errorMsg', repoInfo.error_msg || '')
+            // make sure branch/pr/tag is reactive
+            this.$set(repo, 'branch', repo.branch || '')
+            this.$set(
+              repo,
+              repo.prNumberPropName,
+              repo[repo.prNumberPropName] || null
+            )
+            this.$set(repo, 'tag', repo.tag || '')
+            let branchOrTag = null
+            if (repo.branch) {
+              branchOrTag = {
+                type: 'branch',
+                id: `branch-${repo.branch}`,
+                name: repo.branch
               }
-            })
-            .catch(() => {
-              this.precreateLoading = false
-            })
+            } else if (repo.tag) {
+              branchOrTag = {
+                type: 'tag',
+                id: `tag-${repo.tag}`,
+                name: repo.tag
+              }
+            }
+            this.$set(repo, 'branchOrTag', branchOrTag)
+            this.$set(repo, 'branchAndTagList', [
+              {
+                label: 'Branches',
+                options: (repo.branchNames || []).map(name => {
+                  return {
+                    type: 'branch',
+                    id: `branch-${name}`,
+                    name
+                  }
+                })
+              },
+              {
+                label: 'Tags',
+                options: (repo.tags || []).map(tag => {
+                  return {
+                    type: 'tag',
+                    id: `tag-${tag.name}`,
+                    name: tag.name
+                  }
+                })
+              }
+            ])
+          }
         })
         .catch(() => {
           this.precreateLoading = false
@@ -574,16 +571,18 @@ export default {
       }
     }
   },
-  mounted () {
+  async created () {
     if (this.workflows && this.workflows.length > 0) {
       this.workflowName = this.workflows[0].name
       if (this.workflowType === 'workflow') {
-        getWorkflowDetailAPI(this.projectName, this.workflowName).then(res => {
-          this.workflowMeta = res
-          const namespace = this.currentServiceMeta.envName
-          const projectName = this.workflowMeta.product_tmpl_name
-          this.precreate(`${projectName} / ${namespace}`)
-        })
+        const workflowMeta = await getWorkflowDetailAPI(
+          this.projectName,
+          this.workflowName
+        )
+        this.workflowMeta = workflowMeta
+        const namespace = this.currentServiceMeta.envName
+        const projectName = this.workflowMeta.product_tmpl_name
+        this.precreate(`${projectName} / ${namespace}`)
       }
       // Determine the project type and use different types of startup methods
       this.checkProjectFeature(this.projectName)
