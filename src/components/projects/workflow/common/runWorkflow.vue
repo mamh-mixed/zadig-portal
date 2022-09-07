@@ -553,7 +553,7 @@ export default {
       if (this.artifactDeployEnabled && !this.isPm) {
         const invalidService = []
         this.k8sArtifactDeployData.services.forEach(item => {
-          if (item.image === '') {
+          if (item.image === '' || item.image === undefined) {
             invalidService.push(item.name)
           }
         })
