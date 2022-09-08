@@ -199,14 +199,6 @@ const routes = [
             }
           },
           {
-            path: 'test/function',
-            component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/common/function/function.vue'),
-            meta: {
-              requiresAuth: true,
-              title: '测试'
-            }
-          },
-          {
             path: 'test/function/:test_name',
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/function/functionDetail.vue'),
             meta: {
