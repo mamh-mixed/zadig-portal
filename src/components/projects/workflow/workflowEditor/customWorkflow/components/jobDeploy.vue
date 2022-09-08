@@ -1,5 +1,5 @@
 <template>
-  <div class="build-env">
+  <div class="job-deploy">
     <el-form label-width="90px" :model="job" ref="ruleForm" class="mg-t24 mg-b24">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
@@ -79,7 +79,7 @@ import EnvTypeSelect from './envTypeSelect.vue'
 import { validateJobName } from '../config'
 
 export default {
-  name: 'BuildEnv',
+  name: 'JobDeploy',
   props: {
     projectName: {
       type: String,
@@ -145,7 +145,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.build-env {
+.job-deploy {
   .form-item {
     display: inline-block;
     width: 220px;

@@ -1,17 +1,15 @@
 <template>
-  <div class="plugin">
+  <div class="job-freestyle-detail">
     <header class="mg-b8">
       <el-col :span="6">
-        <span class="type">{{pluginInfo.spec.name}}</span>
-        <span>{{pluginInfo.name}}</span>
+        <span class="type">通用任务</span>
+        <span>{{commonInfo.name}}</span>
       </el-col>
       <el-col :span="2">
-        <div class="grid-content item-desc">
-          <a :class="buildOverallColor" href="#buildv4-log">{{pluginInfo.status?buildOverallStatusZh:"未运行"}}</a>
-        </div>
+        <a :class="buildOverallColor" href="#buildv4-log">{{commonInfo.status?buildOverallStatusZh:"未运行"}}</a>
       </el-col>
       <el-col :span="2">
-        <span class="item-desc">{{pluginInfo.interval}}</span>
+        <span>{{commonInfo.interval}}</span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">
@@ -22,9 +20,9 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="pluginInfo.error" title="错误信息" :description="pluginInfo.error" type="error" close-text="知道了"></el-alert>
+          <el-alert v-if="commonInfo.error" title="错误信息" :description="commonInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
-        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in pluginInfo.spec.repos" :key="index">
+        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in commonInfo.spec.repos" :key="index">
           <el-col :span="4">
             <div class="grid-content item-title">代码库({{build.source}})</div>
           </el-col>
@@ -40,7 +38,7 @@
         </el-row>
       </section>
       <section class="log-content mg-t8">
-        <XtermLog :id="pluginInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="pluginInfo.name" />
+        <XtermLog :id="commonInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="commonInfo.name" />
       </section>
     </main>
   </div>
@@ -62,7 +60,7 @@ export default {
     }
   },
   props: {
-    pluginInfo: {
+    commonInfo: {
       type: Object,
       default: () => ({})
     },
@@ -85,13 +83,13 @@ export default {
   },
   computed: {
     buildIsRunning () {
-      return this.pluginInfo && this.pluginInfo.status === 'running'
+      return this.commonInfo && this.commonInfo.status === 'running'
     },
     buildIsDone () {
-      return this.isSubTaskDone(this.pluginInfo)
+      return this.isSubTaskDone(this.commonInfo)
     },
     buildOverallStatus () {
-      return this.$utils.calcOverallBuildStatus(this.pluginInfo, {})
+      return this.$utils.calcOverallBuildStatus(this.commonInfo, {})
     },
     buildOverallStatusZh () {
       return this.$translate.translateTaskStatus(this.buildOverallStatus)
@@ -102,16 +100,16 @@ export default {
   },
   methods: {
     leaveLog () {
-      const el = document.querySelector('.plugin').style
+      const el = document.querySelector('.job-freestyle-detail').style
       el.overflow = 'auto'
     },
     openBuildLog (buildType) {
       this.buildv4AnyLog = []
-      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.pluginInfo.name}/999999?projectName=${this.projectName}`
+      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.commonInfo.name}/999999?projectName=${this.projectName}`
       if (typeof window.msgServer === 'undefined') {
         window.msgServer = {}
         window.msgServer[
-          `${this.pluginInfo.spec.service_module}_${this.pluginInfo.spec.service_name}`
+          `${this.commonInfo.spec.service_module}_${this.commonInfo.spec.service_name}`
         ] = {}
       }
       this[`${buildType}IntervalHandle`] = setInterval(() => {
@@ -125,7 +123,7 @@ export default {
         .then(sse => {
           // Store SSE object at a higher scope
           window.msgServer[
-            `${this.pluginInfo.spec.service_module}_${this.pluginInfo.spec.service_name}`
+            `${this.commonInfo.spec.service_module}_${this.commonInfo.spec.service_name}`
           ] = sse
           sse.onError(e => {
             console.error('lost connection; giving up!', e)
@@ -149,16 +147,12 @@ export default {
       return getHistoryLogsAPI(
         this.workflowName,
         this.taskId,
-        this.pluginInfo.name,
+        this.commonInfo.name,
         this.projectName
       ).then(response => {
-        if (!response.toString().includes('\n')) {
-          this.buildv4AnyLog = [response]
-        } else {
-          this.buildv4AnyLog = response.split('\n').map(element => {
-            return element + '\n'
-          })
-        }
+        this.buildv4AnyLog = response.split('\n').map(element => {
+          return element + '\n'
+        })
       })
     },
     getLog () {
@@ -177,10 +171,10 @@ export default {
     }
   },
   watch: {
-    pluginInfo: {
+    commonInfo: {
       handler (val, oldVal) {
         if (val) {
-          if (oldVal && val.spec.name !== oldVal.spec.name) {
+          if (oldVal && val.name !== oldVal.name) {
             this.firstLoad = false
           }
           if (val.status && !this.firstLoad) {
@@ -212,7 +206,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.plugin {
+.job-freestyle-detail {
   position: relative;
   height: 100%;
   font-size: 14px;

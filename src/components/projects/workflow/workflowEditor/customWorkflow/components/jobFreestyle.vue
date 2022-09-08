@@ -1,5 +1,5 @@
 <template>
-  <section class="pipeline-build-container">
+  <section class="pipeline-build-container job-freestyle">
     <el-form ref="ruleForm" label-width="120px" :model="job" class="mg-t24 mg-b24" size="small" label-position="left">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 400px;"></el-input>
@@ -57,7 +57,7 @@ import { buildEnvs, validateJobName } from '../config.js'
 import { getCodeSourceMaskedAPI } from '@api'
 
 export default {
-  name: 'commonBuild',
+  name: 'JobFreestyle',
   data () {
     return {
       validateJobName,
@@ -145,7 +145,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.common-parcel-block {
-  padding: 0;
+.job-freestyle {
+  .common-parcel-block {
+    padding: 0;
+  }
 }
 </style>

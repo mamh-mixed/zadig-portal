@@ -58,7 +58,7 @@
       </main>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
       <footer :style="{minHeight:'600px'}" v-if="isShowConsoleFooter">
-        <BuildConsole
+        <JobBuildDetail
           v-if="curJob.type === jobType.build"
           :jobInfo="curJob"
           :taskId="taskId"
@@ -67,8 +67,8 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
-        <DeployConsole @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
-        <Approval
+        <JobDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
+        <StageApproval
           v-if="curJob.type === jobType.approval"
           :approvalInfo="curStage"
           :workflowName="workflowName"
@@ -76,7 +76,7 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
-        <CommonTask
+        <JobFreestyleDetail
           v-if="curJob.type === jobType.common"
           :commonInfo="curJob"
           :workflowName="workflowName"
@@ -84,7 +84,7 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
-        <Plugin
+        <JobPluginDetail
           v-if="curJob.type === jobType.plugin"
           :pluginInfo="curJob"
           :workflowName="workflowName"
@@ -133,11 +133,11 @@
 <script>
 import { getCustomWorkflowTaskDetailAPI, deleteWorkflowTaskAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
-import BuildConsole from './productCustomTaskDetail/buildConsole.vue'
-import DeployConsole from './productCustomTaskDetail/deployConsole.vue'
-import Approval from './productCustomTaskDetail/approval.vue'
-import CommonTask from './productCustomTaskDetail/commonTask.vue'
-import Plugin from './productCustomTaskDetail/plugin.vue'
+import JobBuildDetail from './productCustomTaskDetail/jobBuildDetail.vue'
+import JobDeployDetail from './productCustomTaskDetail/jobDeployDetail.vue'
+import StageApproval from './productCustomTaskDetail/stageApproval.vue'
+import JobFreestyleDetail from './productCustomTaskDetail/jobFreestyleDetail.vue'
+import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -162,11 +162,11 @@ export default {
   components: {
     Multipane,
     MultipaneResizer,
-    BuildConsole,
-    DeployConsole,
-    Approval,
-    CommonTask,
-    Plugin
+    JobBuildDetail,
+    JobDeployDetail,
+    JobFreestyleDetail,
+    JobPluginDetail,
+    StageApproval
   },
   computed: {
     taskId () {

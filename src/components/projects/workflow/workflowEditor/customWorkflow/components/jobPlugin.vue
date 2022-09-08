@@ -1,5 +1,5 @@
 <template>
-  <section class="plugin">
+  <section class="job-plugin">
     <el-form label-width="90px" :model="job" ref="ruleForm" class="mg-t24 mg-b24">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
@@ -96,7 +96,7 @@ import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import EnvTypeSelect from './envTypeSelect.vue'
 import { buildEnvs, validateJobName } from '../config.js'
 export default {
-  name: 'commonBuild',
+  name: 'JobPlugin',
   data () {
     return {
       validateJobName,
@@ -133,7 +133,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.plugin {
+.job-plugin {
   .common-parcel-block {
     padding: 0;
 

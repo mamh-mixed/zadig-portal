@@ -68,35 +68,35 @@ const jobTypeList = [
     type: 'freestyle',
     is_offical: true,
     description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
-  },
-  {
-    label: '部署蓝绿环境',
-    name: 'blue-green-deploy',
-    type: 'blue-green-deploy',
-    is_offical: true,
-    description: '基于 Kubernetes 原声生的能力创建蓝绿环境'
-  },
-  {
-    label: '蓝绿发布',
-    name: 'blue-green-confirm',
-    type: 'blue-green-confirm',
-    is_offical: true,
-    description: '结合前置的 [部署蓝绿环境] 任务，执行蓝绿发布'
-  },
-  {
-    label: '部署金丝雀',
-    name: 'canary-deploy',
-    type: 'canary-deploy',
-    is_offical: true,
-    description: '基于 Kubernetes 原声生的能力部署金丝雀'
-  },
-  {
-    label: '金丝雀发布',
-    name: 'canary-confirm',
-    type: 'canary-confirm',
-    is_offical: true,
-    description: '结合前置的 [部署金丝雀] 任务执行金丝雀发布'
   }
+  // {
+  //   label: '部署蓝绿环境',
+  //   name: 'blue-green-deploy',
+  //   type: 'blue-green-deploy',
+  //   is_offical: true,
+  //   description: '基于 Kubernetes 原声生的能力创建蓝绿环境'
+  // },
+  // {
+  //   label: '蓝绿发布',
+  //   name: 'blue-green-confirm',
+  //   type: 'blue-green-confirm',
+  //   is_offical: true,
+  //   description: '结合前置的 [部署蓝绿环境] 任务，执行蓝绿发布'
+  // },
+  // {
+  //   label: '部署金丝雀',
+  //   name: 'canary-deploy',
+  //   type: 'canary-deploy',
+  //   is_offical: true,
+  //   description: '基于 Kubernetes 原声生的能力部署金丝雀'
+  // },
+  // {
+  //   label: '金丝雀发布',
+  //   name: 'canary-confirm',
+  //   type: 'canary-confirm',
+  //   is_offical: true,
+  //   description: '结合前置的 [部署金丝雀] 任务执行金丝雀发布'
+  // }
   // {
   //   label: '测试',
   //   is_offical: true,

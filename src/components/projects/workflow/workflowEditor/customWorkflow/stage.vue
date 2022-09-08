@@ -154,7 +154,7 @@ export default {
         },
         'canary-deploy': {
           name: 'default',
-          type: 'k8s-canary-deploy',
+          type: 'canary-deploy',
           spec: {
             cluster_id: '',
             namespace: '',

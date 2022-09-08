@@ -1,5 +1,5 @@
 <template>
-  <div class="service-build-val">
+  <div class="job-build">
     <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
@@ -129,7 +129,7 @@ import { getAllBranchInfoAPI, getRegistryWhenBuildAPI } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from './envTypeSelect.vue'
 export default {
-  name: 'ServiceAndBuild',
+  name: 'JobBuild',
   props: {
     projectName: {
       type: String,
@@ -327,7 +327,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.service-build-val {
+.job-build {
   width: 80%;
   color: #606266;
   font-size: 14px;
