@@ -1150,8 +1150,8 @@ export function updateEmailServiceAPI (payload) {
 }
 // ----- System Setting-Application -----
 
-export function getAllAppsAPI () {
-  return http.get('/api/aslan/system/install?available=true')
+export function getAllAppsAPI (showAvailable = true) {
+  return http.get(`/api/aslan/system/install?available=${showAvailable}`)
 }
 
 export function createAppAPI (data) {
