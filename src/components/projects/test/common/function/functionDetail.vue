@@ -220,7 +220,7 @@ export default {
             type: 'success'
           })
           this.$router.push(
-            `/v1/projects/detail/${this.projectName}/test/function`
+            `/v1/projects/detail/${this.projectName}/test`
           )
         })
       })
@@ -238,7 +238,7 @@ export default {
         },
         {
           title: '测试',
-          url: `/v1/projects/detail/${this.projectName}/test/function`
+          url: `/v1/projects/detail/${this.projectName}/test`
         },
         { title: this.isEdit ? this.name : '添加', url: '' }
       ]
