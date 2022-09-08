@@ -103,7 +103,7 @@
             </el-col>
             <el-col :span="6">
               <div class="grid-content item-title">
-                <i class="iconfont iconjiqun1"></i> 部署环境
+                <i class="iconfont iconvery-environ"></i> 部署环境
               </div>
             </el-col>
             <el-col :span="6">
@@ -113,7 +113,7 @@
           <el-row :gutter="0">
             <el-col :span="6">
               <div class="grid-content item-title">
-                <i class="iconfont iconfuwu"></i> 服务名称
+                <i class="iconfont iconvery-service"></i> 服务名称
               </div>
             </el-col>
             <el-col :span="6">

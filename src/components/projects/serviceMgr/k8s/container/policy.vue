@@ -158,6 +158,7 @@ export default {
     },
     updatePolicy (projectName, payload) {
       updateSingleProjectAPI(projectName, payload).then(res => {
+        this.$emit('closeDrawer', true)
         this.$message({
           type: 'success',
           message: '策略更新成功'

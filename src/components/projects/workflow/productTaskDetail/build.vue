@@ -75,7 +75,7 @@
                 :gutter="0">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconfuwu"></i> 服务名称
+              <i class="iconfont iconvery-service"></i> 服务名称
             </div>
           </el-col>
           <el-col :span="6">
