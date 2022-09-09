@@ -1,3 +1,17 @@
+const validateJobName = (rule, value, callback) => {
+  const reg = /^[a-z][a-z0-9-]{0,32}$/
+  if (value === '') {
+    callback(new Error('请输入任务名称'))
+  } else if (!reg.test(value)) {
+    callback(
+      new Error(
+        '支持小写英文字母、数字或者中划线，必须小写英文字母开头，最多 32 位。'
+      )
+    )
+  } else {
+    callback()
+  }
+}
 const tabList = [
   {
     label: '界面化',
@@ -168,6 +182,7 @@ const globalConstEnvs = [
   '{{.workflow.task.timestamp}}'
 ]
 export {
+  validateJobName,
   tabList,
   buildTabList,
   configList,

@@ -1,5 +1,5 @@
 <template>
-  <div class="build-console">
+  <div class="job-deploy-detail">
     <header class="mg-b8">
       <el-col :span="6">
         <span class="type">部署</span>
@@ -120,7 +120,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.build-console {
+.job-deploy-detail {
   position: relative;
   height: 100%;
   font-size: 14px;

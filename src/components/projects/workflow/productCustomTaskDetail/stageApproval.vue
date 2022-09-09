@@ -1,5 +1,5 @@
 <template>
-  <div class="approval">
+  <div class="stage-approval-detail">
     <header class="mg-b8">
       <el-col :span="2" class>
         <span class="type">人工审核</span>
@@ -136,7 +136,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.approval {
+.stage-approval-detail {
   position: relative;
   height: 100%;
   font-size: 14px;
