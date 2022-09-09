@@ -171,6 +171,20 @@ export default {
         }
         this.detailLoading = false
       }
+    },
+    initProjectInfo () {
+      this.getProject(this.projectName)
+      this.getWorkflows(this.projectName)
+      this.getCustomWorkflows(this.projectName)
+      this.getEnvList()
+      bus.$emit(`show-sidebar`, false)
+      bus.$emit('set-topbar-title', {
+        title: '',
+        breadcrumb: [
+          { title: '项目', url: '/v1/projects' },
+          { title: this.projectName, isProjectName: true, url: '' }
+        ]
+      })
     }
   },
   computed: {
@@ -189,31 +203,12 @@ export default {
   },
   watch: {
     projectName () {
-      this.getProject(this.projectName)
-      bus.$emit(`show-sidebar`, false)
-      bus.$emit('set-topbar-title', {
-        title: '',
-        breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
-          { title: this.projectName, isProjectName: true, url: '' }
-        ]
-      })
+      this.initProjectInfo()
     }
   },
   mounted () {
-    this.getProject(this.projectName)
-    this.getWorkflows(this.projectName)
-    this.getCustomWorkflows(this.projectName)
-    this.getEnvList()
+    this.initProjectInfo()
     this.$emit('injectComp', this)
-    bus.$emit(`show-sidebar`, false)
-    bus.$emit('set-topbar-title', {
-      title: '',
-      breadcrumb: [
-        { title: '项目', url: '/v1/projects' },
-        { title: this.projectName, isProjectName: true, url: '' }
-      ]
-    })
   },
   components: {
     DeleteProject
