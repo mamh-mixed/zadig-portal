@@ -40,12 +40,17 @@
       <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
         <span class="permission-disabled menu-item iconfont icondeploy"></span>
       </el-tooltip>
-      <el-dropdown v-hasPermi="{projectName: workflow.projectName, action:'delete_workflow', resource:{type:'workflow',name:workflow.name}, isBtn: true}">
+      <el-dropdown>
         <span class="el-dropdown-link">
           <i class="iconfont iconmorelist more-operation"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="deleteCommonWorkflow(workflow)">删除</el-dropdown-item>
+          <el-dropdown-item
+            v-hasPermi="{projectName: workflow.projectName, action: 'delete_workflow',resource:{type:'workflow',name:workflow.name},isBtn:true}"
+            @click.native="deleteCommonWorkflow(workflow)"
+          >
+            <span>删除</span>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </template>
@@ -72,9 +77,7 @@
       <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
         <span class="permission-disabled menu-item iconfont icondeploy"></span>
       </el-tooltip>
-      <el-dropdown
-        @visible-change="(status) => fnShowTimer(status, index, workflow)"
-      >
+      <el-dropdown @visible-change="(status) => fnShowTimer(status, index, workflow)">
         <span class="el-dropdown-link">
           <i class="iconfont iconmorelist more-operation"></i>
         </span>

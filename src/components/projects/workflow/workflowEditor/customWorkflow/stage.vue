@@ -21,7 +21,7 @@
       id="drawer"
       :style="{'zoom':scal}"
     >
-      <JobOperate :jobInfo="jobInfo" @change="setJob" ref="jobOperate" />
+      <JobOperate @change="setJob" ref="jobOperate" />
     </el-drawer>
     <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ 任务</el-button>
   </div>
@@ -76,11 +76,11 @@ export default {
         'zadig-deploy': {
           name: 'default',
           type: 'zadig-deploy',
-          env: '',
           spec: {
             env: '',
             source: '',
-            job_name: ''
+            job_name: '',
+            service_and_images: []
           }
         },
         'custom-deploy': {
@@ -170,7 +170,6 @@ export default {
           is_offical: true
         }
       },
-      jobInfo: {},
       isShowJobOperateDialog: false,
       scal: ''
     }

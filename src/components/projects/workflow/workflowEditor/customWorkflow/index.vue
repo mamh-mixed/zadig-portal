@@ -70,102 +70,69 @@
             </div>
           </div>
           <div v-if="payload.stages.length > 0 && job" class="main">
-            <el-form
-              v-if="job.type !== jobType.freestyle"
-              :rules="JobConfigRules"
-              ref="jobRuleForm"
-              :model="job"
-              class="mg-t24 mg-b24"
-              label-width="90px"
-              size="small"
-            >
-              <el-form-item label="任务名称" prop="name" v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0">
-                <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
-              </el-form-item>
-              <el-form-item label="镜像仓库" prop="spec.docker_registry_id" v-if="job.type===jobType.build">
-                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
-                  <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
-                </el-select>
-              </el-form-item>
-              <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build" class="mg-t40">
-                <ServiceAndBuild
-                  :projectName="projectName"
-                  v-model="job.spec.service_and_builds"
-                  :originServiceAndBuilds="originServiceAndBuilds"
-                  class="mg-b24"
-                  :globalEnv="globalEnv"
-                  ref="serviceAndbuild"
-                />
-                <el-select size="small" v-model="service" multiple filterable clearable>
-                  <el-option
-                    disabled
-                    label="全选"
-                    value="ALL"
-                    :class="{selected: service.length === serviceAndBuilds.length}"
-                    style="color: #606266;"
-                  >
-                    <span
-                      style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
-                      @click="service = serviceAndBuilds.map(item=>item.value)"
-                    >全选</span>
-                  </el-option>
-                  <el-option
-                    v-for="(service,index) in serviceAndBuilds"
-                    :key="index"
-                    :value="service.value"
-                    :label="service.value"
-                  >{{service.value}}</el-option>
-                </el-select>
-                <el-button
-                  type="success"
-                  size="mini"
-                  plain
-                  :disabled="Object.keys(service).length === 0"
-                  @click="addServiceAndBuild(job.spec.service_and_builds)"
-                >+ 添加</el-button>
-              </div>
-              <K8sDeploy
+            <div v-if="payload.stages[curStageIndex].jobs.length > 0 && job.type === jobType.build">
+              <JobBuild
                 :projectName="projectName"
-                v-if="job.type === jobType.customDeploy"
-                v-model="job"
-                ref="customDeploy"
+                :job="job"
                 :originServiceAndBuilds="originServiceAndBuilds"
+                class="mg-b24"
                 :globalEnv="globalEnv"
-                :workflowInfo="payload"
-              ></K8sDeploy>
-              <div v-if="job.type === 'plugin'">
-                <Plugin v-model="job" ref="plugin" :globalEnv="globalEnv" />
-              </div>
-              <BuildEnv
-                :projectName="projectName"
-                v-if="job.type === jobType.deploy"
-                v-model="job"
-                ref="buildEnv"
-                :originServiceAndBuilds="originServiceAndBuilds"
-                :globalEnv="globalEnv"
-                :workflowInfo="payload"
-              ></BuildEnv>
-            </el-form>
-            <div v-else>
-              <el-form
-                :rules="JobConfigRules"
-                ref="jobRuleForm"
-                label-width="120px"
-                :model="job"
-                class="mg-t24"
-                size="small"
-                label-position="left"
-              >
-                <el-form-item
-                  label="任务名称"
-                  prop="name"
-                  v-if="payload.stages[curStageIndex] && payload.stages[curStageIndex].jobs.length > 0"
+                ref="serviceAndbuild"
+              />
+              <el-select size="small" v-model="service" multiple filterable clearable>
+                <el-option
+                  disabled
+                  label="全选"
+                  value="ALL"
+                  :class="{selected: service.length === serviceAndBuilds.length}"
+                  style="color: #606266;"
                 >
-                  <el-input v-model="job.name" size="small" style="width: 400px;"></el-input>
-                </el-form-item>
-              </el-form>
-              <JobCommonBuild :globalEnv="globalEnv" :ref="beInitCompRef" v-model="job" :workflowInfo="payload"></JobCommonBuild>
+                  <span
+                    style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                    @click="service = serviceAndBuilds.map(item=>item.value)"
+                  >全选</span>
+                </el-option>
+                <el-option
+                  v-for="(service,index) in serviceAndBuilds"
+                  :key="index"
+                  :value="service.value"
+                  :label="service.value"
+                >{{service.value}}</el-option>
+              </el-select>
+              <el-button
+                type="success"
+                size="mini"
+                plain
+                :disabled="Object.keys(service).length === 0"
+                @click="addServiceAndBuild(job.spec.service_and_builds)"
+              >+ 添加</el-button>
             </div>
+            <JobPlugin v-if="job.type === 'plugin'" :job="job" ref="plugin" :globalEnv="globalEnv" />
+            <JobDeploy
+              :projectName="projectName"
+              v-if="job.type === jobType.deploy"
+              :job="job"
+              ref="buildEnv"
+              :originServiceAndBuilds="originServiceAndBuilds"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
+            <JobFreestyle
+              v-if="job.type === jobType.freestyle"
+              :globalEnv="globalEnv"
+              :ref="beInitCompRef"
+              :job="job"
+              :workflowInfo="payload"
+            />
+            <JobK8sDeploy
+              :projectName="projectName"
+              v-if="job.type === jobType.JobK8sDeploy"
+              :job="job"
+              ref="JobK8sDeploy"
+              :originServiceAndBuilds="originServiceAndBuilds"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -246,7 +213,6 @@
 import {
   tabList,
   configList,
-  jobTabList,
   editorOptions,
   jobType,
   jobTypeList,
@@ -257,48 +223,32 @@ import {
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
   getCustomWorkflowDetailAPI,
-  getRegistryWhenBuildAPI,
   checkCustomWorkflowYaml
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
 import Stage from './stage.vue'
 import StageOperate from './stageOperate.vue'
-import ServiceAndBuild from './components/jobServiceAndBuild'
-import BuildEnv from './components/jobBuildEnv.vue'
-import JobCommonBuild from './components/jobCommonBuild.vue'
-import Plugin from './components/plugin.vue'
+import JobBuild from './components/jobBuild'
+import JobDeploy from './components/jobDeploy.vue'
+import JobFreestyle from './components/jobFreestyle.vue'
+import JobPlugin from './components/jobPlugin.vue'
+import JobK8sDeploy from './components/jobK8sDeploy'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import Env from './components/env.vue'
 import Webhook from './components/webhook.vue'
-import K8sDeploy from './components/k8sDeploy.vue'
 import ConfirmJobDialog from './components/confirmJobDialog'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
-const validateName = (rule, value, callback) => {
-  const reg = /^[a-z][a-z0-9-]{0,32}$/
-  if (value === '') {
-    callback(new Error('请输入任务名称'))
-  } else if (!reg.test(value)) {
-    callback(
-      new Error(
-        '支持小写英文字母、数字或者中划线，必须小写英文字母开头，最多 32 位。'
-      )
-    )
-  } else {
-    callback()
-  }
-}
 export default {
   name: 'CustomWorkflow',
   data () {
     return {
       tabList,
       configList,
-      jobTabList,
       globalConstEnvs,
       activeName: 'ui',
       editorOptions,
@@ -339,31 +289,12 @@ export default {
       isShowStageOperateDialog: false,
       serviceAndBuilds: [],
       originServiceAndBuilds: [],
-      dockerList: [],
       service: '',
       yaml: '',
       yamlError: '',
       isShowDrawer: false,
       multi_run: false,
       globalEnv: [],
-      JobConfigRules: {
-        name: [
-          {
-            required: true,
-            trigger: 'blur',
-            validator: validateName
-          }
-        ],
-        spec: {
-          docker_registry_id: [
-            {
-              required: true,
-              message: '请选择镜像',
-              trigger: 'blur'
-            }
-          ]
-        }
-      },
       beInitCompRef: 'beInitCompRef',
       scal: '1',
       isShowCurJobDrawer: false,
@@ -376,16 +307,16 @@ export default {
     StageOperate,
     Multipane,
     MultipaneResizer,
-    ServiceAndBuild,
-    BuildEnv,
-    JobCommonBuild,
+    JobBuild,
+    JobDeploy,
+    JobFreestyle,
+    JobPlugin,
+    JobK8sDeploy,
     Service,
     RunCustomWorkflow,
     codemirror,
-    Plugin,
     Env,
     Webhook,
-    K8sDeploy,
     ConfirmJobDialog
   },
   provide () {
@@ -447,7 +378,6 @@ export default {
   },
   methods: {
     init () {
-      this.getRegistryWhenBuild()
       this.getServiceAndBuildList()
       this.setTitle()
       // edit
@@ -805,99 +735,87 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
-      return new Promise((resolve, reject) => {
-        this.$refs.jobRuleForm.validate().then(valid => {
+      if (this.job.type === jobType.deploy) {
+        this.$refs.buildEnv.validate().then(valid => {
+          const curJob = this.$refs.buildEnv.getData()
           if (valid) {
-            if (this.job.type === jobType.customDeploy) {
-              this.$refs.customDeploy.validate().then(valid => {
-                const curJob = this.$refs.customDeploy.getData()
-                if (valid) {
-                  this.$set(
-                    this.payload.stages[this.curStageIndex].jobs,
-                    this.curJobIndex,
-                    curJob
-                  )
-                  this.$store.dispatch('setIsShowFooter', false)
-                  this.workflowCurJobLength = this.payload.stages[
-                    this.curStageIndex
-                  ].jobs.length
-                }
-              })
-            } else if (this.job.type === jobType.deploy) {
-              this.$refs.buildEnv.validate().then(valid => {
-                const curJob = this.$refs.buildEnv.getData()
-                if (valid) {
-                  this.$set(
-                    this.payload.stages[this.curStageIndex].jobs,
-                    this.curJobIndex,
-                    curJob
-                  )
-                  this.$store.dispatch('setIsShowFooter', false)
-                  this.workflowCurJobLength = this.payload.stages[
-                    this.curStageIndex
-                  ].jobs.length
-
-                  resolve()
-                }
-              })
-              reject()
-            } else if (this.job.type === jobType.build) {
-              if (this.$refs.serviceAndbuild.getData().length === 0) {
-                this.$message.error('请至少选择一个服务组件')
-                return
-              }
-              this.$refs.serviceAndbuild.validate().then(valid => {
-                if (valid) {
-                  this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
-                  this.$set(
-                    this.payload.stages[this.curStageIndex].jobs,
-                    this.curJobIndex,
-                    this.job
-                  )
-                  this.$store.dispatch('setIsShowFooter', false)
-                  this.workflowCurJobLength = this.payload.stages[
-                    this.curStageIndex
-                  ].jobs.length
-                }
-              })
-            } else if (this.job.type === jobType.freestyle) {
-              this.$refs[this.beInitCompRef]
-                .validate()
-                .then(job => {
-                  delete this.job.isCreate // 去除新建状态
-                  this.$set(
-                    this.payload.stages[this.curStageIndex].jobs,
-                    this.curJobIndex,
-                    job
-                  )
-                  this.$store.dispatch('setIsShowFooter', false)
-                  this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
-                  this.workflowCurJobLength = this.payload.stages[
-                    this.curStageIndex
-                  ].jobs.length
-
-                  resolve()
-                })
-                .catch(err => {
-                  console.log('common build valid error', err)
-                  reject(err)
-                })
-            } else if (this.job.type === jobType.plugin) {
-              this.$refs.plugin.validate().then(res => {
-                this.$set(
-                  this.payload.stages[this.curStageIndex].jobs,
-                  this.curJobIndex,
-                  res
-                )
-                this.workflowCurJobLength = this.payload.stages[
-                  this.curStageIndex
-                ].jobs.length
-              })
-              this.$store.dispatch('setIsShowFooter', false)
-            }
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              curJob
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
           }
         })
-      })
+      } else if (this.job.type === jobType.build) {
+        if (this.$refs.serviceAndbuild.getData().length === 0) {
+          this.$message.error('请至少选择一个服务组件')
+          return
+        }
+        this.$refs.serviceAndbuild.validate().then(valid => {
+          if (valid) {
+            // this.job.spec.service_and_builds = this.$refs.serviceAndbuild.getData()
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              this.job
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
+          }
+        })
+      } else if (this.job.type === jobType.freestyle) {
+        this.$refs[this.beInitCompRef]
+          .validate()
+          .then(job => {
+            delete this.job.isCreate // 去除新建状态
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              job
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+            this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
+          })
+          .catch(err => {
+            console.log('common build valid error', err)
+          })
+      } else if (this.job.type === jobType.plugin) {
+        this.$refs.plugin.validate().then(() => {
+          this.$set(
+            this.payload.stages[this.curStageIndex].jobs,
+            this.curJobIndex,
+            this.$refs.plugin.getData()
+          )
+          this.$store.dispatch('setIsShowFooter', false)
+          this.workflowCurJobLength = this.payload.stages[
+            this.curStageIndex
+          ].jobs.length
+        })
+      } else if (this.job.type === jobType.JobK8sDeploy) {
+        this.$refs.JobK8sDeploy.validate().then(valid => {
+          const curJob = this.$refs.JobK8sDeploy.getData()
+          if (valid) {
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              curJob
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
+          }
+        })
+      }
     },
     setJob () {
       if (this.payload.stages.length === 0) return
@@ -910,12 +828,6 @@ export default {
             this.$refs[this.beInitCompRef].initOpe()
         })
       }
-    },
-    getRegistryWhenBuild () {
-      const projectName = this.projectName
-      getRegistryWhenBuildAPI(projectName).then(res => {
-        this.dockerList = res
-      })
     },
     getServiceAndBuildList () {
       const projectName = this.projectName

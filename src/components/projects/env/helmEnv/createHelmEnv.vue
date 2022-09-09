@@ -122,7 +122,7 @@
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">取消</el-button>
-          <el-button @click="deployHelmEnv" :loading="startDeployLoading" type="primary" size="medium">立即创建</el-button>
+          <el-button v-hasPermi="{projectName: projectName, actions: ['create_environment','production:create_environment'],operator:'or',isBtn:true}" @click="deployHelmEnv" :loading="startDeployLoading" type="primary" size="medium">立即创建</el-button>
         </el-form-item>
       </el-form>
       <footer v-if="startDeployLoading" class="create-footer">
@@ -426,7 +426,8 @@ export default {
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         {
-          title: `${this.projectName}`,
+          title: this.projectName,
+          isProjectName: true,
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         { title: '环境', url: '' },

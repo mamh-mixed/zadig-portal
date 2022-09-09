@@ -400,7 +400,7 @@ export default {
         })
       } else if (action === 'delete') {
         const id = registry.id
-        this.$confirm(`确定要删除 ${registry.namespace} ?`, '确认', {
+        this.$confirm(`确定要删除 ${registry.reg_addr} ?`, '确认', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
