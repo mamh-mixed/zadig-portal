@@ -641,7 +641,7 @@ export default {
 
 .sub-project-list-popover {
   .option-list-container {
-    height: 300px;
+    max-height: 300px;
     margin: -5px -12px -5px -5px;
     padding-right: 5px;
     overflow: auto;
