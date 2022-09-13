@@ -38,14 +38,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage
-                  v-model="payload.stages[index]"
-                  :curJobIndex.sync="curJobIndex"
-                  :scale="scal"
-                  :workflowInfo="payload"
-                  :isShowCurJobDrawer.sync="isShowCurJobDrawer"
-                  :handleCurJobDrawer="handleCurJobDrawer"
-                />
+                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" />
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -205,7 +198,6 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <ConfirmJobDialog :isShowCurJobDrawer="isShowCurJobDrawer" />
   </div>
 </template>
 
@@ -296,9 +288,7 @@ export default {
       multi_run: false,
       globalEnv: [],
       beInitCompRef: 'beInitCompRef',
-      scal: '1',
-      isShowCurJobDrawer: false,
-      workflowCurJobLength: 1 // 取消时候判断此字段
+      scal: '1'
     }
   },
   components: {
@@ -319,17 +309,15 @@ export default {
     Webhook,
     ConfirmJobDialog
   },
-  provide () {
-    return {
-      handleCurJobDrawer: this.handleCurJobDrawer
-    }
-  },
   computed: {
     projectName () {
       return this.$route.query.projectName
     },
     isShowFooter () {
       return this.$store.state.customWorkflow.isShowFooter
+    },
+    curOperateType () {
+      return this.$store.state.customWorkflow.curOperateType
     },
     isEdit () {
       return this.$route.params.workflow_name
@@ -430,17 +418,7 @@ export default {
         })
     },
     handleTabChange (name) {
-      if (name === 'yaml') {
-        if (this.isShowFooter) {
-          this.isShowCurJobDrawer = true
-          return
-        } else {
-          this.yaml = jsyaml.dump(this.payload)
-          this.$store.dispatch('setIsShowFooter', false)
-        }
-      } else {
-        this.payload = jsyaml.load(this.yaml)
-      }
+      this.$store.dispatch('setCurOperateType', 'tab')
       this.activeName = name
     },
     operateWorkflow () {
@@ -461,10 +439,6 @@ export default {
           throw Error()
         }
       })
-      if (this.isShowFooter) {
-        this.isShowCurJobDrawer = true
-        return
-      }
       this.saveWorkflow()
     },
     saveWorkflow () {
@@ -643,6 +617,7 @@ export default {
       })
     },
     showStageOperateDialog (type, row) {
+      this.$store.dispatch('setCurOperateType', 'stageAdd')
       if (
         type === 'add' &&
         !this.isEdit &&
@@ -653,7 +628,7 @@ export default {
         return
       }
       if (this.isShowFooter) {
-        this.isShowCurJobDrawer = true
+        this.$message.error('请先保存上一个任务配置')
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -670,31 +645,6 @@ export default {
         }
         this.stage = cloneDeep(row)
       }
-    },
-    // 当有 Job 抽屉打开时候 切换其他操作的确认弹框
-    handleCurJobDrawer (type) {
-      if (type === 'confirm') {
-        if (!this.job) {
-          this.isShowCurJobDrawer = false
-          this.$store.dispatch('setIsShowFooter', false)
-          return
-        }
-        this.saveJobConfig()
-      } else if (type === 'abort') {
-        if (!this.job) {
-          this.isShowCurJobDrawer = false
-          this.$store.dispatch('setIsShowFooter', false)
-          return
-        }
-        // 放弃修改 都关闭
-        this.closeFooter()
-        this.isShowDrawer = false
-      } else {
-        if (!this.job) {
-          this.curStageIndex = this.tempStageIndex
-        }
-      }
-      this.isShowCurJobDrawer = false
     },
     operateStage () {
       this.$refs.stageOperate.validate().then(valid => {
@@ -873,7 +823,6 @@ export default {
       this.curDrawer = ''
     },
     closeFooter () {
-      // 放弃修改时候删除当前 Job
       if (
         this.workflowCurJobLength !==
         this.payload.stages[this.curStageIndex].jobs.length
@@ -908,7 +857,6 @@ export default {
     curStageIndex (val, oldVal) {
       this.workflowCurJobLength = this.payload.stages[val].jobs.length
       this.setJob()
-      this.tempStageIndex = oldVal
     },
     job: {
       handler (val) {

@@ -199,13 +199,14 @@ export default {
     addJob () {
       if (this.stageInfo.jobs.length > 0) {
         if (this.isShowFooter) {
-          this.$emit('update:isShowCurJobDrawer', true)
+          this.$message.error('请先保存上一个任务配置')
         } else {
           this.isShowJobOperateDialog = true
         }
       } else {
         this.isShowJobOperateDialog = true
       }
+      this.$store.dispatch('setCurOperateType', 'jobAdd')
     },
     delJob (item, index) {
       this.$confirm(`确定删除任务 [${item.name}]？`, '确认', {
@@ -219,27 +220,9 @@ export default {
       })
     },
     setCurIndex (index) {
-      if (this.isShowFooter) {
-        this.$emit('update:isShowCurJobDrawer', true)
-      } else {
-        this.$store.dispatch('setIsShowFooter', true)
-      }
+      this.$store.dispatch('setCurOperateType', 'jobChange')
       this.JobIndex = index
-      this.workflowInfo.stages.forEach(stage => {
-        if (stage.name === this.stageInfo.name) {
-          stage.jobs.forEach((job, i) => {
-            if (index === i) {
-              this.$set(stage.jobs[i], 'active', true)
-            } else {
-              this.$set(stage.jobs[i], 'active', false)
-            }
-          })
-        } else {
-          stage.jobs.forEach((job, i) => {
-            this.$set(stage.jobs[i], 'active', false)
-          })
-        }
-      })
+      this.$store.dispatch('setIsShowFooter', true)
     },
     setJob (newVal) {
       if (Object.keys(newVal).length === 0) {
