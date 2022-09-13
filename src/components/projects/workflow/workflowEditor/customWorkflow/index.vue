@@ -835,6 +835,14 @@ export default {
     }
   },
   watch: {
+    activeName (newVal, oldVal) {
+      if (newVal === 'yaml') {
+        this.yaml = jsyaml.dump(this.payload)
+        this.$store.dispatch('setIsShowFooter', false)
+      } else {
+        this.payload = jsyaml.load(this.yaml)
+      }
+    },
     payload: {
       handler (val, oldVal) {
         let res = []
