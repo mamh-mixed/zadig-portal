@@ -184,8 +184,23 @@ export default {
     validateCache () {
       return this.$refs.advancedConfigCache.validate().catch(() => {
         this.$emit('validateFailed')
-        return Promise.reject()
+        return Promise.reject('advancedConfigCacheValid')
       })
+    }
+  },
+  watch: {
+    'buildConfig.cache_enable': {
+      handler (newVal, oldVal) {
+        if (newVal && !this.hiddenCache) {
+          this.validObj.addValidate({
+            name: 'advancedConfigCacheValid',
+            valid: this.validateCache
+          })
+        } else {
+          this.validObj.deleteValidate({ name: 'advancedConfigCacheValid' })
+        }
+      },
+      immediate: true
     }
   },
   created () {
@@ -194,12 +209,6 @@ export default {
       name: 'advancedConfigValid',
       valid: this.validate
     })
-    if (!this.hiddenCache) {
-      this.validObj.addValidate({
-        name: 'advancedConfigCacheValid',
-        valid: this.validateCache
-      })
-    }
   }
 }
 </script>
