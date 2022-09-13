@@ -157,19 +157,14 @@ export default {
     allRepos () {
       return this.buildRepos.concat(this.testRepos)
     },
-    allReposDeduped () {
-      return this.$utils.deduplicateArray(
-        this.allRepos,
-        re => `${re.repo_owner}/${re.repo_name}`
-      )
-    },
     allReposForQuery () {
-      return this.allReposDeduped.map(re => ({
+      return this.allRepos.map(re => ({
         repo_owner: re.repo_owner,
         repo: re.repo_name,
         default_branch: re.branch,
         codehost_id: re.codehost_id,
-        repo_namespace: re.repo_namespace
+        repo_namespace: re.repo_namespace,
+        filter_regexp: re.filter_regexp
       }))
     },
     artifactDeployEnabled () {
