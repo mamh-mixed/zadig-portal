@@ -945,7 +945,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '公告设置'
+          title: '公告管理'
         }
       },
       {
