@@ -134,10 +134,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-    }
-  },
   props: {
     runnerTests: {
       type: Array,
