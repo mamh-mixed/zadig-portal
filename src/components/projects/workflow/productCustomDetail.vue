@@ -204,10 +204,9 @@ export default {
       })
     },
     changeTaskPage (val) {
-      const start = (val - 1) * this.pageSize
-      this.pageStart = start
+      this.pageStart = val
       this.currentPage = val
-      this.fetchHistory(start, this.pageSize)
+      this.fetchHistory(val, this.pageSize)
     },
     hideAndFetchHistory () {
       this.taskDialogVisible = false

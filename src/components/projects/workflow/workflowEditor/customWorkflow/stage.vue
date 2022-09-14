@@ -3,11 +3,11 @@
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
     </el-tooltip>
-    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job-wrap">
+    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job" >
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
-        <span class="job-name">{{item.name}}</span>
+        <span>{{item.name}}</span>
       </el-tooltip>
-      <div class="del" @click="delJob(item,index)" v-if="isShowJobAddBtn">
+      <div class="del" @click.stop="delJob(item,index)" v-if="isShowJobAddBtn">
         <i class="el-icon-close"></i>
       </div>
     </div>
@@ -40,6 +40,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
+    },
     curJobIndex: {
       type: Number,
       default: 0
@@ -51,6 +55,10 @@ export default {
     scale: {
       type: String,
       default: ''
+    },
+    isShowCurJobDrawer: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -73,6 +81,15 @@ export default {
             source: '',
             job_name: '',
             service_and_images: []
+          }
+        },
+        'custom-deploy': {
+          name: 'default',
+          type: 'custom-deploy',
+          spec: {
+            timeout: '60',
+            source: 'runtime',
+            targets: []
           }
         },
         freestyle: {
@@ -189,6 +206,7 @@ export default {
       } else {
         this.isShowJobOperateDialog = true
       }
+      this.$store.dispatch('setCurOperateType', 'jobAdd')
     },
     delJob (item, index) {
       this.$confirm(`确定删除任务 [${item.name}]？`, '确认', {
@@ -202,6 +220,7 @@ export default {
       })
     },
     setCurIndex (index) {
+      this.$store.dispatch('setCurOperateType', 'jobChange')
       this.JobIndex = index
       this.$store.dispatch('setIsShowFooter', true)
     },
@@ -261,7 +280,7 @@ export default {
     cursor: pointer;
   }
 
-  .job-wrap {
+  .job {
     position: relative;
     width: 7em;
     margin: 8px auto;
@@ -290,6 +309,10 @@ export default {
         display: block;
       }
     }
+  }
+
+  .active {
+    border: 1px solid #06f;
   }
 
   .add {

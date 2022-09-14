@@ -1,9 +1,13 @@
 <template>
-  <div class="job-deploy-detail">
+  <div class="build-console">
     <header class="mg-b8">
       <el-col :span="6">
-        <span class="type">部署</span>
-        <span>{{jobInfo.name}}</span>
+        <span class="type">Kubernetes 部署:</span>
+        <span>
+          <el-tooltip effect="dark" placement="top" :content="jobInfo.name">
+            <span>{{$utils.tailCut(jobInfo.name, 20)}}</span>
+          </el-tooltip>
+        </span>
       </el-col>
       <el-col :span="2">
         <div class="grid-content item-desc">
@@ -16,9 +20,9 @@
       <el-col v-if="jobInfo" :span="6">
         <span class="item-desc status">
           <i class="el-icon-question"></i>
-          <span v-if="jobInfo.spec.skip_check_run_status">未开启服务状态检测</span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">服务状态检测通过</span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">服务状态检测未通过</span>
+          <span v-if="jobInfo.spec.skip_check_run_status">未开启容器状态检测</span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">服务容器检测通过</span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">服务容器检测未通过</span>
         </span>
       </el-col>
       <el-col :span="1" class="close">
@@ -31,12 +35,12 @@
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
       </div>
-      <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
+      <el-row class="text item mg-t8" :gutter="0">
         <el-col :span="4">
-          <div class="item-title">服务名称</div>
+          <div class="item-title">容器</div>
         </el-col>
         <el-col :span="8">
-          <span class="item-desc">{{build.service_name}}({{build.service_module}})</span>
+          <span class="item-desc">{{jobInfo.spec.target}}</span>
         </el-col>
         <el-col :span="4">
           <div class="item-title">
@@ -59,22 +63,23 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <el-tooltip effect="dark" :content="build.image" placement="top">
-            <span class="file-name">{{ build.image.split('/')[2]}}</span>
+          <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
+            <span class="file-name">{{ jobInfo.spec.image.split('/')[2] }}</span>
           </el-tooltip>
         </el-col>
       </el-row>
       <el-row class="mg-t8">
         <el-col :span="4">
-          <div class="item-title">部署环境</div>
+          <div class="item-title">集群</div>
         </el-col>
         <el-col :span="8">
-          <div class="grid-content item-desc">
-            <router-link
-              class="env-link"
-              :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`"
-            >{{jobInfo.spec.env}}</router-link>
-          </div>
+          <div class="item-desc">{{jobInfo.spec.cluster_name}}</div>
+        </el-col>
+        <el-col :span="4">
+          <div class="item-title">命名空间</div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content item-desc">{{jobInfo.spec.namespace.toString()}}</div>
         </el-col>
       </el-row>
     </main>
@@ -120,7 +125,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.job-deploy-detail {
+@themeColor: #0066ff;
+
+.build-console {
   position: relative;
   height: 100%;
   font-size: 14px;
@@ -156,6 +163,10 @@ export default {
     .item {
       &-title {
         color: #8d9199;
+      }
+
+      &-desc {
+        color: #000;
       }
     }
 

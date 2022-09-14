@@ -1,73 +1,75 @@
 <template>
   <div class="webhook">
     <el-button type="primary" size="mini" icon="el-icon-plus" plain @click="addWebhook">添加</el-button>
-    <el-row :gutter="20" class="webhook-row" v-for="(item,index) in webhooks" :key="index">
-      <el-col :span="2">
-        <div class="content">
-          <el-switch v-model="item.enabled" active-color="#13ce66" @change="changeWebhookStatus(item)"></el-switch>
-        </div>
-      </el-col>
-      <el-col :span="1">
-        <div class="content">
-          <span class="iconfont icongit"></span>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div class="content">
-          <div class="cate">
-            <span class="title">名称：</span>
-            <span class="desc">{{item.name}}</span>
+    <div v-if="webhooks.length > 0">
+      <el-row :gutter="20" class="webhook-row" v-for="(item,index) in webhooks" :key="index">
+        <el-col :span="2">
+          <div class="content">
+            <el-switch v-model="item.enabled" active-color="#13ce66" @change="changeWebhookStatus(item)"></el-switch>
           </div>
-          <div class="cate">
-            <span class="title">代码库：</span>
-            <span class="desc">{{item.main_repo.repo_name + '/' + item.main_repo.branch}}</span>
+        </el-col>
+        <el-col :span="1">
+          <div class="content">
+            <span class="iconfont icongit"></span>
           </div>
-        </div>
-      </el-col>
-      <el-col :span="9">
-        <div class="content">
-          <div class="cate">
-            <span class="title">目标分支：</span>
-            <span class="desc">{{item.main_repo.branch}}</span>
+        </el-col>
+        <el-col :span="6">
+          <div class="content">
+            <div class="cate">
+              <span class="title">名称：</span>
+              <span class="desc">{{item.name}}</span>
+            </div>
+            <div class="cate">
+              <span class="title">代码库：</span>
+              <span class="desc">{{item.main_repo.repo_name + '/' + item.main_repo.branch}}</span>
+            </div>
           </div>
-          <div class="cate">
-            <span class="title">触发事件：</span>
-            <span class="desc">
-              <div v-if="item.main_repo.events.length">
-                <span v-for="(event,index) in item.main_repo.events" :key="index">
-                  <span
-                    v-if="item.main_repo.source === 'gerrit'"
-                  >{{ triggerMethods.gerrit.find(tri => tri.value === event)?triggerMethods.gerrit.find(tri => tri.value === event).label: 'N/A' }}</span>
-                  <span
-                    v-else
-                  >{{ triggerMethods.git.find(tri => tri.value === event)?triggerMethods.git.find(tri => tri.value === event).label: 'N/A' }}</span>
-                  <span v-if="index !== item.main_repo.events.length - 1">,</span>
-                </span>
-              </div>
-              <span v-else>{{ 'N/A' }}</span>
-            </span>
+        </el-col>
+        <el-col :span="9">
+          <div class="content">
+            <div class="cate">
+              <span class="title">目标分支：</span>
+              <span class="desc">{{item.main_repo.branch}}</span>
+            </div>
+            <div class="cate">
+              <span class="title">触发事件：</span>
+              <span class="desc">
+                <div v-if="item.main_repo.events.length">
+                  <span v-for="(event,index) in item.main_repo.events" :key="index">
+                    <span
+                      v-if="item.main_repo.source === 'gerrit'"
+                    >{{ triggerMethods.gerrit.find(tri => tri.value === event)?triggerMethods.gerrit.find(tri => tri.value === event).label: 'N/A' }}</span>
+                    <span
+                      v-else
+                    >{{ triggerMethods.git.find(tri => tri.value === event)?triggerMethods.git.find(tri => tri.value === event).label: 'N/A' }}</span>
+                    <span v-if="index !== item.main_repo.events.length - 1">,</span>
+                  </span>
+                </div>
+                <span v-else>{{ 'N/A' }}</span>
+              </span>
+            </div>
           </div>
-        </div>
-      </el-col>
-      <el-col :span="4">
-        <div class="content">
-          <div class="cate">
-            <span class="title">描述：</span>
+        </el-col>
+        <el-col :span="4">
+          <div class="content">
+            <div class="cate">
+              <span class="title">描述：</span>
+            </div>
+            <div class="cate">
+              <span class="desc">{{item.description}}</span>
+            </div>
           </div>
-          <div class="cate">
-            <span class="desc">{{item.description}}</span>
+        </el-col>
+        <el-col :span="2">
+          <div class="content">
+            <div class="operation">
+              <span class="el-icon-edit" @click="editWebhook(item)"></span>
+              <span class="el-icon-delete" @click="removeWebhook(index,item.name)"></span>
+            </div>
           </div>
-        </div>
-      </el-col>
-      <el-col :span="2">
-        <div class="content">
-          <div class="operation">
-            <span class="el-icon-edit" @click="editWebhook(item)"></span>
-            <span class="el-icon-delete" @click="removeWebhook(index,item.name)"></span>
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+        </el-col>
+      </el-row>
+    </div>
 
     <el-dialog :visible.sync="dialogVisible" :title="editMode?'编辑触发器':'添加触发器'" width="700px" :close-on-click-modal="false" append-to-body>
       <el-form ref="webhookForm" :model="currentWebhook" label-width="90px" :rules="rules">
@@ -551,7 +553,6 @@ export default {
           type: 'warning'
         })
           .then(() => {
-            this.$emit('closeDrawer')
             this.$emit('saveWorkflow')
           })
           .catch(() => {

@@ -92,6 +92,7 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
+        <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.JobK8sDeploy" :jobInfo="curJob" :projectName="projectName" />
       </footer>
     </Multipane>
     <div v-if="activeName==='env'" class="env">
@@ -138,6 +139,8 @@ import JobDeployDetail from './productCustomTaskDetail/jobDeployDetail.vue'
 import StageApproval from './productCustomTaskDetail/stageApproval.vue'
 import JobFreestyleDetail from './productCustomTaskDetail/jobFreestyleDetail.vue'
 import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
+import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue'
+
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -166,6 +169,7 @@ export default {
     JobDeployDetail,
     JobFreestyleDetail,
     JobPluginDetail,
+    JobK8sDeployDetail,
     StageApproval
   },
   computed: {
@@ -305,7 +309,10 @@ export default {
     },
     async refreshHistoryTaskDetail () {
       await this.getWorkflowTaskDetail(this.workflowName, this.taskId)
-      if (!this.timeTimeoutFinishFlag) {
+      if (
+        !this.timeTimeoutFinishFlag &&
+        this.$route.query.status === 'running'
+      ) {
         this.timerId = setTimeout(this.refreshHistoryTaskDetail, 3000) // 保证内存中只有一个定时器
       }
     },

@@ -2247,3 +2247,10 @@ export function checkPlutusAPI () {
 export function getEnterpriseInfoAPI () {
   return http.get(`/api/plutus/organization`)
 }
+
+export function getNamespaceListAPI (clusterID) {
+  return http.get(`/api/aslan/environment/kube/namespace/cluster/${clusterID}`)
+}
+export function getWorkloadListAPI (clusterID, namespace) {
+  return http.get(`/api/aslan/environment/kube/custom_workload/cluster/${clusterID}/namespace/${namespace}`)
+}

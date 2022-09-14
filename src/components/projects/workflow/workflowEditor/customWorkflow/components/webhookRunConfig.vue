@@ -144,6 +144,44 @@
                 </el-form-item>
               </div>
             </div>
+            <div v-if="job.type === 'custom-deploy'">
+              <el-form-item label="选择容器" v-if="job.spec.source === 'runtime'">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="target"
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleContainerChange($event,job)"
+                >
+                  <el-option v-for="(item,index) of job.spec.targets" :key="index" :label="item.target" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-for="(item,index) in job.pickedTargets" :key="index">
+                <el-form-item :label="item.service">
+                  <el-select
+                    v-model="item.image"
+                    filterable
+                    clearable
+                    @change="handleCurImageChange"
+                    reserve-keyword
+                    size="medium"
+                    style="width: 220px;"
+                    placeholder="请选择镜像"
+                  >
+                    <el-option
+                      v-for="(image,index) of item.images"
+                      :key="index"
+                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                      :label="image.tag"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job" />
             </div>
@@ -293,6 +331,13 @@ export default {
             setTimeout(() => {
               job.spec.service_and_images = this.originServiceAndBuilds
             }, 1000)
+          }
+          if (job.type === 'custom-deploy') {
+            job.spec.targets.forEach(item => {
+              item.service = item.target.split('/')[2]
+            })
+            job.pickedTargets = job.spec.targets
+            this.handleContainerChange(job.pickedTargets, job)
           }
           if (job.type === 'freestyle') {
             job.spec.steps.forEach(step => {
@@ -475,6 +520,22 @@ export default {
         })
         this.originServiceAndBuilds = res
       })
+    },
+    handleContainerChange (val, job) {
+      val.forEach(item => {
+        this.getRegistryList([item.service], job.spec.docker_registry_id).then(
+          res => {
+            this.$set(item, 'images', res)
+            this.$forceUpdate()
+          }
+        )
+      })
+    },
+    handleImageChange (job) {
+      this.handleContainerChange(job.pickedTargets, job)
+    },
+    handleCurImageChange () {
+      this.$forceUpdate()
     }
   },
   watch: {
@@ -507,7 +568,11 @@ export default {
                     })
                   }
                   if (job.type === 'freestyle') {
-                    if (job.spec && job.spec.steps && job.spec.steps.length > 0) {
+                    if (
+                      job.spec &&
+                      job.spec.steps &&
+                      job.spec.steps.length > 0
+                    ) {
                       job.spec.steps.forEach(step => {
                         if (step.type === 'git') {
                           if (step.spec.repos && step.spec.repos.length > 0) {

@@ -4,9 +4,9 @@
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item label="环境" required>
+      <el-form-item label="环境" :required="job.spec.envType && job.spec.envType !== 'runtime'">
         <el-form-item prop="spec.env" v-if="!job.spec.envType ||job.spec.envType === 'runtime'" class="form-item">
-          <el-select v-model="job.spec.env" placeholder="请选择" size="small">
+          <el-select v-model="job.spec.env" placeholder="请选择" size="small" clearable>
             <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
@@ -34,7 +34,7 @@
         </el-form-item>
         <EnvTypeSelect v-model="job.spec.envType" isFixed isRuntime isOther style="display: inline-block;" />
       </el-form-item>
-      <el-form-item label="服务" required>
+      <el-form-item label="服务" :required="job.spec.serviceType && job.spec.serviceType!=='runtime'">
         <el-form-item prop="spec.service_and_images" v-if="!job.spec.serviceType || job.spec.serviceType === 'runtime'" class="form-item">
           <el-select size="small" v-model="job.spec.service_and_images" multiple filterable clearable value-key="value">
             <el-option

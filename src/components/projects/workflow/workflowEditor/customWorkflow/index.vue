@@ -12,7 +12,7 @@
             :class="{'active': activeName===item.name}"
             v-for="item in tabList"
             :key="item.name"
-            @click="activeName = item.name"
+            @click="handleTabChange(item.name)"
           >{{item.label}}</span>
         </div>
         <div>
@@ -38,7 +38,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" />
+                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" />
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -59,7 +59,7 @@
             <span>{{curJobType}}</span>
             <div>
               <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
-              <el-button size="mini" @click="closeFooter">取消</el-button>
+              <el-button size="mini" @click.stop="closeFooter">取消</el-button>
             </div>
           </div>
           <div v-if="payload.stages.length > 0 && job" class="main">
@@ -117,6 +117,15 @@
               :job="job"
               :workflowInfo="payload"
             />
+            <JobK8sDeploy
+              :projectName="projectName"
+              v-if="job.type === jobType.JobK8sDeploy"
+              :job="job"
+              ref="JobK8sDeploy"
+              :originServiceAndBuilds="originServiceAndBuilds"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -134,16 +143,17 @@
       :modal-append-to-body="false"
       :show-close="false"
       class="drawer"
+      :before-close="closeDrawer"
       :size="drawerSize?drawerSize:'40%'"
     >
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain icon="el-icon-circle-close" @click="isShowDrawer=false"></el-button>
+          <el-button size="mini" plain icon="el-icon-circle-close" @click="closeDrawer"></el-button>
         </div>
         <div v-else>
           <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
-          <el-button size="mini" plain @click="isShowDrawer=false">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
@@ -170,7 +180,7 @@
           :isShowDrawer="isShowDrawer"
           :originalWorkflow="originalWorkflow"
           @saveWorkflow="operateWorkflow"
-          @closeDrawer="isShowDrawer=false"
+          @closeDrawer="closeDrawer"
           ref="webhook"
         />
       </div>
@@ -215,6 +225,7 @@ import JobBuild from './components/jobBuild'
 import JobDeploy from './components/jobDeploy.vue'
 import JobFreestyle from './components/jobFreestyle.vue'
 import JobPlugin from './components/jobPlugin.vue'
+import JobK8sDeploy from './components/jobK8sDeploy'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import Env from './components/env.vue'
@@ -263,6 +274,7 @@ export default {
       },
       originalWorkflow: {},
       curStageIndex: 0,
+      tempStageIndex: 0,
       curJobIndex: -2, // 不指向 job
       curDrawer: 'high',
       isShowStageOperateDialog: false,
@@ -288,6 +300,7 @@ export default {
     JobDeploy,
     JobFreestyle,
     JobPlugin,
+    JobK8sDeploy,
     Service,
     RunCustomWorkflow,
     codemirror,
@@ -300,6 +313,9 @@ export default {
     },
     isShowFooter () {
       return this.$store.state.customWorkflow.isShowFooter
+    },
+    curOperateType () {
+      return this.$store.state.customWorkflow.curOperateType
     },
     isEdit () {
       return this.$route.params.workflow_name
@@ -316,31 +332,31 @@ export default {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.label
+      return res ? res.label : ''
     },
     drawerSize () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerSize
+      return res ? res.drawerSize : '30%'
     },
     drawerConfirmText () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerConfirmText
+      return res ? res.drawerConfirmText : ''
     },
     drawerCancelText () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerCancelText
+      return res ? res.drawerCancelText : ''
     },
     drawerHideButton () {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res.drawerHideButton
+      return res ? res.drawerHideButton : false
     }
   },
   created () {
@@ -398,6 +414,10 @@ export default {
         .catch(error => {
           this.yamlError = error.response.data.description
         })
+    },
+    handleTabChange (name) {
+      this.$store.dispatch('setCurOperateType', 'tab')
+      this.activeName = name
     },
     operateWorkflow () {
       if (this.activeName === 'yaml') {
@@ -481,11 +501,13 @@ export default {
       if (this.$route.fullPath.includes('edit')) {
         updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
           .then(res => {
-            this.$message.success('编辑成功')
+            this.$message.success('保存成功')
             this.getWorkflowDetail(this.payload.name)
-            this.$router.push(
-              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
-            )
+            if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
+              this.$router.push(
+                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+              )
+            }
           })
           .catch(() => {
             this.getWorkflowDetail(this.payload.name)
@@ -516,6 +538,9 @@ export default {
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
+        this.workflowCurJobLength = this.payload.stages[
+          this.curStageIndex
+        ].jobs.length
         this.payload.params.forEach(item => {
           if (item.value.includes('<+fixed>')) {
             item.command = 'fixed'
@@ -524,18 +549,22 @@ export default {
         })
         this.payload.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            if (job.spec && job.spec.service_and_builds) {
-              job.spec.service_and_builds.forEach(service => {
-                service.key_vals.forEach(item => {
-                  if (item.value.includes('<+fixed>')) {
-                    item.command = 'fixed'
-                    item.value = item.value.replaceAll('<+fixed>', '')
-                  }
-                  if (item.value.includes('{{')) {
-                    item.command = 'other'
-                  }
+            if (job.type === 'zadig-build') {
+              console.log(1111)
+              if (job.spec && job.spec.service_and_builds) {
+                job.spec.service_and_builds.forEach(service => {
+                  service.key_vals.forEach(item => {
+                    console.log(item)
+                    if (item.value.includes('<+fixed>')) {
+                      item.command = 'fixed'
+                      item.value = item.value.replaceAll('<+fixed>', '')
+                    }
+                    if (item.value.includes('{{')) {
+                      item.command = 'other'
+                    }
+                  })
                 })
-              })
+              }
             }
             if (job.type === 'zadig-deploy') {
               if (job.spec.env.includes('fixed')) {
@@ -592,6 +621,7 @@ export default {
       })
     },
     showStageOperateDialog (type, row) {
+      this.$store.dispatch('setCurOperateType', 'stageAdd')
       if (
         type === 'add' &&
         !this.isEdit &&
@@ -669,6 +699,9 @@ export default {
               curJob
             )
             this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
           }
         })
       } else if (this.job.type === jobType.build) {
@@ -685,6 +718,9 @@ export default {
               this.job
             )
             this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
           }
         })
       } else if (this.job.type === jobType.freestyle) {
@@ -699,6 +735,9 @@ export default {
             )
             this.$store.dispatch('setIsShowFooter', false)
             this.curJobIndex = -2 // 为了反复切换同一个构建不能初始化
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
           })
           .catch(err => {
             console.log('common build valid error', err)
@@ -711,6 +750,24 @@ export default {
             this.$refs.plugin.getData()
           )
           this.$store.dispatch('setIsShowFooter', false)
+          this.workflowCurJobLength = this.payload.stages[
+            this.curStageIndex
+          ].jobs.length
+        })
+      } else if (this.job.type === jobType.JobK8sDeploy) {
+        this.$refs.JobK8sDeploy.validate().then(valid => {
+          const curJob = this.$refs.JobK8sDeploy.getData()
+          if (valid) {
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              curJob
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
+          }
         })
       }
     },
@@ -765,7 +822,18 @@ export default {
       this.isShowDrawer = true
       this.curDrawer = val
     },
+    closeDrawer () {
+      this.isShowDrawer = false
+      this.curDrawer = ''
+    },
     closeFooter () {
+      if (
+        this.workflowCurJobLength !==
+        this.payload.stages[this.curStageIndex].jobs.length
+      ) {
+        this.payload.stages[this.curStageIndex].jobs.pop()
+        this.curJobIndex = this.curJobIndex - 1
+      }
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
     }
@@ -798,7 +866,8 @@ export default {
         this.setJob()
       }
     },
-    curStageIndex () {
+    curStageIndex (val, oldVal) {
+      this.workflowCurJobLength = this.payload.stages[val].jobs.length
       this.setJob()
     },
     job: {
@@ -836,7 +905,7 @@ export default {
   .left {
     position: relative;
     float: left;
-    width: calc(~'100%' - 120px);
+    width: calc(~'100%' - 102px);
     height: 100%;
 
     header {
