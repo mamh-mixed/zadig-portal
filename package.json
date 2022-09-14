@@ -19,7 +19,7 @@
     "countup.js": "2.0.5",
     "diff": "3.5.0",
     "echarts": "4.4.0",
-    "element-ui": "2.15.6",
+    "element-ui": "2.15.10",
     "event-source-polyfill": "^1.0.25",
     "js-base64": "^3.7.2",
     "js-yaml": "4.1.0",
