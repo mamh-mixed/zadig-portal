@@ -230,7 +230,6 @@ import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
 import Env from './components/env.vue'
 import Webhook from './components/webhook.vue'
-import ConfirmJobDialog from './components/confirmJobDialog'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -306,8 +305,7 @@ export default {
     RunCustomWorkflow,
     codemirror,
     Env,
-    Webhook,
-    ConfirmJobDialog
+    Webhook
   },
   computed: {
     projectName () {
@@ -439,6 +437,10 @@ export default {
           throw Error()
         }
       })
+      if (this.isShowFooter) {
+        this.$message.error('请先保存任务配置')
+        return
+      }
       this.saveWorkflow()
     },
     saveWorkflow () {
@@ -548,9 +550,11 @@ export default {
         this.payload.stages.forEach(stage => {
           stage.jobs.forEach(job => {
             if (job.type === 'zadig-build') {
+              console.log(1111)
               if (job.spec && job.spec.service_and_builds) {
                 job.spec.service_and_builds.forEach(service => {
                   service.key_vals.forEach(item => {
+                    console.log(item)
                     if (item.value.includes('<+fixed>')) {
                       item.command = 'fixed'
                       item.value = item.value.replaceAll('<+fixed>', '')
