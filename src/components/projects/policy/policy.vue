@@ -42,9 +42,9 @@
           <template slot-scope="{ row, $index }">
             <el-form-item class="base-item" :prop="`workflows[${$index}].name`" label-width="0px" required>
               <el-tooltip effect="dark" :content="row.name" placement="top" :popper-class="row.name ? '' : 'hidden-base-tooltip'">
-                <el-select v-model="row.name" placeholder="请选择基准工作流" filterable size="small" :disabled="!row.add">
+                <el-select v-model="row.name" placeholder="请选择基准工作流" filterable size="small" :disabled="!row.add" @change="updateSelectedWorkflow(row)">
                   <el-option v-if="row.name" :label="row.name" :value="row.name"></el-option>
-                  <el-option v-for="workflow in lastBaseWorkflows" :key="workflow" :label="workflow" :value="workflow"></el-option>
+                  <el-option v-for="workflow in lastBaseWorkflows" :key="workflow.name" :label="workflow.name" :value="workflow.name"></el-option>
                 </el-select>
               </el-tooltip>
             </el-form-item>
@@ -238,7 +238,7 @@ export default {
         workflow => workflow.name
       )
       return this.workflowList.filter(
-        workflow => !usedWorkflows.includes(workflow)
+        workflow => !usedWorkflows.includes(workflow.name)
       )
     },
     lastBaseEnvironments () {
@@ -267,6 +267,9 @@ export default {
     }
   },
   methods: {
+    updateSelectedWorkflow (row) {
+      row.workflow_type = this.workflowList.find(workflow => workflow.name === row.name).workflow_type
+    },
     getProjectUsers () {
       queryRoleBindingsAPI(this.projectName).then(res => {
         const userList = uniqBy(res, 'uid')
@@ -352,6 +355,7 @@ export default {
           name: '',
           collaboration_type: 'share',
           verbs: this.policy.workflow.sharePermi.map(data => data.action),
+          workflow_type: '',
           add: true
         })
       })
