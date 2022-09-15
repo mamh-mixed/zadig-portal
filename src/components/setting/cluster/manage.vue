@@ -90,7 +90,7 @@
               <i class="iconfont icontengxunyun"></i>
               <span>腾讯云 TKE</span>
             </el-option>
-            <el-option :value="2" label="腾讯云 EKS">
+            <el-option :value="5" label="腾讯云 EKS">
               <i class="iconfont icontengxunyun"></i>
               <span>腾讯云 EKS</span>
             </el-option>
@@ -547,6 +547,10 @@ export default {
         4: {
           icon: 'iconfont logo iconaws',
           name: 'Amazon EKS'
+        },
+        5: {
+          icon: 'iconfont logo icontengxunyun',
+          name: '腾讯云'
         }
       },
       accessCluster: {
