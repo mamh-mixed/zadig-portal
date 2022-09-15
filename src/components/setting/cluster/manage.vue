@@ -90,6 +90,10 @@
               <i class="iconfont icontengxunyun"></i>
               <span>腾讯云 TKE</span>
             </el-option>
+            <el-option :value="2" label="腾讯云 EKS">
+              <i class="iconfont icontengxunyun"></i>
+              <span>腾讯云 EKS</span>
+            </el-option>
             <el-option :value="3" label="华为云 CCE">
               <i class="iconfont iconhuawei"></i>
               <span>华为云 CCE</span>
@@ -356,7 +360,7 @@
     <div class="section">
       <el-alert type="info" :closable="false">
         <template>
-          支持阿里云 ACK、腾讯云 TKE、华为云 CCE 等 K8s 集群的接入和使用，详情可参考
+          支持阿里云 ACK、腾讯云 TKE、腾讯云 EKS、华为云 CCE 等 K8s 集群的接入和使用，详情可参考
           <el-link
             style="font-size: 14px; vertical-align: baseline;"
             type="primary"
