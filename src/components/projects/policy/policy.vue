@@ -391,18 +391,21 @@ export default {
           })
           return
         }
-        const diff = checkDifferent(data, data.initCollaboration, this.userList)
-        this.changedInfo = diff.changedInfo
-        this.mode = diff.mode
-        if (
-          Object.keys(this.changedInfo).length ||
-          data.name !== data.initName
-        ) {
-          this.visible = true
-        } else {
-          this.$message.info('协作模式信息无变动！')
-        }
+        this.checkDifferent(data, data.initCollaboration)
       })
+    },
+    checkDifferent (current, initial) {
+      const diff = checkDifferent(current, initial, this.userList)
+      this.changedInfo = diff.changedInfo
+      this.mode = diff.mode
+      if (
+        Object.keys(this.changedInfo).length ||
+          data.name !== data.initName
+      ) {
+        this.visible = true
+      } else {
+        this.$message.info('协作模式信息无变动！')
+      }
     },
     validate (type = '') {
       let valid = []
