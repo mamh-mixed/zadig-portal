@@ -198,9 +198,10 @@
 </template>
 
 <script>
-import { cloneDeep, uniqBy, difference } from 'lodash'
+import { uniqBy } from 'lodash'
 import PolicyDialog from './policyDialog.vue'
 import { queryRoleBindingsAPI, usersAPI } from '@api'
+import { checkDifferent } from './checkDiff'
 export default {
   props: {
     workflowList: Array,
@@ -390,7 +391,17 @@ export default {
           })
           return
         }
-        this.checkDifferent(data, data.initCollaboration)
+        const diff = checkDifferent(data, data.initCollaboration, this.userList)
+        this.changedInfo = diff.changedInfo
+        this.mode = diff.mode
+        if (
+          Object.keys(this.changedInfo).length ||
+          data.name !== data.initName
+        ) {
+          this.visible = true
+        } else {
+          this.$message.info('协作模式信息无变动！')
+        }
       })
     },
     validate (type = '') {
@@ -412,177 +423,6 @@ export default {
         this.$refs.workflowRef.clearValidate()
         this.$refs.environmentRef.clearValidate()
       })
-    },
-    checkDifferent (current, initial) {
-      this.changedInfo = {}
-      let changedInfo = {} //  added: {}, deleted: {}, updated: {}
-
-      const isAllMemberCurr = current ? current.members.includes('*') : false
-      const isAllMemberInit = initial ? initial.members.includes('*') : false
-
-      if (!initial) {
-        this.changedInfo = {
-          added: {
-            members: isAllMemberCurr
-              ? ['所有用户']
-              : this.transformUidToName(current.members),
-            workflows: cloneDeep(current.workflows),
-            products: cloneDeep(current.products)
-          }
-        }
-        this.mode = 'added'
-      } else if (!current) {
-        this.changedInfo = {
-          deleted: {
-            members: isAllMemberInit
-              ? ['所有用户']
-              : this.transformUidToName(initial.members),
-            workflows: cloneDeep(initial.workflows),
-            products: cloneDeep(initial.products)
-          }
-        }
-        this.mode = 'deleted'
-      } else {
-        // different user
-        if (isAllMemberCurr && isAllMemberInit) {
-          changedInfo = {
-            updated: {
-              members: ['所有用户']
-            }
-          }
-        } else if (isAllMemberCurr) {
-          changedInfo = {
-            added: {
-              members: ['所有用户']
-            },
-            updated: {
-              members: []
-            }
-          }
-        } else if (isAllMemberInit) {
-          changedInfo = {
-            deleted: {
-              members: ['所有用户']
-            },
-            updated: {
-              members: []
-            }
-          }
-        } else {
-          const members = this.getArraySet(initial.members, current.members)
-          if (members.left.length) {
-            changedInfo.deleted = {}
-            changedInfo.deleted.members = this.transformUidToName(members.left)
-          }
-          if (members.right.length) {
-            changedInfo.added = {}
-            changedInfo.added.members = this.transformUidToName(members.right)
-          }
-          changedInfo = {
-            ...changedInfo,
-            updated: {
-              members: this.transformUidToName(members.intersection)
-            }
-          }
-        }
-        // different workflow and product
-        if (changedInfo.added) {
-          changedInfo.added.workflows = cloneDeep(current.workflows)
-          changedInfo.added.products = cloneDeep(current.products)
-        }
-        if (changedInfo.deleted) {
-          changedInfo.deleted.workflows = cloneDeep(initial.workflows)
-          changedInfo.deleted.products = cloneDeep(initial.products)
-        }
-        if (changedInfo.updated) {
-          const workflows = this.getArraySet(
-            initial.workflows,
-            current.workflows,
-            'name'
-          )
-          const products = this.getArraySet(
-            initial.products,
-            current.products,
-            'name'
-          )
-          if (workflows.length || products.length) {
-            changedInfo.updated.workflows = workflows.all
-            changedInfo.updated.products = products.all
-          } else {
-            delete changedInfo.updated
-          }
-        }
-        this.mode = 'updated'
-        this.changedInfo = changedInfo
-        if (initial.recycle_day !== current.recycle_day) {
-          if (!this.changedInfo.updated) {
-            this.changedInfo.updated = {}
-          }
-          this.changedInfo.updated.recycle_day = current.recycle_day
-        }
-      }
-      if (
-        Object.keys(this.changedInfo).length ||
-        current.name !== current.initName
-      ) {
-        this.visible = true
-      } else {
-        this.$message.info('协作模式信息无变动！')
-      }
-    },
-    transformUidToName (userIds) {
-      if (!userIds.length) {
-        return []
-      }
-      return this.userList
-        .filter(user => userIds.includes(user.uid))
-        .map(user => user.username)
-    },
-    getArraySet (arr1, arr2, key = '') {
-      const a1 = cloneDeep(arr1)
-      const a2 = cloneDeep(arr2)
-      const res = {
-        intersection: [],
-        left: [],
-        right: [],
-        all: [],
-        length: 0
-      }
-      a1.forEach(data => {
-        const d = data[key] || data
-        const id = a2.findIndex(data => (data[key] || data) === d)
-        if (id !== -1) {
-          const del = a2.splice(id, 1)[0]
-          if (key) {
-            let updated = false
-            Object.keys(del).forEach(k => {
-              if (
-                (Array.isArray(del[k]) &&
-                  (del[k].length !== data[k].length ||
-                    difference(del[k], data[k]).length)) ||
-                (!Array.isArray(del[k]) && del[k] !== data[k])
-              ) {
-                updated = true
-              }
-            })
-            if (updated) {
-              res.intersection.push({ ...del, type: 'updated' })
-            }
-          } else {
-            res.intersection.push(del)
-          }
-        } else {
-          res.left.push(key ? { ...data, type: 'deleted' } : data)
-        }
-      })
-      res.right = key
-        ? a2.map(a => {
-          return { ...a, type: 'added' }
-        })
-        : a2
-      res.length = res.intersection.length + res.left.length + res.right.length
-      res.all = [].concat(res.intersection, res.left, res.right)
-      return res
     },
     resetDisabled () {
       this.$nextTick(() => {
