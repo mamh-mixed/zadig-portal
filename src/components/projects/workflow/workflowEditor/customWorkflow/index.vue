@@ -20,7 +20,7 @@
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal" v-show="activeName === 'ui'" style="height: 100%;">
+      <Multipane layout="horizontal" v-show="activeName === 'ui'" >
         <div class="scale">
           <el-tooltip class="item" effect="dark" content="缩小" placement="top">
             <span class="icon el-icon-minus" @click="scale('narrow')"></span>
@@ -32,7 +32,9 @@
         <main class="mg-t16" id="main">
           <section class="ui" id="ui">
             <span class="ui-text mg-r8">Start</span>
-            <div class="line"></div>
+            <div class="line">
+              <span class="add" @click="addStage(-1)">+</span>
+            </div>
             <div class="ui-stage" v-for="(item,index) in payload.stages" :key="item.label">
               <div class="item" @click="setCurStage(index,item)">
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
@@ -43,7 +45,9 @@
                   <i class="el-icon-close"></i>
                 </div>
               </div>
-              <div class="line"></div>
+              <div class="line">
+                <span class="add" v-if="payload.stages.length - 1 > index" @click="addStage(index)">+</span>
+              </div>
             </div>
             <div>
               <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
@@ -54,7 +58,7 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{minHeight:'600px'}" v-if="isShowFooter">
+        <footer :style="{minHeight:'500px'}" v-if="isShowFooter">
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
@@ -287,7 +291,8 @@ export default {
       multi_run: false,
       globalEnv: [],
       beInitCompRef: 'beInitCompRef',
-      scal: '1'
+      scal: '1',
+      insertSatgeIndex: 0
     }
   },
   components: {
@@ -621,6 +626,7 @@ export default {
       })
     },
     showStageOperateDialog (type, row) {
+      this.insertSatgeIndex = this.payload.stages.length
       this.$store.dispatch('setCurOperateType', 'stageAdd')
       if (
         type === 'add' &&
@@ -650,12 +656,16 @@ export default {
         this.stage = cloneDeep(row)
       }
     },
+    addStage (index) {
+      this.showStageOperateDialog('add')
+      this.insertSatgeIndex = index + 1
+    },
     operateStage () {
       this.$refs.stageOperate.validate().then(valid => {
         if (valid) {
           if (this.stageOperateType === 'add') {
             this.stage = this.$refs.stageOperate.getData()
-            this.payload.stages.push(this.stage)
+            this.payload.stages.splice(this.insertSatgeIndex, 0, this.stage)
             this.curStageIndex = this.payload.stages.length - 1
             this.curJobIndex = -1
             this.$store.dispatch('setIsShowFooter', false)
@@ -899,6 +909,7 @@ export default {
 .new-workflow-home {
   width: 100%;
   height: 100%;
+  overflow: hidden;
   background: #fff;
   border-top: 1px solid @borderGray;
 
@@ -1061,7 +1072,7 @@ export default {
       .main {
         max-height: 400px;
         padding: 0 24px;
-        overflow-y: scroll;
+        overflow-y: auto;
       }
     }
   }
@@ -1155,6 +1166,15 @@ export default {
       border: 1px solid @themeColor;
       border-radius: 50%;
       content: '';
+    }
+
+    .add {
+      position: absolute;
+      bottom: 0;
+      left: 18px;
+      color: @themeColor;
+      font-weight: 500;
+      cursor: pointer;
     }
   }
 }
