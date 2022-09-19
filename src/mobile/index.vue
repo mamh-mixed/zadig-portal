@@ -9,7 +9,7 @@
       left-icon="info-o"
     >欢迎使用 Zadig 移动端，功能有限，如需更多功能请前往 PC 端使用</van-notice-bar>
     <router-view />
-      <van-tabbar fixed placeholder v-model="active" active-color="#0066ff" inactive-color="#000" route>
+      <van-tabbar fixed placeholder v-model="active" active-color="#0066ff" inactive-color="#4a4a4a" route>
         <van-tabbar-item replace name="status" to="/mobile/status" icon="icon iconfont iconyunhangzhuangtai">运行状态</van-tabbar-item>
         <van-tabbar-item replace name="projects" to="/mobile/projects" icon="icon iconfont iconxiangmuloading">项目</van-tabbar-item>
         <van-tabbar-item replace name="forum" url="https://community.koderover.com/" icon="friends-o">论坛</van-tabbar-item>
