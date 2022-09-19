@@ -1,87 +1,74 @@
 <template>
   <div class="mobile-status">
     <van-nav-bar>
-      <template #title>
-        运行状态
-      </template>
+      <template #title>运行状态</template>
     </van-nav-bar>
-    <van-tabs v-model="activeTab"
-              sticky>
-      <van-tab :title="`正在运行 ${tasksCount.running?tasksCount.running:''}`"
-               name="running">
-        <van-empty v-if="tasksCount.running===0"
-                   image="search"
-                   description="暂无正在运行任务" />
-        <div v-else
-             v-for="task in runningTasks"
-             :key="task.task_id"
-             class="task-container">
+    <van-tabs v-model="activeTab" sticky>
+      <van-tab :title="`正在运行 ${tasksCount.running?tasksCount.running:''}`" name="running">
+        <van-empty v-if="tasksCount.running===0" image="search" description="暂无正在运行任务" />
+        <div v-else v-for="task in runningTasks" :key="task.task_id" class="task-container">
           <van-cell-group>
-            <van-cell center
-                      :to="`/mobile/pipelines/project/${task.product_name}/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`">
+            <van-cell
+              center
+              :to="`/mobile/projects/detail/${task.product_name}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`"
+            >
               <template #title>
                 <span class="workflow-name">{{`${task.pipeline_name}`}}</span>
-                <van-tag plain
-                         type="primary">{{`#${task.task_id}`}}</van-tag>
+                <van-tag plain type="primary">{{`#${task.task_id}`}}</van-tag>
               </template>
               <template #label>
                 <span class="creator">{{`${task.task_creator}`}}</span>
                 <div class="time">{{$utils.convertTimestamp(task.create_time)}}</div>
               </template>
               <template #default>
-                <van-button round
-                            @click.stop="taskOperation('cancel',task.task_id,task.pipeline_name)"
-                            size="small"
-                            type="danger">取消</van-button>
+                <van-button plain hairline @click.stop="taskOperation('cancel',task.task_id,task.pipeline_name)" size="small" type="danger">取消</van-button>
               </template>
             </van-cell>
           </van-cell-group>
         </div>
-
       </van-tab>
-      <van-tab :title="`队列中 ${tasksCount.pending?tasksCount.pending:''}`"
-               name="pending">
-        <van-empty v-if="tasksCount.pending===0"
-                   image="search"
-                   description="暂无队列中任务" />
-        <div v-else
-             v-for="task in pendingTasks"
-             :key="task.task_id"
-             class="task-container">
+      <van-tab :title="`队列中 ${tasksCount.pending?tasksCount.pending:''}`" name="pending">
+        <van-empty v-if="tasksCount.pending===0" image="search" description="暂无队列中任务" />
+        <div v-else v-for="task in pendingTasks" :key="task.task_id" class="task-container">
           <van-cell-group>
             <van-cell center>
               <template #title>
                 <span class="workflow-name">{{`${task.pipeline_name}`}}</span>
-                <van-tag plain
-                         type="primary">{{`#${task.task_id}`}}</van-tag>
+                <van-tag plain type="primary">{{`#${task.task_id}`}}</van-tag>
               </template>
               <template #label>
                 <span class="creator">{{`${task.task_creator}`}}</span>
                 <div class="time">{{$utils.convertTimestamp(task.create_time)}}</div>
               </template>
               <template #default>
-                <van-button round
-                            @click.stop="taskOperation('cancel',task.task_id,task.pipeline_name)"
-                            size="small"
-                            type="danger">取消</van-button>
+                <van-button plain hairline @click.stop="taskOperation('cancel',task.task_id,task.pipeline_name)" size="small" type="danger">取消</van-button>
               </template>
             </van-cell>
           </van-cell-group>
         </div>
-
       </van-tab>
     </van-tabs>
-
   </div>
 </template>
 <script>
-import { NavBar, Tag, Panel, Loading, Button, Notify, Tab, Tabs, Cell, CellGroup, Icon, Empty } from 'vant'
+import {
+  NavBar,
+  Tag,
+  Loading,
+  Button,
+  Notify,
+  Tab,
+  Tabs,
+  Cell,
+  CellGroup,
+  Icon,
+  Empty
+} from 'vant'
 import { taskRunningSSEAPI, taskPendingSSEAPI, cancelWorkflowAPI } from '@api'
 export default {
   components: {
     [NavBar.name]: NavBar,
     [Tag.name]: Tag,
-    [Panel.name]: Panel,
     [Loading.name]: Loading,
     [Button.name]: Button,
     [Notify.name]: Notify,
@@ -91,7 +78,6 @@ export default {
     [CellGroup.name]: CellGroup,
     [Icon.name]: Icon,
     [Empty.name]: Empty
-
   },
   data () {
     return {

@@ -9,10 +9,18 @@
 
 <script>
 import moment from 'moment'
+import { isMobile } from 'mobile-device-detect'
 export default {
   computed: {
     processEnv () {
       return process.env
+    }
+  },
+  methods: {
+    redirectByDevice () {
+      if (isMobile) {
+        this.$router.push('/mobile')
+      }
     }
   },
   mounted () {
@@ -47,6 +55,7 @@ export default {
         )
       }
     }
+    this.redirectByDevice()
   }
 }
 </script>
