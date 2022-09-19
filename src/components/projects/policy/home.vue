@@ -36,8 +36,7 @@ import bus from '@utils/eventBus'
 import { cloneDeep } from 'lodash'
 import {
   queryPolicyDefinitionsAPI,
-  getProductWorkflowsInProjectAPI,
-  getCommonWorkflowListInProjectAPI,
+  getCustomWorkflowListAPI,
   listProductAPI,
   getAllCollaborationAPI
 } from '@api'
@@ -166,25 +165,19 @@ export default {
       return icon ? iconEnum[icon] : ''
     },
     async getWorkflows () {
-      let res = []
-      res = await getProductWorkflowsInProjectAPI(this.projectName).catch(
-        err => {
-          console.log(err)
-          return []
-        }
-      )
-      const workflowList = await getCommonWorkflowListInProjectAPI(
-        this.projectName
-      ).catch(err => {
+      const res = await getCustomWorkflowListAPI(this.projectName).catch(err => {
         console.log(err)
-        return []
       })
-      workflowList.workflow_list.forEach(list => {
-        list.type = 'common'
-      })
-      this.workflowList = [...res, ...workflowList.workflow_list]
-        .filter(workflow => !workflow.base_name)
-        .map(workflow => workflow.name)
+      if (res) {
+        this.workflowList = res.workflow_list
+          .filter(workflow => !workflow.base_name)
+          .map(workflow => {
+            return {
+              name: workflow.name,
+              workflow_type: workflow.workflow_type || ''
+            }
+          })
+      }
     },
     async getEnvNameList () {
       const res = await listProductAPI(this.projectName).catch(err =>
