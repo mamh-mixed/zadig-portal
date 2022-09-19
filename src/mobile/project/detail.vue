@@ -119,7 +119,9 @@ export default {
       const projectName = this.projectName
       const res = await getCustomWorkflowListAPI(projectName)
       if (res) {
-        this.workflows = res.workflow_list
+        this.workflows = res.workflow_list.filter(
+          workflow => workflow.workflow_type !== 'common_workflow'
+        )
       }
     },
     getEnvList () {
