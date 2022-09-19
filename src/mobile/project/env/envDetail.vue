@@ -77,6 +77,30 @@
       </div>
       <div class="service-list">
         <van-cell
+          v-for="(item,index) in externalServices"
+          :to="`/mobile/projects/detail/${projectName}/envs/${envName}/k8s/${item.service_name}?envName=${envName}&projectName=${projectName}&namespace=${envInfo.namespace}&originProjectName=${item.product_name}&isProd=${isProd}&clusterId=${clusterId}&envSource=${envSource}&workLoadType=${item.workLoadType}`"
+          :key="index"
+        >
+          <template #title>
+            <span class="create-info">{{ item.service_name}}</span>
+          </template>
+          <template #label>
+            <span class="imgs">
+              <template v-if="item.type==='k8s'">
+                <el-tooltip v-for="(image,index) in item.images" :key="index" effect="dark" :content="image" placement="top">
+                  <span style="display: block;">{{imageNameSplit(image) }}</span>
+                </el-tooltip>
+              </template>
+            </span>
+          </template>
+
+          <template #default>
+            <van-tag plain :type="statusIndicator[item.status]">{{ item.status }}</van-tag>
+          </template>
+        </van-cell>
+      </div>
+      <div class="service-list">
+        <van-cell
           v-for="(item,index) in helmServices"
           :to="`/mobile/projects/detail/${projectName}/envs/${envName}/helm/${item.service_name}?envName=${envName}&projectName=${projectName}&namespace=${envInfo.namespace}&originProjectName=${item.product_name}&isProd=${isProd}&clusterId=${clusterId}&envSource=${envSource}&workLoadType=${item.workLoadType}`"
           :key="index"
