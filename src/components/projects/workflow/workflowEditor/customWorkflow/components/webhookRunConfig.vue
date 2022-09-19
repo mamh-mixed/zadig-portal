@@ -241,10 +241,6 @@ export default {
       type: Object,
       default: () => ({})
     },
-    webhookName: {
-      type: String,
-      default: ''
-    },
     webhookSelectedRepo: {
       type: Object,
       default: () => ({})
@@ -604,7 +600,7 @@ export default {
       immediate: false,
       deep: true
     },
-    webhookName (val) {
+    cloneWorkflow (val) {
       if (val) {
         this.init()
       }

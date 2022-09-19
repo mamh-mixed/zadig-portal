@@ -165,7 +165,6 @@
           :workflowName="workflowName"
           :projectName="projectName"
           :cloneWorkflow="currentWebhook.workflow_arg"
-          :webhookName = "currentWebhook.name"
           :webhookSelectedRepo="currentWebhook.repo"
         />
       </div>
