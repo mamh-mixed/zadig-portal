@@ -241,6 +241,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    webhookName: {
+      type: String,
+      default: ''
+    },
     webhookSelectedRepo: {
       type: Object,
       default: () => ({})
@@ -293,8 +297,7 @@ export default {
             }
           })
         })
-        this.payload = this.cloneWorkflow
-        // this.$set(this, 'payload', this.cloneWorkflow)
+        this.$set(this, 'payload', this.cloneWorkflow)
         this.handleEnv()
       }
     },
@@ -600,6 +603,11 @@ export default {
       },
       immediate: false,
       deep: true
+    },
+    webhookName (val) {
+      if (val) {
+        this.init()
+      }
     }
   },
   computed: {
