@@ -555,11 +555,9 @@ export default {
         this.payload.stages.forEach(stage => {
           stage.jobs.forEach(job => {
             if (job.type === 'zadig-build') {
-              console.log(1111)
               if (job.spec && job.spec.service_and_builds) {
                 job.spec.service_and_builds.forEach(service => {
                   service.key_vals.forEach(item => {
-                    console.log(item)
                     if (item.value.includes('<+fixed>')) {
                       item.command = 'fixed'
                       item.value = item.value.replaceAll('<+fixed>', '')
