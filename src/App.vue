@@ -20,7 +20,7 @@ export default {
     redirectByDevice () {
       if (isMobile) {
         if (!window.location.pathname.includes('/mobile')) {
-          this.$router.push('/mobile')
+          this.$router.push('/mobile/projects')
         }
       }
     }
