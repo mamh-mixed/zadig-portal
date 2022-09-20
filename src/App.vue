@@ -19,7 +19,9 @@ export default {
   methods: {
     redirectByDevice () {
       if (isMobile) {
-        this.$router.push('/mobile')
+        if (!window.location.pathname.includes('/mobile')) {
+          this.$router.push('/mobile')
+        }
       }
     }
   },
