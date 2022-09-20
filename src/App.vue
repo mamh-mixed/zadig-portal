@@ -10,6 +10,7 @@
 <script>
 import moment from 'moment'
 import { isMobile } from 'mobile-device-detect'
+import store from 'storejs'
 export default {
   computed: {
     processEnv () {
@@ -18,7 +19,8 @@ export default {
   },
   methods: {
     redirectByDevice () {
-      if (isMobile) {
+      const userInfo = store.get('userInfo')
+      if (isMobile && userInfo) {
         if (!window.location.pathname.includes('/mobile')) {
           this.$router.push('/mobile/projects')
         }
