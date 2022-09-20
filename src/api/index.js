@@ -2248,6 +2248,10 @@ export function getEnterpriseInfoAPI () {
   return http.get(`/api/plutus/organization`)
 }
 
+export function getSignatureFeaturesAPI () {
+  return http.get(`/api/plutus/signature/features`)
+}
+
 export function getNamespaceListAPI (clusterID) {
   return http.get(`/api/aslan/environment/kube/namespace/cluster/${clusterID}`)
 }
