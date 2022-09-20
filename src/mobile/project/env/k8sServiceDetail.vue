@@ -110,6 +110,22 @@
                       <span class="content">{{ activePod[index].host_ip }}( {{activePod[index].node_name}} )</span>
                     </van-col>
                   </van-row>
+                  <van-row>
+                    <van-col :span="24">
+                      <span class="title">健康探测：</span>
+                      <span
+                        class="content"
+                        :style="{ color: activePod[index].containers_ready ? '#4a4a4a' : 'red' }"
+                      >{{ activePod[index].containers_ready ? 'ready' : 'not ready' }}</span>
+                      <el-tooltip effect="dark" :content="activePod[index].containers_message" placement="top">
+                        <i
+                          v-show="!activePod[index].containers_ready"
+                          class="el-icon-warning-outline"
+                          style="color: red; vertical-align: middle; cursor: pointer;"
+                        ></i>
+                      </el-tooltip>
+                    </van-col>
+                  </van-row>
                   <van-row
                     v-for="container of activePod[index].containers"
                     :key="container.name"
@@ -143,7 +159,7 @@
                       <span class="content">{{ container.startedAtReadable }}</span>
                     </div>
                   </van-row>
-                  <van-row>
+                  <van-row type="flex" justify="end">
                     <van-col :span="24" class="op-buttons">
                       <van-button plain size="small" @click="showPodEvents(activePod[index])" type="info">查看事件</van-button>
                     </van-col>
@@ -172,18 +188,10 @@ import {
   Row,
   NavBar,
   Tag,
-  Panel,
   Loading,
   Button,
   Notify,
-  Tab,
-  Tabs,
-  Cell,
-  CellGroup,
-  Icon,
   Divider,
-  ActionSheet,
-  List,
   Popup,
   Empty
 } from 'vant'
@@ -193,22 +201,14 @@ export default {
   components: {
     [NavBar.name]: NavBar,
     [Tag.name]: Tag,
-    [Panel.name]: Panel,
     [Loading.name]: Loading,
     [Button.name]: Button,
     [Notify.name]: Notify,
-    [Tab.name]: Tab,
-    [Tabs.name]: Tabs,
-    [Cell.name]: Cell,
-    [CellGroup.name]: CellGroup,
-    [Icon.name]: Icon,
     [Col.name]: Col,
     [Row.name]: Row,
     [Divider.name]: Divider,
-    [ActionSheet.name]: ActionSheet,
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
-    [List.name]: List,
     [Popup.name]: Popup,
     [Empty.name]: Empty
   },
