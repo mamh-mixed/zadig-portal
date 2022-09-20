@@ -1,8 +1,8 @@
 <template>
-  <div class="workflow-build-rows mobile">
+  <div class="mobile-workflow-build-rows">
     <div v-for="(item,index) in zadigBuild" :key="index" style="margin-bottom: 4px; padding: 4px; border: 1px solid #ebedf0; border-radius: 4px;">
       <el-table :data="item.build.repos" empty-text="无">
-        <el-table-column :label="`${item.name} 代码库`">
+        <el-table-column :label="`服务 ${item.name} 的代码库`">
           <template slot-scope="scope">
             <el-row>
               <template v-if="!scope.row.use_default">
@@ -13,7 +13,10 @@
                     </el-tooltip>
                   </div>
                 </el-col>
-                <el-col :span="7">
+                </template>
+              </el-row>
+              <el-row>
+                <el-col :span="11">
                   <el-select
                     v-model="scope.row.branchOrTag"
                     remote
@@ -31,7 +34,7 @@
                     </el-option-group>
                   </el-select>
                 </el-col>
-                <el-col :span="7" :offset="1" v-if="scope.row.source!=='other'">
+                <el-col :span="12" :offset="1" v-if="scope.row.source!=='other'">
                   <el-select
                     v-if="!$utils.isEmpty(scope.row.branchPRsMap)"
                     v-model.number="scope.row[scope.row.prNumberPropName]"
@@ -56,7 +59,7 @@
                         <br />
                         {{`目标分支: ${item.targetBranch}`}}
                       </div>
-                      <el-option :label="`#${item[scope.row.prNumberPropName]} ${item.title}`" :value="item[scope.row.prNumberPropName]"></el-option>
+                      <el-option :label="`#${item[scope.row.prNumberPropName]} ${$utils.tailCut(item.title,30)}`" :value="item[scope.row.prNumberPropName]"></el-option>
                     </el-tooltip>
                   </el-select>
                   <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号" placement="top" popper-class="gray-popper">
@@ -75,7 +78,7 @@
                     <i class="el-icon-question repo-warning"></i>
                   </el-tooltip>
                 </el-col>
-              </template>
+
             </el-row>
           </template>
         </el-table-column>
@@ -267,5 +270,5 @@ export default {
 </script>
 
 <style lang="less">
-@import '~@assets/css/common/build-row.less';
+@import '~@assets/css/common/mobile-build-row.less';
 </style>
