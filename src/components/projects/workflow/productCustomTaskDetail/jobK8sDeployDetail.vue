@@ -10,7 +10,7 @@
         </span>
       </el-col>
       <el-col :span="2">
-        <div class="grid-content item-desc">
+        <div class="item-desc">
           <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
         </div>
       </el-col>
@@ -35,7 +35,7 @@
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
       </div>
-      <el-row class="text item mg-t8" :gutter="0">
+      <el-row class="item" :gutter="0">
         <el-col :span="4">
           <div class="item-title">容器</div>
         </el-col>
@@ -64,11 +64,11 @@
         </el-col>
         <el-col :span="8">
           <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-            <span class="file-name">{{ jobInfo.spec.image.split('/')[2] }}</span>
+            <span class="file-name item-desc">{{ jobInfo.spec.image.split('/')[2] }}</span>
           </el-tooltip>
         </el-col>
       </el-row>
-      <el-row class="mg-t8">
+      <el-row class="item">
         <el-col :span="4">
           <div class="item-title">集群</div>
         </el-col>
@@ -79,7 +79,7 @@
           <div class="item-title">命名空间</div>
         </el-col>
         <el-col :span="8">
-          <div class="grid-content item-desc">{{jobInfo.spec.namespace.toString()}}</div>
+          <div class="item-desc">{{jobInfo.spec.namespace.toString()}}</div>
         </el-col>
       </el-row>
     </main>
@@ -161,12 +161,14 @@ export default {
     padding: 0 24px;
 
     .item {
+      margin-top: 8px;
+
       &-title {
-        color: #8d9199;
+        color: #4a4a4a;
       }
 
       &-desc {
-        color: #000;
+        color: #8d9199;
       }
     }
 

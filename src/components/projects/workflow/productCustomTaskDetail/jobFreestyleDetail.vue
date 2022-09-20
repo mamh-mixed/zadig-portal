@@ -22,12 +22,12 @@
         <div class="error-wrapper">
           <el-alert v-if="commonInfo.error" title="错误信息" :description="commonInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
-        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in commonInfo.spec.repos" :key="index">
+        <el-row class="item" :gutter="0" v-for="(build,index) in commonInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="grid-content item-title">代码库({{build.source}})</div>
+            <div class="item-title">代码库({{build.source}})</div>
           </el-col>
           <el-col :span="8">
-            <div>{{build.repo_name}}</div>
+            <div class="item-desc">{{build.repo_name}}</div>
           </el-col>
           <el-col :span="4">
             <div class="item-title">代码信息</div>
@@ -241,7 +241,13 @@ export default {
     overflow-y: scroll;
 
     .item {
+      margin-top: 8px;
+
       &-title {
+        color: #4a4a4a;
+      }
+
+      &-desc {
         color: #8d9199;
       }
     }
