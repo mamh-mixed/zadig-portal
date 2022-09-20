@@ -1,6 +1,5 @@
 <template>
   <div class="global-env">
-    {{preEnvs.params}}
     <el-form ref="buildEnvRef" :inline="true" :model="preEnvs" class="variable-form" label-position="top" label-width="80px">
       <el-row :gutter="2" class="th">
         <el-col :span="6" class="th-title">类型</el-col>
