@@ -126,7 +126,7 @@
 </template>
 
 <script>
-import EnvTypeSelect from './envTypeSelect.vue'
+import EnvTypeSelect from '../envTypeSelect.vue'
 
 import { cloneDeep } from 'lodash'
 export default {

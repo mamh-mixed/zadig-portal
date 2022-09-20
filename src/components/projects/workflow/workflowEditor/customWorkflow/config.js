@@ -90,10 +90,10 @@ const configList = [
     drawerCancelText: '取消',
     drawerHideButton: true
   },
-  // {
-  //   label: '通知',
-  //   value: 'notify'
-  // },
+  {
+    label: '通知',
+    value: 'notify'
+  },
   {
     label: '高级配置',
     value: 'high'

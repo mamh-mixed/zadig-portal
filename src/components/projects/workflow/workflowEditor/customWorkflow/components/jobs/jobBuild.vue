@@ -124,10 +124,10 @@
 </template>
 
 <script>
-import { jobType, buildTabList, validateJobName } from '../config'
+import { jobType, buildTabList, validateJobName } from '../../config'
 import { getAllBranchInfoAPI, getRegistryWhenBuildAPI } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
-import EnvTypeSelect from './envTypeSelect.vue'
+import EnvTypeSelect from '../envTypeSelect.vue'
 export default {
   name: 'JobBuild',
   props: {

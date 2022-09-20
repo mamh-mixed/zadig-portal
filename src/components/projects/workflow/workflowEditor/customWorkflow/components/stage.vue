@@ -29,7 +29,7 @@
 
 <script>
 import JobOperate from './jobOperate.vue'
-import { jobType } from './config'
+import { jobType } from '../config'
 export default {
   name: 'Stage',
   components: {

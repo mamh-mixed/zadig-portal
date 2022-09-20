@@ -75,8 +75,8 @@
 
 <script>
 import { listProductAPI } from '@/api'
-import EnvTypeSelect from './envTypeSelect.vue'
-import { validateJobName } from '../config'
+import EnvTypeSelect from '../envTypeSelect.vue'
+import { validateJobName } from '../../config'
 
 export default {
   name: 'JobDeploy',

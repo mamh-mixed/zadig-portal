@@ -20,7 +20,7 @@
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal" v-show="activeName === 'ui'" >
+      <Multipane layout="horizontal" v-show="activeName === 'ui'">
         <div class="scale">
           <el-tooltip class="item" effect="dark" content="缩小" placement="top">
             <span class="icon el-icon-minus" @click="scale('narrow')"></span>
@@ -188,6 +188,9 @@
           ref="webhook"
         />
       </div>
+      <div v-if="curDrawer === 'notify'">
+        <Notify />
+      </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate
@@ -223,17 +226,18 @@ import {
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
-import Stage from './stage.vue'
-import StageOperate from './stageOperate.vue'
-import JobBuild from './components/jobBuild'
-import JobDeploy from './components/jobDeploy.vue'
-import JobFreestyle from './components/jobFreestyle.vue'
-import JobPlugin from './components/jobPlugin.vue'
-import JobK8sDeploy from './components/jobK8sDeploy'
+import Stage from './components/stage.vue'
+import StageOperate from './components/stageOperate.vue'
+import JobBuild from './components/jobs/jobBuild'
+import JobDeploy from './components/jobs/jobDeploy.vue'
+import JobFreestyle from './components/jobs/jobFreestyle.vue'
+import JobPlugin from './components/jobs/jobPlugin.vue'
+import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Service from '../../../guide/helm/service.vue'
-import Env from './components/env.vue'
-import Webhook from './components/webhook.vue'
+import Env from './components/base/env.vue'
+import Webhook from './components/base/webhook.vue'
+import Notify from './components/base/notify.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -310,7 +314,8 @@ export default {
     RunCustomWorkflow,
     codemirror,
     Env,
-    Webhook
+    Webhook,
+    Notify
   },
   computed: {
     projectName () {
