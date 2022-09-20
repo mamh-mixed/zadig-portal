@@ -6,7 +6,7 @@ import router from '@/router/index.js'
 // debug address
 const prefix = process.env.NODE_ENV === 'development' ? '//localhost:10000' : ''
 
-const activeRule = ['/v1/enterprise']
+export const activeRule = []
 
 export const microApps = [
   {
@@ -24,6 +24,8 @@ export const microApps = [
 ]
 
 export const registerApps = ({ delivery, release_center }) => {
+  activeRule.splice(0, activeRule.length, '/v1/enterprise')
+
   if (delivery) {
     activeRule.push('/v1/plutus')
   }
