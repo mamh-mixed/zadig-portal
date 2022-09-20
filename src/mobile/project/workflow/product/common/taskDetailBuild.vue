@@ -2,33 +2,23 @@
   <div class="mobile-task-detail-build">
     <div v-if="!$utils.isEmpty(buildv2) && buildv2.enabled">
       <div class="error-wrapper">
-        <van-notice-bar v-if="buildv2.error"
-                        color="#F56C6C"
-                        background="#fef0f0">
-          {{buildv2.error}}
-        </van-notice-bar>
+        <van-notice-bar v-if="buildv2.error" color="#F56C6C" background="#fef0f0">{{buildv2.error}}</van-notice-bar>
       </div>
       <div class="text">
         <van-row :gutter="0">
           <van-col :span="6">
-            <div class="item-title">
-              构建状态
-            </div>
+            <div class="item-title">构建状态</div>
           </van-col>
           <van-col :span="6">
-            <div class="">
+            <div class>
               <span :class="buildOverallColor">{{buildv2.status?buildOverallStatusZh:"未运行"}}</span>
             </div>
           </van-col>
-          <van-col v-if="buildv2.status!=='running'"
-                   :span="6">
-            <div class="item-title">
-              持续时间
-            </div>
+          <van-col v-if="buildv2.status!=='running'" :span="6">
+            <div class="item-title">持续时间</div>
           </van-col>
-          <van-col v-if="buildv2.status!=='running'"
-                   :span="6">
-            <span class="">{{$utils.timeFormat(buildv2.end_time - buildv2.start_time)}}</span>
+          <van-col v-if="buildv2.status!=='running'" :span="6">
+            <span class>{{$utils.timeFormat(buildv2.end_time - buildv2.start_time)}}</span>
           </van-col>
         </van-row>
         <van-row v-if="buildv2.job_ctx.builds">
@@ -36,12 +26,10 @@
             <span>代码信息</span>
           </div>
         </van-row>
-        <van-row :gutter="0"
-                 v-for="(build,index) in buildv2.job_ctx.builds"
-                 :key="index">
+        <van-row :gutter="0" v-for="(build,index) in buildv2.job_ctx.builds" :key="index">
           <van-col :span="24">
             <span>{{build.repo_name}} ({{build.source}})</span>
-            <RepoJump :build="build" :showCommit="false" showIcon/>
+            <RepoJump :build="build" :showCommit="false" showIcon />
           </van-col>
         </van-row>
         <template v-if="serviceType!=='pm'">
@@ -52,10 +40,8 @@
           </van-row>
           <van-row :gutter="0">
             <van-col :span="24">
-              <el-tooltip effect="dark"
-                          :content="buildv2.job_ctx.image"
-                          placement="top">
-                <span class="">{{buildv2.job_ctx.image.split('/').pop()}}</span>
+              <el-tooltip effect="dark" :content="buildv2.job_ctx.image" placement="top">
+                <span class>{{buildv2.job_ctx.image.split('/').pop()}}</span>
               </el-tooltip>
             </van-col>
           </van-row>
@@ -68,7 +54,7 @@
           </van-row>
           <van-row :gutter="0">
             <van-col :span="24">
-              <span class="">{{buildv2.job_ctx.package_file}}</span>
+              <span class>{{buildv2.job_ctx.package_file}}</span>
             </van-col>
           </van-row>
         </template>
@@ -80,19 +66,15 @@
           </van-row>
           <van-row :gutter="0">
             <van-col :span="24">
-              <span class="">{{buildv2.job_ctx.package_file}}</span>
+              <span class>{{buildv2.job_ctx.package_file}}</span>
             </van-col>
           </van-row>
         </template>
       </div>
     </div>
 
-    <div id="buildv2-log"
-         v-if="!$utils.isEmpty(buildv2)&&buildv2.enabled"
-         class="mobile-log-container">
-      <XtermLog :id="buildv2.job_ctx.image"
-                 :fontSize="'10'"
-                 :logs="buildv2AnyLog"/>
+    <div id="buildv2-log" v-if="!$utils.isEmpty(buildv2)&&buildv2.enabled" class="mobile-log-container">
+      <XtermLog :id="buildv2.job_ctx.image" :fontSize="'10'" :logs="buildv2AnyLog" />
     </div>
   </div>
 </template>
@@ -200,7 +182,9 @@ export default {
           // Listen for messages without a specified event
           sse.subscribe('', data => {
             this.hasNewMsg = true
-            this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(Object.freeze(data + '\n'))
+            this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(
+              Object.freeze(data + '\n')
+            )
           })
         })
         .catch(err => {
@@ -214,13 +198,17 @@ export default {
       if (this.buildv2.type === 'jenkins_build') {
         type = 'jenkins_build'
       }
-      return getWorkflowHistoryBuildLogAPI(this.projectName, this.pipelineName, this.taskID, this.serviceName, type).then(
-        response => {
-          this.buildv2AnyLog = (response.split('\n')).map(element => {
-            return element + '\n'
-          })
-        }
-      )
+      return getWorkflowHistoryBuildLogAPI(
+        this.projectName,
+        this.pipelineName,
+        this.taskID,
+        this.serviceName,
+        type
+      ).then(response => {
+        this.buildv2AnyLog = response.split('\n').map(element => {
+          return element + '\n'
+        })
+      })
     }
   },
   beforeDestroy () {
@@ -277,8 +265,6 @@ export default {
 </script>
 
 <style lang="less">
-@import "~@assets/css/component/subtask.less";
-
 .mobile-task-detail-build {
   color: #303133;
 
@@ -288,6 +274,18 @@ export default {
 
   .mobile-log-container {
     margin: 15px 0;
+
+    .xterm {
+      padding: 15px 10px;
+
+      .xterm-viewport {
+        border-radius: 5px;
+      }
+    }
+  }
+
+  .error-wrapper {
+    margin-bottom: 10px;
   }
 }
 </style>

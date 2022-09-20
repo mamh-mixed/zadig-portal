@@ -113,12 +113,45 @@
         </van-collapse-item>
       </van-collapse>
     </template>
+    <template v-if="testArray.length > 0">
+      <div class="mobile-block">
+        <h2 class="mobile-block-title">自动化测试</h2>
+      </div>
+      <van-collapse v-model="testActive">
+        <van-collapse-item v-for="(item,index) in testArray"
+                           :key="index"
+                           :name="item._target">
+          <template #title>
+            <van-row>
+              <van-col span="12">{{$utils.showServiceName(item._target)}}</van-col>
+             <van-col span="12">
+              <span
+                :class="colorTranslation(item.testingv2SubTask.status, 'pipeline', 'task')"
+              >{{ myTranslate(item.testingv2SubTask.status) }}</span>
+              {{ makePrettyElapsedTime(item.testingv2SubTask) }}
+              <el-tooltip v-if="calcElapsedTimeNum(item.testingv2SubTask)<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
+                <i class="el-icon-warning" style="color: red;"></i>
+              </el-tooltip>
+              </van-col>
+            </van-row>
+          </template>
+          <TaskDetailTest
+                :testingv2="item.testingv2SubTask"
+                :serviceName="item._target"
+                :pipelineName="workflowName"
+                ref="testComp"
+                :taskID="taskID"
+              />
+        </van-collapse-item>
+      </van-collapse>
+    </template>
   </div>
 </template>
 <script>
 import { Col, Collapse, CollapseItem, Row, NavBar, Tag, Panel, Loading, Button, Notify, Tab, Tabs, Cell, CellGroup, Icon, Divider, ActionSheet } from 'vant'
 import TaskDetailBuild from './common/taskDetailBuild.vue'
 import TaskDetailDeploy from './common/taskDetailDeploy.vue'
+import TaskDetailTest from './common/taskDetailTest.vue'
 import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
 import {
   workflowTaskDetailAPI, workflowTaskDetailSSEAPI, restartWorkflowAPI, cancelWorkflowAPI
@@ -143,7 +176,8 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     TaskDetailBuild,
-    TaskDetailDeploy
+    TaskDetailDeploy,
+    TaskDetailTest
 
   },
   data () {
@@ -155,7 +189,8 @@ export default {
       taskDetail: {
         stages: []
       },
-      buildActive: []
+      buildActive: [],
+      testActive: []
     }
   },
   methods: {
@@ -300,6 +335,15 @@ export default {
           this.calcElapsedTimeNum(target.buildv2SubTask) + this.calcElapsedTimeNum(target.docker_buildSubTask)
         )
       }
+      return arr
+    },
+    testMap () {
+      const map = {}
+      this.collectSubTask(map, 'testingv2')
+      return map
+    },
+    testArray () {
+      const arr = this.$utils.mapToArray(this.testMap, '_target')
       return arr
     },
     distributeMap () {

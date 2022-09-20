@@ -37,6 +37,7 @@
               <van-tag v-if="!$utils.isEmpty(workflow.build_stage) && workflow.build_stage.enabled" type="primary">构建部署</van-tag>
               <van-tag v-if="!$utils.isEmpty(workflow.artifact_stage) && workflow.artifact_stage.enabled" type="primary">交付物部署</van-tag>
               <van-tag v-if="!$utils.isEmpty(workflow.distribute_stage) &&  workflow.distribute_stage.enabled" type="primary">分发部署</van-tag>
+              <van-tag v-if="!$utils.isEmpty(workflow.test_stage) &&  workflow.test_stage.enabled" type="primary">测试</van-tag>
             </div>
           </div>
         </van-col>
