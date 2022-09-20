@@ -4,7 +4,9 @@
 
 version=$1
 
-image_name=ccr.ccs.tencentyun.com/koderover-rc/zadig-portal:$version
+# ccr.ccs.tencentyun.com/koderover-rc
+
+image_name=koderover.tencentcloudcr.com/koderover-public/zadig-portal:$version
 
 arch_name="$(uname -m)"
 
