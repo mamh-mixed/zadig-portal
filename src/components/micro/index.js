@@ -6,12 +6,14 @@ import router from '@/router/index.js'
 // debug address
 const prefix = process.env.NODE_ENV === 'development' ? '//localhost:10000' : ''
 
+export const activeRule = []
+
 export const microApps = [
   {
     name: 'plutusVendor',
     entry: `${prefix}/plutus-vendor/`,
     container: '#container',
-    activeRule: ['/v1/plutus', '/v1/enterprise', '/v1/release'],
+    activeRule,
     props: {
       routerBase: '/v1',
       //   mainStore: store,
@@ -21,7 +23,16 @@ export const microApps = [
   }
 ]
 
-export const registerApps = () => {
+export const registerApps = ({ delivery, release_center }) => {
+  activeRule.splice(0, activeRule.length, '/v1/enterprise')
+
+  if (delivery) {
+    activeRule.push('/v1/plutus')
+  }
+  if (release_center) {
+    activeRule.push('/v1/release')
+  }
+
   registerMicroApps(microApps, {
     beforeLoad: (app) => {
     //   store.commit('app/loadingMicro', true)
