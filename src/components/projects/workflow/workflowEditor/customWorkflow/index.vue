@@ -130,6 +130,14 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+             <JobTest
+              :projectName="projectName"
+              v-if="job.type === jobType.JobTest"
+              :job="job"
+              ref="JobTest"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -189,7 +197,7 @@
         />
       </div>
       <div v-if="curDrawer === 'notify'">
-        <Notify />
+        <Notify :config="payload" :isEdit="isEdit" ref="notify" />
       </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
@@ -233,8 +241,8 @@ import JobDeploy from './components/jobs/jobDeploy.vue'
 import JobFreestyle from './components/jobs/jobFreestyle.vue'
 import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
+import JobTest from './components/jobs/jobTest'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
-import Service from '../../../guide/helm/service.vue'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
 import Notify from './components/base/notify.vue'
@@ -310,7 +318,7 @@ export default {
     JobFreestyle,
     JobPlugin,
     JobK8sDeploy,
-    Service,
+    JobTest,
     RunCustomWorkflow,
     codemirror,
     Env,
@@ -328,7 +336,7 @@ export default {
       return this.$store.state.customWorkflow.curOperateType
     },
     isEdit () {
-      return this.$route.params.workflow_name
+      return !!this.$route.params.workflow_name
     },
     curJobType () {
       if (this.job) {
@@ -829,6 +837,10 @@ export default {
           this.$set(this.payload, 'params', this.$refs.env.getData())
           this.isShowDrawer = false
         })
+      }
+      if (this.curDrawer === 'notify') {
+        this.$set(this.payload, 'notify_ctls', this.$refs.notify.getData())
+        this.isShowDrawer = false
       }
     },
     setCurDrawer (val) {

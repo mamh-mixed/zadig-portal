@@ -75,6 +75,13 @@ const jobTypeList = [
     type: 'custom-deploy',
     is_offical: true,
     description: '可更新 Kubernetes 中容器镜像'
+  },
+  {
+    label: '测试',
+    name: 'test',
+    type: 'test',
+    is_offical: true,
+    description: '可直接引用「项目」-「测试」模块中的测试配置'
   }
 ]
 const configList = [
@@ -106,7 +113,8 @@ const jobType = {
   common: 'freestyle',
   freestyle: 'freestyle',
   plugin: 'plugin',
-  JobK8sDeploy: 'custom-deploy'
+  JobK8sDeploy: 'custom-deploy',
+  JobTest: 'test'
 
 }
 const editorOptions = {
@@ -184,6 +192,49 @@ const globalConstEnvs = [
   '{{.workflow.task.creator}}',
   '{{.workflow.task.timestamp}}'
 ]
+const notifyType = [
+  {
+    label: 'passed',
+    desc: '任务成功'
+  },
+  {
+    label: 'failed',
+    desc: '任务失败'
+  },
+  {
+    label: 'timeout',
+    desc: '任务超时'
+  },
+  {
+    label: 'cancelled',
+    desc: '任务取消'
+  },
+  {
+    label: 'changed',
+    desc: '状态变更'
+  },
+  {
+    label: 'reject',
+    desc: '任务拒绝'
+  },
+  {
+    label: 'waitforapprove',
+    desc: '等待人工审核'
+  }
+]
+const notifyPlatform = [
+  {
+    label: 'dingding',
+    desc: '钉钉'
+  },
+  {
+    label: 'wechat',
+    desc: '企业微信'
+  },
+  {
+    label: 'feishu',
+    desc: '飞书'
+  }]
 export {
   validateJobName,
   tabList,
@@ -194,5 +245,7 @@ export {
   editorOptions,
   jobType,
   buildEnvs,
-  globalConstEnvs
+  globalConstEnvs,
+  notifyType,
+  notifyPlatform
 }

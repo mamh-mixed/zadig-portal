@@ -3,7 +3,7 @@
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
     </el-tooltip>
-    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job" >
+    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job">
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
         <span>{{item.name}}</span>
       </el-tooltip>
@@ -168,6 +168,15 @@ export default {
             cluster_id: ''
           },
           is_offical: true
+        },
+        test: {
+          name: 'default',
+          type: 'test',
+          spec: {
+            timeout: '60',
+            source: 'runtime',
+            targets: []
+          }
         }
       },
       isShowJobOperateDialog: false,
