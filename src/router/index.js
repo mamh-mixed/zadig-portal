@@ -966,60 +966,13 @@ const routes = [
       title: 'Zadig'
     },
     children: [
+
       {
         path: 'status',
-        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/pipelines/status.vue'),
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/workflow/status.vue'),
         meta: {
           requiresAuth: true,
           title: '运行状态'
-        }
-      },
-      {
-        path: 'envs',
-        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/envs/envs.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '环境'
-        }
-      },
-      {
-        path: 'envs/detail/:project_name',
-        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/envs/envDetail'),
-        meta: {
-          requiresAuth: true,
-          title: '环境'
-        }
-      },
-      {
-        path: 'envs/detail/:project_name/:service_name',
-        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/envs/serviceDetail.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '服务详情'
-        }
-      },
-      {
-        path: 'pipelines',
-        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/pipelines/pipelines.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '工作流'
-        }
-      },
-      {
-        path: 'pipelines/project/:project_name/multi/:workflow_name/:task_id',
-        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/pipelines/multi_task.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '任务详情'
-        }
-      },
-      {
-        path: 'pipelines/project/:project_name/multi/:workflow_name',
-        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/pipelines/detail.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '工作流详情'
         }
       },
       {
@@ -1028,6 +981,70 @@ const routes = [
         meta: {
           requiresAuth: true,
           title: '账号设置'
+        }
+      },
+      {
+        path: 'projects',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/projects.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '项目'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/detail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '项目详情'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/workflows/multi/:workflow_name',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/workflow/product/detail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '工作流详情'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/workflows/multi/:workflow_name/:task_id',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/workflow/product/taskDetail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '任务详情'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/envs/:env_name',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/envDetail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '环境详情'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/envs/:env_name/k8s/:service_name',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/k8sServiceDetail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '服务详情'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/envs/:env_name/helm/:service_name',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/helmServiceDetail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '服务详情'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/envs/:env_name/pm/:service_name',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/pmServiceDetail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '服务详情'
         }
       }
     ]

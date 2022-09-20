@@ -5,11 +5,19 @@
                  @click-left="mobileGoback">
       <template #title>
         <span>{{workflowName}}</span>
-        <van-tag plain
-                 type="primary">{{`#${taskID}`}}</van-tag>
       </template>
     </van-nav-bar>
     <div class="task-info">
+      <van-row>
+        <van-col span="12">
+          <div class="mobile-block">
+            <h2 class="mobile-block-title">ID</h2>
+            <div class="mobile-block-desc">
+              {{`#${taskID}`}}
+            </div>
+          </div>
+        </van-col>
+      </van-row>
       <van-row>
         <van-col span="12">
           <div class="mobile-block">
@@ -32,7 +40,7 @@
         <van-col span="12">
           <div class="mobile-block">
             <h2 class="mobile-block-title">环境</h2>
-            <div class="mobile-block-desc"> {{ workflow.product_tmpl_name }} -
+            <div class="mobile-block-desc">
               {{ workflow.namespace }}
             </div>
           </div>
@@ -70,7 +78,7 @@
                            :name="item._target">
           <template #title>
             <van-row>
-              <van-col span="8">{{item._target}}</van-col>
+              <van-col span="8">{{$utils.showServiceName(item._target,item.buildv2SubTask.service)}}</van-col>
               <van-col span="8">
                 <span :class="item.buildOverallColor">
                   {{ item.buildOverallStatusZh }}
@@ -91,17 +99,49 @@
               </van-col>
             </van-row>
           </template>
-          <task-detail-build :buildv2="item.buildv2SubTask"
+          <TaskDetailBuild :buildv2="item.buildv2SubTask"
                              :docker_build="item.docker_buildSubTask"
                              :isWorkflow="true"
                              :serviceName="item._target"
                              :pipelineName="workflowName"
                              :projectName="projectName"
                              :taskID="taskID"
-                             ref="buildComp"></task-detail-build>
-          <task-detail-deploy :deploys="item.deploySubTasks"
+                             ref="buildComp"/>
+          <TaskDetailDeploy :deploys="item.deploySubTasks"
                               :pipelineName="workflowName"
-                              :taskID="taskID"></task-detail-deploy>
+                              :taskID="taskID"/>
+        </van-collapse-item>
+      </van-collapse>
+    </template>
+    <template v-if="testArray.length > 0">
+      <div class="mobile-block">
+        <h2 class="mobile-block-title">自动化测试</h2>
+      </div>
+      <van-collapse v-model="testActive">
+        <van-collapse-item v-for="(item,index) in testArray"
+                           :key="index"
+                           :name="item._target">
+          <template #title>
+            <van-row>
+              <van-col span="12">{{$utils.showServiceName(item._target)}}</van-col>
+             <van-col span="12">
+              <span
+                :class="colorTranslation(item.testingv2SubTask.status, 'pipeline', 'task')"
+              >{{ myTranslate(item.testingv2SubTask.status) }}</span>
+              {{ makePrettyElapsedTime(item.testingv2SubTask) }}
+              <el-tooltip v-if="calcElapsedTimeNum(item.testingv2SubTask)<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
+                <i class="el-icon-warning" style="color: red;"></i>
+              </el-tooltip>
+              </van-col>
+            </van-row>
+          </template>
+          <TaskDetailTest
+                :testingv2="item.testingv2SubTask"
+                :serviceName="item._target"
+                :pipelineName="workflowName"
+                ref="testComp"
+                :taskID="taskID"
+              />
         </van-collapse-item>
       </van-collapse>
     </template>
@@ -109,8 +149,9 @@
 </template>
 <script>
 import { Col, Collapse, CollapseItem, Row, NavBar, Tag, Panel, Loading, Button, Notify, Tab, Tabs, Cell, CellGroup, Icon, Divider, ActionSheet } from 'vant'
-import taskDetailBuild from './task_detail_build.vue'
-import taskDetailDeploy from './task_detail_deploy.vue'
+import TaskDetailBuild from './common/taskDetailBuild.vue'
+import TaskDetailDeploy from './common/taskDetailDeploy.vue'
+import TaskDetailTest from './common/taskDetailTest.vue'
 import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
 import {
   workflowTaskDetailAPI, workflowTaskDetailSSEAPI, restartWorkflowAPI, cancelWorkflowAPI
@@ -134,22 +175,22 @@ export default {
     [ActionSheet.name]: ActionSheet,
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
-    taskDetailBuild,
-    taskDetailDeploy
+    TaskDetailBuild,
+    TaskDetailDeploy,
+    TaskDetailTest
 
   },
   data () {
     return {
       showAction: false,
-      actions: [
-
-      ],
+      actions: [],
       workflow: {
       },
       taskDetail: {
         stages: []
       },
-      buildActive: []
+      buildActive: [],
+      testActive: []
     }
   },
   methods: {
@@ -167,9 +208,10 @@ export default {
     },
     onSelectAction (action) {
       if (action.name === '失败重试') {
+        const taskUrl = `/mobile/projects/detail/${this.projectName}/workflows/multi/${this.workflowName}/${this.taskID}`
         restartWorkflowAPI(this.projectName, this.workflowName, this.taskID).then(res => {
           Notify({ type: 'success', message: '任务已重新启动' })
-          this.$router.push('/mobile/status')
+          this.$router.push(taskUrl)
         })
       } else if (action.name === '取消任务') {
         cancelWorkflowAPI(this.projectName, this.workflowName, this.taskID).then(res => {
@@ -295,6 +337,15 @@ export default {
       }
       return arr
     },
+    testMap () {
+      const map = {}
+      this.collectSubTask(map, 'testingv2')
+      return map
+    },
+    testArray () {
+      const arr = this.$utils.mapToArray(this.testMap, '_target')
+      return arr
+    },
     distributeMap () {
       const map = {}
       this.collectSubTask(map, 'distribute2kodo')
@@ -318,7 +369,6 @@ export default {
     },
     distributeArrayExpanded () {
       const wanted = ['distribute2kodoSubTask', 'release_imageSubTask', 'distributeSubTask']
-
       const outputKeys = {
         distribute2kodoSubTask: 'package_file',
         release_imageSubTask: '_image',
@@ -329,7 +379,6 @@ export default {
         release_imageSubTask: 'image_repo',
         distributeSubTask: 'dist_host'
       }
-
       const twoD = this.distributeArray.map(map => {
         let typeCount = 0
         const arr = []
