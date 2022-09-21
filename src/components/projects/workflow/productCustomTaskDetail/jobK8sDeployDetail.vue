@@ -19,10 +19,15 @@
       </el-col>
       <el-col v-if="jobInfo" :span="6">
         <span class="item-desc status">
-          <i class="el-icon-question"></i>
-          <span v-if="jobInfo.spec.skip_check_run_status">未开启容器状态检测</span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">服务容器检测通过</span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">服务容器检测未通过</span>
+          <span v-if="jobInfo.spec.skip_check_run_status">
+            <i class="el-icon-warning"></i>未开启容器状态检测
+          </span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">
+            <i class="el-icon-warning"></i>服务容器检测通过
+          </span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">
+            <i class="el-icon-warning"></i>服务容器检测未通过
+          </span>
         </span>
       </el-col>
       <el-col :span="1" class="close">
