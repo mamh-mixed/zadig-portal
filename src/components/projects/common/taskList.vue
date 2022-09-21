@@ -204,7 +204,7 @@ export default {
       const workflowName = task.pipeline_name || task.workflow_name
       const taskId = task.task_id
       if (this.workflowType === 'buildv4') {
-        const customDetail = await getCustomCloneDetailAPI(workflowName, taskId)
+        const customDetail = await getCustomCloneDetailAPI(workflowName, taskId, this.projectName)
         if (customDetail) {
           this.$emit('cloneTask', customDetail)
         }

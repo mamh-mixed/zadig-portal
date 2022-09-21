@@ -37,7 +37,7 @@
     "smoothscroll-polyfill": "0.4.3",
     "storejs": "^2.0.1",
     "validator": "^13.7.0",
-    "vant": "2.8.1",
+    "vant": "2.12.49",
     "vue": "2.6.12",
     "vue-clipboard2": "0.0.8",
     "vue-codemirror": "4.0.6",

@@ -148,7 +148,7 @@ export default {
     },
     redirectByDevice () {
       if (isMobile) {
-        this.$router.push('/mobile')
+        this.$router.push('/mobile/projects')
       } else {
         if (
           typeof this.$route.query.redirect !== 'undefined' &&

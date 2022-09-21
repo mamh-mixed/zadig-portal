@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import {
   /* loadMicroApp */ addGlobalUncaughtErrorHandler,
   initGlobalState
@@ -74,14 +75,17 @@ export default {
   computed: {
     hasMounted () {
       return this.currentInfo.mount
-    }
+    },
+    ...mapState({
+      signatureFeatures: state => state.checkPlutus.features
+    })
   },
   mounted () {
     addGlobalUncaughtErrorHandler(event => console.log('global error: ', event))
     this.initGlobalStateFn()
     // if (window.qiankunStarted) return
     // window.qiankunStarted = true
-    registerApps()
+    registerApps(this.signatureFeatures)
     // this.activationHandleChange(this.$route.path)
     bus.$emit(`set-topbar-title`, {
       title: '',

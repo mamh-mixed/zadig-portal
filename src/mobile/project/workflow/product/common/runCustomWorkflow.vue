@@ -294,7 +294,6 @@ export default {
           }
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
-              this.getRepoInfo(service.repos)
               service.key_vals.forEach(item => {
                 if (
                   item.value.includes('<+fixed>') ||
