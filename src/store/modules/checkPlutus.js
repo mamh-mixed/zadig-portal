@@ -34,12 +34,12 @@ const actions = {
 
   async getSignatureFeatures ({ commit }) {
     const res = await getSignatureFeaturesAPI().catch(err => { console.log(err) })
+    const resObj = {}
     if (res) {
-      const resObj = {}
       res.features.forEach(feat => { resObj[feat] = true })
       commit(types.SET_SIGNATURE_FEATURE, resObj)
-      return resObj
     }
+    return resObj
   }
 }
 
