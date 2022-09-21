@@ -150,7 +150,7 @@
                     <span class="title">启动时间：</span>
                     <span class="content">{{ container.startedAtReadable }}</span>
                   </div>
-                  <van-button plain size="mini" type="info">实时日志</van-button>
+                  <van-button plain size="mini" type="info" @click="openLog(activePod[index].name,container.name)">实时日志</van-button>
                 </van-row>
                 <van-row>
                   <van-col :span="24" class="op-buttons">
@@ -170,6 +170,17 @@
         <el-table-column prop="reason" width="80" label></el-table-column>
       </el-table>
     </van-popup>
+    <van-popup v-model="containerLogModal.visible" closeable close-icon="close" round position="bottom" >
+      <MobileContainerLog
+        :closed="!containerLogModal.visible"
+        :visible="containerLogModal.visible"
+        :id="containerLogModal.id"
+        :projectName="projectName"
+        :envName="envName"
+        :podName="containerLogModal.podName"
+        :containerName="containerLogModal.containerName"
+      />
+    </van-popup>
   </div>
 </template>
 <script>
@@ -187,6 +198,7 @@ import {
   Popup,
   Empty
 } from 'vant'
+import MobileContainerLog from './common/mobileContainerLog.vue'
 import { podEventAPI, getServiceInfo } from '@api'
 import moment from 'moment'
 export default {
@@ -202,7 +214,8 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Popup.name]: Popup,
-    [Empty.name]: Empty
+    [Empty.name]: Empty,
+    MobileContainerLog
   },
   data () {
     return {
@@ -228,6 +241,13 @@ export default {
       eventsModal: {
         visible: false,
         name: '',
+        data: []
+      },
+      containerLogModal: {
+        id: '',
+        podName: '',
+        containerName: '',
+        visible: false,
         data: []
       }
     }
@@ -289,6 +309,12 @@ export default {
         type: 'danger',
         message: '地址复制失败'
       })
+    },
+    openLog (podName, containerName) {
+      this.containerLogModal.visible = true
+      this.containerLogModal.id = `${podName}-${containerName}`
+      this.containerLogModal.podName = podName
+      this.containerLogModal.containerName = containerName
     },
     fetchServiceData () {
       const projectName = this.projectName
