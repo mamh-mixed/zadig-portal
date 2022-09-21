@@ -134,8 +134,8 @@
                     loading-text="加载中，支持手动创建"
                     filterable
                     remote
-                    :remote-method="(query)=>{searchBranch(targetIndex,repoIndex,query)}"
-                    @clear="searchBranch(targetIndex,repoIndex,'')"
+                    :remote-method="(query)=>{searchBranch(targetIndex,repoIndex,query,repo)}"
+                    @clear="searchBranch(targetIndex,repoIndex,'',repo)"
                     allow-create
                     :loading="codeInfo[targetIndex][repoIndex].loading.branch"
                     clearable
@@ -736,7 +736,7 @@ export default {
         this.getRepoNameById(targetIndex, repoIndex, id, repo_owner, query)
       }
     },
-    searchBranch (targetIndex, repoIndex, query) {
+    searchBranch (targetIndex, repoIndex, query, repo) {
       const id = this.targets[targetIndex].repos[repoIndex].codehost_id
       const repoOwner = this.targets[targetIndex].repos[repoIndex].repo_owner
       const repoName = this.targets[targetIndex].repos[repoIndex].repo_name
@@ -750,7 +750,8 @@ export default {
           id,
           repoOwner,
           repoName,
-          query
+          query,
+          repo
         )
       } else {
         const items = this.$utils.filterObjectArrayByKey(
