@@ -8,7 +8,7 @@
         <el-col :span="12">通知事件</el-col>
         <el-col :span="4"></el-col>
       </el-row>
-      <el-row :gutter="20" class="content" v-for="(item,index) in config.notify_ctls" :key="index">
+      <el-row :gutter="20" class="content mg-t8" v-for="(item,index) in config.notify_ctls" :key="index">
         <el-col :span="4">
           <el-switch v-model="item.enabled" active-color="#13ce66"></el-switch>
         </el-col>

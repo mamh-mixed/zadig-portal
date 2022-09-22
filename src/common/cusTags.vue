@@ -10,7 +10,7 @@
           :class="{ current: index === currentTag }"
           @click="toggleTag(index, value)"
         >{{ value }}</span>
-        <span class="cut-tag" style="width: 8px;" v-if="values.length >2">...</span>
+        <span class="cut-tag" v-if="values.length >2">...</span>
       </div>
     </el-tooltip>
   </div>

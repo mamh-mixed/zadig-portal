@@ -169,13 +169,11 @@ export default {
           },
           is_offical: true
         },
-        test: {
+        'zadig-test': {
           name: 'default',
-          type: 'test',
+          type: 'zadig-test',
           spec: {
-            timeout: '60',
-            source: 'runtime',
-            targets: []
+            test_modules: []
           }
         }
       },

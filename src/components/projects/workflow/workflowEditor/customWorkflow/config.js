@@ -78,8 +78,8 @@ const jobTypeList = [
   },
   {
     label: '测试',
-    name: 'test',
-    type: 'test',
+    name: 'zadig-test',
+    type: 'zadig-test',
     is_offical: true,
     description: '可直接引用「项目」-「测试」模块中的测试配置'
   }
@@ -114,7 +114,7 @@ const jobType = {
   freestyle: 'freestyle',
   plugin: 'plugin',
   JobK8sDeploy: 'custom-deploy',
-  JobTest: 'test'
+  JobTest: 'zadig-test'
 
 }
 const editorOptions = {

@@ -534,6 +534,7 @@ export default {
                 })
               }
             })
+            delete job.pickedTargets
           }
           if (job.type === 'freestyle') {
             job.spec.steps.forEach(step => {

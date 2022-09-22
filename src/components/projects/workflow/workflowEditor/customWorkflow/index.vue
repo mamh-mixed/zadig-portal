@@ -130,7 +130,7 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-             <JobTest
+            <JobTest
               :projectName="projectName"
               v-if="job.type === jobType.JobTest"
               :job="job"
@@ -510,9 +510,21 @@ export default {
               }
             })
           }
+          if (job.type === 'zadig-test') {
+            if (job.spec && job.spec.test_modules) {
+              job.spec.test_modules.forEach(service => {
+                if (service.envs) {
+                  service.envs.forEach(item => {
+                    if (item.command === 'fixed') {
+                      item.value = '<+fixed>' + item.value
+                    }
+                  })
+                }
+              })
+            }
+          }
         })
       })
-
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
@@ -628,6 +640,21 @@ export default {
                   item.command = 'other'
                 }
               })
+            }
+            if (job.type === 'zadig-test') {
+              if (job.spec && job.spec.test_modules) {
+                job.spec.test_modules.forEach(service => {
+                  service.envs.forEach(item => {
+                    if (item.value.includes('<+fixed>')) {
+                      item.command = 'fixed'
+                      item.value = item.value.replaceAll('<+fixed>', '')
+                    }
+                    if (item.value.includes('{{')) {
+                      item.command = 'other'
+                    }
+                  })
+                })
+              }
             }
           })
         })
@@ -778,6 +805,21 @@ export default {
       } else if (this.job.type === jobType.JobK8sDeploy) {
         this.$refs.JobK8sDeploy.validate().then(valid => {
           const curJob = this.$refs.JobK8sDeploy.getData()
+          if (valid) {
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              curJob
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
+          }
+        })
+      } else if (this.job.type === jobType.JobTest) {
+        this.$refs.JobTest.validate().then(valid => {
+          const curJob = this.$refs.JobTest.getData()
           if (valid) {
             this.$set(
               this.payload.stages[this.curStageIndex].jobs,
