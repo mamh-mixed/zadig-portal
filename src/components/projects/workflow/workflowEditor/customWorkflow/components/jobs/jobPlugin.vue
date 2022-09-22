@@ -22,11 +22,11 @@
           </el-table-column>
           <el-table-column label="值">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
+              <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'&&scope.row.command !== 'other'" size="small" style="width: 220px;">
                 <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
               </el-select>
               <el-input
-                v-if="scope.row.type === 'text'"
+                v-if="scope.row.type === 'text'&&scope.row.command !== 'other'"
                 v-model="scope.row.value"
                 size="small"
                 type="textarea"
@@ -34,7 +34,7 @@
                 style="width: 220px;"
               ></el-input>
               <el-input
-                v-if="scope.row.type === 'string'"
+                v-if="scope.row.type === 'string'&&scope.row.command !== 'other'"
                 class="password"
                 v-model="scope.row.value"
                 size="small"
@@ -57,7 +57,7 @@
           </el-table-column>
           <el-table-column label="敏感信息">
             <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.is_credential" :disabled="scope.row.type === 'text'"></el-checkbox>
+              <el-checkbox v-model="scope.row.is_credential" :disabled="scope.row.type === 'text'||scope.row.type === 'choice'"></el-checkbox>
             </template>
           </el-table-column>
         </el-table>
