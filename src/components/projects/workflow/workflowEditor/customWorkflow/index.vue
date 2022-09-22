@@ -513,8 +513,9 @@ export default {
           if (job.type === 'zadig-test') {
             if (job.spec && job.spec.test_modules) {
               job.spec.test_modules.forEach(service => {
-                if (service.envs) {
-                  service.envs.forEach(item => {
+                if (service.key_vals) {
+                  service.key_vals.forEach(item => {
+                    console.log(item)
                     if (item.command === 'fixed') {
                       item.value = '<+fixed>' + item.value
                     }
@@ -644,7 +645,7 @@ export default {
             if (job.type === 'zadig-test') {
               if (job.spec && job.spec.test_modules) {
                 job.spec.test_modules.forEach(service => {
-                  service.envs.forEach(item => {
+                  service.key_vals.forEach(item => {
                     if (item.value.includes('<+fixed>')) {
                       item.command = 'fixed'
                       item.value = item.value.replaceAll('<+fixed>', '')

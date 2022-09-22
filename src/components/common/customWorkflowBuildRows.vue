@@ -26,7 +26,7 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="service_module" label="服务" width="100px"></el-table-column>
+      <el-table-column prop="service_module" label="服务" width="100px" v-if="type!=='zadig-test'"></el-table-column>
       <el-table-column label="代码库">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.repos" class="build-row" :key="build.code_host_id">
@@ -124,6 +124,10 @@ export default {
     pickedTargets: {
       type: Array,
       required: true
+    },
+    type: {
+      type: String,
+      default: ''
     }
   },
   components: {
