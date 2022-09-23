@@ -41,21 +41,15 @@
             <div class="item-title">JUnit 测试报告</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc">
-              <el-link
-                style="font-size: 14px; vertical-align: baseline;"
-                type="primary"
-                :href="`https://www.baidu.com/s?wd=%E4%B8%AD%E5%9B%BD%E5%86%9C%E6%B0%91%E4%B8%B0%E6%94%B6%E8%8A%82&sa=fyb_n_homepage&rsv_dl=fyb_n_homepage&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1`"
-                :underline="false"
-                target="_blank"
-              >查看</el-link>
+            <span class="item-desc" v-if="jobInfo.spec.testingv2SubTask.report_ready === true">
+              <router-link class="show-test-result" :to="getTestReport(jobInfo.spec.testingv2SubTask, jobInfo.spec._target)">查看</router-link>
             </span>
           </el-col>
           <el-col :span="4">
             <div class="item-title">文件导出</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc">
+            <span class="item-desc" v-if="jobInfo.spec.testingv2SubTask.job_ctx.is_has_artifact">
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
                 type="primary"
@@ -227,6 +221,13 @@ export default {
     },
     closeConsole () {
       this.isShowConsoleFooter = false
+    },
+    getTestReport (testSubTask, serviceName) {
+      const projectName = this.projectName
+      const test_job_name =
+        this.workflowName + '-' + this.taskID + '-' + testSubTask.test_name
+      const tail = `?is_workflow=1&service_name=${serviceName}&test_type=${testSubTask.job_ctx.test_type}`
+      return `/v1/${this.basePath}/detail/${projectName}/test/testcase/function/${this.workflowName}/${this.taskID}/${test_job_name}${tail}`
     }
   },
   watch: {
