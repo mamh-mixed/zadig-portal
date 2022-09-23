@@ -20,7 +20,7 @@
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal" v-show="activeName === 'ui'">
+      <Multipane layout="horizontal"  style="height: 100%;" v-show="activeName === 'ui'">
         <div class="scale">
           <el-tooltip class="item" effect="dark" content="缩小" placement="top">
             <span class="icon el-icon-minus" @click="scale('narrow')"></span>
@@ -58,7 +58,7 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{minHeight:'500px'}" v-if="isShowFooter">
+        <footer :style="{minHeight:'70%'}" v-if="isShowFooter">
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
@@ -285,6 +285,7 @@ export default {
         project: '',
         description: '',
         multi_run: false,
+        notify_ctls: [],
         stages: [],
         params: []
       },
@@ -1128,7 +1129,7 @@ export default {
       }
 
       .main {
-        max-height: 400px;
+        max-height: 80%;
         padding: 0 24px;
         overflow-y: auto;
       }

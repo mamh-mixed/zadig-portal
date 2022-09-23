@@ -89,6 +89,7 @@ export default {
     submit () {
       this.$refs.notifyOperate.validate().then(res => {
         const data = this.$refs.notifyOperate.getData()
+        data.enabled = true
         if (this.operateType === 'add') {
           this.config.notify_ctls.push(data)
         } else {

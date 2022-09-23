@@ -38,16 +38,48 @@
         </el-row>
         <el-row :gutter="0" class="item">
           <el-col :span="4">
-            <div class="item-title">测试报告</div>
+            <div class="item-title">JUnit 测试报告</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc">查看</span>
+            <span class="item-desc">
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://www.baidu.com/s?wd=%E4%B8%AD%E5%9B%BD%E5%86%9C%E6%B0%91%E4%B8%B0%E6%94%B6%E8%8A%82&sa=fyb_n_homepage&rsv_dl=fyb_n_homepage&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1`"
+                :underline="false"
+                target="_blank"
+              >查看</el-link>
+            </span>
           </el-col>
           <el-col :span="4">
             <div class="item-title">文件导出</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc">下载</span>
+            <span class="item-desc">
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :underline="false"
+                target="_blank"
+                @click="artifactModalVisible=true"
+              >下载</el-link>
+            </span>
+          </el-col>
+        </el-row>
+        <el-row :gutter="0" class="item">
+          <el-col :span="4">
+            <div class="item-title">Html 测试报告</div>
+          </el-col>
+          <el-col :span="8">
+            <span class="item-desc">
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://www.baidu.com/s?wd=%E4%B8%AD%E5%9B%BD%E5%86%9C%E6%B0%91%E4%B8%B0%E6%94%B6%E8%8A%82&sa=fyb_n_homepage&rsv_dl=fyb_n_homepage&from=super&cl=3&tn=baidutop10&fr=top1000&rsv_idx=2&hisfilter=1`"
+                :underline="false"
+                target="_blank"
+              >查看</el-link>
+            </span>
           </el-col>
         </el-row>
       </section>
@@ -55,6 +87,9 @@
         <XtermLog :id="jobInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="jobInfo.name" />
       </section>
     </main>
+    <el-dialog :visible.sync="artifactModalVisible" width="60%" title="Artifact 文件导出" class="downloadArtifact-dialog">
+      <ArtifactDownload ref="downloadArtifact" :workflowName="workflowName" :taskId="taskId" :showArtifact="artifactModalVisible" />
+    </el-dialog>
   </div>
 </template>
 
@@ -62,6 +97,7 @@
 import RepoJump from '@/components/projects/workflow/common/repoJump.vue'
 import mixin from '@/mixin/killSSELogMixin'
 import { getHistoryLogsAPI } from '@api'
+import ArtifactDownload from '@/components/common/artifactDownload.vue'
 
 export default {
   data () {
@@ -70,7 +106,8 @@ export default {
       wsBuildDataBuffer: [],
       buildLogStarted: true,
       window: window,
-      firstLoad: false
+      firstLoad: false,
+      artifactModalVisible: false
     }
   },
   props: {
@@ -97,7 +134,8 @@ export default {
   },
   mixins: [mixin],
   components: {
-    RepoJump
+    RepoJump,
+    ArtifactDownload
   },
   computed: {
     buildIsRunning () {
