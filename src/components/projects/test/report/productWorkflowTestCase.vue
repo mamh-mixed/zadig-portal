@@ -72,7 +72,6 @@ export default {
     getTestCases () {
       const { workflow_name, task_id, test_job_name } = this.$route.params
       const { service_name, test_type } = this.$route.query
-      console.log(service_name)
       if (service_name) {
         getTestReportAPI(
           this.projectName,
