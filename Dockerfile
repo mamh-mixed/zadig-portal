@@ -1,4 +1,4 @@
-FROM node:10.23.3-alpine3.11 as build
+FROM node:10.23.3 as build
 
 ARG VERSION
 ARG BUILD_TIME
