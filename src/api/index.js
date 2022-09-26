@@ -2221,8 +2221,8 @@ export function uploadUserNumberAPI (payload) {
   return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
 }
 
-export function getLicenseAPI () {
-  return http.get(`/api/plutus/signature`)
+export function getLicenseStatusAPI () {
+  return http.get(`/api/plutus/signature/status`)
 }
 // plugins
 export function getPluginsAPI () {

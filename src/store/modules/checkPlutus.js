@@ -22,9 +22,9 @@ const mutations = {
 }
 
 const actions = {
-  async checkPlutusStatus ({ commit, dispatch }) {
+  async checkPlutusStatus ({ commit, dispatch }, payload) {
     const res = await checkPlutusAPI().catch(err => { console.log(err) })
-    if (res) {
+    if (res && payload.isAdmin) {
       const res = await dispatch('getSignatureFeatures')
       router.addRoutes(plutusRoute(res))
     }
@@ -34,12 +34,12 @@ const actions = {
 
   async getSignatureFeatures ({ commit }) {
     const res = await getSignatureFeaturesAPI().catch(err => { console.log(err) })
+    const resObj = {}
     if (res) {
-      const resObj = {}
       res.features.forEach(feat => { resObj[feat] = true })
       commit(types.SET_SIGNATURE_FEATURE, resObj)
-      return resObj
     }
+    return resObj
   }
 }
 

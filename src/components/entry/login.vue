@@ -71,7 +71,7 @@
 <script>
 import moment from 'moment'
 import { isMobile } from 'mobile-device-detect'
-import { checkConnectorsAPI, checkRegistrationAPI, getLicenseAPI } from '@api'
+import { checkConnectorsAPI, checkRegistrationAPI, getEnterpriseInfoAPI, getLicenseStatusAPI } from '@api'
 import ForgetPassword from './components/forgetPassword.vue'
 import SignUp from './components/signUp.vue'
 import store from 'storejs'
@@ -89,7 +89,7 @@ export default {
       showRegistration: false,
       retrieveToken: '',
       loading: false,
-      license: null,
+      enterpriseInfo: null,
       loginForm: {
         account: '',
         password: ''
@@ -160,11 +160,17 @@ export default {
         }
       }
     },
-    async getLicense () {
-      this.license = await getLicenseAPI()
-      if (this.license && !this.license.token) {
-        // this.$router.replace('/license')
-        window.location.href = '/plutus-vendor/license'
+    async getLicenseStatus () {
+      const license = await getLicenseStatusAPI().catch(err => console.log(err))
+      if (license) {
+        if (!license.is_inited) {
+          // this.$router.replace('/license')
+          window.location.href = '/plutus-vendor/license'
+        } else {
+          getEnterpriseInfoAPI().then(res => {
+            this.enterpriseInfo = res
+          })
+        }
       }
     }
   },
@@ -176,15 +182,15 @@ export default {
       return this.copywriting.common
     },
     bigLogoUrl () {
-      if (this.license) {
-        return this.license.big_logo
+      if (this.enterpriseInfo) {
+        return this.enterpriseInfo.big_logo
       } else {
         return ''
       }
     }
   },
   async mounted () {
-    this.getLicense()
+    this.getLicenseStatus()
     const token = this.$route.query.token
     // 邮箱通过 Token 设置新密码接收参数
     const retrieveToken = this.$route.query.idtoken

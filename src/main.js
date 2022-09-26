@@ -86,8 +86,8 @@ router.beforeEach(async (to, from, next) => {
     document.title = 'Zadig'
   }
 
-  if (!store.state.checkPlutus.plutusChecked) {
-    await store.dispatch('checkPlutusStatus')
+  if (userName() && !store.state.checkPlutus.plutusChecked) {
+    await store.dispatch('checkPlutusStatus', { isAdmin: isSuperAdmin() })
     next(to)
   }
 

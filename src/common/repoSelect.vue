@@ -114,8 +114,8 @@
               loading-text="加载中，支持手动创建"
               filterable
               remote
-              :remote-method="(query)=>{searchBranch(repo_index,query)}"
-              @clear="searchBranch(repo_index,'')"
+              :remote-method="(query)=>{searchBranch(repo_index,query,repo)}"
+              @clear="searchBranch(repo_index,'',repo)"
               allow-create
               :loading="codeInfo[repo_index].loading.branch"
               clearable
@@ -441,7 +441,7 @@ export default {
       this.config.repos[index].repo_name = ''
       this.config.repos[index].branch = ''
     },
-    getBranchInfoById (index, id, repo_owner, repo_name, key = '', row) {
+    getBranchInfoById (index, id, repo_owner, repo_name, key = '', repo) {
       if (!repo_name) {
         return
       }
@@ -455,7 +455,7 @@ export default {
         repoId = repoItem.repo_id
         repoUUID = repoItem.repo_uuid
         namespace = repoItem.namespace
-        row.repo_namespace = namespace
+        repo.repo_namespace = namespace
       }
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
@@ -582,7 +582,7 @@ export default {
         this.getRepoNameById(index, id, repo_owner, query)
       }
     },
-    searchBranch (index, query) {
+    searchBranch (index, query, repo) {
       const id = this.config.repos[index].codehost_id
       const repoOwner = this.config.repos[index].repo_owner
       const repoName = this.config.repos[index].repo_name
@@ -590,7 +590,7 @@ export default {
         return item.id === id
       }).type
       if (codehostType === 'gitlab') {
-        this.getBranchInfoById(index, id, repoOwner, repoName, query)
+        this.getBranchInfoById(index, id, repoOwner, repoName, query, repo)
       } else {
         const items = this.$utils.filterObjectArrayByKey(
           'name',
