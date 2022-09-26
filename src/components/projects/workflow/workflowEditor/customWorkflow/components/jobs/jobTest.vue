@@ -13,7 +13,7 @@
       <div v-for="(item,index) in job.spec.test_modules" :key="index">
         <el-row :gutter="24" style="line-height: 30px;">
           <el-col :span="6">
-            <el-form-item prop="name" label-width="0" >
+            <el-form-item prop="name" label-width="0">
               <el-select size="small" v-model="item.name" filterable>
                 <el-option v-for="(test,index) in testList" :key="index" :value="test.name" :label="test.name">{{test.name}}</el-option>
               </el-select>
@@ -75,7 +75,6 @@
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            {{scope.row.command}}
             <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
@@ -219,18 +218,23 @@ export default {
         this.isShowBranchDialog = true
       }
       item.paraRepos = cloneDeep(item.repos)
-      const res = differenceWith(cloneDeep(item.repos) || [], item.paraRepos, (a, b) => {
-        return a.repo_name === b.repo_name
-      })
+      const res = differenceWith(
+        cloneDeep(item.repos) || [],
+        item.paraRepos,
+        (a, b) => {
+          return a.repo_name === b.repo_name
+        }
+      )
       this.curItem = cloneDeep(item)
       this.curItem.repos = res
     },
     saveCurSetting (type) {
-      this.testList.forEach((item, index) => {
+      this.job.spec.test_modules.forEach((item, index) => {
         if (item.name === this.curItem.name) {
           this.$set(this.job.spec.test_modules, index, this.curItem)
         }
       })
+      console.log(this.job.spec.test_modules)
       if (type === 'var') {
         this.isShowVarDialog = false
       } else {
@@ -243,9 +247,11 @@ export default {
     getData () {
       this.job.spec.test_modules.forEach(item => {
         item.repos = item.paraRepos
-        delete item.paraRepos
+        // delete item.paraRepos
+        // delete item.curRepo
         item.project_name = item.product_name || ''
       })
+      console.log(this.job)
       return this.job
     }
   },
