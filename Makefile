@@ -11,7 +11,7 @@ VERSION ?= $(shell date +'%Y%m%d%H%M%S')
 VERSION := $(VERSION)
 
 prereq:
-	@docker buildx create --node=multiarch --use --platform=linux/amd64,linux/arm64
+	@docker buildx create --node=multiarch-frontend --use --platform=linux/amd64,linux/arm64
 
 all: prereq
 all:
