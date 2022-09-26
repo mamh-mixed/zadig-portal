@@ -7,8 +7,6 @@ ARG BRANCH
 ARG PR
 ARG TAG
 
-VOLUME ["/nodecache"]
-
 COPY zadig-portal zadig-portal
 
 #  install sed
@@ -26,7 +24,8 @@ RUN sed -i 's/${BRANCH}/'"$BRANCH"'/g' zadig-portal/config/prod.env.js
 RUN sed -i 's/${PR}/'"$PR"'/g' zadig-portal/config/prod.env.js
 RUN sed -i 's/${TAG}/'"$TAG"'/g' zadig-portal/config/prod.env.js
 
-RUN cd zadig-portal && yarn install --modules-folder=/nodecache && yarn run build
+RUN --mount=type=cache,id=nodebuild,target=/nodecache \
+    cd zadig-portal && yarn install --modules-folder=/nodecache && yarn run build
 
 FROM nginx:1.16.0
 
