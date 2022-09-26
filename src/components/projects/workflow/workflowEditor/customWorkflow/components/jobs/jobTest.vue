@@ -1,5 +1,5 @@
 <template>
-  <div class="job-test">{{curItem.key_vals}}
+  <div class="job-test">
     <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
@@ -74,7 +74,8 @@
               style="display: inline-block; width: 220px;"
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
-            </el-select>{{scope.row.command}}
+            </el-select>
+            {{scope.row.command}}
             <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
@@ -177,27 +178,6 @@ export default {
     delTest (index) {
       this.job.spec.test_modules.splice(index, 1)
     },
-    // setServiceBuilds () {
-    //   this.testList.forEach(item => {
-    //     const res = this.originServiceAndBuilds.find(
-    //       build => build.service_name === item.service_name
-    //     )
-    //     this.$set(item, 'module_builds', res.module_builds)
-
-    //     // set repos
-    //     const result = item.module_builds.find(
-    //       build => build.name === item.build_name
-    //     )
-    //     const originRepos = differenceWith(
-    //       result.repos || [],
-    //       item.repos,
-    //       (a, b) => {
-    //         return a.repo_name === b.repo_name
-    //       }
-    //     )
-    //     this.$set(item, 'originRepos', originRepos || [])
-    //   })
-    // },
     addRepo () {
       if (this.curItem.repos) {
         this.curItem.repos.push(this.curItem.curRepo)
@@ -257,23 +237,10 @@ export default {
       return this.$refs.ruleForm.validate()
     },
     getData () {
-      console.log(this.job)
+      this.job.spec.test_modules.forEach(item => {
+        item.project_name = item.product_name || ''
+      })
       return this.job
-      // this.testList.forEach(item => {
-      //   delete item.originRepos
-      //   delete item.module_builds
-      //   if (item.repos && item.repos.length > 0) {
-      //     item.repos.forEach(repo => {
-      //       delete repo.branches
-      //     })
-      //   }
-      // })
-      // return this.testList
-    }
-  },
-  watch: {
-    isShowFooter () {
-      // this.setServiceBuilds()
     }
   }
 }
