@@ -158,7 +158,6 @@ export default {
     }
   },
   created () {
-    // this.setServiceBuilds()
     this.getTestList()
   },
   methods: {
@@ -241,6 +240,20 @@ export default {
         item.project_name = item.product_name || ''
       })
       return this.job
+    }
+  },
+  watch: {
+    job: {
+      handler (val, oldVal) {
+        val.spec.test_modules.forEach(item => {
+          if (item.repos.length > 0) {
+            item.repos.forEach(repo => {
+              this.getBranch(repo)
+            })
+          }
+        })
+      },
+      immediate: true
     }
   }
 }

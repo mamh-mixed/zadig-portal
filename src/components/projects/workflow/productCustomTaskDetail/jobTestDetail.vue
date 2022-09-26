@@ -22,18 +22,18 @@
         <div class="error-wrapper">
           <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
-        <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
+        <el-row class="item" :gutter="0" :key="index">
           <el-col :span="4">
             <div class="item-title">项目名称</div>
           </el-col>
           <el-col :span="8">
-            <div class="item-desc">{{build.project_name}}</div>
+            <div class="item-desc">{{jobInfo.spec.project_name}}</div>
           </el-col>
           <el-col :span="4">
             <div class="item-title">测试名称</div>
           </el-col>
           <el-col :span="8">
-            <div class="item-desc">{{build.test_name}}</div>
+            <div class="item-desc">{{jobInfo.spec.test_name}}</div>
           </el-col>
         </el-row>
         <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
@@ -336,6 +336,10 @@ export default {
       &-desc {
         color: #8d9199;
       }
+    }
+
+    .el-col {
+      border: 1px solid transparent;
     }
   }
 }
