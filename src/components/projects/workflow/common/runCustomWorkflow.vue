@@ -311,11 +311,11 @@ export default {
                 //   key.value = this.$utils.aesDecrypt(key.value)
                 // }
               })
-              // 如果只有一个组件 默认选上
-              if (job.spec.service_and_builds.length === 1) {
-                job.pickedTargets = job.spec.service_and_builds
-              }
             })
+            // 如果只有一个组件 默认选上
+            if (job.spec.service_and_builds.length === 1) {
+              job.pickedTargets = job.spec.service_and_builds
+            }
           }
           if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
             job.pickedTargets = job.spec.service_and_images
