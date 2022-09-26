@@ -95,6 +95,7 @@
                       v-model.number="build[build.prNumberPropName]"
                       class="short-input"
                       size="small"
+                      style="width: 220px;"
                       placeholder="请填写 PR 号"
                       :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                     ></el-input>

@@ -85,7 +85,7 @@
       </span>
     </el-dialog>
     <el-dialog :title="`${curItem.name} 分支配置`" :visible.sync="isShowBranchDialog" :append-to-body="true" width="40%">
-      <el-table :data="curItem.paraRepos" size="small">
+      <el-table :data="curItem.repos" size="small">
         <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
         <el-table-column prop="branch" label="默认分支">
           <template slot-scope="scope">
@@ -102,9 +102,9 @@
       </el-table>
       <div class="mg-t16">
         <el-select v-model="curItem.curRepo" value-key="repo_name" filterable size="small" placeholder="请选择代码库">
-          <el-option v-for="repo of curItem.repos" :key="repo.repo_name" :label="repo.repo_name" :value="repo"></el-option>
+          <el-option v-for="repo of curItem.originRepos" :key="repo.repo_name" :label="repo.repo_name" :value="repo"></el-option>
         </el-select>
-        <el-button @click="addRepo" :disabled="curItem.repos && curItem.repos.length === 0" type="primary" size="mini" plain>添加</el-button>
+        <el-button @click="addRepo" :disabled="curItem.originRepos && curItem.originRepos.length === 0" type="primary" size="mini" plain>添加</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowBranchDialog = false" size="small">取 消</el-button>
@@ -177,22 +177,22 @@ export default {
       this.job.spec.test_modules.splice(index, 1)
     },
     addRepo () {
-      if (this.curItem.paraRepos) {
-        this.curItem.paraRepos.push(this.curItem.curRepo)
+      if (this.curItem.repos) {
+        this.curItem.repos.push(this.curItem.curRepo)
       } else {
-        this.$set(this.curItem, 'paraRepos', [this.curItem.curRepo])
+        this.$set(this.curItem, 'repos', [this.curItem.curRepo])
       }
-      this.curItem.repos = this.curItem.repos.filter(
+      this.curItem.originRepos = this.curItem.repos.filter(
         repo => repo.repo_name !== this.curItem.curRepo.repo_name
       )
       this.getBranch(this.curItem.curRepo)
       this.curItem.curRepo = {}
     },
     delRepo (row) {
-      this.curItem.paraRepos = this.curItem.paraRepos.filter(
+      this.curItem.repos = this.curItem.repos.filter(
         repo => repo.repo_name !== row.repo_name
       )
-      this.curItem.repos.push(row)
+      this.curItem.originRepos.push(row)
     },
     async getBranch (item) {
       const repo = [
@@ -217,16 +217,16 @@ export default {
       } else {
         this.isShowBranchDialog = true
       }
-      item.paraRepos = cloneDeep(item.repos)
+      // item.paraRepos = cloneDeep(item.repos)
       const res = differenceWith(
-        cloneDeep(item.repos) || [],
-        item.paraRepos,
+        item.repos,
+        this.curItem.originRepos,
         (a, b) => {
           return a.repo_name === b.repo_name
         }
       )
       this.curItem = cloneDeep(item)
-      this.curItem.repos = res
+      this.curItem.originRepos = res
     },
     saveCurSetting (type) {
       this.job.spec.test_modules.forEach((item, index) => {
@@ -234,7 +234,6 @@ export default {
           this.$set(this.job.spec.test_modules, index, this.curItem)
         }
       })
-      console.log(this.job.spec.test_modules)
       if (type === 'var') {
         this.isShowVarDialog = false
       } else {
@@ -246,12 +245,11 @@ export default {
     },
     getData () {
       this.job.spec.test_modules.forEach(item => {
-        item.repos = item.paraRepos
+        // item.repos = item.paraRepos
         // delete item.paraRepos
         // delete item.curRepo
         item.project_name = item.product_name || ''
       })
-      console.log(this.job)
       return this.job
     }
   },
