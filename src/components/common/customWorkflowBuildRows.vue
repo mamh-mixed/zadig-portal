@@ -1,7 +1,7 @@
 <template>
   <div class="workflow-build-rows">
-    <el-table :data="pickedTargets" v-if="pickedTargets.length > 0" empty-text="无">
-      <el-table-column type="expand"  width="50px">
+    <el-table :data="info" v-if="info.length > 0" empty-text="无">
+      <el-table-column type="expand" width="50px">
         <template slot-scope="props">
           <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
             <el-table-column label="键">
@@ -133,6 +133,13 @@ export default {
   components: {
     DeployIcons
   },
+  computed: {
+    info () {
+      return this.pickedTargets.filter(item => {
+        return item.repos.length > 0
+      })
+    }
+  },
   data () {
     return {}
   },
@@ -217,7 +224,7 @@ export default {
     }
   },
   watch: {
-    pickedTargets: {
+    info: {
       handler (value) {
         value.forEach(item => {
           if (item.repos && item.repos.length > 0) {
@@ -226,7 +233,8 @@ export default {
             })
           }
         })
-      }
+      },
+      immediate: true
     }
   }
 }
