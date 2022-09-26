@@ -169,6 +169,8 @@ export default {
       let curService
       this.test.forEach(test => {
         curService = this.testList.find(item => item.name === test)
+        curService.originRepos = curService.repos
+        curService.repos = []
         val.push(cloneDeep(curService))
       })
       this.test = []
@@ -217,16 +219,7 @@ export default {
       } else {
         this.isShowBranchDialog = true
       }
-      // item.paraRepos = cloneDeep(item.repos)
-      const res = differenceWith(
-        item.repos,
-        this.curItem.originRepos,
-        (a, b) => {
-          return a.repo_name === b.repo_name
-        }
-      )
       this.curItem = cloneDeep(item)
-      this.curItem.originRepos = res
     },
     saveCurSetting (type) {
       this.job.spec.test_modules.forEach((item, index) => {
@@ -245,9 +238,7 @@ export default {
     },
     getData () {
       this.job.spec.test_modules.forEach(item => {
-        // item.repos = item.paraRepos
-        // delete item.paraRepos
-        // delete item.curRepo
+        delete item.curRepo
         item.project_name = item.product_name || ''
       })
       return this.job

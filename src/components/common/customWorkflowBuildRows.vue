@@ -70,6 +70,7 @@
                     placeholder="请选择 PR"
                     filterable
                     clearable
+                    style="width: 220px;"
                     :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                   >
                     <el-tooltip
