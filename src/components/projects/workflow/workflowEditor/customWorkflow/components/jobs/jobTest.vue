@@ -20,8 +20,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
-            <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
+            <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
+            <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
           </el-col>
           <el-col :span="4">
             <el-button type="danger" size="mini" plain @click="delTest(index)">删除</el-button>
@@ -147,6 +147,7 @@ export default {
       isShowBranchDialog: false,
       isShowVarDialog: false,
       curItem: {},
+      curIndex: 0,
       testList: [],
       test: ''
     }
@@ -184,7 +185,7 @@ export default {
       } else {
         this.$set(this.curItem, 'repos', [this.curItem.curRepo])
       }
-      this.curItem.originRepos = this.curItem.repos.filter(
+      this.curItem.originRepos = this.curItem.originRepos.filter(
         repo => repo.repo_name !== this.curItem.curRepo.repo_name
       )
       this.getBranch(this.curItem.curRepo)
@@ -213,17 +214,18 @@ export default {
         this.$set(item, 'branches', res[0].branches)
       }
     },
-    handleVarBranchChange (type, item) {
+    handleVarBranchChange (type, item, index) {
       if (type === 'var') {
         this.isShowVarDialog = true
       } else {
         this.isShowBranchDialog = true
       }
+      this.curIndex = index
       this.curItem = cloneDeep(item)
     },
     saveCurSetting (type) {
       this.job.spec.test_modules.forEach((item, index) => {
-        if (item.name === this.curItem.name) {
+        if (index === this.curIndex) {
           this.$set(this.job.spec.test_modules, index, this.curItem)
         }
       })
