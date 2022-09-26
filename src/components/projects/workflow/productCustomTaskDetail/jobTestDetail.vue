@@ -24,6 +24,20 @@
         </div>
         <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
+            <div class="item-title">项目名称</div>
+          </el-col>
+          <el-col :span="8">
+            <div class="item-desc">{{build.project_name}}</div>
+          </el-col>
+          <el-col :span="4">
+            <div class="item-title">测试名称</div>
+          </el-col>
+          <el-col :span="8">
+            <div class="item-desc">{{build.test_name}}</div>
+          </el-col>
+        </el-row>
+        <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
+          <el-col :span="4">
             <div class="item-title">代码库({{build.source}})</div>
           </el-col>
           <el-col :span="8">
@@ -66,7 +80,13 @@
           </el-col>
           <el-col :span="8">
             <span class="item-desc" v-if="jobInfo.spec.html_report">
-              <router-link class="show-test-result" :to="getTestReport('html')">查看</router-link>
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :underline="false"
+                target="_blank"
+                @click="getTestReport('html')"
+              >查看</el-link>
             </span>
           </el-col>
         </el-row>
@@ -91,10 +111,7 @@
 <script>
 import RepoJump from '@/components/projects/workflow/common/repoJump.vue'
 import mixin from '@/mixin/killSSELogMixin'
-import {
-  getHistoryLogsAPI,
-  getTestHtmlReportAPI
-} from '@api'
+import { getHistoryLogsAPI, getTestHtmlReportAPI } from '@api'
 import ArtifactDownload from '@/components/common/artifactDownload.vue'
 
 export default {
@@ -229,7 +246,10 @@ export default {
     getTestReport (type) {
       const tail = `?is_workflow=1&service_name=&test_type=function`
       if (type === 'html') {
-        window.open(`/api/aslan/testing/report/workflowv4/${this.workflowName}/id/${this.taskId}/job/${this.jobInfo.name}`)
+        window.open(
+          `/api/aslan/testing/report/workflowv4/${this.workflowName}/id/${this.taskId}/job/${this.jobInfo.name}`
+        )
+
         // return `/api/aslan/testing/report/workflowv4/${this.workflowName}/id/${this.taskId}/job/${this.jobInfo.name}`
       } else {
         return `/v1/projects/detail/${this.projectName}/pipelines/multi/testcase/${this.workflowName}/${this.taskId}/test/${this.jobInfo.name}${tail}`
