@@ -516,7 +516,6 @@ export default {
               job.spec.test_modules.forEach(service => {
                 if (service.key_vals) {
                   service.key_vals.forEach(item => {
-                    console.log(item)
                     if (item.command === 'fixed') {
                       item.value = '<+fixed>' + item.value
                     }

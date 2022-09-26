@@ -220,6 +220,18 @@ export default {
       } else {
         this.isShowBranchDialog = true
       }
+      const res = this.testList.filter(test => test.name === item.name)
+      if (!item.originRepos) {
+        item.originRepos = res[0].repos
+      } else {
+        item.originRepos = differenceWith(
+          item.originRepos || [],
+          item.repos,
+          (a, b) => {
+            return a.repo_name === b.repo_name
+          }
+        )
+      }
       this.curIndex = index
       this.curItem = cloneDeep(item)
     },
