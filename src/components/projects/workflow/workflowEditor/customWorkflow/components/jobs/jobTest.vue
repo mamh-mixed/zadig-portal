@@ -13,7 +13,7 @@
       <div v-for="(item,index) in job.spec.test_modules" :key="index">
         <el-row :gutter="24" style="line-height: 30px;">
           <el-col :span="6">
-            <el-form-item prop="name" label-width="0" :rules="{required: true, message: '测试不能为空', trigger: ['blur','change']}">
+            <el-form-item prop="name" label-width="0" >
               <el-select size="small" v-model="item.name" filterable>
                 <el-option v-for="(test,index) in testList" :key="index" :value="test.name" :label="test.name">{{test.name}}</el-option>
               </el-select>

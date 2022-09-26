@@ -20,7 +20,7 @@
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal"  style="height: 100%;" v-show="activeName === 'ui'">
+      <Multipane layout="horizontal" style="height: 100%;" v-show="activeName === 'ui'">
         <div class="scale">
           <el-tooltip class="item" effect="dark" content="缩小" placement="top">
             <span class="icon el-icon-minus" @click="scale('narrow')"></span>
@@ -820,6 +820,10 @@ export default {
           }
         })
       } else if (this.job.type === jobType.JobTest) {
+        if (this.$refs.JobTest.getData().spec.test_modules.length === 0) {
+          this.$message.error('请至少选择一个测试')
+          return
+        }
         this.$refs.JobTest.validate().then(valid => {
           const curJob = this.$refs.JobTest.getData()
           if (valid) {

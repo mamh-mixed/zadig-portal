@@ -111,7 +111,7 @@
 <script>
 import RepoJump from '@/components/projects/workflow/common/repoJump.vue'
 import mixin from '@/mixin/killSSELogMixin'
-import { getHistoryLogsAPI, getTestHtmlReportAPI } from '@api'
+import { getHistoryLogsAPI } from '@api'
 import ArtifactDownload from '@/components/common/artifactDownload.vue'
 
 export default {
