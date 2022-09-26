@@ -9,10 +9,6 @@ ARG TAG
 
 COPY zadig-portal zadig-portal
 
-#  install sed
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk update
-RUN apk add sed
-
 # install yarn
 RUN npm config --global set registry https://registry.npm.taobao.org
 RUN npm install yarn
