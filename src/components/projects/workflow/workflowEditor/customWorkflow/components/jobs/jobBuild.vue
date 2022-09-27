@@ -212,7 +212,7 @@ export default {
         // set repos
         const result = item.module_builds.find(
           build => build.name === item.build_name
-        )
+        ) || []
         const originRepos = differenceWith(
           result.repos || [],
           item.repos,
