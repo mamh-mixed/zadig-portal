@@ -10,7 +10,7 @@ IMAGE_REPOSITORY = koderover.tencentcloudcr.com/koderover-public
 VERSION ?= $(shell date +'%Y%m%d%H%M%S')
 VERSION := $(VERSION)
 BUILD_TIME ?= $(date +%s)
-BUILD_TIME := $(VERSION)
+BUILD_TIME := $(BUILD_TIME)
 IMAGE ?= ${IMAGE_REPOSITORY}/zadig-portal:${VERSION}
 
 prereq:
