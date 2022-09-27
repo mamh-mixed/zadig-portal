@@ -12,18 +12,15 @@ VERSION := $(VERSION)
 
 prereq:
 	@docker buildx create --node=multiarch-frontend --use --platform=linux/amd64,linux/arm64
+	@sed -i 's/${VERSION}/'"$VERSION"'/g' config/prod.env.js
+	@sed -i 's/${BUILD_TIME}/'"$BUILD_TIME"'/g' config/prod.env.js
+	@sed -i 's/${COMMIT_ID}/'"$zadig_portal_COMMIT_ID"'/g' config/prod.env.js
+	@sed -i 's/${BRANCH}/'"$zadig_portal_BRANCH"'/g' config/prod.env.js
+	@sed -i 's/${PR}/'"$zadig_portal_PR"'/g' config/prod.env.js
+	@sed -i 's/${TAG}/'"$zadig_portal_TAG"'/g' config/prod.env.js
+	@cat config/prod.env.js
 
 all: prereq
-all:
-	@if [ -f "config/prod.env.js" ]; then \
-	sed -i 's/${VERSION}/'"$VERSION"'/g' config/prod.env.js \
-	sed -i 's/${BUILD_TIME}/'"$BUILD_TIME"'/g' config/prod.env.js \
-	sed -i 's/${COMMIT_ID}/'"$zadig_portal_COMMIT_ID"'/g' config/prod.env.js \
-	sed -i 's/${BRANCH}/'"$zadig_portal_BRANCH"'/g' config/prod.env.js \
-	sed -i 's/${PR}/'"$zadig_portal_PR"'/g' config/prod.env.js \
-	sed -i 's/${TAG}/'"$zadig_portal_TAG"'/g' config/prod.env.js \
-	cat config/prod.env.js \
-	fi
 all:
 	@yarn install --modules-folder=/workspace/nodecache
 	@yarn run build
