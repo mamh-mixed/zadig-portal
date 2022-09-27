@@ -75,7 +75,7 @@
                 </el-select>
               </el-form-item>
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" />
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" :elSelectWidth="'140px'" />
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
@@ -190,7 +190,7 @@
             </div>
             <div v-if="job.type === 'zadig-test'">
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-test"></CustomWorkflowBuildRows>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" :elSelectWidth="'140px'" type="zadig-test"/>
               </div>
             </div>
           </el-collapse-item>
@@ -236,14 +236,17 @@ export default {
   props: {
     workflowName: {
       type: String,
+      required: true,
       default: ''
     },
     projectName: {
       type: String,
+      required: true,
       default: ''
     },
     cloneWorkflow: {
       type: Object,
+      required: true,
       default: () => ({})
     },
     webhookSelectedRepo: {

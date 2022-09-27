@@ -1,6 +1,6 @@
 <template>
   <div class="webhook">
-    <el-button type="primary" size="mini" icon="el-icon-plus" plain @click="addWebhook">添加</el-button>
+    <el-button type="primary" size="mini" icon="el-icon-plus" plain @click="triggerTypeDialogVisible = true">添加</el-button>
     <div v-if="webhooks.length > 0">
       <el-row :gutter="20" class="webhook-row" v-for="(item,index) in webhooks" :key="index">
         <el-col :span="2">
@@ -69,12 +69,70 @@
           </div>
         </el-col>
       </el-row>
+
+      <el-row :gutter="20" class="webhook-row" v-for="(item,index) in timers" :key="item.id">
+        <el-col :span="2">
+          <div class="content">
+            <el-switch v-model="item.enabled" active-color="#13ce66" @change="changeTimerStatus(item)"></el-switch>
+          </div>
+        </el-col>
+        <el-col :span="1">
+          <div class="content">
+            <span class="el-icon-time"></span>
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="content">
+            <div class="cate">
+              <span class="title">触发方式：</span>
+              <span v-if="item.job_type === 'timing'" class="desc">定时循环</span>
+              <span v-else-if="item.job_type === 'gap'" class="desc">间隔循环</span>
+              <span v-else-if="item.job_type === 'crontab'" class="desc">Cron 表达式</span>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="9">
+          <div class="content">
+            <div class="cate">
+              <span class="title">时间配置：</span>
+              <span v-if="item.job_type === 'timing'" class="desc">{{ translateDate(item.frequency) }}&nbsp;&nbsp;{{ item.time }}</span>
+              <span
+                v-if="item.job_type === 'gap'"
+                class="desc"
+              >每&nbsp;&nbsp;{{ item.number }}&nbsp;&nbsp;{{ item.frequency === 'hours' ? '小时' : '分钟'}}</span>
+              <span v-if="item.job_type === 'crontab'" class="desc">{{ item.cron }}</span>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="4"></el-col>
+        <el-col :span="2">
+          <div class="content">
+            <div class="operation">
+              <span class="el-icon-edit" @click="editTimer(item)"></span>
+              <span class="el-icon-delete" @click="removeTimer(index,item.id)"></span>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
 
-    <el-dialog :visible.sync="dialogVisible" :title="editMode?'编辑触发器':'添加触发器'" width="700px" :close-on-click-modal="false" append-to-body>
-      <el-form ref="webhookForm" :model="currentWebhook" label-width="90px" :rules="rules">
+    <el-dialog
+      :visible.sync="webhookDialogVisible"
+      :title="webhookEditMode?'编辑触发器':'添加触发器'"
+      width="700px"
+      :close-on-click-modal="false"
+      append-to-body
+    >
+      <el-form ref="webhookForm" :model="currentWebhook" label-width="90px" :rules="webhookRules">
         <el-form-item label="名称" prop="name">
-          <el-input size="small" autofocus ref="webhookNamedRef" :disabled="editMode" v-model="currentWebhook.name" placeholder="请输入名称"></el-input>
+          <el-input
+            size="small"
+            autofocus
+            ref="webhookNamedRef"
+            :disabled="webhookEditMode"
+            v-model="currentWebhook.name"
+            placeholder="请输入名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input size="small" type="textarea" v-model="currentWebhook.description" placeholder="请输入描述"></el-input>
@@ -169,8 +227,122 @@
         />
       </div>
       <div slot="footer">
-        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="webhookDialogVisible = false" size="small">取 消</el-button>
         <el-button type="primary" @click="saveWebhook" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :title="timerEditMode?'修改定时器配置':'添加定时器'"
+      :visible.sync="timerDialogVisible"
+      width="700px"
+      :close-on-click-modal="false"
+      append-to-body
+    >
+      <el-form :model="currentTimer" ref="timerForm" :rules="timerRules" label-width="100px" label-position="left">
+        <el-form-item label="触发方式" prop="job_type">
+          <el-radio v-model="currentTimer.job_type" label="timing">定时循环</el-radio>
+          <el-radio v-model="currentTimer.job_type" label="gap">间隔循环</el-radio>
+          <el-radio v-model="currentTimer.job_type" label="crontab">Cron 表达式</el-radio>
+        </el-form-item>
+        <el-form-item label="时间配置">
+          <div v-if="currentTimer.job_type === 'timing'" class="inline-show">
+            <!--定时-->
+            <el-form-item prop="frequency">
+              <el-select v-model="currentTimer.frequency" size="small" style="width: 150px;" placeholder="请选择">
+                <el-option v-for="(item,index) in timerDateOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item prop="time">
+              <el-time-picker
+                v-model="currentTimer.time"
+                value-format="HH:mm"
+                format="HH:mm"
+                size="small"
+                style="width: 150px;"
+                placeholder="请选择时间"
+              ></el-time-picker>
+            </el-form-item>
+          </div>
+          <div v-else-if="currentTimer.job_type === 'gap'" class="inline-show">
+            <!--间隔-->
+            <el-form-item prop="number">
+              <el-input-number v-model="currentTimer.number" :min="1" size="small" style="width: 150px;"></el-input-number>
+            </el-form-item>
+            <el-form-item prop="frequency">
+              <el-select v-model="currentTimer.frequency" size="small" style="width: 150px;">
+                <el-option label="分钟" value="minutes"></el-option>
+                <el-option label="小时" value="hours"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div v-else-if="currentTimer.job_type === 'crontab'">
+            <!--Cron-->
+            <el-form-item prop="crontab.cron">
+              <el-input v-model="currentTimer.cron" size="small" style="width: 300px;" />
+            </el-form-item>
+          </div>
+        </el-form-item>
+      </el-form>
+      <div v-if="currentTimer.job_type === 'crontab'">
+        <div class="cron-title-show">Cron 表达式解析</div>
+        <el-table
+          :data="currentTimer.cron.trim().split(/\s+/)"
+          border
+          size="small"
+          class="cron-table-show"
+          :header-cell-style="()=>{return {background: '#dddddd'}}"
+          :cell-style="()=>{return {height:'30px'}}"
+        >
+          <el-table-column prop="min" label="分钟"></el-table-column>
+          <el-table-column prop="hour" label="小时"></el-table-column>
+          <el-table-column prop="date" label="日期"></el-table-column>
+          <el-table-column prop="month" label="月份"></el-table-column>
+          <el-table-column prop="week" label="星期"></el-table-column>
+        </el-table>
+      </div>
+      <div>
+        <span>工作流执行变量</span>
+        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
+      </div>
+      <div slot="footer">
+        <el-button @click="timerDialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveTimer" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      :visible.sync="triggerTypeDialogVisible"
+      title="添加触发器"
+      width="400px"
+      :close-on-click-modal="false"
+      custom-class="trigger-types-dialog"
+      append-to-body
+    >
+      <div class="trigger-types-container">
+        <span>选择触发器类型</span>
+        <div class="trigger-item" @click="triggerTypeDialogVisible = false;addWebhook()">
+          <div class="icon">
+            <span class="iconfont iconvery-master"></span>
+          </div>
+          <div class="detail">
+            <h4 class="trigger-title">Git 触发器</h4>
+            <span class="trigger-desc">代码变更触发</span>
+          </div>
+        </div>
+        <div class="trigger-item" @click="triggerTypeDialogVisible = false;addTimer()">
+          <div class="icon">
+            <span class="iconfont iconvery-time"></span>
+          </div>
+          <div class="detail">
+            <h4 class="trigger-title">定时器</h4>
+            <span class="trigger-desc">定时触发</span>
+          </div>
+        </div>
+      </div>
+      <div slot="footer">
+        <el-button @click="triggerTypeDialogVisible = false" size="small">取 消</el-button>
+        <!-- <el-button type="primary" @click="triggerTypeDialogVisible = false" size="small">确 定</el-button> -->
       </div>
     </el-dialog>
   </div>
@@ -185,7 +357,12 @@ import {
   getCustomWebhooksAPI,
   removeCustomWebhookAPI,
   updateCustomWebhookAPI,
-  getCustomWebhookPresetAPI
+  getCustomWebhookPresetAPI,
+  addCustomTimerAPI,
+  getCustomTimersAPI,
+  removeCustomTimerAPI,
+  updateCustomTimerAPI,
+  getCustomTimerPresetAPI
 } from '@api'
 const validateName = (rule, value, callback) => {
   if (!/^[a-zA-Z0-9]([a-zA-Z0-9_\-\.]*[a-zA-Z0-9])?$/.test(value)) {
@@ -201,6 +378,15 @@ const validateName = (rule, value, callback) => {
 const validateRepo = (rule, value, callback) => {
   if (Object.keys(value).length === 0) {
     callback(new Error('请选择代码库'))
+  } else {
+    callback()
+  }
+}
+const checkCron = (rule, value, callback) => {
+  if (value.trim().split(/\s+/).length !== 5) {
+    callback(new Error('请检查格式，仅支持 5 位！'))
+  } else if (!/^[0-9\s/\-\*\,]+$/.test(value)) {
+    callback(new Error('请检查格式，仅支持数字 * , - / '))
   } else {
     callback()
   }
@@ -231,13 +417,30 @@ const webhookInfo = {
   repo: {},
   workflow_arg: {}
 }
+
+const timerInfo = {
+  number: 1,
+  frequency: '',
+  time: '',
+  max_failures: 1,
+  job_type: 'timing',
+  cron: '******',
+  enabled: true,
+  workflow_v4_args: {}
+}
 export default {
   data () {
     return {
-      dialogVisible: false,
-      editMode: true,
+      triggerTypeDialogVisible: false,
+      webhookDialogVisible: false,
+      timerDialogVisible: false,
+      selectType: '',
+      webhookEditMode: true,
+      timerEditMode: true,
       webhooks: [],
+      timers: [],
       currentWebhook: cloneDeep(webhookInfo),
+      currentTimer: cloneDeep(timerInfo),
       webhookBranches: {},
       webhookRepos: [],
       triggerMethods: {
@@ -266,7 +469,7 @@ export default {
           }
         ]
       },
-      rules: {
+      webhookRules: {
         name: [{ trigger: 'change', required: true, validator: validateName }],
         repo: [{ trigger: 'change', required: true, validator: validateRepo }],
         'main_repo.branch': [
@@ -290,7 +493,26 @@ export default {
             trigger: ['blur', 'change']
           }
         ]
-      }
+      },
+      timerRules: {
+        job_type: [
+          { required: true, message: '请选择触发方式', trigger: 'blur' }
+        ],
+        frequency: [{ required: true, message: '请选择周期', trigger: 'blur' }],
+        time: [{ required: true, message: '请填选择时间', trigger: 'blur' }],
+        number: [{ required: true, message: '请填选择时间', trigger: 'blur' }],
+        cron: [{ required: true, validator: checkCron, trigger: 'blur' }]
+      },
+      timerDateOptions: [
+        { label: '每天', value: 'day' },
+        { label: '每周一', value: 'monday' },
+        { label: '每周二', value: 'tuesday' },
+        { label: '每周三', value: 'wednesday' },
+        { label: '每周四', value: 'thursday' },
+        { label: '每周五', value: 'friday' },
+        { label: '每周六', value: 'saturday' },
+        { label: '每周日', value: 'sunday' }
+      ]
     }
   },
   props: {
@@ -300,9 +522,8 @@ export default {
       default: () => ({})
     },
     isEdit: {
-      type: String,
-      required: true,
-      default: ''
+      type: Boolean,
+      required: true
     },
     isShowDrawer: {
       type: Boolean,
@@ -329,6 +550,14 @@ export default {
     }
   },
   methods: {
+    translateDate (day) {
+      const item = this.timerDateOptions.find(item => {
+        return item.value === day
+      })
+      if (item) {
+        return item.label
+      }
+    },
     validate () {
       return this.$refs.buildEnvRef.validate()
     },
@@ -362,23 +591,26 @@ export default {
           cloneDeep(preset.workflow_arg)
         )
         if (preset.repos && preset.repos.length > 0) {
-          this.webhookRepos = uniqBy(preset.repos.map(item => {
-            item.key = `${item.repo_owner}/${item.repo_name}`
-            delete item.branch
-            return item
-          }), 'key')
+          this.webhookRepos = uniqBy(
+            preset.repos.map(item => {
+              item.key = `${item.repo_owner}/${item.repo_name}`
+              delete item.branch
+              return item
+            }),
+            'key'
+          )
         } else {
           this.webhookRepos = []
         }
 
-        this.editMode = false
-        this.dialogVisible = true
+        this.webhookEditMode = false
+        this.webhookDialogVisible = true
       }
     },
     async editWebhook (item) {
       const projectName = this.projectName
       const workflowName = this.workflowName
-      this.editMode = true
+      this.webhookEditMode = true
       const currentWebhook = cloneDeep(item)
       const triggerName = currentWebhook.name
       const preset = await getCustomWebhookPresetAPI(
@@ -388,11 +620,14 @@ export default {
       )
       if (preset) {
         if (preset.repos && preset.repos.length > 0) {
-          this.webhookRepos = uniqBy(preset.repos.map(item => {
-            item.key = `${item.repo_owner}/${item.repo_name}`
-            delete item.branch
-            return item
-          }), 'key')
+          this.webhookRepos = uniqBy(
+            preset.repos.map(item => {
+              item.key = `${item.repo_owner}/${item.repo_name}`
+              delete item.branch
+              return item
+            }),
+            'key'
+          )
         } else {
           this.webhookRepos = []
         }
@@ -426,7 +661,7 @@ export default {
         ? currentWebhook.main_repo.match_folders.join('\n')
         : '/\n!.md'
       this.currentWebhook = currentWebhook
-      this.dialogVisible = true
+      this.webhookDialogVisible = true
     },
     removeWebhook (index, triggerName) {
       const projectName = this.projectName
@@ -502,7 +737,7 @@ export default {
               }
             })
           })
-          if (this.editMode) {
+          if (this.webhookEditMode) {
             const result = await updateCustomWebhookAPI(
               projectName,
               workflowName,
@@ -511,7 +746,7 @@ export default {
             if (result) {
               this.$message.success('修改成功')
               this.$refs.webhookForm.resetFields()
-              this.dialogVisible = false
+              this.webhookDialogVisible = false
               this.getWebhooks()
             }
           } else {
@@ -523,8 +758,97 @@ export default {
             if (result) {
               this.$message.success('添加成功')
               this.$refs.webhookForm.resetFields()
-              this.dialogVisible = false
+              this.webhookDialogVisible = false
               this.getWebhooks()
+            }
+          }
+        } else {
+          return false
+        }
+      })
+    },
+    changeTimerStatus (timer) {
+      const projectName = this.projectName
+      updateCustomTimerAPI(projectName, timer).then(() => {
+        this.getTimers()
+        this.$message.success(`定时器已${timer.enabled ? '启用' : '禁用'}`)
+      })
+    },
+    async getTimers () {
+      const projectName = this.projectName
+      const workflowName = this.workflowName
+      const result = await getCustomTimersAPI(projectName, workflowName)
+      if (result) {
+        this.timers = result
+      }
+    },
+    async addTimer () {
+      const projectName = this.projectName
+      const workflowName = this.workflowName
+      this.currentTimer = cloneDeep(timerInfo)
+      const preset = await getCustomTimerPresetAPI(projectName, workflowName)
+      if (preset) {
+        this.$set(
+          this.currentTimer,
+          'workflow_v4_args',
+          cloneDeep(preset.workflow_v4_args)
+        )
+        this.timerEditMode = false
+        this.timerDialogVisible = true
+      }
+    },
+    async editTimer (item) {
+      const projectName = this.projectName
+      const workflowName = this.workflowName
+      this.timerEditMode = true
+      const currentTimer = cloneDeep(item)
+      const timerID = currentTimer.id
+      const preset = await getCustomTimerPresetAPI(
+        projectName,
+        workflowName,
+        timerID
+      )
+      this.$set(
+        currentTimer,
+        'workflow_v4_args',
+        cloneDeep(preset.workflow_v4_args)
+      )
+      this.currentTimer = currentTimer
+      this.timerDialogVisible = true
+    },
+    removeTimer (index, timerID) {
+      const projectName = this.projectName
+      const workflowName = this.workflowName
+      removeCustomTimerAPI(projectName, workflowName, timerID).then(res => {
+        this.$message.success('删除成功')
+        this.getTimers()
+      })
+    },
+    saveTimer () {
+      this.$refs.timerForm.validate(async valid => {
+        if (valid) {
+          const payload = cloneDeep(this.currentTimer)
+          const workflowName = this.workflowName
+          const projectName = this.projectName
+          if (this.timerEditMode) {
+            const result = await updateCustomTimerAPI(projectName, payload)
+            if (result) {
+              this.$message.success('修改成功')
+              this.$refs.timerForm.resetFields()
+              this.timerDialogVisible = false
+              this.getTimers()
+            }
+          } else {
+            const result = await addCustomTimerAPI(
+              projectName,
+              workflowName,
+              payload
+            )
+            if (result) {
+              this.$message.success('添加成功')
+              this.$refs.timerForm.resetFields()
+              this.timerDialogVisible = false
+              this.getTimers()
             }
           }
         } else {
@@ -588,10 +912,8 @@ export default {
               })
           }
           if (this.isEdit) {
-            this.webhooks = await getCustomWebhooksAPI(
-              this.projectName,
-              this.workflowName
-            )
+            this.getWebhooks()
+            this.getTimers()
             this.checkingBuildStageChanged(
               cloneDeep(this.config),
               cloneDeep(this.originalWorkflow)
@@ -619,6 +941,68 @@ export default {
 <style lang="less" scoped>
 @secondaryColor: #b1b1b2;
 @primaryColor: #000;
+
+.inline-show {
+  display: flex;
+  flex-direction: row;
+
+  & > div {
+    margin-right: 10px;
+  }
+}
+
+.trigger-types-dialog {
+  .el-dialog__body {
+    .trigger-types-container {
+      .trigger-item {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+        margin: 14px 0;
+        padding: 10px 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+
+        .icon {
+          display: flex;
+          margin-right: 20px;
+
+          span {
+            font-size: 24px;
+          }
+        }
+
+        .detail {
+          display: flex;
+          flex-direction: column;
+
+          .trigger-title {
+            margin: 0;
+            color: #4a4a4a;
+            font-weight: 400;
+            font-size: 15px;
+          }
+
+          .trigger-desc {
+            margin-top: 4px;
+            color: #909399;
+            font-size: 14px;
+          }
+        }
+
+        &:hover {
+          border: 1px solid @themeColor;
+
+          .icon {
+            color: @themeColor;
+          }
+        }
+      }
+    }
+  }
+}
 
 .webhook {
   .webhook-row {

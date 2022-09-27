@@ -9,7 +9,7 @@
             </el-table-column>
             <el-table-column label="值">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
+                <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" :style="{ width: elSelectWidth}">
                   <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
                 </el-select>
                 <el-input
@@ -19,7 +19,7 @@
                   size="small"
                   :type="scope.row.is_credential ? 'passsword' : ''"
                   :show-password="scope.row.is_credential ? true : false"
-                  style="width: 220px;"
+                  :style="{ width: elSelectWidth}"
                 ></el-input>
               </template>
             </el-table-column>
@@ -70,7 +70,7 @@
                     placeholder="请选择 PR"
                     filterable
                     clearable
-                    style="width: 220px;"
+                    :style="{ width: elSelectWidth}"
                     :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                   >
                     <el-tooltip
@@ -96,7 +96,7 @@
                       v-model.number="build[build.prNumberPropName]"
                       class="short-input"
                       size="small"
-                      style="width: 220px;"
+                      :style="{ width: elSelectWidth}"
                       placeholder="请填写 PR 号"
                       :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                     ></el-input>
@@ -130,6 +130,10 @@ export default {
     type: {
       type: String,
       default: ''
+    },
+    elSelectWidth: {
+      type: String,
+      default: '220px'
     }
   },
   components: {

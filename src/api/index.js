@@ -2212,6 +2212,27 @@ export function updateCustomWebhookAPI (projectName, workflowName, payload) {
   return http.put(`/api/aslan/workflow/v4/webhook/${workflowName}?projectName=${projectName}`, payload)
 }
 
+// Timer
+export function addCustomTimerAPI (projectName, workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/cron/${workflowName}?projectName=${projectName}`, payload)
+}
+
+export function getCustomTimersAPI (projectName, workflowName) {
+  return http.get(`/api/aslan/workflow/v4/cron?projectName=${projectName}&workflowName=${workflowName}`)
+}
+
+export function getCustomTimerPresetAPI (projectName, workflowName, cronID = '') {
+  return http.get(`/api/aslan/workflow/v4/cron/preset?projectName=${projectName}&workflowName=${workflowName}&cronID=${cronID}`)
+}
+
+export function removeCustomTimerAPI (projectName, workflowName, cronID) {
+  return http.delete(`/api/aslan/workflow/v4/cron/${workflowName}/trigger/${cronID}?projectName=${projectName}`)
+}
+
+export function updateCustomTimerAPI (projectName, payload) {
+  return http.put(`/api/aslan/workflow/v4/cron?projectName=${projectName}`, payload)
+}
+
 // count the number of users
 export function getUserNumberAPI () {
   return http.get(`/api/v1/user/count`)
