@@ -15,7 +15,6 @@
       </el-col>
       <el-col v-if="jobInfo" :span="6">
         <span class="item-desc status">
-          <i class="el-icon-question"></i>
           <span v-if="jobInfo.spec.skip_check_run_status">
             <i class="el-icon-warning"></i>未开启服务状态检测
           </span>

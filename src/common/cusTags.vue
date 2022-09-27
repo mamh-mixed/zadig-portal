@@ -63,6 +63,7 @@ export default {
     display: inline-block;
     max-width: 5em;
     padding: 0 1em;
+    overflow: hidden;
     line-height: 2;
     text-overflow: ellipsis;
     word-wrap: none;
