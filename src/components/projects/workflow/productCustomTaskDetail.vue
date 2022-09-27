@@ -93,6 +93,15 @@
           @showFooter="showFooter"
         />
         <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.JobK8sDeploy" :jobInfo="curJob" :projectName="projectName" />
+        <JobTestDetail
+          v-if="curJob.type === jobType.JobTest"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
       </footer>
     </Multipane>
     <div v-if="activeName==='env'" class="env">
@@ -140,6 +149,7 @@ import StageApproval from './productCustomTaskDetail/stageApproval.vue'
 import JobFreestyleDetail from './productCustomTaskDetail/jobFreestyleDetail.vue'
 import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
 import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue'
+import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
 
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
@@ -170,6 +180,7 @@ export default {
     JobFreestyleDetail,
     JobPluginDetail,
     JobK8sDeployDetail,
+    JobTestDetail,
     StageApproval
   },
   computed: {

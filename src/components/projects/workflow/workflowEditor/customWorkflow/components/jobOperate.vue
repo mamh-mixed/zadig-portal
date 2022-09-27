@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { jobTypeList } from './config'
+import { jobTypeList } from '../config'
 import { getPluginsAPI } from '@api'
 
 export default {

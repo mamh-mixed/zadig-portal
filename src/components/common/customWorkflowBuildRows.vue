@@ -1,7 +1,7 @@
 <template>
   <div class="workflow-build-rows">
-    <el-table :data="pickedTargets" v-if="pickedTargets.length > 0" empty-text="无">
-      <el-table-column type="expand"  width="50px">
+    <el-table :data="info" v-if="info.length > 0" empty-text="无">
+      <el-table-column type="expand" width="50px">
         <template slot-scope="props">
           <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
             <el-table-column label="键">
@@ -26,7 +26,7 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="service_module" label="服务" width="100px"></el-table-column>
+      <el-table-column prop="service_module" label="服务" width="100px" v-if="type!=='zadig-test'"></el-table-column>
       <el-table-column label="代码库">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.repos" class="build-row" :key="build.code_host_id">
@@ -70,6 +70,7 @@
                     placeholder="请选择 PR"
                     filterable
                     clearable
+                    style="width: 220px;"
                     :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                   >
                     <el-tooltip
@@ -95,6 +96,7 @@
                       v-model.number="build[build.prNumberPropName]"
                       class="short-input"
                       size="small"
+                      style="width: 220px;"
                       placeholder="请填写 PR 号"
                       :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                     ></el-input>
@@ -124,10 +126,21 @@ export default {
     pickedTargets: {
       type: Array,
       required: true
+    },
+    type: {
+      type: String,
+      default: ''
     }
   },
   components: {
     DeployIcons
+  },
+  computed: {
+    info () {
+      return this.pickedTargets.filter(item => {
+        return item.repos.length > 0
+      })
+    }
   },
   data () {
     return {}
@@ -213,7 +226,7 @@ export default {
     }
   },
   watch: {
-    pickedTargets: {
+    info: {
       handler (value) {
         value.forEach(item => {
           if (item.repos && item.repos.length > 0) {
@@ -222,7 +235,8 @@ export default {
             })
           }
         })
-      }
+      },
+      immediate: true
     }
   }
 }

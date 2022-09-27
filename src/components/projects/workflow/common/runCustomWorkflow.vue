@@ -182,6 +182,11 @@
             <div v-if="job.type === 'plugin'">
               <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
             </div>
+            <div v-if="job.type === 'zadig-test'">
+              <div v-if="job.pickedTargets">
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-test"></CustomWorkflowBuildRows>
+              </div>
+            </div>
           </el-collapse-item>
         </div>
       </el-collapse>
@@ -358,6 +363,22 @@ export default {
             const len = job.spec.plugin.inputs.filter(item => item.isShow)
             job.isShowPlugin = len.length !== 0
           }
+          if (job.type === 'zadig-test') {
+            job.pickedTargets = job.spec.test_modules
+            job.spec.test_modules.forEach(service => {
+              this.getRepoInfo(service.repos)
+              service.key_vals.forEach(item => {
+                if (
+                  item.value.includes('<+fixed>') ||
+                  item.value.includes('{{')
+                ) {
+                  item.isShow = false
+                } else {
+                  item.isShow = true
+                }
+              })
+            })
+          }
         })
       })
     },
@@ -505,35 +526,29 @@ export default {
       payload.stages.forEach(stage => {
         stage.jobs = stage.jobs.filter(job => job.checked)
         stage.jobs.forEach(job => {
-          job.spec.service_and_builds = job.pickedTargets
           delete job.checked
-          if (
-            job.spec.service_and_images &&
-            job.spec.service_and_images.length > 0
-          ) {
-            job.spec.service_and_images.forEach(item => {
-              delete item.images
-            })
-            delete job.pickedTargets
-          }
-          if (
-            job.spec.service_and_builds &&
-            job.spec.service_and_builds.length > 0
-          ) {
-            job.spec.service_and_builds.forEach(item => {
-              if (item.repos) {
-                item.repos.forEach(repo => {
-                  if (repo.branchOrTag) {
-                    if (repo.branchOrTag.type === 'branch') {
-                      repo.branch = repo.branchOrTag.name
+          if (job.type === 'zadig-build') {
+            if (
+              job.spec.service_and_builds &&
+              job.spec.service_and_builds.length > 0
+            ) {
+              job.spec.service_and_builds = job.pickedTargets
+              job.spec.service_and_builds.forEach(item => {
+                if (item.repos) {
+                  item.repos.forEach(repo => {
+                    if (repo.branchOrTag) {
+                      if (repo.branchOrTag.type === 'branch') {
+                        repo.branch = repo.branchOrTag.name
+                      }
+                      if (repo.branchOrTag.type === 'tag') {
+                        repo.tag = repo.branchOrTag.name
+                      }
                     }
-                    if (repo.branchOrTag.type === 'tag') {
-                      repo.tag = repo.branchOrTag.name
-                    }
-                  }
-                })
-              }
-            })
+                  })
+                }
+              })
+              delete job.pickedTargets
+            }
           }
           if (job.type === 'freestyle') {
             job.spec.steps.forEach(step => {
@@ -552,11 +567,22 @@ export default {
             })
           }
           if (job.type === 'zadig-deploy') {
-            job.spec.service_and_images = job.spec.service_and_builds
-            delete job.spec.service_and_builds
+            if (
+              job.spec.service_and_images &&
+              job.spec.service_and_images.length > 0
+            ) {
+              job.spec.service_and_images.forEach(item => {
+                delete item.images
+              })
+              delete job.pickedTargets
+            }
           }
           if (job.type === 'custom-deploy') {
             job.spec.targets = cloneDeep(job.pickedTargets)
+            delete job.pickedTargets
+          }
+          if (job.type === 'zadig-test') {
+            job.spec.test_modules = cloneDeep(job.pickedTargets)
             delete job.pickedTargets
           }
         })

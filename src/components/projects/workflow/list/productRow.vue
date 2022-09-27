@@ -31,10 +31,7 @@
       </div>
     </section>
     <section class="stages">
-      <el-tooltip effect="dark" placement="top-start">
-        <div slot="content">{{stages.toString()}}</div>
-        <CusTags :values="stages" ></CusTags>
-      </el-tooltip>
+      <CusTags :values="stages"></CusTags>
     </section>
     <section class="desc">{{ description }}</section>
     <section class="time-rate">

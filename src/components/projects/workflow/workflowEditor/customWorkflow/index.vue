@@ -20,7 +20,7 @@
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
       </header>
-      <Multipane layout="horizontal" v-show="activeName === 'ui'" >
+      <Multipane layout="horizontal" style="height: 100%;" v-show="activeName === 'ui'">
         <div class="scale">
           <el-tooltip class="item" effect="dark" content="缩小" placement="top">
             <span class="icon el-icon-minus" @click="scale('narrow')"></span>
@@ -58,7 +58,7 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{minHeight:'500px'}" v-if="isShowFooter">
+        <footer :style="{minHeight:'70%'}" v-if="isShowFooter">
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
@@ -130,6 +130,14 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+            <JobTest
+              :projectName="projectName"
+              v-if="job.type === jobType.JobTest"
+              :job="job"
+              ref="JobTest"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -188,6 +196,9 @@
           ref="webhook"
         />
       </div>
+      <div v-if="curDrawer === 'notify'">
+        <Notify :config="payload" :isEdit="isEdit" ref="notify" />
+      </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate
@@ -223,17 +234,18 @@ import {
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
-import Stage from './stage.vue'
-import StageOperate from './stageOperate.vue'
-import JobBuild from './components/jobBuild'
-import JobDeploy from './components/jobDeploy.vue'
-import JobFreestyle from './components/jobFreestyle.vue'
-import JobPlugin from './components/jobPlugin.vue'
-import JobK8sDeploy from './components/jobK8sDeploy'
+import Stage from './components/stage.vue'
+import StageOperate from './components/stageOperate.vue'
+import JobBuild from './components/jobs/jobBuild'
+import JobDeploy from './components/jobs/jobDeploy.vue'
+import JobFreestyle from './components/jobs/jobFreestyle.vue'
+import JobPlugin from './components/jobs/jobPlugin.vue'
+import JobK8sDeploy from './components/jobs/jobK8sDeploy'
+import JobTest from './components/jobs/jobTest'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
-import Service from '../../../guide/helm/service.vue'
-import Env from './components/env.vue'
-import Webhook from './components/webhook.vue'
+import Env from './components/base/env.vue'
+import Webhook from './components/base/webhook.vue'
+import Notify from './components/base/notify.vue'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -273,6 +285,7 @@ export default {
         project: '',
         description: '',
         multi_run: false,
+        notify_ctls: [],
         stages: [],
         params: []
       },
@@ -306,11 +319,12 @@ export default {
     JobFreestyle,
     JobPlugin,
     JobK8sDeploy,
-    Service,
+    JobTest,
     RunCustomWorkflow,
     codemirror,
     Env,
-    Webhook
+    Webhook,
+    Notify
   },
   computed: {
     projectName () {
@@ -323,7 +337,7 @@ export default {
       return this.$store.state.customWorkflow.curOperateType
     },
     isEdit () {
-      return this.$route.params.workflow_name
+      return !!this.$route.params.workflow_name
     },
     curJobType () {
       if (this.job) {
@@ -497,9 +511,21 @@ export default {
               }
             })
           }
+          if (job.type === 'zadig-test') {
+            if (job.spec && job.spec.test_modules) {
+              job.spec.test_modules.forEach(service => {
+                if (service.key_vals) {
+                  service.key_vals.forEach(item => {
+                    if (item.command === 'fixed') {
+                      item.value = '<+fixed>' + item.value
+                    }
+                  })
+                }
+              })
+            }
+          }
         })
       })
-
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
@@ -615,6 +641,21 @@ export default {
                   item.command = 'other'
                 }
               })
+            }
+            if (job.type === 'zadig-test') {
+              if (job.spec && job.spec.test_modules) {
+                job.spec.test_modules.forEach(service => {
+                  service.key_vals.forEach(item => {
+                    if (item.value.includes('<+fixed>')) {
+                      item.command = 'fixed'
+                      item.value = item.value.replaceAll('<+fixed>', '')
+                    }
+                    if (item.value.includes('{{')) {
+                      item.command = 'other'
+                    }
+                  })
+                })
+              }
             }
           })
         })
@@ -777,6 +818,25 @@ export default {
             ].jobs.length
           }
         })
+      } else if (this.job.type === jobType.JobTest) {
+        if (this.$refs.JobTest.getData().spec.test_modules.length === 0) {
+          this.$message.error('请至少选择一个测试')
+          return
+        }
+        this.$refs.JobTest.validate().then(valid => {
+          const curJob = this.$refs.JobTest.getData()
+          if (valid) {
+            this.$set(
+              this.payload.stages[this.curStageIndex].jobs,
+              this.curJobIndex,
+              curJob
+            )
+            this.$store.dispatch('setIsShowFooter', false)
+            this.workflowCurJobLength = this.payload.stages[
+              this.curStageIndex
+            ].jobs.length
+          }
+        })
       }
     },
     setJob () {
@@ -824,6 +884,10 @@ export default {
           this.$set(this.payload, 'params', this.$refs.env.getData())
           this.isShowDrawer = false
         })
+      }
+      if (this.curDrawer === 'notify') {
+        this.$set(this.payload, 'notify_ctls', this.$refs.notify.getData())
+        this.isShowDrawer = false
       }
     },
     setCurDrawer (val) {
@@ -1068,7 +1132,7 @@ export default {
       }
 
       .main {
-        max-height: 400px;
+        max-height: 80%;
         padding: 0 24px;
         overflow-y: auto;
       }

@@ -2258,3 +2258,15 @@ export function getNamespaceListAPI (clusterID) {
 export function getWorkloadListAPI (clusterID, namespace) {
   return http.get(`/api/aslan/environment/kube/custom_workload/cluster/${clusterID}/namespace/${namespace}`)
 }
+export function getTestListAPI (projectName) {
+  return http.get(`/api/v1/picket/testing`)
+}
+export function getTestJunitReportAPI (workflowName, taskID, jobName) {
+  return http.get(`/api/aslan/testing/itreport/workflowv4/${workflowName}/id/${taskID}/job/${jobName}`)
+}
+export function getTestHtmlReportAPI (workflowName, taskID, jobName) {
+  return http.get(`/api/aslan/testing/report/workflowv4/${workflowName}/id/${taskID}/job/${jobName}`)
+}
+export function getTestFileListAPI (workflowName, taskID, jobName) {
+  return http.get(`/api/aslan/testing/workspace/workflowv4/${workflowName}/taskId/${taskID}/job/${jobName}`)
+}

@@ -1,49 +1,45 @@
 <template>
-  <div class="job-build">
+  <div class="job-test">
     <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item label="镜像仓库" :rules="{required: true, message: '请选择镜像仓库', trigger: ['blur', 'change']}" prop="spec.docker_registry_id">
-        <el-select v-model="job.spec.docker_registry_id" placeholder="请选择" size="small" style="width: 220px;">
-          <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
+      <div class="mg-b24 title">选择测试</div>
       <el-row :gutter="24" class="mg-b16">
-        <el-col :span="6" class="title">服务组件</el-col>
-        <el-col :span="6" class="title">构建名称</el-col>
-        <el-col :span="6" class="title">构建配置</el-col>
+        <el-col :span="6">测试名称</el-col>
+        <el-col :span="6">测试配置</el-col>
+        <el-col :span="6"></el-col>
       </el-row>
-      <div v-for="(item,index) in serviceAndBuilds" :key="index">
-        <el-form :model="item" :ref="`ruleForm${index}`" size="small">
-          <el-row :gutter="24" style="line-height: 30px;">
-            <el-col :span="6">
-              <div>{{item.service_name}}/{{item.service_module}}</div>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item prop="build_name" :rules="{required: true, message: '构建不能为空', trigger: ['blur','change']}">
-                <el-select v-model="item.build_name" size="small" @change="handleBuildChange(item)" style="width: 200px;">
-                  <el-option v-for="build in item.module_builds" :key="build.name" :label="build.name" :value="build.name">{{build.name}}</el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
-              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
-            </el-col>
-            <el-col :span="4">
-              <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
-            </el-col>
-          </el-row>
-        </el-form>
+      <div v-for="(item,index) in job.spec.test_modules" :key="index">
+        <el-row :gutter="24" style="line-height: 30px;">
+          <el-col :span="6">
+            <el-form-item prop="name" label-width="0">
+              <el-select size="small" v-model="item.name" filterable>
+                <el-option v-for="(test,index) in testList" :key="index" :value="test.name" :label="test.name">{{test.name}}</el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
+            <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
+          </el-col>
+          <el-col :span="4">
+            <el-button type="danger" size="mini" plain @click="delTest(index)">删除</el-button>
+          </el-col>
+        </el-row>
       </div>
+      <el-select size="small" v-model="test" multiple filterable clearable class="mg-t24">
+        <el-option disabled label="全选" value="ALL" :class="{selected: test.length === testList.length}" style="color: #606266;">
+          <span
+            style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+            @click="test = testList.map(item=>item.name)"
+          >全选</span>
+        </el-option>
+        <el-option v-for="(test,index) in testList" :key="index" :value="test.name" :label="test.name">{{test.name}}</el-option>
+      </el-select>
+      <el-button type="success" size="mini" plain :disabled="Object.keys(test).length === 0" @click="addTest(job.spec.test_modules)">+ 添加</el-button>
     </el-form>
-    <el-dialog
-      :title="`${curItem.service_name}/${curItem.service_module} 变量配置`"
-      :visible.sync="isShowVarDialog"
-      :append-to-body="true"
-      width="40%"
-    >
+    <el-dialog :title="`${curItem.name} 变量配置`" :visible.sync="isShowVarDialog" :append-to-body="true" width="40%">
       <el-table :data="curItem.key_vals" size="small">
         <el-table-column prop="key" label="键"></el-table-column>
         <el-table-column label="类型">
@@ -88,12 +84,7 @@
         <el-button type="primary" @click="saveCurSetting('var',curItem)" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      :title="`${curItem.service_name}/${curItem.service_module} 分支配置`"
-      :visible.sync="isShowBranchDialog"
-      :append-to-body="true"
-      width="40%"
-    >
+    <el-dialog :title="`${curItem.name} 分支配置`" :visible.sync="isShowBranchDialog" :append-to-body="true" width="40%">
       <el-table :data="curItem.repos" size="small">
         <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
         <el-table-column prop="branch" label="默认分支">
@@ -124,10 +115,10 @@
 </template>
 
 <script>
-import { jobType, buildTabList, validateJobName } from '../config'
-import { getAllBranchInfoAPI, getRegistryWhenBuildAPI } from '@api'
+import { jobType, validateJobName } from '../../config'
+import { getAllBranchInfoAPI, getTestListAPI } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
-import EnvTypeSelect from './envTypeSelect.vue'
+import EnvTypeSelect from '../envTypeSelect.vue'
 export default {
   name: 'JobBuild',
   props: {
@@ -135,17 +126,17 @@ export default {
       type: String,
       default: ''
     },
-    originServiceAndBuilds: {
-      type: Array,
-      default: () => []
-    },
     globalEnv: {
       type: Array,
       default: () => []
     },
     job: {
       type: Object,
-      default: () => ({})
+      default: () => ({
+        spec: {
+          test_modules: []
+        }
+      })
     }
   },
   components: { EnvTypeSelect },
@@ -153,90 +144,40 @@ export default {
     return {
       validateJobName,
       jobType,
-      buildTabList,
       isShowBranchDialog: false,
       isShowVarDialog: false,
       curItem: {},
-      dockerList: []
+      curIndex: 0,
+      testList: [],
+      test: ''
     }
   },
   computed: {
-    serviceAndBuilds: {
-      get () {
-        this.job.spec.service_and_builds.forEach(val => {
-          if (
-            !val.build_name &&
-            val.module_builds &&
-            val.module_builds.length > 0
-          ) {
-            // default select first build
-            val.build_name = val.module_builds[0].name
-            this.handleBuildChange(val)
-          }
-          if (val.repos) {
-            val.repos.forEach(repo => {
-              this.getBranch(repo)
-            })
-          }
-        })
-        return this.job.spec.service_and_builds
-      }
-    },
     isShowFooter () {
       return this.$store.state.customWorkflow.isShowFooter
     }
   },
   created () {
-    this.setServiceBuilds()
-    this.getRegistryWhenBuild()
+    this.getTestList()
   },
   methods: {
-    // validateJob: validateJobName,
-    delServiceAndBuild (index) {
-      this.serviceAndBuilds.splice(index, 1)
-      this.$emit('input', this.serviceAndBuilds)
-    },
-    getRegistryWhenBuild () {
-      const projectName = this.projectName
-      getRegistryWhenBuildAPI(projectName).then(res => {
-        this.dockerList = res
+    getTestList () {
+      getTestListAPI(this.projectName).then(res => {
+        this.testList = res
       })
     },
-    setServiceBuilds () {
-      this.serviceAndBuilds.forEach(item => {
-        const res = this.originServiceAndBuilds.find(
-          build => build.service_name === item.service_name
-        )
-        this.$set(item, 'module_builds', res.module_builds)
-
-        // set repos
-        const result = item.module_builds.find(
-          build => build.name === item.build_name
-        )
-        const originRepos = differenceWith(
-          result.repos || [],
-          item.repos,
-          (a, b) => {
-            return a.repo_name === b.repo_name
-          }
-        )
-        this.$set(item, 'originRepos', originRepos || [])
+    addTest (val) {
+      let curService
+      this.test.forEach(test => {
+        curService = this.testList.find(item => item.name === test)
+        curService.originRepos = curService.repos
+        curService.repos = []
+        val.push(cloneDeep(curService))
       })
+      this.test = []
     },
-    handleBuildChange (item) {
-      const res = item.module_builds.find(
-        build => build.name === item.build_name
-      )
-      if (res) {
-        res.key_vals.forEach(item => {
-          if (item.is_credential) {
-            // item.value = this.$utils.aesDecrypt(item.value)
-          }
-        })
-      }
-      this.$set(item, 'key_vals', res.key_vals || [])
-      this.$set(item, 'originRepos', res.repos || [])
-      this.$set(item, 'repos', [])
+    delTest (index) {
+      this.job.spec.test_modules.splice(index, 1)
     },
     addRepo () {
       if (this.curItem.repos) {
@@ -273,18 +214,31 @@ export default {
         this.$set(item, 'branches', res[0].branches)
       }
     },
-    handleVarBranchChange (type, item) {
+    handleVarBranchChange (type, item, index) {
       if (type === 'var') {
         this.isShowVarDialog = true
       } else {
         this.isShowBranchDialog = true
       }
+      const res = this.testList.filter(test => test.name === item.name)
+      if (!item.originRepos) {
+        item.originRepos = res[0].repos
+      } else {
+        item.originRepos = differenceWith(
+          item.originRepos || [],
+          item.repos,
+          (a, b) => {
+            return a.repo_name === b.repo_name
+          }
+        )
+      }
+      this.curIndex = index
       this.curItem = cloneDeep(item)
     },
     saveCurSetting (type) {
-      this.serviceAndBuilds.forEach((item, index) => {
-        if (item.build_name === this.curItem.build_name) {
-          this.$set(this.serviceAndBuilds, index, this.curItem)
+      this.job.spec.test_modules.forEach((item, index) => {
+        if (index === this.curIndex) {
+          this.$set(this.job.spec.test_modules, index, this.curItem)
         }
       })
       if (type === 'var') {
@@ -294,40 +248,34 @@ export default {
       }
     },
     validate () {
-      const valid = []
-      return this.$refs.ruleForm.validate().then(val => {
-        if (val) {
-          this.serviceAndBuilds.forEach((item, index) => {
-            valid.push(this.$refs[`ruleForm${index}`][0].validate())
-          })
-          return Promise.all(valid)
-        }
-      })
+      return this.$refs.ruleForm.validate()
     },
     getData () {
-      this.serviceAndBuilds.forEach(item => {
-        delete item.currentTab
-        delete item.isShowVals
-        delete item.originRepos
-        delete item.module_builds
-        if (item.repos && item.repos.length > 0) {
-          item.repos.forEach(repo => {
-            delete repo.branches
-          })
-        }
+      this.job.spec.test_modules.forEach(item => {
+        delete item.curRepo
+        item.project_name = item.product_name || ''
       })
-      return this.serviceAndBuilds
+      return this.job
     }
   },
   watch: {
-    isShowFooter () {
-      this.setServiceBuilds()
+    job: {
+      handler (val, oldVal) {
+        val.spec.test_modules.forEach(item => {
+          if (item.repos.length > 0) {
+            item.repos.forEach(repo => {
+              this.getBranch(repo)
+            })
+          }
+        })
+      },
+      immediate: true
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.job-build {
+.job-test {
   width: 80%;
   color: #606266;
   font-size: 14px;

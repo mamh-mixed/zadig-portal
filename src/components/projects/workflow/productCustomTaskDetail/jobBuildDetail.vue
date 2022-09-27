@@ -22,12 +22,12 @@
         <div class="error-wrapper">
           <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
-        <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
+        <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="grid-content item-title">代码库({{build.source}})</div>
+            <div class="item-title">代码库({{build.source}})</div>
           </el-col>
           <el-col :span="8">
-            <div>{{build.repo_name}}</div>
+            <div class="item-desc">{{build.repo_name}}</div>
           </el-col>
           <el-col :span="4">
             <div class="item-title">代码信息</div>
@@ -36,12 +36,12 @@
             <RepoJump :build="build" showIcon />
           </el-col>
         </el-row>
-        <el-row :gutter="0" class="mg-t8">
+        <el-row :gutter="0" class="item">
           <el-col :span="4">
             <div class="item-title">服务名称</div>
           </el-col>
           <el-col :span="8">
-            <span>{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
+            <span class="item-desc">{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
           </el-col>
           <el-col :span="4">
             <div class="item-title">
@@ -65,7 +65,7 @@
           </el-col>
           <el-col :span="8">
             <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-              <span>{{jobInfo.spec.image.split('/').pop()}}</span>
+              <span class="item-desc">{{jobInfo.spec.image.split('/').pop()}}</span>
             </el-tooltip>
           </el-col>
         </el-row>
@@ -281,7 +281,13 @@ export default {
     overflow-y: scroll;
 
     .item {
+      margin-top: 8px;
+
       &-title {
+        color: #4a4a4a;
+      }
+
+      &-desc {
         color: #8d9199;
       }
     }

@@ -6,7 +6,7 @@
         <span>{{jobInfo.name}}</span>
       </el-col>
       <el-col :span="2">
-        <div class="grid-content item-desc">
+        <div class="item-desc">
           <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
         </div>
       </el-col>
@@ -16,9 +16,15 @@
       <el-col v-if="jobInfo" :span="6">
         <span class="item-desc status">
           <i class="el-icon-question"></i>
-          <span v-if="jobInfo.spec.skip_check_run_status">未开启服务状态检测</span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">服务状态检测通过</span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">服务状态检测未通过</span>
+          <span v-if="jobInfo.spec.skip_check_run_status">
+            <i class="el-icon-warning"></i>未开启服务状态检测
+          </span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">
+            <i class="el-icon-warning"></i>服务状态检测通过
+          </span>
+          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">
+            <i class="el-icon-warning"></i>服务状态检测未通过
+          </span>
         </span>
       </el-col>
       <el-col :span="1" class="close">
@@ -31,7 +37,7 @@
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
       </div>
-      <el-row class="text item mg-t8" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
+      <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
         <el-col :span="4">
           <div class="item-title">服务名称</div>
         </el-col>
@@ -60,16 +66,16 @@
         </el-col>
         <el-col :span="8">
           <el-tooltip effect="dark" :content="build.image" placement="top">
-            <span class="file-name">{{ build.image.split('/')[2]}}</span>
+            <span class="file-name item-desc">{{ build.image.split('/')[2]}}</span>
           </el-tooltip>
         </el-col>
       </el-row>
-      <el-row class="mg-t8">
+      <el-row class="item">
         <el-col :span="4">
           <div class="item-title">部署环境</div>
         </el-col>
         <el-col :span="8">
-          <div class="grid-content item-desc">
+          <div class="item-desc">
             <router-link
               class="env-link"
               :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`"
@@ -154,7 +160,13 @@ export default {
     padding: 0 24px;
 
     .item {
+      margin-top: 8px;
+
       &-title {
+        color: #4a4a4a;
+      }
+
+      &-desc {
         color: #8d9199;
       }
     }

@@ -188,6 +188,11 @@
             <div v-if="job.type === 'plugin'">
               <CustomWorkflowCommonRows :job="job" type="plugin" />
             </div>
+            <div v-if="job.type === 'zadig-test'">
+              <div v-if="job.pickedTargets">
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-test"></CustomWorkflowBuildRows>
+              </div>
+            </div>
           </el-collapse-item>
         </div>
       </el-collapse>
@@ -359,6 +364,22 @@ export default {
               } else {
                 item.isShow = true
               }
+            })
+          }
+          if (job.type === 'zadig-test') {
+            job.pickedTargets = job.spec.test_modules
+            job.spec.test_modules.forEach(service => {
+              this.getRepoInfo(service.repos)
+              service.key_vals.forEach(item => {
+                if (
+                  item.value.includes('<+fixed>') ||
+                  item.value.includes('{{')
+                ) {
+                  item.isShow = false
+                } else {
+                  item.isShow = true
+                }
+              })
             })
           }
         })

@@ -48,11 +48,11 @@
 import ValidateSubmit from '@utils/validateAsync'
 import Editor from 'vue2-ace-bind'
 import Resize from '@/components/common/resize.vue'
-import BuildEnv from './buildEnv.vue'
+import BuildEnv from '../buildEnv.vue'
 import EnvVariable from '@/components/projects/build/envVariable.vue'
 import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
-import OtherSteps from './otherSteps.vue'
-import { buildEnvs, validateJobName } from '../config.js'
+import OtherSteps from '../otherSteps.vue'
+import { buildEnvs, validateJobName } from '../../config.js'
 
 import { getCodeSourceMaskedAPI } from '@api'
 

@@ -51,8 +51,8 @@ import {
   getNamespaceListAPI,
   getWorkloadListAPI
 } from '@api'
-import EnvTypeSelect from './envTypeSelect.vue'
-import { validateJobName } from '../config.js'
+import EnvTypeSelect from '../envTypeSelect.vue'
+import { validateJobName } from '../../config.js'
 
 export default {
   name: 'JobK8sDeploy',
