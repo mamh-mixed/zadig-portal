@@ -1,7 +1,7 @@
 <template>
   <div class="webhook">
     <el-button type="primary" size="mini" icon="el-icon-plus" plain @click="triggerTypeDialogVisible = true">添加</el-button>
-    <div v-if="webhooks.length > 0">
+    <div>
       <el-row :gutter="20" class="webhook-row" v-for="(item,index) in webhooks" :key="index">
         <el-col :span="2">
           <div class="content">
