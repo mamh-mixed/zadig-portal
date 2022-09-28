@@ -359,6 +359,9 @@ export default {
                 item.isShow = true
               }
             })
+            // 判断是否展示(固定值和全局变量不展示)一个都没有的话则不展示表头
+            const len = job.spec.properties.envs.filter(item => item.isShow)
+            job.isShowCommon = len.length !== 0
           }
           if (job.type === 'plugin') {
             job.spec.plugin.inputs.forEach(item => {
@@ -368,6 +371,8 @@ export default {
                 item.isShow = true
               }
             })
+            const len = job.spec.plugin.inputs.filter(item => item.isShow)
+            job.isShowPlugin = len.length !== 0
           }
           if (job.type === 'zadig-test') {
             job.pickedTargets = job.spec.test_modules
