@@ -94,7 +94,8 @@
         <el-col :span="9">
           <div class="content">
             <div class="cate">
-              <span class="title">时间配置：</span>
+              <span v-if="item.job_type === 'timing'|| item.job_type === 'gap'" class="title">时间配置：</span>
+              <span v-if="item.job_type === 'crontab'" class="title">表达式：</span>
               <span v-if="item.job_type === 'timing'" class="desc">{{ translateDate(item.frequency) }}&nbsp;&nbsp;{{ item.time }}</span>
               <span
                 v-if="item.job_type === 'gap'"
@@ -241,9 +242,11 @@
     >
       <el-form :model="currentTimer" ref="timerForm" :rules="timerRules" label-width="100px" label-position="left">
         <el-form-item label="触发方式" prop="job_type">
-          <el-radio v-model="currentTimer.job_type" label="timing">定时循环</el-radio>
-          <el-radio v-model="currentTimer.job_type" label="gap">间隔循环</el-radio>
-          <el-radio v-model="currentTimer.job_type" label="crontab">Cron 表达式</el-radio>
+          <el-radio-group v-model="currentTimer.job_type" @change="changeTimerType">
+            <el-radio label="timing">定时循环</el-radio>
+            <el-radio label="gap">间隔循环</el-radio>
+            <el-radio label="crontab">Cron 表达式</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="时间配置">
           <div v-if="currentTimer.job_type === 'timing'" class="inline-show">
@@ -278,16 +281,16 @@
           </div>
           <div v-else-if="currentTimer.job_type === 'crontab'">
             <!--Cron-->
-            <el-form-item prop="crontab.cron">
-              <el-input v-model="currentTimer.cron" size="small" style="width: 300px;" />
+            <el-form-item prop="cron">
+              <el-input v-model="currentTimer.cron" placeholder="输入 Cron 表达式，用空格隔开" size="small" style="width: 300px;" />
             </el-form-item>
           </div>
         </el-form-item>
       </el-form>
       <div v-if="currentTimer.job_type === 'crontab'">
-        <div class="cron-title-show">Cron 表达式解析</div>
+        <span style="display: inline-block; margin-bottom: 10px;">Cron 表达式解析</span>
         <el-table
-          :data="currentTimer.cron.trim().split(/\s+/)"
+          :data="cronExpressionParse"
           border
           size="small"
           class="cron-table-show"
@@ -301,8 +304,8 @@
           <el-table-column prop="week" label="星期"></el-table-column>
         </el-table>
       </div>
-      <div>
-        <span>工作流执行变量</span>
+      <div style="margin: 10px 0;">
+        <span style="display: inline-block; margin-bottom: 10px;">工作流执行变量</span>
         <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
       </div>
       <div slot="footer">
@@ -547,6 +550,18 @@ export default {
     },
     workflowName () {
       return this.config.name
+    },
+    cronExpressionParse () {
+      const cronArr = this.currentTimer.cron.trim().split(/\s+/)
+      return [
+        {
+          min: cronArr[0],
+          hour: cronArr[1],
+          date: cronArr[2],
+          month: cronArr[3],
+          week: cronArr[4]
+        }
+      ]
     }
   },
   methods: {
@@ -855,6 +870,17 @@ export default {
           return false
         }
       })
+    },
+    changeTimerType (type) {
+      if (type === 'timing') {
+        this.currentTimer.frequency = ''
+        this.currentTimer.time = ''
+      } else if (type === 'gap') {
+        this.currentTimer.frequency = ''
+        this.currentTimer.number = 1
+      } else if (type === 'crontab') {
+        this.currentTimer.cron = ''
+      }
     },
     getBranchInfoById (id, namespace, repoName) {
       if (!namespace) return
