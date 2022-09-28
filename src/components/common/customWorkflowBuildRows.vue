@@ -55,7 +55,7 @@
                     clearable
                     size="small"
                     value-key="id"
-                    :placeholder="build.source==='other'?'请输入分支或标签':'请选择分支或标签'"
+                    :placeholder="build.source==='other'?'请输入分支或标签':请选择分支或标签"
                     @change="changeBranchOrTag(build)"
                   >
                     <el-option-group v-for="group in build.branchAndTagList" :key="group.label" :label="group.label">
