@@ -46,7 +46,9 @@
               </div>
               <div v-else>
                 <el-col :span="7">
+                  <el-input v-if="build.source==='other'" v-model="build.branchOrTag.name" placeholder="请输入分支或标签" size="small"></el-input>
                   <el-select
+                    v-else
                     v-model="build.branchOrTag"
                     remote
                     :remote-method="(query)=>{searchRepoInfo(build,query)}"
@@ -55,7 +57,7 @@
                     clearable
                     size="small"
                     value-key="id"
-                    :placeholder="build.source==='other'?'请输入分支或标签':'请选择分支或标签'"
+                    placeholder="请选择分支或标签"
                     @change="changeBranchOrTag(build)"
                   >
                     <el-option-group v-for="group in build.branchAndTagList" :key="group.label" :label="group.label">
