@@ -567,6 +567,7 @@ export default {
             })
           }
           if (job.type === 'zadig-deploy') {
+            job.spec.service_and_images = cloneDeep(job.pickedTargets)
             if (
               job.spec.service_and_images &&
               job.spec.service_and_images.length > 0
@@ -583,6 +584,22 @@ export default {
           }
           if (job.type === 'zadig-test') {
             job.spec.test_modules = cloneDeep(job.pickedTargets)
+            if (job.spec.test_modules && job.spec.test_modules.length > 0) {
+              job.spec.test_modules.forEach(item => {
+                if (item.repos) {
+                  item.repos.forEach(repo => {
+                    if (repo.branchOrTag) {
+                      if (repo.branchOrTag.type === 'branch') {
+                        repo.branch = repo.branchOrTag.name
+                      }
+                      if (repo.branchOrTag.type === 'tag') {
+                        repo.tag = repo.branchOrTag.name
+                      }
+                    }
+                  })
+                }
+              })
+            }
             delete job.pickedTargets
           }
         })

@@ -37,7 +37,7 @@
         </el-option>
         <el-option v-for="(test,index) in testList" :key="index" :value="test.name" :label="test.name">{{test.name}}</el-option>
       </el-select>
-      <el-button type="success" size="mini" plain :disabled="Object.keys(test).length === 0" @click="addTest(job.spec.test_modules)">+ 添加</el-button>
+      <el-button type="success" size="mini" plain :disabled="Object.keys(test).length === 0" @click="addTest()">+ 添加</el-button>
     </el-form>
     <el-dialog :title="`${curItem.name} 变量配置`" :visible.sync="isShowVarDialog" :append-to-body="true" width="40%">
       <el-table :data="curItem.key_vals" size="small">
@@ -149,6 +149,7 @@ export default {
       curItem: {},
       curIndex: 0,
       testList: [],
+      originTestList: [],
       test: ''
     }
   },
@@ -163,17 +164,18 @@ export default {
   methods: {
     getTestList () {
       getTestListAPI(this.projectName).then(res => {
-        this.testList = res
+        this.testList = cloneDeep(res)
+        this.originTestList = cloneDeep(res)
       })
     },
-    addTest (val) {
+    addTest () {
       let curService
       this.test.forEach(test => {
         curService = this.testList.find(item => item.name === test)
-        curService.originRepos = curService.repos
+        curService.originRepos = cloneDeep(curService.repos)
         curService.repos = []
-        val.push(cloneDeep(curService))
       })
+      this.job.spec.test_modules.push(cloneDeep(curService))
       this.test = []
     },
     delTest (index) {
@@ -220,9 +222,18 @@ export default {
       } else {
         this.isShowBranchDialog = true
       }
-      const res = this.testList.filter(test => test.name === item.name)
-      if (!item.originRepos) {
-        item.originRepos = res[0].repos
+      const res = this.originTestList.find(test => test.name === item.name)
+      if (
+        !item.originRepos ||
+        (item.originRepos && item.originRepos.length === 0)
+      ) {
+        item.originRepos = differenceWith(
+          res.repos || [],
+          item.repos,
+          (a, b) => {
+            return a.repo_name === b.repo_name
+          }
+        )
       } else {
         item.originRepos = differenceWith(
           item.originRepos || [],
