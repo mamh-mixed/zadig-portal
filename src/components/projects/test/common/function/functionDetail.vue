@@ -149,7 +149,7 @@ export default {
           installs: [{ name: '', version: '' }],
           envs: []
         },
-        artifact_paths: [''],
+        artifact_paths: [],
         scripts: '#!/bin/bash\nset -e',
         test_result_path: '',
         test_report_path: '',
@@ -278,7 +278,7 @@ export default {
           res.notify_ctls = res.notify_ctls.filter(item => item.enabled)
         }
         if (this.test.artifact_paths.length === 0) {
-          this.test.artifact_paths.push('')
+          this.test.artifact_paths.push()
         }
         if (this.test.pre_test.installs) {
           this.test.pre_test.installs = this.test.pre_test.installs.map(i => {
