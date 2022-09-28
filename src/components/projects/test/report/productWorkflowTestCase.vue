@@ -112,7 +112,8 @@ export default {
         getTestJunitReportAPI(
           workflow_name,
           task_id,
-          test_job_name
+          test_job_name,
+          this.projectName
         ).then(res => {
           if (test_type === 'undefined' || test_type === 'function') {
             this.testSummary = res.functionTestSuite
