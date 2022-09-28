@@ -849,21 +849,16 @@ export default {
     },
     async getWebhookRepos () {
       const projectName = this.projectName
-      const builds = await getAssociatedBuildsAPI(projectName)
+      const allBuilds = await getAssociatedBuildsAPI(projectName)
       let webhookRepos = []
-      if (builds) {
-        builds.forEach(build => {
-          build.repos = []
-          build.module_builds.forEach(
-            module => {
-              build.repos = uniqBy(build.repos.concat(module.repos), value => value.source + '/' + value.repo_owner + '/' + value.repo_name)
-            }
-          )
-        })
+      if (allBuilds) {
         this.workflowToRun.build_stage.modules.forEach(item => {
-          builds.forEach(element => {
+          allBuilds.forEach(element => {
             if (item.target.service_name === element.service_name && item.target.service_module === element.service_module) {
-              webhookRepos = webhookRepos.concat(element.repos)
+              const currentBuild = element.module_builds.find(build => {
+                return build.name === item.target.build_name
+              })
+              webhookRepos = webhookRepos.concat(currentBuild.repos)
             }
           })
         })
@@ -871,7 +866,7 @@ export default {
           repo.key = `${repo.repo_owner}/${repo.repo_name}`
           this.$set(repo, 'is_regular', false)
         })
-        this.webhookRepos = webhookRepos
+        this.webhookRepos = uniqBy(webhookRepos, 'key')
       }
     }
   },
