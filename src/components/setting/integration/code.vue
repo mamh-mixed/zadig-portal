@@ -721,13 +721,9 @@ export default {
           trigger: ['blur']
         },
         address: [{
-          type: 'url',
-          message: '请输入正确的 URL，包含协议',
-          trigger: ['blur', 'change']
-        }, {
           required: true,
-          trigger: 'change',
-          validator: validateGitURL
+          trigger: ['blur', 'change'],
+          message: '请输入 URL，包含协议'
         }],
         region: {
           required: true,
