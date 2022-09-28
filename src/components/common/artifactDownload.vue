@@ -64,7 +64,7 @@ export default {
       const jobName = this.jobName
       this.loading = true
       if (this.type === 'customWorkflow') {
-        getTestFileListAPI(workflowName, taskId, jobName).then(res => {
+        getTestFileListAPI(workflowName, taskId, jobName, projectName).then(res => {
           this.loading = false
           this.fileList = res
         })
