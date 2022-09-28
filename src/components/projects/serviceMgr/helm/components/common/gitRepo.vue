@@ -241,12 +241,7 @@ export default {
         url: [
           {
             required: true,
-            message: '请输入 URL 地址',
-            trigger: 'blur'
-          },
-          {
-            type: 'url',
-            message: '请输入正确的 URL，包含协议',
+            message: '请输入 URL，包含协议',
             trigger: ['blur', 'change']
           }
         ]
