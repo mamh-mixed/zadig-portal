@@ -350,7 +350,8 @@ import {
   getBranchInfoByIdAPI,
   singleTestAPI,
   getAllBranchInfoAPI,
-  checkRegularAPI
+  checkRegularAPI,
+  getAssociatedBuildsAPI
 } from '@api'
 import { uniqBy, get, debounce, cloneDeep } from 'lodash'
 
@@ -452,6 +453,7 @@ export default {
     }
     return {
       testInfos: [],
+      webhookRepos: [],
       gotScheduleRepo: false,
       currentForcedUserInput: {},
       projectEnvs: [],
@@ -683,10 +685,11 @@ export default {
       this.firstShowPolicy = false
       this.showEnvUpdatePolicy = false
     },
-    editWebhook (index) {
+    async editWebhook (index) {
       this.webhookEditMode = true
       this.showEnvUpdatePolicy = true
       this.currenteditWebhookIndex = index
+      await this.getWebhookRepos()
       const webhookSwap = this.$utils.cloneObj(this.webhook.items[index])
       if (
         webhookSwap.main_repo.codehost_id &&
@@ -739,6 +742,7 @@ export default {
         this.$refs.webhookNamedRef.focus()
         this.$refs.triggerForm.clearValidate()
       })
+      this.getWebhookRepos()
     },
     updateWebhook (action) {
       const webhookSwap = this.$utils.cloneObj(this.webhookSwap)
@@ -842,6 +846,33 @@ export default {
     switchMode () {
       this.webhookSwap.is_yaml = !this.webhookSwap.is_yaml
       this.$refs.triggerForm.clearValidate()
+    },
+    async getWebhookRepos () {
+      const projectName = this.projectName
+      const builds = await getAssociatedBuildsAPI(projectName)
+      let webhookRepos = []
+      if (builds) {
+        builds.forEach(build => {
+          build.repos = []
+          build.module_builds.forEach(
+            module => {
+              build.repos = uniqBy(build.repos.concat(module.repos), value => value.source + '/' + value.repo_owner + '/' + value.repo_name)
+            }
+          )
+        })
+        this.workflowToRun.build_stage.modules.forEach(item => {
+          builds.forEach(element => {
+            if (item.target.service_name === element.service_name && item.target.service_module === element.service_module) {
+              webhookRepos = webhookRepos.concat(element.repos)
+            }
+          })
+        })
+        webhookRepos.forEach(repo => {
+          repo.key = `${repo.repo_owner}/${repo.repo_name}`
+          this.$set(repo, 'is_regular', false)
+        })
+        this.webhookRepos = webhookRepos
+      }
     }
   },
   computed: {
@@ -857,24 +888,6 @@ export default {
         this.webhookAddMode
           ? (this.webhookAddMode = newValue)
           : (this.webhookEditMode = newValue)
-      }
-    },
-    webhookRepos: {
-      get: function () {
-        let repos = []
-        this.workflowToRun.build_stage.modules.forEach(item => {
-          this.presets.forEach(element => {
-            if (item.target.build_name === element.target.build_name) {
-              repos = repos.concat(element.repos)
-            }
-          })
-        })
-        repos = uniqBy(repos, value => value.repo_owner + '/' + value.repo_name)
-        repos.forEach(repo => {
-          repo.key = `${repo.repo_owner}/${repo.repo_name}`
-          this.$set(repo, 'is_regular', false)
-        })
-        return repos
       }
     },
     webhookTargets: {
