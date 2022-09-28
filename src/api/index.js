@@ -2285,9 +2285,6 @@ export function getTestListAPI (projectName) {
 export function getTestJunitReportAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/itreport/workflowv4/${workflowName}/id/${taskID}/job/${jobName}?projectName=${projectName}`)
 }
-export function getTestHtmlReportAPI (workflowName, taskID, jobName, projectName) {
-  return http.get(`/api/aslan/testing/report/workflowv4/${workflowName}/id/${taskID}/job/${jobName}?projectName=${projectName}`)
-}
 export function getTestFileListAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/workspace/workflowv4/${workflowName}/taskId/${taskID}/job/${jobName}?projectName=${projectName}`)
 }
