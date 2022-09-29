@@ -68,7 +68,7 @@ export default {
     return {
       testAnyLog: [],
       wsTestDataBuffer: [],
-      testLogStarted: false
+      testLogStarted: true
     }
   },
   computed: {
@@ -112,7 +112,7 @@ export default {
           }
           this.hasNewTestMsg = false
         }, 500)
-        const url = `/api/aslan/logs/sse/workflow/test/${this.pipelineName}/${this.taskID}/${this.testName}/999999/${this.serviceName}?projectName=${this.projectName}`
+        const url = `/api/aslan/logs/sse/workflow/test/${this.pipelineName}/${this.taskID}/${this.testName}/999999/${this.serviceName}?projectName=${this.projectName}&workflowType=${this.isTestJob ? 'test' : ''}`
         this.$sse(url, { format: 'plain' })
           .then(sse => {
             // Store SSE object at a higher scope
@@ -158,7 +158,8 @@ export default {
         this.pipelineName,
         this.taskID,
         this.testName,
-        this.serviceName
+        this.serviceName,
+        this.isTestJob ? 'test' : ''
       ).then(response => {
         this.testAnyLog = response.split('\n').map(element => {
           return element + '\n'
@@ -185,6 +186,11 @@ export default {
     taskID: {
       type: [String, Number],
       required: true
+    },
+    isTestJob: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   mixins: [mixin]
