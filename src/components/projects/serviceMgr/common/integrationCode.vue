@@ -176,17 +176,6 @@
 import {
   createCodeSourceAPI
 } from '@api'
-const validateGitURL = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入服务 URL'))
-  } else {
-    if (value.endsWith('/')) {
-      callback(new Error('URL 末尾不能包含 /'))
-    } else {
-      callback()
-    }
-  }
-}
 export default {
   data () {
     return {
