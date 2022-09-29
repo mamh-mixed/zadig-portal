@@ -22,7 +22,7 @@
         <div class="error-wrapper">
           <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
-        <el-row class="item" :gutter="0" >
+        <el-row class="item" :gutter="0">
           <el-col :span="4">
             <div class="item-title">项目名称</div>
           </el-col>
@@ -55,20 +55,25 @@
             <div class="item-title">JUnit 测试报告</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc" v-if="jobInfo.spec.junit_report">
-              <router-link class="show-test-result" :to="getTestReport('')">查看</router-link>
+            <span class="item-desc">
+              <el-link
+                :is="!jobInfo.spec.junit_report ? 'span' : 'router-link'"
+                class="show-test-result"
+                :to="getTestReport('')"
+              >查看</el-link>
             </span>
           </el-col>
           <el-col :span="4">
             <div class="item-title">文件导出</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc" v-if="jobInfo.spec.archive">
+            <span class="item-desc">
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
                 type="primary"
                 :underline="false"
                 target="_blank"
+                :disabled="!jobInfo.spec.archive"
                 @click="artifactModalVisible=true"
               >下载</el-link>
             </span>
@@ -79,12 +84,13 @@
             <div class="item-title">Html 测试报告</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc" v-if="jobInfo.spec.html_report">
+            <span class="item-desc">
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
                 type="primary"
                 :underline="false"
                 target="_blank"
+                :disabled="!jobInfo.spec.html_report"
                 @click="getTestReport('html')"
               >查看</el-link>
             </span>
@@ -335,6 +341,11 @@ export default {
 
       &-desc {
         color: #8d9199;
+
+        span.show-test-result {
+          color: #a0cfff;
+          cursor: not-allowed;
+        }
       }
     }
 
