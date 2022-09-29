@@ -593,9 +593,9 @@ const utils = {
       return 'danger'
     }
   },
-  mobileElTagType (status) {
+  mobileVantTagType (status) {
     if (status === 'created') {
-      return ''
+      return 'primary'
     } else if (status === 'running') {
       return 'primary'
     } else if (status === 'timeout' || status === 'pending-approval') {

@@ -1016,6 +1016,22 @@ const routes = [
         }
       },
       {
+        path: 'projects/detail/:project_name/tests/:test_name',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/test/detail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '测试详情'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/tests/:test_name/:task_id',
+        component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/test/taskDetail.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '测试任务详情'
+        }
+      },
+      {
         path: 'projects/detail/:project_name/envs/:env_name',
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/envDetail.vue'),
         meta: {

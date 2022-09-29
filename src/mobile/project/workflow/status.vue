@@ -8,10 +8,7 @@
         <van-empty v-if="tasksCount.running===0" image="search" description="暂无正在运行任务" />
         <div v-else v-for="task in runningTasks" :key="task.task_id" class="task-container">
           <van-cell-group>
-            <van-cell
-              center
-              :to="`/mobile/projects/detail/${task.product_name}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`"
-            >
+            <van-cell center :to="setTaskURL(task)">
               <template #title>
                 <span class="workflow-name">{{`${task.pipeline_name}`}}</span>
                 <van-tag plain type="primary">{{`#${task.task_id}`}}</van-tag>
@@ -21,7 +18,7 @@
                 <div class="time">{{$utils.convertTimestamp(task.create_time)}}</div>
               </template>
               <template #default>
-                <van-button plain hairline @click.stop="taskOperation('cancel',task.task_id,task.pipeline_name)" size="small" type="danger">取消</van-button>
+                <van-button plain hairline @click.stop="taskOperation('cancel',task)" size="small" type="danger">取消</van-button>
               </template>
             </van-cell>
           </van-cell-group>
@@ -31,7 +28,7 @@
         <van-empty v-if="tasksCount.pending===0" image="search" description="暂无队列中任务" />
         <div v-else v-for="task in pendingTasks" :key="task.task_id" class="task-container">
           <van-cell-group>
-            <van-cell center>
+            <van-cell center :to="setTaskURL(task)">
               <template #title>
                 <span class="workflow-name">{{`${task.pipeline_name}`}}</span>
                 <van-tag plain type="primary">{{`#${task.task_id}`}}</van-tag>
@@ -41,7 +38,7 @@
                 <div class="time">{{$utils.convertTimestamp(task.create_time)}}</div>
               </template>
               <template #default>
-                <van-button plain hairline @click.stop="taskOperation('cancel',task.task_id,task.pipeline_name)" size="small" type="danger">取消</van-button>
+                <van-button plain hairline @click.stop="taskOperation('cancel',task)" size="small" type="danger">取消</van-button>
               </template>
             </van-cell>
           </van-cell-group>
@@ -64,7 +61,12 @@ import {
   Icon,
   Empty
 } from 'vant'
-import { taskRunningSSEAPI, taskPendingSSEAPI, cancelWorkflowAPI } from '@api'
+import {
+  taskRunningSSEAPI,
+  taskPendingSSEAPI,
+  cancelWorkflowAPI,
+  cancelTestTaskAPI
+} from '@api'
 export default {
   components: {
     [NavBar.name]: NavBar,
@@ -96,6 +98,13 @@ export default {
     }
   },
   methods: {
+    setTaskURL (task) {
+      if (task.type === 'workflow') {
+        return `/mobile/projects/detail/${task.product_name}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`
+      } else if (task.type === 'test') {
+        return `/mobile/projects/detail/${task.product_name}/tests/${task.pipeline_name}/${task.task_id}?status=${task.status}`
+      }
+    },
     showTaskList (type) {
       if (type === 'running') {
         taskRunningSSEAPI()
@@ -115,17 +124,26 @@ export default {
     },
     /*
     任务操作
-    * @param  {string}           operation 操作 （cancel）
-    * @param  {number}           id 任务 id
-    * @param  {string}           pipeline_name 流水线名
+    * @param  {string}           operation 操作
+    * @param  {object}           task      任务
     * @return {}
     */
-    taskOperation (operation, id, pipeline_name) {
+    taskOperation (operation, task) {
+      const type = task.type
+      const projectName = this.projectName
+      const workflowName = task.pipeline_name
+      const id = task.task_id
       switch (operation) {
         case 'cancel':
-          cancelWorkflowAPI(this.projectName, pipeline_name, id).then(res => {
-            Notify({ type: 'success', message: '任务取消成功' })
-          })
+          if (type === 'workflow') {
+            cancelWorkflowAPI(projectName, workflowName, id).then(res => {
+              Notify({ type: 'success', message: '任务取消成功' })
+            })
+          } else if (type === 'test') {
+            cancelTestTaskAPI(projectName, workflowName, id).then(res => {
+              Notify({ type: 'success', message: '任务取消成功' })
+            })
+          }
           break
         default:
           break

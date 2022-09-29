@@ -2,43 +2,53 @@
   <div class="mobile-pipelines-detail">
     <van-nav-bar left-arrow fixed @click-left="mobileGoback">
       <template #title>
-        <span>{{workflowName}}</span>
+        <span>{{testName}} 测试</span>
       </template>
     </van-nav-bar>
-    <van-divider content-position="left">基本信息</van-divider>
+    <van-divider content-position="left">最新一次测试报告</van-divider>
     <div class="task-info">
       <van-row>
         <van-col span="12">
           <div class="mobile-block">
-            <h2 class="mobile-block-title">创建者</h2>
-            <div class="mobile-block-desc">{{ workflow.update_by }}</div>
+            <h2 class="mobile-block-title">总测试用例</h2>
+            <div class="mobile-block-desc">{{latestTestSummary.tests }}</div>
           </div>
         </van-col>
         <van-col span="12">
           <div class="mobile-block">
-            <h2 class="mobile-block-title">更新时间</h2>
-            <div class="mobile-block-desc">{{ $utils.convertTimestamp(workflow.update_time) }}</div>
-          </div>
-        </van-col>
-      </van-row>
-      <van-row v-if="workflow.description">
-        <van-col span="24">
-          <div class="mobile-block">
-            <h2 class="mobile-block-title">描述</h2>
-            <div class="mobile-block-desc">{{workflow.description}}</div>
+            <h2 class="mobile-block-title">成功用例</h2>
+            <div class="mobile-block-desc">
+              {{latestTestSummary.tests -
+              latestTestSummary.failures - latestTestSummary.errors}}
+            </div>
           </div>
         </van-col>
       </van-row>
       <van-row>
-        <van-col span="24">
+        <van-col span="12">
           <div class="mobile-block">
-            <h2 class="mobile-block-title">包含流程</h2>
-            <div class="mobile-block-desc">
-              <van-tag v-if="!$utils.isEmpty(workflow.build_stage) && workflow.build_stage.enabled" type="primary">构建部署</van-tag>
-              <van-tag v-if="!$utils.isEmpty(workflow.artifact_stage) && workflow.artifact_stage.enabled" type="primary">交付物部署</van-tag>
-              <van-tag v-if="!$utils.isEmpty(workflow.distribute_stage) &&  workflow.distribute_stage.enabled" type="primary">分发部署</van-tag>
-              <van-tag v-if="!$utils.isEmpty(workflow.test_stage) &&  workflow.test_stage.enabled" type="primary">测试</van-tag>
-            </div>
+            <h2 class="mobile-block-title">失败用例</h2>
+            <div class="mobile-block-desc">{{latestTestSummary.failures}}</div>
+          </div>
+        </van-col>
+        <van-col span="12">
+          <div class="mobile-block">
+            <h2 class="mobile-block-title">错误用例</h2>
+            <div class="mobile-block-desc">{{latestTestSummary.errors}}</div>
+          </div>
+        </van-col>
+      </van-row>
+      <van-row>
+        <van-col span="12">
+          <div class="mobile-block">
+            <h2 class="mobile-block-title">未执行用例</h2>
+            <div class="mobile-block-desc">{{latestTestSummary.skips}}</div>
+          </div>
+        </van-col>
+        <van-col span="12">
+          <div class="mobile-block">
+            <h2 class="mobile-block-title">测试用时</h2>
+            <div class="mobile-block-desc">{{$utils.timeFormat(parseInt((latestTestSummary.time)))}}</div>
           </div>
         </van-col>
       </van-row>
@@ -46,7 +56,7 @@
         <van-col span="24">
           <div class="mobile-block">
             <h2 class="mobile-block-title">操作</h2>
-            <van-cell is-link title="启动工作流" @click="showAction = true" />
+            <van-cell is-link title="启动测试" @click="showAction = true" />
             <van-action-sheet
               close-on-click-action
               v-model="showAction"
@@ -62,8 +72,8 @@
     <van-divider content-position="left">历史任务</van-divider>
     <div>
       <van-cell
-        v-for="task in workflowTasks"
-        :to="`/mobile/projects/detail/${projectName}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`"
+        v-for="task in testTasks"
+        :to="`/mobile/projects/detail/${projectName}/tests/${task.pipeline_name}/${task.task_id}?status=${task.status}`"
         :key="task.task_id"
       >
         <template #title>
@@ -74,7 +84,9 @@
           <span class="status">
             <van-tag plain :type="$utils.mobileVantTagType(task.status)">{{ myTranslate(task.status) }}</van-tag>
           </span>
-          <span class="env" v-if="task.namespace">{{task.namespace}}</span>
+          <template v-if="task.test_reports">
+            <van-tag plain v-for="(item,testIndex) in task.testSummary" :key="testIndex" color="#909399">{{item.success}}/{{item.total}}</van-tag>
+          </template>
         </template>
         <template #default>
           <span v-if="task.status!=='running'" style="font-size: 13px;">{{ $utils.timeFormat(task.end_time - task.start_time) }}</span>
@@ -85,16 +97,6 @@
         </template>
       </van-cell>
       <van-pagination v-model="currentPage" @change="changeTaskPage" :items-per-page="pageSize" :total-items="total" />
-      <van-popup closeable round v-model="taskDialogVisible" position="bottom" :style="{ height: '70%' }">
-        <RunWorkflow
-          v-if="taskDialogVisible"
-          :workflowName="workflowName"
-          :workflowMeta="workflow"
-          :targetProject="workflow.product_tmpl_name"
-          :forcedUserInput="forcedUserInput"
-          @success="hideAndFetchHistory"
-        />
-      </van-popup>
     </div>
   </div>
 </template>
@@ -102,10 +104,7 @@
 import {
   NavBar,
   Tag,
-  Loading,
   Button,
-  Tab,
-  Tabs,
   Cell,
   CellGroup,
   Icon,
@@ -115,20 +114,16 @@ import {
   ActionSheet,
   List,
   Pagination,
-  Popup
+  Notify
 } from 'vant'
-import { getWorkflowDetailAPI, workflowTaskListAPI } from '@api'
+import { getLatestTestReportAPI, workflowTaskListAPI, runTestsAPI } from '@api'
 import { wordTranslate } from '@utils/wordTranslate.js'
-import RunWorkflow from './runWorkflow.vue'
 import moment from 'moment'
 export default {
   components: {
     [NavBar.name]: NavBar,
     [Tag.name]: Tag,
-    [Loading.name]: Loading,
     [Button.name]: Button,
-    [Tab.name]: Tab,
-    [Tabs.name]: Tabs,
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
     [Icon.name]: Icon,
@@ -138,24 +133,25 @@ export default {
     [ActionSheet.name]: ActionSheet,
     [List.name]: List,
     [Pagination.name]: Pagination,
-    [Popup.name]: Popup,
-    RunWorkflow
+    [Notify.name]: Notify
   },
   data () {
     return {
-      workflow: {},
-      workflowTasks: [],
+      latestTestSummary: {
+        failures: 0,
+        skips: 0,
+        tests: 0,
+        time: 0,
+        errors: 0,
+        successes: 0
+      },
+      testTasks: [],
       actions: [{ name: '启动' }],
       total: 0,
       pageSize: 10,
       currentPage: 1,
-      guideDialog: false,
-      taskDialogVisible: false,
       showAction: false,
-      durationSet: {},
-      forcedUserInput: {},
-      loading: false,
-      finished: true
+      durationSet: {}
     }
   },
   methods: {
@@ -169,15 +165,36 @@ export default {
       this.showAction = false
     },
     runTask () {
-      this.taskDialogVisible = true
-      this.forcedUserInput = {}
+      const projectName = this.projectName
+      const serviceName = this.serviceName
+      const payload = {
+        product_name: projectName,
+        test_name: serviceName
+      }
+      runTestsAPI(payload).then(res => {
+        Notify({
+          type: 'success',
+          message: '任务创建成功'
+        })
+        this.$router.push(
+          `/mobile/projects/detail/${projectName}/tests/${res.pipeline_name}/${res.task_id}?status=running`
+        )
+      })
     },
     hideAndFetchHistory () {
-      this.taskDialogVisible = false
       this.fetchHistory(0, this.pageSize)
     },
+    getLatestTest () {
+      const projectName = this.projectName
+      const serviceName = this.serviceName
+      getLatestTestReportAPI(projectName, serviceName).then(res => {
+        this.latestTestSummary = res
+      })
+    },
     fetchHistory (start, max) {
-      workflowTaskListAPI(this.projectName, this.workflowName, start, max).then(
+      const projectName = this.projectName
+      const testName = this.testName
+      workflowTaskListAPI(projectName, testName, start, max, 'test').then(
         res => {
           res.data.forEach(element => {
             if (element.test_reports) {
@@ -196,10 +213,11 @@ export default {
                   if (val.functionTestSuite) {
                     struct.name = testName
                     struct.type = 'function'
-                    struct.success =
-                      val.functionTestSuite.tests -
-                      val.functionTestSuite.failures -
-                      val.functionTestSuite.errors
+                    struct.success = val.functionTestSuite.successes
+                      ? val.functionTestSuite.successes
+                      : val.functionTestSuite.tests -
+                        val.functionTestSuite.failures -
+                        val.functionTestSuite.errors
                     struct.total = val.functionTestSuite.tests
                     struct.time = val.functionTestSuite.time
                   }
@@ -209,7 +227,7 @@ export default {
               element.testSummary = testArray
             }
           })
-          this.workflowTasks = res.data
+          this.testTasks = res.data
           this.total = res.total
         }
       )
@@ -234,17 +252,18 @@ export default {
     }
   },
   computed: {
-    workflowName () {
-      return this.$route.params.workflow_name
+    testName () {
+      return `${this.$route.params.test_name}-job`
+    },
+    serviceName () {
+      return `${this.$route.params.test_name}`
     },
     projectName () {
       return this.$route.params.project_name
     }
   },
   mounted () {
-    getWorkflowDetailAPI(this.projectName, this.workflowName).then(res => {
-      this.workflow = res
-    })
+    this.getLatestTest()
     this.fetchHistory(0, this.pageSize)
   }
 }

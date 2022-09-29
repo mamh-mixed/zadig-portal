@@ -24,7 +24,7 @@
             <h2 class="mobile-block-title">状态</h2>
             <div class="mobile-block-desc">
               <van-tag size="small"
-                       :type="$utils.mobileElTagType(taskDetail.status)">
+                       :type="$utils.mobileVantTagType(taskDetail.status)">
                 {{ myTranslate(taskDetail.status) }}</van-tag>
             </div>
           </div>
@@ -404,10 +404,15 @@ export default {
     }
   },
   mounted () {
-    if (this.status === 'running') {
-      this.fetchTaskDetail()
-    } else {
+    if (
+      this.status === 'passed' ||
+      this.status === 'failed' ||
+      this.status === 'timeout' ||
+      this.status === 'cancelled'
+    ) {
       this.fetchOldTaskDetail()
+    } else {
+      this.fetchTaskDetail()
     }
   }
 }

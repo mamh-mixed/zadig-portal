@@ -67,6 +67,29 @@
       </van-cell>
     </div>
     <van-empty v-else description="暂无环境" />
+    <van-divider content-position="left">
+      <van-icon class-prefix="iconfont" name="category iconfont iconvery-testing" />
+      <span>测试信息</span>
+    </van-divider>
+    <div v-if="tests.length > 0">
+      <van-cell v-for="test in tests" :to="`/mobile/projects/detail/${test.product_name}/tests/${test.name}`" :key="test.name">
+        <template #title>
+          <span class="test-name">{{test.name}}</span>
+          <template v-if="test.pass_rate">
+            <van-tag v-if="test.pass_rate < 0.5" type="danger" plain>{{ (test.pass_rate * 100).toFixed(2)+'%' }}</van-tag>
+            <van-tag v-if="test.pass_rate > 0.5 && test.pass_rate < 0.8 " type="warning" plain>{{ (test.pass_rate * 100).toFixed(2)+'%' }}</van-tag>
+            <van-tag v-if="test.pass_rate > 0.8" type="success" plain>{{ (test.pass_rate * 100).toFixed(2)+'%' }}</van-tag>
+          </template>
+        </template>
+        <template #label>
+          <span v-if="test.desc"> {{test.desc}} </span>
+        </template>
+        <template #default>
+          <span v-if="test.avg_duration">{{ $utils.timeFormatEn(test.avg_duration) }}</span>
+        </template>
+      </van-cell>
+    </div>
+    <van-empty v-else description="暂无测试" />
   </div>
 </template>
 <script>
@@ -79,16 +102,19 @@ import {
   Icon,
   Divider,
   Sticky,
-  Empty
+  Empty,
+  Tag
 } from 'vant'
 import {
   getEnvInfoAPI,
   listProductAPI,
   getProjectInfoAPI,
-  getCustomWorkflowListAPI
+  getCustomWorkflowListAPI,
+  testsAPI
 } from '@api'
 import { translateEnvStatus } from '@utils/wordTranslate'
 import { wordTranslate } from '@utils/wordTranslate.js'
+import moment from 'moment'
 export default {
   components: {
     [NavBar.name]: NavBar,
@@ -99,12 +125,14 @@ export default {
     [Row.name]: Row,
     [Divider.name]: Divider,
     [Empty.name]: Empty,
-    [Sticky.name]: Sticky
+    [Sticky.name]: Sticky,
+    [Tag.name]: Tag
   },
   data () {
     return {
       envs: [],
       workflows: [],
+      tests: [],
       projectInfo: null
     }
   },
@@ -123,6 +151,18 @@ export default {
           workflow => workflow.workflow_type !== 'common_workflow'
         )
       }
+    },
+    getTests () {
+      const projectName = this.projectName
+      const type = 'function'
+      testsAPI(projectName, type).then(res => {
+        for (const row of res) {
+          row.updateTimeReadable = moment(row.update_time, 'X').format(
+            'YYYY-MM-DD HH:mm:ss'
+          )
+        }
+        this.tests = res
+      })
     },
     getEnvList () {
       const projectName = this.projectName
@@ -145,6 +185,7 @@ export default {
       this.getProject()
       this.getWorkflows()
       this.getEnvList()
+      this.getTests()
     }
   },
   computed: {
@@ -160,7 +201,8 @@ export default {
 <style lang="less">
 .mobile-project-detail {
   .workflow-name,
-  .env-name {
+  .env-name,
+  .test-name {
     color: @themeColor;
   }
 
