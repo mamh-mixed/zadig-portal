@@ -57,10 +57,9 @@
             :label="service.name"
             :value="service"
           >
-            <span v-if="!service.has_build">{{`${service.name}(${service.service_name})`}}</span>
+            <span v-if="!service.has_build">{{`${$utils.tailCut(service.name ,40)}`}}</span>
             <span v-else>
-              <span>{{service.name}}</span>
-              <span style="color: #ccc;">({{service.service_name}})</span>
+              <span>{{$utils.tailCut(service.name,40)}}</span>
             </span>
           </el-option>
         </el-select>
@@ -102,7 +101,7 @@
       <el-collapse>
         <el-collapse-item title="高级设置" name="advanced">
           <el-checkbox v-model="runner.reset_cache">
-            不使用工作空间缓存
+            <span style="font-size: 12px;">使用工作空间缓存</span>
             <el-tooltip effect="dark" content="可能会增加任务时长。如果构建中不使用工作空间缓存，该设置会被忽略" placement="top">
               <span>
                 <i @click.stop.prevent style="color: #909399;" class="el-icon-question"></i>
@@ -111,7 +110,7 @@
           </el-checkbox>
           <br />
           <el-checkbox v-model="runner.ignore_cache">
-            不使用 Docker 缓存
+            <span style="font-size: 12px;">不使用 Docker 缓存</span>
             <el-tooltip effect="dark" content="只对配置了镜像构建步骤的构建生效" placement="top">
               <span>
                 <i @click.stop.prevent style="color: #909399;" class="el-icon-question"></i>
