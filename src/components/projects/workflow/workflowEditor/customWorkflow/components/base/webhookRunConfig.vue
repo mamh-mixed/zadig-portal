@@ -84,12 +84,11 @@
                   <el-option
                     v-for="pro of currentProjectEnvs"
                     :key="`${pro.projectName} / ${pro.name}`"
-                    :label="`${pro.projectName} / ${pro.name}${pro.production?'（生产）':''}`"
+                    :label="`${pro.projectName} / ${pro.name}`"
                     :value="`${pro.name}`"
                   >
                     <span>
                       {{`${pro.projectName} / ${pro.name}`}}
-                      <el-tag v-if="pro.production" type="danger" size="mini" effect="light">生产</el-tag>
                     </span>
                   </el-option>
                 </el-select>

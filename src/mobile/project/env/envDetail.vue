@@ -17,7 +17,7 @@
             <div class="mobile-block">
               <h2 class="mobile-block-title">k8s 集群</h2>
               <div v-if="envInfo.is_local" class="mobile-block-desc">本地集群</div>
-              <div v-else class="mobile-block-desc">{{envInfo.is_prod?envInfo.cluster_name+' (生产集群)':envInfo.cluster_name +' (测试集群)'}}</div>
+              <div v-else class="mobile-block-desc">{{envInfo.cluster_name}}</div>
             </div>
           </van-col>
           <van-col span="12">

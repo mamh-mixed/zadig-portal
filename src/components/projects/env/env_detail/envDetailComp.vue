@@ -16,7 +16,6 @@
             <i v-if="tab.source==='helm'" class="iconfont iconhelmrepo"></i>
             <i v-else-if="tab.source==='spock'" class="el-icon-cloudy"></i>
             {{ $utils.tailCut(tab.name,14) }}
-            <el-tag v-if="tab.production" effect="light" size="mini" type="danger">生产</el-tag>
             <el-tag v-if="tab.source==='external'" effect="light" size="mini" type="primary">托管</el-tag>
             <el-tag v-if="!_.isNil(tab.share_env_is_base) && tab.share_env_is_base" effect="light" size="mini" type="primary">基准环境</el-tag>
             <el-tag
@@ -67,7 +66,7 @@
           <el-col v-if="!pmServiceList.length" :span="12">
             <div class="grid-title">K8s 集群</div>
             <div v-if="productInfo.is_local" class="grid-content">本地集群</div>
-            <div v-else class="grid-content">{{productInfo.is_prod?productInfo.cluster_name+' (生产集群)':productInfo.cluster_name +' (测试集群)'}}</div>
+            <div v-else class="grid-content">{{productInfo.cluster_name}}</div>
           </el-col>
           <el-col :span="12">
             <div class="grid-title">更新时间</div>
