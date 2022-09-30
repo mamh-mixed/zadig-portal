@@ -31,7 +31,7 @@
     </div>
     <div class="controls__wrap">
       <div class="controls__right">
-        <el-button v-hasPermi="{projectName: projectName, actions: ['manage_environment','production:manage_environment'],operator:'or',isBtn:true}" type="primary" size="small" @click="openDialog" :disabled="updateEnvDisabled">
+        <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment',operator:'or',isBtn:true}" type="primary" size="small" @click="openDialog" :disabled="updateEnvDisabled">
           更新环境
         </el-button>
       </div>

@@ -33,7 +33,7 @@
           <el-tooltip v-if="chart.updatable" effect="dark" content="服务配置有变更" placement="top">
             <i class="el-icon-question common-icon"></i>
           </el-tooltip>
-          <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment'})" effect="dark" content="更新服务" placement="top">
+          <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action:'manage_environment',resource:{name:envName,type:'env'}})" effect="dark" content="更新服务" placement="top">
             <i
               class="iconfont icongengxin common-icon pointer"
               :class="[chart.status === 'pending' ? 'disabled' : '']"

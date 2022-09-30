@@ -1,7 +1,7 @@
 <template>
   <div class="env-common-config-container">
     <el-button
-      v-hasPermi="{projectName: projectName, actions: ['production:config_environment','config_environment'],operator:'or',isBtn:true}"
+      v-hasPermi="{projectName: projectName, action: 'config_environment',resource:{name:envName,type:'env'},isBtn:true}"
       type="primary"
       size="small"
       plain
@@ -203,7 +203,12 @@ export default {
           <el-button
             type="text"
             size="mini"
-            v-hasPermi={{ projectName: this.projectName, actions: ['production:get_environment', 'get_environment'], operator: 'or', isBtn: true }}
+            v-hasPermi={{
+              projectName: this.projectName,
+              action: 'get_environment',
+              resource: { name: this.envName, type: 'env' },
+              isBtn: true
+            }}
             onClick={() => {
               this.operateConfig('view', scope.row, scope.$index)
             }}
@@ -213,7 +218,12 @@ export default {
           <el-button
             type="text"
             size="mini"
-            v-hasPermi={{ projectName: this.projectName, actions: ['production:config_environment', 'config_environment'], operator: 'or', isBtn: true }}
+            v-hasPermi={{
+              projectName: this.projectName,
+              action: 'config_environment',
+              resource: { name: this.envName, type: 'env' },
+              isBtn: true
+            }}
             onClick={() => {
               this.operateConfig('edit', scope.row, scope.$index)
             }}
@@ -224,7 +234,12 @@ export default {
           <el-button
             type="text"
             size="mini"
-            v-hasPermi={{ projectName: this.projectName, actions: ['production:get_environment', 'get_environment'], operator: 'or', isBtn: true }}
+            v-hasPermi={{
+              projectName: this.projectName,
+              action: 'get_environment',
+              resource: { name: this.envName, type: 'env' },
+              isBtn: true
+            }}
             onClick={() => {
               this.operateConfig('history', scope.row, scope.$index)
             }}
@@ -234,7 +249,12 @@ export default {
           <el-button
             type="text"
             size="mini"
-            v-hasPermi={{ projectName: this.projectName, actions: ['production:config_environment', 'config_environment'], operator: 'or', isBtn: true }}
+            v-hasPermi={{
+              projectName: this.projectName,
+              action: 'config_environment',
+              resource: { name: this.envName, type: 'env' },
+              isBtn: true
+            }}
             onClick={() => {
               this.deleteConfig(scope.row)
             }}

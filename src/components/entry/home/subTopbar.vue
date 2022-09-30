@@ -14,7 +14,7 @@
             </li>
           </router-link>
           <router-link
-            v-hasPermi="{projectName: projectName, actions: ['get_environment','production:get_environment'],operator:'or'}"
+            v-hasPermi="{projectName: projectName, action: 'get_environment'}"
             active-class="active"
             :to="`/v1/projects/detail/${projectName}/envs`"
           >
@@ -80,7 +80,7 @@
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail`">
         <el-button
-          v-hasPermi="{projectName: projectName, actions: ['create_environment','production:create_environment'],operator:'or',isBtn:true}"
+          v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}"
           @click="bindComp(comp,'env')"
           icon="el-icon-plus"
           plain
