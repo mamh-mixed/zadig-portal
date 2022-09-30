@@ -57,7 +57,7 @@
         <el-tooltip v-if="envSource !== 'pm'" effect="dark" content="变更记录" placement="top">
           <el-button
             type="text"
-            v-hasPermi="{projectName: projectName,action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+            v-hasPermi="{projectName: projectName,action:'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
             icon="el-icon-document"
             class="change-log"
             @click="$router.push(`/v1/projects/detail/${projectName}/envs/${envName}/log`)"
@@ -93,7 +93,7 @@
               <div v-if="editImageRegistry === false">
                 <span>{{imageRegistryDesc}}</span>
                 <i
-                  v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}}"
+                  v-hasPermi="{projectName: projectName, action:'config_environment',resource:{name:envName,type:'env'}}"
                   class="icon el-icon-edit icon-primary"
                   @click="editImageRegistry = true"
                 ></i>
@@ -123,7 +123,7 @@
               >
                 <el-button
                   v-if="productInfo.status!=='Creating'"
-                  v-hasPermi="{projectName: projectName,action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                  v-hasPermi="{projectName: projectName,action:'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                   type="primary"
                   @click="envSource==='helm' ? openUpdateHelmVar() : openUpdateK8sVar()"
                   size="mini"
@@ -135,7 +135,7 @@
                   :to="`/v1/projects/detail/${projectName}/envs/create?createShare=true&baseEnvName=${productInfo.env_name}&clusterId=${productInfo.cluster_id}`"
                 >
                   <el-button
-                    v-hasPermi="{projectName: projectName, action: isProd?'production:create_environment':'create_environment',isBtn:true}"
+                    v-hasPermi="{projectName: projectName, action:'create_environment',isBtn:true}"
                     type="primary"
                     size="mini"
                     plain
@@ -145,7 +145,7 @@
               <template v-if="productInfo.status!=='Disconnected' && productInfo.status!=='Creating'">
                 <el-dropdown v-if="envSource===''||envSource==='spock' || envSource==='helm'" trigger="click">
                   <el-button
-                    v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}})"
+                    v-if="checkPermissionSyncMixin({projectName: projectName, action:'config_environment',resource:{name:envName,type:'env'}})"
                     type="primary"
                     plain
                   >
@@ -157,7 +157,7 @@
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu
-                    v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}})"
+                    v-if="checkPermissionSyncMixin({projectName: projectName, action:'config_environment',resource:{name:envName,type:'env'}})"
                     slot="dropdown"
                   >
                     <el-dropdown-item @click.native="manageServices('add')">添加服务</el-dropdown-item>
@@ -172,7 +172,7 @@
                   placement="top"
                 >
                   <el-button
-                    v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                    v-hasPermi="{projectName: projectName, action:'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                     type="primary"
                     @click="updateK8sEnv(productInfo)"
                     size="mini"
@@ -183,7 +183,7 @@
               <template v-if="envSource==='' || envSource==='spock' || envSource === 'helm'">
                 <el-dropdown trigger="click">
                   <el-button
-                    v-if="checkPermissionSyncMixin({projectName: projectName, actions: isProd?['production:get_environment','get_environment']:['production:config_environment','config_environment'],operator:'or',resource:{name:envName,type:'env'}})"
+                    v-if="checkPermissionSyncMixin({projectName: projectName, actions: ['get_environment','config_environment'],operator:'or',resource:{name:envName,type:'env'}})"
                     type="primary"
                     plain
                   >
@@ -195,7 +195,7 @@
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </el-button>
                   <el-dropdown-menu
-                    v-if="checkPermissionSyncMixin({projectName: projectName, actions: isProd?['production:get_environment','get_environment']:['production:config_environment','config_environment'],operator:'or',resource:{name:envName,type:'env'}})"
+                    v-if="checkPermissionSyncMixin({projectName: projectName, actions:['get_environment','config_environment'],operator:'or',resource:{name:envName,type:'env'}})"
                     slot="dropdown"
                   >
                     <el-dropdown-item @click.native="jumpEnvConfigPage('Ingress')">Ingress</el-dropdown-item>
@@ -213,24 +213,24 @@
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
-                      v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                      v-hasPermi="{projectName: projectName, action: 'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                       v-if="!productInfo.share_env_enable"
                       @click.native="shareEnv('enable')"
                     >开启自测模式</el-dropdown-item>
                     <el-dropdown-item
-                      v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                      v-hasPermi="{projectName: projectName, action: 'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                       v-if="productInfo.share_env_enable && productInfo.share_env_is_base"
                       @click.native="shareEnv('disable')"
                     >关闭自测模式</el-dropdown-item>
                     <el-dropdown-item
-                      v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                      v-hasPermi="{projectName: projectName, action: 'delete_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                       v-if="isShowDeleteEnv"
                       @click.native="deleteEnv(productInfo.product_name,productInfo.env_name)"
                     >删除环境</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                  v-hasPermi="{projectName: projectName, action: 'delete_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                   v-else-if="isShowDeleteEnv && (envSource==='helm'||envSource==='pm') "
                   type="primary"
                   @click="deleteEnv(productInfo.product_name,productInfo.env_name)"
@@ -240,14 +240,14 @@
               </template>
               <template v-if="envSource==='external'">
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: isProd?'production:config_environment':'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                  v-hasPermi="{projectName: projectName, action: 'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                   @click="editExternalConfig(productInfo)"
                   type="primary"
                   size="mini"
                   plain
                 >配置托管</el-button>
                 <el-button
-                  v-hasPermi="{projectName: projectName, action: isProd?'production:delete_environment':'delete_environment',resource:{name:envName,type:'env'}, isBtn:true}"
+                  v-hasPermi="{projectName: projectName, action: 'delete_environment',resource:{name:envName,type:'env'}, isBtn:true}"
                   type="primary"
                   @click="deleteHostingEnv(productInfo.product_name,productInfo.env_name)"
                   size="mini"
@@ -339,7 +339,7 @@
               </router-link>
               <template v-if=" serviceStatus[scope.row.service_name] && serviceStatus[scope.row.service_name]['tpl_updatable']">
                 <el-tooltip
-                  v-hasPermi="{projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'} }"
+                  v-hasPermi="{projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'} }"
                   effect="dark"
                   content="更新主机资源和探活配置"
                   placement="top"
@@ -390,7 +390,7 @@
               </template>
               <div>
                 <span
-                  v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'} })"
+                  v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'} })"
                   class="add-host el-icon-edit-outline"
                   @click="editHost(scope.row)"
                 ></span>
@@ -405,7 +405,7 @@
             <template slot-scope="scope">
               <span class="operation">
                 <el-tooltip
-                  v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})"
+                  v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})"
                   effect="dark"
                   content="通过工作流升级服务"
                   placement="top"
@@ -421,7 +421,7 @@
               </span>
               <span v-if="scope.row.status!=='Succeeded'" class="operation">
                 <el-tooltip
-                  v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'},isBtn:true})"
+                  v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'},isBtn:true})"
                   effect="dark"
                   content="查看服务升级日志"
                   placement="top"
@@ -434,7 +434,7 @@
               </span>
               <span class="operation">
                 <el-tooltip
-                  v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd ?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})"
+                  v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})"
                   effect="dark"
                   content="查看服务配置"
                   placement="top"
