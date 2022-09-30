@@ -683,7 +683,7 @@ const utils = {
     if (cluster.local) {
       return '本地集群'
     } else {
-      return `${cluster.name} （${cluster.production ? '生产集群' : '测试集群'})`
+      return `${cluster.name}`
     }
   },
   showServiceName (unionString, serviceName = '') {
