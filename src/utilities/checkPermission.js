@@ -50,10 +50,44 @@ export function checkPermissionSync (opts) {
       if (!isEmpty(resource) && (!isEmpty(currentProjectPermissions.workflow_verbs_map[resource.name]) || !isEmpty(currentProjectPermissions.environment_verbs_map[resource.name]))) {
         if (resource.type === 'workflow') {
           const resourcePermission = currentProjectPermissions.workflow_verbs_map[resource.name]
-          return resourcePermission.includes(action)
+          if (operator && actions) {
+            if (operator === 'and') {
+              for (const action of actions) {
+                if (!resourcePermission.includes(action)) {
+                  return false
+                }
+              }
+            }
+            if (operator === 'or') {
+              for (const action of actions) {
+                if (resourcePermission.includes(action)) {
+                  return true
+                }
+              }
+            }
+          } else {
+            return resourcePermission.includes(action)
+          }
         } else if (resource.type === 'env') {
           const resourcePermission = currentProjectPermissions.environment_verbs_map[resource.name]
-          return resourcePermission.includes(action)
+          if (operator && actions) {
+            if (operator === 'and') {
+              for (const action of actions) {
+                if (!resourcePermission.includes(action)) {
+                  return false
+                }
+              }
+            }
+            if (operator === 'or') {
+              for (const action of actions) {
+                if (resourcePermission.includes(action)) {
+                  return true
+                }
+              }
+            }
+          } else {
+            return resourcePermission.includes(action)
+          }
         }
       } else {
         return false
@@ -143,10 +177,44 @@ export async function permissionCheckingLogic (opts) {
       if (!isEmpty(resource) && (!isEmpty(currentProjectPermissions.workflow_verbs_map[resource.name]) || !isEmpty(currentProjectPermissions.environment_verbs_map[resource.name]))) {
         if (resource.type === 'workflow') {
           const resourcePermission = currentProjectPermissions.workflow_verbs_map[resource.name]
-          return resourcePermission.includes(action)
+          if (operator && actions) {
+            if (operator === 'and') {
+              for (const action of actions) {
+                if (!resourcePermission.includes(action)) {
+                  return false
+                }
+              }
+            }
+            if (operator === 'or') {
+              for (const action of actions) {
+                if (resourcePermission.includes(action)) {
+                  return true
+                }
+              }
+            }
+          } else {
+            return resourcePermission.includes(action)
+          }
         } else if (resource.type === 'env') {
           const resourcePermission = currentProjectPermissions.environment_verbs_map[resource.name]
-          return resourcePermission.includes(action)
+          if (operator && actions) {
+            if (operator === 'and') {
+              for (const action of actions) {
+                if (!resourcePermission.includes(action)) {
+                  return false
+                }
+              }
+            }
+            if (operator === 'or') {
+              for (const action of actions) {
+                if (resourcePermission.includes(action)) {
+                  return true
+                }
+              }
+            }
+          } else {
+            return resourcePermission.includes(action)
+          }
         }
       } else {
         return false
