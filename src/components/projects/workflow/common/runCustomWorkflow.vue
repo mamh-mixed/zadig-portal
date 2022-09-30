@@ -324,6 +324,7 @@ export default {
           }
           if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
             job.pickedTargets = job.spec.service_and_images
+            this.getRegistryId(job.spec.env)
             this.handleServiceDeployChange(job.pickedTargets)
             setTimeout(() => {
               job.spec.service_and_images = this.originServiceAndBuilds
@@ -627,9 +628,8 @@ export default {
     },
     getRegistryId (val) {
       if (val) {
-        const namespace = val.split('/')[1]
         const res = this.currentProjectEnvs.find(item => {
-          return item.name === namespace
+          return item.name === val
         })
         this.registry_id = res ? res.registry_id : ''
       }
