@@ -98,7 +98,7 @@
       </div>
       <div class="info-body fundamental-ops">
         <template>
-          <router-link v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'}})"
+          <router-link v-if="checkPermissionSyncMixin({projectName: projectName, action: 'get_environment',resource:{name:envName,type:'env'}})"
                        :to="`/v1/projects/detail/${projectName}/envs/detail/${serviceName}/config${window.location.search}`">
             <el-button icon="iconfont iconshare1"
                        type="primary"
@@ -116,7 +116,7 @@
               配置管理
             </el-button>
           </el-tooltip>
-          <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'}})" @click="showExport"
+          <el-button v-if="checkPermissionSyncMixin({projectName: projectName, action: 'get_environment',resource:{name:envName,type:'env'}})" @click="showExport"
                      icon="iconfont iconcloud icon-bold"
                      type="primary"
                      size="small"
@@ -198,7 +198,7 @@
                                 placement="top">
                       <span class="service-image">{{splitImg(item.image) }}</span>
                     </el-tooltip>
-                    <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showEditImage(item)"
+                    <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showEditImage(item)"
                                type="primary"
                                plain
                                size="mini"
@@ -241,7 +241,7 @@
                              width="125px"
                              label="副本数量">
               <template slot-scope="scope">
-                <el-input-number v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})" size="mini"
+                <el-input-number v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})" size="mini"
                                  :min="0"
                                  @change="(currentValue)=>{scaleService(scope.row.name,scope.row.type,currentValue)}"
                                  v-model="scope.row.replicas"></el-input-number>
@@ -254,9 +254,9 @@
             <el-table-column  label="操作"
                              width="220px">
               <template slot-scope="scope">
-                <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="restartService(scope.row.name,scope.row.type)"
+                <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="restartService(scope.row.name,scope.row.type)"
                            size="mini">重启实例</el-button>
-                <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showScaleEvents(scope.row.name,scope.row.type)"
+                <el-button v-hasPermi="{projectName: projectName, action: 'get_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showScaleEvents(scope.row.name,scope.row.type)"
                            size="mini">查看事件</el-button>
               </template>
             </el-table-column>
@@ -323,14 +323,14 @@
                           </el-tooltip>
                           <el-badge v-else value="alpha" class="ephemeral-badge">
                           <el-button @click="openEphemeralContainersDialog(activePod[scope.$index].name)"
-                                     v-hasPermi="{projectName: projectName, action: isProd?'production:debug_pod':'debug_pod',resource:{name:envName,type:'env'},isBtn:true, disabled: activePod[scope.$index].enable_debug_container || !activePod[scope.$index].canOperate}"
+                                     v-hasPermi="{projectName: projectName, action: 'debug_pod',resource:{name:envName,type:'env'},isBtn:true, disabled: activePod[scope.$index].enable_debug_container || !activePod[scope.$index].canOperate}"
                                      :disabled="activePod[scope.$index].enable_debug_container || !activePod[scope.$index].canOperate"
                                      size="small">启动调试容器</el-button>
                           </el-badge>
-                          <el-button style="margin-left: 40px;" v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}}" @click="restartPod(activePod[scope.$index])"
+                          <el-button style="margin-left: 40px;" v-hasPermi="{projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}}" @click="restartPod(activePod[scope.$index])"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      size="small">重启</el-button>
-                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'}}" @click="showPodEvents(activePod[scope.$index])"
+                          <el-button v-hasPermi="{projectName: projectName, action: 'get_environment',resource:{name:envName,type:'env'}}" @click="showPodEvents(activePod[scope.$index])"
                                      size="small">查看事件</el-button>
                         </el-col>
                       </el-row>
@@ -370,11 +370,11 @@
                         </el-col>
                         <el-col :span="5"
                                 class="op-buttons">
-                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:debug_pod':'debug_pod',resource:{name:envName,type:'env'},isBtn:true}" @click="showContainerExec(activePod[scope.$index].name,container.name)"
+                          <el-button v-hasPermi="{projectName: projectName, action: 'debug_pod',resource:{name:envName,type:'env'},isBtn:true}" @click="showContainerExec(activePod[scope.$index].name,container.name)"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      icon="iconfont iconTerminal"
                                      size="small"> 调试</el-button>
-                          <el-button v-hasPermi="{projectName: projectName, action: isProd?'production:get_environment':'get_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showContainerLog(activePod[scope.$index].name,container.name)"
+                          <el-button v-hasPermi="{projectName: projectName, action: 'get_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="showContainerLog(activePod[scope.$index].name,container.name)"
                                      :disabled="!activePod[scope.$index].canOperate"
                                      icon="el-icon-document"
                                      size="small">实时日志</el-button>

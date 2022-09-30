@@ -9,15 +9,9 @@
                  class="full-width">
         <el-option v-for="pro of matchedProducts"
                    :key="`${pro.projectName} / ${pro.name}`"
-                   :label="`${pro.projectName} / ${pro.name}（${pro.is_prod?'生产':'测试'}）`"
+                   :label="`${pro.projectName} / ${pro.name}`"
                    :value="`${pro.projectName} / ${pro.name}`">
           <span>{{`${pro.projectName} / ${pro.name}`}}
-            <el-tag v-if="pro.is_prod"
-                    type="danger"
-                    size="mini"
-                    effect="light">
-              生产
-            </el-tag>
           </span>
         </el-option>
       </el-select>
