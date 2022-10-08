@@ -632,8 +632,8 @@ export function checkRegularAPI (payload) { // {regular: '', branches: []}
   return http.post(`/api/aslan/code/codehost/branches/regular/check`, payload)
 }
 
-export function copyWorkflowAPI (projectName, oldName, newName) {
-  return http.put(`/api/aslan/workflow/workflow/old/${oldName}/new/${newName}?projectName=${projectName}`)
+export function copyWorkflowAPI (projectName, oldName, newName, newDisplay) {
+  return http.put(`/api/aslan/workflow/workflow/old/${oldName}/new/${newName}/${newDisplay}?projectName=${projectName}`)
 }
 
 export function precreateWorkflowTaskAPI (projectName, workflowName, envName) {

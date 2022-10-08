@@ -53,6 +53,7 @@
       <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
+        :displayName="displayName"
         :projectName="projectName"
         @success="hideAfterSuccess"
       />
@@ -91,6 +92,9 @@ export default {
   computed: {
     workflowName () {
       return this.$route.params.workflow_name
+    },
+    displayName () {
+      return this.$route.params.display_name
     },
     workflowID () {
       return this.$route.query.id

@@ -61,6 +61,7 @@
         :projectName="projectName"
         :baseUrl="`/v1/projects/detail/${projectName}/pipelines/multi/${workflowName}`"
         :workflowName="workflowName"
+        :displayName="displayName"
         :functionTestBaseUrl="`/v1/projects/detail/${projectName}/pipelines/multi/testcase/${workflowName}`"
         @cloneTask="rerun"
         @currentChange="changeTaskPage"
@@ -148,6 +149,9 @@ export default {
     },
     workflowName () {
       return this.$route.params.workflow_name
+    },
+    displayName () {
+      return this.$route.query.display_name
     },
     testReportExists () {
       const items = []
@@ -356,7 +360,7 @@ export default {
           title: '工作流',
           url: `/v1/projects/detail/${this.projectName}/pipelines`
         },
-        { title: this.workflowName, url: '' }
+        { title: this.displayName || this.workflowName, url: '' }
       ]
     })
   },

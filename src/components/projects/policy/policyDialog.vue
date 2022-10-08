@@ -20,7 +20,7 @@
             <span class="member" v-for="member in changedInfo[key].members" :key="member">{{ member }}</span>
           </div>
           <div v-for="workflow in changedInfo[key].workflows" :key="workflow.name">
-            {{ workflow.collaboration_type === 'new' ? '独享': '共享' }}工作流 {{ workflow.name }} ：
+            {{ workflow.collaboration_type === 'new' ? '独享': '共享' }}工作流 {{ workflow.display_name }} ：
             <span
               v-for="(verb, index) in workflow.verbs"
               :key="verb"

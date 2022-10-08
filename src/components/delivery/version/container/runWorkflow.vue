@@ -143,7 +143,7 @@ export default {
         const pipelineName = res.pipeline_name
         this.$message.success('创建成功')
         this.$emit('success')
-        this.$router.push(`/v1/projects/detail/${projectName}/pipelines/multi/${pipelineName}/${taskId}?status=running`)
+        this.$router.push(`/v1/projects/detail/${projectName}/pipelines/multi/${pipelineName}/${taskId}?status=running&display_name=${displayName}`)
       }).catch(error => {
         console.log(error)
         if (error.response && error.response.data.code === 6168) {

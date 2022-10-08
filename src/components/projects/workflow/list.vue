@@ -29,6 +29,23 @@
                 </div>
                 <el-input v-model="keyword" placeholder="搜索工作流" class="search-workflow" prefix-icon="el-icon-search" clearable></el-input>
               </div>
+              <!-- <div class="view">
+                <div>
+                  <el-radio-group v-model="view">
+                    <el-radio-button label="所有"></el-radio-button>
+                    <el-radio-button label="北京"></el-radio-button>
+                    <el-radio-button label="广州"></el-radio-button>
+                    <el-radio-button label="深圳"></el-radio-button>
+                  </el-radio-group>
+                  <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start">
+                    <el-button icon="el-icon-plus" circle @click="isShowViewDialog=true" size="small"></el-button>
+                  </el-tooltip>
+                </div>
+                <div>
+                  <el-button type="primary" size="middle">编辑视图</el-button>
+                  <el-button type="danger">删除视图</el-button>
+                </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -67,6 +84,7 @@
       <RunProductWorkflow
         v-if="workflowToRun.name"
         :workflowName="workflowToRun.name"
+        :displayName="workflowToRun.display_name"
         :workflowMeta="workflowToRun"
         :targetProject="workflowToRun.product_tmpl_name"
         @success="hideProductTaskDialog"
@@ -80,9 +98,28 @@
       <RunCustomWorkflow
         v-if="workflowToRun.name"
         :workflowName="workflowToRun.name"
+        :displayName="workflowToRun.display_name"
         :projectName="projectName"
         @success="hideAfterSuccess"
       />
+    </el-dialog>
+    <el-dialog title="编辑视图" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
+      <el-form :model="form" ref="ruleForm">
+        <el-form-item label="视图名称">
+          <el-input v-model="form.view" placeholder="搜索工作流" class="search-workflow" prefix-icon="el-icon-search" clearable></el-input>
+        </el-form-item>
+       <el-form-item label="选择工作流">
+          <el-checkbox-group v-model="form.checkList">
+            <el-checkbox label="复选框 A"></el-checkbox>
+            <el-checkbox label="复选框 B"></el-checkbox>
+            <el-checkbox label="复选框 C"></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button type="primary" size="small" @click="submitForm('ruleForm')">确定</el-button>
+        <el-button size="small" @click="resetForm('ruleForm')">取消</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -125,7 +162,10 @@ export default {
 
       showStartCommonWorkflowBuild: false,
       isShowRunCustomWorkflowDialog: false,
-      commonToRun: {}
+      commonToRun: {},
+      view: '所有',
+      isShowViewDialog: false,
+      form: {}
     }
   },
   provide () {
@@ -359,7 +399,7 @@ export default {
     copyWorkflow (workflow) {
       const oldName = workflow.name
       const projectName = workflow.projectName
-      this.$prompt('请输入新的产品工作流名称', '复制工作流', {
+      this.$prompt('新工作流名称', '复制工作流', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValidator: newName => {
@@ -406,6 +446,25 @@ export default {
     startCommonWorkflowBuild (worflow) {
       this.commonToRun = worflow
       this.showStartCommonWorkflowBuild = true
+    },
+    submitForm (formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.copyWorkflowReq(
+            this.projectName,
+            this.curWorkflow.name,
+            this.copyWorkflowInfo.name,
+            this.copyWorkflowInfo.display_name
+          )
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
+      this.isShowCopyDialog = false
     }
   },
   created () {
@@ -555,6 +614,12 @@ export default {
           .search-workflow {
             width: 400px;
           }
+        }
+
+        .view {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 16px;
         }
       }
     }

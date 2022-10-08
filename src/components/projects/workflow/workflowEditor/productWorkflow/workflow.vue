@@ -94,6 +94,7 @@ export default {
     return {
       fromRoute: null,
       workflowInfo: {
+        display_name: '',
         name: '',
         enabled: true,
         product_tmpl_name: '',
@@ -267,7 +268,7 @@ export default {
           if (this.$route.query.from) {
             this.$router.push(this.$route.query.from)
           } else {
-            this.$router.push(`/v1/projects/detail/${this.workflowInfo.product_tmpl_name}/pipelines/multi/${this.workflowInfo.name}`)
+            this.$router.push(`/v1/projects/detail/${this.workflowInfo.product_tmpl_name}/pipelines/multi/${this.workflowInfo.name}?display_name=${this.workflowInfo.display_name}`)
           }
         })
       }).catch(err => console.log(err))

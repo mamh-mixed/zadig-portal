@@ -1,6 +1,7 @@
 <template>
   <ProductWorkflowRow
     :workflowInfo="workflow"
+    :displayName="workflow.display_name"
     :name="workflow.name"
     :isFavorite="workflow.isFavorite || false"
     :type="workflow.workflow_type === 'common_workflow' ? 'common_workflow' : 'workflow'"
@@ -102,6 +103,23 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <el-dialog :visible.sync="isShowCopyDialog" title="复制工作流" width="40%">
+        <el-form :model="copyWorkflowInfo" @submit.native.prevent ref="copyForm" :rules="rules" label-width="120px">
+          <el-form-item label="新工作流名称" prop="display_name">
+            <el-input v-model="copyWorkflowInfo.display_name" placeholder="新工作流名称" size="small"></el-input>
+          </el-form-item>
+          <el-form-item label="新工作流标识" prop="name">
+            <el-input v-model="copyWorkflowInfo.name" :disabled="!editProjectName" placeholder="新工作流标识" size="small" class="name"></el-input>
+            <span @click="editProjectName = editProjectName ? false : true" class="edit-btn">
+              <i :class="[editProjectName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+            </span>
+          </el-form-item>
+        </el-form>
+        <span slot="footer">
+          <el-button type="primary" size="small" @click="submitForm('copyForm')">确定</el-button>
+          <el-button size="small" @click="resetForm('copyForm')">取消</el-button>
+        </span>
+      </el-dialog>
     </template>
   </ProductWorkflowRow>
 </template>
@@ -110,13 +128,40 @@
 import ProductWorkflowRow from './productRow.vue'
 import mixins from '@/mixin/virtualScrollListMixin'
 import { wordTranslate } from '@utils/wordTranslate.js'
-import { getWorkflowDetailAPI, updateWorkflowAPI } from '@api'
+import { getWorkflowDetailAPI, updateWorkflowAPI, copyWorkflowAPI } from '@api'
+const pinyin = require('pinyin')
+
 export default {
   name: 'workflow-list-item',
   mixins: [mixins],
   data () {
     return {
-      workflowInfo: null
+      workflowInfo: null,
+      copyWorkflowInfo: {
+        display_name: '',
+        name: ''
+      },
+      editProjectName: false,
+      isShowCopyDialog: false,
+      rules: {
+        display_name: [
+          {
+            type: 'string',
+            required: true,
+            trigger: ['blur', 'change'],
+            message: '请输入工作流名称'
+          }
+        ],
+        name: [
+          {
+            type: 'string',
+            required: true,
+            message: '请输入工作流标识',
+            // validator: this.validatePipelineName,
+            trigger: ['blur', 'change']
+          }
+        ]
+      }
     }
   },
   props: {
@@ -133,7 +178,7 @@ export default {
   inject: [
     'startProductWorkflowBuild',
     'startCustomWorkflowBuild',
-    'copyWorkflow',
+    // 'copyWorkflow',
     'deleteProductWorkflow',
     'renamePipeline',
     'startCommonWorkflowBuild',
@@ -161,6 +206,39 @@ export default {
     }
   },
   methods: {
+    copyWorkflow (workflow) {
+      this.curWorkflow = workflow
+      this.isShowCopyDialog = true
+    },
+    copyWorkflowReq (projectName, oldName, newName, newDisplay) {
+      copyWorkflowAPI(projectName, oldName, newName, newDisplay).then(() => {
+        this.$message({
+          message: '复制流水线成功',
+          type: 'success'
+        })
+        this.refreshWorkflow(this.projectName)
+        this.isShowCopyDialog = false
+      })
+    },
+    submitForm (formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.copyWorkflowReq(
+            this.projectName,
+            this.curWorkflow.name,
+            this.copyWorkflowInfo.name,
+            this.copyWorkflowInfo.display_name
+          )
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
+      this.isShowCopyDialog = false
+    },
     makeAvgRunTime (number) {
       if (number > 0) {
         return number.toFixed(1) + 's'
@@ -178,9 +256,9 @@ export default {
     makeTaskDetailLink (projectName, taskInfo, type) {
       if (taskInfo) {
         if (type === 'common_workflow') {
-          return `/v1/projects/detail/${projectName}/pipelines/custom/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+          return `/v1/projects/detail/${projectName}/pipelines/custom/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}&display_name=${this.workflow.display_name}`
         } else {
-          return `/v1/projects/detail/${projectName}/pipelines/multi/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}`
+          return `/v1/projects/detail/${projectName}/pipelines/multi/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}&display_name=${this.workflow.display_name}`
         }
       } else {
         return ''
@@ -222,6 +300,15 @@ export default {
   },
   components: {
     ProductWorkflowRow
+  },
+  watch: {
+    'copyWorkflowInfo.display_name': {
+      handler (val, old_val) {
+        this.copyWorkflowInfo.name = pinyin(val, {
+          style: pinyin.STYLE_NORMAL
+        }).join('')
+      }
+    }
   }
 }
 </script>
@@ -246,6 +333,10 @@ export default {
   &:hover {
     border-color: @borderGray;
   }
+}
+
+.name {
+  width: calc(~'100% - 20px');
 }
 
 .more-operation {

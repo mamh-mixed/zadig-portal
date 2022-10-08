@@ -237,6 +237,9 @@ export default {
     workflowName () {
       return this.$route.params.workflow_name
     },
+    displayName () {
+      return this.$route.params.display_name
+    },
     projectName () {
       return this.$route.params.project_name
     }

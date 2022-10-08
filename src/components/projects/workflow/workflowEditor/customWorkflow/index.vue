@@ -3,7 +3,8 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.name" placeholder="工作流名称" :from="activeName" :disabled="!!isEdit" class="mg-r16" />
+          <CanInput v-model="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
+          <CanInput v-model="payload.name" placeholder="工作流标识" :from="activeName" :disabled="!!isEdit"   class="mg-r8" />
           <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
@@ -250,6 +251,8 @@ import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
+const pinyin = require('pinyin')
+
 export default {
   name: 'CustomWorkflow',
   data () {
@@ -281,6 +284,7 @@ export default {
       },
       stageOperateType: 'add',
       payload: {
+        display_name: '',
         name: '',
         project: '',
         description: '',
@@ -442,8 +446,12 @@ export default {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
-      if (!this.payload.name) {
+      if (!this.payload.display_name) {
         this.$message.error(' 请填写工作流名称')
+        return
+      }
+      if (!this.payload.name) {
+        this.$message.error(' 请填写工作流标识')
         return
       }
       if (this.payload.stages.length === 0) {
@@ -536,7 +544,7 @@ export default {
             this.getWorkflowDetail(this.payload.name)
             if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
               this.$router.push(
-                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
               )
             }
           })
@@ -962,6 +970,15 @@ export default {
         }
       },
       deep: true
+    },
+    'payload.display_name': {
+      handler (val, old_val) {
+        if (!this.isEdit) {
+          this.payload.name = pinyin(val, {
+            style: pinyin.STYLE_NORMAL
+          }).join('')
+        }
+      }
     }
   }
 }
