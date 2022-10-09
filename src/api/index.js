@@ -2288,3 +2288,20 @@ export function getTestJunitReportAPI (workflowName, taskID, jobName, projectNam
 export function getTestFileListAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/workspace/workflowv4/${workflowName}/taskId/${taskID}/job/${jobName}?projectName=${projectName}`)
 }
+
+// workflow view
+export function getViewPresetAPI (projectName, viewName) {
+  return http.get(`/api/workflow/view/preset?projectName=${projectName}&viewName=${viewName}`)
+}
+export function getViewListAPI (projectName) {
+  return http.get(`/api/workflow/view?projectName=${projectName}`)
+}
+export function addViewAPI (payload) {
+  return http.post(`/api/workflow/view`, payload)
+}
+export function editViewAPI (payload) {
+  return http.put(`/api/workflow/view`, payload)
+}
+export function deleteViewAPI (projectName, viewName) {
+  return http.delete(`/api/workflow/view/${projectName}/${viewName}`)
+}

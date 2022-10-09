@@ -77,6 +77,7 @@
       <run-workflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
+        :displayName="displayName"
         :workflowMeta="workflow"
         :targetProject="workflow.product_tmpl_name"
         :forcedUserInput="forcedUserInput"

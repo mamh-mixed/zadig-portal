@@ -29,23 +29,21 @@
                 </div>
                 <el-input v-model="keyword" placeholder="搜索工作流" class="search-workflow" prefix-icon="el-icon-search" clearable></el-input>
               </div>
-              <!-- <div class="view">
+              <div class="view">
                 <div>
-                  <el-radio-group v-model="view">
+                  <el-radio-group v-model="view" >
                     <el-radio-button label="所有"></el-radio-button>
-                    <el-radio-button label="北京"></el-radio-button>
-                    <el-radio-button label="广州"></el-radio-button>
-                    <el-radio-button label="深圳"></el-radio-button>
+                    <el-radio-button v-for="(item,index) in viewList" :key="index" label="item"></el-radio-button>
                   </el-radio-group>
-                  <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start">
-                    <el-button icon="el-icon-plus" circle @click="isShowViewDialog=true" size="small"></el-button>
+                  <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start" v-if="isProjectAdmin">
+                    <el-button icon="el-icon-plus" circle @click="operate('add')" size="small"></el-button>
                   </el-tooltip>
                 </div>
-                <div>
-                  <el-button type="primary" size="middle">编辑视图</el-button>
-                  <el-button type="danger">删除视图</el-button>
+                <div v-if="view!=='所有'&&isProjectAdmin">
+                  <el-button type="primary"  @click="operate('edit')">编辑视图</el-button>
+                  <el-button type="danger"  @click="delView">删除视图</el-button>
                 </div>
-              </div> -->
+              </div>
             </div>
           </div>
         </div>
@@ -103,22 +101,20 @@
         @success="hideAfterSuccess"
       />
     </el-dialog>
-    <el-dialog title="编辑视图" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
-      <el-form :model="form" ref="ruleForm">
-        <el-form-item label="视图名称">
-          <el-input v-model="form.view" placeholder="搜索工作流" class="search-workflow" prefix-icon="el-icon-search" clearable></el-input>
+    <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
+      <el-form :model="viewForm" ref="viewForm">
+        <el-form-item label="视图名称" prop="view" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
+          <el-input v-model="viewForm.view" placeholder="视图名称" clearable></el-input>
         </el-form-item>
-       <el-form-item label="选择工作流">
-          <el-checkbox-group v-model="form.checkList">
-            <el-checkbox label="复选框 A"></el-checkbox>
-            <el-checkbox label="复选框 B"></el-checkbox>
-            <el-checkbox label="复选框 C"></el-checkbox>
+        <el-form-item label="选择工作流" prop="checkList" :rules="{required: true, message: '请选择工作流', trigger: ['blur', 'change']}">
+          <el-checkbox-group v-model="viewForm.checkList" style="width: 100%; max-height: 500px; overflow-y: auto;">
+            <el-checkbox :label="item.name" v-for="item in presetWorkflows" :key="item.name" style="display: block;"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" size="small" @click="submitForm('ruleForm')">确定</el-button>
-        <el-button size="small" @click="resetForm('ruleForm')">取消</el-button>
+        <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
+        <el-button size="small" @click="resetForm('viewForm')">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -138,7 +134,12 @@ import {
   getCommonWorkflowListAPI,
   getCustomWorkflowListAPI,
   getCustomWorkfloweTaskPresetAPI,
-  deleteWorkflowAPI
+  deleteWorkflowAPI,
+  getViewPresetAPI,
+  deleteViewAPI,
+  getViewListAPI,
+  addViewAPI,
+  editViewAPI
 } from '@api'
 import bus from '@utils/eventBus'
 import { mapGetters } from 'vuex'
@@ -164,8 +165,14 @@ export default {
       isShowRunCustomWorkflowDialog: false,
       commonToRun: {},
       view: '所有',
+      operateType: 'add',
+      viewList: [],
+      presetWorkflows: [],
       isShowViewDialog: false,
-      form: {}
+      viewForm: {
+        view: '',
+        checkList: []
+      }
     }
   },
   provide () {
@@ -226,6 +233,15 @@ export default {
         this.workflows
       )
       return list
+    },
+    isProjectAdmin () {
+      if (this.$utils.roleCheck('admin')) {
+        return true
+      } else if (this.userBindings.length > 0) {
+        return this.userBindings.some(item => item.role === 'project-admin')
+      } else {
+        return false
+      }
     }
   },
   watch: {
@@ -447,24 +463,75 @@ export default {
       this.commonToRun = worflow
       this.showStartCommonWorkflowBuild = true
     },
+    async getUserBinding (projectName) {
+      const userInfo = store.get('userInfo')
+      const userBindings = await queryUserBindingsAPI(
+        userInfo.uid,
+        projectName
+      ).catch(error => console.log(error))
+      if (userBindings) {
+        this.userBindings = userBindings
+      }
+    },
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.copyWorkflowReq(
-            this.projectName,
-            this.curWorkflow.name,
-            this.copyWorkflowInfo.name,
-            this.copyWorkflowInfo.display_name
-          )
+          this.$refs[formName].resetFields()
+          this.isShowViewDialog = false
         } else {
-          console.log('error submit!!')
           return false
         }
       })
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
-      this.isShowCopyDialog = false
+      this.isShowViewDialog = false
+    },
+    getViewList () {
+      getViewListAPI(this.projectName).then(res => {
+        this.viewList = res
+      })
+    },
+    getPresetViewWorkflow () {
+      getViewPresetAPI(this.projectName, this.view).then(res => {
+        this.presetWorkflows = res
+      })
+    },
+    operate (type) {
+      this.isShowViewDialog = true
+      this.operateType = type
+      const params = Object.assign(this.viewForm, { project_name: this.projectName })
+      if (type === 'add') {
+        addViewAPI(params).then(res => {
+          this.$message({
+            message: '新增成功',
+            type: 'success'
+          })
+        })
+      } else {
+        editViewAPI(params).then(res => {
+          this.$message({
+            message: '编辑成功',
+            type: 'success'
+          })
+          this.getViewList()
+        })
+      }
+    },
+    delView () {
+      this.$confirm(`确定要删除 ${this.view} ?`, '确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(({ value }) => {
+        deleteViewAPI(id, this.projectName).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.getViewList()
+        })
+      })
     }
   },
   created () {
@@ -489,6 +556,7 @@ export default {
         ]
       })
     }
+    this.getUserBinding(this.projectName)
   },
   components: {
     RunProductWorkflow,

@@ -57,8 +57,8 @@
             <template slot-scope="{ row }">
               <router-link
                 class="pipeline-name"
-                :to=" row.workflow_type === 'common_workflow'? `/v1/projects/detail/${projectName}/pipelines/custom/${row.name}`  :  `/v1/projects/detail/${projectName}/pipelines/multi/${row.name}`"
-              >{{row.name}}</router-link>
+                :to=" row.workflow_type === 'common_workflow'? `/v1/projects/detail/${projectName}/pipelines/custom/${row.name}?display_name=${row.display_name}`  :  `/v1/projects/detail/${projectName}/pipelines/multi/${row.name}?display_name=${row.display_name}`"
+              >{{row.display_name}}</router-link>
               <el-tag v-if="row.workflow_type === 'common_workflow'" size="mini" class="mg-l16">自定义</el-tag>
             </template>
           </el-table-column>
