@@ -1,0 +1,71 @@
+.trigger-types-dialog {
+  .el-dialog__body {
+    .trigger-types-container {
+      .trigger-item {
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+        margin: 14px 0;
+        padding: 10px 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+
+        .icon {
+          display: flex;
+          margin-right: 20px;
+
+          span {
+            font-size: 24px;
+          }
+        }
+
+        .detail {
+          display: flex;
+          flex-direction: column;
+
+          .trigger-title {
+            margin: 0;
+            color: #4a4a4a;
+            font-weight: 400;
+            font-size: 15px;
+          }
+
+          .trigger-desc {
+            margin-top: 4px;
+            color: #909399;
+            font-size: 14px;
+          }
+        }
+
+        &:hover {
+          border: 1px solid @themeColor;
+
+          .icon {
+            color: @themeColor;
+          }
+        }
+      }
+    }
+  }
+}
+
+.trigger-edit-dialog {
+  .el-dialog {
+    .el-dialog__body {
+      .el-form {
+        .el-form-item {
+          .inline-show {
+            display: flex;
+            flex-direction: row;
+
+            & > div {
+              margin-right: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

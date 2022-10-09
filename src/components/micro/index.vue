@@ -130,4 +130,5 @@ export default {
 <style lang="less">
 // popover style
 @import url('./css/popover-pcc.less');
+@import url('./css/dialog-webhook.less');
 </style>
