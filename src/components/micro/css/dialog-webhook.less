@@ -52,12 +52,20 @@
 }
 
 .trigger-edit-dialog {
-  .inline-show {
-    display: flex;
-    flex-direction: row;
+  .el-dialog {
+    .el-dialog__body {
+      .el-form {
+        .el-form-item {
+          .inline-show {
+            display: flex;
+            flex-direction: row;
 
-    & > div {
-      margin-right: 10px;
+            & > div {
+              margin-right: 10px;
+            }
+          }
+        }
+      }
     }
   }
 }
