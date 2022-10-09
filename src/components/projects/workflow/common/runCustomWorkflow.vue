@@ -263,7 +263,7 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            job.checked = true
+            this.$set(job, 'checked', true)
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
@@ -393,7 +393,7 @@ export default {
         res => {
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
-              job.checked = true
+              this.$set(job, 'checked', true)
               if (job.type === 'zadig-deploy') {
                 // Mapping for value-key
                 if (
