@@ -12,10 +12,7 @@
         class="full-width"
       >
         <el-option v-for="(ser,index) of allServices" :key="index" :label="ser.name" :value="ser">
-          <span>
-            <span>{{ser.name}}</span>
-            <span style="color: #ccc;">({{ser.service_name}})</span>
-          </span>
+           <span>{{$utils.tailCut(ser.name,40)}}</span>
         </el-option>
       </el-select>
     </el-form-item>
