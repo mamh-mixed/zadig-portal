@@ -75,7 +75,7 @@
       <!--apps-create-dialog-->
 
       <!--apps-edit-dialog-->
-      <el-dialog title='修改软件包'
+      <el-dialog :title='`修改软件包-${swapApp.name} ${swapApp.version}`'
                  width="55%"
                  custom-class="create-app-dialog"
                  :close-on-click-modal="false"
@@ -158,74 +158,51 @@
                      @change="changeProxy"></el-switch>
         </div>
         <div class="app-list">
-          <template>
-            <el-table :data="availableApps"
-                      style="width: 100%;">
-              <el-table-column label="名称">
-                <template slot-scope="scope">
-                  <span>{{scope.row.name}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="版本">
-                <template slot-scope="scope">
-                  <el-select v-model="defaultVersion[scope.row.name]"
-                             size="small"
-                             placeholder="请选择">
-                    <el-option v-for="item in appBucket[scope.row.name]"
-                               :key="item.version"
-                               :label="item.version"
-                               :value="item.version">
-                    </el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="更新时间">
-                <template slot-scope="scope">
-                  <i class="el-icon-time"></i>
-                  <span style="margin-left: 10px;">{{
-                  $utils.convertTimestamp(selectedApp(scope.row.name,defaultVersion[scope.row.name],"update_time"))
-                  }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="更新人">
-                <template slot-scope="scope">
-                  <span style="margin-left: 10px;">{{
-                  selectedApp(scope.row.name,defaultVersion[scope.row.name],"update_by") }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button @click="appOperation('edit',selectedApp(scope.row.name,defaultVersion[scope.row.name]))"
-                             type="primary"
-                             size="mini" plain>编辑</el-button>
-                  <el-popover v-model="showPopper[scope.row.name]"
-                              trigger="click"
-                              placement="top"
-                              width="260"
-                              style="display: inline-block;">
-                    <p>软件包删除可能会影响正在使用的工作流，确定删除软件包 {{scope.row.name}} 的
-                      {{defaultVersion[scope.row.name]}} 版本吗？</p>
-                    <div style=" margin: 0; text-align: right;">
-                      <el-button size="mini"
-                                 @click="showPopper[scope.row.name]=false"
-                                 type="text">取消</el-button>
-                      <el-button type="primary"
-                                 @click="appOperation('delete',selectedApp(scope.row.name,defaultVersion[scope.row.name]))"
-                                 size="mini">确定</el-button>
-                    </div>
-                    <div slot="reference">
-                      <el-button size="mini"
-                                 @click="showDeleteModal(scope.row.name)"
-                                 type="danger" plain>删除</el-button>
-                    </div>
-                  </el-popover>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
+          <el-collapse v-model="activeApps">
+            <el-collapse-item v-for="(app,key) of appBucket" :key="key" :title="key" :name="key">
+              <template slot="title">
+                <span style="color: #4a4a4a; font-weight: 400; font-size: 16px;">{{key}}</span>
+              </template>
+              <el-table v-if="app.length > 0" :data="app"
+                        style="width: 100%;">
+                <el-table-column label="版本">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.version}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="启用">
+                  <template slot-scope="scope">
+                    <i v-if="scope.row.enabled" style="color: #67c23a;" class="el-icon-circle-check"></i>
+                    <i v-else style="color: #f56c6c;" class="el-icon-circle-close"></i>
+                  </template>
+                </el-table-column>
+                <el-table-column label="更新时间">
+                  <template slot-scope="scope">
+                    <i class="el-icon-time"></i>
+                    <span style="margin-left: 5px;">{{$utils.convertTimestamp(scope.row.update_time)}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="更新人">
+                  <template slot-scope="scope">
+                    <span>{{scope.row.update_by }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button @click="appOperation('edit',scope.row)"
+                               type="primary"
+                               size="mini" plain>编辑</el-button>
+                    <el-button size="mini"
+                               @click="deleteApp(scope.row)"
+                               type="danger" plain>删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-collapse-item>
+          </el-collapse>
+
         </div>
       </div>
-
     </div>
 </template>
 
@@ -272,7 +249,7 @@ export default {
       dialogAppDelVisible: false,
       loading: true,
       availableApps: [],
-      showPopper: {},
+      activeApps: [],
       rules: {
         name: [{ required: true, message: '请填写软件包名称', trigger: 'blur' }],
         version: [{ required: true, message: '请填写软件包版本', trigger: 'blur' }],
@@ -282,7 +259,7 @@ export default {
     }
   },
   methods: {
-    appOperation (operate, current_app) {
+    appOperation (operate, currentApp) {
       if (operate === 'add') {
         this.$refs.createApp.validate((valid) => {
           if (valid) {
@@ -294,7 +271,7 @@ export default {
         })
       } else if (operate === 'edit') {
         this.dialogAppEditFormVisible = true
-        this.swapApp = current_app
+        this.swapApp = currentApp
       } else if (operate === 'update') {
         this.$refs.updateApp.validate((valid) => {
           if (valid) {
@@ -306,7 +283,7 @@ export default {
           }
         })
       } else if (operate === 'delete') {
-        this.deleteApp(current_app)
+        this.deleteApp(currentApp)
       } else if (operate === 'cancel') {
         this.getApps()
       }
@@ -355,35 +332,26 @@ export default {
         this.resetForm('updateApp')
       })
     },
-    showDeleteModal (name) {
-      this.$set(this.showPopper, name, false)
-    },
     deleteApp (data) {
-      deleteAppAPI(data).then(response => {
+      this.$confirm(`软件包删除可能会影响正在使用的工作流，确定删除 ${data.name} 的 ${data.version} 版本吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteAppAPI(data).then(response => {
+          this.getApps()
+          this.$message({
+            message: '软件包已删除',
+            type: 'success'
+          })
+        })
         this.getApps()
+      }).catch(() => {
         this.$message({
-          message: '软件包已删除',
-          type: 'success'
-        })
-      }).catch(response => {
-        this.$message({
-          message: '软件包删除失败',
-          type: 'error'
+          type: 'info',
+          message: '已取消删除'
         })
       })
-    },
-    selectedApp (name, _version, _prop) {
-      let _app = null
-      this.appBucket[name].forEach(app => {
-        if (app.version === _version) {
-          _app = app
-        }
-      })
-      if (_prop) {
-        return _app[_prop]
-      } else {
-        return _app
-      }
     },
     getApps () {
       this.loading = true
@@ -392,26 +360,26 @@ export default {
         response => {
           this.loading = false
           const apps = this.$utils.sortVersion(response, 'version', 'asc')
-          this.availableApps = []
+          const unsortAppBucket = {}
           this.appBucket = {}
+          this.activeApps = []
           apps.forEach((app, index) => {
-            this.$set(this.appBucket, app.name, [])
-            this.$set(this.showPopper, app.name, false)
-            this.$set(this.defaultVersion, app.name, app.version)
+            unsortAppBucket[app.name] = []
           })
           apps.forEach((app, index) => {
-            this.appBucket[app.name].push(app)
+            unsortAppBucket[app.name].push(app)
           })
-          for (const app_name in this.appBucket) {
-            if (Object.prototype.hasOwnProperty.call(this.appBucket, app_name)) {
-              this.appBucket[app_name] = this.$utils.sortVersion(this.appBucket[app_name], 'version', 'asc')
+          Object.keys(unsortAppBucket).sort().forEach(item => {
+            this.appBucket[item] = unsortAppBucket[item]
+          })
+          for (const appName in this.appBucket) {
+            if (Object.prototype.hasOwnProperty.call(this.appBucket, appName)) {
+              this.appBucket[appName] = this.$utils.sortVersion(this.appBucket[appName], 'version', 'asc')
             }
           }
           for (const key in this.appBucket) {
             if (Object.prototype.hasOwnProperty.call(this.appBucket, key)) {
-              this.availableApps.push({
-                name: key
-              })
+              this.activeApps.push(key)
             }
           }
         }
@@ -448,9 +416,6 @@ export default {
         this.$message.error(`获取代理配置失败：${error}`)
       })
     }
-  },
-  computed: {
-
   },
   created () {
     bus.$emit('set-topbar-title', { title: '软件包管理', breadcrumb: [] })
@@ -513,6 +478,22 @@ export default {
 
     .app-list {
       padding-bottom: 30px;
+
+      .el-collapse-item__arrow {
+        margin: 0 0 0 4px;
+      }
+
+      .el-collapse-item__header {
+        border-bottom: none;
+      }
+
+      .el-collapse-item__content {
+        padding-bottom: 0;
+      }
+
+      .el-collapse-item__wrap {
+        border-bottom: none;
+      }
     }
   }
 }
