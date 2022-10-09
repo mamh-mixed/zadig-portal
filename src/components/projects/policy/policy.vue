@@ -270,6 +270,7 @@ export default {
   methods: {
     updateSelectedWorkflow (row) {
       row.workflow_type = this.workflowList.find(workflow => workflow.name === row.name).workflow_type
+      row.display_name = this.workflowList.find(workflow => workflow.name === row.name).display_name
     },
     getProjectUsers () {
       queryRoleBindingsAPI(this.projectName).then(res => {
@@ -354,6 +355,7 @@ export default {
       this.validate('workflow').then(res => {
         this.collaborationData.workflows.push({
           name: '',
+          display_name: '',
           collaboration_type: 'share',
           verbs: this.policy.workflow.sharePermi.map(data => data.action),
           workflow_type: '',

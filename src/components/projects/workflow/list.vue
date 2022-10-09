@@ -103,12 +103,12 @@
     </el-dialog>
     <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
       <el-form :model="viewForm" ref="viewForm">
-        <el-form-item label="视图名称" prop="view" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
-          <el-input v-model="viewForm.view" placeholder="视图名称" clearable></el-input>
+        <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
+          <el-input v-model="viewForm.name" placeholder="视图名称" clearable></el-input>
         </el-form-item>
-        <el-form-item label="选择工作流" prop="checkList" :rules="{required: true, message: '请选择工作流', trigger: ['blur', 'change']}">
-          <el-checkbox-group v-model="viewForm.checkList" style="width: 100%; max-height: 500px; overflow-y: auto;">
-            <el-checkbox :label="item.name" v-for="item in presetWorkflows" :key="item.name" style="display: block;"></el-checkbox>
+        <el-form-item label="选择工作流" prop="workflows" :rules="{required: true, message: '请选择工作流', trigger: ['blur', 'change']}">
+          <el-checkbox-group v-model="viewForm.workflows" style="width: 100%; max-height: 500px; overflow-y: auto;">
+            <el-checkbox :label="item.workflow_name" :value="item" v-for="item in presetWorkflows" :key="item.workflow_name" style="display: block;"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -127,6 +127,7 @@ import RunCommonWorkflow from './common/runCommonWorkflow.vue'
 import RunCustomWorkflow from './common/runCustomWorkflow'
 import VirtualList from 'vue-virtual-scroll-list'
 import qs from 'qs'
+import store from 'storejs'
 import {
   getWorkflowDetailAPI,
   deleteProductWorkflowAPI,
@@ -135,6 +136,7 @@ import {
   getCustomWorkflowListAPI,
   getCustomWorkfloweTaskPresetAPI,
   deleteWorkflowAPI,
+  queryUserBindingsAPI,
   getViewPresetAPI,
   deleteViewAPI,
   getViewListAPI,
@@ -170,8 +172,8 @@ export default {
       presetWorkflows: [],
       isShowViewDialog: false,
       viewForm: {
-        view: '',
-        checkList: []
+        name: '',
+        workflows: []
       }
     }
   },
@@ -298,7 +300,8 @@ export default {
       let commonWorkflows = []
       if (this.projectName) {
         commonWorkflows = await getCustomWorkflowListAPI(
-          projectName
+          projectName,
+          this.view
         ).catch(err => {
           console.log(err)
           return []
@@ -322,7 +325,7 @@ export default {
       ]
     },
     deleteProductWorkflow (workflow) {
-      const name = workflow.name
+      const name = workflow.display_name
       const projectName = workflow.projectName
       if (workflow.base_refs && workflow.base_refs.length) {
         this.$alert(`工作流 ${name} 已在协作模式 ${workflow.base_refs.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
@@ -345,7 +348,7 @@ export default {
           }
         }
       }).then(({ value }) => {
-        deleteProductWorkflowAPI(projectName, name).then(() => {
+        deleteProductWorkflowAPI(projectName, workflow.name).then(() => {
           this.getWorkflows(this.projectName)
           this.$message.success('删除成功')
         })
@@ -523,8 +526,8 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(({ value }) => {
-        deleteViewAPI(id, this.projectName).then(res => {
+      }).then(res => {
+        deleteViewAPI(this.projectName, this.view).then(res => {
           this.$message({
             message: '删除成功',
             type: 'success'

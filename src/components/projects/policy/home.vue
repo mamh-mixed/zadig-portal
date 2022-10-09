@@ -174,6 +174,7 @@ export default {
           .map(workflow => {
             return {
               name: workflow.name,
+              display_name: workflow.display_name,
               workflow_type: workflow.workflow_type || ''
             }
           })

@@ -241,10 +241,10 @@ export default {
       this.forcedUserInput = {}
     },
     removeWorkflow () {
-      const name = this.workflowName
+      const name = this.workflow.display_name
       if (this.usedInPolicy.length) {
         this.$alert(
-          `工作流 ${name} 已在协作模式 ${this.usedInPolicy.join(
+          `工作流 ${this.workflow.display_name} 已在协作模式 ${this.usedInPolicy.join(
             '、'
           )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
           '删除工作流',
@@ -255,7 +255,7 @@ export default {
         )
         return
       }
-      this.$prompt('输入工作流名称确认', '删除工作流 ' + name, {
+      this.$prompt('输入工作流名称确认', '删除工作流2 ' + name, {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         confirmButtonClass: 'el-button el-button--danger',
@@ -269,7 +269,7 @@ export default {
           }
         }
       }).then(({ value }) => {
-        deleteProductWorkflowAPI(this.$route.params.project_name, name).then(
+        deleteProductWorkflowAPI(this.$route.params.project_name, this.workflow.name).then(
           () => {
             this.$message.success('删除成功')
             this.$router.push(
