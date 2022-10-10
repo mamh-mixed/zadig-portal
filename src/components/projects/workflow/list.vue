@@ -106,10 +106,10 @@
         <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
           <el-input v-model="viewForm.name" :disabled="operateType==='edit'" placeholder="视图名称" clearable></el-input>
         </el-form-item>
-        <el-form-item label="选择工作流" prop="workflows" :rules="{required: true, message: '请选择工作流', trigger: ['blur', 'change']}">
-          <el-checkbox-group v-model="viewForm.workflows" style="width: 100%; max-height: 500px; overflow-y: auto;">
-            <el-checkbox :label="item" :value="item" v-for="item in presetWorkflows" :key="item.workflow_name" style="display: block;">{{item.workflow_name}}</el-checkbox>
-          </el-checkbox-group>
+        <el-form-item label="选择工作流" prop="workflows" >
+          <div style="width: 100%; max-height: 450px; overflow-y: auto;">
+            <el-checkbox v-model="item.enabled" :label="item"  v-for="item in presetWorkflowInfo.workflows" :key="item.workflow_name" style="display: block;">{{item.workflow_display_name}}</el-checkbox>
+          </div>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -169,7 +169,9 @@ export default {
       view: '',
       operateType: 'add',
       viewList: [],
-      presetWorkflows: [],
+      presetWorkflowInfo: {
+        workflows: []
+      },
       isShowViewDialog: false,
       viewForm: {
         name: '',
@@ -281,9 +283,7 @@ export default {
       }
     },
     view (newVal, oldVal) {
-      if (newVal) {
-        this.getWorkflows(this.projectName)
-      }
+      this.getWorkflows(this.projectName)
     }
   },
   methods: {
@@ -485,6 +485,7 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         this.viewForm.project_name = this.projectName
+        this.viewForm.workflows = this.presetWorkflowInfo.workflows
         if (valid) {
           const params = this.viewForm
           if (this.operateType === 'add') {
@@ -497,12 +498,14 @@ export default {
               this.$refs[formName].resetFields()
             })
           } else {
+            params.id = this.presetWorkflowInfo.id
             editViewAPI(params).then(res => {
               this.$message({
                 message: '编辑成功',
                 type: 'success'
               })
               this.$refs[formName].resetFields()
+              this.getWorkflows(this.projectName)
               this.getViewList()
             })
           }
@@ -523,7 +526,7 @@ export default {
     },
     getPresetViewWorkflow () {
       getViewPresetAPI(this.projectName, this.view).then(res => {
-        this.presetWorkflows = res.workflows
+        this.presetWorkflowInfo = res
       })
     },
     operate (type) {
@@ -545,6 +548,7 @@ export default {
             message: '删除成功',
             type: 'success'
           })
+          this.view = ''
           this.getViewList()
         })
       })
