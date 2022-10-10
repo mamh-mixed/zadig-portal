@@ -854,10 +854,14 @@ export default {
         this.workflowToRun.build_stage.modules.forEach(item => {
           allBuilds.forEach(element => {
             if (item.target.service_name === element.service_name && item.target.service_module === element.service_module) {
-              const currentBuild = element.module_builds.find(build => {
-                return build.name === item.target.build_name
-              })
-              webhookRepos = webhookRepos.concat(currentBuild.repos)
+              if (element.module_builds.length > 0) {
+                const currentBuild = element.module_builds.find(build => {
+                  return build.name === item.target.build_name
+                })
+                if (currentBuild) {
+                  webhookRepos = webhookRepos.concat(currentBuild.repos)
+                }
+              }
             }
           })
         })
