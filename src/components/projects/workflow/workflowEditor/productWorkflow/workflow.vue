@@ -281,9 +281,10 @@ export default {
       if (this.$route.query.from) {
         this.$router.push(this.$route.query.from)
       } else if (this.fromRoute.path) {
-        this.$router.push(this.fromRoute.path)
+        const path = `${this.fromRoute.path}?display_name=${this.$route.query.display_name}`
+        this.$router.push(path)
       } else if (name) {
-        this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines/multi/${name}`)
+        this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines/multi/${name}?display_name=${this.$route.query.display_name}`)
       } else if (window.history.length > 1) {
         this.$router.back()
       } else {

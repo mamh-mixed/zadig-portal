@@ -34,7 +34,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
-        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.projectName}&id=${workflow.id}`"
+        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}&display_name=${workflow.display_name}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.projectName}&id=${workflow.id}&display_name=${workflow.display_name}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
@@ -71,7 +71,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow',resource:{type:'workflow',name:workflow.name},isBtn: true})"
-        :to="`/workflows/product/edit/${workflow.name}?projectName=${workflow.projectName}`"
+        :to="`/workflows/product/edit/${workflow.name}?projectName=${workflow.projectName}&display_name=${workflow.display_name}`"
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>

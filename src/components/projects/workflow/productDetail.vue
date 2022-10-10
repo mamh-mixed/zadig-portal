@@ -17,7 +17,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
-        :to="`/workflows/product/edit/${workflowName}?projectName=${projectName}`"
+        :to="`/workflows/product/edit/${workflowName}?projectName=${projectName}&display_name=${this.$route.query.display_name}`"
         class="middle"
       >
         <span class="iconfont icondeploy edit-setting"></span>

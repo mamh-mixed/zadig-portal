@@ -410,7 +410,7 @@ export default {
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {
-            title: this.$route.params.workflow_name,
+            title: this.$route.query.display_name || this.$route.params.workflow_name,
             url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
           }
         ]
@@ -568,10 +568,10 @@ export default {
     cancelWorkflow () {
       if (this.isEdit) {
         this.$router.push(
-          `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+          `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
         )
       } else {
-        this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines`)
+        this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines?display_name=${this.payload.display_name}`)
       }
     },
     getWorkflowDetail (workflow_name) {
