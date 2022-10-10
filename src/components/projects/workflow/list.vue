@@ -32,14 +32,14 @@
               <div class="view">
                 <div>
                   <el-radio-group v-model="view" >
-                    <el-radio-button label="所有"></el-radio-button>
-                    <el-radio-button v-for="(item,index) in viewList" :key="index" label="item"></el-radio-button>
+                    <el-radio-button label="">所有</el-radio-button>
+                    <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
                   </el-radio-group>
                   <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start" v-if="isProjectAdmin">
                     <el-button icon="el-icon-plus" circle @click="operate('add')" size="small"></el-button>
                   </el-tooltip>
                 </div>
-                <div v-if="view!=='所有'&&isProjectAdmin">
+                <div v-if="view&&isProjectAdmin">
                   <el-button type="primary"  @click="operate('edit')">编辑视图</el-button>
                   <el-button type="danger"  @click="delView">删除视图</el-button>
                 </div>
@@ -104,11 +104,11 @@
     <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
       <el-form :model="viewForm" ref="viewForm">
         <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
-          <el-input v-model="viewForm.name" placeholder="视图名称" clearable></el-input>
+          <el-input v-model="viewForm.name" :disabled="operateType==='edit'" placeholder="视图名称" clearable></el-input>
         </el-form-item>
         <el-form-item label="选择工作流" prop="workflows" :rules="{required: true, message: '请选择工作流', trigger: ['blur', 'change']}">
           <el-checkbox-group v-model="viewForm.workflows" style="width: 100%; max-height: 500px; overflow-y: auto;">
-            <el-checkbox :label="item.workflow_name" :value="item" v-for="item in presetWorkflows" :key="item.workflow_name" style="display: block;"></el-checkbox>
+            <el-checkbox :label="item" :value="item" v-for="item in presetWorkflows" :key="item.workflow_name" style="display: block;">{{item.workflow_name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -166,13 +166,14 @@ export default {
       showStartCommonWorkflowBuild: false,
       isShowRunCustomWorkflowDialog: false,
       commonToRun: {},
-      view: '所有',
+      view: '',
       operateType: 'add',
       viewList: [],
       presetWorkflows: [],
       isShowViewDialog: false,
       viewForm: {
         name: '',
+        project_name: '',
         workflows: []
       }
     }
@@ -277,6 +278,11 @@ export default {
     $route (val) {
       if (val && !this.projectName) {
         this.getWorkflows()
+      }
+    },
+    view (newVal, oldVal) {
+      if (newVal) {
+        this.getWorkflows(this.projectName)
       }
     }
   },
@@ -478,8 +484,28 @@ export default {
     },
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
+        this.viewForm.project_name = this.projectName
         if (valid) {
-          this.$refs[formName].resetFields()
+          const params = this.viewForm
+          if (this.operateType === 'add') {
+            addViewAPI(params).then(res => {
+              this.$message({
+                message: '新增成功',
+                type: 'success'
+              })
+              this.getViewList()
+              this.$refs[formName].resetFields()
+            })
+          } else {
+            editViewAPI(params).then(res => {
+              this.$message({
+                message: '编辑成功',
+                type: 'success'
+              })
+              this.$refs[formName].resetFields()
+              this.getViewList()
+            })
+          }
           this.isShowViewDialog = false
         } else {
           return false
@@ -497,29 +523,16 @@ export default {
     },
     getPresetViewWorkflow () {
       getViewPresetAPI(this.projectName, this.view).then(res => {
-        this.presetWorkflows = res
+        this.presetWorkflows = res.workflows
       })
     },
     operate (type) {
       this.isShowViewDialog = true
       this.operateType = type
-      const params = Object.assign(this.viewForm, { project_name: this.projectName })
-      if (type === 'add') {
-        addViewAPI(params).then(res => {
-          this.$message({
-            message: '新增成功',
-            type: 'success'
-          })
-        })
-      } else {
-        editViewAPI(params).then(res => {
-          this.$message({
-            message: '编辑成功',
-            type: 'success'
-          })
-          this.getViewList()
-        })
+      if (this.operateType === 'edit') {
+        this.viewForm.name = this.view
       }
+      this.getPresetViewWorkflow()
     },
     delView () {
       this.$confirm(`确定要删除 ${this.view} ?`, '确认', {
@@ -560,6 +573,7 @@ export default {
       })
     }
     this.getUserBinding(this.projectName)
+    this.getViewList()
   },
   components: {
     RunProductWorkflow,

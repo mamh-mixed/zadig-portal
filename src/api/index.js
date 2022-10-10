@@ -2291,17 +2291,17 @@ export function getTestFileListAPI (workflowName, taskID, jobName, projectName) 
 
 // workflow view
 export function getViewPresetAPI (projectName, viewName) {
-  return http.get(`/api/workflow/view/preset?projectName=${projectName}&viewName=${viewName}`)
+  return http.get(`/api/aslan/workflow/view/preset?projectName=${projectName}&viewName=${viewName}`)
 }
 export function getViewListAPI (projectName) {
-  return http.get(`/api/workflow/view?projectName=${projectName}`)
+  return http.get(`/api/aslan/workflow/view?projectName=${projectName}`)
 }
 export function addViewAPI (payload) {
-  return http.post(`/api/workflow/view`, payload)
+  return http.post(`/api/aslan/workflow/view`, payload)
 }
 export function editViewAPI (payload) {
-  return http.put(`/api/workflow/view`, payload)
+  return http.put(`/api/aslan/workflow/view`, payload)
 }
 export function deleteViewAPI (projectName, viewName) {
-  return http.delete(`/api/workflow/view/${projectName}/${viewName}`)
+  return http.delete(`/api/aslan/workflow/view/${projectName}/${viewName}`)
 }
