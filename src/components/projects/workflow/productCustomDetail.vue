@@ -17,7 +17,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
-        :to="`/v1/projects/detail/${projectName}/pipelines/custom/edit/${workflowName}?projectName=${projectName}`"
+        :to="`/v1/projects/detail/${projectName}/pipelines/custom/edit/${workflowName}?projectName=${projectName}&display_name=${displayName}`"
         class="middle"
       >
         <span class="iconfont icondeploy edit-setting"></span>
