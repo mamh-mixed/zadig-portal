@@ -504,6 +504,7 @@ export default {
                 message: '编辑成功',
                 type: 'success'
               })
+              this.view = ''
               this.$refs[formName].resetFields()
               this.getWorkflows(this.projectName)
               this.getViewList()

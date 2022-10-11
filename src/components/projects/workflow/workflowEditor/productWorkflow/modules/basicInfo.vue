@@ -126,7 +126,7 @@ export default {
           {
             type: 'string',
             required: true,
-            trigger: 'blur',
+            trigger: ['blur', 'change'],
             message: '请输入工作流名称'
           }
         ],
@@ -135,7 +135,7 @@ export default {
             type: 'string',
             required: true,
             validator: this.validatePipelineName,
-            trigger: 'blur'
+            trigger: ['blur', 'change']
           }
         ],
         product_tmpl_name: [
