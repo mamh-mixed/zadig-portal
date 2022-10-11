@@ -104,7 +104,7 @@
     <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
       <el-form :model="viewForm" ref="viewForm">
         <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
-          <el-input v-model="viewForm.name" :disabled="operateType==='edit'" placeholder="视图名称" clearable></el-input>
+          <el-input v-model="viewForm.name"  placeholder="视图名称" clearable></el-input>
         </el-form-item>
         <el-form-item label="选择工作流" prop="workflows" >
           <div style="width: 100%; max-height: 450px; overflow-y: auto;">
