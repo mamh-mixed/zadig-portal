@@ -29,22 +29,22 @@
                 </div>
                 <el-input v-model="keyword" placeholder="搜索工作流" class="search-workflow" prefix-icon="el-icon-search" clearable></el-input>
               </div>
-              <div class="view">
-                <div>
-                  <el-radio-group v-model="view" >
-                    <el-radio-button label="">所有</el-radio-button>
-                    <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
-                  </el-radio-group>
-                  <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start" v-if="isProjectAdmin">
-                    <el-button icon="el-icon-plus" circle @click="operate('add')" size="small"></el-button>
-                  </el-tooltip>
-                </div>
-                <div v-if="view&&isProjectAdmin">
-                  <el-button type="primary"  @click="operate('edit')">编辑视图</el-button>
-                  <el-button type="danger"  @click="delView">删除视图</el-button>
-                </div>
-              </div>
             </div>
+          </div>
+        </div>
+        <div class="view">
+          <div>
+            <el-radio-group v-model="view" >
+              <el-radio-button label="">所有</el-radio-button>
+              <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
+            </el-radio-group>
+            <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start" v-if="isProjectAdmin">
+              <el-button icon="el-icon-plus" circle @click="operate('add')" size="small"></el-button>
+            </el-tooltip>
+          </div>
+          <div v-if="view&&isProjectAdmin">
+            <el-button type="primary"  @click="operate('edit')">编辑视图</el-button>
+            <el-button type="danger"  @click="delView">删除视图</el-button>
           </div>
         </div>
         <VirtualList
@@ -645,6 +645,12 @@ export default {
     }
   }
 
+  .view {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+  }
+
   .project-header {
     display: flex;
     align-items: stretch;
@@ -706,12 +712,6 @@ export default {
           .search-workflow {
             width: 400px;
           }
-        }
-
-        .view {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 16px;
         }
       }
     }

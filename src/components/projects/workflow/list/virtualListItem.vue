@@ -178,7 +178,6 @@ export default {
   inject: [
     'startProductWorkflowBuild',
     'startCustomWorkflowBuild',
-    // 'copyWorkflow',
     'deleteProductWorkflow',
     'renamePipeline',
     'startCommonWorkflowBuild',
