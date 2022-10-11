@@ -7,7 +7,7 @@
       element-loading-spinner="iconfont iconfont-loading icongongzuoliucheng"
     >
       <ul class="workflow-ul">
-        <div v-if="workflows.length > 0" class="project-header">
+        <div  class="project-header">
           <div class="header-start">
             <div class="container">
               <div class="function-container">
@@ -43,8 +43,8 @@
             </el-tooltip>
           </div>
           <div v-if="view&&isProjectAdmin">
-            <el-button type="primary"  @click="operate('edit')">编辑视图</el-button>
-            <el-button type="danger"  @click="delView">删除视图</el-button>
+            <el-button type="primary" size="small"  @click="operate('edit')">编辑视图</el-button>
+            <el-button type="danger" size="small"  @click="delView">删除视图</el-button>
           </div>
         </div>
         <VirtualList
