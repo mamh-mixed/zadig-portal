@@ -2144,7 +2144,7 @@ export function addCustomWorkflowAPI (payload, projectName) {
 export function updateCustomWorkflowAPI (workflow_name, payload, projectName) {
   return http.put(` /api/aslan/workflow/v4/${workflow_name}?projectName=${projectName} `, payload)
 }
-export function getCustomWorkflowListAPI (projectName, viewName, page_num = 1, page_size = 20) {
+export function getCustomWorkflowListAPI (projectName, viewName = '', page_num = 1, page_size = 20) {
   return http.get(`/api/aslan/workflow/v4?project=${projectName}&view_name=${viewName}&page_num=${page_num}&page_size=${page_size}&projectName=${projectName}`)
 }
 export function getCustomWorkflowDetailAPI (workflow_name, projectName, key = '') {

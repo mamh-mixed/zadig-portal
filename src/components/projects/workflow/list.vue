@@ -534,6 +534,9 @@ export default {
       this.operateType = type
       if (this.operateType === 'edit') {
         this.viewForm.name = this.view
+      } else {
+        this.viewForm.name = ''
+        this.view = ''
       }
       this.getPresetViewWorkflow()
     },
