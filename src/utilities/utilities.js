@@ -468,9 +468,9 @@ const utils = {
     if (!new_name || new_name === '') {
       return '请输入工作流标识'
     } else if (pipeline_names.includes(new_name)) {
-      return '工作流名称重复'
+      return '工作流标识重复'
     } else if (!/^[a-zA-Z0-9-]+$/.test(new_name)) {
-      return '名称只支持字母大小写和数字，特殊字符只支持中划线'
+      return '支持字母大小写和数字，特殊字符只支持中划线'
     } else {
       return true
     }
