@@ -248,7 +248,6 @@ export default {
     CustomWorkflowCommonRows
   },
   created () {
-    console.log(this.displayName)
     this.init()
   },
   methods: {

@@ -233,7 +233,7 @@ export default {
     },
     filteredWorkflows () {
       const list = this.$utils.filterObjectArrayByKey(
-        'name',
+        'display_name',
         this.keyword,
         this.workflows
       )
