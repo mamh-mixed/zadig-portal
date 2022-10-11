@@ -40,7 +40,8 @@
               <el-col :span="11" :offset="1">
                 <el-select
                   v-if="!$utils.isEmpty(scope.row.branchPRsMap)"
-                  v-model.number="scope.row[scope.row.prNumberPropName]"
+                  v-model="scope.row.prs"
+                  multiple
                   size="small"
                   placeholder="请选择 PR"
                   filterable
@@ -65,7 +66,7 @@
                   </el-tooltip>
                 </el-select>
                 <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号" placement="top" popper-class="gray-popper">
-                  <el-input v-model.number="scope.row[scope.row.prNumberPropName]" class="short-input" size="small" placeholder="请填写 PR 号"></el-input>
+                  <el-input v-model="scope.row.prs" class="short-input" size="small" placeholder="请填写 PR 号"></el-input>
                 </el-tooltip>
               </el-col>
               <el-col :span="1">

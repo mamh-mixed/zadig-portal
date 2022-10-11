@@ -487,6 +487,9 @@ export default {
             repo.pr = repo.pr ? repo.pr : 0
             repo.branch = ''
             repo.tag = ''
+            if (typeof (repo.prs) === 'string') {
+              repo.prs = repo.prs.split(',')
+            }
             if (repo.branchOrTag) {
               repo[repo.branchOrTag.type] = repo.branchOrTag.name
             }

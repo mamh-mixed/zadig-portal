@@ -31,7 +31,8 @@
                 <el-col :span="7" :offset="1">
                   <el-select
                     v-if="!$utils.isEmpty(row.branchPRsMap)"
-                    v-model.number="row[row.prNumberPropName]"
+                    v-model="row.prs"
+                    multiple
                     size="small"
                     placeholder="请选择 PR"
                     filterable
@@ -57,7 +58,7 @@
                   </el-select>
                   <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号" placement="top" popper-class="gray-popper">
                     <el-input
-                      v-model.number="row[row.prNumberPropName]"
+                      v-model="row.prs"
                       class="short-input"
                       size="small"
                       placeholder="请填写 PR 号"

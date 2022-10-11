@@ -541,6 +541,9 @@ export default {
               job.spec.service_and_builds.forEach(item => {
                 if (item.repos) {
                   item.repos.forEach(repo => {
+                    if (typeof (repo.prs) === 'string') {
+                      repo.prs = repo.prs.split(',')
+                    }
                     if (repo.branchOrTag) {
                       if (repo.branchOrTag.type === 'branch') {
                         repo.branch = repo.branchOrTag.name
@@ -559,6 +562,9 @@ export default {
             job.spec.steps.forEach(step => {
               if (step.type === 'git') {
                 step.spec.repos.forEach(repo => {
+                  if (typeof (repo.prs) === 'string') {
+                    repo.prs = repo.prs.split(',')
+                  }
                   if (repo.branchOrTag) {
                     if (repo.branchOrTag.type === 'branch') {
                       repo.branch = repo.branchOrTag.name
@@ -593,6 +599,9 @@ export default {
               job.spec.test_modules.forEach(item => {
                 if (item.repos) {
                   item.repos.forEach(repo => {
+                    if (typeof (repo.prs) === 'string') {
+                      repo.prs = repo.prs.split(',')
+                    }
                     if (repo.branchOrTag) {
                       if (repo.branchOrTag.type === 'branch') {
                         repo.branch = repo.branchOrTag.name
