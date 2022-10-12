@@ -11,7 +11,7 @@
           <el-input v-model="signUpForm.name" placeholder="请输入昵称"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input type="email" v-model="signUpForm.email" placeholder="请输入邮箱"></el-input>
+          <el-input type="email" v-model.trim="signUpForm.email" placeholder="请输入邮箱"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input v-model="signUpForm.password" placeholder="请输入密码"></el-input>

@@ -141,7 +141,7 @@
           <el-form-item v-if="codeEdit.type==='gitlab'"
                         label="GitLab 服务 URL"
                         prop="address">
-            <el-input v-model="codeEdit.address"
+            <el-input v-model.trim="codeEdit.address"
                       placeholder="GitLab 服务 URL"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -164,7 +164,7 @@
         <template v-else-if="codeEdit.type==='gerrit'">
           <el-form-item label="Gerrit 服务 URL"
                         prop="address">
-            <el-input v-model="codeEdit.address"
+            <el-input v-model.trim="codeEdit.address"
                       placeholder="Gerrit 服务 URL"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -203,7 +203,7 @@
         <template v-else-if="codeEdit.type==='codehub'">
           <el-form-item label="CodeHub 服务 URL"
                         prop="address">
-            <el-input v-model="codeEdit.address"
+            <el-input v-model.trim="codeEdit.address"
                       placeholder="CodeHub 服务 URL"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -436,7 +436,7 @@
           <el-form-item v-if="codeAdd.type==='gitlab'"
                         :label="codeAdd.type==='gitlab'?'GitLab 服务 URL':'服务 URL'"
                         prop="address">
-            <el-input v-model="codeAdd.address"
+            <el-input v-model.trim="codeAdd.address"
                       :placeholder="codeAdd.type==='gitlab'?'GitLab 服务 URL':'服务 URL'"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -457,7 +457,7 @@
         <template v-else-if="codeAdd.type==='gerrit'">
           <el-form-item label="Gerrit 服务 URL"
                         prop="address">
-            <el-input v-model="codeAdd.address"
+            <el-input v-model.trim="codeAdd.address"
                       placeholder="Gerrit 服务 URL"
                       auto-complete="off"></el-input>
           </el-form-item>
@@ -493,7 +493,7 @@
         <template v-else-if="codeAdd.type==='codehub'">
           <el-form-item label="CodeHub 服务 URL"
                         prop="address">
-            <el-input v-model="codeAdd.address"
+            <el-input v-model.trim="codeAdd.address"
                       placeholder="CodeHub 服务 URL"
                       auto-complete="off"></el-input>
           </el-form-item>

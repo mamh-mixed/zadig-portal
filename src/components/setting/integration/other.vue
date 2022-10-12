@@ -6,7 +6,7 @@
           <el-input v-model="externalEdit.name" placeholder="输入系统名称" size="small"></el-input>
         </el-form-item>
         <el-form-item label="访问地址" prop="server">
-          <el-input v-model="externalEdit.server" placeholder="输入系统访问地址" size="small"></el-input>
+          <el-input v-model.trim="externalEdit.server" placeholder="输入系统访问地址" size="small"></el-input>
         </el-form-item>
         <el-form-item label="API Token" prop="api_token">
           <el-input v-model="externalEdit.api_token" show-password v-if="dialogExternalVisible" type="password" placeholder="输入 API Token" size="small"></el-input>

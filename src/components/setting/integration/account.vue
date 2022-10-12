@@ -71,7 +71,7 @@
           <el-form-item label="主机地址" prop="addr">
             <el-col :span="14">
               <el-form-item prop="addr">
-                <el-input v-model="userAccountAD.config.addr" placeholder="AD 地址" autofocus clearable auto-complete="off"></el-input>
+                <el-input v-model.trim="userAccountAD.config.addr" placeholder="AD 地址" autofocus clearable auto-complete="off"></el-input>
               </el-form-item>
             </el-col>
             <el-col style="text-align: center;" :span="1">:</el-col>
@@ -149,7 +149,7 @@
           <el-form-item label="主机地址" prop="addr">
             <el-col :span="14">
               <el-form-item prop="addr">
-                <el-input v-model="userAccountLDAP.config.addr" placeholder="LDAP 地址" autofocus clearable auto-complete="off"></el-input>
+                <el-input v-model.trim="userAccountLDAP.config.addr" placeholder="LDAP 地址" autofocus clearable auto-complete="off"></el-input>
               </el-form-item>
             </el-col>
             <el-col style="text-align: center;" :span="1">:</el-col>

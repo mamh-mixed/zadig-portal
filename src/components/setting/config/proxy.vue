@@ -38,7 +38,7 @@
                         required
                         class="address-container">
             <el-form-item prop="address">
-              <el-input v-model="proxyInfo.address"
+              <el-input v-model.trim="proxyInfo.address"
                         size="small"
                         placeholder="IP 地址"></el-input>
             </el-form-item>

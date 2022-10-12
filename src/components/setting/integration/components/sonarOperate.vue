@@ -23,7 +23,7 @@
     >
       <el-form-item label="服务地址" prop="server_address">
         <el-input
-          v-model="addForm.server_address"
+          v-model.trim="addForm.server_address"
           @change="validate(checkPassword)"
           placeholder="Sonar 服务地址"
         ></el-input>

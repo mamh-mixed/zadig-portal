@@ -50,7 +50,7 @@
         <el-form-item label="接入点地址"
                       prop="endpoint">
           <el-input size="small"
-                    v-model="storage.endpoint"
+                    v-model.trim="storage.endpoint"
                     placeholder="请输入接入点地址"></el-input>
         </el-form-item>
         <el-form-item label="AK"
@@ -152,7 +152,7 @@
         <el-form-item label="接入点地址"
                       prop="endpoint">
           <el-input size="small"
-                    v-model="swapStorage.endpoint"
+                    v-model.trim="swapStorage.endpoint"
                     placeholder="请输入接入点地址"></el-input>
         </el-form-item>
         <el-form-item label="AK"
