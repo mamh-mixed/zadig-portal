@@ -10,7 +10,7 @@
           <van-cell-group>
             <van-cell center :to="setTaskURL(task)">
               <template #title>
-                <span class="workflow-name">{{`${task.pipeline_name}`}}</span>
+                <span class="workflow-name">{{`${task.pipeline_display_name}`}}</span>
                 <van-tag plain type="primary">{{`#${task.task_id}`}}</van-tag>
               </template>
               <template #label>
@@ -30,7 +30,7 @@
           <van-cell-group>
             <van-cell center :to="setTaskURL(task)">
               <template #title>
-                <span class="workflow-name">{{`${task.pipeline_name}`}}</span>
+                <span class="workflow-name">{{`${task.pipeline_display_name}`}}</span>
                 <van-tag plain type="primary">{{`#${task.task_id}`}}</van-tag>
               </template>
               <template #label>
@@ -100,9 +100,9 @@ export default {
   methods: {
     setTaskURL (task) {
       if (task.type === 'workflow') {
-        return `/mobile/projects/detail/${task.product_name}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`
+        return `/mobile/projects/detail/${task.product_name}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${task.pipeline_display_name}`
       } else if (task.type === 'test') {
-        return `/mobile/projects/detail/${task.product_name}/tests/${task.pipeline_name}/${task.task_id}?status=${task.status}`
+        return `/mobile/projects/detail/${task.product_name}/tests/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${task.pipeline_display_name}`
       }
     },
     showTaskList (type) {
