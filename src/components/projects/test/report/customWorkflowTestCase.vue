@@ -178,11 +178,11 @@ export default {
         },
         {
           title: this.displayName,
-          url: `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.workflowName}?display_name=${this.displayName}`
+          url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}?display_name=${this.displayName}`
         },
         {
           title: `#${this.taskId}`,
-          url: `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.workflowName}/${this.taskId}?display_name=${this.displayName}`
+          url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}/${this.taskId}?display_name=${this.displayName}`
         },
         { title: '测试用例', url: '' }
       ]

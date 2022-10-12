@@ -517,7 +517,7 @@ export default {
         const workflowName = res.pipeline_name
         this.$message.success('创建成功')
         this.$emit('success')
-        this.$router.push(`/v1/projects/detail/${projectName}/pipelines/multi/${workflowName}/${taskId}?status=running`)
+        this.$router.push(`/v1/projects/detail/${projectName}/pipelines/multi/${workflowName}/${taskId}?status=running&display_name=${this.displayName}`)
       }).catch(error => {
         console.log(error)
         // handle error
@@ -677,6 +677,10 @@ export default {
     workflowName: {
       type: String,
       required: true
+    },
+    displayName: {
+      type: String,
+      default: ''
     },
     targetProject: {
       type: String,

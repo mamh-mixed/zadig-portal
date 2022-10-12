@@ -135,6 +135,14 @@ const routes = [
             }
           },
           {
+            path: 'customPipelines/multi/testcase/:workflow_name/:task_id/:test_name/:test_job_name',
+            component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/report/customWorkflowTestCase.vue'),
+            meta: {
+              requiresAuth: true,
+              title: '自定义工作流测试报告'
+            }
+          },
+          {
             path: 'pipelines/common/:workflow_name',
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/commonDetail.vue'),
             meta: {

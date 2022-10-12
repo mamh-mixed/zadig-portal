@@ -17,7 +17,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
-        :to="`/workflows/product/edit/${workflowName}?projectName=${projectName}`"
+        :to="`/workflows/product/edit/${workflowName}?projectName=${projectName}&display_name=${this.$route.query.display_name}`"
         class="middle"
       >
         <span class="iconfont icondeploy edit-setting"></span>
@@ -61,6 +61,7 @@
         :projectName="projectName"
         :baseUrl="`/v1/projects/detail/${projectName}/pipelines/multi/${workflowName}`"
         :workflowName="workflowName"
+        :displayName="displayName"
         :functionTestBaseUrl="`/v1/projects/detail/${projectName}/pipelines/multi/testcase/${workflowName}`"
         @cloneTask="rerun"
         @currentChange="changeTaskPage"
@@ -76,6 +77,7 @@
       <run-workflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
+        :displayName="displayName"
         :workflowMeta="workflow"
         :targetProject="workflow.product_tmpl_name"
         :forcedUserInput="forcedUserInput"
@@ -148,6 +150,9 @@ export default {
     },
     workflowName () {
       return this.$route.params.workflow_name
+    },
+    displayName () {
+      return this.$route.query.display_name
     },
     testReportExists () {
       const items = []
@@ -236,10 +241,10 @@ export default {
       this.forcedUserInput = {}
     },
     removeWorkflow () {
-      const name = this.workflowName
+      const name = this.workflow.display_name
       if (this.usedInPolicy.length) {
         this.$alert(
-          `工作流 ${name} 已在协作模式 ${this.usedInPolicy.join(
+          `工作流 ${this.workflow.display_name} 已在协作模式 ${this.usedInPolicy.join(
             '、'
           )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
           '删除工作流',
@@ -264,7 +269,7 @@ export default {
           }
         }
       }).then(({ value }) => {
-        deleteProductWorkflowAPI(this.$route.params.project_name, name).then(
+        deleteProductWorkflowAPI(this.$route.params.project_name, this.workflow.name).then(
           () => {
             this.$message.success('删除成功')
             this.$router.push(
@@ -356,7 +361,7 @@ export default {
           title: '工作流',
           url: `/v1/projects/detail/${this.projectName}/pipelines`
         },
-        { title: this.workflowName, url: '' }
+        { title: this.displayName || this.workflowName, url: '' }
       ]
     })
   },

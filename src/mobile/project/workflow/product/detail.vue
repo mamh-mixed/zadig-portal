@@ -2,7 +2,7 @@
   <div class="mobile-pipelines-detail">
     <van-nav-bar left-arrow fixed @click-left="mobileGoback">
       <template #title>
-        <span>{{workflowName}}</span>
+        <span>{{displayName}}</span>
       </template>
     </van-nav-bar>
     <van-divider content-position="left">基本信息</van-divider>
@@ -63,7 +63,7 @@
     <div>
       <van-cell
         v-for="task in workflowTasks"
-        :to="`/mobile/projects/detail/${projectName}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`"
+        :to="`/mobile/projects/detail/${projectName}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${displayName}`"
         :key="task.task_id"
       >
         <template #title>
@@ -89,6 +89,7 @@
         <RunWorkflow
           v-if="taskDialogVisible"
           :workflowName="workflowName"
+          :displayName="displayName"
           :workflowMeta="workflow"
           :targetProject="workflow.product_tmpl_name"
           :forcedUserInput="forcedUserInput"
@@ -236,6 +237,9 @@ export default {
   computed: {
     workflowName () {
       return this.$route.params.workflow_name
+    },
+    displayName () {
+      return this.$route.query.display_name
     },
     projectName () {
       return this.$route.params.project_name

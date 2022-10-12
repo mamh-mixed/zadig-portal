@@ -41,10 +41,10 @@
         <el-table-column label="基准工作流">
           <template slot-scope="{ row, $index }">
             <el-form-item class="base-item" :prop="`workflows[${$index}].name`" label-width="0px" required>
-              <el-tooltip effect="dark" :content="row.name" placement="top" :popper-class="row.name ? '' : 'hidden-base-tooltip'">
+              <el-tooltip effect="dark" :content="row.display_name" placement="top" :popper-class="row.name ? '' : 'hidden-base-tooltip'">
                 <el-select v-model="row.name" placeholder="请选择基准工作流" filterable size="small" :disabled="!row.add" @change="updateSelectedWorkflow(row)">
-                  <el-option v-if="row.name" :label="row.name" :value="row.name"></el-option>
-                  <el-option v-for="workflow in lastBaseWorkflows" :key="workflow.name" :label="workflow.name" :value="workflow.name"></el-option>
+                  <el-option v-if="row.display_name" :label="row.display_name" :value="row.name"></el-option>
+                  <el-option v-for="workflow in lastBaseWorkflows" :key="workflow.display_name" :label="workflow.display_name" :value="workflow.name"></el-option>
                 </el-select>
               </el-tooltip>
             </el-form-item>
@@ -270,6 +270,7 @@ export default {
   methods: {
     updateSelectedWorkflow (row) {
       row.workflow_type = this.workflowList.find(workflow => workflow.name === row.name).workflow_type
+      row.display_name = this.workflowList.find(workflow => workflow.name === row.name).display_name
     },
     getProjectUsers () {
       queryRoleBindingsAPI(this.projectName).then(res => {
@@ -354,6 +355,7 @@ export default {
       this.validate('workflow').then(res => {
         this.collaborationData.workflows.push({
           name: '',
+          display_name: '',
           collaboration_type: 'share',
           verbs: this.policy.workflow.sharePermi.map(data => data.action),
           workflow_type: '',

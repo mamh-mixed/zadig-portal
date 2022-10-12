@@ -7,7 +7,7 @@
       element-loading-spinner="iconfont iconfont-loading icongongzuoliucheng"
     >
       <ul class="workflow-ul">
-        <div v-if="workflows.length > 0" class="project-header">
+        <div  class="project-header">
           <div class="header-start">
             <div class="container">
               <div class="function-container">
@@ -30,6 +30,21 @@
                 <el-input v-model="keyword" placeholder="搜索工作流" class="search-workflow" prefix-icon="el-icon-search" clearable></el-input>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="view">
+          <div>
+            <el-radio-group v-model="view" >
+              <el-radio-button label="">所有</el-radio-button>
+              <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
+            </el-radio-group>
+            <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start" v-if="isProjectAdmin">
+              <el-button icon="el-icon-plus" circle @click="operate('add')" size="small"></el-button>
+            </el-tooltip>
+          </div>
+          <div v-if="view&&isProjectAdmin">
+            <el-button type="primary" size="small"  @click="operate('edit')">编辑视图</el-button>
+            <el-button type="danger" size="small"  @click="delView">删除视图</el-button>
           </div>
         </div>
         <VirtualList
@@ -67,6 +82,7 @@
       <RunProductWorkflow
         v-if="workflowToRun.name"
         :workflowName="workflowToRun.name"
+        :displayName="workflowToRun.display_name"
         :workflowMeta="workflowToRun"
         :targetProject="workflowToRun.product_tmpl_name"
         @success="hideProductTaskDialog"
@@ -80,9 +96,26 @@
       <RunCustomWorkflow
         v-if="workflowToRun.name"
         :workflowName="workflowToRun.name"
+        :displayName="workflowToRun.display_name"
         :projectName="projectName"
         @success="hideAfterSuccess"
       />
+    </el-dialog>
+    <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
+      <el-form :model="viewForm" ref="viewForm">
+        <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
+          <el-input v-model="viewForm.name"  placeholder="视图名称" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="选择工作流" prop="workflows" >
+          <div style="width: 100%; max-height: 450px; overflow-y: auto;">
+            <el-checkbox v-model="item.enabled" :label="item"  v-for="item in presetWorkflowInfo.workflows" :key="item.workflow_name" style="display: block;">{{item.workflow_display_name}}</el-checkbox>
+          </div>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
+        <el-button size="small" @click="resetForm('viewForm')">取消</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -94,6 +127,7 @@ import RunCommonWorkflow from './common/runCommonWorkflow.vue'
 import RunCustomWorkflow from './common/runCustomWorkflow'
 import VirtualList from 'vue-virtual-scroll-list'
 import qs from 'qs'
+import store from 'storejs'
 import {
   getWorkflowDetailAPI,
   deleteProductWorkflowAPI,
@@ -101,7 +135,13 @@ import {
   getCommonWorkflowListAPI,
   getCustomWorkflowListAPI,
   getCustomWorkfloweTaskPresetAPI,
-  deleteWorkflowAPI
+  deleteWorkflowAPI,
+  queryUserBindingsAPI,
+  getViewPresetAPI,
+  deleteViewAPI,
+  getViewListAPI,
+  addViewAPI,
+  editViewAPI
 } from '@api'
 import bus from '@utils/eventBus'
 import { mapGetters } from 'vuex'
@@ -125,7 +165,19 @@ export default {
 
       showStartCommonWorkflowBuild: false,
       isShowRunCustomWorkflowDialog: false,
-      commonToRun: {}
+      commonToRun: {},
+      view: '',
+      operateType: 'add',
+      viewList: [],
+      presetWorkflowInfo: {
+        workflows: []
+      },
+      isShowViewDialog: false,
+      viewForm: {
+        name: '',
+        project_name: '',
+        workflows: []
+      }
     }
   },
   provide () {
@@ -181,11 +233,20 @@ export default {
     },
     filteredWorkflows () {
       const list = this.$utils.filterObjectArrayByKey(
-        'name',
+        'display_name',
         this.keyword,
         this.workflows
       )
       return list
+    },
+    isProjectAdmin () {
+      if (this.$utils.roleCheck('admin')) {
+        return true
+      } else if (this.userBindings.length > 0) {
+        return this.userBindings.some(item => item.role === 'project-admin')
+      } else {
+        return false
+      }
     }
   },
   watch: {
@@ -220,6 +281,9 @@ export default {
       if (val && !this.projectName) {
         this.getWorkflows()
       }
+    },
+    view (newVal, oldVal) {
+      this.getWorkflows(this.projectName)
     }
   },
   methods: {
@@ -242,7 +306,8 @@ export default {
       let commonWorkflows = []
       if (this.projectName) {
         commonWorkflows = await getCustomWorkflowListAPI(
-          projectName
+          projectName,
+          this.view
         ).catch(err => {
           console.log(err)
           return []
@@ -266,7 +331,7 @@ export default {
       ]
     },
     deleteProductWorkflow (workflow) {
-      const name = workflow.name
+      const name = workflow.display_name
       const projectName = workflow.projectName
       if (workflow.base_refs && workflow.base_refs.length) {
         this.$alert(`工作流 ${name} 已在协作模式 ${workflow.base_refs.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
@@ -289,7 +354,7 @@ export default {
           }
         }
       }).then(({ value }) => {
-        deleteProductWorkflowAPI(projectName, name).then(() => {
+        deleteProductWorkflowAPI(projectName, workflow.name).then(() => {
           this.getWorkflows(this.projectName)
           this.$message.success('删除成功')
         })
@@ -359,7 +424,7 @@ export default {
     copyWorkflow (workflow) {
       const oldName = workflow.name
       const projectName = workflow.projectName
-      this.$prompt('请输入新的产品工作流名称', '复制工作流', {
+      this.$prompt('新工作流名称', '复制工作流', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValidator: newName => {
@@ -406,6 +471,91 @@ export default {
     startCommonWorkflowBuild (worflow) {
       this.commonToRun = worflow
       this.showStartCommonWorkflowBuild = true
+    },
+    async getUserBinding (projectName) {
+      const userInfo = store.get('userInfo')
+      const userBindings = await queryUserBindingsAPI(
+        userInfo.uid,
+        projectName
+      ).catch(error => console.log(error))
+      if (userBindings) {
+        this.userBindings = userBindings
+      }
+    },
+    submitForm (formName) {
+      this.$refs[formName].validate(valid => {
+        this.viewForm.project_name = this.projectName
+        this.viewForm.workflows = this.presetWorkflowInfo.workflows
+        if (valid) {
+          const params = this.viewForm
+          if (this.operateType === 'add') {
+            addViewAPI(params).then(res => {
+              this.$message({
+                message: '新增成功',
+                type: 'success'
+              })
+              this.getViewList()
+              this.$refs[formName].resetFields()
+            })
+          } else {
+            params.id = this.presetWorkflowInfo.id
+            editViewAPI(params).then(res => {
+              this.$message({
+                message: '编辑成功',
+                type: 'success'
+              })
+              this.view = ''
+              this.$refs[formName].resetFields()
+              this.getWorkflows(this.projectName)
+              this.getViewList()
+            })
+          }
+          this.isShowViewDialog = false
+        } else {
+          return false
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
+      this.isShowViewDialog = false
+    },
+    getViewList () {
+      getViewListAPI(this.projectName).then(res => {
+        this.viewList = res
+      })
+    },
+    getPresetViewWorkflow () {
+      getViewPresetAPI(this.projectName, this.view).then(res => {
+        this.presetWorkflowInfo = res
+      })
+    },
+    operate (type) {
+      this.isShowViewDialog = true
+      this.operateType = type
+      if (this.operateType === 'edit') {
+        this.viewForm.name = this.view
+      } else {
+        this.viewForm.name = ''
+        this.view = ''
+      }
+      this.getPresetViewWorkflow()
+    },
+    delView () {
+      this.$confirm(`确定要删除 ${this.view} ?`, '确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(res => {
+        deleteViewAPI(this.projectName, this.view).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.view = ''
+          this.getViewList()
+        })
+      })
     }
   },
   created () {
@@ -430,6 +580,8 @@ export default {
         ]
       })
     }
+    this.getUserBinding(this.projectName)
+    this.getViewList()
   },
   components: {
     RunProductWorkflow,
@@ -492,6 +644,12 @@ export default {
     .el-radio {
       margin-left: 15px;
     }
+  }
+
+  .view {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
   }
 
   .project-header {

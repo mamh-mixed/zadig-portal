@@ -9,27 +9,20 @@
                  label-width="80px">
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item prop="name"
+              <el-form-item prop="display_name"
                             label="工作流名称">
-                <el-input v-model="workflowInfo.name"
-                          :disabled="editMode"
+                <el-input v-model="workflowInfo.display_name"
                           style="width: 80%;"
                           placeholder="请输入工作流名称"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item prop="product_tmpl_name"
-                            label="选择项目">
-                <el-select v-model="workflowInfo.product_tmpl_name"
-                           style="width: 80%;"
-                           @change="getEnvServices(workflowInfo.product_tmpl_name)"
-                           placeholder="请选择项目"
-                           :disabled="editMode || !!$route.query.projectName"
-                           filterable>
-                    <el-option v-for="pro in projects" :key="pro.value" :label="pro.label"
-                               :value="pro.value">
-                    </el-option>
-                </el-select>
+              <el-form-item prop="name"
+                            label="工作流标识">
+                <el-input v-model="workflowInfo.name"
+                          :disabled="editMode"
+                          style="width: 80%;"
+                          placeholder="请输入工作流标识"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -110,6 +103,7 @@
 <script type="text/javascript">
 import bus from '@utils/eventBus'
 import { templatesAPI, listProductAPI } from '@api'
+const pinyin = require('pinyin')
 
 export default {
   data () {
@@ -128,12 +122,20 @@ export default {
       projectList: [],
       filteredEnvs: [],
       rules: {
+        display_name: [
+          {
+            type: 'string',
+            required: true,
+            trigger: ['blur', 'change'],
+            message: '请输入工作流名称'
+          }
+        ],
         name: [
           {
             type: 'string',
             required: true,
             validator: this.validatePipelineName,
-            trigger: 'blur'
+            trigger: ['blur', 'change']
           }
         ],
         product_tmpl_name: [
@@ -215,6 +217,15 @@ export default {
         })
         if (projectName) {
           this.getEnvServices(projectName)
+        }
+      }
+    },
+    'workflowInfo.display_name': {
+      handler (val, old_val) {
+        if (!this.editMode) {
+          this.workflowInfo.name = pinyin(val, {
+            style: pinyin.STYLE_NORMAL
+          }).join('')
         }
       }
     }

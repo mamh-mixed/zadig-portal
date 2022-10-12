@@ -234,6 +234,10 @@ export default {
       type: String,
       default: ''
     },
+    displayName: {
+      type: String,
+      default: ''
+    },
     projectName: {
       type: String,
       default: ''
@@ -258,7 +262,7 @@ export default {
       if (Object.keys(this.cloneWorkflow).length > 0) {
         this.cloneWorkflow.stages.forEach(stage => {
           stage.jobs.forEach(job => {
-            job.checked = true
+            this.$set(job, 'checked', true)
             if (
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
@@ -388,7 +392,7 @@ export default {
         res => {
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
-              job.checked = true
+              this.$set(job, 'checked', true)
               if (job.type === 'zadig-deploy') {
                 // Mapping for value-key
                 if (
@@ -610,7 +614,7 @@ export default {
           this.$message.success('创建成功')
           this.$emit('success')
           this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running`
+            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running&display_name=${this.displayName}`
           )
         })
         .catch(error => {

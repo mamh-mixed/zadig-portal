@@ -7,7 +7,7 @@
           <i class="iconfont icongongzuoliucheng"></i>工作流
         </div>
         <div v-for="(workflow, index) in collaborationData.workflow" :key="index" class="detail-item">
-          <div class="item-name">{{ workflow.name }}</div>
+          <div class="item-name">{{ workflow.display_name }}</div>
         </div>
       </article>
       <article v-if="collaborationData.product.length" style="margin-top: 30px;">

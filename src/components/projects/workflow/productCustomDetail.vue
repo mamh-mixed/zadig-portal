@@ -17,7 +17,7 @@
       </el-tooltip>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
-        :to="`/v1/projects/detail/${projectName}/pipelines/custom/edit/${workflowName}?projectName=${projectName}`"
+        :to="`/v1/projects/detail/${projectName}/pipelines/custom/edit/${workflowName}?projectName=${projectName}&display_name=${displayName}`"
         class="middle"
       >
         <span class="iconfont icondeploy edit-setting"></span>
@@ -59,6 +59,7 @@
         :pageSize="pageSize"
         :currentPage="currentPage"
         :projectName="projectName"
+        :displayName="displayName"
         :baseUrl="`/v1/projects/detail/${projectName}/pipelines/custom/${workflowName}`"
         :workflowName="workflowName"
         :functionTestBaseUrl="`/v1/projects/detail/${projectName}/pipelines/multi/testcase/${workflowName}`"
@@ -73,6 +74,7 @@
        <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
+        :displayName="displayName"
         :projectName="projectName"
         :cloneWorkflow="cloneWorkflow"
         @success="hideAndFetchHistory"
@@ -146,6 +148,9 @@ export default {
     },
     workflowName () {
       return this.$route.params.workflow_name
+    },
+    displayName () {
+      return this.$route.query.display_name
     },
     taskId () {
       return this.$route.params.task_id
@@ -271,7 +276,7 @@ export default {
           title: '工作流',
           url: `/v1/projects/detail/${this.projectName}/pipelines`
         },
-        { title: this.workflowName, url: '' }
+        { title: this.displayName || this.workflowName, url: '' }
       ]
     })
   },

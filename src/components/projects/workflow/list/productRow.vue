@@ -4,8 +4,8 @@
     <section class="product-header" @click.stop>
       <div class="workflow-name">
         <router-link :to="pipelineLink">
-          <el-tooltip effect="dark" :content="name" placement="top">
-            <span class="name-span">{{ name }}</span>
+          <el-tooltip effect="dark" :content="displayName" placement="top">
+            <span class="name-span">{{ displayName }}</span>
           </el-tooltip>
           <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" size="mini" class="custom">自定义</el-tag>
         </router-link>
@@ -78,7 +78,10 @@ export default {
       type: String,
       required: true
     },
-
+    displayName: {
+      type: String,
+      required: true
+    },
     stages: {
       type: Array,
       required: true
@@ -129,8 +132,8 @@ export default {
     },
     pipelineLink () {
       return this.type === 'common_workflow'
-        ? `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}`
-        : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}`
+        ? `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}?display_name=${this.displayName}`
+        : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}?display_name=${this.displayName}`
     }
   },
   methods: {

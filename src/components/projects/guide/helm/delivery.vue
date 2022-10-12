@@ -75,6 +75,7 @@
       <RunWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflow.name"
+        :displayName="workflow.display_name"
         :workflowMeta="workflow"
         :targetProject="workflow.product_tmpl_name"
         @success="hideAfterSuccess"

@@ -632,8 +632,8 @@ export function checkRegularAPI (payload) { // {regular: '', branches: []}
   return http.post(`/api/aslan/code/codehost/branches/regular/check`, payload)
 }
 
-export function copyWorkflowAPI (projectName, oldName, newName) {
-  return http.put(`/api/aslan/workflow/workflow/old/${oldName}/new/${newName}?projectName=${projectName}`)
+export function copyWorkflowAPI (projectName, oldName, newName, newDisplay) {
+  return http.put(`/api/aslan/workflow/workflow/old/${oldName}/new/${newName}/${newDisplay}?projectName=${projectName}`)
 }
 
 export function precreateWorkflowTaskAPI (projectName, workflowName, envName) {
@@ -2144,8 +2144,8 @@ export function addCustomWorkflowAPI (payload, projectName) {
 export function updateCustomWorkflowAPI (workflow_name, payload, projectName) {
   return http.put(` /api/aslan/workflow/v4/${workflow_name}?projectName=${projectName} `, payload)
 }
-export function getCustomWorkflowListAPI (projectName, page_num = 1, page_size = 20) {
-  return http.get(`/api/aslan/workflow/v4?project=${projectName}&page_num=${page_num}&page_size=${page_size}&projectName=${projectName}`)
+export function getCustomWorkflowListAPI (projectName, viewName = '', page_num = 1, page_size = 20) {
+  return http.get(`/api/aslan/workflow/v4?project=${projectName}&view_name=${viewName}&page_num=${page_num}&page_size=${page_size}&projectName=${projectName}`)
 }
 export function getCustomWorkflowDetailAPI (workflow_name, projectName, key = '') {
   return http.get(`/api/aslan/workflow/v4/name/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
@@ -2287,4 +2287,21 @@ export function getTestJunitReportAPI (workflowName, taskID, jobName, projectNam
 }
 export function getTestFileListAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/workspace/workflowv4/${workflowName}/taskId/${taskID}/job/${jobName}?projectName=${projectName}`)
+}
+
+// workflow view
+export function getViewPresetAPI (projectName, viewName) {
+  return http.get(`/api/aslan/workflow/view/preset?projectName=${projectName}&viewName=${viewName}`)
+}
+export function getViewListAPI (projectName) {
+  return http.get(`/api/aslan/workflow/view?projectName=${projectName}`)
+}
+export function addViewAPI (payload) {
+  return http.post(`/api/aslan/workflow/view`, payload)
+}
+export function editViewAPI (payload) {
+  return http.put(`/api/aslan/workflow/view`, payload)
+}
+export function deleteViewAPI (projectName, viewName) {
+  return http.delete(`/api/aslan/workflow/view/${projectName}/${viewName}`)
 }

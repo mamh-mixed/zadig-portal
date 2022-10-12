@@ -3,7 +3,11 @@
     <header>
       <el-row>
         <el-col :span="8">
-          <span>{{workflowName}}#</span>
+          <span>
+            <el-tooltip effect="dark" :content="displayName" placement="top">
+              <span>{{ $utils.tailCut(displayName,20) }}</span>
+            </el-tooltip>#
+          </span>
           <span>{{taskId}}</span>
           <span :class="$translate.calcTaskStatusColor(payload.status)">{{translateStatus(payload.status)}}</span>
         </el-col>
@@ -190,6 +194,9 @@ export default {
     workflowName () {
       return this.$route.params.workflow_name
     },
+    displayName () {
+      return this.$route.query.display_name
+    },
     projectName () {
       return this.$route.params.project_name
     },
@@ -373,8 +380,8 @@ export default {
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {
-            title: this.workflowName,
-            url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}`
+            title: this.displayName || this.workflowName,
+            url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.workflowName}?display_name=${this.displayName}`
           },
           { title: this.taskId, url: `` }
         ]

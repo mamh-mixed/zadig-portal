@@ -229,6 +229,10 @@ export default {
       type: String,
       default: ''
     },
+    displayName: {
+      type: String,
+      default: ''
+    },
     projectName: {
       type: String,
       default: ''
@@ -565,7 +569,7 @@ export default {
           this.$message.success('创建成功')
           this.$emit('success')
           this.$router.push(
-            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running`
+            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running&display_name=${this.displayName}`
           )
         })
         .catch(error => {
