@@ -4,7 +4,7 @@
                  fixed
                  @click-left="mobileGoback">
       <template #title>
-        <span>{{workflowName}}</span>
+        <span>{{displayName}}</span>
       </template>
     </van-nav-bar>
     <div class="task-info">
@@ -304,6 +304,9 @@ export default {
   computed: {
     workflowName () {
       return this.$route.params.workflow_name
+    },
+    displayName () {
+      return this.$route.query.display_name
     },
     taskID () {
       return this.$route.params.task_id

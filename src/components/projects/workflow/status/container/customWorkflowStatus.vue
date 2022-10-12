@@ -12,11 +12,11 @@
                 <label>工作流 {{`#${task.task_id}`}}</label>
                 <br />
                 <router-link
-                  :to="`${task.project_name}`==='DEPLOY_CENTER' ? `/v1/release/workflow/${task.workflow_name}/${task.task_id}?status=${task.status}`: `/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}`"
+                  :to="`${task.project_name}`==='DEPLOY_CENTER' ? `/v1/release/workflow/${task.workflow_name}/${task.task_id}?status=${task.status}&display_name=${task.workflow_display_name}`: `/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}&display_name=${task.workflow_display_name}`"
                 >
                   <span class="workflow-name">
                     <i class="el-icon-link"></i>
-                    {{`${task.workflow_name}`}}
+                    {{`${task.workflow_display_name}`}}
                   </span>
                 </router-link>
               </span>
@@ -71,11 +71,11 @@
               <label>工作流 {{`#${task.task_id}`}}</label>
               <br />
               <router-link
-                :to="`/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}`"
+                :to="`/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}&display_name=${task.workflow_display_name}`"
               >
                 <span class="workflow-name">
                   <i class="el-icon-link"></i>
-                  {{`${task.workflow_name}`}}
+                  {{`${task.workflow_display_name}`}}
                 </span>
               </router-link>
             </span>

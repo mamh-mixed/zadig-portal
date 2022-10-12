@@ -40,12 +40,14 @@
         </el-form-item>
         <el-form-item v-if="registry.reg_provider"
                       :label="providerMap[registry.reg_provider].reg_addr"
-                      prop="reg_addr">
+                      prop="reg_addr"
+                      :rules="{ required: true,message: `请输入${providerMap[registry.reg_provider].reg_addr}，包含协议`,trigger: ['blur']}">
           <el-input size="small"
                     clearable
                     v-model.trim="registry.reg_addr"></el-input>
         </el-form-item>
-        <el-form-item v-if="registry.reg_provider && registry.reg_provider !=='ecr'" prop="namespace">
+        <el-form-item v-if="registry.reg_provider && registry.reg_provider !=='ecr'" prop="namespace"
+                      :rules="{ required: true, message: `请输入${providerMap[registry.reg_provider].namespace}`, trigger: ['blur'] }">
           <template slot="label">
             {{ registry.reg_provider ? providerMap[registry.reg_provider].namespace : 'Namespace' }}
           </template>
@@ -237,7 +239,7 @@ export default {
           value: 'dockerhub',
           label: 'DockerHub',
           reg_addr: '地址',
-          namespace: 'Namespace',
+          namespace: 'Organization',
           access_key: 'Docker 用户名',
           secret_key: 'Docker 密码',
           icon: 'iconfont logo icondocker'
@@ -265,14 +267,7 @@ export default {
       dialogRegistryFormVisible: false,
       loading: true,
       rules: {
-        reg_provider: [{ required: true, message: '请选择镜像仓库提供商', trigger: ['blur'] }],
-        reg_addr: [{
-          required: true,
-          message: '请输入URL，包含协议',
-          trigger: ['blur']
-        }],
-        region: [{ required: true, message: '请输入区域', trigger: ['blur'] }],
-        namespace: [{ required: true, message: '请输入 Namespace', trigger: ['blur'] }]
+        reg_provider: [{ required: true, message: '请选择镜像仓库提供商', trigger: ['blur'] }]
       },
       isModify: false
     }

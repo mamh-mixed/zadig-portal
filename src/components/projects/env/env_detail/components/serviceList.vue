@@ -36,7 +36,7 @@
               </span>
             </el-popover>
             <el-tooltip  effect="dark" content="更新服务" placement="top">
-              <i v-hasPermi="{projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="updateService(scope.row)" class="iconfont icongengxin operation"></i>
+              <i v-hasPermi="{projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="updateService(scope.row)" class="iconfont icongengxin operation"></i>
             </el-tooltip>
           </template>
         </template>
@@ -84,7 +84,7 @@
         <template slot-scope="scope">
           <span v-if="envSource !=='external' && envSource !=='helm'" class="operation">
             <el-tooltip
-              v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})"
+              v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})"
               effect="dark"
               content="通过工作流升级服务"
               placement="top"
@@ -101,7 +101,7 @@
             </el-tooltip>
           </span>
           <span class="operation">
-            <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})" effect="dark" content="重启服务" placement="top">
+            <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})" effect="dark" content="重启服务" placement="top">
               <i @click="restartService(projectName,scope.row.service_name,$route.query.envName)" class="el-icon-refresh"></i>
             </el-tooltip>
             <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
@@ -110,7 +110,7 @@
           </span>
           <span v-if="(envSource===''||envSource ==='spock'||envSource ==='external')" class="operation">
             <el-tooltip
-              v-if="checkPermissionSyncMixin({projectName: projectName, action: isProd?'production:manage_environment':'manage_environment',resource:{name:envName,type:'env'}})"
+              v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})"
               effect="dark"
               content="查看服务配置"
               placement="top"

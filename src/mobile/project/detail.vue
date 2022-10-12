@@ -36,11 +36,11 @@
     <div v-if="workflows.length > 0">
       <van-cell
         v-for="workflow in workflows"
-        :to="`/mobile/projects/detail/${workflow.projectName}/workflows/multi/${workflow.name}`"
+        :to="`/mobile/projects/detail/${workflow.projectName}/workflows/multi/${workflow.name}?display_name=${workflow.display_name}`"
         :key="workflow.name"
       >
         <template #title>
-          <span class="workflow-name">{{workflow.name}}</span>
+          <span class="workflow-name">{{workflow.display_name}}</span>
         </template>
         <template #default>
           <span

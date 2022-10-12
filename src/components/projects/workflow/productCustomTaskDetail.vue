@@ -3,7 +3,11 @@
     <header>
       <el-row>
         <el-col :span="8">
-          <span>{{workflowName}}#</span>
+          <span>
+            <el-tooltip effect="dark" :content="displayName" placement="top">
+              <span>{{ $utils.tailCut(displayName,20) }}</span>
+            </el-tooltip>#
+          </span>
           <span>{{taskId}}</span>
           <span :class="$translate.calcTaskStatusColor(payload.status)">{{translateStatus(payload.status)}}</span>
         </el-col>

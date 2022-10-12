@@ -255,7 +255,7 @@ export default {
         )
         return
       }
-      this.$prompt('输入工作流名称确认', '删除工作流2 ' + name, {
+      this.$prompt('输入工作流名称确认', '删除工作流 ' + name, {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         confirmButtonClass: 'el-button el-button--danger',

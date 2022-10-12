@@ -67,6 +67,7 @@ export default {
 <style lang="less">
 @import url('~@assets/css/common/color.less');
 @import url('~@assets/css/common/icon.less');
+@import url('~@assets/css/common/font.less');
 @import url('~@assets/css/common/common.less');
 @import url('~@assets/css/common/scroll-bar.less');
 @import url('~@assets/css/common/helper.less');

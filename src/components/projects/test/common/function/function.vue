@@ -10,7 +10,7 @@
         <el-option
           v-for="(workflow,index) in availableWorkflows"
           :key="index"
-          :label="`${workflow.name} (${workflow.product_tmpl_name})`"
+          :label="`${workflow.display_name} (${workflow.product_tmpl_name})`"
           :value="workflow"
         ></el-option>
       </el-select>
@@ -164,7 +164,7 @@ export default {
       })
     },
     deleteConnection (testName, workflow) {
-      this.$confirm(`确定要取消和工作流 ${workflow.name} 的关联`, '取消关联', {
+      this.$confirm(`确定要取消和工作流 ${workflow.display_name} 的关联`, '取消关联', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

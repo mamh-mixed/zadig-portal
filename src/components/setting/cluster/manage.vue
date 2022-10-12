@@ -43,11 +43,6 @@
     >
       <el-alert title="注意:" type="warning" style="margin-bottom: 15px;" :closable="false">
         <slot>
-          <span class="tip-item">- 如果指定生产集群为“否”，有环境创建权限的用户，可以指定使用哪个集群资源。</span>
-          <span class="tip-item">
-            -
-            如果指定生产集群为“是”，超级管理员可以通过权限控制集群资源的使用，以实现业务与资源的严格隔离和安全生产管控。
-          </span>
           <span class="tip-item">
             - 接入新的集群后，如需该集群支持泛域名访问，需安装 Ingress Controller，请参阅
             <el-link
@@ -110,12 +105,6 @@
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input size="small" v-model="cluster.description" placeholder="请输入描述"></el-input>
-        </el-form-item>
-        <el-form-item label="生产集群" prop="production">
-          <el-radio-group v-model="cluster.production">
-            <el-radio :label="true">是</el-radio>
-            <el-radio :label="false">否</el-radio>
-          </el-radio-group>
         </el-form-item>
         <el-form-item label="KubeConfig" prop="config" v-if="cluster.type === 'kubeconfig'" :show-message="false">
           <Resize :resize="'vertical'" :height="'100px'" @sizeChange="$refs.codemirror.refresh()">
@@ -389,11 +378,6 @@
                 <el-tag size="small" effect="dark" :type="statusIndicator[scope.row.status]">{{myTranslate(scope.row.status)}}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="生产集群">
-              <template slot-scope="scope">
-                <span>{{scope.row.production?'是':'否'}}</span>
-              </template>
-            </el-table-column>
             <el-table-column label="描述">
               <template slot-scope="scope">
                 <span>{{scope.row.description}}</span>
@@ -571,13 +555,6 @@ export default {
         ],
         provider: [
           { required: true, message: '请选择提供商', trigger: ['blur', 'change'] }
-        ],
-        production: [
-          {
-            type: 'boolean',
-            required: true,
-            message: '请选择是否为生产集群'
-          }
         ],
         config: {
           type: 'string',
