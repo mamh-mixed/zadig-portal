@@ -542,7 +542,7 @@ export default {
                 if (item.repos) {
                   item.repos.forEach(repo => {
                     if (typeof (repo.prs) === 'string') {
-                      repo.prs = repo.prs.split(',')
+                      repo.prs = repo.prs.split(',').map(Number)
                     }
                     if (repo.branchOrTag) {
                       if (repo.branchOrTag.type === 'branch') {
@@ -563,7 +563,7 @@ export default {
               if (step.type === 'git') {
                 step.spec.repos.forEach(repo => {
                   if (typeof (repo.prs) === 'string') {
-                    repo.prs = repo.prs.split(',')
+                    repo.prs = repo.prs.split(',').map(Number)
                   }
                   if (repo.branchOrTag) {
                     if (repo.branchOrTag.type === 'branch') {
@@ -600,7 +600,7 @@ export default {
                 if (item.repos) {
                   item.repos.forEach(repo => {
                     if (typeof (repo.prs) === 'string') {
-                      repo.prs = repo.prs.split(',')
+                      repo.prs = repo.prs.split(',').map(Number)
                     }
                     if (repo.branchOrTag) {
                       if (repo.branchOrTag.type === 'branch') {
