@@ -72,9 +72,9 @@
                   <div class="item-desc">
                     <span v-if="currentVersionDetail.versionInfo.taskId" class="link">
                       <router-link
-                        :to="`/v1/projects/detail/${currentVersionDetail.versionInfo.productName}/pipelines/multi/${currentVersionDetail.versionInfo.workflowName}/${currentVersionDetail.versionInfo.taskId}`"
+                        :to="`/v1/projects/detail/${currentVersionDetail.versionInfo.productName}/pipelines/multi/${currentVersionDetail.versionInfo.workflowName}/${currentVersionDetail.versionInfo.taskId}?display_name=${currentVersionDetail.versionInfo.workflowDisplayName}`"
                       >
-                        {{currentVersionDetail.versionInfo.workflowName + '#'
+                        {{currentVersionDetail.versionInfo.workflowDisplayName + '#'
                         +currentVersionDetail.versionInfo.taskId}}
                       </router-link>
                     </span>
