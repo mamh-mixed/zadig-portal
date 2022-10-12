@@ -13,7 +13,7 @@
         <el-form-item label="主机"
                       label-width="100px"
                       prop="name">
-          <el-input v-model="mailHostEdit.name"
+          <el-input v-model.trim="mailHostEdit.name"
                     placeholder="主机"
                     autofocus
                     auto-complete="off"></el-input>
@@ -57,7 +57,7 @@
         <el-form-item label="发信地址"
                       label-width="100px"
                       prop="address">
-          <el-input v-model="mailServiceEdit.address"
+          <el-input v-model.trim="mailServiceEdit.address"
                     placeholder="发信地址"
                     autofocus
                     auto-complete="off"></el-input>
@@ -100,7 +100,7 @@
         <el-form-item label="主机"
                       label-width="100px"
                       prop="name">
-          <el-input v-model="mailHostAdd.name"
+          <el-input v-model.trim="mailHostAdd.name"
                     placeholder="主机"
                     autofocus
                     auto-complete="off"></el-input>
@@ -144,7 +144,7 @@
         <el-form-item label="发信地址"
                       label-width="100px"
                       prop="address">
-          <el-input v-model="mailServiceAdd.address"
+          <el-input v-model.trim="mailServiceAdd.address"
                     placeholder="发信地址"
                     autofocus
                     auto-complete="off"></el-input>

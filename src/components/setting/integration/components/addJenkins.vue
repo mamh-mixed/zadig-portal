@@ -23,7 +23,7 @@
     >
       <el-form-item label="服务地址" prop="url">
         <el-input
-          v-model="addForm.url"
+          v-model.trim="addForm.url"
           @change="validate(checkPassword)"
           placeholder="Jenkins 服务地址"
         ></el-input>

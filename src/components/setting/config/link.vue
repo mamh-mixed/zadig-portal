@@ -20,7 +20,7 @@
         <el-table-column prop="url" label="URL">
           <template slot-scope="{row}">
             <span v-show="!row.edit">{{row.url}}</span>
-            <el-input v-show="row.edit" v-model="row.url" placeholder="请输入 URL" size="small"></el-input>
+            <el-input v-show="row.edit" v-model.trim="row.url" placeholder="请输入 URL" size="small"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作">

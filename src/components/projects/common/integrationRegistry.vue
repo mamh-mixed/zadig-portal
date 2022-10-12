@@ -43,7 +43,7 @@
                       prop="reg_addr"
                       :rules="{ required: true,message: `请输入${providerMap[registry.reg_provider].reg_addr}，包含协议`,trigger: ['blur']}">
           <el-input clearable
-                    v-model="registry.reg_addr"></el-input>
+                    v-model.trim="registry.reg_addr"></el-input>
         </el-form-item>
         <el-form-item  v-if="registry.reg_provider && registry.reg_provider !=='ecr'" prop="namespace"
                        :rules="{ required: true, message: `请输入${providerMap[registry.reg_provider].namespace}`, trigger: ['blur'] }">

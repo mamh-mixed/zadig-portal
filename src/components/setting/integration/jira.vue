@@ -15,7 +15,7 @@
                ref="jiraEditForm">
         <el-form-item label="Jira 地址"
                       prop="host">
-          <el-input v-model="jiraEdit.host"
+          <el-input v-model.trim="jiraEdit.host"
                     placeholder="企业 Jira 地址"
                     autofocus
                     auto-complete="off"></el-input>
@@ -67,7 +67,7 @@
                ref="jiraAddForm">
         <el-form-item label="Jira 地址"
                       prop="host">
-          <el-input v-model="jiraAdd.host"
+          <el-input v-model.trim="jiraAdd.host"
                     placeholder="企业 Jira 地址"
                     autofocus
                     auto-complete="off"></el-input>

@@ -51,7 +51,7 @@
             </template>
             <el-input size="small"
                       placeholder="http://domain/install_pkg.tar.gz"
-                      v-model="createApp.download_path"></el-input>
+                      v-model.trim="createApp.download_path"></el-input>
           </el-form-item>
           <el-form-item label="安装脚本"
                         prop="scripts">
@@ -112,7 +112,7 @@
               </el-tooltip>
             </template>
             <el-input size="small"
-                      v-model="swapApp.download_path"></el-input>
+                      v-model.trim="swapApp.download_path"></el-input>
           </el-form-item>
           <el-form-item label="安装脚本"
                         prop="scripts">
