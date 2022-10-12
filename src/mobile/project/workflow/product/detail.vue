@@ -63,7 +63,7 @@
     <div>
       <van-cell
         v-for="task in workflowTasks"
-        :to="`/mobile/projects/detail/${projectName}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}`"
+        :to="`/mobile/projects/detail/${projectName}/workflows/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${displayName}`"
         :key="task.task_id"
       >
         <template #title>

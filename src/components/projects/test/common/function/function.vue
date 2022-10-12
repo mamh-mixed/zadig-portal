@@ -10,7 +10,7 @@
         <el-option
           v-for="(workflow,index) in availableWorkflows"
           :key="index"
-          :label="`${workflow.name} (${workflow.product_tmpl_name})`"
+          :label="`${workflow.display_name} (${workflow.product_tmpl_name})`"
           :value="workflow"
         ></el-option>
       </el-select>
