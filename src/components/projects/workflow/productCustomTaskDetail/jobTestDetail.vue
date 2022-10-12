@@ -250,15 +250,13 @@ export default {
       this.isShowConsoleFooter = false
     },
     getTestReport (type) {
-      const tail = `?is_workflow=1&service_name=&test_type=function`
+      const tail = `?is_workflow=1&service_name=&test_type=function&display_name=${this.$route.query.display_name}`
       if (type === 'html') {
         window.open(
           `/api/aslan/testing/report/workflowv4/${this.workflowName}/id/${this.taskId}/job/${this.jobInfo.name}`
         )
-
-        // return `/api/aslan/testing/report/workflowv4/${this.workflowName}/id/${this.taskId}/job/${this.jobInfo.name}`
       } else {
-        return `/v1/projects/detail/${this.projectName}/pipelines/multi/testcase/${this.workflowName}/${this.taskId}/test/${this.jobInfo.name}${tail}`
+        return `/v1/projects/detail/${this.projectName}/customPipelines/multi/testcase/${this.workflowName}/${this.taskId}/test/${this.jobInfo.name}${tail}`
       }
     }
   },
