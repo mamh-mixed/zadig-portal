@@ -470,7 +470,7 @@ const utils = {
     } else if (pipeline_names.includes(new_name)) {
       return '工作流标识重复'
     } else if (!/^[a-zA-Z0-9-]+$/.test(new_name)) {
-      return '支持字母大小写和数字，特殊字符只支持中划线'
+      return '支持大小写字母、数字和中划线'
     } else {
       return true
     }
