@@ -587,7 +587,7 @@
               支持集成代码源，支持 GitLab、GitHub、Gerrit、Gitee 集成，详情可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
-                       :href="`https://docs.koderover.com/zadig/settings/codehost/overview/`"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/overview`"
                        :underline="false"
                        target="_blank">帮助文档</el-link> 。
             </template>
