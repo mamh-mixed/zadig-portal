@@ -137,6 +137,7 @@ export default {
             repo_owner: repo.repo_owner,
             repo_name: repo.repo_name,
             pr: repo.pr,
+            prs: repo.prs,
             branch: repo.branchOrTag.name,
             repo_namespace: repo.repo_namespace
           }
