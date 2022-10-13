@@ -2296,12 +2296,12 @@ export function getViewPresetAPI (projectName, viewName) {
 export function getViewListAPI (projectName) {
   return http.get(`/api/aslan/workflow/view?projectName=${projectName}`)
 }
-export function addViewAPI (payload) {
-  return http.post(`/api/aslan/workflow/view`, payload)
+export function addViewAPI (payload, projectName) {
+  return http.post(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
 }
-export function editViewAPI (payload) {
-  return http.put(`/api/aslan/workflow/view`, payload)
+export function editViewAPI (payload, projectName) {
+  return http.put(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
 }
 export function deleteViewAPI (projectName, viewName) {
-  return http.delete(`/api/aslan/workflow/view/${projectName}/${viewName}`)
+  return http.delete(`/api/aslan/workflow/view/${projectName}/${viewName}?projectName=${projectName}`)
 }

@@ -484,12 +484,14 @@ export default {
     },
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
-        this.viewForm.project_name = this.projectName
-        this.viewForm.workflows = this.presetWorkflowInfo.workflows
         if (valid) {
-          const params = this.viewForm
+          const params = {
+            name: this.viewForm.name,
+            project_name: this.projectName,
+            workflows: this.presetWorkflowInfo.workflows
+          }
           if (this.operateType === 'add') {
-            addViewAPI(params).then(res => {
+            addViewAPI(params, this.projectName).then(res => {
               this.$message({
                 message: '新增成功',
                 type: 'success'
@@ -499,7 +501,7 @@ export default {
             })
           } else {
             params.id = this.presetWorkflowInfo.id
-            editViewAPI(params).then(res => {
+            editViewAPI(params, this.projectName).then(res => {
               this.$message({
                 message: '编辑成功',
                 type: 'success'
