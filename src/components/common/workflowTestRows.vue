@@ -72,7 +72,7 @@
                   </el-tooltip>
                 </el-select>
                 <el-tooltip v-else
-                            content="PR 不存在，支持手动输入 PR 号"
+                            content="PR 不存在，支持手动输入 PR 号，多个 PR 用 , 分隔"
                             placement="top"
                             popper-class="gray-popper">
                   <el-input v-model="build.prs"

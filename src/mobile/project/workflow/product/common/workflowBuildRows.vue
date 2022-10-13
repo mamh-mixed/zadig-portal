@@ -63,7 +63,7 @@
                       <el-option :label="`#${item[scope.row.prNumberPropName]} ${$utils.tailCut(item.title,30)}`" :value="item[scope.row.prNumberPropName]"></el-option>
                     </el-tooltip>
                   </el-select>
-                  <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号" placement="top" popper-class="gray-popper">
+                  <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号，多个 PR 用 , 分隔" placement="top" popper-class="gray-popper">
                     <el-input
                       v-model="scope.row.prs"
                       class="short-input"
