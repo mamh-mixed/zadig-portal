@@ -48,38 +48,47 @@
     </el-tooltip>
     <el-tooltip :content="`在 ${build.source} 上查看 PR`" placement="top" effect="dark">
       <span v-if="build.prs.join('-')" class="link">
-        <a
-          v-if="build.source==='github'"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${curPr}`"
-          target="_blank"
-        >{{"PR"}}
-        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
+        <a v-if="build.source==='github'" :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${curPr}`" target="_blank">
+          <i v-if="showIcon && build.prs" class="iconfont icongit-pull-request repo-icon"></i>
+          <span v-for="item in build.prs" :key="item" @click="setPr(item)">
+            <span>—</span>
+            {{item}}
+          </span>
         </a>
         <a
           v-else-if="build.source==='gitlab'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/merge_requests/${curPr}`"
           target="_blank"
-        >{{"PR"}}
-        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span></a>
+        >
+          <i v-if="showIcon && build.prs" class="iconfont icongit-pull-request repo-icon"></i>
+          <span v-for="item in build.prs" :key="item" @click="setPr(item)">
+            <span>—</span>
+            {{item}}
+          </span>
+        </a>
         <a
           v-else-if="build.source==='gitee'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pulls/${curPr}`"
           target="_blank"
-        >{{"PR"}}
-        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
+        >
+          <i v-if="showIcon && build.prs" class="iconfont icongit-pull-request repo-icon"></i>
+          <span v-for="item in build.prs" :key="item" @click="setPr(item)">
+            <span>—</span>
+            {{item}}
+          </span>
         </a>
-        <a
-          v-if="!build.source"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${curPr}`"
-          target="_blank"
-        >{{"PR"}}
-        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
+        <a v-if="!build.source" :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${curPr}`" target="_blank">
+          <i v-if="showIcon && build.prs" class="iconfont icongit-pull-request repo-icon"></i>
+          <span v-for="item in build.prs" :key="item" @click="setPr(item)">
+            <span>—</span>
+            {{item}}
+          </span>
         </a>
       </span>
     </el-tooltip>
     <i v-if="showIcon && build.commit_id" class="iconfont iconicon_git-commit repo-icon"></i>
     <el-tooltip
-      :content="(build.source==='gerrit'&& (!build.prs.join('-') || build.prs.join('-')===0))||build.source==='codehub'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
+      :content="(build.source==='gerrit'&& (!build.prs.join('-')))||build.source==='codehub'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
       placement="top"
       effect="dark"
     >
@@ -89,8 +98,10 @@
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/commit/${build.commit_id}`"
           target="_blank"
         >{{showCommit ? "Commit-" : ''}}{{build.commit_id.substring(0, 10)}}</a>
-        <span v-else-if="build.source==='gerrit'&& (!build.prs.join('-') || build.prs.join('-')===0)">{{'Commit-'+build.commit_id.substring(0, 8)}}</span>
-        <span v-else-if="build.source==='gerrit'&& build.prs.join('-') && build.prs.join('-')!==0" class="link">
+        <span
+          v-else-if="build.source==='gerrit'&& (!build.prs.join('-'))"
+        >{{'Commit-'+build.commit_id.substring(0, 8)}}</span>
+        <span v-else-if="build.source==='gerrit'&& build.prs.join('-')" class="link">
           <a :href="`${build.address}/c/${build.repo_name}/+/${build.prs.join('-')}`" target="_blank">{{`Change-${build.prs.join('-')}`}}</a>
           {{build.commit_id.substring(0, 8)}}
         </span>
