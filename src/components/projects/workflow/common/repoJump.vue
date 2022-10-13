@@ -57,20 +57,20 @@
         </a>
         <a
           v-else-if="build.source==='gitlab'"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/merge_requests/${build.prs.join('-')}`"
+          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/merge_requests/${curPr}`"
           target="_blank"
         >{{"PR"}}
         <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span></a>
         <a
           v-else-if="build.source==='gitee'"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pulls/${build.prs.join('-')}`"
+          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pulls/${curPr}`"
           target="_blank"
         >{{"PR"}}
         <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
         </a>
         <a
           v-if="!build.source"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${build.prs.join('-')}`"
+          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${curPr}`"
           target="_blank"
         >{{"PR"}}
         <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
@@ -111,6 +111,11 @@ export default {
     showIcon: {
       default: false,
       type: Boolean
+    }
+  },
+  data () {
+    return {
+      curPr: ''
     }
   },
   methods: {
