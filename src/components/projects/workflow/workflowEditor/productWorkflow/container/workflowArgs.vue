@@ -282,6 +282,9 @@ export default {
           repo.pr = repo.pr ? repo.pr : 0
           repo.branch = ''
           repo.tag = ''
+          if (typeof (repo.prs) === 'string') {
+            repo.prs = repo.prs.split(',').map(Number)
+          }
           repo[repo.branchOrTag.type] = repo.branchOrTag.name
           for (const key of repoKeysToDelete) {
             delete repo[key]
