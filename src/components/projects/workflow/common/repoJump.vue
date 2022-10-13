@@ -43,40 +43,43 @@
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.branch}`"
           target="_blank"
         >{{showIcon ? '' : "Branch-" }}{{ build.branch}}</a>
-        <!-- <a v-else-if="build.source ==='codehub'"
-                               :href="`${build.address}/codehub/project${build.project_uuid}/codehub/${build.repo_id}/home?ref=${build.branch}`"
-                               target="_blank">{{"Branch-"+build.branch}}
-        </a>-->
         <span v-else-if="build.source ==='codehub'">{{showIcon ? '' : "Branch-" }}{{ build.branch}}</span>
       </span>
     </el-tooltip>
     <el-tooltip :content="`在 ${build.source} 上查看 PR`" placement="top" effect="dark">
-      <span v-if="build.pr && build.pr>0" class="link">
+      <span v-if="build.prs.join('-')" class="link">
         <a
           v-if="build.source==='github'"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${build.pr}`"
+          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${curPr}`"
           target="_blank"
-        >{{"PR-"+build.pr}}</a>
+        >{{"PR"}}
+        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
+        </a>
         <a
           v-else-if="build.source==='gitlab'"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/merge_requests/${build.pr}`"
+          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/merge_requests/${build.prs.join('-')}`"
           target="_blank"
-        >{{"PR-"+build.pr}}</a>
+        >{{"PR"}}
+        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span></a>
         <a
           v-else-if="build.source==='gitee'"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pulls/${build.pr}`"
+          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pulls/${build.prs.join('-')}`"
           target="_blank"
-        >{{"PR-"+build.pr}}</a>
+        >{{"PR"}}
+        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
+        </a>
         <a
           v-if="!build.source"
-          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${build.pr}`"
+          :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pull/${build.prs.join('-')}`"
           target="_blank"
-        >{{"PR-"+build.pr}}</a>
+        >{{"PR"}}
+        <span v-for="item in build.prs" :key="item" @click="setPr(item)">-{{item}}</span>
+        </a>
       </span>
     </el-tooltip>
     <i v-if="showIcon && build.commit_id" class="iconfont iconicon_git-commit repo-icon"></i>
     <el-tooltip
-      :content="(build.source==='gerrit'&& (!build.pr || build.pr===0))||build.source==='codehub'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
+      :content="(build.source==='gerrit'&& (!build.prs.join('-') || build.prs.join('-')===0))||build.source==='codehub'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
       placement="top"
       effect="dark"
     >
@@ -86,15 +89,11 @@
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/commit/${build.commit_id}`"
           target="_blank"
         >{{showCommit ? "Commit-" : ''}}{{build.commit_id.substring(0, 10)}}</a>
-        <span v-else-if="build.source==='gerrit'&& (!build.pr || build.pr===0)">{{'Commit-'+build.commit_id.substring(0, 8)}}</span>
-        <span v-else-if="build.source==='gerrit'&& build.pr && build.pr!==0" class="link">
-          <a :href="`${build.address}/c/${build.repo_name}/+/${build.pr}`" target="_blank">{{`Change-${build.pr}`}}</a>
+        <span v-else-if="build.source==='gerrit'&& (!build.prs.join('-') || build.prs.join('-')===0)">{{'Commit-'+build.commit_id.substring(0, 8)}}</span>
+        <span v-else-if="build.source==='gerrit'&& build.prs.join('-') && build.prs.join('-')!==0" class="link">
+          <a :href="`${build.address}/c/${build.repo_name}/+/${build.prs.join('-')}`" target="_blank">{{`Change-${build.prs.join('-')}`}}</a>
           {{build.commit_id.substring(0, 8)}}
         </span>
-        <!-- <a v-else-if="build.source==='codehub'"
-                               :href="`${build.address}/codehub/project/${build.project_uuid}/codehub/${build.repo_id}/${build.commit_id}/commitdetail`"
-                               target="_blank">{{build.commit_id.substring(0, 8)}}
-        </a>-->
         <span v-else-if="build.source==='codehub'">{{build.commit_id.substring(0, 8)}}</span>
       </span>
     </el-tooltip>
@@ -112,6 +111,12 @@ export default {
     showIcon: {
       default: false,
       type: Boolean
+    }
+  },
+  methods: {
+    setPr (item) {
+      this.curPr = item
+      this.$forceUpdate()
     }
   }
 }
