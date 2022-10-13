@@ -156,8 +156,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: '请输入工作流标识',
-            // validator: this.validatePipelineName,
+            validator: this.validatePipelineName,
             trigger: ['blur', 'change']
           }
         ]
@@ -205,6 +204,15 @@ export default {
     }
   },
   methods: {
+    validatePipelineName (rule, value, callback) {
+      console.log(value)
+      const result = this.$utils.validatePipelineName([], value)
+      if (result === true) {
+        callback()
+      } else {
+        callback(new Error(result))
+      }
+    },
     copyWorkflow (workflow) {
       this.curWorkflow = workflow
       this.isShowCopyDialog = true
@@ -216,7 +224,7 @@ export default {
           type: 'success'
         })
         this.refreshWorkflow(this.projectName)
-        this.isShowCopyDialog = false
+        this.resetForm('copyForm')
       })
     },
     submitForm (formName) {
@@ -303,9 +311,9 @@ export default {
   watch: {
     'copyWorkflowInfo.display_name': {
       handler (val, old_val) {
-        this.copyWorkflowInfo.name = pinyin(val, {
+        this.$set(this.copyWorkflowInfo, 'name', pinyin(val, {
           style: pinyin.STYLE_NORMAL
-        }).join('')
+        }).join(''))
       }
     }
   }
