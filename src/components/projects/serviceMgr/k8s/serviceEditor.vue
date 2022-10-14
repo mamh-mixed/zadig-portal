@@ -293,7 +293,8 @@ export default {
             val.source === 'gitee' ||
             val.source === 'github' ||
             (val.visibility === 'public' &&
-              val.product_name !== this.projectName)
+              val.product_name !== this.projectName) ||
+              (val.source === 'template' && this.service.auto_sync)
           ) {
             this.cmOptions.readOnly = 'nocursor'
           } else {
