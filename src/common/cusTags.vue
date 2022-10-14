@@ -66,6 +66,7 @@ export default {
     overflow: hidden;
     line-height: 2;
     text-overflow: ellipsis;
+    vertical-align: middle;
     word-wrap: none;
     border: 1px solid @borderGray;
 
