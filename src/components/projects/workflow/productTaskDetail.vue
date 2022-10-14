@@ -866,7 +866,7 @@ export default {
       const projectName = this.projectName
       const test_job_name =
         this.workflowName + '-' + this.taskID + '-' + testSubTask.test_name
-      const tail = `?is_workflow=1&service_name=${serviceName}&test_type=${testSubTask.job_ctx.test_type}`
+      const tail = `?is_workflow=1&service_name=${serviceName}&test_type=${testSubTask.job_ctx.test_type}&display_name=${this.$route.query.display_name}`
       return `/v1/projects/detail/${projectName}/pipelines/multi/testcase/${this.workflowName}/${this.taskID}/${testSubTask.test_name}/${test_job_name}${tail}`
     },
     repoID (repo) {
