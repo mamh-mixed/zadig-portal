@@ -47,7 +47,7 @@
             <div class="item-title">代码信息</div>
           </el-col>
           <el-col :span="8">
-            <RepoJump :build="build" showIcon />
+            <RepoJump :build="build" />
           </el-col>
         </el-row>
         <el-row :gutter="0" class="item">

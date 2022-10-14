@@ -65,7 +65,7 @@
                   <div v-if="scope.row.builds.length > 0">
                     <el-row :gutter="0" v-for="(build,index) in scope.row.builds" :key="index">
                       <el-col :span="24">
-                        <RepoJump :build="build" :showCommit="false" showIcon />
+                        <RepoJump :build="build" :showCommit="false" />
                       </el-col>
                     </el-row>
                   </div>
