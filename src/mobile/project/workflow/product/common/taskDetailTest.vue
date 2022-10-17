@@ -38,7 +38,7 @@
         <van-row :gutter="0" v-for="(build,index) in testingv2.job_ctx.builds" :key="index">
           <van-col :span="24">
             <span>{{build.repo_name}} ({{build.source}})</span>
-            <RepoJump :build="build" :showCommit="false" showIcon />
+            <RepoJump :build="build" :showCommit="false" />
           </van-col>
         </van-row>
       </div>

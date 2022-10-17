@@ -57,7 +57,7 @@
             </div>
           </el-col>
           <el-col :span="6">
-            <RepoJump :build="repo" showIcon />
+            <RepoJump :build="repo" />
           </el-col>
         </el-row>
       </div>

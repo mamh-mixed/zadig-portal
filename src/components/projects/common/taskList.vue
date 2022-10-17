@@ -80,7 +80,7 @@
                       <div v-for="(code,codeIndex) in item.code_info" :key="codeIndex" class="repo-detail-item">
                         <div class="common-column">{{ code.commit_message }}</div>
                         <div class="common-column color-theme">
-                          <RepoJump :build="code" :showCommit="false" showIcon/>
+                          <RepoJump :build="code" :showCommit="false"/>
                         </div>
                         <div class="common-column"><i class="el-icon-user" style="margin-right: 4px;"></i>{{ code.author_name }}</div>
                       </div>
