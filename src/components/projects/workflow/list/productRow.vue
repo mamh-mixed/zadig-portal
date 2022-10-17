@@ -256,7 +256,7 @@ export default {
 
         .name-span {
           display: inline-block;
-          max-width: 240px;
+          max-width: 180px;
           margin-right: 8px;
           overflow: hidden;
           white-space: nowrap;
