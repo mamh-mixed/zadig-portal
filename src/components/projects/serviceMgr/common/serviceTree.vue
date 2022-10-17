@@ -138,6 +138,8 @@
       :projectName="projectName"
       :currentUpdatedServiceName="currentUpdatedServiceName"
       :currentUpdatedServiceTemplateId="currentUpdatedServiceTemplateId"
+      :currentUpdatedServiceVariableYaml="currentUpdatedServiceVariableYaml"
+      :currentUpdatedServiceAutoSync="currentUpdatedServiceAutoSync"
       :dialogImportFromYamlVisible.sync="openImportYamlDialog"
       @importYamlSuccess="importYamlSuccess"
     />
@@ -442,6 +444,8 @@ export default {
       searchService: '',
       currentUpdatedServiceName: '',
       currentUpdatedServiceTemplateId: '',
+      currentUpdatedServiceAutoSync: false,
+      currentUpdatedServiceVariableYaml: '',
       serviceGroup: [],
       allCodeHosts: [],
       openImportYamlDialog: false,
@@ -1038,7 +1042,9 @@ export default {
     refreshService (node, data) {
       if (data.source === 'template') {
         this.currentUpdatedServiceName = data.service_name
-        this.currentUpdatedServiceTemplateId = data.template_id
+        this.currentUpdatedServiceTemplateId = data.create_from.template_id
+        this.currentUpdatedServiceAutoSync = data.auto_sync
+        this.currentUpdatedServiceVariableYaml = data.create_from.variable_yaml
         this.openImportYamlDialog = true
       } else {
         this.dialogImportFromRepoVisible = true
