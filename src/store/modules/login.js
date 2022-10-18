@@ -36,7 +36,9 @@ const actions = {
     const userInfo = await userLoginAPI(args).catch(error => console.log(error))
     if (userInfo) {
       store.set('userInfo', userInfo) // 存储用户信息，包括 Token
-      context.dispatch('GETUSERROLE')
+      context.dispatch('GETUSERROLE').then((role) => {
+        context.dispatch('checkPlutusStatus', { isAdmin: role && role.includes('admin') })
+      })
     }
     return Promise.resolve(userInfo)
   },
@@ -58,6 +60,7 @@ const actions = {
         const role = roleBinding.map(item => (item.role))
         store.set('role', role)
         context.commit('INJECT_ROLE', role)
+        return role
       }
     }
   },
