@@ -2030,6 +2030,27 @@ export function getPolicyByIdAPI (projectName, id) {
   return http.get(`/api/v1/policy/${id}?projectName=${projectName}`)
 }
 
+// variable group list
+export function getVariablesGroupsAPI (projectName, page, perPage) {
+  return http.get(`/api/aslan/project/variablesets?page=${page}&perPage=${perPage}&projectName=${projectName}`)
+}
+
+export function getVariablesGroupByIdAPI (projectName, id) {
+  return http.get(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`)
+}
+
+export function createVariablesGroupAPI (projectName, payload) {
+  return http.post(`/api/aslan/project/variablesets?projectName=${projectName}`, payload)
+}
+
+export function updateVariablesGroupAPI (projectName, id, payload) {
+  return http.put(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`, payload)
+}
+
+export function deleteVariablesGroupAPI (projectName, id) {
+  return http.delete(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`)
+}
+
 // Insight
 export function getLatestBuildsAPI ({ startDate, endDate, projectNames }) {
   return http.post(`/api/aslan/stat/quality/buildLatestTenMeasure`, { startDate, endDate, productNames: projectNames })
