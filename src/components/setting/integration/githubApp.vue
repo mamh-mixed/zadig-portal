@@ -97,7 +97,7 @@
             支持集成 GitHub App，配置后可以在 GitHub - Checks 上追踪工作流状态，详情可参考
             <el-link style="font-size: 14px; vertical-align: baseline;"
                      type="primary"
-                     :href="`https://docs.koderover.com/zadig/settings/webhook-config/`"
+                     :href="`https://docs.koderover.com/zadig/settings/github-app/`"
                      :underline="false"
                      target="_blank">帮助文档</el-link> 。
           </template>
