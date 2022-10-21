@@ -55,7 +55,7 @@ export default {
         variable_yaml: {
           required: true,
           trigger: 'change',
-          message: '请填写变量'
+          message: '请输入 YAML 格式变量'
         }
       },
       handleLoading: false
@@ -83,25 +83,27 @@ export default {
         this.groupDetail = res
       }
     },
-    async handleOpe () {
-      const { name, description, variable_yaml } = this.groupDetail
-      const payload = {
-        name,
-        description,
-        variable_yaml
-      }
-      this.handleLoading = true
-      const res = await (this.id
-        ? updateVariablesGroupAPI(this.projectName, this.id, payload)
-        : createVariablesGroupAPI(this.projectName, payload)
-      ).catch(err => console.log(err))
-      this.handleLoading = false
-      if (res) {
-        this.$message.success(`${this.id ? '更新' : '创建'}成功！`)
-        this.$router.push(`/v1/projects/detail/${this.projectName}/group`)
-      } else {
-        this.$message.fail(`${this.id ? '更新' : '创建'}失败`)
-      }
+    handleOpe () {
+      this.$refs.createGroupRef.validate().then(async () => {
+        const { name, description, variable_yaml } = this.groupDetail
+        const payload = {
+          name,
+          description,
+          variable_yaml
+        }
+        this.handleLoading = true
+        const res = await (this.id
+          ? updateVariablesGroupAPI(this.projectName, this.id, payload)
+          : createVariablesGroupAPI(this.projectName, payload)
+        ).catch(err => console.log(err))
+        this.handleLoading = false
+        if (res) {
+          this.$message.success(`${this.id ? '更新' : '创建'}成功！`)
+          this.$router.push(`/v1/projects/detail/${this.projectName}/group`)
+        } else {
+          this.$message.fail(`${this.id ? '更新' : '创建'}失败`)
+        }
+      })
     }
   },
   created () {
