@@ -31,7 +31,7 @@
             </div>
           </div>
         </div>
-        <el-button v-if="importRepoInfo.yamlSource === 'default'" type="text" @click="importRepoInfo.yamlSource = 'freeEdit'">高级设置</el-button>
+        <el-button v-if="importRepoInfo.yamlSource === 'default'" type="text" @click="importRepoInfo.yamlSource = 'customEdit'">高级设置</el-button>
         <CommonImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo" showDelete></CommonImportValues>
       </div>
       <ImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo"></ImportValues>
@@ -130,7 +130,7 @@ export default {
           if (createFrom.yaml_data) {
             this.importRepoInfo = {
               yamlSource: createFrom.yaml_data.yaml_content
-                ? 'freeEdit'
+                ? 'customEdit'
                 : 'default',
               overrideYaml: createFrom.yaml_data.yaml_content
             }

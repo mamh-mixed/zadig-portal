@@ -1846,8 +1846,8 @@ export function getAllChartValuesYamlAPI (projectName, envName, serviceName = []
   return http.get(`/api/aslan/environment/environments/${envName}/estimated-renderchart?projectName=${projectName}&serviceName=${serviceName.join(',')}`)
 }
 
-export function getEnvDefaultVariableAPI (projectName, envName) {
-  return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}`)
+export function getEnvDefaultVariableAPI (projectName, envName, ifPassFilter = true) {
+  return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}&ifPassFilter=${ifPassFilter}`)
 }
 
 export function createHelmEnvAPI (projectName, payload, scene = '') {
@@ -2031,8 +2031,8 @@ export function getPolicyByIdAPI (projectName, id) {
 }
 
 // variable group list
-export function getVariablesGroupsAPI (projectName, page, perPage) {
-  return http.get(`/api/aslan/project/variablesets?page=${page}&perPage=${perPage}&projectName=${projectName}`)
+export function getVariablesGroupsAPI (projectName, page, perPage, ifPassFilter = true) {
+  return http.get(`/api/aslan/project/variablesets?page=${page}&perPage=${perPage}&projectName=${projectName}&ifPassFilter=${ifPassFilter}`)
 }
 
 export function getVariablesGroupByIdAPI (projectName, id) {

@@ -8,7 +8,7 @@
         ref="helmEnvTemplateRef"
         :envScene="`updateRenderSet`"
         :chartNames="chartNames"
-        :currentEnvValue="currentEnvValue"
+        :currentEnvObj="currentEnvObj"
         :baseEnvObj="baseEnvObj"
       ></HelmEnvTemplate>
     </div>
@@ -34,7 +34,7 @@ export default {
     return {
       variables: [],
       chartNames: [],
-      currentEnvValue: undefined
+      currentEnvObj: undefined
     }
   },
   computed: {
@@ -59,14 +59,29 @@ export default {
       if (!nVal) {
         this.variables = []
         this.chartNames = []
-        this.currentEnvValue = undefined
+        this.currentEnvObj = undefined
         return
       }
       if (this.deployType === 'k8s') {
         this.variables = cloneDeep(this.currentInfo.vars)
       } else {
+        // for service charts
         this.chartNames = cloneDeep(this.currentInfo.chartValues || [])
-        this.currentEnvValue = this.currentInfo.defaultValues || ''
+        // for environment
+        const valuesData = this.currentInfo.valuesData
+        const currentEnvObj = { yamlSource: 'customEdit', envValue: this.currentInfo.defaultValues, gitRepoConfig: null, variableSet: null }
+        if (valuesData) {
+          currentEnvObj.yamlSource = valuesData.yamlSource
+          if (valuesData.yamlSource === 'repo') {
+            currentEnvObj.gitRepoConfig = valuesData.gitRepoConfig
+          } else if (valuesData.yamlSource === 'variableSet') {
+            currentEnvObj.variableSet = {
+              autoSync: valuesData.autoSync,
+              source_id: valuesData.source_id
+            }
+          }
+        }
+        this.currentEnvObj = currentEnvObj
       }
     }
   },
@@ -79,7 +94,9 @@ export default {
           envInfo,
           chartInfo
         } = this.$refs.helmEnvTemplateRef.getAllInfo()
-        this.currentInfo.defaultValues = envInfo.DEFAULT.envValue || ''
+        const defaultEnv = envInfo.DEFAULT
+        this.currentInfo.defaultValues = defaultEnv.envValue || ''
+        this.currentInfo.valuesData = defaultEnv.valuesData || null
         this.currentInfo.chartValues = chartInfo
       }
       this.dialogVisible = false

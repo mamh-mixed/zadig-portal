@@ -163,7 +163,6 @@ export default {
     },
     async createHelmProductEnv () {
       const { envInfo, chartInfo } = this.$refs.helmEnvTemplateRef.getAllInfo()
-
       const payloadObj = {}
       const projectName = this.projectName
 
@@ -175,13 +174,7 @@ export default {
           chartValues: [],
           defaultValues: envInfo[info.initName].envValue || '',
           namespace: `${projectName}-env-${info.envName}`,
-          valuesData: envInfo[info.initName].gitRepoConfig
-            ? {
-              autoSync: envInfo[info.initName].gitRepoConfig.autoSync,
-              yamlSource: 'repo',
-              gitRepoConfig: envInfo[info.initName].gitRepoConfig
-            }
-            : null
+          valuesData: envInfo[info.initName].valuesData
         }
       })
       chartInfo.forEach(chart => {

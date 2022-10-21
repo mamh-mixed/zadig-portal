@@ -84,7 +84,7 @@ export default {
       ).catch(err => console.log(err))
       if (res) {
         const groupMap = {}
-        this.groupList = res.variable_set_list.map(group => {
+        this.groupList = (res.variable_set_list || []).map(group => {
           groupMap[group.id] = group.variable_yaml
           return {
             ...group,
