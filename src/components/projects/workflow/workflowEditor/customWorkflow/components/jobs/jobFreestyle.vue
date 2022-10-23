@@ -109,22 +109,23 @@ export default {
       }
       return this.$refs.ruleForm.validate().then(val => {
         if (val) {
-          return Promise.all(valid).then(() => {
-            const payload = this.$utils.cloneObj(this.job)
-            const git = this.job.spec.steps.find(step => step.name === 'git')
-            if (git) {
-              git.spec.repos.forEach(repo => {
-                this.allCodeHosts.forEach(codehost => {
-                  if (repo.codehost_id === codehost.id) {
-                    repo.source = codehost.type
-                  }
-                })
-              })
-            }
-            return payload
-          })
+          return Promise.all(valid)
         }
       })
+    },
+    getData () {
+      const payload = this.$utils.cloneObj(this.job)
+      const git = this.job.spec.steps.find(step => step.name === 'git')
+      if (git) {
+        git.spec.repos.forEach(repo => {
+          this.allCodeHosts.forEach(codehost => {
+            if (repo.codehost_id === codehost.id) {
+              repo.source = codehost.type
+            }
+          })
+        })
+      }
+      return payload
     }
   },
   created () {
