@@ -141,7 +141,7 @@ export default {
     }
     this.defaultEnvsValues = {} // 不需要响应式 { key: envName, value: defaultEnvValue }
     return {
-      allChartNameInfo: {}, // key: serviceName value: Object{ key:envName }
+      allChartNameInfo: {}, // key: serviceName value: Object{ key:envName } // initInfo comes from interface request for data backup
       selectedChart: '',
       selectedEnv: 'DEFAULT',
       disabledEnv: [],
@@ -331,9 +331,8 @@ export default {
           ...cloneDeep(initInfo || chartInfoTemp),
           ...cloneDeep(chart),
           envName: envName === 'DEFAULT' ? '' : envName,
-          yamlSource: (chart.valuesData && chart.valuesData.yamlSource) || (chart.overrideYaml ? 'customEdit' : 'default'), // watch: test
-          gitRepoConfig: chart.valuesData && chart.valuesData.gitRepoConfig, // watch: test
-          initInfo // watch: why? what is the priority?
+          yamlSource: chart.yamlSource || (initInfo && initInfo.yamlSource) || 'default', // watch: test
+          initInfo // watch: why? what is the priority? Sufficient information is either in chart or initInfo
         }
         this.$set(this.allChartNameInfo, chart.serviceName, {
           ...this.allChartNameInfo[chart.serviceName],

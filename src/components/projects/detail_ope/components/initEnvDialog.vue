@@ -66,7 +66,13 @@ export default {
         this.variables = cloneDeep(this.currentInfo.vars)
       } else {
         // for service charts
-        this.chartNames = cloneDeep(this.currentInfo.chartValues || [])
+        this.chartNames = cloneDeep(this.currentInfo.chartValues || []).map(chart => {
+          return {
+            ...chart,
+            yamlSource: (chart.valuesData && chart.valuesData.yamlSource) || (chart.overrideYaml ? 'customEdit' : 'default'),
+            gitRepoConfig: chart.valuesData && chart.valuesData.gitRepoConfig
+          }
+        })
         // for environment
         const valuesData = this.currentInfo.valuesData
         const currentEnvObj = { yamlSource: 'customEdit', envValue: this.currentInfo.defaultValues, gitRepoConfig: null, variableSet: null }
