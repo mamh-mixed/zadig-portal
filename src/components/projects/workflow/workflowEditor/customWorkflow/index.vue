@@ -75,7 +75,7 @@
                 :originServiceAndBuilds="originServiceAndBuilds"
                 class="mg-b24"
                 :globalEnv="globalEnv"
-                ref="zadig-build"
+                :ref="jobType.build"
               />
               <el-select size="small" v-model="service" multiple filterable clearable>
                 <el-option
@@ -105,22 +105,22 @@
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
               >+ 添加</el-button>
             </div>
-            <JobPlugin v-if="job.type === 'plugin'" :job="job" ref="plugin" :globalEnv="globalEnv" />
+            <JobPlugin v-if="job.type === jobType.plugin" :job="job" :ref="jobType.plugin" :globalEnv="globalEnv" />
             <JobDeploy
               :projectName="projectName"
               v-if="job.type === jobType.deploy"
               :job="job"
-              ref="zadig-deploy"
+              :ref="jobType.deploy"
               :originServiceAndBuilds="originServiceAndBuilds"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-            <JobFreestyle v-if="job.type === jobType.freestyle" :globalEnv="globalEnv" ref="freestyle" :job="job" :workflowInfo="payload" />
+            <JobFreestyle v-if="job.type === jobType.freestyle" :globalEnv="globalEnv" :ref="jobType.freestyle" :job="job" :workflowInfo="payload" />
             <JobK8sDeploy
               :projectName="projectName"
               v-if="job.type === jobType.JobK8sDeploy"
               :job="job"
-              ref="custom-deploy"
+              :ref="jobType.JobK8sDeploy"
               :originServiceAndBuilds="originServiceAndBuilds"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
@@ -129,7 +129,7 @@
               :projectName="projectName"
               v-if="job.type === jobType.JobTest"
               :job="job"
-              ref="zadig-test"
+              :ref="jobType.JobTest"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
@@ -301,7 +301,6 @@ export default {
       isShowDrawer: false,
       multi_run: false,
       globalEnv: [],
-      beInitCompRef: 'beInitCompRef',
       scal: '1',
       insertSatgeIndex: 0
     }
