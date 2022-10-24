@@ -23,7 +23,7 @@
         </el-tabs>
         <div class="v-content" v-if="usedChartNameInfo">
           <div v-show="usedChartNameInfo.yamlSource === 'default'" class="default-values">
-            <el-button type="text" @click="usedChartNameInfo.yamlSource = 'freeEdit'">添加 values 文件</el-button>
+            <el-button type="text" @click="usedChartNameInfo.yamlSource = 'customEdit'">添加 values 文件</el-button>
           </div>
           <ImportValues
             v-show="usedChartNameInfo.yamlSource !== 'default'"
@@ -141,7 +141,7 @@ export default {
     }
     this.defaultEnvsValues = {} // 不需要响应式 { key: envName, value: defaultEnvValue }
     return {
-      allChartNameInfo: {}, // key: serviceName value: Object{ key:envName }
+      allChartNameInfo: {}, // key: serviceName value: Object{ key:envName } // initInfo comes from interface request for data backup
       selectedChart: '',
       selectedEnv: 'DEFAULT',
       disabledEnv: [],
@@ -249,6 +249,7 @@ export default {
       return valid
     },
     getAllChartNameInfo () {
+      // It will only be called when the api is operated, here you can clean up some data
       const chartValues = []
       const serviceNames = Object.keys(this.allChartNameInfo)
       const chartNameInfo = this.allChartNameInfo
@@ -262,28 +263,50 @@ export default {
           if (!envNames.includes(envName)) {
             continue
           }
+
+          // reset initInfo: repo and yaml information
+          // It is not called when closeValueEdit because the information at this time is still available when it is opened again.
+          if (chartInfo[envName].initInfo) {
+            const initInfo = chartInfo[envName].initInfo
+            switch (chartInfo[envName].yamlSource) {
+              case 'default':
+                initInfo.gitRepoConfig = null
+                initInfo.overrideYaml = ''
+                break
+              case 'repo':
+                initInfo.gitRepoConfig = cloneDeep(chartInfo[envName].gitRepoConfig)
+                initInfo.overrideYaml = chartInfo[envName].overrideYaml
+                break
+              case 'customEdit':
+                initInfo.gitRepoConfig = null
+                initInfo.overrideYaml = chartInfo[envName].overrideYaml
+                break
+            }
+            initInfo.yamlSource = chartInfo[envName].yamlSource
+          }
+          // reset end
+          if (chartInfo[envName].yamlSource === 'default') {
+            chartInfo[envName].overrideYaml = ''
+          }
           chartInfo[envName].overrideValues = chartInfo[
             envName
           ].overrideValues.filter(value => value.key !== '')
+
           const values = pick(chartInfo[envName], [
             'envName',
             'serviceName',
             'chartVersion',
-            'overrideValues'
+            'overrideValues',
+            'overrideYaml'
           ])
-          values.valuesData = {
-            yamlSource: 'repo',
-            autoSync:
-              chartInfo[envName].gitRepoConfig &&
-              chartInfo[envName].gitRepoConfig.autoSync
-                ? chartInfo[envName].gitRepoConfig.autoSync
-                : false,
-            gitRepoConfig: chartInfo[envName].gitRepoConfig
+          values.valuesData = null
+          if (chartInfo[envName].yamlSource === 'repo' && (chartInfo[envName].gitRepoConfig && chartInfo[envName].gitRepoConfig.codehostID)) {
+            values.valuesData = {
+              yamlSource: 'repo',
+              autoSync: chartInfo[envName].gitRepoConfig.autoSync,
+              gitRepoConfig: chartInfo[envName].gitRepoConfig
+            }
           }
-          values.overrideYaml =
-            chartInfo[envName].yamlSource !== 'default'
-              ? chartInfo[envName].overrideYaml
-              : ''
           chartValues.push(values)
         }
       }
@@ -308,11 +331,8 @@ export default {
           ...cloneDeep(initInfo || chartInfoTemp),
           ...cloneDeep(chart),
           envName: envName === 'DEFAULT' ? '' : envName,
-          yamlSource:
-            (initInfo && initInfo.overrideYaml) || chart.overrideYaml
-              ? 'freeEdit'
-              : 'default',
-          initInfo
+          yamlSource: chart.yamlSource || (initInfo && initInfo.yamlSource) || 'default', // watch: test
+          initInfo // watch: why? what is the priority? Sufficient information is either in chart or initInfo
         }
         this.$set(this.allChartNameInfo, chart.serviceName, {
           ...this.allChartNameInfo[chart.serviceName],
@@ -360,7 +380,7 @@ export default {
             ...cloneDeep(chartInfoTemp),
             ...re,
             envName,
-            yamlSource: re.overrideYaml ? 'freeEdit' : 'default'
+            yamlSource: re.overrideYaml ? 'customEdit' : 'default'
           }
           if (
             envInfo.yaml_data &&
@@ -378,6 +398,7 @@ export default {
               autoSync: envInfo.yaml_data.auto_sync,
               namespace: envInfo.yaml_data.source_detail.git_repo_config.namespace
             }
+            envInfo.yamlSource = re.yaml_data.source
           }
           const allChartNameInfo = {}
 

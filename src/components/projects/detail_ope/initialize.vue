@@ -82,9 +82,64 @@ export default {
             product.collaboration_type === 'new' &&
             product.deploy_type === 'helm'
           ) {
+            // for services info: repo
             product.chartValues.forEach(chart => {
               chart.envName = product.name
+
+              if (chart.yaml_data) {
+                const gitRepo = chart.yaml_data.source_detail && chart.yaml_data.source_detail.git_repo_config
+                const gitRepoConfig = gitRepo && gitRepo.codehost_id
+                  ? {
+                    branch: gitRepo.branch,
+                    codehostID: gitRepo.codehost_id,
+                    owner: gitRepo.owner,
+                    repo: gitRepo.repo,
+                    valuesPaths: [chart.yaml_data.source_detail.load_path],
+                    autoSync: chart.yaml_data.auto_sync,
+                    namespace: gitRepo.namespace
+                  }
+                  : null
+                chart.valuesData = {
+                  autoSync: chart.yaml_data.auto_sync,
+                  yamlSource: 'repo',
+                  gitRepoConfig: gitRepoConfig
+                }
+                delete chart.yaml_data
+              }
             })
+
+            // for environment info: repo and variableSet
+            if (product.yaml_data) {
+              // for repo
+              if (product.yaml_data.source === 'repo') {
+                const gitRepo = product.yaml_data.source_detail && product.yaml_data.source_detail.git_repo_config
+                const gitRepoConfig = gitRepo && gitRepo.codehost_id
+                  ? {
+                    branch: gitRepo.branch,
+                    codehostID: gitRepo.codehost_id,
+                    owner: gitRepo.owner,
+                    repo: gitRepo.repo,
+                    valuesPaths: [product.yaml_data.source_detail.load_path],
+                    autoSync: product.yaml_data.auto_sync,
+                    namespace: gitRepo.namespace
+                  }
+                  : null
+                if (gitRepoConfig) {
+                  product.valuesData = {
+                    autoSync: product.yaml_data.auto_sync,
+                    yamlSource: 'repo',
+                    gitRepoConfig
+                  }
+                }
+              } else if (product.yaml_data.source === 'variableSet') { // for variableSet
+                product.valuesData = {
+                  autoSync: product.yaml_data.auto_sync,
+                  yamlSource: 'variableSet',
+                  source_id: product.yaml_data.source_id
+                }
+              }
+              delete product.yaml_data
+            }
           }
           if (product.deploy_type !== 'helm') {
             product.deploy_type = 'k8s'

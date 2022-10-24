@@ -1846,8 +1846,8 @@ export function getAllChartValuesYamlAPI (projectName, envName, serviceName = []
   return http.get(`/api/aslan/environment/environments/${envName}/estimated-renderchart?projectName=${projectName}&serviceName=${serviceName.join(',')}`)
 }
 
-export function getEnvDefaultVariableAPI (projectName, envName) {
-  return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}`)
+export function getEnvDefaultVariableAPI (projectName, envName, ifPassFilter = true) {
+  return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}&ifPassFilter=${ifPassFilter}`)
 }
 
 export function createHelmEnvAPI (projectName, payload, scene = '') {
@@ -2028,6 +2028,27 @@ export function getPolicyByNameAPI (projectName, name) {
 
 export function getPolicyByIdAPI (projectName, id) {
   return http.get(`/api/v1/policy/${id}?projectName=${projectName}`)
+}
+
+// variable group list
+export function getVariablesGroupsAPI (projectName, page, perPage, ifPassFilter = true) {
+  return http.get(`/api/aslan/project/variablesets?page=${page}&perPage=${perPage}&projectName=${projectName}&ifPassFilter=${ifPassFilter}`)
+}
+
+export function getVariablesGroupByIdAPI (projectName, id) {
+  return http.get(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`)
+}
+
+export function createVariablesGroupAPI (projectName, payload) {
+  return http.post(`/api/aslan/project/variablesets?projectName=${projectName}`, payload)
+}
+
+export function updateVariablesGroupAPI (projectName, id, payload) {
+  return http.put(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`, payload)
+}
+
+export function deleteVariablesGroupAPI (projectName, id) {
+  return http.delete(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`)
 }
 
 // Insight

@@ -135,6 +135,11 @@
               icon="item-icon iconfont iconvery-collaboratiom"
               @click.native="$router.push(`/v1/projects/detail/${projectName}/policy`)"
             >协作模式</el-dropdown-item>
+            <el-dropdown-item
+              v-if="deployType === 'helm'"
+              icon="item-icon iconfont iconchakanbianliang"
+              @click.native="$router.push(`/v1/projects/detail/${projectName}/group`)"
+            >变量组</el-dropdown-item>
             <el-dropdown-item icon="el-icon-delete" @click.native="comp.deleteProject">删除</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

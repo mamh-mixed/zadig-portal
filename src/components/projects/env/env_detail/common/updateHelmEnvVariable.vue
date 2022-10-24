@@ -6,6 +6,7 @@
       :importRepoInfo="envVariable"
       @closeValueEdit="envVariable.overrideYaml = ''"
       showAutoSync
+      useVarGroup
       style="margin-top: 0;"
     ></ImportValues>
   </div>
@@ -21,11 +22,6 @@ export default {
     envName: {
       type: String,
       required: true
-    },
-    baseEnvObj: {
-      type: Object,
-      required: false,
-      default: () => null
     },
     defaultEnvsValues: {
       type: Object,
@@ -51,10 +47,11 @@ export default {
     },
     initEnvVariableInfo (envName = '') {
       this.envVariable = {
-        yamlSource: this.overrideData.envValue ? 'freeEdit' : 'default', // : String
+        yamlSource: this.overrideData.yamlSource || 'customEdit',
         overrideYaml: this.overrideData.envValue || '', // : String
         envName,
-        gitRepoConfig: this.overrideData.gitRepoConfig || null
+        gitRepoConfig: this.overrideData.gitRepoConfig || null,
+        variableSet: this.overrideData.variableSet || null
       }
     },
     validate () {
@@ -73,9 +70,10 @@ export default {
       )
       if (res) {
         this.envVariable = {
-          yamlSource: res.defaultValues ? 'freeEdit' : 'default',
+          yamlSource: (res.yaml_data && res.yaml_data.source) || 'customEdit',
           overrideYaml: res.defaultValues,
-          gitRepoConfig: res.gitRepoConfig
+          gitRepoConfig: res.gitRepoConfig,
+          variableSet: res.variableSet
         }
       }
     },
@@ -83,6 +81,7 @@ export default {
       return getEnvDefaultVariableAPI(this.projectName, baseEnvName).then(
         res => {
           let gitRepoConfig = null
+          let variableSet = null
           if (res.yaml_data && res.yaml_data.source_detail && res.yaml_data.source_detail.git_repo_config && res.yaml_data.source_detail.git_repo_config.codehost_id) {
             const repoConfig = res.yaml_data.source_detail.git_repo_config
             gitRepoConfig = {
@@ -94,8 +93,19 @@ export default {
               valuesPaths: [res.yaml_data.source_detail.load_path]
             }
           }
-          this.$set(this.defaultEnvsValues, envName, { envValue: res.defaultValues, gitRepoConfig })
-          return { ...res, gitRepoConfig }
+          if (res.yaml_data && res.yaml_data.source === 'variableSet') {
+            variableSet = {
+              source_id: res.yaml_data.source_id,
+              autoSync: res.yaml_data.auto_sync
+            }
+          }
+          this.$set(this.defaultEnvsValues, envName, {
+            envValue: res.defaultValues,
+            yamlSource: (res.yaml_data && res.yaml_data.source) || 'customEdit',
+            gitRepoConfig,
+            variableSet
+          })
+          return { ...res, gitRepoConfig, variableSet }
         }
       )
     }
@@ -103,7 +113,7 @@ export default {
   watch: {
     envName: {
       handler (newV, oldV) {
-        if (newV === '' || (this.overrideData && this.overrideData.envValue) || this.baseEnvObj) {
+        if (newV === '' || (this.overrideData && this.overrideData.envValue)) {
           this.initEnvVariableInfo()
         } else {
           this.getEnvVariablesYaml(newV)
@@ -112,22 +122,12 @@ export default {
       immediate: true
     },
     'envVariable.overrideYaml' (newV) {
-      this.$set(this.defaultEnvsValues, this.envName || 'DEFAULT', { envValue: newV, gitRepoConfig: this.envVariable.gitRepoConfig })
-    },
-    baseEnvObj: {
-      handler (newV, oldV) {
-        if (newV) {
-          Object.keys(newV).forEach(val => {
-            const fn =
-              val === this.envName
-                ? this.getEnvVariablesYaml
-                : this.initEnvVariablesYaml
-            fn(val, newV[val])
-          })
-        }
-      },
-      deep: true,
-      immediate: true
+      this.$set(this.defaultEnvsValues, this.envName || 'DEFAULT', {
+        envValue: newV,
+        yamlSource: this.envVariable.yamlSource, // watch: test
+        gitRepoConfig: this.envVariable.gitRepoConfig,
+        variableSet: this.envVariable.variableSet
+      })
     }
   },
   components: {

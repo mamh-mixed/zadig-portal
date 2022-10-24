@@ -40,7 +40,7 @@ export default {
   name: 'HelmEnvTemplate',
   data () {
     return {
-      defaultEnvsValues: {}, // { key: envName, value: { envValue: defaultEnvValue, gitRepoConfig: null } }
+      defaultEnvsValues: {}, // { key: envName, value: { yamlSource: '', envValue: defaultEnvValue, gitRepoConfig: null, variableSet: null } }
       showGlobalVariable: false,
       showServiceVariable: true
     }
@@ -77,9 +77,9 @@ export default {
       type: Object,
       default: () => null // {envName: baseEvnName}
     },
-    currentEnvValue: {
-      // current env yaml
-      type: String,
+    currentEnvObj: {
+      // current env object
+      type: Object,
       required: false
     }
   },
@@ -87,7 +87,7 @@ export default {
     defaultEnvValue () {
       const envName = this.handledEnv || 'DEFAULT'
       if (!this.defaultEnvsValues[envName]) {
-        this.$set(this.defaultEnvsValues, envName, { envValue: '' })
+        this.$set(this.defaultEnvsValues, envName, { envValue: '', yamlSource: 'customEdit' })
       }
       return {
         envName,
@@ -96,9 +96,9 @@ export default {
     }
   },
   watch: {
-    currentEnvValue: {
+    currentEnvObj: {
       handler (val) {
-        this.$set(this.defaultEnvsValues, 'DEFAULT', { envValue: val || '' })
+        this.$set(this.defaultEnvsValues, 'DEFAULT', val || { envValue: '', yamlSource: 'customEdit' })
         this.$refs.envValuesRef && this.$refs.envValuesRef.initEnvVariableInfo()
       },
       immediate: true
@@ -122,12 +122,31 @@ export default {
         })
     },
     getAllInfo () {
+      // Handling basic information about the environment
       Object.keys(this.defaultEnvsValues).forEach(envName => {
-        const gitRepoConfig = this.defaultEnvsValues[envName].gitRepoConfig
-        if (!gitRepoConfig || !gitRepoConfig.codehostID) {
-          delete this.defaultEnvsValues[envName].gitRepoConfig
+        const cur = this.defaultEnvsValues[envName]
+        // correct wrong data
+        if (cur.yamlSource === 'repo' && !cur.gitRepoConfig) {
+          cur.yamlSource = 'customEdit'
+        }
+        cur.valuesData = null
+        if (cur.yamlSource === 'repo') {
+          cur.valuesData = {
+            autoSync: cur.gitRepoConfig.autoSync,
+            yamlSource: 'repo',
+            gitRepoConfig: cur.gitRepoConfig
+          }
+          cur.variableSet = null
+        } else if (cur.yamlSource === 'variableSet') {
+          cur.valuesData = {
+            autoSync: cur.variableSet.autoSync,
+            yamlSource: 'variableSet',
+            source_id: cur.variableSet.source_id
+          }
+          cur.gitRepoConfig = null
         }
       })
+
       return {
         envInfo: this.defaultEnvsValues,
         chartInfo: this.$refs.chartValuesRef.getAllChartNameInfo()
@@ -140,7 +159,7 @@ export default {
   },
   created () {
     this.envNames.forEach(env => {
-      this.$set(this.defaultEnvsValues, env, { envValue: '' })
+      this.$set(this.defaultEnvsValues, env, { envValue: '', yamlSource: 'customEdit' })
     })
   }
 }
