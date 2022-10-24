@@ -114,6 +114,7 @@ export default {
       })
     },
     getData () {
+      delete this.job.isCreate
       const payload = this.$utils.cloneObj(this.job)
       const git = this.job.spec.steps.find(step => step.name === 'git')
       if (git) {
