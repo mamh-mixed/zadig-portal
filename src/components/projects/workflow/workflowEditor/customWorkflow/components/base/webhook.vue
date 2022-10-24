@@ -153,8 +153,24 @@
             <el-option v-for="(repo,index) in webhookRepos" :key="index" :label="repo.repo_owner+'/'+repo.repo_name" :value="repo"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="目标分支" prop="main_repo.branch">
+        <el-form-item
+          label="目标分支"
+          prop="main_repo.branch"
+          v-if="checkGitRepo"
+          :rules="[
+          { required: true, message: currentWebhook.main_repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
+        ]"
+        >
+          <el-input
+            style="width: 100%;"
+            v-if="currentWebhook.main_repo.is_regular"
+            v-model="currentWebhook.main_repo.branch"
+            placeholder="请输入正则表达式配置"
+            size="small"
+          ></el-input>
+
           <el-select
+            v-else
             style="width: 100%;"
             v-model="currentWebhook.main_repo.branch"
             size="small"
@@ -170,6 +186,15 @@
               :value="branch.name"
             ></el-option>
           </el-select>
+          <el-switch
+            v-model="currentWebhook.main_repo.is_regular"
+            active-text="正则表达式配置"
+            @change="currentWebhook.main_repo.branch = '';matchedBranchNames=null;"
+          ></el-switch>
+          <div v-show="currentWebhook.main_repo.is_regular">
+            <span v-show="matchedBranchNames">当前正则匹配到的分支：{{matchedBranchNames && matchedBranchNames.length === 0 ? '无': ''}}</span>
+            <span style="display: inline-block; padding-right: 10px;" v-for="branch in matchedBranchNames" :key="branch">{{ branch }}</span>
+          </div>
         </el-form-item>
         <el-form-item v-if="currentWebhook.repo.source==='gerrit'" label="触发事件" prop="main_repo.events">
           <el-checkbox-group v-model="currentWebhook.main_repo.events">
@@ -352,7 +377,7 @@
 </template>
 
 <script>
-import { cloneDeep, isEqual, uniqBy } from 'lodash'
+import { cloneDeep, isEqual, uniqBy, debounce } from 'lodash'
 import WebhookRunConfig from './webhookRunConfig.vue'
 import {
   getBranchInfoByIdAPI,
@@ -365,7 +390,8 @@ import {
   getCustomTimersAPI,
   removeCustomTimerAPI,
   updateCustomTimerAPI,
-  getCustomTimerPresetAPI
+  getCustomTimerPresetAPI,
+  checkRegularAPI
 } from '@api'
 const validateName = (rule, value, callback) => {
   if (!/^[a-zA-Z0-9]([a-zA-Z0-9_\-\.]*[a-zA-Z0-9])?$/.test(value)) {
@@ -515,7 +541,8 @@ export default {
         { label: '每周五', value: 'friday' },
         { label: '每周六', value: 'saturday' },
         { label: '每周日', value: 'sunday' }
-      ]
+      ],
+      matchedBranchNames: null
     }
   },
   props: {
@@ -562,9 +589,30 @@ export default {
           week: cronArr[4]
         }
       ]
+    },
+    checkGitRepo () {
+      return (
+        this.currentWebhook.repo &&
+        ['gitlab', 'github'].includes(this.currentWebhook.repo.source)
+      )
     }
   },
   methods: {
+    checkRegular: debounce(({ value, that }) => {
+      if (!that.webhookBranches[that.currentWebhook.repo.repo_name]) {
+        return
+      }
+      const payload = {
+        regular: value,
+        branches:
+          that.webhookBranches[that.currentWebhook.repo.repo_name].map(
+            branch => branch.name
+          ) || []
+      }
+      checkRegularAPI(payload).then(res => {
+        that.matchedBranchNames = res || []
+      })
+    }, 500),
     translateDate (day) {
       const item = this.timerDateOptions.find(item => {
         return item.value === day
@@ -737,7 +785,7 @@ export default {
                 job.spec.steps.forEach(step => {
                   if (step.type === 'git') {
                     step.spec.repos.forEach(repo => {
-                      if (typeof (repo.prs) === 'string') {
+                      if (typeof repo.prs === 'string') {
                         repo.prs = repo.prs.split(',').map(Number)
                       }
                       if (repo.branchOrTag) {
@@ -1014,6 +1062,15 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    'currentWebhook.main_repo.branch': {
+      handler (value) {
+        if (!value) {
+          this.matchedBranchNames = null
+        } else if (this.checkGitRepo && this.currentWebhook.main_repo.is_regular) {
+          this.checkRegular({ value, that: this })
+        }
+      }
     }
   },
   created () {
