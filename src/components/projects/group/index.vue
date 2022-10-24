@@ -10,7 +10,7 @@
       <el-table-column label="最后修改" prop="updated_by" />
       <el-table-column label="操作" width="150px">
         <template slot-scope="{ row }">
-          <el-button size="mini" @click="varGroup('edit', row)" plain>编辑</el-button>
+          <el-button size="mini" type="primary" @click="varGroup('edit', row)" plain>编辑</el-button>
           <el-button size="mini" type="danger" @click="varGroup('delete', row)" plain>删除</el-button>
         </template>
       </el-table-column>
@@ -25,7 +25,7 @@
         :page-size="page.perPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="page.total"
-      ></el-pagination>
+      />
     </div>
   </div>
 </template>

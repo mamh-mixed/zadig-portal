@@ -10,25 +10,25 @@
             icon="el-icon-s-operation"
             type="text"
             v-hasPermi="{type:'project', projectName: projectName, operator: 'or', actions: ['create_environment', 'config_environment']}"
-          ></el-button>
+          />
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="openVarGroupDisable">使用变量组</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-      <i v-if="showDelete" class="el-icon-delete-solid icon-delete" @click="closeValueEdit"></i>
+      <i v-if="showDelete" class="el-icon-delete-solid icon-delete" @click="closeValueEdit" />
     </div>
     <Resize class="desc mirror" :resize="setResize.direction" :height="setResize.height" @sizeChange="$refs.codemirror.refresh()">
-      <codemirror ref="codemirror" v-model="importRepoInfoUse.overrideYaml"></codemirror>
+      <codemirror ref="codemirror" v-model="importRepoInfoUse.overrideYaml" />
     </Resize>
     <el-dialog title="从代码库导入" :visible.sync="showGitImportDialog" append-to-body>
-      <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" :showAutoSync="showAutoSync"></Repository>
+      <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" :showAutoSync="showAutoSync" />
       <div slot="footer">
         <el-button @click="showGitImportDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="importOverrideYaml" size="small" :loading="loadValueYamls">导 入</el-button>
       </div>
     </el-dialog>
-    <VarGroups v-model="varGroupData.visible" :variableSet="varGroupData.variableSet" @updateSourceDetail="updateSourceDetail"></VarGroups>
+    <VarGroups v-model="varGroupData.visible" :variableSet="varGroupData.variableSet" @updateSourceDetail="updateSourceDetail" />
   </div>
 </template>
 

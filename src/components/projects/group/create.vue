@@ -10,14 +10,14 @@
       inline-message
     >
       <el-form-item label="变量组名称" prop="name">
-        <el-input v-model="groupDetail.name" size="small" :disabled="!!id" placeholder="请输入变量组名称"></el-input>
+        <el-input v-model="groupDetail.name" size="small" :disabled="!!id" placeholder="请输入变量组名称" />
       </el-form-item>
       <el-form-item label="描述信息" prop="description">
-        <el-input type="textarea" :rows="2" v-model="groupDetail.description" size="small" placeholder="描述信息"></el-input>
+        <el-input type="textarea" :rows="2" v-model="groupDetail.description" size="small" placeholder="描述信息" />
       </el-form-item>
       <el-form-item label="变量" prop="variable_yaml" style="max-width: 1000px;">
         <Resize class="desc mirror" @sizeChange="$refs.codemirror.refresh()">
-          <codemirror ref="codemirror" v-model="groupDetail.variable_yaml" :placeholder="'输入 YAML 格式变量'"></codemirror>
+          <codemirror ref="codemirror" v-model="groupDetail.variable_yaml" :placeholder="'输入 YAML 格式变量'" />
         </Resize>
       </el-form-item>
     </el-form>
