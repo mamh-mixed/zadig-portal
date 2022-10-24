@@ -21,7 +21,7 @@
         </Resize>
       </el-form-item>
     </el-form>
-    <div style="margin-left: 35%;">
+    <div class="bottom">
       <el-button @click="$router.back()" :loading="handleLoading" size="medium">取消</el-button>
       <el-button @click="handleOpe" :loading="handleLoading" type="primary" size="medium">确定</el-button>
     </div>
@@ -129,3 +129,15 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.var-group-detail {
+  height: 100%;
+  overflow: auto;
+
+  .bottom {
+    margin-bottom: 20px;
+    margin-left: 35%;
+  }
+}
+</style>
