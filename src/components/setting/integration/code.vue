@@ -142,7 +142,7 @@
                        value="gerrit"></el-option>
             <el-option label="Gitee（社区版）"
                        value="gitee"></el-option>
-            <el-option label="Gitee（企业版）"
+            <el-option v-if="hasPlutus" label="Gitee（企业版）"
                        value="gitee-enterprise"></el-option>
           </el-select>
         </el-form-item>
@@ -422,7 +422,7 @@
                        value="gerrit"></el-option>
             <el-option label="Gitee（社区版）"
                        value="gitee"></el-option>
-            <el-option label="Gitee（企业版）"
+            <el-option v-if="hasPlutus" label="Gitee（企业版）"
                        value="gitee-enterprise"></el-option>
             <el-option label="其他"
                        value="other"></el-option>
@@ -631,6 +631,7 @@
 import {
   getCodeProviderAPI, deleteCodeSourceAPI, updateCodeSourceAPI, createCodeSourceAPI, getProxyConfigAPI
 } from '@api'
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -751,7 +752,10 @@ export default {
         }
       }
       return validateGitURL
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     updateRepoProxySettings (row) {

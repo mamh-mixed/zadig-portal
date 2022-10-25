@@ -137,7 +137,7 @@
           <el-option label="GitHub" value="github"></el-option>
           <el-option label="Gerrit" value="gerrit"></el-option>
           <el-option label="Gitee（社区版）" value="gitee"></el-option>
-          <el-option label="Gitee（企业版）" value="gitee-enterprise"></el-option>
+          <el-option v-if="hasPlutus" label="Gitee（企业版）" value="gitee-enterprise"></el-option>
           <el-option label="其他" value="other"></el-option>
         </el-select>
       </el-form-item>
@@ -232,6 +232,7 @@
 </template>
 <script>
 import { createCodeSourceAPI } from '@api'
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -328,7 +329,10 @@ export default {
         }
       }
       return validateGitURL
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     clearValidate (ref) {
