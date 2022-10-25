@@ -27,7 +27,7 @@
         <el-button type="primary" @click="importOverrideYaml" size="small" :loading="loadValueYamls">导 入</el-button>
       </div>
     </el-dialog>
-    <VarGroups v-model="varGroupData.visible" :variableSet="varGroupData.variableSet" @updateSourceDetail="updateSourceDetail" />
+    <VarGroups v-if="useVarGroup" v-model="varGroupData.visible" :variableSet="varGroupData.variableSet" @updateSourceDetail="updateSourceDetail" />
   </div>
 </template>
 
