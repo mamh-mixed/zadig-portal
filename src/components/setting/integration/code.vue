@@ -851,7 +851,7 @@ export default {
           }
           updateCodeSourceAPI(codehostId, payload).then((res) => {
             this.getCodeConfig()
-            if (payload.type === 'gitlab' || payload.type === 'gitee' || payload.type === 'github') {
+            if (payload.type === 'gitlab' || payload.type === 'gitee' || payload.type === 'gitee-enterprise' || payload.type === 'github') {
               this.$message({
                 message: '代码源修改成功，正在前往授权',
                 type: 'success'
