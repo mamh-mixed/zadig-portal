@@ -33,7 +33,7 @@
       <span v-if="build.branch && !build.tag && build.source!=='other'" class="link">
         <i v-if=" build.branch" class="iconfont iconicon_git-branch repo-icon"></i>
         <a
-          v-if="build.source==='github'||build.source==='gitee'||build.source==='gitlab'"
+          v-if="build.source==='github'||build.source==='gitee'|| build.source==='gitee-enterprise'||build.source==='gitlab'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.branch}`"
           target="_blank"
         >{{build.branch}}</a>

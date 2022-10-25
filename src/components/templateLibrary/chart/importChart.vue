@@ -68,7 +68,7 @@ export default {
       let res
       const name = this.tempData.name
       const refVal = this.$refs.gitRepo.getGitSource(this.tempData.codeHostID)
-      if (refVal === 'gerrit' || refVal === 'gitee') {
+      if (refVal === 'gerrit' || refVal === 'gitee' || refVal === 'gitee-enterprise') {
         const params = {
           codehostId: this.tempData.codeHostID,
           repoOwner: this.tempData.owner,
