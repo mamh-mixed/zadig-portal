@@ -9,7 +9,6 @@
             size="mini"
             icon="el-icon-s-operation"
             type="text"
-            v-hasPermi="{type:'project', projectName: projectName, operator: 'or', actions: ['create_environment', 'config_environment']}"
           />
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="openVarGroupDisable">使用变量组</el-dropdown-item>
@@ -113,9 +112,6 @@ export default {
         this.$emit('update:importRepoInfo', val)
         return val
       }
-    },
-    projectName () {
-      return this.$route.params.project_name
     }
   },
   methods: {

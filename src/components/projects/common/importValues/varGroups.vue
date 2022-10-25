@@ -48,6 +48,9 @@ export default {
   computed: {
     dialogVisible: {
       get () {
+        if (this.value && !this.groupList.length) {
+          this.getGroupList()
+        }
         return this.value
       },
       set (val) {
@@ -100,9 +103,6 @@ export default {
         this.group.autoSync = false
       }
     }
-  },
-  created () {
-    this.getGroupList()
   }
 }
 </script>
