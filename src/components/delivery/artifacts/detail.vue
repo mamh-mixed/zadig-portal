@@ -92,7 +92,7 @@
                         target="_blank"
                       >{{cm.pr}}</a>
                       <a
-                        v-else-if="cm.source==='gitee'"
+                        v-else-if="cm.source==='gitee'||cm.source==='gitee-enterprise'"
                         class="link"
                         :href="`${cm.address}/${cm.repo_owner}/${cm.repo_name}/pulls/${cm.pr}`"
                         target="_blank"

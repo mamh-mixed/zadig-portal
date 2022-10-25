@@ -469,7 +469,7 @@ export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '
       }
     }
     return http.get(`/api/aslan/code/workspace/tree`, { params })
-  } else if (type === 'gerrit' || type === 'gitee') {
+  } else if (type === 'gerrit' || type === 'gitee' || type === 'gitee-enterprise') {
     const params = {
       repoOwner: repoOwner,
       repoName: repoName,

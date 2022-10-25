@@ -143,7 +143,7 @@
       </el-form-item>
     </el-form>
 
-    <el-dialog v-if="codehostSource === 'gerrit' || codehostSource === 'gitee'" :append-to-body="true"
+    <el-dialog v-if="codehostSource === 'gerrit' || codehostSource === 'gitee' || codehostSource === 'gitee-enterprise'" :append-to-body="true"
                :visible.sync="workSpaceModalVisible"
                width="60%"
                title="请选择要同步的文件或文件目录"

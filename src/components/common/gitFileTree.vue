@@ -112,12 +112,12 @@ export default {
       const type = this.gitType
       const namespace = this.namespace
       let path = ''
-      if (type === 'gerrit' || type === 'gitee') {
+      if (type === 'gerrit' || type === 'gitee' || type === 'gitee-enterprise') {
         path = node.data ? (node.data.parent + '/' + node.data.name) : ''
       } else {
         path = node.data ? node.data.full_path : ''
       }
-      if (path === '' && type !== 'gerrit' && type !== 'gitee') {
+      if (path === '' && type !== 'gerrit' && type !== 'gitee' && type !== 'gitee-enterprise') {
         this.loading = true
       }
       this.selectPath = ''
