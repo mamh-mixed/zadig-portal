@@ -358,7 +358,7 @@ export default {
               message: '代码源添加成功',
               type: 'success'
             })
-            if (payload.type === 'gitlab' || payload.type === 'gitee' || payload.type === 'github') {
+            if (payload.type === 'gitlab' || payload.type === 'gitee' || payload.type === 'gitee-enterprise' || payload.type === 'github') {
               this.goToCodeHostAuth(codehostId, redirectUrl)
             }
             this.handleCodeCancel()
