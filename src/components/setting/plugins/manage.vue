@@ -195,7 +195,6 @@ export default {
       const repoOwner =
         element.source === 'other' ? 'other' : element.repo_owner
       const repoName = element.source === 'other' ? 'other' : element.repo_name
-      const uuid = element.repo_uuid
       const key = this.$utils.rsaEncrypt()
       getCodeSourceMaskedAPI(key).then(res => {
         this.allCodeHosts = res.filter(element => {
@@ -216,13 +215,11 @@ export default {
             return item.path === repoOwner
           })
           const type = item ? item.kind : 'group'
-          const project_uuid = item.project_uuid ? item.project_uuid : ''
           getRepoNameByIdAPI(
             codehostId,
             type,
             encodeURI(repoOwner),
-            '',
-            project_uuid
+            ''
           ).then(res => {
             this.$set(this.codeInfo, 'repos', res)
             this.$set(this.codeInfo, 'origin_repos', res)
@@ -232,8 +229,7 @@ export default {
         getBranchInfoByIdAPI(
           codehostId,
           element.repo_namespace,
-          repoName,
-          uuid
+          repoName
         ).then(res => {
           this.$set(this.codeInfo, 'branches', res || [])
           this.$set(this.codeInfo, 'origin_branches', res || [])
@@ -259,14 +255,12 @@ export default {
         return item.path === repo_owner || item.name === repo_owner
       })
       const type = item ? item.kind : 'group'
-      const project_uuid = item.project_uuid ? item.project_uuid : ''
       const id = this.source.codehost_id
       getRepoNameByIdAPI(
         id,
         type,
         encodeURI(repo_owner),
-        '',
-        project_uuid
+        ''
       ).then(res => {
         this.$set(this.codeInfo, 'repos', res)
       })
@@ -279,14 +273,12 @@ export default {
         return item.path === repo_owner || item.name === repo_owner
       })
       const type = item ? item.kind : 'group'
-      const project_uuid = item.project_uuid ? item.project_uuid : ''
       if (repo_owner) {
         getRepoNameByIdAPI(
           id,
           type,
           encodeURI(repo_owner),
-          key,
-          project_uuid
+          key
         ).then(res => {
           this.$set(this.codeInfo, 'repos', res)
         })
@@ -352,15 +344,12 @@ export default {
       const repoItem = this.codeInfo.repos.find(item => {
         return item.name === repo_name
       })
-      const repoUUID = repoItem.repo_uuid ? repoItem.repo_uuid : ''
-      this.source.repoUUID = repoUUID
       this.source.repo_namespace = repoItem.namespace || ''
       if (repo_name && repo_owner) {
         getBranchInfoByIdAPI(
           id,
           this.source.repo_namespace,
-          repo_name,
-          repoUUID
+          repo_name
         ).then(res => {
           this.$set(this.codeInfo, 'branches', res)
         })

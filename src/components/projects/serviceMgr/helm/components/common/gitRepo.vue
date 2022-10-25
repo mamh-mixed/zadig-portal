@@ -151,7 +151,6 @@
       <GerritFileTree ref="worktree"
                     :codehostId="source.codehostId"
                     :repoName="source.repoName"
-                    :repoUUID="source.repoUUID"
                     :repoOwner="source.repoOwner"
                     :branchName="source.branchName"
                     :remoteName="source.remoteName"

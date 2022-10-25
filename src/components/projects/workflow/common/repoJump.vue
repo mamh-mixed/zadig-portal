@@ -26,7 +26,7 @@
       <span class="normal" v-if="build.source ==='other'">{{build.branch}}</span>
     </span>
     <el-tooltip
-      :content="build.source==='gerrit'||build.source==='codehub'?`暂不支持在该类型上查看 Branch`:`在 ${build.source} 上查看 Branch`"
+      :content="build.source==='gerrit'?`暂不支持在该类型上查看 Branch`:`在 ${build.source} 上查看 Branch`"
       placement="top"
       effect="dark"
     >
@@ -43,7 +43,6 @@
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.branch}`"
           target="_blank"
         >{{ build.branch}}</a>
-        <span v-else-if="build.source ==='codehub'">{{ build.branch}}</span>
       </span>
     </el-tooltip>
     <el-tooltip :content="`在 ${build.source} 上查看 PR`" placement="top" effect="dark">
@@ -76,7 +75,7 @@
     </el-tooltip>
     <i v-if=" build.commit_id" class="iconfont iconicon_git-commit repo-icon"></i>
     <el-tooltip
-      :content="(build.source==='gerrit'&& (!build.prs.join('-')))||build.source==='codehub'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
+      :content="(build.source==='gerrit'&& (!build.prs.join('-')))?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
       placement="top"
       effect="dark"
     >
@@ -93,7 +92,6 @@
           </a>
           {{build.commit_id.substring(0, 8)}}
         </span>
-        <span v-else-if="build.source==='codehub'">{{build.commit_id.substring(0, 8)}}</span>
       </span>
     </el-tooltip>
   </div>

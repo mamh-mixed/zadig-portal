@@ -390,9 +390,9 @@ export default {
         this.webhook.enabled = false
       }
     },
-    getBranchInfoById (id, repo_owner, repo_name) {
-      getBranchInfoByIdAPI(id, repo_owner, repo_name).then((res) => {
-        this.$set(this.webhookBranches, repo_name, res)
+    getBranchInfoById (id, repoOwner, repoName) {
+      getBranchInfoByIdAPI(id, repoOwner, repoName).then((res) => {
+        this.$set(this.webhookBranches, repoName, res)
       })
     },
     repoChange (currentRepo) {

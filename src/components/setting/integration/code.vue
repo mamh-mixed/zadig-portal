@@ -6,19 +6,6 @@
                :close-on-click-modal="false"
                :visible.sync="dialogCodeEditFormVisible">
       <template>
-        <el-alert v-if="codeEdit.type === 'codehub'"
-                  type="info"
-                  :closable="false">
-          <slot>
-            <span class="tips">- 具体配置可参考
-              <el-link style="font-size: 14px; vertical-align: baseline;"
-                       type="primary"
-                       href="https://docs.koderover.com/zadig/settings/codehost/codehub/"
-                       :underline="false"
-                       target="_blank">帮助文档</el-link>
-            </span>
-          </slot>
-        </el-alert>
         <el-alert v-if="codeEdit.type === 'gerrit'"
                   type="info"
                   :closable="false">
@@ -54,6 +41,49 @@
             </span>
           </slot>
         </el-alert>
+        <el-alert v-else-if="codeEdit.type === 'github'"
+                  type="info"
+                  :closable="false">
+          <slot>
+            <span class="tips">{{`- 应用授权的回调地址请填写:`}}</span>
+            <span class="tips code-line">
+              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
+              <span v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
+                    v-clipboard:success="copyCommandSuccess"
+                    v-clipboard:error="copyCommandError"
+                    class="el-icon-document-copy copy"></span>
+            </span>
+            <span class="tips">- 更多配置可参考
+              <el-link style="font-size: 14px; vertical-align: baseline;"
+                       type="primary"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/github/`"
+                       :underline="false"
+                       target="_blank">帮助文档</el-link>
+            </span>
+          </slot>
+        </el-alert>
+        <el-alert v-if="codeEdit.type === 'gitee-enterprise'"
+                  type="info"
+                  :closable="false">
+          <slot>
+            <span class="tips">{{`- 应用授权的回调地址请填写:`}}</span>
+            <span class="tips code-line">
+              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
+              <span v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
+                    v-clipboard:success="copyCommandSuccess"
+                    v-clipboard:error="copyCommandError"
+                    class="el-icon-document-copy copy"></span>
+            </span>
+            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook</span>
+            <span class="tips">- 更多配置可参考
+              <el-link style="font-size: 14px; vertical-align: baseline;"
+                       type="primary"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
+                       :underline="false"
+                       target="_blank">帮助文档</el-link>
+            </span>
+          </slot>
+        </el-alert>
         <el-alert v-else-if="codeEdit.type === 'gitee'"
                   type="info"
                   :closable="false">
@@ -76,27 +106,7 @@
             </span>
           </slot>
         </el-alert>
-        <el-alert v-else-if="codeEdit.type === 'github'"
-                  type="info"
-                  :closable="false">
-          <slot>
-            <span class="tips">{{`- 应用授权的回调地址请填写:`}}</span>
-            <span class="tips code-line">
-              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
-              <span v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
-                    v-clipboard:success="copyCommandSuccess"
-                    v-clipboard:error="copyCommandError"
-                    class="el-icon-document-copy copy"></span>
-            </span>
-            <span class="tips">- 更多配置可参考
-              <el-link style="font-size: 14px; vertical-align: baseline;"
-                       type="primary"
-                       :href="`https://docs.koderover.com/zadig/settings/codehost/github/`"
-                       :underline="false"
-                       target="_blank">帮助文档</el-link>
-            </span>
-          </slot>
-        </el-alert>
+
         <el-alert v-else-if="codeEdit.type === 'other'"
                   type="info"
                   :closable="false">
@@ -128,10 +138,12 @@
                        value="gitlab"></el-option>
             <el-option label="GitHub"
                        value="github"></el-option>
-            <!-- <el-option label="CodeHub"
-                       value="codehub"></el-option> -->
             <el-option label="Gerrit"
                        value="gerrit"></el-option>
+            <el-option label="Gitee（社区版）"
+                       value="gitee"></el-option>
+            <el-option label="Gitee（企业版）"
+                       value="gitee-enterprise"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="代码源标识" prop="alias">
@@ -200,51 +212,29 @@
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
-        <template v-else-if="codeEdit.type==='codehub'">
-          <el-form-item label="CodeHub 服务 URL"
+        <template v-else-if="codeEdit.type==='gitee-enterprise'">
+          <el-form-item label="Gitee 服务 URL"
                         prop="address">
             <el-input v-model.trim="codeEdit.address"
-                      placeholder="CodeHub 服务 URL"
+                      placeholder="Gitee 服务 URL"
                       auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="区域"
-                        prop="region">
-            <el-input v-model="codeEdit.region"
-                      placeholder="区域"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item :rules="{required: true,message: '请填写 Access Key',trigger: ['blur']}"
-                        label="Access Key"
+          <el-form-item :rules="{required: true,message: '请填写 Client ID',trigger: ['blur']}"
+                        label="Client ID"
                         prop="application_id">
             <el-input v-model="codeEdit.application_id"
-                      placeholder="Access Key"
+                      placeholder="Client ID"
                       auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item :rules="{required: true,message: '请填写 Secret Key',trigger: ['blur']}"
-                        label="Secret Key"
+          <el-form-item :rules="{required: true,message: '请填写 Client Secret',trigger: ['blur']}"
+                        label="Client Secret"
                         prop="client_secret">
             <el-input v-model="codeEdit.client_secret"
                       show-password v-if='dialogCodeEditFormVisible'
                       type="password"
-                      placeholder="Secret Key"
+                      placeholder="Client Secret"
                       auto-complete="off"></el-input>
           </el-form-item>
-
-          <el-form-item :rules="{required: true,message: '请填写用户名',trigger: ['blur']}"
-                        label="用户名"
-                        prop="username">
-            <el-input v-model="codeEdit.username"
-                      placeholder="用户名"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item :rules="{required: true,message: '请填写密码',trigger: ['blur']}"
-                        label="密码"
-                        prop="password">
-            <el-input v-model="codeEdit.password"
-                      placeholder="密码"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-
         </template>
         <template v-else-if="codeEdit.type==='other'">
           <el-form-item label="鉴权方式" prop="auth_type">
@@ -283,7 +273,7 @@
                    size="small"
                    class="start-create"
                    @click="updateCodeConfig">
-          {{(codeEdit.type==='gerrit'||codeEdit.type==='codehub'||codeEdit.type==='other')?'确定':'前往授权'}}</el-button>
+          {{(codeEdit.type==='gerrit'||codeEdit.type==='other')?'确定':'前往授权'}}</el-button>
         <el-button plain
                    native-type="submit"
                    size="small"
@@ -298,33 +288,7 @@
                :close-on-click-modal="false"
                :visible.sync="dialogCodeAddFormVisible">
       <template>
-        <el-alert v-if="codeAdd.type === 'codehub'"
-                  type="info"
-                  :closable="false">
-          <slot>
-            <span class="tips">- 具体配置可参考
-              <el-link style="font-size: 14px; vertical-align: baseline;"
-                       type="primary"
-                       href="https://docs.koderover.com/zadig/settings/codehost/codehub/"
-                       :underline="false"
-                       target="_blank">帮助文档</el-link>
-            </span>
-          </slot>
-        </el-alert>
-        <el-alert v-if="codeAdd.type === 'gerrit'"
-                  type="info"
-                  :closable="false">
-          <slot>
-            <span class="tips">- 具体配置可参考
-              <el-link style="font-size: 14px; vertical-align: baseline;"
-                       type="primary"
-                       href="https://docs.koderover.com/zadig/settings/codehost/gerrit/"
-                       :underline="false"
-                       target="_blank">帮助文档</el-link>
-            </span>
-          </slot>
-        </el-alert>
-        <el-alert v-else-if="codeAdd.type === 'gitlab'"
+        <el-alert v-if="codeAdd.type === 'gitlab'"
                   type="info"
                   :closable="false">
           <slot>
@@ -341,6 +305,40 @@
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitlab/`"
+                       :underline="false"
+                       target="_blank">帮助文档</el-link>
+            </span>
+          </slot>
+        </el-alert>
+        <el-alert v-else-if="codeAdd.type === 'github'"
+                  type="info"
+                  :closable="false">
+          <slot>
+            <span class="tips">{{`- 应用授权的回调地址请填写:`}}</span>
+            <span class="tips code-line">
+              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
+              <span v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
+                    v-clipboard:success="copyCommandSuccess"
+                    v-clipboard:error="copyCommandError"
+                    class="el-icon-document-copy copy"></span>
+            </span>
+            <span class="tips">- 更多配置可参考
+              <el-link style="font-size: 14px; vertical-align: baseline;"
+                       type="primary"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/github/`"
+                       :underline="false"
+                       target="_blank">帮助文档</el-link>
+            </span>
+          </slot>
+        </el-alert>
+        <el-alert v-else-if="codeAdd.type === 'gerrit'"
+                  type="info"
+                  :closable="false">
+          <slot>
+            <span class="tips">- 具体配置可参考
+              <el-link style="font-size: 14px; vertical-align: baseline;"
+                       type="primary"
+                       href="https://docs.koderover.com/zadig/settings/codehost/gerrit/"
                        :underline="false"
                        target="_blank">帮助文档</el-link>
             </span>
@@ -368,7 +366,7 @@
             </span>
           </slot>
         </el-alert>
-        <el-alert v-else-if="codeAdd.type === 'github'"
+        <el-alert v-if="codeAdd.type === 'gitee-enterprise'"
                   type="info"
                   :closable="false">
           <slot>
@@ -380,10 +378,11 @@
                     v-clipboard:error="copyCommandError"
                     class="el-icon-document-copy copy"></span>
             </span>
+            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook</span>
             <span class="tips">- 更多配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
-                       :href="`https://docs.koderover.com/zadig/settings/codehost/github/`"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
                        :underline="false"
                        target="_blank">帮助文档</el-link>
             </span>
@@ -419,12 +418,12 @@
                        value="gitlab"></el-option>
             <el-option label="GitHub"
                        value="github"></el-option>
-            <!-- <el-option label="CodeHub"
-                       value="codehub"></el-option> -->
             <el-option label="Gerrit"
                        value="gerrit"></el-option>
-            <el-option label="Gitee"
+            <el-option label="Gitee（社区版）"
                        value="gitee"></el-option>
+            <el-option label="Gitee（企业版）"
+                       value="gitee-enterprise"></el-option>
             <el-option label="其他"
                        value="other"></el-option>
           </el-select>
@@ -490,47 +489,27 @@
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
-        <template v-else-if="codeAdd.type==='codehub'">
-          <el-form-item label="CodeHub 服务 URL"
+        <template v-else-if="codeAdd.type==='gitee-enterprise'">
+          <el-form-item label="Gitee 服务 URL"
                         prop="address">
             <el-input v-model.trim="codeAdd.address"
-                      placeholder="CodeHub 服务 URL"
+                      placeholder="Gitee 服务 URL"
                       auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="区域"
-                        prop="region">
-            <el-input v-model="codeAdd.region"
-                      placeholder="区域"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item :rules="{required: true,message: '请填写 Access Key',trigger: ['blur']}"
-                        label="Access Key"
+          <el-form-item :rules="{required: true,message: '请填写 Client ID',trigger: ['blur']}"
+                        label="Client ID"
                         prop="application_id">
             <el-input v-model="codeAdd.application_id"
                       placeholder="Access Key"
                       auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item :rules="{required: true,message: '请填写 Secret Key',trigger: ['blur']}"
-                        label="Secret Key"
+          <el-form-item :rules="{required: true,message: '请填写 Client Secret',trigger: ['blur']}"
+                        label="Client Secret"
                         prop="client_secret">
             <el-input v-model="codeAdd.client_secret"
-                      placeholder="Secret Key"
+                      placeholder="Client Secret"
                       show-password v-if='dialogCodeAddFormVisible'
                       type="password"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item :rules="{required: true,message: '请填写用户名',trigger: ['blur']}"
-                        label="用户名"
-                        prop="username">
-            <el-input v-model="codeAdd.username"
-                      placeholder="用户名"
-                      auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item :rules="{required: true,message: '请填写密码',trigger: ['blur']}"
-                        label="密码"
-                        prop="password">
-            <el-input v-model="codeAdd.password"
-                      placeholder="密码"
                       auto-complete="off"></el-input>
           </el-form-item>
         </template>
@@ -570,7 +549,7 @@
                    size="small"
                    class="start-create"
                    @click="createCodeConfig">
-          {{(codeAdd.type==='gerrit'||codeAdd.type==='codehub'||codeAdd.type==='other')?'确定':'前往授权'}}</el-button>
+          {{(codeAdd.type==='gerrit'||codeAdd.type==='other')?'确定':'前往授权'}}</el-button>
         <el-button plain
                    native-type="submit"
                    size="small"
@@ -603,7 +582,8 @@
                   style="width: 100%;">
           <el-table-column label="代码源">
             <template slot-scope="scope">
-              <span>{{scope.row.type}}({{scope.row.alias}})</span>
+              <span>{{scope.row.type}}</span>
+              <span v-if="scope.row.alias">({{scope.row.alias}})</span>
             </template>
           </el-table-column>
           <el-table-column label="URL">
@@ -651,30 +631,6 @@
 import {
   getCodeProviderAPI, deleteCodeSourceAPI, updateCodeSourceAPI, createCodeSourceAPI, getProxyConfigAPI
 } from '@api'
-const validateGitURL = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入服务 URL'))
-  } else {
-    const reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/
-    if (!reg.test(value)) {
-      callback(new Error('请输入正确的 URL，包含协议'))
-    } else {
-      callback()
-    }
-  }
-}
-const validateSSH = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error('请输入服务 URL'))
-  } else {
-    const reg = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z0-9]{2,14}(:[1-9]\d{0,4})?/
-    if (!reg.test(value)) {
-      callback(new Error('请输入正确的格式'))
-    } else {
-      callback()
-    }
-  }
-}
 export default {
   data () {
     return {
@@ -693,7 +649,6 @@ export default {
       dialogCodeEditFormVisible: false,
       codeEdit: {
         name: '',
-        region: '',
         type: '',
         address: '',
         access_token: '',
@@ -705,7 +660,6 @@ export default {
       },
       codeAdd: {
         name: '',
-        region: '',
         type: 'gitlab',
         address: '',
         access_token: '',
@@ -713,23 +667,24 @@ export default {
         client_secret: '',
         alias: '',
         auth_type: ''
-      },
-      codeRules: {
+      }
+    }
+  },
+  computed: {
+    codeRules () {
+      return {
         type: {
           required: true,
           message: '请选择代码源类型',
           trigger: ['blur']
         },
-        address: [{
-          required: true,
-          trigger: ['blur', 'change'],
-          message: '请输入 URL，包含协议'
-        }],
-        region: {
-          required: true,
-          message: '请填写区域',
-          trigger: ['blur']
-        },
+        address: [
+          {
+            required: true,
+            trigger: ['blur', 'change'],
+            message: '请输入 URL，包含协议'
+          }
+        ],
         access_token: {
           required: true,
           message: '请填写 Access Token',
@@ -765,9 +720,37 @@ export default {
           message: '请选择鉴权方式',
           trigger: ['blur', 'change']
         }
-      },
-      validateSSH,
-      validateGitURL
+      }
+    },
+    validateSSH () {
+      const validateSSH = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入服务 URL'))
+        } else {
+          const reg = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z0-9]{2,14}(:[1-9]\d{0,4})?/
+          if (!reg.test(value)) {
+            callback(new Error('请输入正确的格式'))
+          } else {
+            callback()
+          }
+        }
+      }
+      return validateSSH
+    },
+    validateGitURL () {
+      const validateGitURL = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入服务 URL'))
+        } else {
+          const reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/
+          if (!reg.test(value)) {
+            callback(new Error('请输入正确的 URL，包含协议'))
+          } else {
+            callback()
+          }
+        }
+      }
+      return validateGitURL
     }
   },
   methods: {
@@ -949,18 +932,6 @@ export default {
     .sync-container {
       padding-top: 15px;
       padding-bottom: 15px;
-
-      .switch-span {
-        display: inline-block;
-        height: 20px;
-        margin-right: 5px;
-        margin-left: 10px;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 20px;
-        vertical-align: middle;
-        transition: color 0.5s;
-      }
     }
   }
 
