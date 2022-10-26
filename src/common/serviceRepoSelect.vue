@@ -572,6 +572,9 @@ export default {
         repoId = repoItem.repo_id
         namespace = repoItem.namespace
         repo.repo_namespace = namespace
+      } else {
+        // for manual input
+        namespace = repo_owner
       }
       if (repo_owner && repo_name) {
         this.codeInfo[targetIndex][repoIndex].branches = []

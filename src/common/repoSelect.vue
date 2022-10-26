@@ -438,7 +438,7 @@ export default {
       this.config.repos[index].branch = ''
     },
     getBranchInfoById (index, id, repo_owner, repo_name, key = '', repo) {
-      if (!repo_name) {
+      if (!repo_name || !repo_owner) {
         return
       }
       const repoItem = this.codeInfo[index].repos.find(item => {
@@ -450,6 +450,9 @@ export default {
         repoId = repoItem.repo_id
         namespace = repoItem.namespace
         repo.repo_namespace = namespace
+      } else {
+        // for manual input
+        namespace = repo_owner
       }
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
