@@ -410,10 +410,8 @@ export default {
         return item.path === repo_owner
       })
       let type = 'group'
-      let project_uuid = ''
       if (item) {
         type = item.kind
-        project_uuid = item.project_uuid || ''
       }
       if (repo_owner) {
         if (!key) {
@@ -425,8 +423,7 @@ export default {
           id,
           type,
           encodeURI(repo_owner),
-          key,
-          project_uuid
+          key
         ).then(res => {
           this.$set(this.codeInfo[index], 'repos', orderBy(res, ['name']))
           this.$set(
@@ -437,24 +434,25 @@ export default {
           this.setLoadingState(index, 'repo', false)
         })
       }
-      this.config.repos[index].project_uuid = project_uuid
       this.config.repos[index].repo_name = ''
       this.config.repos[index].branch = ''
     },
     getBranchInfoById (index, id, repo_owner, repo_name, key = '', repo) {
-      if (!repo_name) {
+      if (!repo_name || !repo_owner) {
         return
       }
       const repoItem = this.codeInfo[index].repos.find(item => {
         return item.name === repo_name
       })
       let repoId = ''
-      let repoUUID = ''
       let namespace = ''
       if (repoItem) {
         repoId = repoItem.repo_id
-        repoUUID = repoItem.repo_uuid
         namespace = repoItem.namespace
+        repo.repo_namespace = namespace
+      } else {
+        // for manual input
+        namespace = repo_owner
         repo.repo_namespace = namespace
       }
       if (repo_owner && repo_name) {
@@ -464,7 +462,6 @@ export default {
           id,
           namespace,
           repo_name,
-          repoUUID,
           1,
           200,
           key
@@ -474,7 +471,6 @@ export default {
           this.setLoadingState(index, 'branch', false)
         })
       }
-      this.$set(this.config.repos[index], 'repo_uuid', repoUUID)
       this.$set(this.config.repos[index], 'repo_id', repoId)
       this.config.repos[index].branch = ''
     },
@@ -514,7 +510,6 @@ export default {
         const codehostId = element.codehost_id
         const repoOwner = element.source === 'other' ? 'other' : element.repo_owner
         const repoName = element.source === 'other' ? 'other' : element.repo_name
-        const uuid = element.repo_uuid
         this.$set(this.codeInfo, index, {
           repo_owners: [],
           repos: [],
@@ -537,13 +532,11 @@ export default {
               return item.path === repoOwner
             })
             const type = item ? item.kind : 'group'
-            const project_uuid = item.project_uuid ? item.project_uuid : ''
             getRepoNameByIdAPI(
               codehostId,
               type,
               encodeURI(repoOwner),
-              '',
-              project_uuid
+              ''
             ).then(res => {
               this.$set(this.codeInfo[index], 'repos', orderBy(res, ['name']))
               this.$set(
@@ -554,7 +547,7 @@ export default {
             })
           })
           if (!repoName) return
-          getBranchInfoByIdAPI(codehostId, element.repo_namespace, repoName, uuid).then(
+          getBranchInfoByIdAPI(codehostId, element.repo_namespace, repoName).then(
             res => {
               this.$set(this.codeInfo[index], 'branches', res || [])
               this.$set(this.codeInfo[index], 'origin_branches', res || [])

@@ -10,7 +10,7 @@
           target="_blank"
         >{{build.tag }}</a>
         <a
-          v-else-if="build.source==='gitee'"
+          v-else-if="build.source==='gitee'||build.source==='gitee-enterprise'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.tag}`"
           target="_blank"
         >{{build.tag }}</a>
@@ -26,14 +26,14 @@
       <span class="normal" v-if="build.source ==='other'">{{build.branch}}</span>
     </span>
     <el-tooltip
-      :content="build.source==='gerrit'||build.source==='codehub'?`暂不支持在该类型上查看 Branch`:`在 ${build.source} 上查看 Branch`"
+      :content="build.source==='gerrit'?`暂不支持在该类型上查看 Branch`:`在 ${build.source} 上查看 Branch`"
       placement="top"
       effect="dark"
     >
       <span v-if="build.branch && !build.tag && build.source!=='other'" class="link">
         <i v-if=" build.branch" class="iconfont iconicon_git-branch repo-icon"></i>
         <a
-          v-if="build.source==='github'||build.source==='gitee'||build.source==='gitlab'"
+          v-if="build.source==='github'||build.source==='gitee'|| build.source==='gitee-enterprise'||build.source==='gitlab'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.branch}`"
           target="_blank"
         >{{build.branch}}</a>
@@ -43,7 +43,6 @@
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.branch}`"
           target="_blank"
         >{{ build.branch}}</a>
-        <span v-else-if="build.source ==='codehub'">{{ build.branch}}</span>
       </span>
     </el-tooltip>
     <el-tooltip :content="`在 ${build.source} 上查看 PR`" placement="top" effect="dark">
@@ -61,7 +60,7 @@
           <span v-for="item in build.prs" :key="item" @click="setPr(item)">#{{item}}</span>
         </a>
         <a
-          v-else-if="build.source==='gitee'"
+          v-else-if="build.source==='gitee'|| build.source==='gitee-enterprise'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pulls/${curPr}`"
           target="_blank"
         >
@@ -76,13 +75,13 @@
     </el-tooltip>
     <i v-if=" build.commit_id" class="iconfont iconicon_git-commit repo-icon"></i>
     <el-tooltip
-      :content="(build.source==='gerrit'&& (!build.prs.join('-')))||build.source==='codehub'?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
+      :content="(build.source==='gerrit'&& (!build.prs.join('-')))?`暂不支持在该类型上查看 Commit`:`在 ${build.source} 上查看 Commit`"
       placement="top"
       effect="dark"
     >
       <span v-if="build.commit_id" class="link">
         <a
-          v-if="build.source==='github'||build.source==='gitee'||build.source==='gitlab'"
+          v-if="build.source==='github'||build.source==='gitee'||build.source==='gitee-enterprise'||build.source==='gitlab'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/commit/${build.commit_id}`"
           target="_blank"
         >{{build.commit_id.substring(0, 10)}}</a>
@@ -93,7 +92,6 @@
           </a>
           {{build.commit_id.substring(0, 8)}}
         </span>
-        <span v-else-if="build.source==='codehub'">{{build.commit_id.substring(0, 8)}}</span>
       </span>
     </el-tooltip>
   </div>

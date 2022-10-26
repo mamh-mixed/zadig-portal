@@ -128,7 +128,7 @@ export default {
       this.selectPath = ''
       this.loading = true
       if (this.type === 'private') {
-        if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee') {
+        if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee' || this.codehostSource === 'gitee-enterprise') {
           params = {
             codehostId,
             repoOwner,
