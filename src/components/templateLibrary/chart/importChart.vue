@@ -14,7 +14,7 @@
           :value="value"
           ref="gitRepo"
           @selectPath="selectedPath($event)"
-        ></GitRepo>
+        />
       </el-form-item>
       <el-form-item>
         <el-button

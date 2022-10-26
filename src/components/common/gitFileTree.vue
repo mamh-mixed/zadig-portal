@@ -137,7 +137,7 @@ export default {
     },
     clickNode (data, node) {
       const type = this.gitType
-      if (type === 'gerrit' || type === 'gitee') {
+      if (type === 'gerrit' || type === 'gitee' || type === 'gitee-enterprise') {
         this.selectPath = (data.parent + '/' + data.name).substr(2)
       } else {
         this.selectPath = node.data.full_path
