@@ -292,6 +292,7 @@ export default {
             val.source === 'gitlab' ||
             val.source === 'gerrit' ||
             val.source === 'gitee' ||
+            val.source === 'gitee-enterprise' ||
             val.source === 'github' ||
             (val.visibility === 'public' &&
               val.product_name !== this.projectName) ||

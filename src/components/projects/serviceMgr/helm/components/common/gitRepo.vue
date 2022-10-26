@@ -386,7 +386,7 @@ export default {
       this.loading = true
       const projectName = this.$route.params.project_name
       this.getGitSource(this.source.codehostId)
-      if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee') {
+      if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee' || this.codehostSource === 'gitee-enterprise') {
         const params = {
           codehostId: this.source.codehostId,
           repoOwner: this.source.repoOwner,
@@ -410,7 +410,7 @@ export default {
       } else {
         const source = this.codehostSource
         payload = {
-          source: (source === 'gerrit' || source === 'gitee') ? source : 'repo',
+          source: (source === 'gerrit' || source === 'gitee' || source === 'gitee-enterprise') ? source : 'repo',
           createFrom: {
             codehostID: this.source.codehostId,
             owner: this.source.repoOwner,
