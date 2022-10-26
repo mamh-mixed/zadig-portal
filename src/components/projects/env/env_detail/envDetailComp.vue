@@ -98,7 +98,7 @@
                 ></i>
               </div>
               <div v-else>
-                <el-select v-model="productInfo.editRegistryID" size="mini">
+                <el-select v-model="productInfo.editRegistryID" filterable size="mini">
                   <el-option
                     v-for="registry in imageRegistry"
                     :key="registry.id"
