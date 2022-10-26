@@ -9,7 +9,6 @@
             size="mini"
             icon="el-icon-s-operation"
             type="text"
-            v-hasPermi="{type:'project', projectName: projectName, operator: 'or', actions: ['create_environment', 'config_environment']}"
           />
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="openVarGroupDisable">使用变量组</el-dropdown-item>
@@ -28,7 +27,7 @@
         <el-button type="primary" @click="importOverrideYaml" size="small" :loading="loadValueYamls">导 入</el-button>
       </div>
     </el-dialog>
-    <VarGroups v-model="varGroupData.visible" :variableSet="varGroupData.variableSet" @updateSourceDetail="updateSourceDetail" />
+    <VarGroups v-if="useVarGroup" v-model="varGroupData.visible" :variableSet="varGroupData.variableSet" @updateSourceDetail="updateSourceDetail" />
   </div>
 </template>
 
@@ -113,9 +112,6 @@ export default {
         this.$emit('update:importRepoInfo', val)
         return val
       }
-    },
-    projectName () {
-      return this.$route.params.project_name
     }
   },
   methods: {

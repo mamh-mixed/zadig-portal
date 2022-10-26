@@ -3,7 +3,7 @@
     <div>
       <el-form ref="groupForm" :model="group" label-width="120px">
         <el-form-item label="选择变量组">
-          <el-select v-model="group.source_id" placeholder="选择变量组" filterable size="small" style="width: 100%;" @change="updateSourceId">
+          <el-select v-model="group.source_id" placeholder="选择变量组" filterable size="small" style="width: 100%;">
             <el-option v-for="(group, index) in groupList" :key="index" :label="group.label" :value="group.id">
               {{ group.name }}
               <span style="color: #aaa;">({{ group.description }})</span>
@@ -39,9 +39,7 @@ export default {
     return {
       group: {
         source_id: '',
-        autoSync: false,
-        yamlSource: 'variableSet',
-        overrideYaml: ''
+        autoSync: false
       },
       groupList: [],
       groupMap: {}
@@ -50,6 +48,9 @@ export default {
   computed: {
     dialogVisible: {
       get () {
+        if (this.value && !this.groupList.length) {
+          this.getGroupList()
+        }
         return this.value
       },
       set (val) {
@@ -62,19 +63,16 @@ export default {
   },
   methods: {
     handleOpe () {
-      const { source_id, autoSync, yamlSource, overrideYaml } = this.group
+      const { source_id, autoSync } = this.group
       this.$emit('updateSourceDetail', {
-        yamlSource,
-        overrideYaml,
+        yamlSource: 'variableSet',
+        overrideYaml: this.groupMap[source_id],
         variableSet: {
           source_id,
           autoSync
         }
       })
       this.dialogVisible = false
-    },
-    updateSourceId (id) {
-      this.group.overrideYaml = this.groupMap[id]
     },
     async getGroupList () {
       const res = await getVariablesGroupsAPI(
@@ -105,9 +103,6 @@ export default {
         this.group.autoSync = false
       }
     }
-  },
-  created () {
-    this.getGroupList()
   }
 }
 </script>
