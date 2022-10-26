@@ -6,20 +6,7 @@
                :close-on-click-modal="false"
                :visible.sync="dialogCodeEditFormVisible">
       <template>
-        <el-alert v-if="codeEdit.type === 'gerrit'"
-                  type="info"
-                  :closable="false">
-          <slot>
-            <span class="tips">- 具体配置可参考
-              <el-link style="font-size: 14px; vertical-align: baseline;"
-                       type="primary"
-                       href="https://docs.koderover.com/zadig/settings/codehost/gerrit/"
-                       :underline="false"
-                       target="_blank">帮助文档</el-link>
-            </span>
-          </slot>
-        </el-alert>
-        <el-alert v-else-if="codeEdit.type === 'gitlab'"
+        <el-alert v-if="codeEdit.type === 'gitlab'"
                   type="info"
                   :closable="false">
           <slot>
@@ -62,23 +49,14 @@
             </span>
           </slot>
         </el-alert>
-        <el-alert v-if="codeEdit.type === 'gitee-enterprise'"
+        <el-alert v-if="codeEdit.type === 'gerrit'"
                   type="info"
                   :closable="false">
           <slot>
-            <span class="tips">{{`- 应用授权的回调地址请填写:`}}</span>
-            <span class="tips code-line">
-              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
-              <span v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
-                    v-clipboard:success="copyCommandSuccess"
-                    v-clipboard:error="copyCommandError"
-                    class="el-icon-document-copy copy"></span>
-            </span>
-            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook</span>
-            <span class="tips">- 更多配置可参考
+            <span class="tips">- 具体配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
-                       :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
+                       href="https://docs.koderover.com/zadig/settings/codehost/gerrit/"
                        :underline="false"
                        target="_blank">帮助文档</el-link>
             </span>
@@ -106,7 +84,28 @@
             </span>
           </slot>
         </el-alert>
-
+        <el-alert v-if="codeEdit.type === 'gitee-enterprise'"
+                  type="info"
+                  :closable="false">
+          <slot>
+            <span class="tips">{{`- 应用授权的回调地址请填写:`}}</span>
+            <span class="tips code-line">
+              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
+              <span v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
+                    v-clipboard:success="copyCommandSuccess"
+                    v-clipboard:error="copyCommandError"
+                    class="el-icon-document-copy copy"></span>
+            </span>
+            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook</span>
+            <span class="tips">- 更多配置可参考
+              <el-link style="font-size: 14px; vertical-align: baseline;"
+                       type="primary"
+                       :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
+                       :underline="false"
+                       target="_blank">帮助文档</el-link>
+            </span>
+          </slot>
+        </el-alert>
         <el-alert v-else-if="codeEdit.type === 'other'"
                   type="info"
                   :closable="false">
