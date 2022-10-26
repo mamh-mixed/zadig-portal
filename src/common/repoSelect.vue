@@ -453,6 +453,7 @@ export default {
       } else {
         // for manual input
         namespace = repo_owner
+        repo.repo_namespace = namespace
       }
       if (repo_owner && repo_name) {
         this.codeInfo[index].branches = []
