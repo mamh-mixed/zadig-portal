@@ -5,7 +5,7 @@
         <el-input v-model="form.env_name" placeholder="请输入环境名称" size="small"></el-input>
       </el-form-item>
       <el-form-item label="关联镜像仓库">
-        <el-select class="select" v-model.trim="form.registry_id" placeholder="请选择关联的镜像仓库" size="small">
+        <el-select class="select" filterable v-model.trim="form.registry_id" placeholder="请选择关联的镜像仓库" size="small">
             <el-option
               v-for="registry in imageRegistry"
               :key="registry.id"

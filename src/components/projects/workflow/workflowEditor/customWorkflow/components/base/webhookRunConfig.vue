@@ -70,7 +70,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="镜像仓库" prop="docker_registry_id">
-                <el-select v-model="job.spec.docker_registry_id" placeholder="请选择镜像" size="small" style="width: 220px;">
+                <el-select v-model="job.spec.docker_registry_id" filterable placeholder="请选择镜像" size="small" style="width: 220px;">
                   <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                 </el-select>
               </el-form-item>
