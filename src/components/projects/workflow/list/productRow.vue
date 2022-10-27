@@ -13,19 +13,37 @@
       </div>
       <div class="gray-desc" style="margin-top: 4px;">
         <span style="display: inline-block; margin-right: 10px;">
-          最近成功
-          <router-link v-if="recentSuccessID" :to="recentSuccessLink" class="passed">
-            <!-- <i class="icon el-icon-success"></i> -->
-            {{ recentSuccessID }}
-          </router-link>
+          <el-popover v-if="recentSuccessID" placement="top-start" width="100" trigger="hover" content>
+            <div>
+              <i class="icon el-icon-user"></i>
+              <span>{{workflowInfo.recentSuccessfulTask.task_creator}}</span>
+            </div>
+            <div>
+              <i class="icon el-icon-time"></i>
+              <span>{{$utils.convertTimestamp(workflowInfo.recentSuccessfulTask.create_time)}}</span>
+            </div>
+            <span slot="reference">
+              最近成功
+              <router-link :to="recentSuccessLink" class="passed">{{ recentSuccessID }}</router-link>
+            </span>
+          </el-popover>
           <span v-else class="passed">*</span>
         </span>
         <span>
-          最近失败
-          <router-link v-if="recentFailID" :to="recentFailLink" class="failed">
-            <!-- <i class="icon el-icon-warning"></i> -->
-            {{ recentFailID }}
-          </router-link>
+          <el-popover v-if="recentFailID" placement="top-start" width="100" trigger="hover" content>
+            <div>
+              <i class="icon el-icon-user"></i>
+              <span>{{workflowInfo.recentFailedTask.task_creator}}</span>
+            </div>
+            <div>
+              <i class="icon el-icon-time"></i>
+              <span>{{$utils.convertTimestamp(workflowInfo.recentFailedTask.create_time)}}</span>
+            </div>
+            <span slot="reference">
+              最近失败
+              <router-link :to="recentFailLink" class="failed">{{ recentFailID }}</router-link>
+            </span>
+          </el-popover>
           <span v-else class="failed">*</span>
         </span>
       </div>
