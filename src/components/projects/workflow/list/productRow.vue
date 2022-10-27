@@ -13,7 +13,7 @@
       </div>
       <div class="gray-desc" style="margin-top: 4px;">
         <span style="display: inline-block; margin-right: 10px;">
-          <el-popover v-if="recentSuccessID" placement="top-start" width="100" trigger="hover" content>
+          <el-popover v-if="recentSuccessID" placement="top-start" width="150" trigger="hover" content>
             <div>
               <i class="icon el-icon-user"></i>
               <span>{{workflowInfo.recentSuccessfulTask.task_creator}}</span>
@@ -30,7 +30,7 @@
           <span v-else class="passed">*</span>
         </span>
         <span>
-          <el-popover v-if="recentFailID" placement="top-start" width="100" trigger="hover" content>
+          <el-popover v-if="recentFailID" placement="top-start" width="150" trigger="hover" content>
             <div>
               <i class="icon el-icon-user"></i>
               <span>{{workflowInfo.recentFailedTask.task_creator}}</span>
