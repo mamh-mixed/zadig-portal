@@ -710,6 +710,22 @@ const routes = [
         }
       },
       {
+        path: 'projects/detail/:project_name/group',
+        component: () => import(/* webpackChunkName: "Environment Group" */ '@/components/projects/group/index.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '变量组'
+        }
+      },
+      {
+        path: 'projects/detail/:project_name/group/create',
+        component: () => import(/* webpackChunkName: "Environment Group" */ '@/components/projects/group/create.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '变量组'
+        }
+      },
+      {
         path: 'projects/detail/:project_name/host',
         component: () => import(/* webpackChunkName: "Project Host Management" */ '@/components/projects/host/home.vue'),
         meta: {

@@ -147,6 +147,14 @@ export default {
     currentUpdatedServiceTemplateId: {
       type: String,
       required: false
+    },
+    currentUpdatedServiceAutoSync: {
+      type: Boolean,
+      required: false
+    },
+    currentUpdatedServiceVariableYaml: {
+      type: String,
+      required: false
     }
   },
   methods: {
@@ -182,9 +190,10 @@ export default {
       }
     },
     async openImportYamlDialog () {
+      this.previewYamlFile = false
       if (this.currentUpdatedServiceName) {
-        this.importYaml.auto_sync = this.serviceInfo.service.auto_sync
-        this.importYaml.variable_yaml = this.serviceInfo.variable_yaml
+        this.importYaml.auto_sync = this.currentUpdatedServiceAutoSync
+        this.importYaml.variable_yaml = this.currentUpdatedServiceVariableYaml
       } else {
         this.importYaml.serviceName = ''
         this.importYaml.id = ''
@@ -243,11 +252,6 @@ export default {
           this.$emit('importYamlSuccess', serviceName)
         }
       }
-    }
-  },
-  computed: {
-    serviceInfo () {
-      return this.$store.state.k8sService.k8sServiceInfo
     }
   },
   watch: {

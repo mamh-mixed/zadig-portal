@@ -348,9 +348,7 @@ export default {
           const selectedServices = this.projectConfig.selectedService.map(
             service => service.serviceName
           )
-          valueInfo.chartInfo = valueInfo.chartInfo.filter(chart =>
-            selectedServices.includes(chart.serviceName)
-          )
+          valueInfo.chartInfo = valueInfo.chartInfo.filter(chart => selectedServices.includes(chart.serviceName))
 
           const defaultEnv = isCopy ? baseEnvName : 'DEFAULT'
           const payload = {
@@ -360,13 +358,7 @@ export default {
             baseEnvName: isCopy ? baseEnvName : '',
             chartValues: valueInfo.chartInfo,
             defaultValues: valueInfo.envInfo[defaultEnv].envValue || '',
-            valuesData: valueInfo.envInfo[defaultEnv].gitRepoConfig
-              ? {
-                autoSync: valueInfo.envInfo[defaultEnv].gitRepoConfig.autoSync,
-                yamlSource: 'repo',
-                gitRepoConfig: valueInfo.envInfo[defaultEnv].gitRepoConfig
-              }
-              : null,
+            valuesData: valueInfo.envInfo[defaultEnv].valuesData,
             namespace: this.projectConfig.defaultNamespace,
             is_existed: this.nsIsExisted,
             env_configs: this.$refs.envConfigRef.getEnvConfig()

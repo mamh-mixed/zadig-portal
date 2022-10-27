@@ -251,6 +251,7 @@ export default {
         this.service.source === 'github' ||
         this.service.source === 'gerrit' ||
         this.service.source === 'gitee' ||
+        this.service.source === 'gitee-enterprise' ||
         (this.service.visibility === 'public' &&
           this.service.product_name !== this.projectName) ||
         (this.service.source === 'template' && this.service.auto_sync)
@@ -291,6 +292,7 @@ export default {
             val.source === 'gitlab' ||
             val.source === 'gerrit' ||
             val.source === 'gitee' ||
+            val.source === 'gitee-enterprise' ||
             val.source === 'github' ||
             (val.visibility === 'public' &&
               val.product_name !== this.projectName) ||

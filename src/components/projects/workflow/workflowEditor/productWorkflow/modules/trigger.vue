@@ -192,7 +192,7 @@
               </el-tooltip>
             </el-checkbox>
           </el-form-item>
-          <el-form-item v-if="webhookSwap.repo.source!=='gerrit' && webhookSwap.repo.source!=='codehub'" label="文件目录" prop="match_folders">
+          <el-form-item v-if="webhookSwap.repo.source!=='gerrit'" label="文件目录" prop="match_folders">
             <el-input
               :autosize="{ minRows: 4, maxRows: 10}"
               type="textarea"
@@ -200,7 +200,7 @@
               placeholder="输入目录时，多个目录请用回车换行分隔"
             ></el-input>
           </el-form-item>
-          <ul v-if="webhookSwap.repo.source!=='gerrit' && webhookSwap.repo.source!=='codehub'" style="padding-left: 120px; color: #909399; font-size: 12px; line-height: 20px;">
+          <ul v-if="webhookSwap.repo.source!=='gerrit'" style="padding-left: 120px; color: #909399; font-size: 12px; line-height: 20px;">
             <li>输入目录时，多个目录请用回车换行分隔</li>
             <li>"/" 表示代码库中的所有文件</li>
             <li>用 "!" 符号开头可以排除相应的文件</li>
@@ -317,7 +317,7 @@
               <el-table-column label="文件目录">
                 <template slot-scope="{ row }">
                   <span
-                    v-if="row.main_repo.source!=='gerrit' && row.main_repo.source!=='codehub'"
+                    v-if="row.main_repo.source!=='gerrit'"
                   >{{ row.main_repo.match_folders ? row.main_repo.match_folders.join() : 'N/A' }}</span>
                   <span v-else>N/A</span>
                 </template>

@@ -34,7 +34,7 @@
         </div>
         <div class="view">
           <div>
-            <el-radio-group v-model="view" >
+            <el-radio-group v-model="view" size="small">
               <el-radio-button label="">所有</el-radio-button>
               <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
             </el-radio-group>

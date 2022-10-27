@@ -469,7 +469,7 @@ export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '
       }
     }
     return http.get(`/api/aslan/code/workspace/tree`, { params })
-  } else if (type === 'gerrit' || type === 'gitee') {
+  } else if (type === 'gerrit' || type === 'gitee' || type === 'gitee-enterprise') {
     const params = {
       repoOwner: repoOwner,
       repoName: repoName,
@@ -478,13 +478,6 @@ export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '
       dir: path
     }
     return http.get(`/api/aslan/code/workspace/git/${codehostId}`, { params })
-  } else if (type === 'codehub') {
-    const params = {
-      repoName: repoName,
-      branchName: branchName,
-      path: path
-    }
-    return http.get(`/api/aslan/code/workspace/codehub/${codehostId}`, { params })
   }
 }
 
@@ -500,44 +493,31 @@ export function getRepoFileServiceAPI (codehostId, repoOwner, repoName, branchNa
   return http.get(`/api/aslan/service/loader/preload/${codehostId}`, { params })
 }
 
-export function getCodehubRepoFileServiceAPI (codehostId, repoUUID, repoName, branchName, path, isDir) {
-  const params = {
-    repoUUID: repoUUID,
-    repoName: repoName,
-    branchName: branchName,
-    path: path,
-    isDir: isDir
-  }
-  return http.get(`/api/aslan/service/loader/preload/${codehostId}`, { params })
-}
-
-export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', namespace = '', payload) {
+export function loadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', namespace = '', payload) {
   const params = {
     projectName: projectName,
     repoOwner: repoOwner,
     repoName: repoName,
     branchName: branchName,
     remoteName: remoteName,
-    repoUUID: repoUUID,
     namespace: namespace
   }
   return http.post(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
 }
 
-export function updateLoadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', repoUUID = '', namespace = '', payload) {
+export function updateLoadRepoServiceAPI (projectName, codehostId, repoOwner, repoName, branchName, remoteName = '', namespace = '', payload) {
   const params = {
     projectName: projectName,
     repoOwner: repoOwner,
     repoName: repoName,
     branchName: branchName,
     remoteName: remoteName,
-    repoUUID: repoUUID,
     namespace: namespace
   }
   return http.put(`/api/aslan/service/loader/load/${codehostId}`, payload, { params })
 }
 
-export function validPreloadService (codehostId, repoOwner, repoName, branchName, path, serviceName, isDir = false, remoteName = '', repoUUID = '') {
+export function validPreloadService (codehostId, repoOwner, repoName, branchName, path, serviceName, isDir = false, remoteName = '') {
   const params = {
     repoOwner: repoOwner,
     repoName: repoName,
@@ -545,8 +525,7 @@ export function validPreloadService (codehostId, repoOwner, repoName, branchName
     path: path,
     serviceName: serviceName,
     isDir: isDir,
-    remoteName: remoteName,
-    repoUUID: repoUUID
+    remoteName: remoteName
   }
   return http.get(`/api/aslan/service/loader/validateUpdate/${codehostId}`, { params })
 }
@@ -931,44 +910,26 @@ export function getRepoOwnerByIdAPI (id, key = '') {
   return http.get(`/api/aslan/code/codehost/${id}/namespaces?key=${key}`)
 }
 
-export function getRepoNameByIdAPI (id, type, repoOwner, key = '', projectUUID = '') {
-  if (projectUUID) {
-    const params = {
-      repoOwner: projectUUID,
-      type: type,
-      per_page: 200,
-      key: key
-    }
-    return http.get(`/api/aslan/code/codehost/${id}/projects`, { params })
-  } else {
-    const params = {
-      repoOwner: repoOwner,
-      type: type,
-      page: 1,
-      per_page: 200,
-      key: key
-    }
-    return http.get(`/api/aslan/code/codehost/${id}/projects`, { params })
+export function getRepoNameByIdAPI (id, type, repoOwner, key = '') {
+  const params = {
+    repoOwner: repoOwner,
+    type: type,
+    page: 1,
+    per_page: 200,
+    key: key
   }
+  return http.get(`/api/aslan/code/codehost/${id}/projects`, { params })
 }
 // repoOwner from namespace
-export function getBranchInfoByIdAPI (id, repoOwner, repoName, repoUUID = '', page = 1, perPage = 200, key = '') {
-  if (repoUUID) {
-    const params = {
-      repoOwner: repoOwner,
-      projectName: repoUUID
-    }
-    return http.get(`/api/aslan/code/codehost/${id}/branches`, { params })
-  } else {
-    const params = {
-      repoOwner: repoOwner,
-      repoName: repoName,
-      page: page,
-      per_page: perPage,
-      key: key
-    }
-    return http.get(`/api/aslan/code/codehost/${id}/branches`, { params })
+export function getBranchInfoByIdAPI (id, repoOwner, repoName, page = 1, perPage = 200, key = '') {
+  const params = {
+    repoOwner: repoOwner,
+    repoName: repoName,
+    page: page,
+    per_page: perPage,
+    key: key
   }
+  return http.get(`/api/aslan/code/codehost/${id}/branches`, { params })
 }
 export function getTagsInfoByIdAPI (id, repoOwner, repoName, page = 1, perPage = 200, key = '') {
   const params = {
@@ -1846,8 +1807,8 @@ export function getAllChartValuesYamlAPI (projectName, envName, serviceName = []
   return http.get(`/api/aslan/environment/environments/${envName}/estimated-renderchart?projectName=${projectName}&serviceName=${serviceName.join(',')}`)
 }
 
-export function getEnvDefaultVariableAPI (projectName, envName) {
-  return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}`)
+export function getEnvDefaultVariableAPI (projectName, envName, ifPassFilter = true) {
+  return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}&ifPassFilter=${ifPassFilter}`)
 }
 
 export function createHelmEnvAPI (projectName, payload, scene = '') {
@@ -2028,6 +1989,27 @@ export function getPolicyByNameAPI (projectName, name) {
 
 export function getPolicyByIdAPI (projectName, id) {
   return http.get(`/api/v1/policy/${id}?projectName=${projectName}`)
+}
+
+// variable group list
+export function getVariablesGroupsAPI (projectName, page, perPage, ifPassFilter = true) {
+  return http.get(`/api/aslan/project/variablesets?page=${page}&perPage=${perPage}&projectName=${projectName}&ifPassFilter=${ifPassFilter}`)
+}
+
+export function getVariablesGroupByIdAPI (projectName, id) {
+  return http.get(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`)
+}
+
+export function createVariablesGroupAPI (projectName, payload) {
+  return http.post(`/api/aslan/project/variablesets?projectName=${projectName}`, payload)
+}
+
+export function updateVariablesGroupAPI (projectName, id, payload) {
+  return http.put(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`, payload)
+}
+
+export function deleteVariablesGroupAPI (projectName, id) {
+  return http.delete(`/api/aslan/project/variablesets/${id}?projectName=${projectName}`)
 }
 
 // Insight

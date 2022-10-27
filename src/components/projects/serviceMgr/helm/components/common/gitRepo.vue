@@ -143,7 +143,7 @@
       </el-form-item>
     </el-form>
 
-    <el-dialog v-if="codehostSource === 'gerrit' || codehostSource === 'gitee'" :append-to-body="true"
+    <el-dialog v-if="codehostSource === 'gerrit' || codehostSource === 'gitee' || codehostSource === 'gitee-enterprise'" :append-to-body="true"
                :visible.sync="workSpaceModalVisible"
                width="60%"
                title="请选择要同步的文件或文件目录"
@@ -151,7 +151,6 @@
       <GerritFileTree ref="worktree"
                     :codehostId="source.codehostId"
                     :repoName="source.repoName"
-                    :repoUUID="source.repoUUID"
                     :repoOwner="source.repoOwner"
                     :branchName="source.branchName"
                     :remoteName="source.remoteName"
@@ -387,7 +386,7 @@ export default {
       this.loading = true
       const projectName = this.$route.params.project_name
       this.getGitSource(this.source.codehostId)
-      if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee') {
+      if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee' || this.codehostSource === 'gitee-enterprise') {
         const params = {
           codehostId: this.source.codehostId,
           repoOwner: this.source.repoOwner,
@@ -411,7 +410,7 @@ export default {
       } else {
         const source = this.codehostSource
         payload = {
-          source: (source === 'gerrit' || source === 'gitee') ? source : 'repo',
+          source: (source === 'gerrit' || source === 'gitee' || source === 'gitee-enterprise') ? source : 'repo',
           createFrom: {
             codehostID: this.source.codehostId,
             owner: this.source.repoOwner,

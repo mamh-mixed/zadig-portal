@@ -6,7 +6,6 @@
         ref="worktree"
         :codehostId="source.codehostId"
         :repoName="source.repoName"
-        :repoUUID="source.repoUUID"
         :repoOwner="source.repoOwner"
         :branchName="source.branchName"
         :remoteName="source.remoteName"
@@ -138,6 +137,8 @@
       :projectName="projectName"
       :currentUpdatedServiceName="currentUpdatedServiceName"
       :currentUpdatedServiceTemplateId="currentUpdatedServiceTemplateId"
+      :currentUpdatedServiceVariableYaml="currentUpdatedServiceVariableYaml"
+      :currentUpdatedServiceAutoSync="currentUpdatedServiceAutoSync"
       :dialogImportFromYamlVisible.sync="openImportYamlDialog"
       @importYamlSuccess="importYamlSuccess"
     />
@@ -287,7 +288,7 @@
                 ></el-button>
                 <el-button
                   v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
-                  v-if="data.source && (data.source === 'gitee' || data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='codehub' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
+                  v-if="data.source && (data.source === 'gitee' || data.source === 'gitee-enterprise' || data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
                   type="text"
                   size="mini"
                   icon="el-icon-refresh"
@@ -442,6 +443,8 @@ export default {
       searchService: '',
       currentUpdatedServiceName: '',
       currentUpdatedServiceTemplateId: '',
+      currentUpdatedServiceAutoSync: false,
+      currentUpdatedServiceVariableYaml: '',
       serviceGroup: [],
       allCodeHosts: [],
       openImportYamlDialog: false,
@@ -463,7 +466,6 @@ export default {
       source: {
         codehostId: null,
         repoOwner: '',
-        repoUUID: '',
         repoName: '',
         branchName: '',
         remoteName: '',
@@ -633,7 +635,6 @@ export default {
       this.workSpaceModalVisible = false
       const codehostId = this.source.codehostId
       const repoName = this.source.repoName
-      const repoUUID = this.source.repoUUID
       const branchName = this.source.branchName
       const remoteName = this.source.remoteName
       const serviceName = this.source.serviceName
@@ -649,8 +650,7 @@ export default {
           path,
           serviceName,
           isDir,
-          remoteName,
-          repoUUID
+          remoteName
         ).then(
           res => {
             this.disabledReload = false
@@ -665,7 +665,6 @@ export default {
       const codehostId = this.source.codehostId
       const repoOwner = this.source.repoOwner
       const repoName = this.source.repoName
-      const repoUUID = this.source.repoUUID
       const branchName = this.source.branchName
       const remoteName = this.source.remoteName
       const path = this.source.path
@@ -691,7 +690,6 @@ export default {
             repoName,
             branchName,
             remoteName,
-            repoUUID,
             namespace,
             payload
           )
@@ -728,7 +726,6 @@ export default {
       this.source = {
         codehostId: null,
         repoOwner: '',
-        repoUUID: '',
         repoName: '',
         branchName: '',
         remoteName: '',
@@ -925,9 +922,8 @@ export default {
         return item.path === repoOwner || item.name === repoOwner
       })
       const type = item ? item.kind : 'group'
-      const project_uuid = item.project_uuid ? item.project_uuid : ''
       const id = this.source.codehostId
-      getRepoNameByIdAPI(id, type, encodeURI(repoOwner), '', project_uuid).then(
+      getRepoNameByIdAPI(id, type, encodeURI(repoOwner), '').then(
         res => {
           this.$set(this.codeInfo, 'repos', res)
         }
@@ -942,15 +938,13 @@ export default {
         return item.path === repoOwner || item.name === repoOwner
       })
       const type = item ? item.kind : 'group'
-      const project_uuid = item.project_uuid ? item.project_uuid : ''
       this.$refs.sourceForm.clearValidate()
       if (repoOwner) {
         getRepoNameByIdAPI(
           id,
           type,
           encodeURI(repoOwner),
-          key,
-          project_uuid
+          key
         ).then(res => {
           this.$set(this.codeInfo, 'repos', res)
         })
@@ -1018,15 +1012,12 @@ export default {
       const repoItem = this.codeInfo.repos.find(item => {
         return item.name === repoName
       })
-      const repoUUID = repoItem.repo_uuid ? repoItem.repo_uuid : ''
-      this.source.repoUUID = repoUUID
       this.source.namespace = repoItem.namespace || ''
       if (repoName && repoOwner) {
         getBranchInfoByIdAPI(
           id,
           this.source.namespace,
-          repoName,
-          repoUUID
+          repoName
         ).then(res => {
           this.$set(this.codeInfo, 'branches', res)
         })
@@ -1038,7 +1029,9 @@ export default {
     refreshService (node, data) {
       if (data.source === 'template') {
         this.currentUpdatedServiceName = data.service_name
-        this.currentUpdatedServiceTemplateId = data.template_id
+        this.currentUpdatedServiceTemplateId = data.create_from.template_id
+        this.currentUpdatedServiceAutoSync = data.auto_sync
+        this.currentUpdatedServiceVariableYaml = data.create_from.variable_yaml
         this.openImportYamlDialog = true
       } else {
         this.dialogImportFromRepoVisible = true
@@ -1046,7 +1039,6 @@ export default {
         this.source.codehostId = data.codehost_id
         this.source.repoOwner = data.repo_owner
         this.source.repoName = data.repo_name
-        this.source.repoUUID = data.repo_uuid
         this.source.branchName = data.branch_name
         this.source.path = data.load_path
         this.source.gitType = data.source
@@ -1062,8 +1054,7 @@ export default {
           data.load_path,
           data.service_name,
           data.is_dir,
-          data.remote_name,
-          data.repo_uuid
+          data.remote_name
         ).then(
           res => {
             this.disabledReload = false

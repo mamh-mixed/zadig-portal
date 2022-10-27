@@ -299,27 +299,14 @@ export default {
     },
     async getRepoInfo (originRepos) {
       const reposQuery = originRepos.map(re => {
-        if (re.source === 'codehub') {
-          return {
-            source: re.source,
-            repo_owner: re.repo_owner,
-            repo: re.repo_name,
-            default_branch: re.branch,
-            project_uuid: re.project_uuid,
-            repo_uuid: re.repo_uuid,
-            repo_id: re.repo_id,
-            codehost_id: re.codehost_id
-          }
-        } else {
-          return {
-            source: re.source,
-            repo_owner: re.repo_owner,
-            repo: re.repo_name,
-            default_branch: re.branch,
-            codehost_id: re.codehost_id,
-            repo_namespace: re.repo_namespace,
-            filter_regexp: re.filter_regexp
-          }
+        return {
+          source: re.source,
+          repo_owner: re.repo_owner,
+          repo: re.repo_name,
+          default_branch: re.branch,
+          codehost_id: re.codehost_id,
+          repo_namespace: re.repo_namespace,
+          filter_regexp: re.filter_regexp
         }
       })
       const payload = { infos: reposQuery }

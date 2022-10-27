@@ -2,7 +2,7 @@
   <div class="float-link">
     <el-popover class="link-popover" placement="top-end" trigger="hover">
       <div slot="reference" class="icon">
-        <el-button type="primary" plain circle icon=" iconfont iconlink1" size="mini"></el-button>
+        <el-button type="primary" plain circle icon=" iconfont iconlink1" ></el-button>
       </div>
       <div class="link-title">快捷链接</div>
       <div class="link-outer" v-for="(link, index) in links" :key="index">

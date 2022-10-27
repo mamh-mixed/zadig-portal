@@ -299,35 +299,19 @@ export default {
       }
     },
     async searchRepoInfo (build, query) {
-      let reposQuery = []
-      if (build.source === 'codehub') {
-        reposQuery = [
-          {
-            source: build.source,
-            repo_owner: build.repo_owner,
-            repo: build.repo_name,
-            default_branch: build.branch,
-            project_uuid: build.project_uuid,
-            repo_uuid: build.repo_uuid,
-            repo_id: build.repo_id,
-            codehost_id: build.codehost_id,
-            key: query
-          }
-        ]
-      } else {
-        reposQuery = [
-          {
-            source: build.source,
-            repo_owner: build.repo_owner,
-            repo: build.repo_name,
-            default_branch: build.branch,
-            codehost_id: build.codehost_id,
-            filter_regexp: build.filter_regexp,
-            repo_namespace: build.repo_namespace,
-            key: query
-          }
-        ]
-      }
+      const reposQuery = [
+        {
+          source: build.source,
+          repo_owner: build.repo_owner,
+          repo: build.repo_name,
+          default_branch: build.branch,
+          codehost_id: build.codehost_id,
+          filter_regexp: build.filter_regexp,
+          repo_namespace: build.repo_namespace,
+          key: query
+        }
+      ]
+
       const payload = { infos: reposQuery }
       // b = branch, p = pr, t = tag
       const res = await getAllBranchInfoAPI(payload)
