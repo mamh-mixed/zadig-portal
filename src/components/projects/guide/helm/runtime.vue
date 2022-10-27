@@ -39,7 +39,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="镜像仓库">
-              <el-select class="select" v-model.trim="currentInfo.registry_id" placeholder="请选择镜像仓库" size="small">
+              <el-select class="select" filterable v-model.trim="currentInfo.registry_id" placeholder="请选择镜像仓库" size="small">
                 <el-option
                   v-for="registry in imageRegistry"
                   :key="registry.id"

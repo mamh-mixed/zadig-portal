@@ -2,7 +2,7 @@
   <div class="version-push">
     <el-form ref="pushRef" :rules="rules" :model="releaseInfo" label-width="160px">
       <el-form-item label="选择镜像仓库" prop="imageRegistryID">
-        <el-select v-model="releaseInfo.imageRegistryID" placeholder="选择镜像仓库" size="small">
+        <el-select v-model="releaseInfo.imageRegistryID" filterable placeholder="选择镜像仓库" size="small">
           <el-option :label="image.namespace ? `${image.reg_addr}/${image.namespace}` : image.reg_addr" :value="image.id" v-for="image in imageRegistryList" :key="image.id"></el-option>
         </el-select>
       </el-form-item>
