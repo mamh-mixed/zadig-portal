@@ -70,7 +70,7 @@
       <div v-else class="value">
         <div v-if="testInfo.workflows">
           <div v-for="(workflow,index) in testInfo.workflows" :key="index" class="info-wrapper">
-            <router-link class="link" :to="`/v1/projects/detail/${projectName}/pipelines/multi/${workflow.name}?display_name=${workflow.display_name}`">{{workflow.display_name}}</router-link>
+            <router-link class="link" :to="`/v1/projects/detail/${testInfo.product_name}/pipelines/multi/${workflow.name}?display_name=${workflow.display_name}`">{{workflow.display_name}}</router-link>
             <span
               v-if="checkPermissionSyncMixin({type: 'system', action: 'edit_test'})"
               @click="deleteConnection(testInfo.name, workflow)"
