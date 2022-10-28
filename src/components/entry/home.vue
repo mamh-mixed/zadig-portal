@@ -198,7 +198,7 @@ body {
 
           .main-float {
             position: fixed;
-            right: 40px;
+            right: 90px;
             bottom: 40px;
             z-index: 2;
           }
