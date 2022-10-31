@@ -98,7 +98,7 @@
             <Editor v-model="scannerConfig.pre_script"></Editor>
           </Resize>
         </div>
-        <div class="primary-title not-first-child">
+        <div class="primary-title not-first-child" v-if="hasPlutus">
           <span class="mg-r8">质量门禁检查</span>
           <el-checkbox v-model="scannerConfig.check_quality_gate"></el-checkbox>
         </div>
@@ -155,6 +155,7 @@
 <script>
 import Editor from 'vue2-ace-bind'
 import Resize from '@/components/common/resize.vue'
+import { mapState } from 'vuex'
 
 import AdvancedConfig from './common/advancedConfig.vue'
 import ValidateSubmit from '@utils/validateAsync'
@@ -265,7 +266,10 @@ export default {
     },
     remainingApps () {
       return differenceBy(this.allApps, this.scannerConfig.installs, 'id')
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     getAllApps () {
