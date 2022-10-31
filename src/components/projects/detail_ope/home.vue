@@ -6,7 +6,7 @@
         <i class="el-icon-s-fold display-btn" @click="currentTab = 'list'" :class="{'active':currentTab==='list'}"></i>
       </div>
       <div class="header-end">
-        <el-input v-model="searchProject" placeholder="搜索项目" class="search-input" prefix-icon="el-icon-search" size="medium" />
+        <el-input v-model.trim="searchProject" placeholder="搜索项目" class="search-input" prefix-icon="el-icon-search" size="medium" />
         <el-button
           v-if="$utils.roleCheck('admin')"
           @click="$router.push(`/v1/projects/create`)"
