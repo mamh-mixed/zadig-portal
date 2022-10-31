@@ -6,6 +6,7 @@
         <i class="el-icon-s-fold display-btn" @click="currentTab = 'list'" :class="{'active':currentTab==='list'}"></i>
       </div>
       <div class="header-end">
+        <el-input v-model.trim="searchProject" placeholder="搜索项目" class="search-input" prefix-icon="el-icon-search" size="medium" />
         <el-button
           v-if="$utils.roleCheck('admin')"
           @click="$router.push(`/v1/projects/create`)"
@@ -39,7 +40,7 @@
       class="projects-grid"
     >
       <el-row :gutter="12">
-        <el-col v-for="(project,index) in projectList" :key="index" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
+        <el-col v-for="(project,index) in searchedProjectList" :key="index" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
           <el-card shadow="hover" class="project-card">
             <div class="operations">
               <el-dropdown @command="handleCommand" trigger="click">
@@ -93,7 +94,7 @@
       element-loading-spinner="iconfont iconfont-loading iconxiangmuloading"
       class="projects-list"
     >
-      <el-table v-if="projectList.length > 0" :data="projectList" stripe style="width: 100%;">
+      <el-table v-if="projectList.length > 0" :data="searchedProjectList" stripe style="width: 100%;">
         <el-table-column label="项目名称">
           <template slot-scope="scope">
             <router-link :to="`/v1/projects/detail/${scope.row.name}/detail`" class="project-name">
@@ -152,7 +153,8 @@ export default {
         helm: 'iconhelmrepo',
         external: 'iconvery-trustee',
         cloud_host: 'iconwuliji'
-      }
+      },
+      searchProject: ''
     }
   },
   methods: {
@@ -182,7 +184,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['projectList'])
+    ...mapGetters(['projectList']),
+    searchedProjectList () {
+      const searchProject = this.searchProject
+      return this.projectList.filter(pro => pro.alias.indexOf(searchProject) !== -1)
+    }
   },
   mounted () {
     this.$store.dispatch('getProjectList')
@@ -259,6 +265,17 @@ export default {
     }
 
     .header-end {
+      min-width: 510px;
+
+      .search-input {
+        width: 210px;
+        margin-right: 10px;
+
+        .el-input__inner {
+          border-color: @themeColor;
+        }
+      }
+
       .el-button {
         padding: 10px 15px;
         color: @themeColor;
