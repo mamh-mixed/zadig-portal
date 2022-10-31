@@ -34,12 +34,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="Sonar 地址" v-if="scannerConfig.scanner_type === 'sonarQube'" prop="sonar_id">
-          <el-select v-model="scannerConfig.sonar_id" placeholder="选择 Sonar 地址" size="small">
-            <el-option v-for="(item, index) in sonarList" :key="index" :label="item.server_address" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="scannerConfig.installs.length===0" label="依赖的软件包" class="secondary-label">
+        <el-form-item v-if="scannerConfig.installs.length===0" label="依赖的软件包">
           <el-button @click="addFirstApp()" type="primary" size="mini" plain>新增</el-button>
         </el-form-item>
         <el-form-item
@@ -49,7 +44,6 @@
           :prop="`installs.${appIndex}.name`"
           :rules="{required: false, message: '不能为空', trigger: 'blur'}"
           :label="appIndex === 0 ? `依赖的软件包` : ''"
-          class="secondary-label"
         >
           <el-select v-model="scannerConfig.installs[appIndex]" placeholder="请选择" size="small" value-key="id" filterable>
             <el-option
@@ -63,6 +57,11 @@
             <el-button v-if="scannerConfig.installs.length >= 1" @click="deleteApp(appIndex)" type="danger" size="mini" plain>删除</el-button>
             <el-button v-if="appIndex===scannerConfig.installs.length-1" @click="addApp(appIndex)" type="primary" size="mini" plain>新增</el-button>
           </span>
+        </el-form-item>
+        <el-form-item label="Sonar 地址" v-if="scannerConfig.scanner_type === 'sonarQube'" prop="sonar_id">
+          <el-select v-model="scannerConfig.sonar_id" placeholder="选择 Sonar 地址" size="small">
+            <el-option v-for="(item, index) in sonarList" :key="index" :label="item.server_address" :value="item.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
