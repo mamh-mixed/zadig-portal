@@ -37,7 +37,10 @@
                   @change="changeBranchOrTag(build)"
                 >
                   <el-option-group v-for="group in build.branchAndTagList" :key="group.label" :label="group.label">
-                    <el-option v-for="(item, index) in group.options" :key="index" :label="item.name" :value="item"></el-option>
+                    <el-option v-for="(item, index) in group.options" :key="index" :label="item.name" :value="item">
+                      <span v-if="item.id.startsWith('addTag')||item.id.startsWith('addBranch')">{{'使用 '+item.name}}</span>
+                      <span v-else>{{item.name}}</span>
+                    </el-option>
                   </el-option-group>
                 </el-select>
               </el-col>
@@ -352,16 +355,26 @@ export default {
         tags.options = []
       }
       if (query) {
-        branches.options.unshift({
-          id: 'addBranch-' + query,
-          name: query,
-          type: 'branch'
+        const queryBranchInResponse = branches.options.findIndex((element) => {
+          return element.name === query && element.type === 'branch'
         })
-        tags.options.unshift({
-          id: 'addTag-' + query,
-          name: query,
-          type: 'tag'
+        const queryTagInResponse = tags.options.findIndex((element) => {
+          return element.name === query && element.type === 'tag'
         })
+        if (queryBranchInResponse === -1) {
+          branches.options.unshift({
+            id: 'addBranch-' + query,
+            name: query,
+            type: 'branch'
+          })
+        }
+        if (queryTagInResponse === -1) {
+          tags.options.unshift({
+            id: 'addTag-' + query,
+            name: query,
+            type: 'tag'
+          })
+        }
       }
     },
     // 如果是勾选的不需要展示当前行 这里不处理数据  通过样式隐藏当前行

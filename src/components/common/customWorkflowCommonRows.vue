@@ -194,16 +194,26 @@ export default {
         tags.options = []
       }
       if (query) {
-        branches.options.unshift({
-          id: 'addBranch-' + query,
-          name: query,
-          type: 'branch'
+        const queryBranchInResponse = branches.options.findIndex((element) => {
+          return element.name === query && element.type === 'branch'
         })
-        tags.options.unshift({
-          id: 'addTag-' + query,
-          name: query,
-          type: 'tag'
+        const queryTagInResponse = tags.options.findIndex((element) => {
+          return element.name === query && element.type === 'tag'
         })
+        if (queryBranchInResponse === -1) {
+          branches.options.unshift({
+            id: 'addBranch-' + query,
+            name: query,
+            type: 'branch'
+          })
+        }
+        if (queryTagInResponse === -1) {
+          tags.options.unshift({
+            id: 'addTag-' + query,
+            name: query,
+            type: 'tag'
+          })
+        }
       }
     },
     changeBranchOrTag (build) {
