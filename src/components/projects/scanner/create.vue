@@ -218,7 +218,7 @@ export default {
         sonar_id: '',
         repos: [],
         installs: [],
-        pre_script: '',
+        pre_script: '#!/bin/bash',
         check_quality_gate: false,
         parameter: '# Sonar 参数\n', // sonar parameters
         script: '#!/bin/bash\nset -e', // for other type
