@@ -80,6 +80,14 @@
 
       <section v-if="scannerConfig.scanner_type === 'sonarQube'">
         <div class="primary-title not-first-child">
+          <span>前置脚本</span>
+        </div>
+        <div class="deploy-script">
+          <Resize :resize="'both'">
+            <Editor v-model="scannerConfig.pre_script"></Editor>
+          </Resize>
+        </div>
+        <div class="primary-title not-first-child">
           <span>参数配置</span>
           <el-tooltip effect="dark" content="sonar 地址和 token 在执行时自动注入" placement="right">
             <i class="el-icon-warning"></i>
@@ -88,14 +96,6 @@
         <div class="deploy-script">
           <Resize :resize="'both'">
             <Editor v-model="scannerConfig.parameter"></Editor>
-          </Resize>
-        </div>
-        <div class="primary-title not-first-child">
-          <span>前置脚本</span>
-        </div>
-        <div class="deploy-script">
-          <Resize :resize="'both'">
-            <Editor v-model="scannerConfig.pre_script"></Editor>
           </Resize>
         </div>
         <div class="primary-title not-first-child" v-if="hasPlutus">
@@ -288,6 +288,13 @@ export default {
       }
     },
     addFirstApp () {
+      this.scannerConfig.installs.push({
+        name: '',
+        version: '',
+        id: ''
+      })
+    },
+    addApp () {
       this.scannerConfig.installs.push({
         name: '',
         version: '',
