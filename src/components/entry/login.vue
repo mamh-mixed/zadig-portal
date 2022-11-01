@@ -1,8 +1,8 @@
 <template>
-  <div class="login tab-box">
+  <div class="login">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-7 col-md-12 col-pad-0 form-section">
+      <el-row type="flex">
+        <el-col :xs="24" :sm="24" :md="13" :lg="13" class="form-section">
           <div class="login-inner-form" v-show="!showForgotPassword && !showSignUp">
             <div class="details">
               <header>
@@ -27,7 +27,7 @@
                     ></el-input>
                   </el-form-item>
                 </el-form>
-                <el-button type="submit" @click="login" v-loading="loading" class="btn-md btn-theme btn-block login-btn">登录</el-button>
+                <el-button type="submit" @click="login" v-loading="loading" class="btn-md btn-theme login-btn">登录</el-button>
               </section>
               <div class="bottom">
                 <a @click="showForgotPassword = true">找回密码</a>
@@ -42,14 +42,14 @@
           <div class="login-inner-form" v-show="showSignUp">
             <SignUp :openLogin="afterSignUp" />
           </div>
-        </div>
-        <div class="col-lg-5 col-md-12 col-pad-0 bg-img none-992">
+        </el-col>
+        <el-col class="bg-img none-992" :xs="0" :sm="0" :md="11" :lg="11">
           <div class="information">
             <h3>{{showCopywriting.title}}</h3>
             <p>{{showCopywriting.content}}</p>
           </div>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
     </div>
     <footer>
       <div class="copyright">
@@ -71,7 +71,12 @@
 <script>
 import moment from 'moment'
 import { isMobile } from 'mobile-device-detect'
-import { checkConnectorsAPI, checkRegistrationAPI, getEnterpriseInfoAPI, getLicenseStatusAPI } from '@api'
+import {
+  checkConnectorsAPI,
+  checkRegistrationAPI,
+  getEnterpriseInfoAPI,
+  getLicenseStatusAPI
+} from '@api'
 import ForgetPassword from './components/forgetPassword.vue'
 import SignUp from './components/signUp.vue'
 import store from 'storejs'
@@ -226,34 +231,15 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import url('~@assets/css/quote/bootstarp.less');
-
-.bottom {
-  display: flex;
-  align-items: center;
-  float: right;
-  padding: 0 10px;
-
-  .divide {
-    color: #ced4da;
-  }
-
-  a {
-    padding-right: 10px;
-    padding-left: 10px;
-    color: #717171;
-    font-size: 14px;
-    cursor: pointer !important;
-
-    &:hover {
-      color: @themeColor !important;
-      text-decoration-line: none;
-    }
-  }
-}
-
 .login {
+  .container-fluid {
+    width: 100%;
+    margin: 0 auto;
+  }
+
   .information {
+    display: flex;
+    flex-direction: column;
     margin: 0 20px 0 70px;
     color: #fff;
 
@@ -272,10 +258,6 @@ export default {
 
   .form-section {
     position: relative;
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -317,6 +299,7 @@ export default {
         }
 
         .btn-md {
+          width: 100%;
           padding: 12px 30px 11px 30px;
           font-weight: 400;
           font-size: 14px;
@@ -373,30 +356,31 @@ export default {
           background: #0066ffc2;
         }
 
-        .name {
-          display: inline-block;
-          margin-bottom: 5px;
-          font-weight: 500;
-          font-size: 35px;
-          background: linear-gradient(25deg, #ff6302 0%, #ff2968 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
         .login-btn {
           margin-bottom: 8px;
         }
 
-        .login-loading {
-          width: 30px;
-          margin: 0 auto;
-          margin-top: 12px;
-          font-size: 30px;
-          visibility: hidden;
+        .bottom {
+          display: flex;
+          align-items: center;
+          float: right;
+          padding: 0 10px;
 
-          &.show {
-            visibility: unset;
+          .divide {
+            color: #ced4da;
+          }
+
+          a {
+            padding-right: 10px;
+            padding-left: 10px;
+            color: #717171;
+            font-size: 14px;
+            cursor: pointer !important;
+
+            &:hover {
+              color: @themeColor !important;
+              text-decoration-line: none;
+            }
           }
         }
       }
@@ -411,7 +395,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
     min-height: 100vh;
     padding: 30px 30px;
     text-align: left;
