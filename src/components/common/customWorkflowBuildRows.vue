@@ -27,6 +27,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" label="测试名称" width="100px" v-if="type=='zadig-test'"></el-table-column>
+      <el-table-column prop="name" label="扫描名称" width="100px" v-if="type=='zadig-scanning'"></el-table-column>
       <el-table-column prop="service_module" label="服务" width="100px" v-else></el-table-column>
       <el-table-column label="代码库">
         <template slot-scope="scope">
