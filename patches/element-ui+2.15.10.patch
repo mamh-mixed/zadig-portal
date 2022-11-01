@@ -1,0 +1,89 @@
+diff --git a/node_modules/element-ui/lib/element-ui.common.js b/node_modules/element-ui/lib/element-ui.common.js
+index a00af60..481c669 100644
+--- a/node_modules/element-ui/lib/element-ui.common.js
++++ b/node_modules/element-ui/lib/element-ui.common.js
+@@ -7507,9 +7507,10 @@ var selectvue_type_template_id_0e4aade6_render = function() {
+                     directives: [
+                       {
+                         name: "model",
+-                        rawName: "v-model",
++                        rawName: "v-model.trim",
+                         value: _vm.query,
+-                        expression: "query"
++                        expression: "query",
++                        modifiers: { trim: true }
+                       }
+                     ],
+                     ref: "input",
+@@ -7528,9 +7529,14 @@ var selectvue_type_template_id_0e4aade6_render = function() {
+                     domProps: { value: _vm.query },
+                     on: {
+                       focus: _vm.handleFocus,
+-                      blur: function($event) {
+-                        _vm.softFocus = false
+-                      },
++                      blur: [
++                        function($event) {
++                          _vm.softFocus = false
++                        },
++                        function($event) {
++                          _vm.$forceUpdate()
++                        }
++                      ],
+                       keyup: _vm.managePlaceholder,
+                       keydown: [
+                         _vm.resetInputState,
+@@ -7623,7 +7629,7 @@ var selectvue_type_template_id_0e4aade6_render = function() {
+                           if ($event.target.composing) {
+                             return
+                           }
+-                          _vm.query = $event.target.value
++                          _vm.query = $event.target.value.trim()
+                         },
+                         _vm.debouncedQueryChange
+                       ]
+@@ -7733,7 +7739,7 @@ var selectvue_type_template_id_0e4aade6_render = function() {
+           model: {
+             value: _vm.selectedLabel,
+             callback: function($$v) {
+-              _vm.selectedLabel = $$v
++              _vm.selectedLabel = typeof $$v === "string" ? $$v.trim() : $$v
+             },
+             expression: "selectedLabel"
+           }
+@@ -7820,9 +7826,23 @@ var selectvue_type_template_id_0e4aade6_render = function() {
+                 },
+                 [
+                   _vm.showNewOption
+-                    ? _c("el-option", {
+-                        attrs: { value: _vm.query, created: "" }
+-                      })
++                    ? _c(
++                        "el-option",
++                        {
++                          attrs: {
++                            value: _vm.query,
++                            label: _vm.query,
++                            created: ""
++                          }
++                        },
++                        [
++                          _vm._v(
++                            "\n          " +
++                              _vm._s("使用 " + _vm.query) +
++                              "\n        "
++                          )
++                        ]
++                      )
+                     : _vm._e(),
+                   _vm._t("default")
+                 ],
+@@ -8430,6 +8450,8 @@ var scroll_into_view_default = /*#__PURE__*/__webpack_require__.n(scroll_into_vi
+ //
+ //
+ //
++//
++//
+ 
+ 
+ 
