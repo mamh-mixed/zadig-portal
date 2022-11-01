@@ -72,6 +72,7 @@
         </el-select>
         <div v-if="currentResource.res_req_spec && currentResource.res_req === 'define'" class="define-resource">
           <el-form-item
+            ref="cpuItem"
             label="CPU(m)"
             label-width="72px"
             :prop="`${secondaryProp}.res_req_spec.cpu_limit`"
@@ -81,6 +82,7 @@
           </el-form-item>
 
           <el-form-item
+            ref="memItem"
             label="内存(Mi)"
             label-width="72px"
             :prop="`${secondaryProp}.res_req_spec.memory_limit`"
@@ -90,6 +92,7 @@
           </el-form-item>
 
           <el-form-item
+            ref="gpuItem"
             label="GPU 资源"
             label-width="72px"
             :prop="`${secondaryProp}.res_req_spec.gpu_limit`"
@@ -135,6 +138,8 @@ export default {
       } else if (value && typeof value === 'string') {
         callback(new Error('请输入正确数字'))
       } else {
+        this.$refs.memItem.clearValidate()
+        this.$refs.gpuItem.clearValidate()
         callback()
       }
     }
@@ -146,6 +151,8 @@ export default {
       } else if (value && typeof value === 'string') {
         callback(new Error('请输入正确数字'))
       } else {
+        this.$refs.cpuItem.clearValidate()
+        this.$refs.gpuItem.clearValidate()
         callback()
       }
     }
@@ -155,6 +162,8 @@ export default {
       if (!curVal.gpu_limit && !curVal.cpu_limit && !curVal.memory_limit) {
         callback(new Error('请输入 GPU 资源配置'))
       } else {
+        this.$refs.cpuItem.clearValidate()
+        this.$refs.memItem.clearValidate()
         callback()
       }
     }
