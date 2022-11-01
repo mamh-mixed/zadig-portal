@@ -131,7 +131,6 @@ export default {
   methods: {
     getScanningList () {
       getCodeScannerListAPI(this.projectName).then(res => {
-        // this.scanningList = cloneDeep(res)
         this.originScannings = cloneDeep(res)
       })
     },
@@ -184,11 +183,7 @@ export default {
       }
     },
     handleVarBranchChange (type, item, index) {
-      if (type === 'var') {
-        this.isShowVarDialog = true
-      } else {
-        this.isShowBranchDialog = true
-      }
+      this.isShowBranchDialog = true
       const res = this.originScannings.find(
         scanning => scanning.name === item.name
       )
@@ -221,11 +216,7 @@ export default {
           this.$set(this.job.spec.scannings, index, this.curItem)
         }
       })
-      if (type === 'var') {
-        this.isShowVarDialog = false
-      } else {
-        this.isShowBranchDialog = false
-      }
+      this.isShowBranchDialog = false
     },
     validate () {
       if (this.job.spec.scannings.length === 0) {
@@ -243,18 +234,18 @@ export default {
     }
   },
   watch: {
-    // job: {
-    //   handler (val, oldVal) {
-    //     val.spec.scannings.forEach(item => {
-    //       if (item.repos.length > 0) {
-    //         item.repos.forEach(repo => {
-    //           this.getBranch(repo)
-    //         })
-    //       }
-    //     })
-    //   },
-    //   immediate: true
-    // }
+    job: {
+      handler (val, oldVal) {
+        val.spec.scannings.forEach(item => {
+          if (item.repos.length > 0) {
+            item.repos.forEach(repo => {
+              this.getBranch(repo)
+            })
+          }
+        })
+      },
+      immediate: true
+    }
   }
 }
 </script>

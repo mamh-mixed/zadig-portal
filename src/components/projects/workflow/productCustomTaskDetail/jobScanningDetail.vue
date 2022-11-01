@@ -22,18 +22,18 @@
         <div class="error-wrapper">
           <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
-        <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
+        <el-row class="item" :gutter="0" v-for="(item,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="item-title">代码库({{build.source}})</div>
+            <div class="item-title">代码库({{item.source}})</div>
           </el-col>
           <el-col :span="8">
-            <div class="item-desc">{{build.repo_name}}</div>
+            <div class="item-desc">{{item.repo_name}}</div>
           </el-col>
           <el-col :span="4">
             <div class="item-title">代码信息</div>
           </el-col>
           <el-col :span="8">
-            <RepoJump :build="build" />
+            <RepoJump :build="item" />
           </el-col>
         </el-row>
         <el-row :gutter="0" class="item">
@@ -41,7 +41,7 @@
             <div class="item-title">链接</div>
           </el-col>
           <el-col :span="8">
-            <span class="item-desc">查看</span>
+            <el-link type="primary" :underline="false" :disabled="!jobInfo.link_url" :to="jobInfo.link_url">查看</el-link>
           </el-col>
         </el-row>
       </section>

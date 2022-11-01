@@ -86,9 +86,7 @@
                     :label="`${pro.projectName} / ${pro.name}`"
                     :value="`${pro.name}`"
                   >
-                    <span>
-                      {{`${pro.projectName} / ${pro.name}`}}
-                    </span>
+                    <span>{{`${pro.projectName} / ${pro.name}`}}</span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -184,6 +182,11 @@
             <div v-if="job.type === 'zadig-test'">
               <div v-if="job.pickedTargets">
                 <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-test"></CustomWorkflowBuildRows>
+              </div>
+            </div>
+            <div v-if="job.type === 'zadig-scanning'">
+              <div v-if="job.pickedTargets">
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning"></CustomWorkflowBuildRows>
               </div>
             </div>
           </el-collapse-item>
@@ -383,6 +386,12 @@ export default {
               })
             })
           }
+          if (job.type === 'zadig-scanning') {
+            job.pickedTargets = job.spec.scannings
+            job.spec.scannings.forEach(service => {
+              this.getRepoInfo(service.repos)
+            })
+          }
         })
       })
     },
@@ -540,7 +549,7 @@ export default {
               job.spec.service_and_builds.forEach(item => {
                 if (item.repos) {
                   item.repos.forEach(repo => {
-                    if (typeof (repo.prs) === 'string') {
+                    if (typeof repo.prs === 'string') {
                       repo.prs = repo.prs.split(',').map(Number)
                     }
                     if (repo.branchOrTag) {
@@ -561,7 +570,7 @@ export default {
             job.spec.steps.forEach(step => {
               if (step.type === 'git') {
                 step.spec.repos.forEach(repo => {
-                  if (typeof (repo.prs) === 'string') {
+                  if (typeof repo.prs === 'string') {
                     repo.prs = repo.prs.split(',').map(Number)
                   }
                   if (repo.branchOrTag) {
@@ -598,7 +607,30 @@ export default {
               job.spec.test_modules.forEach(item => {
                 if (item.repos) {
                   item.repos.forEach(repo => {
-                    if (typeof (repo.prs) === 'string') {
+                    if (typeof repo.prs === 'string') {
+                      repo.prs = repo.prs.split(',').map(Number)
+                    }
+                    if (repo.branchOrTag) {
+                      if (repo.branchOrTag.type === 'branch') {
+                        repo.branch = repo.branchOrTag.name
+                      }
+                      if (repo.branchOrTag.type === 'tag') {
+                        repo.tag = repo.branchOrTag.name
+                      }
+                    }
+                  })
+                }
+              })
+            }
+            delete job.pickedTargets
+          }
+          if (job.type === 'zadig-scanning') {
+            job.spec.scannings = cloneDeep(job.pickedTargets)
+            if (job.spec.scannings && job.spec.scannings.length > 0) {
+              job.spec.scannings.forEach(item => {
+                if (item.repos) {
+                  item.repos.forEach(repo => {
+                    if (typeof repo.prs === 'string') {
                       repo.prs = repo.prs.split(',').map(Number)
                     }
                     if (repo.branchOrTag) {
