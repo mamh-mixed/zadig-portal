@@ -63,14 +63,22 @@
         :prop="`${secondaryProp}.res_req`"
         :rules="{ required: true, message: '请选择操作系统', trigger: ['change', 'blur'] }"
       >
-        <el-select size="small" v-model="currentResource.res_req" placeholder="请选择">
-          <el-option label="高 | CPU: 16 核 内存: 32 GB" value="high"></el-option>
-          <el-option label="中 | CPU: 8 核 内存: 16 GB" value="medium"></el-option>
-          <el-option label="低 | CPU: 4 核 内存: 8 GB" value="low"></el-option>
-          <el-option label="最低 | CPU: 2 核 内存: 2 GB" value="min"></el-option>
-          <el-option label="自定义" value="define" @click.native="checkSpec"></el-option>
-        </el-select>
-
+        <div>
+          <el-select v-show="currentResource.res_req !== 'gpu'" size="small" v-model="currentResource.res_req" placeholder="请选择">
+            <el-option label="高 | CPU: 16 核 内存: 32 GB" value="high"></el-option>
+            <el-option label="中 | CPU: 8 核 内存: 16 GB" value="medium"></el-option>
+            <el-option label="低 | CPU: 4 核 内存: 8 GB" value="low"></el-option>
+            <el-option label="最低 | CPU: 2 核 内存: 2 GB" value="min"></el-option>
+            <el-option label="自定义" value="define" @click.native="checkSpec"></el-option>
+          </el-select>
+          <el-input
+            v-show="currentResource.res_req_spec && currentResource.res_req === 'gpu'"
+            v-model.trim="currentResource.res_req_spec.gpu_limit"
+            placeholder="输入 GPU 资源配置，比如 nvidia.com/gpu: 1"
+            size="small"
+          ></el-input>
+          <el-button type="text" @click="triggerResReq">{{ currentResource.res_req !== 'gpu' ? '配置 GPU 资源' : '配置 CPU 资源' }}</el-button>
+        </div>
         <div v-if="currentResource.res_req_spec && currentResource.res_req === 'define'" class="define-resource">
           <el-form-item
             label="CPU(m)"
@@ -150,6 +158,13 @@ export default {
     }
   },
   methods: {
+    triggerResReq () {
+      this.checkSpec()
+      this.currentResource.res_req = this.currentResource.res_req !== 'gpu' ? 'gpu' : 'low'
+      if (this.currentResource.res_req !== 'gpu') {
+        this.currentResource.res_req_spec.gpu_limit = ''
+      }
+    },
     initAdvancedConfig (buildConfig = this.buildConfig) {
       const currentResource = buildConfig[this.secondaryProp]
       if (this.isCreate || !currentResource.cluster_id) {
@@ -164,8 +179,11 @@ export default {
       if (!this.currentResource.res_req_spec) {
         this.$set(this.currentResource, 'res_req_spec', {
           cpu_limit: 1000,
-          memory_limit: 512
+          memory_limit: 512,
+          gpu_limit: ''
         })
+      } else if (typeof this.currentResource.res_req_spec.gpu_limit === 'undefined') {
+        this.$set(this.currentResource.res_req_spec, 'gpu_limit', '')
       }
     },
     getClusterList () {
