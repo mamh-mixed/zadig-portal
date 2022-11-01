@@ -61,8 +61,8 @@
             ref="cpuItem"
             label="CPU(m)"
             label-width="72px"
-            :prop="`${secondaryProp}.res_req_spec.cpu_limit`"
-            :rules="{ validator: validateCpuLimit, trigger: ['change', 'blur'] }"
+            :prop="`${secondaryProp}.res_req_spec`"
+            :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'cpu_limit' }"
           >
             <el-input v-model.number="currentResource.res_req_spec.cpu_limit" placeholder="自定义 CPU" size="small"></el-input>
           </el-form-item>
@@ -71,8 +71,8 @@
             ref="memItem"
             label="内存(Mi)"
             label-width="72px"
-            :prop="`${secondaryProp}.res_req_spec.memory_limit`"
-            :rules="{ validator: validateMemoryLimit, trigger: ['change', 'blur'] }"
+            :prop="`${secondaryProp}.res_req_spec`"
+            :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'memory_limit' }"
           >
             <el-input v-model.number="currentResource.res_req_spec.memory_limit" placeholder="自定义内存" size="small"></el-input>
           </el-form-item>
@@ -81,8 +81,8 @@
             ref="gpuItem"
             label="GPU 资源"
             label-width="72px"
-            :prop="`${secondaryProp}.res_req_spec.gpu_limit`"
-            :rules="{ validator: validateGPULimit, trigger: ['change', 'blur'] }"
+            :prop="`${secondaryProp}.res_req_spec`"
+            :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'gpu_limit' }"
           >
             <el-input
               v-model="currentResource.res_req_spec.gpu_limit"
@@ -113,39 +113,33 @@ export default {
     }
   },
   data () {
-    this.validateCpuLimit = (rule, value, callback) => {
-      const curVal = this.currentResource.res_req_spec
-      if (!curVal.gpu_limit && !curVal.cpu_limit && !curVal.memory_limit) {
-        callback(new Error('请输入自定义 CPU'))
-      } else if (value && typeof value === 'string') {
-        callback(new Error('请输入正确数字'))
-      } else {
-        this.$refs.memItem.clearValidate()
-        this.$refs.gpuItem.clearValidate()
-        callback()
+    this.validateReqLimit = (rule, value, callback) => {
+      const validInfo = {
+        cpu_limit: {
+          empty: '请输入自定义 CPU',
+          checkType: '请输入正确数字'
+        },
+        memory_limit: {
+          empty: '输入自定义内存',
+          checkType: '请输入正确数字'
+        },
+        gpu_limit: {
+          empty: '请输入 GPU 资源配置'
+        }
       }
-    }
-
-    this.validateMemoryLimit = (rule, value, callback) => {
-      const curVal = this.currentResource.res_req_spec
-      if (!curVal.gpu_limit && !curVal.cpu_limit && !curVal.memory_limit) {
-        callback(new Error('请输入自定义内存'))
-      } else if (value && typeof value === 'string') {
-        callback(new Error('请输入正确数字'))
+      const curItem = validInfo[rule.item]
+      if (!value.gpu_limit && !value.cpu_limit && !value.memory_limit) {
+        callback(new Error(curItem.empty))
+      } else if (curItem.checkType && value[rule.item] && typeof value[rule.item] === 'string') {
+        callback(new Error(curItem.checkType))
       } else {
-        this.$refs.cpuItem.clearValidate()
+        if (value.cpu_limit && typeof value.cpu_limit === 'number') {
+          this.$refs.cpuItem.clearValidate()
+        }
+        if (value.mem_limit && typeof value.mem_limit === 'number') {
+          this.$refs.memItem.clearValidate()
+        }
         this.$refs.gpuItem.clearValidate()
-        callback()
-      }
-    }
-
-    this.validateGPULimit = (rule, value, callback) => {
-      const curVal = this.currentResource.res_req_spec
-      if (!curVal.gpu_limit && !curVal.cpu_limit && !curVal.memory_limit) {
-        callback(new Error('请输入 GPU 资源配置'))
-      } else {
-        this.$refs.cpuItem.clearValidate()
-        this.$refs.memItem.clearValidate()
         callback()
       }
     }
