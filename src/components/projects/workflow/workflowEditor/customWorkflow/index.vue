@@ -124,7 +124,7 @@
             />
             <JobK8sDeploy
               :projectName="projectName"
-              v-if="job.type === jobType.JobK8sDeploy"
+              v-if="job.type === jobType.k8sDeploy"
               :job="job"
               ref="JobK8sDeploy"
               :originServiceAndBuilds="originServiceAndBuilds"
@@ -133,9 +133,17 @@
             />
             <JobTest
               :projectName="projectName"
-              v-if="job.type === jobType.JobTest"
+              v-if="job.type === jobType.test"
               :job="job"
               ref="JobTest"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
+             <JobScanning
+              :projectName="projectName"
+              v-if="job.type === jobType.scanning"
+              :job="job"
+              ref="JobScanning"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
@@ -243,6 +251,7 @@ import JobFreestyle from './components/jobs/jobFreestyle.vue'
 import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
+import JobScanning from './components/jobs/jobScanning.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -324,6 +333,7 @@ export default {
     JobPlugin,
     JobK8sDeploy,
     JobTest,
+    JobScanning,
     RunCustomWorkflow,
     codemirror,
     Env,
@@ -811,7 +821,7 @@ export default {
             this.curStageIndex
           ].jobs.length
         })
-      } else if (this.job.type === jobType.JobK8sDeploy) {
+      } else if (this.job.type === jobType.k8sDeploy) {
         this.$refs.JobK8sDeploy.validate().then(valid => {
           const curJob = this.$refs.JobK8sDeploy.getData()
           if (valid) {
@@ -826,7 +836,7 @@ export default {
             ].jobs.length
           }
         })
-      } else if (this.job.type === jobType.JobTest) {
+      } else if (this.job.type === jobType.test) {
         if (this.$refs.JobTest.getData().spec.test_modules.length === 0) {
           this.$message.error('请至少选择一个测试')
           return

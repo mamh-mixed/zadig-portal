@@ -82,6 +82,13 @@ const jobTypeList = [
     type: 'zadig-test',
     is_offical: true,
     description: '可直接引用「项目」-「测试」模块中的测试配置'
+  },
+  {
+    label: '代码扫描',
+    name: 'zadig-scanning',
+    type: 'zadig-scanning',
+    is_offical: true,
+    description: '可直接引用「项目」-「代码扫描」模块中的配置。'
   }
 ]
 const configList = [
@@ -113,9 +120,9 @@ const jobType = {
   common: 'freestyle',
   freestyle: 'freestyle',
   plugin: 'plugin',
-  JobK8sDeploy: 'custom-deploy',
-  JobTest: 'zadig-test'
-
+  k8sDeploy: 'custom-deploy',
+  test: 'zadig-test',
+  scanning: 'zadig-scanning'
 }
 const editorOptions = {
   mode: 'yaml',

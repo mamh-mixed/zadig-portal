@@ -96,9 +96,9 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
-        <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.JobK8sDeploy" :jobInfo="curJob" :projectName="projectName" />
+        <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.k8sDeploy" :jobInfo="curJob" :projectName="projectName" />
         <JobTestDetail
-          v-if="curJob.type === jobType.JobTest"
+          v-if="curJob.type === jobType.test"
           :jobInfo="curJob"
           :taskId="taskId"
           :workflowName="workflowName"
