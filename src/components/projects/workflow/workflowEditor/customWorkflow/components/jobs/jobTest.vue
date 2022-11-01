@@ -174,8 +174,8 @@ export default {
         curService = this.testList.find(item => item.name === test)
         curService.originRepos = cloneDeep(curService.repos)
         curService.repos = []
+        this.job.spec.test_modules.push(cloneDeep(curService))
       })
-      this.job.spec.test_modules.push(cloneDeep(curService))
       this.test = []
     },
     delTest (index) {
@@ -259,6 +259,10 @@ export default {
       }
     },
     validate () {
+      if (this.job.spec.test_modules.length === 0) {
+        this.$message.error('请至少选择一个测试')
+        return
+      }
       return this.$refs.ruleForm.validate()
     },
     getData () {

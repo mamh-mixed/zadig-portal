@@ -32,7 +32,10 @@
                     @change="changeBranchOrTag(build)"
                   >
                     <el-option-group v-for="group in build.branchAndTagList" :key="group.label" :label="group.label">
-                      <el-option v-for="(item, index) in group.options" :key="index" :label="item.name" :value="item"></el-option>
+                      <el-option v-for="(item, index) in group.options" :key="index" :label="item.name" :value="item">
+                        <span v-if="item.id.startsWith('addTag')||item.id.startsWith('addBranch')">{{`使用 "${item.name}"`}}</span>
+                        <span v-else>{{item.name}}</span>
+                      </el-option>
                     </el-option-group>
                   </el-select>
                 </el-col>

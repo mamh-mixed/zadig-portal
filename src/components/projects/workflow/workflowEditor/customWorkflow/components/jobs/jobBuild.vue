@@ -294,6 +294,10 @@ export default {
       }
     },
     validate () {
+      if (this.serviceAndBuilds.length === 0) {
+        this.$message.error('请至少选择一个服务组件')
+        return
+      }
       const valid = []
       return this.$refs.ruleForm.validate().then(val => {
         if (val) {
@@ -316,7 +320,8 @@ export default {
           })
         }
       })
-      return this.serviceAndBuilds
+      this.job.spec.service_and_builds = this.serviceAndBuilds
+      return this.job
     }
   },
   watch: {
