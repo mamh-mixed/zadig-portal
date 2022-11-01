@@ -159,6 +159,7 @@ export default {
   },
   methods: {
     triggerResReq () {
+      // gpu for front-end use only
       this.checkSpec()
       this.currentResource.res_req = this.currentResource.res_req !== 'gpu' ? 'gpu' : 'low'
       if (this.currentResource.res_req !== 'gpu') {
@@ -173,6 +174,9 @@ export default {
         if (local) {
           currentResource.cluster_id = local.id
         }
+      }
+      if (!this.isCreate && currentResource.res_req === 'gpu' && !(currentResource.res_req_spec && currentResource.res_req_spec.gpu_limit)) {
+        currentResource.res_req = 'low'
       }
     },
     checkSpec () {
