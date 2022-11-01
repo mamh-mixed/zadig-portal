@@ -1,7 +1,7 @@
 <template>
   <div class="workflow-build-rows">
     <el-table :data="info" v-if="info.length > 0" empty-text="无">
-      <el-table-column type="expand" width="50px">
+      <el-table-column type="expand" width="50px" v-if="type!=='zadig-scanning'">
         <template slot-scope="props">
           <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
             <el-table-column label="键">
