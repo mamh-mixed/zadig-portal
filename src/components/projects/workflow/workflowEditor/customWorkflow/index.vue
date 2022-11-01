@@ -120,7 +120,7 @@
               :projectName="projectName"
               v-if="job.type === jobType.k8sDeploy"
               :job="job"
-              :ref="jobType.JobK8sDeploy"
+              :ref="jobType.k8sDeploy"
               :originServiceAndBuilds="originServiceAndBuilds"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
@@ -129,7 +129,7 @@
               :projectName="projectName"
               v-if="job.type === jobType.test"
               :job="job"
-              :ref="jobType.JobTest"
+              :ref="jobType.test"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
