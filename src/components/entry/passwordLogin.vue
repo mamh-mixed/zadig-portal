@@ -1,8 +1,8 @@
 <template>
-  <div class="pure-login">
+  <div class="password-login">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-lg-7 col-md-12 col-pad-0 form-section">
+      <el-row type="flex">
+        <el-col :xs="24" :sm="24" :md="13" :lg="13" class="form-section">
           <div class="login-inner-form">
             <div class="details">
               <header>
@@ -26,18 +26,18 @@
                     ></el-input>
                   </el-form-item>
                 </el-form>
-                <el-button type="submit" @click="login" v-loading="loading" class="btn-md btn-theme btn-block login-btn">登录</el-button>
+                <el-button type="submit" @click="login" v-loading="loading" class="btn-md btn-theme login-btn">登录</el-button>
               </section>
             </div>
           </div>
-        </div>
-        <div class="col-lg-5 col-md-12 col-pad-0 bg-img none-992">
+        </el-col>
+        <el-col class="bg-img none-992" :xs="0" :sm="0" :md="11" :lg="11">
           <div class="information">
             <h3>Zadig，让工程师更加专注创造～</h3>
             <p>工程师热爱的云原生持续交付平台：具备灵活易用的高并发工作流、面向开发者的云原生环境、高效协同的测试管理、强大免运维的模板库、客观精确的效能洞察以及云原生 IDE 插件等重要特性，为工程师提供统一的协作平面。</p>
           </div>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
     </div>
     <footer>
       <div class="copyright">
@@ -97,10 +97,15 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import url('~@assets/css/quote/bootstarp.less');
+.password-login {
+  .container-fluid {
+    width: 100%;
+    margin: 0 auto;
+  }
 
-.pure-login {
   .information {
+    display: flex;
+    flex-direction: column;
     margin: 0 20px 0 70px;
     color: #fff;
 
@@ -135,11 +140,32 @@ export default {
       .details {
         font-size: 15px;
 
+        p {
+          margin: 0;
+          color: #717171;
+          font-size: 14px;
+
+          a {
+            color: #717171;
+            font-weight: 500;
+          }
+        }
+
         img {
+          width: 200px;
           height: 60px;
+          object-fit: contain;
+        }
+
+        h3 {
+          margin: 0 0 25px;
+          color: #717171;
+          font-weight: 400;
+          font-size: 14px;
         }
 
         .btn-md {
+          width: 100%;
           padding: 12px 30px 11px 30px;
           font-weight: 400;
           font-size: 14px;
@@ -160,6 +186,19 @@ export default {
 
         /deep/ .el-form-item__label {
           color: #717171;
+        }
+
+        input[type='checkbox'],
+        input[type='radio'] {
+          margin-top: 4px;
+        }
+
+        input[type='checkbox']:checked + label::before {
+          color: #f3f3f3;
+          font-weight: 300;
+          font-size: 14px;
+          line-height: 15px;
+          content: '\2713';
         }
 
         button:focus {
@@ -186,6 +225,30 @@ export default {
         .login-btn {
           margin-bottom: 8px;
         }
+
+        .bottom {
+          display: flex;
+          align-items: center;
+          float: right;
+          padding: 0 10px;
+
+          .divide {
+            color: #ced4da;
+          }
+
+          a {
+            padding-right: 10px;
+            padding-left: 10px;
+            color: #717171;
+            font-size: 14px;
+            cursor: pointer !important;
+
+            &:hover {
+              color: @themeColor !important;
+              text-decoration-line: none;
+            }
+          }
+        }
       }
     }
   }
@@ -198,7 +261,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
     min-height: 100vh;
     padding: 30px 30px;
     text-align: left;
