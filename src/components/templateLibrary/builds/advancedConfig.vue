@@ -49,26 +49,17 @@
         </el-select>
       </el-form-item>
       <el-form-item label="操作系统规格" :prop="`${secondaryProp}.res_req`" :rules="{ required: true, message: '请选择操作系统', trigger: ['change', 'blur'] }">
-        <div>
-          <el-select v-show="currentResource.res_req !== 'gpu'" size="small" v-model="currentResource.res_req" placeholder="请选择">
-            <el-option label="高 | CPU: 16 核 内存: 32 GB" value="high"></el-option>
-            <el-option label="中 | CPU: 8 核 内存: 16 GB" value="medium"></el-option>
-            <el-option label="低 | CPU: 4 核 内存: 8 GB" value="low"></el-option>
-            <el-option label="最低 | CPU: 2 核 内存: 2 GB" value="min"></el-option>
-            <el-option label="自定义" value="define" @click.native="checkSpec"></el-option>
-          </el-select>
-          <el-input
-            v-show="currentResource.res_req_spec && currentResource.res_req === 'gpu'"
-            v-model="currentResource.res_req_spec.gpu_limit"
-            placeholder="输入 GPU 资源配置，比如 nvidia.com/gpu: 1"
-            size="small"
-          ></el-input>
-          <el-button type="text" @click="triggerResReq">{{ currentResource.res_req !== 'gpu' ? '配置 GPU 资源' : '配置 CPU 资源' }}</el-button>
-        </div>
+        <el-select size="small" v-model="currentResource.res_req" placeholder="请选择">
+          <el-option label="高 | CPU: 16 核 内存: 32 GB" value="high"></el-option>
+          <el-option label="中 | CPU: 8 核 内存: 16 GB" value="medium"></el-option>
+          <el-option label="低 | CPU: 4 核 内存: 8 GB" value="low"></el-option>
+          <el-option label="最低 | CPU: 2 核 内存: 2 GB" value="min"></el-option>
+          <el-option label="自定义" value="define" @click.native="checkSpec"></el-option>
+        </el-select>
         <div v-if="currentResource.res_req_spec && currentResource.res_req === 'define'" class="define-resource">
           <el-form-item
             label="CPU(m)"
-            label-width="70px"
+            label-width="72px"
             :prop="`${secondaryProp}.res_req_spec.cpu_limit`"
             :rules="{ validator: validateCpuLimit, trigger: ['change', 'blur'] }"
           >
@@ -77,11 +68,24 @@
 
           <el-form-item
             label="内存(Mi)"
-            label-width="70px"
+            label-width="72px"
             :prop="`${secondaryProp}.res_req_spec.memory_limit`"
             :rules="{ validator: validateMemoryLimit, trigger: ['change', 'blur'] }"
           >
             <el-input v-model.number="currentResource.res_req_spec.memory_limit" placeholder="自定义内存" size="small"></el-input>
+          </el-form-item>
+
+          <el-form-item
+            label="GPU 资源"
+            label-width="72px"
+            :prop="`${secondaryProp}.res_req_spec.gpu_limit`"
+            :rules="{ validator: validateGPULimit, trigger: ['change', 'blur'] }"
+          >
+            <el-input
+              v-model="currentResource.res_req_spec.gpu_limit"
+              placeholder="输入 GPU 资源配置，比如 nvidia.com/gpu: 1"
+              size="small"
+            ></el-input>
           </el-form-item>
         </div>
       </el-form-item>
@@ -107,24 +111,31 @@ export default {
   },
   data () {
     this.validateCpuLimit = (rule, value, callback) => {
-      if (value === '') {
+      const curVal = this.currentResource.res_req_spec
+      if (!curVal.gpu_limit && !curVal.cpu_limit && !curVal.memory_limit) {
         callback(new Error('请输入自定义 CPU'))
-      } else if (typeof value === 'string') {
+      } else if (value && typeof value === 'string') {
         callback(new Error('请输入正确数字'))
-      } else if (value <= 0) {
-        callback(new Error('CPU 必须大于 0'))
       } else {
         callback()
       }
     }
 
     this.validateMemoryLimit = (rule, value, callback) => {
-      if (value === '') {
+      const curVal = this.currentResource.res_req_spec
+      if (!curVal.gpu_limit && !curVal.cpu_limit && !curVal.memory_limit) {
         callback(new Error('请输入自定义内存'))
-      } else if (typeof value === 'string') {
+      } else if (value && typeof value === 'string') {
         callback(new Error('请输入正确数字'))
-      } else if (value <= 0) {
-        callback(new Error('内存必须大于 0'))
+      } else {
+        callback()
+      }
+    }
+
+    this.validateGPULimit = (rule, value, callback) => {
+      const curVal = this.currentResource.res_req_spec
+      if (!curVal.gpu_limit && !curVal.cpu_limit && !curVal.memory_limit) {
+        callback(new Error('请输入 GPU 资源配置'))
       } else {
         callback()
       }
@@ -140,14 +151,6 @@ export default {
     }
   },
   methods: {
-    triggerResReq () {
-      // gpu for front-end use only
-      this.checkSpec()
-      this.currentResource.res_req = this.currentResource.res_req !== 'gpu' ? 'gpu' : 'low'
-      if (this.currentResource.res_req !== 'gpu') {
-        this.currentResource.res_req_spec.gpu_limit = ''
-      }
-    },
     initAdvancedConfig (buildConfig = this.buildConfig) {
       const currentResource = buildConfig[this.secondaryProp]
       if (this.isCreate || !currentResource.cluster_id) {
@@ -156,9 +159,6 @@ export default {
         if (local) {
           currentResource.cluster_id = local.id
         }
-      }
-      if (!this.isCreate && currentResource.res_req === 'gpu' && !(currentResource.res_req_spec && currentResource.res_req_spec.gpu_limit)) {
-        currentResource.res_req = 'low'
       }
     },
     checkSpec () {
@@ -180,7 +180,15 @@ export default {
       })
     },
     validate () {
-      return this.$refs.advancedConfig.validate().catch(() => {
+      return this.$refs.advancedConfig.validate().then(() => {
+        const spec = this.currentResource.res_req_spec
+        if (spec.cpu_limit === '') {
+          spec.cpu_limit = 0
+        }
+        if (spec.memory_limit === '') {
+          spec.memory_limit = 0
+        }
+      }).catch(() => {
         this.$emit('validateFailed')
         return Promise.reject()
       })
