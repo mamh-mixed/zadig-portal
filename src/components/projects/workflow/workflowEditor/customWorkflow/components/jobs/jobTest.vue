@@ -174,8 +174,8 @@ export default {
         curService = this.testList.find(item => item.name === test)
         curService.originRepos = cloneDeep(curService.repos)
         curService.repos = []
+        this.job.spec.test_modules.push(cloneDeep(curService))
       })
-      this.job.spec.test_modules.push(cloneDeep(curService))
       this.test = []
     },
     delTest (index) {
