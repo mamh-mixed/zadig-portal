@@ -98,7 +98,10 @@
           </Resize>
         </div>
         <div class="primary-title not-first-child" v-if="hasPlutus">
-          <span class="mg-r8">质量门禁检查</span>
+          <span>质量门禁检查</span>
+          <el-tooltip effect="dark" content="开启质量门禁检查后，如果门禁未通过，任务状态置为失败" placement="top" class="mg-r8">
+            <i class="el-icon-warning"></i>
+          </el-tooltip>
           <el-checkbox v-model="scannerConfig.check_quality_gate"></el-checkbox>
         </div>
       </section>
