@@ -33,7 +33,7 @@
             <div class="item-title">链接</div>
           </el-col>
           <el-col :span="8">
-            <el-link type="primary" :underline="false" target="_blank" :href="jobInfo.spec.link_url">查看</el-link>
+            <el-link type="primary" :underline="false" target="_blank" :disabled="!jobInfo.spec.link_url" :href="jobInfo.spec.link_url">查看</el-link>
           </el-col>
         </el-row>
         <el-row class="item" :gutter="0" v-for="(item,index) in jobInfo.spec.repos" :key="index">
