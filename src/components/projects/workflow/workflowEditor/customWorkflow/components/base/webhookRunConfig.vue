@@ -192,7 +192,7 @@
             </div>
             <div v-if="job.type === 'zadig-scanning'">
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning"></CustomWorkflowBuildRows>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning"/>
               </div>
             </div>
           </el-collapse-item>

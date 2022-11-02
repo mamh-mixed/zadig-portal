@@ -74,7 +74,7 @@
                 </el-select>
               </el-form-item>
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets"></CustomWorkflowBuildRows>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets"/>
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
@@ -174,19 +174,18 @@
               </div>
             </div>
             <div v-if="job.type === 'freestyle'">
-              <CustomWorkflowCommonRows :job="job"></CustomWorkflowCommonRows>
+              <CustomWorkflowCommonRows :job="job"/>
             </div>
             <div v-if="job.type === 'plugin'">
-              <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
-            </div>
+              <CustomWorkflowCommonRows :job="job" type="plugin"/>
             <div v-if="job.type === 'zadig-test'">
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-test"></CustomWorkflowBuildRows>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-test"/>
               </div>
             </div>
             <div v-if="job.type === 'zadig-scanning'">
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning"></CustomWorkflowBuildRows>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning"/>
               </div>
             </div>
           </el-collapse-item>
