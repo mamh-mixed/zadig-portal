@@ -1,6 +1,8 @@
 <template>
   <div class="codemirror-container" @keydown.meta.83.prevent="handleSave">
-    <div class="yaml-desc" v-if="placeholder" v-show="!value">{{ placeholder }}</div>
+    <div class="yaml-desc" v-if="placeholder" v-show="!value">
+      <pre>{{ placeholder }}</pre>
+    </div>
     <codemirror class="codemirror" ref="cmEditor" :value="value" :options="options" @input="handleInput"></codemirror>
   </div>
 </template>
@@ -76,6 +78,10 @@ export default {
     color: #ccc;
     font-size: 14px;
     line-height: 20px;
+
+    pre {
+      margin: 0;
+    }
   }
 
   .codemirror {
