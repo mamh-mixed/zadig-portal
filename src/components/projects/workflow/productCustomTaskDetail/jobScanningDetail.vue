@@ -22,6 +22,20 @@
         <div class="error-wrapper">
           <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
         </div>
+        <el-row :gutter="0" class="item">
+          <el-col :span="4">
+            <div class="item-title">扫描名称</div>
+          </el-col>
+          <el-col :span="8">
+            <div class="item-desc">{{jobInfo.spec.scanning_name}}</div>
+          </el-col>
+          <el-col :span="4">
+            <div class="item-title">链接</div>
+          </el-col>
+          <el-col :span="8">
+            <el-link type="primary" :underline="false" target="_blank" :href="jobInfo.spec.link_url">查看</el-link>
+          </el-col>
+        </el-row>
         <el-row class="item" :gutter="0" v-for="(item,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
             <div class="item-title">代码库({{item.source}})</div>
@@ -34,14 +48,6 @@
           </el-col>
           <el-col :span="8">
             <RepoJump :build="item" />
-          </el-col>
-        </el-row>
-        <el-row :gutter="0" class="item">
-          <el-col :span="4">
-            <div class="item-title">链接</div>
-          </el-col>
-          <el-col :span="8">
-            <el-link type="primary" :underline="false" :disabled="!jobInfo.link_url" :to="jobInfo.link_url">查看</el-link>
           </el-col>
         </el-row>
       </section>
