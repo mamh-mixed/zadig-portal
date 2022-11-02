@@ -56,24 +56,40 @@
           <el-option label="最低 | CPU: 2 核 内存: 2 GB" value="min"></el-option>
           <el-option label="自定义" value="define" @click.native="checkSpec"></el-option>
         </el-select>
-
         <div v-if="currentResource.res_req_spec && currentResource.res_req === 'define'" class="define-resource">
           <el-form-item
+            ref="cpuItem"
             label="CPU(m)"
-            label-width="70px"
-            :prop="`${secondaryProp}.res_req_spec.cpu_limit`"
-            :rules="{ validator: validateCpuLimit, trigger: ['change', 'blur'] }"
+            label-width="72px"
+            :prop="`${secondaryProp}.res_req_spec`"
+            :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'cpu_limit' }"
           >
             <el-input v-model.number="currentResource.res_req_spec.cpu_limit" placeholder="自定义 CPU" size="small"></el-input>
           </el-form-item>
 
           <el-form-item
+            ref="memItem"
             label="内存(Mi)"
-            label-width="70px"
-            :prop="`${secondaryProp}.res_req_spec.memory_limit`"
-            :rules="{ validator: validateMemoryLimit, trigger: ['change', 'blur'] }"
+            label-width="72px"
+            :prop="`${secondaryProp}.res_req_spec`"
+            :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'memory_limit' }"
           >
             <el-input v-model.number="currentResource.res_req_spec.memory_limit" placeholder="自定义内存" size="small"></el-input>
+          </el-form-item>
+
+          <el-form-item
+            v-if="hasPlutus"
+            ref="gpuItem"
+            label="GPU 资源"
+            label-width="72px"
+            :prop="`${secondaryProp}.res_req_spec`"
+            :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'gpu_limit' }"
+          >
+            <el-input
+              v-model="currentResource.res_req_spec.gpu_limit"
+              placeholder="输入 GPU 资源配置，比如 nvidia.com/gpu: 1"
+              size="small"
+            ></el-input>
           </el-form-item>
         </div>
       </el-form-item>
@@ -83,6 +99,8 @@
 
 <script>
 import { getClusterListAPI } from '@api'
+import { mapState } from 'vuex'
+
 export default {
   props: {
     buildConfig: Object,
@@ -98,26 +116,33 @@ export default {
     }
   },
   data () {
-    this.validateCpuLimit = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入自定义 CPU'))
-      } else if (typeof value === 'string') {
-        callback(new Error('请输入正确数字'))
-      } else if (value <= 0) {
-        callback(new Error('CPU 必须大于 0'))
-      } else {
-        callback()
+    this.validateReqLimit = (rule, value, callback) => {
+      const validInfo = {
+        cpu_limit: {
+          empty: '请输入自定义 CPU',
+          checkType: '请输入正确数字'
+        },
+        memory_limit: {
+          empty: '输入自定义内存',
+          checkType: '请输入正确数字'
+        },
+        gpu_limit: {
+          empty: '请输入 GPU 资源配置'
+        }
       }
-    }
-
-    this.validateMemoryLimit = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入自定义内存'))
-      } else if (typeof value === 'string') {
-        callback(new Error('请输入正确数字'))
-      } else if (value <= 0) {
-        callback(new Error('内存必须大于 0'))
+      const curItem = validInfo[rule.item]
+      if (!value.gpu_limit && !value.cpu_limit && !value.memory_limit) {
+        callback(new Error(curItem.empty))
+      } else if (curItem.checkType && value[rule.item] && typeof value[rule.item] === 'string') {
+        callback(new Error(curItem.checkType))
       } else {
+        if (!value.cpu_limit || (value.cpu_limit && typeof value.cpu_limit === 'number')) {
+          this.$refs.cpuItem.clearValidate()
+        }
+        if (!value.memory_limit || (value.memory_limit && typeof value.memory_limit === 'number')) {
+          this.$refs.memItem.clearValidate()
+        }
+        this.$refs.gpuItem && this.$refs.gpuItem.clearValidate()
         callback()
       }
     }
@@ -129,7 +154,10 @@ export default {
   computed: {
     currentResource () {
       return this.buildConfig[this.secondaryProp]
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     initAdvancedConfig (buildConfig = this.buildConfig) {
@@ -146,8 +174,11 @@ export default {
       if (!this.currentResource.res_req_spec) {
         this.$set(this.currentResource, 'res_req_spec', {
           cpu_limit: 1000,
-          memory_limit: 512
+          memory_limit: 512,
+          gpu_limit: ''
         })
+      } else if (typeof this.currentResource.res_req_spec.gpu_limit === 'undefined') {
+        this.$set(this.currentResource.res_req_spec, 'gpu_limit', '')
       }
     },
     getClusterList () {
@@ -158,7 +189,15 @@ export default {
       })
     },
     validate () {
-      return this.$refs.advancedConfig.validate().catch(() => {
+      return this.$refs.advancedConfig.validate().then(() => {
+        const spec = this.currentResource.res_req_spec
+        if (spec.cpu_limit === '') {
+          spec.cpu_limit = 0
+        }
+        if (spec.memory_limit === '') {
+          spec.memory_limit = 0
+        }
+      }).catch(() => {
         this.$emit('validateFailed')
         return Promise.reject()
       })
