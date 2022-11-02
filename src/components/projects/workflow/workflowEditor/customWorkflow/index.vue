@@ -311,7 +311,8 @@ export default {
       multi_run: false,
       globalEnv: [],
       scal: '1',
-      insertSatgeIndex: 0
+      insertSatgeIndex: 0,
+      notComputedPayload: {}
     }
   },
   components: {
@@ -474,6 +475,7 @@ export default {
       this.saveWorkflow()
     },
     saveWorkflow () {
+      this.notComputedPayload = cloneDeep(this.payload)
       if (this.payload.params && this.payload.params.length > 0) {
         this.payload.params.forEach(item => {
           if (item.command === 'fixed') {
@@ -544,7 +546,6 @@ export default {
         updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
           .then(res => {
             this.$message.success('保存成功')
-            this.getWorkflowDetail(this.payload.name)
             if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
               this.$router.push(
                 `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
@@ -552,7 +553,7 @@ export default {
             }
           })
           .catch(() => {
-            this.getWorkflowDetail(this.payload.name)
+            this.payload = this.notComputedPayload
           })
       } else {
         addCustomWorkflowAPI(yamlParams, this.projectName)
@@ -564,7 +565,7 @@ export default {
             )
           })
           .catch(() => {
-            this.getWorkflowDetail(this.payload.name)
+            this.payload = this.notComputedPayload
           })
       }
     },
