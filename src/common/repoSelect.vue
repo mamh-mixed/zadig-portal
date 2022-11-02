@@ -63,8 +63,13 @@
                 v-for="(repo_owner,index) in codeInfo[repo_index] ? codeInfo[repo_index]['repo_owners'] : []"
                 :key="index"
                 :label="repo_owner.path"
-                :value="repo_owner.path"
-              ></el-option>
+                :value="repo_owner.path">
+                <span>{{repo_owner.path}}</span>
+                <template v-if="repo.source === 'gitee-enterprise'">
+                  <span v-if="repo_owner.kind==='enterprise'">(企业)</span>
+                  <span v-else-if="repo_owner.kind==='org'">(团队)</span>
+                </template>
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
