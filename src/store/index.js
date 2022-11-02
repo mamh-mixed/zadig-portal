@@ -23,9 +23,6 @@ import externalLink from './modules/externalLink'
 // Common Workflow
 import commonWorkflow from './modules/commonWorkflow'
 
-// Project Permission
-import projectPermission from './modules/projectPermission'
-
 // Global Permission
 import globalPermission from './modules/globalPermission'
 
@@ -44,7 +41,6 @@ export default new Vuex.Store({
     login,
     globalConfig,
     projectList,
-    projectPermission,
     globalPermission,
     sidebarStatus,
     serviceManage,

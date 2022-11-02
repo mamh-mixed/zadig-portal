@@ -225,8 +225,15 @@ export function analyticsRequestAPI (payload) {
   return http.post(analyticsReq, payload)
 }
 
-// Statistics
+export function getUserNumberAPI () {
+  return http.get(`/api/v1/user/count`)
+}
 
+export function uploadUserNumberAPI (payload) {
+  return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
+}
+
+// Statistics
 export function getStatisticsOverviewAPI () {
   return http.get('/api/v1/picket/stat/dashboard/overview')
 }
@@ -253,16 +260,11 @@ export function taskPendingSSEAPI () {
 }
 
 // Permission
-
 export function getGlobalPermissionAPI () {
   return http.get(`/api/v1/policy/permission`)
 }
 
-export function getProjectPermissionAPI (projectName) {
-  return http.get(`/api/v1/policy/permission/project/${projectName}`)
-}
-
-//  Env
+// Env
 export function listProductAPI (projectName = '', envType = '') {
   if (envType) {
     return http.get(`/api/aslan/environment/environments?projectName=${projectName}&envType=${envType}`)
@@ -543,6 +545,28 @@ export function getBuildConfigsAPI (projectName = '') {
 }
 
 // Workflow
+
+// Workflow view
+export function getViewPresetAPI (projectName, viewName) {
+  return http.get(`/api/aslan/workflow/view/preset?projectName=${projectName}&viewName=${viewName}`)
+}
+
+export function getViewListAPI (projectName) {
+  return http.get(`/api/aslan/workflow/view?projectName=${projectName}`)
+}
+
+export function addViewAPI (payload, projectName) {
+  return http.post(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
+}
+
+export function editViewAPI (payload, projectName) {
+  return http.put(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
+}
+
+export function deleteViewAPI (projectName, viewName) {
+  return http.delete(`/api/aslan/workflow/view/${projectName}/${viewName}?projectName=${projectName}`)
+}
+
 export function getWorkflowHistoryBuildLogAPI (projectName, workflowName, taskID, serviceName, type) {
   return http.get(`/api/aslan/logs/log/workflow/${workflowName}/tasks/${taskID}/service/${serviceName}?type=${type}&projectName=${projectName}`)
 }
@@ -862,17 +886,15 @@ export function deleteSystemRoleBindingsAPI (name) {
   return http.delete(`/api/v1/system-rolebindings/${name}`)
 }
 
-// 获取角色定义列表
+// System role
 export function getRolePolicyListAPI (role) {
   return http.get(`/api/v1/policy-definitions?scope=${role}`)
 }
 
-// 获取角色列表
 export function getRoleListAPI () {
   return http.get(`/api/v1/system-roles`)
 }
 
-// 新增角色
 export function addSystemRoleAPI (payload) {
   return http.post(`/api/v1/system-roles `, payload)
 }
@@ -1033,6 +1055,7 @@ export function queryJenkinsJob (id) {
 export function queryJenkinsParams (id, jobName) {
   return http.get(`/api/aslan/system/jenkins/buildArgs/${id}/${jobName}`)
 }
+
 // Sonar
 export function querySonarAPI (key, projectName = '') {
   return http.get(`/api/aslan/system/sonar/integration?encryptedKey=${key}&projectName=${projectName}`)
@@ -1079,9 +1102,11 @@ export function deleteExternalSystemAPI (id) {
 export function getEmailHostAPI (key) {
   return http.get(`/api/v1/emails/internal/host?encryptedKey=${key}`)
 }
+
 export function checkEmailHostAPI () {
   return http.get(`/api/v1/emails/host`)
 }
+
 export function deleteEmailHostAPI () {
   return http.delete(`/api/v1/emails/host`)
 }
@@ -1946,15 +1971,11 @@ export function queryUserBindingsAPI (uid, projectName = '') { // Query all bind
   return http.get(`/api/v1/userbindings?uid=${uid}&projectName=${projectName}`)
 }
 
-// export function getProjectPermissionAPI (projectName = '', uid) {
-//   return http.get(`/api/v1/policy/permission/${uid}?projectName=${projectName}`)
-// }
-
 export function getArtifactFileAPI (payload, id, projectName = '') {
   return http.post(`/api/aslan/system/s3storage/${id}/releases/search?kind=file&projectName=${projectName}`, payload)
 }
 
-// initialize project workflow and environment
+// Collaboration mode
 export function getNewCollaborationAPI (projectName) {
   return http.get(`/api/aslan/collaboration/collaborations/new?projectName=${projectName}`)
 }
@@ -1991,7 +2012,7 @@ export function getPolicyByIdAPI (projectName, id) {
   return http.get(`/api/v1/policy/${id}?projectName=${projectName}`)
 }
 
-// variable group list
+// Variable group list
 export function getVariablesGroupsAPI (projectName, page, perPage, ifPassFilter = true) {
   return http.get(`/api/aslan/project/variablesets?page=${page}&perPage=${perPage}&projectName=${projectName}&ifPassFilter=${ifPassFilter}`)
 }
@@ -2072,7 +2093,7 @@ export function getServiceFailureAPI ({ startDate, endDate, projectNames }) {
   return http.post(`/api/aslan/stat/quality/deployTopFiveFailureMeasure`, { startDate, endDate, productNames: projectNames })
 }
 
-// environment config
+// Environment config
 export function getConfigYamlAPI ({ codehostId, repoOwner, repoName, branchName, path, isDir, projectName }) {
   const params = {
     repoOwner,
@@ -2119,7 +2140,7 @@ export function getObjectHistoryVersionAPI ({ objectName, projectName, envName, 
   return http.get(`/api/aslan/environment/envcfgs/${envName}/cfg/${objectName}?projectName=${projectName}&commonEnvCfgType=${commonEnvCfgType}`)
 }
 
-// new workflow
+// Custom workflow
 export function addCustomWorkflowAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4?projectName=${projectName} `, payload)
 }
@@ -2168,7 +2189,8 @@ export function checkCustomWorkflowYaml (payload) {
 export function getCustomCloneDetailAPI (workflow_name, task_id, projectName) {
   return http.get(`/api/aslan/workflow/v4/workflowtask/clone/workflow/${workflow_name}/task/${task_id}?projectName=${projectName}`)
 }
-// approval
+
+// Approval
 export function approvalCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask/approve?projectName=${projectName}`, payload)
 }
@@ -2215,29 +2237,19 @@ export function updateCustomTimerAPI (projectName, payload) {
   return http.put(`/api/aslan/workflow/v4/cron?projectName=${projectName}`, payload)
 }
 
-// count the number of users
-export function getUserNumberAPI () {
-  return http.get(`/api/v1/user/count`)
-}
-
-export function uploadUserNumberAPI (payload) {
-  return http.post(`${analyticsPrefix}/api/operation/upload/user`, payload)
-}
-
-export function getLicenseStatusAPI () {
-  return http.get(`/api/plutus/signature/status`)
-}
-// plugins
+// Plugins
 export function getPluginsAPI () {
   return http.get(`/api/aslan/workflow/plugin/template`)
 }
-// settings plugins
+
 export function updatePlugin (payload) {
   return http.post(`/api/aslan/workflow/plugin`, payload)
 }
+
 export function delPlugin (id) {
   return http.delete(`/api/aslan/workflow/plugin/${id}`)
 }
+
 export function getPlugins () {
   return http.get(`/api/aslan/workflow/plugin`)
 }
@@ -2245,6 +2257,10 @@ export function getPlugins () {
 // ----- Enterprise -----
 export function checkPlutusAPI () {
   return http.get(`/api/plutus/health`)
+}
+
+export function getLicenseStatusAPI () {
+  return http.get(`/api/plutus/signature/status`)
 }
 
 export function getEnterpriseInfoAPI () {
@@ -2258,32 +2274,19 @@ export function getSignatureFeaturesAPI () {
 export function getNamespaceListAPI (clusterID) {
   return http.get(`/api/aslan/environment/kube/namespace/cluster/${clusterID}`)
 }
+
 export function getWorkloadListAPI (clusterID, namespace) {
   return http.get(`/api/aslan/environment/kube/custom_workload/cluster/${clusterID}/namespace/${namespace}`)
 }
-export function getTestListAPI (projectName) {
+
+export function getTestListAPI () {
   return http.get(`/api/v1/picket/testing`)
 }
+
 export function getTestJunitReportAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/itreport/workflowv4/${workflowName}/id/${taskID}/job/${jobName}?projectName=${projectName}`)
 }
+
 export function getTestFileListAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/workspace/workflowv4/${workflowName}/taskId/${taskID}/job/${jobName}?projectName=${projectName}`)
-}
-
-// workflow view
-export function getViewPresetAPI (projectName, viewName) {
-  return http.get(`/api/aslan/workflow/view/preset?projectName=${projectName}&viewName=${viewName}`)
-}
-export function getViewListAPI (projectName) {
-  return http.get(`/api/aslan/workflow/view?projectName=${projectName}`)
-}
-export function addViewAPI (payload, projectName) {
-  return http.post(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
-}
-export function editViewAPI (payload, projectName) {
-  return http.put(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
-}
-export function deleteViewAPI (projectName, viewName) {
-  return http.delete(`/api/aslan/workflow/view/${projectName}/${viewName}?projectName=${projectName}`)
 }
