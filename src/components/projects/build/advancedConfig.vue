@@ -92,6 +92,7 @@
           </el-form-item>
 
           <el-form-item
+            v-if="hasPlutus"
             ref="gpuItem"
             label="GPU 资源"
             label-width="72px"
@@ -112,6 +113,8 @@
 
 <script>
 import { getClusterListAPI } from '@api'
+import { mapState } from 'vuex'
+
 export default {
   props: {
     buildConfig: Object,
@@ -151,13 +154,13 @@ export default {
       } else if (curItem.checkType && value[rule.item] && typeof value[rule.item] === 'string') {
         callback(new Error(curItem.checkType))
       } else {
-        if (value.cpu_limit && typeof value.cpu_limit === 'number') {
+        if (!value.cpu_limit || (value.cpu_limit && typeof value.cpu_limit === 'number')) {
           this.$refs.cpuItem.clearValidate()
         }
-        if (value.mem_limit && typeof value.mem_limit === 'number') {
+        if (!value.memory_limit || (value.memory_limit && typeof value.memory_limit === 'number')) {
           this.$refs.memItem.clearValidate()
         }
-        this.$refs.gpuItem.clearValidate()
+        this.$refs.gpuItem && this.$refs.gpuItem.clearValidate()
         callback()
       }
     }
@@ -169,7 +172,10 @@ export default {
   computed: {
     currentResource () {
       return this.buildConfig[this.secondaryProp]
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     initAdvancedConfig (buildConfig = this.buildConfig) {
