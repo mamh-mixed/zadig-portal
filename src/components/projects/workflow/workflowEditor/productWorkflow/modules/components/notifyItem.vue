@@ -58,7 +58,12 @@
           </span>
           <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的手机号码，使用用 ; 分割" v-model="mobileStr"></el-input>
         </el-form-item>
-
+        <el-form-item v-if="notify.webhook_type==='wechat'" prop="at_user_ids">
+          <span slot="label">
+            <span> @指定成员（输入指定通知接收人的user_id，使用;分割</span>
+          </span>
+          <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的手机号码，使用用 ; 分割" v-model="wechatMobileStr"></el-input>
+        </el-form-item>
         <el-form-item prop="notify_type" label="通知事件：">
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
           <el-checkbox-group @change="handleCheckedValueChange" v-model="notify.notify_type">
@@ -115,6 +120,7 @@ export default {
             trigger: 'blur'
           }
         ],
+        at_user_ids: [],
         dingding_webhook: [
           {
             type: 'string',
@@ -154,6 +160,22 @@ export default {
     'notify.at_mobiles': {
       get: function () {
         return this.mobileStr.split(';')
+      }
+    },
+    wechatMobileStr: {
+      get: function () {
+        if (this.notify.at_user_ids) {
+          return this.notify.at_user_ids.join(';')
+        } else {
+          return ''
+        }
+      },
+      set: function (newValue) {
+        if (newValue === '') {
+          this.$set(this.notify, 'at_user_ids', [])
+        } else {
+          this.$set(this.notify, 'at_user_ids', newValue.split(';'))
+        }
       }
     },
     mobileStr: {
