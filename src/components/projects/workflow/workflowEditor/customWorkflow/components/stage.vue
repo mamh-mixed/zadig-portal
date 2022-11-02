@@ -175,6 +175,13 @@ export default {
           spec: {
             test_modules: []
           }
+        },
+        'zadig-scanning': {
+          name: 'default',
+          type: 'zadig-scanning',
+          spec: {
+            scannings: []
+          }
         }
       },
       isShowJobOperateDialog: false,

@@ -96,9 +96,18 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
-        <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.JobK8sDeploy" :jobInfo="curJob" :projectName="projectName" />
+        <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.k8sDeploy" :jobInfo="curJob" :projectName="projectName" />
         <JobTestDetail
-          v-if="curJob.type === jobType.JobTest"
+          v-if="curJob.type === jobType.test"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
+        <JobScanningDetail
+          v-if="curJob.type === jobType.scanning"
           :jobInfo="curJob"
           :taskId="taskId"
           :workflowName="workflowName"
@@ -154,6 +163,7 @@ import JobFreestyleDetail from './productCustomTaskDetail/jobFreestyleDetail.vue
 import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
 import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue'
 import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
+import JobScanningDetail from './productCustomTaskDetail/jobScanningDetail.vue'
 
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
@@ -185,6 +195,7 @@ export default {
     JobPluginDetail,
     JobK8sDeployDetail,
     JobTestDetail,
+    JobScanningDetail,
     StageApproval
   },
   computed: {

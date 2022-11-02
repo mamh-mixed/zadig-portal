@@ -118,18 +118,26 @@
             <JobFreestyle v-if="job.type === jobType.freestyle" :globalEnv="globalEnv" :ref="jobType.freestyle" :job="job" :workflowInfo="payload" />
             <JobK8sDeploy
               :projectName="projectName"
-              v-if="job.type === jobType.JobK8sDeploy"
+              v-if="job.type === jobType.k8sDeploy"
               :job="job"
-              :ref="jobType.JobK8sDeploy"
+              :ref="jobType.k8sDeploy"
               :originServiceAndBuilds="originServiceAndBuilds"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
             <JobTest
               :projectName="projectName"
-              v-if="job.type === jobType.JobTest"
+              v-if="job.type === jobType.test"
               :job="job"
-              :ref="jobType.JobTest"
+              :ref="jobType.test"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
+             <JobScanning
+              :projectName="projectName"
+              v-if="job.type === jobType.scanning"
+              :job="job"
+              :ref="jobType.scanning"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
@@ -237,6 +245,7 @@ import JobFreestyle from './components/jobs/jobFreestyle.vue'
 import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
+import JobScanning from './components/jobs/jobScanning.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -317,6 +326,7 @@ export default {
     JobPlugin,
     JobK8sDeploy,
     JobTest,
+    JobScanning,
     RunCustomWorkflow,
     codemirror,
     Env,
