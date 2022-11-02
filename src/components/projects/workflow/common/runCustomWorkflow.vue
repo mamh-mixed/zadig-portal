@@ -178,6 +178,7 @@
             </div>
             <div v-if="job.type === 'plugin'">
               <CustomWorkflowCommonRows :job="job" type="plugin"/>
+            </div>
             <div v-if="job.type === 'zadig-test'">
               <div v-if="job.pickedTargets">
                 <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-test"/>
