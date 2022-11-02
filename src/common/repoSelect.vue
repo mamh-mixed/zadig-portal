@@ -391,7 +391,7 @@ export default {
       const codehostType = this.allCodeHosts.find(item => {
         return item.id === id
       }).type
-      if (codehostType === 'github' && query !== '') {
+      if ((codehostType === 'github' || codehostType === 'gitee-enterprise') && query !== '') {
         const items = this.$utils.filterObjectArrayByKey(
           'name',
           query,
