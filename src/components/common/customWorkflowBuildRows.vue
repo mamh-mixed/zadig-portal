@@ -28,7 +28,12 @@
       </el-table-column>
       <el-table-column prop="name" label="测试名称" width="100px" v-if="type=='zadig-test'"></el-table-column>
       <el-table-column prop="name" label="扫描名称" width="100px" v-if="type=='zadig-scanning'"></el-table-column>
-      <el-table-column :prop="type=='zadig-test'?'service_module':'scannings'" label="服务" width="100px" v-else></el-table-column>
+      <el-table-column
+        prop="service_module"
+        label="服务"
+        width="100px"
+        v-if="type!=='zadig-test'&&type!=='zadig-scanning'"
+      ></el-table-column>
       <el-table-column label="代码库">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.repos" class="build-row" :key="build.code_host_id">
@@ -42,7 +47,7 @@
               </el-col>
               <div v-if="build.showTip">
                 <el-col :span="7">
-                 <span style="color: #909399; font-size: 12px; line-height: 33px;">使用变更的代码执行</span>
+                  <span style="color: #909399; font-size: 12px; line-height: 33px;">使用变更的代码执行</span>
                 </el-col>
               </div>
               <div v-else>
@@ -117,7 +122,6 @@
                   </el-tooltip>
                 </el-col>
               </div>
-
             </template>
           </el-row>
         </template>
@@ -212,10 +216,10 @@ export default {
         tags.options = []
       }
       if (query) {
-        const queryBranchInResponse = branches.options.findIndex((element) => {
+        const queryBranchInResponse = branches.options.findIndex(element => {
           return element.name === query && element.type === 'branch'
         })
-        const queryTagInResponse = tags.options.findIndex((element) => {
+        const queryTagInResponse = tags.options.findIndex(element => {
           return element.name === query && element.type === 'tag'
         })
         if (queryBranchInResponse === -1) {
