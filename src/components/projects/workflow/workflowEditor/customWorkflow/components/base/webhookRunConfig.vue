@@ -87,9 +87,7 @@
                     :label="`${pro.projectName} / ${pro.name}`"
                     :value="`${pro.name}`"
                   >
-                    <span>
-                      {{`${pro.projectName} / ${pro.name}`}}
-                    </span>
+                    <span>{{`${pro.projectName} / ${pro.name}`}}</span>
                   </el-option>
                 </el-select>
                 <el-tooltip v-if="specificEnv" effect="dark" content="该工作流已指定环境运行，可通过修改 工作流->基本信息 来解除指定环境绑定" placement="top">
@@ -189,7 +187,12 @@
             </div>
             <div v-if="job.type === 'zadig-test'">
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" :elSelectWidth="'140px'" type="zadig-test"/>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" :elSelectWidth="'140px'" type="zadig-test" />
+              </div>
+            </div>
+            <div v-if="job.type === 'zadig-scanning'">
+              <div v-if="job.pickedTargets">
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning"></CustomWorkflowBuildRows>
               </div>
             </div>
           </el-collapse-item>
@@ -387,6 +390,12 @@ export default {
                   item.isShow = true
                 }
               })
+            })
+          }
+          if (job.type === 'zadig-scanning') {
+            job.pickedTargets = job.spec.scannings
+            job.spec.scannings.forEach(service => {
+              this.getRepoInfo(service.repos)
             })
           }
         })
