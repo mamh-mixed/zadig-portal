@@ -162,9 +162,6 @@
 
 <script>
 export default {
-  data () {
-    return {}
-  },
   props: {
     testInfo: {
       type: Object,

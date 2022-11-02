@@ -9,7 +9,7 @@
       style="margin-bottom: 12px;"
     >添加</el-button>
     <div v-loading="configLoading">
-      <ETable :tableData="currentInfos.tableData" :tableColumns="currentInfos.tableColumns" :id="currentInfos.id"></ETable>
+      <ETable :tableData="currentInfos.tableData" :tableColumns="currentInfos.tableColumns" :id="currentInfos.id" />
     </div>
   </div>
 </template>

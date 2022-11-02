@@ -1,6 +1,5 @@
 <template>
   <div class="config-proxy-container">
-    <!-- 这里是代理配置的内容-->
     <template>
       <el-alert type="info"
                 :closable="false">

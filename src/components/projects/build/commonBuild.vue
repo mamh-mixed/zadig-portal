@@ -16,7 +16,7 @@
       :serviceTargets="serviceTargets"
       :jenkinsList ="jenkinsList"
       :mini="mini"
-    ></JenkinsBuild>
+      />
     <ZadigBuild
       v-show="source === 'zadig'"
       ref="zadigBuildForm"

@@ -23,7 +23,7 @@
         </span>
       </el-tooltip>
       <div class="right">
-        <CusTags :values="stages" class="item"></CusTags>
+        <CusTags :values="stages" class="item" />
         <span class="item">
           <span class="item left">修改人</span>
           {{ workflow.update_by || '*' }}
@@ -45,8 +45,7 @@
         :baseUrl="`/v1/projects/detail/${projectName}/pipelines/common/${workflowName}`"
         :workflowName="workflowName"
         :workflowID="workflowID"
-        @currentChange="changeTaskPage"
-      ></TaskList>
+        @currentChange="changeTaskPage" />
     </el-card>
 
     <el-dialog :visible.sync="taskDialogVisible" title="运行 通用-工作流" custom-class="run-workflow" width="60%" class="dialog">

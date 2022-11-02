@@ -32,9 +32,9 @@
           </div>
         </div>
         <el-button v-if="importRepoInfo.yamlSource === 'default'" type="text" @click="importRepoInfo.yamlSource = 'customEdit'">高级设置</el-button>
-        <CommonImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo" showDelete></CommonImportValues>
+        <CommonImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo" showDelete />
       </div>
-      <ImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo"></ImportValues>
+      <ImportValues v-else ref="importValues" :importRepoInfo.sync="importRepoInfo" />
       <el-form-item prop="auto_sync">
         <span slot="label">
           <span>自动同步</span>

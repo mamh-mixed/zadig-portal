@@ -7,7 +7,7 @@
   >
     <!--Host-edit-dialog-->
     <el-dialog :title="title" :visible.sync="dialogHostFormVisible" custom-class="dialog-style" :close-on-click-modal="false" width="45%">
-      <AddHost ref="add-host" :host="host"></AddHost>
+      <AddHost ref="add-host" :host="host" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogHostFormVisible = false">取 消</el-button>
         <el-button :plain="true" size="small" type="success" @click="hostOperation">保存</el-button>
@@ -17,7 +17,7 @@
 
     <!--Host-import-dialog-->
     <el-dialog :title="title" :visible.sync="dialogImportHostVisible" custom-class="dialog-style" :close-on-click-modal="false" width="35%">
-      <ImportHosts ref="import-hosts" :originHosts="allHost" :type="type"></ImportHosts>
+      <ImportHosts ref="import-hosts" :originHosts="allHost" :type="type" />
       <div slot="footer" class="dialog-footer">
         <el-button size="small" @click="dialogImportHostVisible = false">取 消</el-button>
         <el-button :plain="true" size="small" type="success" @click="hostOperation">保存</el-button>

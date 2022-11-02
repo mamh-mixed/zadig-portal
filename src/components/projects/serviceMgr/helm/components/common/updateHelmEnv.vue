@@ -12,8 +12,7 @@
         :chartNames="chartInfo.chartNames"
         showEnvTabs
         :showServicesTab="false"
-        :envScene="`updateEnv`"
-      ></ChartValues>
+        :envScene="`updateEnv`" />
     </div>
     <div class="overwrite-warning" v-show="checkedEnvList.find(env => env.is_existed)">
       <p>Zadig 中定义的服务将覆盖所选命名空间中的同名服务，请谨慎操作！</p>

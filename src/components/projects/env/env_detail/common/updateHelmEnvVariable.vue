@@ -8,7 +8,7 @@
       showAutoSync
       useVarGroup
       style="margin-top: 0;"
-    ></ImportValues>
+    />
   </div>
 </template>
 

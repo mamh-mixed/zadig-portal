@@ -1,9 +1,6 @@
 <template>
   <div class="main-home-container">
     <div class="main-view">
-      <!-- <div class="topbar-wrap">
-        <Topbar />
-      </div> -->
       <div class="content-wrap">
         <div class="side-bar-container" :class="{'small-sidebar': !showSidebar}">
           <Sidebar class="side-bar-component" />
@@ -24,7 +21,7 @@
 </template>
 
 <script>
-import { getAnnouncementsAPI, checkEmailHostAPI, getPublicKeyAPI, getUserNumberAPI, uploadUserNumberAPI } from '@api'
+import { getAnnouncementsAPI, checkEmailHostAPI, getPublicKeyAPI, userStatisticsAPI, uploadUserNumberAPI } from '@api'
 import encrypt from '@/utilities/encrypt'
 import Sidebar from './home/sidebar.vue'
 import Topbar from './home/topbar.vue'
@@ -62,8 +59,8 @@ export default {
         this.SMTPDisabled = true
       }
     },
-    updateUsers () {
-      getUserNumberAPI().then(res => {
+    userStatistics () {
+      userStatisticsAPI().then(res => {
         const payload = encrypt({
           domain: window.location.hostname,
           user_count: res
@@ -86,10 +83,9 @@ export default {
     isAdmin: {
       handler (val, oldVal) {
         if (val) {
-          // 检查 SMTP 配置
+          // Checking SMTP
           this.checkSMTP()
-          // upload users
-          this.updateUsers()
+          this.userStatistics()
         }
       },
       immediate: true

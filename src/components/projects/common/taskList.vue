@@ -18,8 +18,6 @@
                        label="运行状态">
         <template slot-scope="scope">
           <span :class="[`status-${$utils.taskElTagType(scope.row.status)}`]">
-            <!-- <i class="el-icon-orange"></i> -->
-            <!-- <span class="status-icon"></span> -->
             &nbsp;{{ wordTranslation(scope.row.status,'pipeline','task') }}
           </span>
         </template>

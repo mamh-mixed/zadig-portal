@@ -10,8 +10,7 @@
         ref="envValuesRef"
         :envName="handledEnv"
         :baseEnvObj="baseEnvObj"
-        :defaultEnvsValues="defaultEnvsValues"
-      ></EnvValues>
+        :defaultEnvsValues="defaultEnvsValues" />
     </div>
     <div class="template-block">
       <div class="primary-title not-first-child template-title" @click="showServiceVariable = !showServiceVariable">
@@ -27,8 +26,7 @@
         :envScene="envScene"
         :showEnvTabs="showEnvTabs"
         :defaultEnvValue="defaultEnvValue"
-        :baseEnvObj="baseEnvObj"
-      ></ChartValues>
+        :baseEnvObj="baseEnvObj" />
     </div>
   </div>
 </template>

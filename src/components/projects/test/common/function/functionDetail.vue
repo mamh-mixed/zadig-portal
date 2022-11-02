@@ -28,7 +28,7 @@
         <div class="primary-title not-first-child">测试脚本</div>
         <div class="deploy-script">
           <Resize :resize="'both'">
-            <Editor v-model="test.scripts"></Editor>
+            <Editor v-model="test.scripts" />
           </Resize>
         </div>
       </section>
@@ -43,10 +43,10 @@
           </el-form-item>
           <el-form-item class="label-icon">
             <template slot="label">
-              <span>Html 报告文件地址</span>
+              <span>HTML 报告文件地址</span>
               <el-tooltip effect="dark" placement="top">
                 <div slot="content">
-                  Html 测试报告文件将包含在工作流发送的 IM 通知内容中
+                  HTML 测试报告文件将包含在工作流发送的 IM 通知内容中
                   <br />
                 </div>
                 <i class="el-icon-question"></i>
@@ -75,7 +75,7 @@
         :allCodeHosts="allCodeHosts"
         :validObj="validObj"
         @validateFailed="test.advanced_setting_modified = true"
-      ></AdvancedConfig>
+      />
     </section>
 
     <footer class="create-footer">

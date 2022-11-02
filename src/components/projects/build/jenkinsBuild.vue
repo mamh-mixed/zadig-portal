@@ -50,7 +50,7 @@
         type="warning"
       ></el-alert>
       <div class="divider item"></div>
-      <EnvVariable :preEnvs="jenkinsBuild.jenkins_build" :serviceName="jenkinsBuild.targets" isJenkins :mini="mini"></EnvVariable>
+      <EnvVariable :preEnvs="jenkinsBuild.jenkins_build" :serviceName="jenkinsBuild.targets" isJenkins :mini="mini" />
     </el-form>
   </section>
 </template>

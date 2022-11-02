@@ -51,8 +51,7 @@
         :secondaryProp="`pre_test`"
         :validObj="validObj"
         :isCreate="!isEdit"
-        @validateFailed="$emit('validateFailed')"
-      ></BuildAdvancedConfig>
+        @validateFailed="$emit('validateFailed')" />
 
       <div class="primary-title not-first-child">触发器与通知</div>
       <div class="trigger">
@@ -66,8 +65,7 @@
           :testName="isEdit ? name : testConfig.name"
           :webhook="testConfig.hook_ctl"
           :avaliableRepos="testConfig.repos"
-          :class="{ 'margin-bottom': testConfig.hook_ctl.items.length }"
-        ></TestTrigger>
+          :class="{ 'margin-bottom': testConfig.hook_ctl.items.length }" />
       </div>
       <div class="timer">
         <el-form-item>

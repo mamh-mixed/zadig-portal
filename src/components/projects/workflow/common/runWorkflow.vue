@@ -95,7 +95,7 @@
       </el-form-item>
       <!-- Build -->
       <div v-if="pickedTargets.length > 0">
-        <WorkflowBuildRows :pickedTargets="pickedTargets"></WorkflowBuildRows>
+        <WorkflowBuildRows :pickedTargets="pickedTargets" />
       </div>
     </div>
 
@@ -122,7 +122,7 @@
 
     <!--  Test -->
     <div v-if="runner.tests.length > 0">
-      <WorkflowTestRows :runnerTests="runner.tests"></WorkflowTestRows>
+      <WorkflowTestRows :runnerTests="runner.tests" />
     </div>
 
     <div v-if="buildDeployEnabled"

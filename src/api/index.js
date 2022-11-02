@@ -225,7 +225,7 @@ export function analyticsRequestAPI (payload) {
   return http.post(analyticsReq, payload)
 }
 
-export function getUserNumberAPI () {
+export function userStatisticsAPI () {
   return http.get(`/api/v1/user/count`)
 }
 

@@ -31,16 +31,15 @@
         :envName="this.releaseInfo.envName"
         :fileData="releaseInfo.chartDatas"
         @clickFile="getFile"
-        @deleteService="deleteService"
-      ></FileTree>
+        @deleteService="deleteService"/>
       <MultipaneResizer></MultipaneResizer>
       <div :style="{ minWidth: '200px', width: '50%'}" class="middle">
-        <Codemirror v-model="yamlStorage[selectedPath]" :cmOption="cmOption"></Codemirror>
+        <Codemirror v-model="yamlStorage[selectedPath]" :cmOption="cmOption" />
       </div>
       <MultipaneResizer></MultipaneResizer>
       <div :style="{flexGrow: 1, width: '200px', minWidth: '100px'}" class="right">
         <div class="title">全局变量</div>
-        <Codemirror v-model="globalYaml" class="mirror"></Codemirror>
+        <Codemirror v-model="globalYaml" class="mirror" />
         <div class="bottom">
           <el-button type="primary" size="mini" plain @click="applyGlobalVars" :loading="useLoading">应用</el-button>
           <el-button type="primary" size="mini" plain @click="resetAllVars" :disabled="useLoading">重置</el-button>
