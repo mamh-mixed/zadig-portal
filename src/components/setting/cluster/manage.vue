@@ -180,6 +180,11 @@
                 </div>
               </div>
             </el-form-item>
+            <el-form-item label="配置容忍度" v-if="hasPlutus">
+              <Resize :resize="'vertical'" :height="'100px'" @sizeChange="$refs.codemirror.refresh()">
+                <Codemirror ref="codemirror" v-model="cluster.advanced_config.tolerations" :placeholder="tolerancePlaceholder"></Codemirror>
+              </Resize>
+            </el-form-item>
           </section>
           <section v-show="isEdit">
             <h4>
@@ -441,6 +446,7 @@ import {
 import { wordTranslate } from '@utils/wordTranslate'
 import bus from '@utils/eventBus'
 import { cloneDeep, omit } from 'lodash'
+import { mapState } from 'vuex'
 const validateClusterName = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入集群名称'))
@@ -476,7 +482,8 @@ const clusterInfo = {
   advanced_config: {
     project_names: [],
     strategy: 'normal',
-    node_labels: []
+    node_labels: [],
+    tolerations: ''
   },
   dind_cfg: {
     replicas: 1,
@@ -639,7 +646,8 @@ export default {
         data: [] // {labels, ready, ip}
       },
       expandAdvanced: false,
-      hasNotified: false
+      hasNotified: false,
+      tolerancePlaceholder: '- key: "key1"\n  operator: "Equal"\n  value: "value1"\n  effect: "NoSchedule"'
     }
   },
   computed: {
@@ -659,7 +667,10 @@ export default {
     },
     projectNames () {
       return this.$store.getters.projectList.map(project => project.name)
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   watch: {
     dialogClusterFormVisible (nVal, oldV) {
@@ -872,6 +883,9 @@ export default {
         this.allCluster = res.map(re => {
           if (!re.advanced_config.node_labels) {
             re.advanced_config.node_labels = []
+          }
+          if (this.hasPlutus && !re.advanced_config.tolerations) {
+            re.advanced_config.tolerations = ''
           }
           return re
         })
