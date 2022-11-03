@@ -138,7 +138,7 @@ http.interceptors.response.use(
           const redirectPath = window.location.pathname + window.location.search
           Element.Message.error('登录信息失效, 请返回重新登录')
           Store.dispatch('LOGINOUT')
-          window.location.href = `/signin?redirect=${redirectPath}`
+          window.location.href = `/signin?redirect=${encodeURIComponent(redirectPath)}`
         } else if (error.response.status === 403) {
           Element.Message.error('暂无权限')
         }
