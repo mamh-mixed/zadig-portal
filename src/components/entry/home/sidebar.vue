@@ -281,7 +281,6 @@ export default {
           icon: 'iconfont iconcompany-info',
           url: 'enterprise/'
         }
-
       }
     }
   },
@@ -372,10 +371,16 @@ export default {
       }
       /** plutus menu */
       if (this.isAdmin && this.hasPlutus) {
-        if (this.signatureFeatures.delivery && !defaultMenu.find(menu => menu.category_name === '客户交付')) {
+        if (
+          this.signatureFeatures.delivery &&
+          !defaultMenu.find(menu => menu.category_name === '客户交付')
+        ) {
           defaultMenu.splice(1, 0, this.plutusMenu.delivery)
         }
-        if (this.signatureFeatures.release_center && !defaultMenu.find(menu => menu.category_name === '发布中心')) {
+        if (
+          this.signatureFeatures.release_center &&
+          !defaultMenu.find(menu => menu.category_name === '发布中心')
+        ) {
           defaultMenu.splice(1, 0, this.plutusMenu.release_center)
         }
         if (!adminMenu[0].items.find(menu => menu.name === '企业管理')) {
@@ -526,6 +531,32 @@ export default {
 
     &.grow-all {
       flex-grow: 1;
+
+      &::-webkit-scrollbar-track {
+        width: 4px;
+        height: 4px;
+        background-color: transparent;
+        border-radius: 6px;
+      }
+
+      &::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+        background-color: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        width: 4px;
+        height: 4px;
+        background-color: transparent;
+        border-radius: 6px;
+      }
+
+      &:hover {
+        &::-webkit-scrollbar-thumb {
+          background-color: #b7b8b9;
+        }
+      }
     }
 
     &.grow-nothing {
