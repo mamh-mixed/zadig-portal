@@ -393,7 +393,7 @@ export default {
       }).type
       if ((codehostType === 'github' || codehostType === 'gitee-enterprise') && query !== '') {
         const items = this.$utils.filterObjectArrayByKey(
-          'name',
+          'path',
           query,
           this.codeInfo[index].origin_repo_owners
         )
