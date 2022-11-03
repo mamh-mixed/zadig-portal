@@ -56,7 +56,7 @@
         </span>
         <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的手机号码，使用用 ; 分割" v-model="mobileStr"></el-input>
       </el-form-item>
-      <el-form-item v-if="notify.webhook_type==='wechat'" prop="at_user_ids">
+      <el-form-item v-if="notify.webhook_type==='wechat'" prop="wechat_user_ids">
         <span slot="label">
           <span> @指定成员（输入指定通知接收人的user_id，使用;分割）</span>
         </span>
@@ -95,7 +95,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        at_user_ids: [],
+        wechat_user_ids: [],
         dingding_webhook: [
           {
             type: 'string',
@@ -147,17 +147,17 @@ export default {
     },
     wechatMobileStr: {
       get: function () {
-        if (this.notify.at_user_ids) {
-          return this.notify.at_user_ids.join(';')
+        if (this.notify.wechat_user_ids) {
+          return this.notify.wechat_user_ids.join(';')
         } else {
           return ''
         }
       },
       set: function (newValue) {
         if (newValue === '') {
-          this.$set(this.notify, 'at_user_ids', [])
+          this.$set(this.notify, 'wechat_user_ids', [])
         } else {
-          this.$set(this.notify, 'at_user_ids', newValue.split(';'))
+          this.$set(this.notify, 'wechat_user_ids', newValue.split(';'))
         }
       }
     },
