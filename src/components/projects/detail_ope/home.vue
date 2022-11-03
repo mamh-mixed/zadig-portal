@@ -265,6 +265,8 @@ export default {
     }
 
     .header-end {
+      display: flex;
+      justify-content: flex-end;
       min-width: 510px;
 
       .search-input {
