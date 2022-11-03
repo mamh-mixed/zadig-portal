@@ -66,7 +66,13 @@
         <span slot="label">
           <span>@指定成员（输入指定通知接收人的 user_id，使用 ; 分割，为空则全员通知）：</span>
         </span>
-        <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的 user_id，使用 ; 分割，为空则全员通知" v-model="feishuMobileStr"></el-input>
+        <el-input
+          style="width: 350px;"
+          type="textarea"
+          :rows="3"
+          placeholder="输入指定通知接收人的 user_id，使用 ; 分割，为空则全员通知"
+          v-model="feishuMobileStr"
+        ></el-input>
       </el-form-item>
       <el-form-item prop="notify_type" label="通知事件：">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -149,6 +155,16 @@ export default {
     'notify.at_mobiles': {
       get: function () {
         return this.mobileStr.split(';')
+      }
+    },
+    'notify.wechat_user_ids': {
+      get: function () {
+        return this.wechatMobileStr.split(';')
+      }
+    },
+    'notify.lark_user_ids': {
+      get: function () {
+        return this.feishuMobileStr.split(';')
       }
     },
     wechatMobileStr: {
