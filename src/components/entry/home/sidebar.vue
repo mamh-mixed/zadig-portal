@@ -554,7 +554,11 @@ export default {
 
       &:hover {
         &::-webkit-scrollbar-thumb {
-          background-color: #b7b8b9;
+          background-color: #dcdfe6;
+
+          &:hover {
+            background-color: #bdb6b6;
+          }
         }
       }
     }
