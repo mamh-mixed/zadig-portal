@@ -57,9 +57,11 @@
           <el-col :span="8">
             <span class="item-desc">
               <el-link
-                :is="!jobInfo.spec.junit_report ? 'span' : 'router-link'"
-                class="show-test-result"
-                :to="getTestReport('')"
+                :type="jobInfo.spec.junit_report ? 'primary':'info'"
+                @click="getTestReport('')"
+                :underline="false"
+                target="_blank"
+                :disabled="!jobInfo.spec.junit_report"
               >查看</el-link>
             </span>
           </el-col>
@@ -70,7 +72,7 @@
             <span class="item-desc">
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
-                type="primary"
+                :type="jobInfo.spec.archive ? 'primary':'info'"
                 :underline="false"
                 target="_blank"
                 :disabled="!jobInfo.spec.archive"
@@ -87,9 +89,9 @@
             <span class="item-desc">
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
-                type="primary"
                 :underline="false"
                 target="_blank"
+                :type="jobInfo.spec.html_report ? 'primary':'info'"
                 :disabled="!jobInfo.spec.html_report"
                 @click="getTestReport('html')"
               >查看</el-link>
@@ -256,7 +258,9 @@ export default {
           `/api/aslan/testing/report/workflowv4/${this.workflowName}/id/${this.taskId}/job/${this.jobInfo.name}`
         )
       } else {
-        return `/v1/projects/detail/${this.projectName}/customPipelines/multi/testcase/${this.workflowName}/${this.taskId}/test/${this.jobInfo.name}${tail}`
+        window.open(
+          `/v1/projects/detail/${this.projectName}/customPipelines/multi/testcase/${this.workflowName}/${this.taskId}/test/${this.jobInfo.name}${tail}`
+        )
       }
     }
   },
