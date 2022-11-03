@@ -58,9 +58,21 @@
       </el-form-item>
       <el-form-item v-if="notify.webhook_type==='wechat'" prop="wechat_user_ids">
         <span slot="label">
-          <span> @指定成员（输入指定通知接收人的 user_id，使用 ; 分割）</span>
+          <span>@指定成员（输入指定通知接收人的 user_id，使用 ; 分割）：</span>
         </span>
         <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的 user_id，使用 ; 分割" v-model="wechatMobileStr"></el-input>
+      </el-form-item>
+      <el-form-item v-if="notify.webhook_type==='feishu'" prop="lark_user_ids">
+        <span slot="label">
+          <span>@指定成员（输入指定通知接收人的 user_id，使用 ; 分割，为空则全员通知）：</span>
+        </span>
+        <el-input
+          style="width: 350px;"
+          type="textarea"
+          :rows="3"
+          placeholder="输入指定通知接收人的 user_id，使用 ; 分割，为空则全员通知"
+          v-model="feishuMobileStr"
+        ></el-input>
       </el-form-item>
       <el-form-item prop="notify_type" label="通知事件：">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -145,6 +157,16 @@ export default {
         return this.mobileStr.split(';')
       }
     },
+    'notify.wechat_user_ids': {
+      get: function () {
+        return this.wechatMobileStr.split(';')
+      }
+    },
+    'notify.lark_user_ids': {
+      get: function () {
+        return this.feishuMobileStr.split(';')
+      }
+    },
     wechatMobileStr: {
       get: function () {
         if (this.notify.wechat_user_ids) {
@@ -158,6 +180,24 @@ export default {
           this.$set(this.notify, 'wechat_user_ids', [])
         } else {
           this.$set(this.notify, 'wechat_user_ids', newValue.split(';'))
+        }
+      }
+    },
+    feishuMobileStr: {
+      get: function () {
+        if (this.notify.lark_user_ids) {
+          return this.notify.lark_user_ids.join(';')
+        } else {
+          return ''
+        }
+      },
+      set: function (newValue) {
+        if (newValue === '') {
+          this.$set(this.notify, 'is_at_all', true)
+          this.$set(this.notify, 'lark_user_ids', [])
+        } else {
+          this.$set(this.notify, 'is_at_all', false)
+          this.$set(this.notify, 'lark_user_ids', newValue.split(';'))
         }
       }
     },
