@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-card class="notifyItem box-card">
-      {{notify}}
       <i class="del el-icon-delete" @click="delNotify"></i>
       <el-form :model="notify" :rules="notifyRules" label-position="top" ref="notify">
         <el-form-item prop="webhook_type">
