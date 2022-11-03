@@ -24,8 +24,7 @@
         :policy="policy"
         :collaborationData="currentCollaboration"
         :deleteMode="deleteMode"
-        :updateActiveName="updateActiveName"
-      ></Policy>
+        :updateActiveName="updateActiveName" />
     </div>
   </div>
 </template>

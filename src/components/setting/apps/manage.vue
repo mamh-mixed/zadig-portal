@@ -120,7 +120,7 @@
                     lang="sh"
                     theme="monokai"
                     width="100%"
-                    height="220"></Editor>
+                    height="220"/>
           </el-form-item>
         </el-form>
         <div slot="footer"

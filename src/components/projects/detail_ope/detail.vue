@@ -64,7 +64,7 @@
           </el-table-column>
           <el-table-column label="步骤">
             <template slot-scope="{ row }">
-              <CusTags :values="row.enabledStages"></CusTags>
+              <CusTags :values="row.enabledStages" />
             </template>
           </el-table-column>
           <el-table-column label="状态">
@@ -91,7 +91,7 @@
         </el-table>
       </div>
     </section>
-    <DeleteProject ref="deleteProject" :followUpFn="followUpFn"></DeleteProject>
+    <DeleteProject ref="deleteProject" :followUpFn="followUpFn" />
   </div>
 </template>
 <script>

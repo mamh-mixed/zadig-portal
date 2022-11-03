@@ -3,7 +3,7 @@
     <div class="yaml-desc" v-if="placeholder" v-show="!value">
       <pre>{{ placeholder }}</pre>
     </div>
-    <codemirror class="codemirror" ref="cmEditor" :value="value" :options="options" @input="handleInput"></codemirror>
+    <codemirror class="codemirror" ref="cmEditor" :value="value" :options="options" @input="handleInput" />
   </div>
 </template>
 

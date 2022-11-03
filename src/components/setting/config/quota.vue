@@ -174,7 +174,6 @@ export default {
 
   created () {
     bus.$emit(`set-topbar-title`, { title: '系统配置', breadcrumb: [] })
-
     this.getCapacity('WorkflowTaskRetention')
     this.getConcurrencySettings()
   }

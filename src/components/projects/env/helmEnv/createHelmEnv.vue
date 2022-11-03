@@ -110,15 +110,14 @@
           </div>
         </el-form-item>
       </el-form>
-      <EnvConfig class="common-parcel-block" ref="envConfigRef"></EnvConfig>
+      <EnvConfig class="common-parcel-block" ref="envConfigRef" />
       <HelmEnvTemplate
         class="chart-value"
         ref="helmEnvTemplateRef"
         :chartNames="projectConfig.selectedService"
         :envNames="envNames"
         :handledEnv="envName"
-        :envScene="`createEnv`"
-      ></HelmEnvTemplate>
+        :envScene="`createEnv`" />
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">取消</el-button>

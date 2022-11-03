@@ -23,7 +23,7 @@
       </div>
     </div>
     <el-dialog :visible.sync="dialogVisible" width="60%" custom-class="env-config-dialog" append-to-body>
-      <ImportConfig :importRepoInfo="repoConfig"></ImportConfig>
+      <ImportConfig :importRepoInfo="repoConfig" />
       <div slot="footer">
         <el-button size="small" @click="handleConfig(false)">取 消</el-button>
         <el-button size="small" type="primary" @click="handleConfig(true)">确 定</el-button>

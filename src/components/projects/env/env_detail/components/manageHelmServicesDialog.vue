@@ -38,7 +38,7 @@
           :envNames="[productInfo.env_name]"
           :handledEnv="productInfo.env_name"
           :envScene="`updateEnv`"
-        ></ChartValues>
+        />
       </template>
     </div>
     <div slot="footer">

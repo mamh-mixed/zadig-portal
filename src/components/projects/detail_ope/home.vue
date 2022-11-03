@@ -134,7 +134,7 @@
         <p>暂无可展示的项目，请手动添加项目</p>
       </div>
     </div>
-    <DeleteProject ref="deleteProject" :followUpFn="followUpFn"></DeleteProject>
+    <DeleteProject ref="deleteProject" :followUpFn="followUpFn" />
   </div>
 </template>
 <script>

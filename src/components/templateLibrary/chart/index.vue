@@ -1,7 +1,7 @@
 <template>
   <div class="chart-template-container">
     <el-dialog title="请选择导入源" :visible.sync="chartDialogVisible" :close-on-click-modal="false">
-      <ImportChart v-model="chartDialogVisible" :chartCurrentService="currentService" @importChart="chartTemplateUpdate($event)"></ImportChart>
+      <ImportChart v-model="chartDialogVisible" :chartCurrentService="currentService" @importChart="chartTemplateUpdate($event)"/>
     </el-dialog>
     <multipane>
       <div class="pane left" :style="{width: '250px', maxWidth: '400px'}">
@@ -18,14 +18,14 @@
           @clickFile="handleFileClick"
           @deleteChart="chartTemplateUpdate($event)"
           @refreshChart="refreshChart($event)"
-        ></Folder>
+        />
       </div>
       <multipane-resizer></multipane-resizer>
       <div class="pane center" :style="{minWidth: '300px', width: '500px'}">
         <div class="top">
-          <PageNav :displayedFile="displayedFile" :currentTab="currentTab" @updateFile="showFile"></PageNav>
+          <PageNav :displayedFile="displayedFile" :currentTab="currentTab" @updateFile="showFile" />
         </div>
-        <Codemirror v-if="currentTab" v-model="yaml" :cmOption="{ readOnly: true }" class="mirror"></Codemirror>
+        <Codemirror v-if="currentTab" v-model="yaml" :cmOption="{ readOnly: true }" class="mirror" />
       </div>
       <multipane-resizer></multipane-resizer>
       <Aside
@@ -33,7 +33,7 @@
         :style="{flexGrow: 1, minWidth: '372px'}"
         :systemVariables="systemVariables"
         :customVariables="customVariables"
-      ></Aside>
+      />
     </multipane>
   </div>
 </template>

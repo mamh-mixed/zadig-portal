@@ -144,16 +144,6 @@ export default {
       currentLog: {
         request_body: ''
       },
-      editorOption: {
-        showLineNumbers: true,
-        showFoldWidgets: true,
-        showGutter: true,
-        displayIndentGuides: true,
-        showPrintMargin: false,
-        readOnly: true,
-        tabSize: 2,
-        maxLines: Infinity
-      },
       totalLog: 0,
       logPageSize: 50,
       currentPageList: 1

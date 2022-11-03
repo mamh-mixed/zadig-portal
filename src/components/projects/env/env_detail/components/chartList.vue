@@ -10,7 +10,7 @@
           :getFilterList="getFilterList"
           @updateFilter="updateFilter"
           :showFilterRes="false"
-        ></FilterStatus>
+        />
       </div>
       <div v-for="(chart, index) in filteredChartNames" :key="index" class="chart-content" :class="[chart.selected ? 'selected' : '']">
         <span class="chart-left">
@@ -81,7 +81,7 @@
       :before-close="dialogBeforeClose"
     >
       <div>
-        <Codemirror class="value-codemirror" ref="codemirror" :value="currentChart.valuesYaml" :cmOption="cmOption"></Codemirror>
+        <Codemirror class="value-codemirror" ref="codemirror" :value="currentChart.valuesYaml" :cmOption="cmOption" />
       </div>
       <div slot="footer">
         <el-button size="small" @click="dialogBeforeClose()">取 消</el-button>

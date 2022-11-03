@@ -4,16 +4,16 @@
       <el-tab-pane v-for="name in allConfig" :key="name" :label="name" :name="name"></el-tab-pane>
     </el-tabs>
     <div class="env-config-content">
-      <CommonConfig ref="commonConfigRef" :currentType="currentConfig" @actionConfig="actionConfig"></CommonConfig>
+      <CommonConfig ref="commonConfigRef" :currentType="currentConfig" @actionConfig="actionConfig" />
     </div>
     <el-dialog :visible.sync="dialogVisible" width="60%" custom-class="env-config-dialog" append-to-body>
-      <ImportConfig :importRepoInfo="repoConfig" :cmOption="cmOption" :placeholder="placeholder"></ImportConfig>
+      <ImportConfig :importRepoInfo="repoConfig" :cmOption="cmOption" :placeholder="placeholder" />
       <div slot="footer">
         <el-button size="small" :disabled="dialogBtnLoading" @click="dialogVisible = false" v-show="repoConfig.actionType !== 'view'">取 消</el-button>
         <el-button size="small" type="primary" :loading="dialogBtnLoading" @click="handleConfig">确 定</el-button>
       </div>
     </el-dialog>
-    <VersionHistory ref="versionRef" @actionConfig="actionConfig"></VersionHistory>
+    <VersionHistory ref="versionRef" @actionConfig="actionConfig" />
   </div>
 </template>
 

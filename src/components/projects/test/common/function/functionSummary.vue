@@ -97,8 +97,7 @@
                    :workflowName="workflowName"
                    :functionTestBaseUrl="`/v1/${basePath}/detail/${projectName}/test/testcase/function/${workflowName}`"
                    @currentChange="changeTaskPage"
-                   showTestReport>
-        </TaskList>
+                   showTestReport />
       </el-card>
     </div>
 </template>

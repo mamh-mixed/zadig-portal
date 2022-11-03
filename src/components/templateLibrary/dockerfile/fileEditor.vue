@@ -12,8 +12,7 @@
                             ref="myCm"
                             :value="fileContent.content"
                             :options="cmOptions"
-                            @input="onCmCodeChange">
-                </codemirror>
+                            @input="onCmCodeChange" />
               </div>
             </div>
           </div>

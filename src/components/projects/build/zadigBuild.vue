@@ -40,22 +40,22 @@
               </el-select>
             </el-form-item>
           </slot>
-          <BuildEnv v-if="!useTemplate" ref="buildEnvRef" :buildConfig="buildConfig" :isCreate="isCreate" :mini="mini"></BuildEnv>
+          <BuildEnv v-if="!useTemplate" ref="buildEnvRef" :buildConfig="buildConfig" :isCreate="isCreate" :mini="mini" />
         </el-form>
       </div>
       <div v-show="!useTemplate" class="section">
-        <RepoSelect ref="repoSelectRef" :config="buildConfig" :validObj="validObj" class="build-secondary-form" showFirstLine></RepoSelect>
+        <RepoSelect ref="repoSelectRef" :config="buildConfig" :validObj="validObj" class="build-secondary-form" showFirstLine />
       </div>
       <section v-if="useTemplate">
-        <ServiceRepoSelect ref="serviceRepoSelectRef" :serviceTargets="serviceTargets" :targets="buildConfig.target_repos" :currentTemplateEnvs="currentTemplateEnvs" :isCreate="isCreate" :validObj="validObj" :mini="mini" class="build-secondary-form" showFirstLine/>
+        <ServiceRepoSelect ref="serviceRepoSelectRef" :serviceTargets="serviceTargets" :targets="buildConfig.target_repos" :currentTemplateEnvs="currentTemplateEnvs" :isCreate="isCreate" :validObj="validObj" :mini="mini" class="build-secondary-form" showFirstLine />
       </section>
       <section v-show="!useTemplate">
         <div class="primary-title not-first-child">构建变量</div>
-        <EnvVariable :preEnvs="buildConfig.pre_build" :validObj="validObj" :fromServicePage="fromServicePage" :mini="mini"></EnvVariable>
+        <EnvVariable :preEnvs="buildConfig.pre_build" :validObj="validObj" :fromServicePage="fromServicePage" :mini="mini" />
         <div class="primary-title not-first-child">通用构建脚本</div>
         <div class="deploy-script">
           <Resize :resize="'both'">
-            <Editor v-model="buildConfig.scripts"></Editor>
+            <Editor v-model="buildConfig.scripts" />
           </Resize>
         </div>
       </section>
@@ -77,10 +77,10 @@
           :validObj="validObj"
           @validateFailed="buildConfig.advanced_setting_modified = true"
           :mini="mini"
-        ></AdvancedConfig>
+        />
       </section>
       <section>
-        <OtherSteps ref="otherStepsRef" :buildPostConfig="buildConfig.post_build" :validObj="validObj" :mini="mini" :usedToHost="usedToHost"></OtherSteps>
+        <OtherSteps ref="otherStepsRef" :buildPostConfig="buildConfig.post_build" :validObj="validObj" :mini="mini" :usedToHost="usedToHost" />
       </section>
     </div>
   </section>
@@ -89,16 +89,13 @@
 <script>
 import Editor from 'vue2-ace-bind'
 import Resize from '@/components/common/resize.vue'
-
 import BuildEnv from './buildEnv.vue'
 import EnvVariable from './envVariable.vue'
 import AdvancedConfig from './advancedConfig.vue'
 import OtherSteps from './otherSteps.vue'
-
 import ValidateSubmit from '@utils/validateAsync'
 
 import { getCodeSourceMaskedAPI, getBuildTemplatesAPI, getBuildTemplateDetailAPI } from '@api'
-
 import { cloneDeep, differenceBy, intersectionBy } from 'lodash'
 
 const validateBuildConfigName = (rule, value, callback) => {

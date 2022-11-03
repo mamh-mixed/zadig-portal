@@ -28,7 +28,7 @@
         </span>
       </el-tooltip>
       <div class="right">
-        <CusTags :values="stages" class="item"></CusTags>
+        <CusTags :values="stages" class="item" />
         <span class="item">
           <span class="item left">修改人</span>
           {{ workflow.update_by }}
@@ -50,8 +50,7 @@
           :filteredItems="filteredItems"
           :defaultFilterList="defaultFilterList"
           :getFilterList="getFilterList"
-          @updateFilter="updateFilter"
-        ></FilterStatus>
+          @updateFilter="updateFilter" />
       </div>
       <TaskList
         :taskList="workflowTasks"
@@ -69,8 +68,7 @@
         showEnv
         showTestReport
         showServiceNames
-        showOperation
-      ></TaskList>
+        showOperation />
     </el-card>
 
     <el-dialog :visible.sync="taskDialogVisible" title="运行 产品-工作流" custom-class="run-workflow" width="60%" class="dialog">
@@ -81,8 +79,7 @@
         :workflowMeta="workflow"
         :targetProject="workflow.product_tmpl_name"
         :forcedUserInput="forcedUserInput"
-        @success="hideAndFetchHistory"
-      ></run-workflow>
+        @success="hideAndFetchHistory" />
     </el-dialog>
   </div>
 </template>

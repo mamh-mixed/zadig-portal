@@ -118,7 +118,7 @@
           @checkedPath="checkedPath"
           :checkOne="!substantial"
           :fileType="typeObject[fileType].fileType"
-        ></TreeFile>
+        />
       </el-dialog>
     </el-form>
   </div>

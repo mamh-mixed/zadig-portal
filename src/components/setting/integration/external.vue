@@ -1,6 +1,6 @@
 <template>
   <div class="integration-external">
-    <Other class="content"></Other>
+    <Other class="content" />
   </div>
 </template>
 

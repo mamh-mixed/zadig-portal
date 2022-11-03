@@ -6,8 +6,8 @@
       <!--<div class="bar-title" :class="{selected:selected === 'quote' }" @click="selected = 'quote'">引用列表</div>-->
     </div>
     <div class="aside-content">
-      <ModuleUse v-if="selected === 'quote'"></ModuleUse>
-      <VariableList v-if="selected === 'var'" :systemVariables="systemVariables" :customVariables="customVariables"></VariableList>
+      <ModuleUse v-if="selected === 'quote'"/>
+      <VariableList v-if="selected === 'var'" :systemVariables="systemVariables" :customVariables="customVariables"/>
     </div>
   </div>
 </template>

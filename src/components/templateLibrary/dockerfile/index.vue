@@ -10,7 +10,7 @@
                            ref="FileTree"
                            @onRefreshFile="getFiles"
                            @onSelectFileChange="onSelectFileChange"
-                           @updateFile="updateFile($event)"></FileTree>
+                           @updateFile="updateFile($event)" />
             </div>
             <template v-if="files.length >0">
               <template>
@@ -21,14 +21,13 @@
                                     :fileContent="fileContent"
                                     :fileContentChange="fileContentChange"
                                     @onRefreshFile="getFiles"
-                                    @onUpdateFile="onUpdateFile"></FileEditor>
+                                    @onUpdateFile="onUpdateFile" />
                 </div>
                 <multipane-resizer></multipane-resizer>
                 <aside class="service-aside service-aside-right"
                        :style="{ flexGrow: 1 }">
-                  <FileAside :fileContent="fileContent"></FileAside>
+                  <FileAside :fileContent="fileContent" />
                 </aside>
-
               </template>
             </template>
             <div v-else

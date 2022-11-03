@@ -74,7 +74,7 @@
                 </el-select>
               </el-form-item>
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets"/>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" />
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">

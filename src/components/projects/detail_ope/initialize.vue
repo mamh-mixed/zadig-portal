@@ -21,12 +21,10 @@
           <el-button v-if="env.collaboration_type === 'new'" type="primary" plain size="small" @click="editEnvInfo(env)">环境变量</el-button>
         </div>
       </article>
-
       <footer>
         <el-button type="primary" size="small" icon="confirm-icon iconfont iconvery-confirm" @click="createEnvAndWorkflow" round>确认</el-button>
       </footer>
     </section>
-
     <InitEnvDialog
       ref="envDialogRef"
       :visible="dialogVisible"
@@ -34,7 +32,7 @@
       :currentEnv="currentEnv"
       :currentInfo="currentInfo"
       :baseEnvObj="baseEnvObj"
-    ></InitEnvDialog>
+    />
   </div>
 </template>
 

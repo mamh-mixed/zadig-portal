@@ -1,25 +1,5 @@
 export function wordTranslate (word, category, subitem = '') {
   const wordComparisonTable = {
-    container: {
-      'NOT-RUNNING': '未正常运行',
-      RUNNING: '正常运行',
-      STOPPED: '容器被停止',
-      EXITED: '容器已退出',
-      RESTARTING: '容器一直在重启'
-    },
-    service: {
-      Running: '正在运行',
-      Pending: '正在等待',
-      CrashLoopBackOff: '发生错误',
-      '': '*'
-    },
-    product: {
-      Running: '正常',
-      Deleting: '删除中',
-      Updating: '更新中',
-      Unstable: '运行不稳定',
-      Error: '内部错误'
-    },
     pipeline: {
       task: {
         '': '未运行',
@@ -189,11 +169,9 @@ export function translateSubTaskType (type) {
 export default {
   wordTranslate,
   translateTaskStatus,
-
   colorTranslate,
   calcTaskStatusColor,
   calcEnvStatusColor,
-
   translateServiceType,
   translateSubTaskType
 }

@@ -32,7 +32,7 @@
           :addConnection="addConnection"
           :deleteConnection="deleteConnection"
           :runTests="runTests"
-        ></TestRow>
+        />
       </ul>
     </div>
     <div v-if="testList.length === 0 && !loading" class="no-product">

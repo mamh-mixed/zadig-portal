@@ -24,7 +24,7 @@
       >
     </div>
     <div class="jeknins-container">
-    <Etable :tableColumns="tableColumns" :tableData="tableData" id="id" />
+      <Etable :tableColumns="tableColumns" :tableData="tableData" id="id" />
     </div>
 
     <SonarOperate :getSonar="getSonar" ref="sonarRef" />

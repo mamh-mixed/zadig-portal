@@ -108,7 +108,7 @@
         </el-form-item>
         <el-form-item label="KubeConfig" prop="config" v-if="cluster.type === 'kubeconfig'" :show-message="false">
           <Resize :resize="'vertical'" :height="'100px'" @sizeChange="$refs.codemirror.refresh()">
-            <Codemirror ref="codemirror" v-model="cluster.config" placeholder="请输入目标集群 KubeConfig"></Codemirror>
+            <Codemirror ref="codemirror" v-model="cluster.config" placeholder="请输入目标集群 KubeConfig" />
           </Resize>
         </el-form-item>
         <el-button type="text" @click="expandAdvanced = !expandAdvanced">

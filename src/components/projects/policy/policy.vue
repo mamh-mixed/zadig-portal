@@ -14,9 +14,6 @@
             :remote="hasAllUser"
             :remote-method="getUsers"
           >
-            <!-- <template slot="prefix">
-              <i class="el-icon-search prefix-icon"></i>
-            </template>-->
             <el-option disabled value="NEWUSER">
               <router-link :to="`/v1/projects/detail/${projectName}/rbac?addRole=true`" class="env-link">
                 <i class="el-icon-circle-plus-outline" style="margin-right: 3px;"></i>

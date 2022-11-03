@@ -28,7 +28,7 @@
         </span>
       </el-tooltip>
       <div class="right">
-        <CusTags :values="stages" class="item"></CusTags>
+        <CusTags :values="stages" class="item" />
         <span class="item">
           <span class="item left">修改人</span>
           {{ detail.updated_by }}
@@ -51,7 +51,7 @@
           :defaultFilterList="defaultFilterList"
           :getFilterList="getFilterList"
           @updateFilter="updateFilter"
-        ></FilterStatus> -->
+        /> -->
       </div>
       <TaskList
         :taskList="workflowTasks"
@@ -67,7 +67,7 @@
         @currentChange="changeTaskPage"
         workflowType="buildv4"
         showOperation
-      ></TaskList>
+      />
     </el-card>
 
     <el-dialog :visible.sync="taskDialogVisible" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog" :before-close="close">

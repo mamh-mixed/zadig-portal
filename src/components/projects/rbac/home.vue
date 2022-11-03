@@ -8,7 +8,7 @@
         <Role v-if="activeTab==='role'" :projectName="projectName" />
       </el-tab-pane>
       <el-tab-pane name="policy" label="策略管理">
-        <Policy v-if="activeTab==='policy'" :projectName="projectName"></Policy>
+        <Policy v-if="activeTab==='policy'" :projectName="projectName" />
       </el-tab-pane>
     </el-tabs>
   </div>

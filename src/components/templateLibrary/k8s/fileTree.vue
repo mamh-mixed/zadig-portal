@@ -241,9 +241,9 @@ export default {
     },
     selectFile (data, node, current) {
       const levelOneNodeLabel = node.level === 1 ? node.label : node.parent.label
-      // 切换 node 且 yaml 变化时
+      // When switching nodes and yaml changed
       if (this.previousNodeKey && this.previousNodeKey !== levelOneNodeLabel && this.fileContentChange) {
-        // 把当前 node 切换回来
+        // Switch to current node
         this.setFileSelected(this.previousNodeKey)
         this.askSaveYamlConfig(true).then(() => {
           this.justStoreSwitchNode = { data, node, levelOneNodeLabel }

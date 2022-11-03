@@ -3,6 +3,7 @@
     <el-drawer :modal-append-to-body="false" title="Dockerfile 模板预览" :visible.sync="showDockerfile" direction="rtl">
       <Codemirror
         v-model="dockerfileTemplate.content"
+        class="mirror"
         :cmOption="{
       tabSize: 2,
       readOnly: true,
@@ -15,8 +16,7 @@
       showPrintMargin: false,
       collapseIdentical: true
     }"
-        class="mirror"
-      ></Codemirror>
+     />
     </el-drawer>
     <div style="margin: 14px 0 8px;">
       <el-dropdown @command="addExtra">
@@ -182,7 +182,7 @@
             <el-button type="text" @click="removeScript" icon="el-icon-delete"></el-button>
           </div>
           <div class="script-content">
-            <Editor v-model="buildConfig.post_build.scripts" height="100%"></Editor>
+            <Editor v-model="buildConfig.post_build.scripts" height="100%" />
           </div>
         </div>
       </el-form>

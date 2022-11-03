@@ -1150,13 +1150,13 @@ export default {
     selectService (data, node, current) {
       const levelOneNodeLabel =
         node.level === 1 ? node.label : node.parent.label
-      // 切换 node 且 yaml 变化时
+      // When switching nodes and yaml changed
       if (
         this.previousNodeKey &&
         this.previousNodeKey !== levelOneNodeLabel &&
         this.yamlChange
       ) {
-        // 把当前 node 切换回来
+        // Switch to current node
         this.setServiceSelected(this.previousNodeKey)
         this.askSaveYamlConfig(true)
           .then(() => {

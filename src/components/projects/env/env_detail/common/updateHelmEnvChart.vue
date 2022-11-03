@@ -32,13 +32,13 @@
             ref="importValuesRef"
             :resize="{direction: 'vertical'}"
             :importRepoInfo="usedChartNameInfo"
-          ></ImportValues>
+          />
           <KeyValue
             ref="keyValueRef"
             :keyValues="usedChartNameInfo.overrideValues"
             :listKeyValues="listKeyValues"
             @estimatedValues="getCalculatedValuesYaml"
-          ></KeyValue>
+          />
           <section class="review-content">
             <div class="review-title">
               <el-button type="text" @click="getReviewValuesFile">
@@ -47,7 +47,7 @@
               </el-button>
               <el-button type="text" v-show="showReview" @click="getCalculatedValuesYaml(false)">刷新</el-button>
             </div>
-            <Codemirror class="codemirror" ref="codemirror" v-if="showReview" :value="usedChartNameInfo.yamlContent" :cmOption="cmOption"></Codemirror>
+            <Codemirror class="codemirror" ref="codemirror" v-if="showReview" :value="usedChartNameInfo.yamlContent" :cmOption="cmOption" />
           </section>
         </div>
       </div>
@@ -77,12 +77,6 @@ const chartInfoTemp = {
   gitRepoConfig: null, // : Object [Not use, just record]
   yamlContent: '' // 预览 YAML 内容
 }
-
-// const allChartNameInfoTemp = {
-//   serviceName: {
-//     envName: chartInfoTemp
-//   }
-// }
 
 export default {
   name: 'ChartValues',

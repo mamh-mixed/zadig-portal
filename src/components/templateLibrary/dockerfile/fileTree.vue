@@ -84,13 +84,10 @@
                       @keyup.enter.native="inputFileNameDoneWhenBlur"
                       placeholder="请输入模板名称"></el-input>
           </el-form-item>
-
         </el-form>
       </div>
     </div>
-    <div
-         class="search-container">
-
+    <div class="search-container">
       <el-input placeholder="搜索模板"
                 size="small"
                 clearable
@@ -144,11 +141,7 @@ export default {
       } else if (this.selectFiles.map(ser => ser.name).includes(value)) {
         callback(new Error('模板名称与现有名称重复'))
       } else {
-        // if (!/^[a-z0-9-]+$/.test(value)) {
-        //   callback(new Error('名称只支持小写字母和数字，特殊字符只支持中划线'))
-        // } else {
         callback()
-        // }
       }
     },
     setHovered (name) {
@@ -240,9 +233,9 @@ export default {
     },
     selectFile (data, node, current) {
       const levelOneNodeLabel = node.level === 1 ? node.label : node.parent.label
-      // 切换 node 且 yaml 变化时
+      // When switching nodes and yaml changed
       if (this.previousNodeKey && this.previousNodeKey !== levelOneNodeLabel && this.fileContentChange) {
-        // 把当前 node 切换回来
+        // Switch to current node
         this.setFileSelected(this.previousNodeKey)
         this.askSaveYamlConfig(true).then(() => {
           this.justStoreSwitchNode = { data, node, levelOneNodeLabel }

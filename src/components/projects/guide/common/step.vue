@@ -7,10 +7,10 @@
       <el-row :gutter="0" class="steps-wrap" type="flex">
         <el-col :span="envDisabled?24:18" style="display: flex;">
           <OnboardingSteps :active="activeStep" class="steps-container" align-center simple finish-status="success">
-            <OnboardingStep title="项目配置" description></OnboardingStep>
-            <OnboardingStep title="新建服务" description></OnboardingStep>
-            <OnboardingStep :title="stepThreeTitle" description></OnboardingStep>
-            <OnboardingStep title="执行工作流" description></OnboardingStep>
+            <OnboardingStep title="项目配置" description />
+            <OnboardingStep title="新建服务" description />
+            <OnboardingStep :title="stepThreeTitle" description />
+            <OnboardingStep title="执行工作流" description />
           </OnboardingSteps>
         </el-col>
         <el-col v-if="!envDisabled" :span="6">

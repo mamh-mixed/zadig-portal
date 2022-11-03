@@ -110,7 +110,7 @@
         <div class="primary-title not-first-child">扫描脚本</div>
         <div class="deploy-script">
           <Resize :resize="'both'">
-            <Editor v-model="scannerConfig.script"></Editor>
+            <Editor v-model="scannerConfig.script" />
           </Resize>
         </div>
       </section>
@@ -136,8 +136,7 @@
         :scannerConfig="scannerConfig"
         :allCodeHosts="allCodeHosts"
         :validObj="validObj"
-        @validateFailed="scannerConfig.advanced_setting_modified = true"
-      ></AdvancedConfig>
+        @validateFailed="scannerConfig.advanced_setting_modified = true" />
     </section>
 
     <footer class="create-footer">
@@ -157,10 +156,9 @@
 <script>
 import Editor from 'vue2-ace-bind'
 import Resize from '@/components/common/resize.vue'
-import { mapState } from 'vuex'
-
 import AdvancedConfig from './common/advancedConfig.vue'
 import ValidateSubmit from '@utils/validateAsync'
+import { mapState } from 'vuex'
 
 import {
   getCodeSourceMaskedAPI,
