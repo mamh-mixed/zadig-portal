@@ -60,7 +60,13 @@
               placeholder="请选择组织名/用户名"
               filterable
             >
-              <el-option v-for="(repo,index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path"></el-option>
+              <el-option v-for="(repo,index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path">
+                <span>{{repo.path}}</span>
+                <template v-if="source.gitType === 'gitee-enterprise'">
+                  <span v-if="repo.kind==='enterprise'">(企业)</span>
+                  <span v-else-if="repo.kind==='org'">(团队)</span>
+                </template>
+              </el-option>
             </el-select>
           </el-form-item>
           <template>
@@ -960,9 +966,9 @@ export default {
       const type = this.allCodeHosts.find(item => {
         return item.id === id
       }).type
-      if (type === 'github' && query !== '') {
+      if ((type === 'github' || type === 'gitee-enterprise') && query !== '') {
         const items = this.$utils.filterObjectArrayByKey(
-          'name',
+          'path',
           query,
           this.codeInfo.repoOwners
         )
