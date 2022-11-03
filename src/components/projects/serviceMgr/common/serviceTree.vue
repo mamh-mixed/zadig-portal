@@ -1018,7 +1018,12 @@ export default {
       const repoItem = this.codeInfo.repos.find(item => {
         return item.name === repoName
       })
-      this.source.namespace = repoItem.namespace || ''
+      if (repoItem) {
+        this.source.namespace = repoItem.namespace
+      } else {
+        // for manual input
+        this.source.namespace = repoOwner
+      }
       if (repoName && repoOwner) {
         getBranchInfoByIdAPI(
           id,

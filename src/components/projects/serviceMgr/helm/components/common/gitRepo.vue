@@ -56,7 +56,13 @@
           filterable
           :disabled="isUpdate"
         >
-          <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path"></el-option>
+          <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path">
+            <span>{{repo.path}}</span>
+            <template v-if="codehostSource === 'gitee-enterprise'">
+              <span v-if="repo.kind==='enterprise'">(企业)</span>
+              <span v-else-if="repo.kind==='org'">(团队)</span>
+            </template>
+          </el-option>
         </el-select>
       </el-form-item>
       <template>
@@ -324,7 +330,12 @@ export default {
         return item.name === repoName
       })
       this.source.branchName = ''
-      this.source.namespace = repoItem.namespace || ''
+      if (repoItem) {
+        this.source.namespace = repoItem.namespace
+      } else {
+        // for manual input
+        this.source.namespace = repoOwner
+      }
       if (repoName && repoOwner) {
         getBranchInfoByIdAPI(id, this.source.namespace, repoName).then(res => {
           this.$set(this.codeInfo, 'branches', res)
