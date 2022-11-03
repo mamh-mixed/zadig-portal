@@ -200,6 +200,7 @@ export default {
         .map(re => ({
           repo_owner: re.repo_owner,
           repo: re.repo_name,
+          repo_namespace: re.repo_namespace,
           default_branch: re.branch,
           codehost_id: re.codehost_id
         }))
