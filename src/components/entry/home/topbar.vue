@@ -50,7 +50,7 @@
                     @click="toggleSubUrl(item, proItem)"
                   >
                     <span class="left">{{ proItem.title }}</span>
-                    <i class="el-icon-close" v-if="proItem.deleteOpe" @click.stop="proItem.deleteOpe(proItem.name)"></i>
+                    <i class="el-icon-close" v-if="proItem.deleteOpe" @click.stop="proItem.deleteOpe(proItem.title, proItem.name)"></i>
                   </div>
                 </div>
                 <i slot="reference" class="el-icon-caret-bottom list-popover-icon"></i>
