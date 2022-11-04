@@ -96,7 +96,7 @@
                     v-clipboard:error="copyCommandError"
                     class="el-icon-document-copy copy"></span>
             </span>
-            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook</span>
+            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook、enterprises</span>
             <span class="tips">- 更多配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
@@ -377,7 +377,7 @@
                     v-clipboard:error="copyCommandError"
                     class="el-icon-document-copy copy"></span>
             </span>
-            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook</span>
+            <span class="tips">- 应用权限请勾选：projects、groups、pull_requests、hook、enterprises</span>
             <span class="tips">- 更多配置可参考
               <el-link style="font-size: 14px; vertical-align: baseline;"
                        type="primary"
