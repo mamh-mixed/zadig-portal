@@ -264,6 +264,10 @@ export function getGlobalPermissionAPI () {
   return http.get(`/api/v1/policy/permission`)
 }
 
+export function getProjectPermissionAPI (projectName) {
+  return http.get(`/api/v1/policy/permission/project/${projectName}`)
+}
+
 // Env
 export function listProductAPI (projectName = '', envType = '') {
   if (envType) {
