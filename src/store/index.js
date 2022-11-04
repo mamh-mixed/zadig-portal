@@ -10,6 +10,12 @@ import globalConfig from './modules/globalConfig'
 // Project
 import projectList from './modules/projectList'
 
+// Global Permission
+import globalPermission from './modules/globalPermission'
+
+// Project Permission
+import projectPermission from './modules/projectPermission'
+
 // Sidebar
 import sidebarStatus from './modules/sidebarStatus'
 
@@ -22,9 +28,6 @@ import externalLink from './modules/externalLink'
 
 // Common Workflow
 import commonWorkflow from './modules/commonWorkflow'
-
-// Global Permission
-import globalPermission from './modules/globalPermission'
 
 // Custom Workflow
 import customWorkflow from './modules/customWorkflow'
@@ -42,6 +45,7 @@ export default new Vuex.Store({
     globalConfig,
     projectList,
     globalPermission,
+    projectPermission,
     sidebarStatus,
     serviceManage,
     k8sService,
