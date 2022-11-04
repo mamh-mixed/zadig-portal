@@ -32,7 +32,7 @@
                     <router-link
                       :to="`/v1/projects/detail/${notification.content.product_name}/pipelines/${notification.content.type==='single'?notification.content.type:'multi'}/${notification.content.pipeline_name}/${notification.content.task_id}?status=${notification.content.status}`"
                     >
-                      <span @click.native="markAsRead(notification, index)" class="notification-id">
+                      <span @click="markAsRead(notification, index)" class="notification-id">
                         {{'#' +
                         notification.content.task_id}}
                       </span>
