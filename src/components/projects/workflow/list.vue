@@ -162,7 +162,7 @@ export default {
       workflowsList: [],
       showSelectWorkflowType: false,
       selectWorkflowType: 'product',
-
+      userBindings: [],
       showStartCommonWorkflowBuild: false,
       isShowRunCustomWorkflowDialog: false,
       commonToRun: {},
