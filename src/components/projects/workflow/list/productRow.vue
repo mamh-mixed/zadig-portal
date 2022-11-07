@@ -12,8 +12,11 @@
           <span v-else-if="recentTaskStatus === 'running'||recentTaskStatus === 'elected'" class="el-icon-loading"></span>
           <span v-else class="el-icon-warning"></span>
         </div>
-        <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">自定义</el-tag>
-        <el-tag v-else class="workflow-tag" size="mini" effect="plain">产品</el-tag>
+        <div class="tag-container">
+          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">自定义</el-tag>
+          <el-tag v-else class="workflow-tag" size="mini" effect="plain">产品</el-tag>
+        </div>
+
         <div class="stages-container">
           <CusTags :values="stages" noBorder noLimit />
         </div>
@@ -254,7 +257,8 @@ export default {
         }
       }
 
-      .workflow-tag {
+      .tag-container {
+        width: 48px;
         margin-left: 10px;
       }
 
