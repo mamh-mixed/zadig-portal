@@ -12,7 +12,7 @@
           <span v-else-if="recentTaskStatus === 'running'||recentTaskStatus === 'elected'" class="el-icon-loading"></span>
           <span v-else class="el-icon-warning"></span>
         </div>
-        <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" size="mini" effect="plain">自定义</el-tag>
+        <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">自定义</el-tag>
         <div class="stages-container">
           <CusTags :values="stages" noBorder noLimit />
         </div>
@@ -220,13 +220,12 @@ export default {
     .info-header {
       display: inline-flex;
       align-items: center;
-      padding: 8px;
+      padding: 8px 10px;
       background-color: #fff;
       border-radius: 4px 4px 0 0;
 
       .status {
         display: flex;
-        margin-right: 10px;
         color: #77797d;
 
         &.running,
@@ -250,6 +249,10 @@ export default {
         &.terminated {
           color: #77797d;
         }
+      }
+
+      .workflow-tag {
+        margin-left: 10px;
       }
 
       .stages-container {
@@ -287,7 +290,7 @@ export default {
       line-height: 22px;
 
       &.workflow-desc {
-        margin-left: 40px;
+        margin-left: 36px;
         overflow: hidden;
         white-space: nowrap;
       }
@@ -295,8 +298,8 @@ export default {
 
     .favorite {
       display: inline-block;
-      flex: 0 0 10px;
-      margin: 0 10px;
+      flex: 0 0 8px;
+      margin: 0 8px;
       color: #ebebf0;
       font-size: 20px;
       text-align: center;
