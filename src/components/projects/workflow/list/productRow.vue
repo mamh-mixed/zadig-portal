@@ -225,7 +225,7 @@ export default {
       align-items: center;
       padding: 8px 10px;
       background-color: #fff;
-      border-radius: 4px 4px 0 0;
+      border-radius: 6px 6px 0 0;
 
       .status {
         display: flex;
