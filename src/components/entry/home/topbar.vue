@@ -60,7 +60,7 @@
         </div>
       </div>
       <div class="topbar-container-end">
-        <el-popover placement="bottom" popper-class="help-droplist" trigger="click">
+        <el-popover placement="bottom" popper-class="help-droplist" trigger="hover">
           <ul class="dropdown-menu" uib-dropdown-menu>
             <li>
               <a href="https://docs.koderover.com/zadig/" target="_blank">
@@ -117,23 +117,14 @@
                 <span>开发者中心</span>
               </a>
             </li>
-            <!-- <li>
-              <a href="https://docs.koderover.com/zadig/glossary/"
-                 target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>术语表</span>
-              </a>
-            </li>-->
           </ul>
           <span slot="reference">
-            <i class="help-icon iconfont iconvery-teach"></i>
+            <i class="function-icon iconfont iconvery-teach"></i>
           </span>
         </el-popover>
-        <span>
-          <Notification class="icon notify" />
-        </span>
+        <Notification class="function-icon" />
         <div class="nav nav-item-bottom user-profile">
-          <el-popover placement="bottom" width="240" popper-class="dropdown-menu" trigger="click">
+          <el-popover placement="bottom" width="240" popper-class="dropdown-menu" trigger="hover">
             <div class="flex">
               <div class="profile-menu__list">
                 <ul class="profile-list profile-list__with-icon">
@@ -359,8 +350,8 @@ export default {
   }
 }
 
-.help-icon {
-  margin: 0 38px;
+.function-icon {
+  margin: 0 20px;
   color: #a0a0a0;
   font-size: 20px;
   cursor: pointer;
@@ -454,10 +445,6 @@ export default {
     justify-content: space-between;
     width: 100%;
     height: 100%;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
 
     .topbar-container-start {
       display: flex;
@@ -540,20 +527,11 @@ export default {
     }
 
     .topbar-container-end {
-      display: -webkit-box;
-      display: -ms-flexbox;
       display: flex;
       flex-grow: 0;
       flex-shrink: 0;
       align-items: center;
       justify-content: space-between;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-      -webkit-box-flex: 0;
-      -ms-flex-positive: 0;
-      -ms-flex-negative: 0;
 
       * {
         max-height: 100%;
@@ -571,7 +549,6 @@ export default {
 
       .notify {
         font-size: 20px;
-        line-height: 60px;
       }
 
       .user-profile {
