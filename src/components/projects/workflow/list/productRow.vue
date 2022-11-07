@@ -1,5 +1,5 @@
 <template>
-  <div class="product-workflow-row" @click="$router.push(workflowLink)">
+  <div class="product-workflow-row">
     <div class="info-container">
       <span class="info-header">
         <div class="status" :class="recentTaskStatus">
@@ -35,7 +35,7 @@
         <div v-if="recentSuccessID" class="detail-desc">
           <i class="icon el-icon-user"></i>
           <span>{{workflowInfo.recentSuccessfulTask.task_creator}}</span>
-          <router-link :to="recentFailLink" class="success">{{ recentSuccessID }}</router-link>
+          <router-link :to="recentSuccessLink" class="success">{{ recentSuccessID }}</router-link>
         </div>
         <div v-else class="detail-desc">
           <span>-</span>
@@ -265,7 +265,6 @@ export default {
     line-height: 22px;
     background: #fff;
     border-left: 0 solid #77797d;
-    cursor: pointer;
 
     .detail-desc {
       margin-top: 4px;
