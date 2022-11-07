@@ -4,7 +4,10 @@
       <span class="info-header">
         <div class="status" :class="recentTaskStatus">
           <span v-if="recentTaskStatus === 'passed'|| recentTaskStatus === 'success'" class="el-icon-success"></span>
-          <span v-else-if="recentTaskStatus === 'failed'||recentTaskStatus === 'failure'||recentTaskStatus === 'timeout'" class="el-icon-error"></span>
+          <span
+            v-else-if="recentTaskStatus === 'failed'||recentTaskStatus === 'failure'||recentTaskStatus === 'timeout'"
+            class="el-icon-error"
+          ></span>
           <span v-else-if="recentTaskStatus === 'cancelled'||recentTaskStatus === 'terminated'" class="el-icon-warning"></span>
           <span v-else-if="recentTaskStatus === 'running'||recentTaskStatus === 'elected'" class="el-icon-loading"></span>
           <span v-else class="el-icon-warning"></span>
@@ -16,9 +19,10 @@
       </span>
     </div>
     <div class="detail-container">
-      <section @click.stop="setFavorite(projectName,name,type)" class="favorite el-icon-star-on" :class="{'liked':isFavorite}"></section>
+      <!-- <section ></section> -->
       <section class="workflow-header" @click.stop>
         <div class="workflow-name">
+          <span @click.stop="setFavorite(projectName,name,type)" class="favorite el-icon-star-on" :class="{'liked':isFavorite}"></span>
           <router-link :to="workflowLink">
             <el-tooltip effect="dark" :content="displayName" placement="top">
               <span class="name-span">{{ displayName }}</span>
@@ -283,7 +287,9 @@ export default {
       line-height: 22px;
 
       &.workflow-desc {
-        margin-top: 4px;
+        margin-left: 40px;
+        overflow: hidden;
+        white-space: nowrap;
       }
     }
 
@@ -303,8 +309,8 @@ export default {
     }
 
     .workflow-header {
-      flex: 0 0 200px;
-      max-width: 200px;
+      flex: 0 0 300px;
+      max-width: 300px;
       cursor: auto;
 
       .workflow-name {
@@ -318,7 +324,7 @@ export default {
 
           .name-span {
             display: inline-block;
-            max-width: 180px;
+            max-width: 220px;
             margin-right: 8px;
             overflow: hidden;
             white-space: nowrap;
