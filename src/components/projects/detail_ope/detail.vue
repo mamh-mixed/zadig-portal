@@ -3,7 +3,7 @@
     class="projects-detail-container"
     v-loading="detailLoading"
     element-loading-text="加载中..."
-    element-loading-spinner="iconfont iconfont-loading iconxiangmu"
+    element-loading-spinner="iconfont iconfont-loading iconxiangmuloading"
   >
     <div class="project-header"></div>
     <section class="projects-detail">
