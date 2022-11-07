@@ -13,24 +13,27 @@
           <span v-else class="el-icon-warning"></span>
         </div>
         <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">自定义</el-tag>
+        <el-tag v-else class="workflow-tag" size="mini" effect="plain">产品</el-tag>
         <div class="stages-container">
           <CusTags :values="stages" noBorder noLimit />
         </div>
       </span>
     </div>
     <div class="detail-container">
-      <!-- <section ></section> -->
       <section class="workflow-header" @click.stop>
-        <div class="workflow-name">
+        <div class="info-wrap">
           <span @click.stop="setFavorite(projectName,name,type)" class="favorite el-icon-star-on" :class="{'liked':isFavorite}"></span>
-          <router-link :to="workflowLink">
-            <el-tooltip effect="dark" :content="displayName" placement="top">
-              <span class="name-span">{{ displayName }}</span>
-            </el-tooltip>
-          </router-link>
-          <!-- <el-tag v-if="type === 'common'" size="mini" effect="plain">通用</el-tag> -->
+          <div class="name-container">
+            <div class="workflow-name">
+              <router-link :to="workflowLink">
+                <el-tooltip effect="dark" :content="displayName" placement="top">
+                  <span class="name-span">{{ displayName }}</span>
+                </el-tooltip>
+              </router-link>
+            </div>
+            <div class="gray-desc workflow-desc">{{ description?description:'-' }}</div>
+          </div>
         </div>
-        <div class="gray-desc workflow-desc">{{ description?description:'-' }}</div>
       </section>
 
       <section class="recent-success">
@@ -290,24 +293,9 @@ export default {
       line-height: 22px;
 
       &.workflow-desc {
-        margin-left: 36px;
+        display: flex;
         overflow: hidden;
         white-space: nowrap;
-      }
-    }
-
-    .favorite {
-      display: inline-block;
-      flex: 0 0 8px;
-      margin: 0 8px;
-      color: #ebebf0;
-      font-size: 20px;
-      text-align: center;
-      cursor: pointer;
-
-      &.liked,
-      &:hover {
-        color: @themeColor;
       }
     }
 
@@ -316,22 +304,47 @@ export default {
       max-width: 300px;
       cursor: auto;
 
-      .workflow-name {
+      .info-wrap {
         display: flex;
         align-items: center;
 
-        a {
-          display: flex;
-          color: @themeColor;
-          font-weight: 500;
+        .favorite {
+          display: inline-flex;
+          flex: 0 0 8px;
+          margin: 0 8px;
+          color: #ebebf0;
+          font-size: 20px;
+          text-align: center;
+          cursor: pointer;
 
-          .name-span {
-            display: inline-block;
-            max-width: 220px;
-            margin-right: 8px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+          &.liked,
+          &:hover {
+            color: @themeColor;
+          }
+        }
+
+        .name-container {
+          display: flex;
+          flex-direction: column;
+
+          .workflow-name {
+            display: flex;
+            align-items: center;
+
+            a {
+              display: flex;
+              color: @themeColor;
+              font-weight: 500;
+
+              .name-span {
+                display: inline-block;
+                max-width: 220px;
+                margin-right: 8px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+            }
           }
         }
       }
