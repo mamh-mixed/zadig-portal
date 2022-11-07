@@ -22,7 +22,7 @@
           </router-link>
           <!-- <el-tag v-if="type === 'common'" size="mini" effect="plain">通用</el-tag> -->
         </div>
-        <div class="gray-desc">{{ description?description:'-' }}</div>
+        <div class="gray-desc workflow-desc">{{ description?description:'-' }}</div>
       </section>
 
       <section class="recent-success">
@@ -277,6 +277,10 @@ export default {
       color: @fontLightGray;
       font-size: 12px;
       line-height: 22px;
+
+      &.workflow-desc {
+        margin-top: 4px;
+      }
     }
 
     .favorite {
