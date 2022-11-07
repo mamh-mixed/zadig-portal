@@ -118,6 +118,8 @@ const utils = {
         time = yyyy + '-' + mm + '-' + dd
       } else if (string === 'yyyy-mm-dd-ss') {
         time = yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + min + ':' + ss + ' '
+      } else if (string === 'mm-dd-mm') {
+        time = mm + '-' + dd + ' ' + h + ':' + min
       } else {
         time = yyyy + '-' + mm + '-' + dd + ' ' + h + ':' + min + ' '
       }
