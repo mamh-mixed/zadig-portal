@@ -1,69 +1,89 @@
 <template>
-  <li class="product-workflow-row" :class="recentTaskStatus" @click="$router.push(pipelineLink)">
-    <section @click.stop="setFavorite(projectName,name,type)" class="favorite el-icon-star-on" :class="{'liked':isFavorite}"></section>
-    <section class="product-header" @click.stop>
-      <div class="workflow-name">
-        <router-link :to="pipelineLink">
-          <el-tooltip effect="dark" :content="displayName" placement="top">
-            <span class="name-span">{{ displayName }}</span>
-          </el-tooltip>
-          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" size="mini" class="custom">自定义</el-tag>
-        </router-link>
-        <!-- <el-tag v-if="type === 'common'" size="mini">通用</el-tag> -->
-      </div>
-      <div class="gray-desc" style="margin-top: 4px;">
-        <span style="display: inline-block; margin-right: 10px;">
-          <el-popover v-if="recentSuccessID" placement="top-start" width="150" trigger="hover" content>
-            <div>
-              <i class="icon el-icon-user"></i>
-              <span>{{workflowInfo.recentSuccessfulTask.task_creator}}</span>
+  <div class="product-workflow-row">
+    <div class="info-container">
+      <span class="info-header">
+        <div class="status" :class="recentTaskStatus">
+          <span v-if="recentTaskStatus === 'passed'|| recentTaskStatus === 'success'" class="el-icon-success"></span>
+          <span
+            v-else-if="recentTaskStatus === 'failed'||recentTaskStatus === 'failure'||recentTaskStatus === 'timeout'"
+            class="el-icon-error"
+          ></span>
+          <span v-else-if="recentTaskStatus === 'cancelled'||recentTaskStatus === 'terminated'" class="el-icon-warning"></span>
+          <span v-else-if="recentTaskStatus === 'running'||recentTaskStatus === 'elected'" class="el-icon-loading"></span>
+          <span v-else class="el-icon-warning"></span>
+        </div>
+        <div class="tag-container">
+          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">自定义</el-tag>
+          <el-tag v-else class="workflow-tag" size="mini" effect="plain">产品</el-tag>
+        </div>
+
+        <div class="stages-container">
+          <CusTags :values="stages" noBorder noLimit />
+        </div>
+      </span>
+    </div>
+    <div class="detail-container">
+      <section class="workflow-header" @click.stop>
+        <div class="info-wrap">
+          <span @click.stop="setFavorite(projectName,name,type)" class="favorite el-icon-star-on" :class="{'liked':isFavorite}"></span>
+          <div class="name-container">
+            <div class="workflow-name">
+              <router-link :to="workflowLink">
+                <el-tooltip effect="dark" :content="displayName" placement="top">
+                  <span class="name-span">{{ displayName }}</span>
+                </el-tooltip>
+              </router-link>
             </div>
-            <div>
-              <i class="icon el-icon-time"></i>
-              <span>{{$utils.convertTimestamp(workflowInfo.recentSuccessfulTask.create_time)}}</span>
-            </div>
-            <span slot="reference">
-              最近成功
-              <router-link :to="recentSuccessLink" class="passed">{{ recentSuccessID }}</router-link>
-            </span>
-          </el-popover>
-          <span v-else class="passed">*</span>
-        </span>
-        <span>
-          <el-popover v-if="recentFailID" placement="top-start" width="150" trigger="hover" content>
-            <div>
-              <i class="icon el-icon-user"></i>
-              <span>{{workflowInfo.recentFailedTask.task_creator}}</span>
-            </div>
-            <div>
-              <i class="icon el-icon-time"></i>
-              <span>{{$utils.convertTimestamp(workflowInfo.recentFailedTask.create_time)}}</span>
-            </div>
-            <span slot="reference">
-              最近失败
-              <router-link :to="recentFailLink" class="failed">{{ recentFailID }}</router-link>
-            </span>
-          </el-popover>
-          <span v-else class="failed">*</span>
-        </span>
-      </div>
-    </section>
-    <section class="stages">
-      <CusTags :values="stages"></CusTags>
-    </section>
-    <section class="desc">{{ description }}</section>
-    <section class="time-rate">
-      <div class="gray-desc">平均执行时间</div>
-      <div class="value">{{ avgRuntime || '*' }}</div>
-    </section>
-    <section class="time-rate">
-      <div class="gray-desc">成功率</div>
-      <div class="value">{{ avgSuccessRate || '*' }}</div>
-    </section>
-    <section class="operations" @click.stop>
-      <slot name="operations"></slot>
-    </section>
-  </li>
+            <div class="gray-desc workflow-desc">{{ description?description:'-' }}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="recent-success">
+        <div class="gray-desc">
+          最近成功
+          <span style="display: inline-block; width: 80px;">
+            <span v-if="recentSuccessID">{{$utils.convertTimestamp(workflowInfo.recentSuccessfulTask.create_time,'mm-dd-mm')}}</span>
+          </span>
+        </div>
+        <div v-if="recentSuccessID" class="detail-desc">
+          <i class="icon el-icon-user"></i>
+          <span>{{workflowInfo.recentSuccessfulTask.task_creator}}</span>
+          <router-link :to="recentSuccessLink" class="success">{{ recentSuccessID }}</router-link>
+        </div>
+        <div v-else class="detail-desc">
+          <span>-</span>
+        </div>
+      </section>
+      <section class="recent-failed">
+        <div class="gray-desc">
+          最近失败
+          <span style="display: inline-block; width: 80px;">
+            <span v-if="recentFailID">{{$utils.convertTimestamp(workflowInfo.recentFailedTask.create_time,'mm-dd-mm')}}</span>
+          </span>
+        </div>
+        <div v-if="recentFailID" class="detail-desc">
+          <i class="icon el-icon-user"></i>
+          <span>{{workflowInfo.recentFailedTask.task_creator}}</span>
+          <router-link :to="recentFailLink" class="failed">{{ recentFailID }}</router-link>
+        </div>
+        <div v-else class="detail-desc">
+          <span>-</span>
+        </div>
+      </section>
+      <section class="time-rate">
+        <div class="gray-desc">平均执行时间</div>
+        <div class="value">{{ avgRuntime || '-' }}</div>
+      </section>
+      <section class="time-rate">
+        <div class="gray-desc">成功率</div>
+        <div class="value">{{ avgSuccessRate || '-' }}</div>
+      </section>
+      <section class="operations" @click.stop>
+        <slot name="operations"></slot>
+      </section>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -148,7 +168,7 @@ export default {
     workflowBelongToProject () {
       return this.$route.params.project_name
     },
-    pipelineLink () {
+    workflowLink () {
       return this.type === 'common_workflow'
         ? `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}?display_name=${this.displayName}`
         : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}?display_name=${this.displayName}`
@@ -196,138 +216,193 @@ export default {
 <style lang="less">
 .product-workflow-row {
   display: flex;
-  flex-flow: row nowrap;
-  flex-grow: 1;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-  width: 100%;
-  height: 80px;
-  margin-bottom: 8px;
-  overflow: auto;
-  font-size: 14px;
-  line-height: 22px;
-  background: #fff;
-  border-left: 6px solid #77797d;
-  cursor: pointer;
+  flex-direction: column;
 
-  &.running,
-  &.elected {
-    border-left-color: @themeColor;
-    animation: blink 1.5s infinite;
-  }
+  .info-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 
-  &.passed,
-  &.success {
-    border-left-color: #67c23a;
-  }
+    .info-header {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 10px;
+      background-color: #fff;
+      border-radius: 6px 6px 0 0;
 
-  &.failed,
-  &.failure,
-  &.timeout {
-    border-left-color: #ff1949;
-  }
+      .status {
+        display: flex;
+        color: #77797d;
 
-  &.cancelled,
-  &.terminated {
-    border-left-color: #77797d;
-  }
+        &.running,
+        &.elected {
+          color: @themeColor;
+          animation: blink 1.5s infinite;
+        }
 
-  & > section:not(:last-child) {
-    margin-right: 15px;
-  }
+        &.passed,
+        &.success {
+          color: #67c23a;
+        }
 
-  .gray-desc {
-    color: @fontLightGray;
-    font-size: 12px;
-    line-height: 22px;
-  }
+        &.failed,
+        &.failure,
+        &.timeout {
+          color: #ff1949;
+        }
 
-  .favorite {
-    display: inline-block;
-    flex: 0 0 30px;
-    margin: 0 15px;
-    color: #ebebf0;
-    font-size: 20px;
-    text-align: center;
-    cursor: pointer;
+        &.cancelled,
+        &.terminated {
+          color: #77797d;
+        }
+      }
 
-    &.liked,
-    &:hover {
-      color: @themeColor;
+      .tag-container {
+        width: 48px;
+        margin-left: 10px;
+      }
+
+      .stages-container {
+        display: flex;
+      }
     }
   }
 
-  .product-header {
-    flex: 0 0 240px;
-    max-width: 240px;
-    cursor: auto;
+  .detail-container {
+    display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    height: 70px;
+    margin-bottom: 18px;
+    overflow: auto;
+    font-size: 14px;
+    line-height: 22px;
+    background: #fff;
+    border-left: 0 solid #77797d;
 
-    .workflow-name {
-      display: flex;
-      align-items: center;
+    .detail-desc {
+      margin-top: 4px;
+      color: #4a4a4a;
+      font-size: 12px;
+      cursor: auto;
+    }
 
-      a {
+    .gray-desc {
+      color: @fontLightGray;
+      font-size: 12px;
+      line-height: 22px;
+
+      &.workflow-desc {
         display: flex;
-        color: @themeColor;
-        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
 
-        .name-span {
-          display: inline-block;
-          max-width: 180px;
-          margin-right: 8px;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
+    .workflow-header {
+      flex: 0 0 300px;
+      max-width: 300px;
+      cursor: auto;
+
+      .info-wrap {
+        display: flex;
+        align-items: center;
+
+        .favorite {
+          display: inline-flex;
+          flex: 0 0 8px;
+          margin: 0 8px;
+          color: #ebebf0;
+          font-size: 20px;
+          text-align: center;
+          cursor: pointer;
+
+          &.liked,
+          &:hover {
+            color: @themeColor;
+          }
+        }
+
+        .name-container {
+          display: flex;
+          flex-direction: column;
+
+          .workflow-name {
+            display: flex;
+            align-items: center;
+
+            a {
+              display: flex;
+              color: @themeColor;
+              font-weight: 500;
+
+              .name-span {
+                display: inline-block;
+                max-width: 220px;
+                margin-right: 8px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+            }
+          }
         }
       }
     }
 
-    .icon {
-      margin-left: 2px;
-      font-size: 12px;
+    .desc {
+      flex: 1 0 20%;
+      color: @fontLightGray;
+      font-size: 13px;
     }
 
-    .failed {
-      color: #f56c6c;
+    .time-rate {
+      flex: 0 0 80px;
+      margin-right: 20px;
+      white-space: nowrap;
+
+      .value {
+        margin-top: 4px;
+        color: #4a4a4a;
+        line-height: 22px;
+        cursor: auto;
+      }
     }
 
-    .passed {
-      color: @success;
+    .recent-success {
+      flex: 0 0 80px;
+      white-space: nowrap;
+
+      .detail-desc {
+        .success {
+          color: #06f;
+        }
+      }
     }
-  }
 
-  .stages {
-    width: 400px;
-    overflow: hidden;
-  }
+    .recent-failed {
+      flex: 0 0 80px;
+      white-space: nowrap;
 
-  .desc {
-    flex: 1 0 20%;
-    color: @fontLightGray;
-    font-size: 13px;
-  }
+      .detail-desc {
+        .failed {
+          color: #06f;
+        }
+      }
+    }
 
-  .time-rate {
-    flex: 0 0 80px;
-    margin-right: 20px;
-    white-space: nowrap;
-
-    .value {
-      margin-top: 4px;
-      color: #4a4a4a;
-      line-height: 22px;
+    .operations {
+      display: flex;
+      flex: 0 0 200px;
+      align-items: center;
+      justify-content: space-around;
+      font-size: 23px;
       cursor: auto;
     }
-  }
-
-  .operations {
-    display: flex;
-    flex: 0 0 200px;
-    align-items: center;
-    justify-content: space-around;
-    font-size: 23px;
-    cursor: auto;
   }
 }
 </style>

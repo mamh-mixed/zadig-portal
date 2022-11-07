@@ -1,13 +1,22 @@
 <template>
   <div class="cus-tags" :class="{ 'cus-select': check }">
-    <el-tooltip effect="dark" placement="top-start">
+    <div v-if="noLimit">
+      <span
+        v-for="(value, index) in tags"
+        :key="index"
+        class="cut-tag"
+        :class="{ current: index === currentTag,'no-border':noBorder?true:false,'no-limit':noLimit?true:false }"
+        @click="toggleTag(index, value)"
+      >{{ value }}</span>
+    </div>
+    <el-tooltip v-else effect="dark" placement="top-start">
       <div slot="content">{{values.toString()}}</div>
       <div>
         <span
-          v-for="(value, index) in values.slice(0,2)"
+          v-for="(value, index) in tags"
           :key="index"
           class="cut-tag"
-          :class="{ current: index === currentTag }"
+          :class="{ current: index === currentTag,'no-border':noBorder?true:false}"
           @click="toggleTag(index, value)"
         >{{ value }}</span>
         <span class="cut-tag" v-if="values.length >2">...</span>
@@ -35,6 +44,23 @@ export default {
     currentTag: {
       default: 0,
       type: Number
+    },
+    noBorder: {
+      default: false,
+      type: Boolean
+    },
+    noLimit: {
+      default: false,
+      type: Boolean
+    }
+  },
+  computed: {
+    tags () {
+      if (this.noLimit) {
+        return this.values
+      } else {
+        return this.values.slice(0, 2)
+      }
     }
   },
   methods: {
@@ -104,6 +130,27 @@ export default {
     &:last-child {
       border-top-right-radius: @borderRadius;
       border-bottom-right-radius: @borderRadius;
+    }
+
+    &.no-border {
+      padding: none;
+      line-height: 1;
+      border: none;
+
+      &::before {
+        top: 0;
+        left: -0.75em;
+        width: 1em;
+        height: 1em;
+      }
+
+      &:not(:first-child) {
+        padding-left: 1.2em;
+      }
+    }
+
+    &.no-limit {
+      max-width: unset;
     }
   }
 

@@ -43,8 +43,8 @@
             </el-tooltip>
           </div>
           <div v-if="view&&isProjectAdmin">
-            <el-button type="primary" size="small"  @click="operate('edit')">编辑视图</el-button>
-            <el-button type="danger" size="small"  @click="delView">删除视图</el-button>
+            <el-button type="primary" size="small"  @click="operate('edit')" plain>编辑视图</el-button>
+            <el-button type="danger" size="small"  @click="delView" plain>删除视图</el-button>
           </div>
         </div>
         <VirtualList
