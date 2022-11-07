@@ -3,7 +3,11 @@
     <div class="info-container">
       <span class="info-header">
         <div class="status" :class="recentTaskStatus">
-          <span class="el-icon-success"></span>
+          <span v-if="recentTaskStatus === 'passed'|| recentTaskStatus === 'success'" class="el-icon-success"></span>
+          <span v-else-if="recentTaskStatus === 'failed'||recentTaskStatus === 'failure'||recentTaskStatus === 'timeout'" class="el-icon-error"></span>
+          <span v-else-if="recentTaskStatus === 'cancelled'||recentTaskStatus === 'terminated'" class="el-icon-warning"></span>
+          <span v-else-if="recentTaskStatus === 'running'" class="el-icon-loading"></span>
+          <span v-else class="el-icon-warning"></span>
         </div>
         <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" size="mini" effect="plain">自定义</el-tag>
         <div class="stages-container">
