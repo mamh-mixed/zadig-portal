@@ -28,7 +28,7 @@
         </span>
       </el-tooltip>
       <div class="right">
-        <CusTags :values="stages" class="item" />
+        <CusTags :values="stages" class="item" noLimit/>
         <span class="item">
           <span class="item left">修改人</span>
           {{ detail.updated_by }}
@@ -128,7 +128,6 @@ export default {
       workflow: {},
       cloneWorkflow: {},
       detail: {},
-      stages: [],
       workflowTasks: [],
       total: 0,
       pageSize: 50,
@@ -138,8 +137,7 @@ export default {
       pageStart: 1,
       currentPage: 1,
       timerId: null,
-      timeTimeoutFinishFlag: false,
-      usedInPolicy: [] // whether used in policy
+      timeTimeoutFinishFlag: false
     }
   },
   computed: {
@@ -152,8 +150,14 @@ export default {
     displayName () {
       return this.$route.query.display_name
     },
-    taskId () {
-      return this.$route.params.task_id
+    stages () {
+      if (this.detail.stages && this.detail.stages.length > 0) {
+        return this.detail.stages.map((item) => {
+          return item.name
+        })
+      } else {
+        return []
+      }
     }
   },
   methods: {
@@ -163,39 +167,6 @@ export default {
         this.timerId = setTimeout(this.refreshHistoryTask, 3000) // 保证内存中只有一个定时器
       }
     },
-    processTestData (res) {
-      res.forEach(element => {
-        if (element.test_reports) {
-          const testArray = []
-          for (const testName in element.test_reports) {
-            const val = element.test_reports[testName]
-            if (typeof val === 'object') {
-              const struct = {
-                success: null,
-                total: null,
-                name: null,
-                type: null,
-                time: null,
-                img_id: null
-              }
-              if (val.functionTestSuite) {
-                struct.name = testName
-                struct.type = 'function'
-                struct.success = val.functionTestSuite.successes
-                  ? val.functionTestSuite.successes
-                  : val.functionTestSuite.tests -
-                    val.functionTestSuite.failures -
-                    val.functionTestSuite.errors
-                struct.total = val.functionTestSuite.tests
-                struct.time = val.functionTestSuite.time
-              }
-              testArray.push(struct)
-            }
-          }
-          element.testSummary = testArray
-        }
-      })
-    },
     fetchHistory (start, max) {
       getCustomWorkflowTaskListAPI(
         this.workflowName,
@@ -203,7 +174,6 @@ export default {
         max,
         this.projectName
       ).then(res => {
-        this.processTestData(res.workflow_list)
         this.workflowTasks = res.workflow_list
         this.total = res.total
       })

@@ -195,9 +195,9 @@ export default {
         stages = this.workflow.enabledStages
       } else {
         stages = this.workflow.enabledStages
-          ? this.workflow.enabledStages.map(stage =>
-            this.wordTranslation(stage, 'workflowStage')
-          )
+          ? this.workflow.enabledStages.map(stage => {
+            return this.wordTranslation(stage, 'workflowStage')
+          })
           : []
       }
       return stages
@@ -205,7 +205,6 @@ export default {
   },
   methods: {
     validatePipelineName (rule, value, callback) {
-      console.log(value)
       const result = this.$utils.validatePipelineName([], value)
       if (result === true) {
         callback()
