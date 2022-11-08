@@ -277,7 +277,7 @@ export default {
     box-sizing: border-box;
     width: 100%;
     height: 70px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     overflow: auto;
     font-size: 14px;
     line-height: 22px;
