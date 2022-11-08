@@ -117,6 +117,13 @@
         <el-button size="small" @click="resetForm('viewForm')">取消</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false">
+      <div>21</div>
+      <span slot="footer">
+        <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
+        <el-button size="small" @click="isShowModelDialog=false">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -141,7 +148,8 @@ import {
   deleteViewAPI,
   getViewListAPI,
   addViewAPI,
-  editViewAPI
+  editViewAPI,
+  getWorkflowTemplateListAPI
 } from '@api'
 import bus from '@utils/eventBus'
 import { mapGetters } from 'vuex'
@@ -173,6 +181,7 @@ export default {
         workflows: []
       },
       isShowViewDialog: false,
+      isShowModelDialog: false,
       viewForm: {
         name: '',
         project_name: '',
@@ -295,7 +304,9 @@ export default {
       } else if (type === 'common') {
         path = '/workflows/common/create'
       } else {
-        path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
+        this.isShowModelDialog = true
+        this.getWorkflowTemplateList()
+        // path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
       }
       this.$router.push(
         `${path}?projectName=${this.projectName ? this.projectName : ''}`
@@ -557,6 +568,12 @@ export default {
           this.view = ''
           this.getViewList()
         })
+      })
+    },
+    getWorkflowTemplateList () {
+      const type = 'release'
+      getWorkflowTemplateListAPI(type).then(res => {
+        console.log(res)
       })
     }
   },

@@ -1823,6 +1823,22 @@ export function deleteBuildTemplateAPI (id) {
   return http.delete(`/api/aslan/template/build/${id}`)
 }
 
+// Template workflows
+export function getWorkflowTemplateListAPI (category) {
+  return http.get(`/api/aslan/template/workflow?category=${category}`)
+}
+export function addWorkflowTemplateAPI (payload) {
+  return http.post(`/api/aslan/template/workflow`, payload)
+}
+export function editWorkflowTemplateAPI (payload) {
+  return http.put(`/api/aslan/template/workflow`, payload)
+}
+export function deleteWorkflowTemplateAPI (id) {
+  return http.delete(`/api/aslan/template/workflow/${id}`)
+}
+export function getWorkflowTemplateDetailAPI (id) {
+  return http.get(`/api/aslan/template/workflow/${id}`)
+}
 // Helm env and service
 export function getChartValuesYamlAPI (projectName, envName, serviceName = []) {
   return http.get(`/api/aslan/environment/rendersets/renderchart?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}`)

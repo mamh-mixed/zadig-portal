@@ -13,15 +13,22 @@
       </div>
     </div>
     <div class="operation">
-
+      <template v-if="$route.path === `/v1/template/workflows`">
+        <el-dropdown @command="handleCommand">
+          <el-button type="primary" size="small">新建工作流模版</el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="custom">自定义工作流</el-dropdown-item>
+            <el-dropdown-item command="release">发布工作流</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </template>
     </div>
   </div>
 </template>
 <script>
 export default {
   data () {
-    return {
-    }
+    return {}
   },
   props: {},
   computed: {
@@ -46,8 +53,18 @@ export default {
           name: '构建',
           icon: 'iconfont iconvery-build',
           url: `/v1/template/builds`
+        },
+        {
+          name: '工作流',
+          icon: 'iconfont icongongzuoliucheng',
+          url: `/v1/template/workflows`
         }
       ]
+    }
+  },
+  methods: {
+    handleCommand (val) {
+      this.$router.push(`/v1/template/workflows/config`)
     }
   }
 }
@@ -105,19 +122,7 @@ export default {
 
   .operation {
     display: flex;
-
-    .el-select {
-      width: 240px;
-      margin-right: 24px;
-    }
-
-    .el-range-editor {
-      &.el-input__inner {
-        align-items: baseline;
-        width: 240px;
-        padding: 0 10px;
-      }
-    }
+    margin-right: 80px;
   }
 }
 </style>

@@ -439,7 +439,22 @@ const routes = [
             meta: {
               title: '构建模板库'
             }
-          }]
+          },
+          {
+            path: 'workflows',
+            component: () => import(/* webpackChunkName: "Workflows Template" */ '@/components/templateLibrary/workflows/index.vue'),
+            meta: {
+              title: '工作流'
+            }
+          },
+          {
+            path: 'workflows/config',
+            component: () => import(/* webpackChunkName: "Workflows Template" */ '@/components/templateLibrary/workflows/config.vue'),
+            meta: {
+              title: '工作流配置'
+            }
+          }
+        ]
       },
       {
         path: 'delivery',

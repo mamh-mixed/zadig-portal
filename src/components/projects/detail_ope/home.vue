@@ -27,6 +27,7 @@
               <el-dropdown-item icon="iconfont iconhelmrepo" @click.native="$router.push(`/v1/template/charts`)">Helm Chart</el-dropdown-item>
               <el-dropdown-item icon="iconfont icondocker" @click.native="$router.push(`/v1/template/dockerfiles`)">Dockerfile</el-dropdown-item>
               <el-dropdown-item icon="iconfont iconvery-build" @click.native="$router.push(`/v1/template/builds`)">构建</el-dropdown-item>
+              <el-dropdown-item icon="iconfont icongongzuoliucheng" @click.native="$router.push(`/v1/template/workflows`)">工作流</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
