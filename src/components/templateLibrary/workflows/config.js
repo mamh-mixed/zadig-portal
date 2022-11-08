@@ -70,7 +70,7 @@ const jobTypeList = [
     type: 'freestyle',
     is_offical: true,
     description: '支持拉取代码、执行 Shell 脚本、文件存储等功能',
-    workflowType: 'custom'
+    workflowType: 'common'
   },
   {
     label: 'Kubernetes 部署',
@@ -78,7 +78,7 @@ const jobTypeList = [
     type: 'custom-deploy',
     is_offical: true,
     description: '可更新 Kubernetes 中容器镜像',
-    workflowType: 'custom'
+    workflowType: 'common'
   },
   {
     label: '测试',
@@ -86,7 +86,7 @@ const jobTypeList = [
     type: 'zadig-test',
     is_offical: true,
     description: '可直接引用「项目」-「测试」模块中的测试配置',
-    workflowType: 'custom'
+    workflowType: 'common'
   },
   {
     label: '代码扫描',
@@ -95,6 +95,14 @@ const jobTypeList = [
     is_offical: true,
     description: '可直接引用「项目」-「代码扫描」模块中的配置。',
     workflowType: 'custom'
+  },
+  {
+    label: '更新 K8s YAML 任务',
+    name: 'update-k8s-resource',
+    type: 'k8s-resource-patch',
+    is_offical: true,
+    description: '使用原生 Kubernetes Patch 能力更新 YAML',
+    workflowType: 'release'
   },
   {
     label: '部署蓝绿环境',

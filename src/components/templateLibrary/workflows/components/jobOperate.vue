@@ -32,7 +32,7 @@ export default {
   computed: {
     taskList () {
       const filterJobTypeList = jobTypeList.filter(
-        item => item.workflowType === this.type
+        item => item.workflowType === this.type || item.workflowType === 'common'
       )
       console.log(filterJobTypeList)
       // 由两部分组成 一部分前端定义 + 后端插件列表（并且插件需要自己造结构）

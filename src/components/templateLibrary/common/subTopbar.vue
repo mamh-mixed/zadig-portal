@@ -9,7 +9,7 @@
               <span class="name">{{item.name}}</span>
             </li>
           </router-link>
-          <router-link :to="`/v1/template/workflows`" v-if="hasPlutus">
+          <router-link :to="`/v1/template/workflows`" v-if="hasPlutus" active-class="active">
             <li class="nav-item">
               <i class="icon iconfont icongongzuoliucheng"></i>
               <span class="name">工作流</span>
