@@ -532,7 +532,7 @@ export default {
           }
         })
       })
-      this.payload.category = this.workflowType
+      this.payload.category = this.workflowType === 'custom' ? '' : 'release'
       const yamlParams = jsyaml.dump(this.payload)
       if (this.isEdit) {
         editWorkflowTemplateAPI(yamlParams)
