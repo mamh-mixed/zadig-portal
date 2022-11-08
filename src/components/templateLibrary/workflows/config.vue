@@ -314,9 +314,7 @@ export default {
     JobTest,
     JobScanning,
     codemirror,
-    Env,
-    Webhook,
-    Notify
+    Env
   },
   computed: {
     projectName () {

@@ -63,7 +63,7 @@ export default {
     }
   },
   methods: {
-    handleCommand (val) {
+    handleCommand () {
       this.$router.push(`/v1/template/workflows/config`)
     }
   }

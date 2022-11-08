@@ -71,6 +71,8 @@
         <div class="type-desc">可自定义工作流程，内置构建、K8s 部署、小程序发版等步骤</div> -->
         <el-radio v-model="selectWorkflowType" label="custom">自定义工作流<el-tag type="success" size="small" class="mg-l8">new</el-tag></el-radio>
         <div class="type-desc">可自定义工作流步骤和自由编排执行顺序</div>
+        <el-radio v-model="selectWorkflowType" label="release">发布工作流<el-tag type="success" size="small" class="mg-l8">new</el-tag></el-radio>
+        <div class="type-desc"></div>
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">取 消</el-button>
@@ -118,7 +120,27 @@
       </span>
     </el-dialog>
     <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false">
-      <div>21</div>
+      <div >
+        <div class="mg-b16">空白工作流</div>
+        <div v-if="selectWorkflowType==='custom'" class="mg-b16">自定义工作流模版</div>
+        <div v-if="selectWorkflowType==='release'" class="mg-b16">发布工作流模版</div>
+        <div v-for="item in modelList" :key="item.id" class="model-dialog">
+          <section class="header" @click.stop>
+            <div class="header-name">
+              <router-link :to="`/v1/template/workflows/config?id=${item.id}`">
+                <el-tooltip effect="dark" :content="item.template_name" placement="top">
+                  <span class="header-span">{{ item.template_name }}</span>
+                </el-tooltip>
+              </router-link>
+            </div>
+          </section>
+          <span>{{item.description}}</span>
+          <section class="stages">
+            <CusTags :values="item.stages"></CusTags>
+          </section>
+        </div>
+        <div>内置模版</div>
+      </div>
       <span slot="footer">
         <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
         <el-button size="small" @click="isShowModelDialog=false">取消</el-button>
@@ -186,7 +208,8 @@ export default {
         name: '',
         project_name: '',
         workflows: []
-      }
+      },
+      modelList: []
     }
   },
   provide () {
@@ -571,9 +594,9 @@ export default {
       })
     },
     getWorkflowTemplateList () {
-      const type = 'release'
+      const type = this.selectWorkflowType === 'custom' ? '' : 'release'
       getWorkflowTemplateListAPI(type).then(res => {
-        console.log(res)
+        this.modelList = res
       })
     }
   },
@@ -812,6 +835,65 @@ export default {
       margin-bottom: 22px;
       margin-left: 25px;
       color: #999;
+    }
+  }
+
+  .model-dialog {
+    display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    margin-bottom: 8px;
+    padding: 0 16px;
+    overflow: auto;
+    font-size: 14px;
+    line-height: 22px;
+    background: #fff;
+    cursor: pointer;
+
+    .header {
+      flex: 0 0 240px;
+      max-width: 240px;
+      cursor: auto;
+
+      &-name {
+        display: flex;
+        align-items: center;
+
+        a {
+          display: flex;
+          font-weight: 500;
+
+          .name-span {
+            display: inline-block;
+            max-width: 180px;
+            margin-right: 8px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+
+      .icon {
+        margin-left: 2px;
+        font-size: 12px;
+      }
+    }
+
+    // .stages {
+    //   width: 400px;
+    //   overflow: hidden;
+    // }
+
+    .desc {
+      flex: 1 0 20%;
+      color: @fontLightGray;
+      font-size: 13px;
     }
   }
 }
