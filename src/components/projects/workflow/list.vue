@@ -68,10 +68,16 @@
         <el-radio v-model="selectWorkflowType" label="product">工作流</el-radio>
         <div class="type-desc">具有对项目环境构建、部署、测试和服务版本交付的能力</div>
         <!-- <el-radio v-model="selectWorkflowType" label="common">通用-工作流</el-radio>
-        <div class="type-desc">可自定义工作流程，内置构建、K8s 部署、小程序发版等步骤</div> -->
-        <el-radio v-model="selectWorkflowType" label="custom">自定义工作流<el-tag type="success" size="small" class="mg-l8">new</el-tag></el-radio>
+        <div class="type-desc">可自定义工作流程，内置构建、K8s 部署、小程序发版等步骤</div>-->
+        <el-radio v-model="selectWorkflowType" label="custom">
+          自定义工作流
+          <el-tag type="success" size="small" class="mg-l8">new</el-tag>
+        </el-radio>
         <div class="type-desc">可自定义工作流步骤和自由编排执行顺序</div>
-        <el-radio v-model="selectWorkflowType" label="release">发布工作流<el-tag type="success" size="small" class="mg-l8">new</el-tag></el-radio>
+        <el-radio v-model="selectWorkflowType" label="release">
+          发布工作流
+          <el-tag type="success" size="small" class="mg-l8">new</el-tag>
+        </el-radio>
         <div class="type-desc"></div>
       </div>
       <div slot="footer">
@@ -110,7 +116,13 @@
         </el-form-item>
         <el-form-item label="选择工作流" prop="workflows" >
           <div style="width: 100%; max-height: 450px; overflow-y: auto;">
-            <el-checkbox v-model="item.enabled" :label="item"  v-for="item in presetWorkflowInfo.workflows" :key="item.workflow_name" style="display: block;">{{item.workflow_display_name}}</el-checkbox>
+            <el-checkbox
+              v-model="item.enabled"
+              :label="item"
+              v-for="item in presetWorkflowInfo.workflows"
+              :key="item.workflow_name"
+              style="display: block;"
+            >{{item.workflow_display_name}}</el-checkbox>
           </div>
         </el-form-item>
       </el-form>
@@ -119,11 +131,12 @@
         <el-button size="small" @click="resetForm('viewForm')">取消</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false">
-      <div >
-        <div class="mg-b16">空白工作流</div>
-        <div v-if="selectWorkflowType==='release'" class="mg-b16">发布工作流模版</div>
-        <div v-for="item in modelList" :key="item.id" class="model-dialog">
+    <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false" class="model-dialog">
+      <div class="title">空白工作流</div>
+      <el-card></el-card>
+      <div class="title">发布工作流模版</div>
+      <el-card v-if="selectWorkflowType==='release'">
+        <div v-for="item in modelList" :key="item.id" class="wrap">
           <section class="header" @click.stop>
             <div class="header-name">
               <router-link :to="`/v1/template/workflows/config?id=${item.id}`">
@@ -138,8 +151,9 @@
             <CusTags :values="item.stages"></CusTags>
           </section>
         </div>
-        <div>内置模版</div>
-      </div>
+      </el-card>
+      <div class="title">内置模版</div>
+      <el-card></el-card>
       <span slot="footer">
         <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
         <el-button size="small" @click="isShowModelDialog=false">取消</el-button>
@@ -839,61 +853,60 @@ export default {
   }
 
   .model-dialog {
-    display: flex;
-    flex-flow: row nowrap;
-    flex-grow: 1;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    width: 100%;
-    height: 40px;
-    margin-bottom: 8px;
-    padding: 0 16px;
-    overflow: auto;
-    font-size: 14px;
-    line-height: 22px;
-    background: #fff;
-    cursor: pointer;
+    .wrap {
+      display: flex;
+      flex-flow: row nowrap;
+      flex-grow: 1;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      width: 100%;
+      height: 60px;
+      padding: 0 16px;
+      overflow: auto;
+      font-size: 14px;
+      line-height: 22px;
+      background: #f5f5f5;
+      cursor: pointer;
 
-    .header {
-      flex: 0 0 240px;
-      max-width: 240px;
-      cursor: auto;
+      .header {
+        max-width: 200px;
+        cursor: auto;
 
-      &-name {
-        display: flex;
-        align-items: center;
-
-        a {
+        &-name {
           display: flex;
-          font-weight: 500;
+          align-items: center;
 
-          .name-span {
-            display: inline-block;
-            max-width: 180px;
-            margin-right: 8px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+          a {
+            display: flex;
+            font-weight: 500;
+
+            .name-span {
+              display: inline-block;
+              max-width: 180px;
+              margin-right: 8px;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
           }
+        }
+
+        .icon {
+          margin-left: 2px;
+          font-size: 12px;
         }
       }
 
-      .icon {
-        margin-left: 2px;
-        font-size: 12px;
+      .desc {
+        flex: 1 0 20%;
+        color: @fontLightGray;
+        font-size: 13px;
       }
     }
 
-    // .stages {
-    //   width: 400px;
-    //   overflow: hidden;
-    // }
-
-    .desc {
-      flex: 1 0 20%;
-      color: @fontLightGray;
-      font-size: 13px;
+    .title {
+      margin: 16px 0;
     }
   }
 }

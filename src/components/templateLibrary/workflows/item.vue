@@ -6,14 +6,13 @@
           <el-tooltip effect="dark" :content="modelInfo.template_name" placement="top">
             <span class="header-span">{{ modelInfo.template_name }}</span>
           </el-tooltip>
-          <!-- <el-tag v-if="modelInfo.modelInfo_type === 'common_modelInfo'" size="mini" class="custom">自定义</el-tag> -->
         </router-link>
       </div>
     </section>
     <section class="stages">
       <CusTags :values="modelInfo.stages"></CusTags>
     </section>
-    <section class="desc">{{ 21 }}</section>
+    <section class="desc">{{ modelInfo.description }}</section>
     <section class="operations" @click.stop>
       <template>
         <router-link :to="pipelineLink">
