@@ -9,6 +9,12 @@
               <span class="name">{{item.name}}</span>
             </li>
           </router-link>
+          <router-link :to="`/v1/template/workflows`" v-if="hasPlutus">
+            <li class="nav-item">
+              <i v-if="item.icon" class="icon iconfont icongongzuoliucheng"></i>
+              <span class="name">工作流</span>
+            </li>
+          </router-link>
         </ul>
       </div>
     </div>
@@ -26,6 +32,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {}
@@ -53,14 +60,12 @@ export default {
           name: '构建',
           icon: 'iconfont iconvery-build',
           url: `/v1/template/builds`
-        },
-        {
-          name: '工作流',
-          icon: 'iconfont icongongzuoliucheng',
-          url: `/v1/template/workflows`
         }
       ]
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     handleCommand (val) {
