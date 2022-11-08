@@ -4,16 +4,24 @@
       <ul class="dropdown-menu">
         <span class="title">快捷链接</span>
         <li role="separator" class="divider"></li>
-        <li v-for="(link, index) in links" :key="index" class="link-container">
-          <a :href="link.url" target="_blank">
-            <span class="icon">
-              <img src="@assets/icons/others/link.svg" />
-            </span>
-            <div class="info-wrap">
-              <span class="link-name">{{link.name}}</span>
-              <span class="link-url">{{link.url}}</span>
-            </div>
-          </a>
+        <template v-if="links.length > 0">
+          <li v-for="(link, index) in links" :key="index" class="link-container">
+            <a :href="link.url" target="_blank">
+              <span class="icon">
+                <img src="@assets/icons/others/link.svg" />
+              </span>
+              <div class="info-wrap">
+                <span class="link-name">{{link.name}}</span>
+                <span class="link-url">{{link.url}}</span>
+              </div>
+            </a>
+          </li>
+        </template>
+        <li v-else class="no-link">
+          <span class="icon">
+            <img src="@assets/icons/others/link.svg" />
+          </span>
+          <span class="desc">暂无快捷链接</span>
         </li>
       </ul>
       <span slot="reference">
@@ -70,6 +78,26 @@ export default {
       display: flex;
     }
 
+    .no-link {
+      display: flex;
+      align-items: center;
+      padding: 60px 40px;
+
+      .icon {
+        margin-right: 5px;
+
+        img {
+          width: 18px;
+          height: 18px;
+        }
+      }
+
+      .desc {
+        color: #c0c4cc;
+        font-size: 14px;
+      }
+    }
+
     .link-container {
       display: flex;
       flex-direction: column;
@@ -107,7 +135,7 @@ export default {
 
           .link-url {
             display: flex;
-            color: rgb(88, 88, 88);
+            color: #909399;
             font-size: 12px;
           }
         }

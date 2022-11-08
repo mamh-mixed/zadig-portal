@@ -136,7 +136,7 @@ export default {
 
           .link-desc {
             display: flex;
-            color: rgb(88, 88, 88);
+            color: #909399;
             font-size: 12px;
           }
         }
