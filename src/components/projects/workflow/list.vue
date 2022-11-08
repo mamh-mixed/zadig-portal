@@ -122,7 +122,6 @@
     <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false">
       <div >
         <div class="mg-b16">空白工作流</div>
-        <div v-if="selectWorkflowType==='custom'" class="mg-b16">自定义工作流模版</div>
         <div v-if="selectWorkflowType==='release'" class="mg-b16">发布工作流模版</div>
         <div v-for="item in modelList" :key="item.id" class="model-dialog">
           <section class="header" @click.stop>
@@ -326,10 +325,11 @@ export default {
         path = '/workflows/product/create'
       } else if (type === 'common') {
         path = '/workflows/common/create'
-      } else {
+      } else if (type === 'release') {
         this.isShowModelDialog = true
         this.getWorkflowTemplateList()
-        // path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
+      } else {
+        path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
       }
       this.$router.push(
         `${path}?projectName=${this.projectName ? this.projectName : ''}`
