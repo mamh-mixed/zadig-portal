@@ -113,35 +113,6 @@ export default {
         }
       }
     }
-    // li {
-    //   display: flex;
-    //   padding: 4px 8px;
-
-    //   & > a {
-    //     display: flex;
-    //     clear: both;
-    //     color: #333;
-    //     font-weight: normal;
-    //     line-height: 1.42857143;
-    //     white-space: nowrap;
-    //     .icon {
-    //       position: relative;
-    //       margin-right: 2px;
-    //       font-size: 16px;
-    //     }
-    //   }
-
-    //   &:hover {
-    //     color: #262626;
-    //     text-decoration: none;
-    //     background-color: rgba(0, 102, 255, 0.07);
-    //     border-radius: 6px;
-
-    //     & > a {
-    //       color: @themeColor;
-    //     }
-    //   }
-    // }
   }
 }
 
