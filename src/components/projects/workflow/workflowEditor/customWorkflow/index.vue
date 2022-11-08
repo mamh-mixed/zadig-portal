@@ -17,7 +17,7 @@
           >{{item.label}}</span>
         </div>
         <div>
-          <el-button type="text" @click="isShowModelDialog=true">保存为模版</el-button>
+          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模版</el-button>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
@@ -273,6 +273,7 @@ import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
+import { mapState } from 'vuex'
 const pinyin = require('pinyin')
 
 export default {
@@ -408,7 +409,10 @@ export default {
         return item.value === this.curDrawer
       })
       return res ? res.drawerHideButton : false
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   created () {
     this.init()

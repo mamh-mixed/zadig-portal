@@ -11,7 +11,7 @@
           </router-link>
           <router-link :to="`/v1/template/workflows`" v-if="hasPlutus">
             <li class="nav-item">
-              <i v-if="item.icon" class="icon iconfont icongongzuoliucheng"></i>
+              <i class="icon iconfont icongongzuoliucheng"></i>
               <span class="name">工作流</span>
             </li>
           </router-link>
