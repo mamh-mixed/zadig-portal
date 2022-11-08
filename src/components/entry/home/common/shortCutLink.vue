@@ -1,79 +1,50 @@
 <template>
-  <div class="doc-link-container">
-    <el-popover placement="bottom" popper-class="doc-droplist" trigger="hover">
+  <div class="shortcut-link-container">
+    <el-popover placement="bottom" popper-class="shortcuts-droplist" trigger="hover">
       <ul class="dropdown-menu">
-        <span class="title">文档链接</span>
+        <span class="title">快捷链接</span>
         <li role="separator" class="divider"></li>
         <li v-for="(link, index) in links" :key="index" class="link-container">
           <a :href="link.url" target="_blank">
             <span class="icon">
-              <img src="@assets/icons/others/doc.svg" />
+              <img src="@assets/icons/others/link.svg" />
             </span>
             <div class="info-wrap">
               <span class="link-name">{{link.name}}</span>
-              <span class="link-desc">{{link.desc}}</span>
+              <span class="link-url">{{link.url}}</span>
             </div>
           </a>
         </li>
       </ul>
       <span slot="reference">
-        <i class="function-icon iconfont iconvery-teach"></i>
+        <i class="function-icon iconfont iconkaifang"></i>
       </span>
     </el-popover>
   </div>
 </template>
 <script>
+import { getExternalLinksAPI } from '@api'
+import { mapState } from 'vuex'
 export default {
-  data () {
-    return {
-      links: [
-        {
-          name: '文档站',
-          desc: 'Zadig 官方文档站入口',
-          url: 'https://docs.koderover.com'
-        },
-        {
-          name: '入门',
-          desc: '了解 Zadig 的业务架构以及核心能力',
-          url: 'https://docs.koderover.com/zadig/quick-start/introduction/'
-        },
-        {
-          name: '最佳实践',
-          desc: '查看来自官方的最佳实践',
-          url: 'https://koderover.com/tutorials/'
-        },
-        {
-          name: '工作流',
-          desc: '学习工作流的配置和使用',
-          url: 'https://docs.koderover.com/zadig/project/workflow/'
-        },
-        {
-          name: '环境',
-          desc: '查看环境的相关操作',
-          url: 'https://docs.koderover.com/zadig/project/env/k8s/'
-        },
-        {
-          name: '项目管理',
-          desc: '了解不同项目的适应场景以及如何创建项目',
-          url: 'https://docs.koderover.com/zadig/project/overview/'
-        },
-        {
-          name: '系统设置',
-          desc: '了解系统中的相关配置项',
-          url: 'https://docs.koderover.com/zadig/settings/codehost/overview'
-        },
-        {
-          name: '开发者中心',
-          desc: '通过 Open API 调用的方式，玩转 Zadig',
-          url: 'https://docs.koderover.com/zadig/api/usage/'
-        }
-      ]
+  computed: {
+    ...mapState({
+      links: state => state.externalLink.links
+    })
+  },
+  methods: {
+    getExternalLinks () {
+      getExternalLinksAPI().then(res => {
+        this.$store.commit('SET_EXTERNAL_LINK', res || [])
+      })
     }
+  },
+  created () {
+    this.getExternalLinks()
   }
 }
 </script>
 <style lang="less">
-.doc-droplist {
+.shortcuts-droplist {
   min-width: 0;
 
   .dropdown-menu {
@@ -134,7 +105,7 @@ export default {
             font-size: 13px;
           }
 
-          .link-desc {
+          .link-url {
             display: flex;
             color: rgb(88, 88, 88);
             font-size: 12px;
@@ -142,10 +113,39 @@ export default {
         }
       }
     }
+    // li {
+    //   display: flex;
+    //   padding: 4px 8px;
+
+    //   & > a {
+    //     display: flex;
+    //     clear: both;
+    //     color: #333;
+    //     font-weight: normal;
+    //     line-height: 1.42857143;
+    //     white-space: nowrap;
+    //     .icon {
+    //       position: relative;
+    //       margin-right: 2px;
+    //       font-size: 16px;
+    //     }
+    //   }
+
+    //   &:hover {
+    //     color: #262626;
+    //     text-decoration: none;
+    //     background-color: rgba(0, 102, 255, 0.07);
+    //     border-radius: 6px;
+
+    //     & > a {
+    //       color: @themeColor;
+    //     }
+    //   }
+    // }
   }
 }
 
-.doc-link-container {
+.shortcut-link-container {
   .function-icon {
     color: #a0a0a0;
     font-size: 20px;
