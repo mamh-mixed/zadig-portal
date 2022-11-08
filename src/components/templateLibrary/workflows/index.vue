@@ -6,7 +6,7 @@
         <el-tab-pane label="发布工作流" name="release"></el-tab-pane>
         <div v-if="modelList.length>0">
           <div v-for="item in modelList" :key="item.name">
-            <Item :modelInfo="item" @success="getModelList(activeName)" />
+            <Item :modelInfo="item" :type="activeName" @success="getModelList(activeName)" />
           </div>
         </div>
         <div v-else class="empty">

@@ -31,8 +31,15 @@ export default {
   },
   computed: {
     taskList () {
+      const filterJobTypeList = jobTypeList.filter(
+        item => item.workflowType === this.type
+      )
+      console.log(filterJobTypeList)
       // 由两部分组成 一部分前端定义 + 后端插件列表（并且插件需要自己造结构）
-      return this.jobTypeList.concat(this.plugins)
+      return filterJobTypeList.concat(this.plugins)
+    },
+    type () {
+      return this.$route.query.type
     }
   },
   created () {

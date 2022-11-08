@@ -146,6 +146,24 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+            <JobCanaryDeploy v-if="job.type === jobType.canaryDeploy" :job="job" :ref="jobType.canaryDeploy" />
+            <JobK8sResourceUpdate v-if="job.type === jobType.k8sResourcePatch" :job="job" :ref="jobType.k8sResourcePatch" />
+            <JobCanaryConfirm v-if="job.type === jobType.canaryConfirm" :job="job" :workflowInfo="payload" :ref="jobType.canaryConfirm" />
+            <JobBlueGreenDeploy v-if="job.type === jobType.blueGreenDeploy" :job="job" :ref="jobType.blueGreenDeploy" />
+            <JobBlueGreenConfirm
+              v-if="job.type === jobType.blueGreenConfirm"
+              :job="job"
+              :workflowInfo="payload"
+              :ref="jobType.blueGreenConfirm"
+            />
+            <JobGrayRollback v-if="job.type === jobType.k8sGrayRollback" :job="job" :workflowInfo="payload" :ref="jobType.k8sGrayRollback" />
+            <JobK8sGrayDeploy
+              v-if="job.type === jobType.grayDeploy"
+              :job="job"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+              :ref="jobType.grayDeploy"
+            />
           </div>
         </footer>
       </Multipane>
@@ -237,6 +255,14 @@ import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
 import JobScanning from './components/jobs/jobScanning.vue'
+import JobCanaryDeploy from './components/jobs/jobCanaryDeploy.vue'
+import JobCanaryConfirm from './components/jobs/jobCanaryConfirm.vue'
+import JobBlueGreenDeploy from './components/jobs/jobBlueGreenDeploy.vue'
+import JobBlueGreenConfirm from './components/jobs/jobBlueGreenConfirm.vue'
+import JobGrayRollback from './components/jobs/jobGrayRollback.vue'
+import JobK8sGrayDeploy from './components/jobs/jobK8sGrayDeploy'
+import JobK8sResourceUpdate from './components/jobs/jobK8sResourceUpdate'
+
 import Env from './components/base/env.vue'
 import jsyaml from 'js-yaml'
 import { codemirror } from 'vue-codemirror'
@@ -314,7 +340,14 @@ export default {
     JobTest,
     JobScanning,
     codemirror,
-    Env
+    Env,
+    JobK8sResourceUpdate,
+    JobCanaryDeploy,
+    JobCanaryConfirm,
+    JobBlueGreenDeploy,
+    JobBlueGreenConfirm,
+    JobGrayRollback,
+    JobK8sGrayDeploy
   },
   computed: {
     projectName () {
@@ -366,6 +399,9 @@ export default {
         return item.value === this.curDrawer
       })
       return res ? res.drawerHideButton : false
+    },
+    workflowType () {
+      return this.$route.query.type
     }
   },
   created () {
@@ -496,16 +532,13 @@ export default {
           }
         })
       })
-      // this.payload.project = this.projectName
+      this.payload.category = this.workflowType
       const yamlParams = jsyaml.dump(this.payload)
       if (this.isEdit) {
         editWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('保存成功')
-            // if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
             this.$router.push(`/v1/template/workflows`)
-
-            // }
           })
           .catch(() => {
             this.payload = this.notComputedPayload
@@ -514,7 +547,6 @@ export default {
         addWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('新建成功')
-            // this.getModelDetail(this.payload.name)
             this.$router.push(`/v1/template/workflows`)
           })
           .catch(() => {

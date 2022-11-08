@@ -63,8 +63,8 @@ export default {
     }
   },
   methods: {
-    handleCommand () {
-      this.$router.push(`/v1/template/workflows/config`)
+    handleCommand (val) {
+      this.$router.push(`/v1/template/workflows/config?type=${val}`)
     }
   }
 }

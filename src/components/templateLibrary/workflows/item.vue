@@ -45,6 +45,10 @@ export default {
     modelInfo: {
       type: Object,
       required: true
+    },
+    type: {
+      type: String,
+      default: 'custom'
     }
   },
   computed: {
@@ -52,13 +56,13 @@ export default {
       return this.$route.params.project_name
     },
     pipelineLink () {
-      return `/v1/template/workflows/config?id=${this.modelInfo.id}`
+      return `/v1/template/workflows/config?id=${this.modelInfo.id}&type=${this.type}`
     }
   },
   methods: {
     deleteModel (modelInfo) {
-      const { name, id } = modelInfo
-      this.$confirm(`确定要删除 ${name} 模版?`, '确认', {
+      const { template_name, id } = modelInfo
+      this.$confirm(`确定要删除 ${template_name} 模版?`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

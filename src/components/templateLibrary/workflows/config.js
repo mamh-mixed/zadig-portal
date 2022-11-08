@@ -53,42 +53,96 @@ const jobTypeList = [
     name: 'zadig-build',
     type: 'zadig-build',
     is_offical: true,
-    description: '可直接引用「项目」-「构建」模块中的配置'
+    description: '可直接引用「项目」-「构建」模块中的配置',
+    workflowType: 'custom'
   },
   {
     label: '部署',
     name: 'zadig-deploy',
     type: 'zadig-deploy',
     is_offical: true,
-    description: '可更新容器形态的服务镜像'
+    description: '可更新容器形态的服务镜像',
+    workflowType: 'custom'
   },
   {
     label: '通用任务',
     name: 'freestyle',
     type: 'freestyle',
     is_offical: true,
-    description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
+    description: '支持拉取代码、执行 Shell 脚本、文件存储等功能',
+    workflowType: 'custom'
   },
   {
     label: 'Kubernetes 部署',
     name: 'custom-deploy',
     type: 'custom-deploy',
     is_offical: true,
-    description: '可更新 Kubernetes 中容器镜像'
+    description: '可更新 Kubernetes 中容器镜像',
+    workflowType: 'custom'
   },
   {
     label: '测试',
     name: 'zadig-test',
     type: 'zadig-test',
     is_offical: true,
-    description: '可直接引用「项目」-「测试」模块中的测试配置'
+    description: '可直接引用「项目」-「测试」模块中的测试配置',
+    workflowType: 'custom'
   },
   {
     label: '代码扫描',
     name: 'zadig-scanning',
     type: 'zadig-scanning',
     is_offical: true,
-    description: '可直接引用「项目」-「代码扫描」模块中的配置。'
+    description: '可直接引用「项目」-「代码扫描」模块中的配置。',
+    workflowType: 'custom'
+  },
+  {
+    label: '部署蓝绿环境',
+    name: 'blue-green-deploy',
+    type: 'k8s-blue-green-deploy',
+    is_offical: true,
+    description: '基于 Kubernetes 原生的能力创建蓝绿环境',
+    workflowType: 'release'
+  },
+  {
+    label: '蓝绿发布',
+    name: 'blue-green-release',
+    type: 'k8s-blue-green-release',
+    is_offical: true,
+    description: '结合前置的 [部署蓝绿环境] 任务，执行蓝绿发布',
+    workflowType: 'release'
+  },
+  {
+    label: '部署金丝雀',
+    name: 'canary-deploy',
+    type: 'k8s-canary-deploy',
+    is_offical: true,
+    description: '基于 Kubernetes 原生的能力部署金丝雀',
+    workflowType: 'release'
+  },
+  {
+    label: '金丝雀发布',
+    name: 'canary-confirm',
+    type: 'k8s-canary-release',
+    is_offical: true,
+    description: '结合前置的 [部署金丝雀] 任务执行金丝雀发布',
+    workflowType: 'release'
+  },
+  {
+    label: '灰度回滚',
+    name: 'gray-deploy',
+    type: 'k8s-gray-rollback',
+    is_offical: true,
+    description: '基于 Kubernetes 原生的能力执行回滚任务，滚动升级到灰度之前状态',
+    workflowType: 'release'
+  },
+  {
+    label: '灰度发布',
+    name: 'gray-deploy',
+    type: 'k8s-gray-release',
+    is_offical: true,
+    description: '基于 Kubernetes 原生的能力执行灰度发布',
+    workflowType: 'release'
   }
 ]
 const configList = [
@@ -110,7 +164,15 @@ const jobType = {
   plugin: 'plugin',
   k8sDeploy: 'custom-deploy',
   test: 'zadig-test',
-  scanning: 'zadig-scanning'
+  scanning: 'zadig-scanning',
+  canaryDeploy: 'k8s-canary-deploy',
+  canaryConfirm: 'k8s-canary-release',
+  blueGreenDeploy: 'k8s-blue-green-deploy',
+  blueGreenConfirm: 'k8s-blue-green-release',
+  JobTest: 'zadig-test',
+  k8sResourcePatch: 'k8s-resource-patch',
+  k8sGrayRollback: 'k8s-gray-rollback',
+  grayDeploy: 'k8s-gray-release'
 }
 const editorOptions = {
   mode: 'yaml',
@@ -230,8 +292,22 @@ const notifyPlatform = [
     label: 'feishu',
     desc: '飞书'
   }]
+const editorJsonOptions = {
+  mode: 'application/json',
+  theme: 'neo',
+  lineNumbers: true,
+  lineWrapping: true,
+  indentUnit: 2,
+  tabSize: 2,
+  indentWithTabs: false,
+  autofocus: true,
+  extraKeys: {
+    'Ctrl-Space': 'autocomplete'
+  }
+}
 export {
   validateJobName,
+  editorJsonOptions,
   tabList,
   buildTabList,
   configList,
