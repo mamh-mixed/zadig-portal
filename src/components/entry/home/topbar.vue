@@ -60,6 +60,7 @@
         </div>
       </div>
       <div class="topbar-container-end">
+        <ShortCutLink class="function-icon" />
         <DocLink class="function-icon" />
         <Notification class="function-icon" />
         <div class="nav nav-item-bottom user-profile">
@@ -129,8 +130,9 @@
   </div>
 </template>
 <script>
-import Notification from './common/notification.vue'
+import ShortCutLink from './common/shortCutLink.vue'
 import DocLink from './common/docLink.vue'
+import Notification from './common/notification.vue'
 import mixin from '@/mixin/topbarMixin'
 import bus from '@utils/eventBus'
 import { mapState, mapGetters } from 'vuex'
@@ -218,8 +220,9 @@ export default {
     })
   },
   components: {
-    Notification,
-    DocLink
+    ShortCutLink,
+    DocLink,
+    Notification
   },
   mixins: [mixin]
 }
