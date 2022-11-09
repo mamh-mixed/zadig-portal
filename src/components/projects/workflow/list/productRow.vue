@@ -298,6 +298,7 @@ export default {
 
       &.workflow-desc {
         display: flex;
+        margin-top: 4px;
         overflow: hidden;
         white-space: nowrap;
       }
