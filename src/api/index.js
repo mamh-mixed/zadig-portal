@@ -264,6 +264,10 @@ export function getGlobalPermissionAPI () {
   return http.get(`/api/v1/policy/permission`)
 }
 
+export function getProjectPermissionAPI (projectName) {
+  return http.get(`/api/v1/policy/permission/project/${projectName}`)
+}
+
 // Env
 export function listProductAPI (projectName = '', envType = '') {
   if (envType) {
@@ -551,19 +555,19 @@ export function getViewPresetAPI (projectName, viewName) {
   return http.get(`/api/aslan/workflow/view/preset?projectName=${projectName}&viewName=${viewName}`)
 }
 
-export function getViewListAPI (projectName) {
+export function getWorkflowViewListAPI (projectName) {
   return http.get(`/api/aslan/workflow/view?projectName=${projectName}`)
 }
 
-export function addViewAPI (payload, projectName) {
+export function addWorkflowViewAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
 }
 
-export function editViewAPI (payload, projectName) {
+export function editWorkflowViewAPI (payload, projectName) {
   return http.put(`/api/aslan/workflow/view?projectName=${projectName}`, payload)
 }
 
-export function deleteViewAPI (projectName, viewName) {
+export function removeWorkflowViewAPI (projectName, viewName) {
   return http.delete(`/api/aslan/workflow/view/${projectName}/${viewName}?projectName=${projectName}`)
 }
 
@@ -1823,22 +1827,27 @@ export function deleteBuildTemplateAPI (id) {
   return http.delete(`/api/aslan/template/build/${id}`)
 }
 
-// Template workflows
+// Template Workflow
 export function getWorkflowTemplateListAPI (category) {
   return http.get(`/api/aslan/template/workflow?category=${category}`)
 }
+
 export function addWorkflowTemplateAPI (payload) {
   return http.post(`/api/aslan/template/workflow`, payload)
 }
+
 export function editWorkflowTemplateAPI (payload) {
   return http.put(`/api/aslan/template/workflow`, payload)
 }
+
 export function deleteWorkflowTemplateAPI (id) {
   return http.delete(`/api/aslan/template/workflow/${id}`)
 }
+
 export function getWorkflowTemplateDetailAPI (id) {
   return http.get(`/api/aslan/template/workflow/${id}`)
 }
+
 // Helm env and service
 export function getChartValuesYamlAPI (projectName, envName, serviceName = []) {
   return http.get(`/api/aslan/environment/rendersets/renderchart?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}`)

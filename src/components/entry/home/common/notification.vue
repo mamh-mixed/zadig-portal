@@ -1,116 +1,82 @@
 <template>
   <span class="notification">
-    <el-popover ref="popover4"
-                placement="bottom"
-                width="300"
-                popper-class="notify-container"
-                trigger="click"
-                v-model="showPopover">
+    <el-popover ref="notifyPop" placement="bottom" width="300" popper-class="notify-container" trigger="hover" v-model="showPopover">
       <div class="notify-header">
         <span class="msg">通知</span>
-        <el-tooltip class="item"
-                    effect="dark"
-                    content="通知设置"
-                    placement="top">
-          <router-link to="/v1/profile/info"
-                       class="setting pull-right">
+        <el-tooltip effect="dark" content="通知设置" placement="top">
+          <router-link to="/v1/profile/info" class="setting pull-right">
             <i class="el-icon-setting icon"></i>
           </router-link>
         </el-tooltip>
-        <el-tooltip class="item"
-                    effect="dark"
-                    content="全部通知设为已读"
-                    placement="top">
-          <span @click="notificationOperation('mark_all_as_read')"
-                style="margin-right: 15px;"
-                class="setread pull-right">
+        <el-tooltip effect="dark" content="全部通知设为已读" placement="top">
+          <span @click="notificationOperation('mark_all_as_read')" style="margin-right: 15px;" class="setread pull-right">
             <i class="el-icon-check"></i>
           </span>
         </el-tooltip>
       </div>
       <div class="notify-body">
-        <div v-if="notifications.length===0"
-             class="no-msg">没有通知</div>
+        <div v-if="notifications.length===0" class="no-msg">没有通知</div>
         <div>
           <ul class="notifications-list">
-            <li v-for="(notification,index) in notifications"
-                :key="index"
-                class="notification hasSeen level-error">
+            <li v-for="(notification,index) in notifications" :key="index" class="notification hasSeen level-error">
               <div v-if="notification.type===2">
-                <span class="icon"
-                      :class="colorTranslation(notification.content.status,'pipeline','task')"
-                      :title="notification.content.status"></span>
                 <h3>
                   <span>
-                    <span class="status"
-                          style="margin-right: 10px;">{{wordTranslation(notification.content.status,'pipeline','task')}}</span>
-                    <router-link @click.native="markAsRead(notification, index)"
-                                 :to="`/v1/projects/detail/${notification.content.product_name}/pipelines/${notification.content.type==='single'?notification.content.type:'multi'}/${notification.content.pipeline_name}/${notification.content.task_id}?status=${notification.content.status}`">
-                      <em>{{notification.content.pipeline_name}}
-                        <span class="notification-id">{{'#' +
-                          notification.content.task_id}}</span>
-                      </em><br>
+                    <el-tag
+                      size="mini"
+                      effect="plain"
+                      :type="$utils.taskElTagType(notification.content.status)"
+                      close-transition
+                    >{{ wordTranslation(notification.content.status,'pipeline','task')}}</el-tag>
+
+                    <router-link
+                      :to="`/v1/projects/detail/${notification.content.product_name}/pipelines/${notification.content.type==='single'?notification.content.type:'multi'}/${notification.content.pipeline_name}/${notification.content.task_id}?status=${notification.content.status}`"
+                    >
+                      <span @click="markAsRead(notification, index)" class="notification-id">
+                        {{'#' +
+                        notification.content.task_id}}
+                      </span>
                     </router-link>
+                    <br />
+                    <em>{{notification.content.pipeline_name}}</em>
                   </span>
                 </h3>
                 <div class="event-extra">
-                  <span :class="{'is-read':notification.is_read,'unread':!notification.is_read}">
-                    {{notification.is_read?'已读':'未读'}}
-                  </span>
+                  <span :class="{'is-read':notification.is_read,'unread':!notification.is_read}">{{notification.is_read?'已读':'未读'}}</span>
                   <span class="time">{{$utils.convertTimestamp(notification.create_time)}}</span>
                 </div>
-                <span @click="notificationOperation('mark_as_read', notification, index)"
-                      class="operation read">
-                  <el-tooltip class="item"
-                              effect="dark"
-                              content="设为已读"
-                              placement="top">
+                <span @click="notificationOperation('mark_as_read', notification, index)" class="operation read">
+                  <el-tooltip effect="dark" content="设为已读" placement="top">
                     <i class="el-icon-check"></i>
                   </el-tooltip>
                 </span>
-                <span @click="notificationOperation('delete', notification, index)"
-                      class="operation delete">
-                  <el-tooltip class="item"
-                              effect="dark"
-                              content="删除该通知"
-                              placement="top">
+                <span @click="notificationOperation('delete', notification, index)" class="operation delete">
+                  <el-tooltip effect="dark" content="删除该通知" placement="top">
                     <i class="el-icon-delete"></i>
                   </el-tooltip>
                 </span>
               </div>
               <div v-if="notification.type===3">
                 <h3>
-                  <span class="status"
-                        style="margin-right: 10px;">{{notification.content.title}}</span>
+                  <span class="status" style="margin-right: 10px;">{{notification.content.title}}</span>
                 </h3>
                 <div class="announcement-content">
                   <p>{{notification.content.content}}{{"("+notification.content.req_id+")"}}</p>
                 </div>
                 <div class="event-extra">
-                  <span class="is-read">
-                    {{notification.is_read?'已读':'未读'}}
-                  </span>
+                  <span class="is-read">{{notification.is_read?'已读':'未读'}}</span>
                   <span class="time">{{$utils.convertTimestamp(notification.create_time)}}</span>
                 </div>
-                <span @click="notificationOperation('mark_as_read', notification, index)"
-                      class="operation  read">
-                  <el-tooltip class="item"
-                              effect="dark"
-                              content="设为已读"
-                              placement="top">
+                <span @click="notificationOperation('mark_as_read', notification, index)" class="operation read">
+                  <el-tooltip effect="dark" content="设为已读" placement="top">
                     <i class="el-icon-check"></i>
                   </el-tooltip>
                 </span>
-                <span @click="notificationOperation('delete', notification, index)"
-                      class="operation delete">
-                  <el-tooltip class="item"
-                              effect="dark"
-                              content="删除该通知"
-                              placement="top">
+                <span @click="notificationOperation('delete', notification, index)" class="operation delete">
+                  <el-tooltip effect="dark" content="删除该通知" placement="top">
                     <i class="el-icon-delete"></i>
                   </el-tooltip>
                 </span>
-
               </div>
             </li>
           </ul>
@@ -118,11 +84,8 @@
       </div>
     </el-popover>
     <div class="notify">
-      <el-badge :value="unreadMsgs.length"
-                :max="99"
-                :hidden="unreadMsgs.length===0"
-                class="item">
-        <span v-popover:popover4>
+      <el-badge :value="unreadMsgs.length" :max="99" :hidden="unreadMsgs.length===0" class="item">
+        <span v-popover:notifyPop>
           <i class="el-icon-bell icon-bell"></i>
         </span>
       </el-badge>
@@ -131,7 +94,11 @@
 </template>
 <script>
 import { wordTranslate, colorTranslate } from '@utils/wordTranslate'
-import { getNotificationAPI, deleteNotificationAPI, markNotiReadAPI } from '@api'
+import {
+  getNotificationAPI,
+  deleteNotificationAPI,
+  markNotiReadAPI
+} from '@api'
 export default {
   props: {},
   data: function () {
@@ -143,7 +110,7 @@ export default {
   },
   methods: {
     getNotifications () {
-      getNotificationAPI().then((res) => {
+      getNotificationAPI().then(res => {
         this.notifications = res
         this.unreadMsgs = []
         this.notifications.forEach(element => {
@@ -155,19 +122,19 @@ export default {
       })
     },
 
-    notificationOperation (operation, notify_obj, index) {
+    notificationOperation (operation, item, index) {
       if (operation === 'delete') {
         const payload = {
-          ids: [notify_obj.id]
+          ids: [item.id]
         }
-        deleteNotificationAPI(payload).then((res) => {
+        deleteNotificationAPI(payload).then(res => {
           this.getNotifications()
         })
       } else if (operation === 'mark_as_read') {
         const payload = {
-          ids: [notify_obj.id]
+          ids: [item.id]
         }
-        markNotiReadAPI(payload).then((res) => {
+        markNotiReadAPI(payload).then(res => {
           this.getNotifications()
         })
       } else if (operation === 'mark_all_as_read') {
@@ -177,7 +144,7 @@ export default {
         this.notifications.forEach(element => {
           payload.ids.push(element.id)
         })
-        markNotiReadAPI(payload).then((res) => {
+        markNotiReadAPI(payload).then(res => {
           this.getNotifications()
         })
       }
@@ -188,9 +155,9 @@ export default {
     wordTranslation (word, category, subitem) {
       return wordTranslate(word, category, subitem)
     },
-    markAsRead (notify_obj, index) {
-      if (!notify_obj.is_read) {
-        this.notificationOperation('mark_as_read', notify_obj, index)
+    markAsRead (item, index) {
+      if (!item.is_read) {
+        this.notificationOperation('mark_as_read', item, index)
       }
     }
   },
@@ -211,7 +178,7 @@ export default {
 
   .notification-id {
     color: @themeColor;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
   }
 }
@@ -258,17 +225,17 @@ export default {
 
     &::-webkit-scrollbar-track {
       background-color: #f5f5f5;
-      border-radius: 6px;
+      border-radius: 4px;
     }
 
     &::-webkit-scrollbar {
-      width: 6px;
+      width: 4px;
       background-color: #f5f5f5;
     }
 
     &::-webkit-scrollbar-thumb {
-      border-radius: 6px;
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
     }
 
     .no-msg {
@@ -280,6 +247,9 @@ export default {
     }
 
     .notifications-list {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
       margin: 0;
       padding-left: 0;
       list-style: none;

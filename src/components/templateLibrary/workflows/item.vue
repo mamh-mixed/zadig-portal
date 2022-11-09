@@ -10,7 +10,7 @@
       </div>
     </section>
     <section class="stages">
-      <CusTags :values="modelInfo.stages"></CusTags>
+      <CusTags :values="modelInfo.stages" noLimit />
     </section>
     <section class="desc">{{ modelInfo.description }}</section>
     <section class="operations" @click.stop>

@@ -60,80 +60,11 @@
         </div>
       </div>
       <div class="topbar-container-end">
-        <el-popover placement="bottom" popper-class="help-droplist" trigger="click">
-          <ul class="dropdown-menu" uib-dropdown-menu>
-            <li>
-              <a href="https://docs.koderover.com/zadig/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>文档站</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://docs.koderover.com/zadig/quick-start/introduction/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>入门</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://www.koderover.com/tutorials/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>最佳实践</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://docs.koderover.com/zadig/workflow/trigger/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>工作流</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://docs.koderover.com/zadig/env/loadbalance/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>环境</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://docs.koderover.com/zadig/project/overview/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>项目管理</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://docs.koderover.com/zadig/delivery/artifact/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>交付中心</span>
-              </a>
-            </li>
-            <li role="separator" class="divider"></li>
-            <li>
-              <a href="https://docs.koderover.com/zadig/settings/codehost/gitlab/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>系统设置</span>
-              </a>
-            </li>
-            <li>
-              <a href="https://docs.koderover.com/zadig/api/usage/" target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>开发者中心</span>
-              </a>
-            </li>
-            <!-- <li>
-              <a href="https://docs.koderover.com/zadig/glossary/"
-                 target="_blank">
-                <i class="icon el-icon-link"></i>
-                <span>术语表</span>
-              </a>
-            </li>-->
-          </ul>
-          <span slot="reference">
-            <i class="help-icon iconfont iconvery-teach"></i>
-          </span>
-        </el-popover>
-        <span>
-          <Notification class="icon notify" />
-        </span>
+        <ShortCutLink class="function-icon" />
+        <DocLink class="function-icon" />
+        <Notification class="function-icon" />
         <div class="nav nav-item-bottom user-profile">
-          <el-popover placement="bottom" width="240" popper-class="dropdown-menu" trigger="click">
+          <el-popover placement="bottom" width="240" popper-class="dropdown-menu" trigger="hover">
             <div class="flex">
               <div class="profile-menu__list">
                 <ul class="profile-list profile-list__with-icon">
@@ -199,6 +130,8 @@
   </div>
 </template>
 <script>
+import ShortCutLink from './common/shortCutLink.vue'
+import DocLink from './common/docLink.vue'
 import Notification from './common/notification.vue'
 import mixin from '@/mixin/topbarMixin'
 import bus from '@utils/eventBus'
@@ -287,6 +220,8 @@ export default {
     })
   },
   components: {
+    ShortCutLink,
+    DocLink,
     Notification
   },
   mixins: [mixin]
@@ -314,53 +249,8 @@ export default {
   }
 }
 
-.help-droplist {
-  .dropdown-menu {
-    margin: 0 2px;
-    padding: 8px 0;
-    list-style: none;
-
-    .divider {
-      height: 1px;
-      margin: 9px 0;
-      overflow: hidden;
-      background-color: #e5e5e5;
-    }
-
-    li {
-      & > a {
-        display: block;
-        clear: both;
-        padding: 3px 20px;
-        padding: 4px 0 4px 5px;
-        color: #333;
-        font-weight: normal;
-        line-height: 1.42857143;
-        white-space: nowrap;
-
-        .icon {
-          position: relative;
-          margin-right: 5px;
-          font-size: 16px;
-        }
-      }
-
-      &:hover {
-        color: #262626;
-        text-decoration: none;
-        background-color: rgba(0, 102, 255, 0.07);
-        border-radius: 6px;
-
-        & > a {
-          color: @themeColor;
-        }
-      }
-    }
-  }
-}
-
-.help-icon {
-  margin: 0 38px;
+.function-icon {
+  margin: 0 20px;
   color: #a0a0a0;
   font-size: 20px;
   cursor: pointer;
@@ -454,10 +344,6 @@ export default {
     justify-content: space-between;
     width: 100%;
     height: 100%;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
 
     .topbar-container-start {
       display: flex;
@@ -540,20 +426,11 @@ export default {
     }
 
     .topbar-container-end {
-      display: -webkit-box;
-      display: -ms-flexbox;
       display: flex;
       flex-grow: 0;
       flex-shrink: 0;
       align-items: center;
       justify-content: space-between;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-      -webkit-box-flex: 0;
-      -ms-flex-positive: 0;
-      -ms-flex-negative: 0;
 
       * {
         max-height: 100%;
@@ -571,7 +448,6 @@ export default {
 
       .notify {
         font-size: 20px;
-        line-height: 60px;
       }
 
       .user-profile {

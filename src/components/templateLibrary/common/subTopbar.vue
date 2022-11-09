@@ -19,10 +19,19 @@
       </div>
     </div>
     <div class="operation">
-      <template v-if="$route.path === `/v1/template/workflows`">
-        <el-dropdown @command="handleCommand">
-          <el-button type="primary" size="small">新建工作流模版</el-button>
-          <el-dropdown-menu slot="dropdown">
+      <template>
+        <el-dropdown
+          v-if="$route.path === `/v1/template/workflows`"
+          @command="createWorkflowTemplate"
+          placement="bottom"
+          trigger="click"
+        >
+          <button type="button" class="display-btn el-button">
+            <i class="el-icon-plus"></i>
+            &nbsp;&nbsp;工作流模板&nbsp;&nbsp;
+            <i class="el-icon-caret-bottom el-icon--right"></i>
+          </button>
+          <el-dropdown-menu slot="dropdown" class="create-workflow-template">
             <el-dropdown-item command="custom">自定义工作流</el-dropdown-item>
             <el-dropdown-item command="release">发布工作流</el-dropdown-item>
           </el-dropdown-menu>
@@ -68,7 +77,7 @@ export default {
     })
   },
   methods: {
-    handleCommand (val) {
+    createWorkflowTemplate (val) {
       this.$router.push(`/v1/template/workflows/config?type=${val}`)
     }
   }
@@ -128,6 +137,46 @@ export default {
   .operation {
     display: flex;
     margin-right: 80px;
+
+    .el-button {
+      padding: 10px 15px;
+      color: @themeColor;
+      font-weight: 400;
+      border: 1px solid @themeColor;
+      border-radius: 4px;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .display-btn {
+      padding: 10px 15px;
+      color: @themeColor;
+      font-weight: 400;
+      font-size: 14px;
+      background-color: #fff;
+      border: 1px solid @themeColor;
+      border-radius: 4px;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+    }
+  }
+}
+
+.el-dropdown-menu.el-popper.create-workflow-template {
+  margin-top: 2px;
+
+  .el-dropdown-menu__item {
+    margin: 0 10px;
+    padding: 0 10px;
+    font-weight: 300;
+    border-radius: 6px;
+
+    .item-icon {
+      font-size: 14px;
+    }
+  }
+
+  .popper__arrow {
+    display: none;
   }
 }
 </style>
