@@ -240,7 +240,6 @@ import {
 import {
   addWorkflowTemplateAPI,
   editWorkflowTemplateAPI,
-  getAssociatedBuildsAPI,
   getWorkflowTemplateDetailAPI,
   checkCustomWorkflowYaml
 } from '@api'
@@ -409,7 +408,6 @@ export default {
   },
   methods: {
     init () {
-      this.getServiceAndBuildList()
       // edit
       if (this.isEdit) {
         this.getModelDetail(this.$route.query.id)
@@ -752,17 +750,6 @@ export default {
             this.$refs[this.beInitCompRef].initOpe()
         })
       }
-    },
-    getServiceAndBuildList () {
-      const projectName = this.projectName
-      // const key = this.$utils.rsaEncrypt()
-      getAssociatedBuildsAPI(projectName, true).then(res => {
-        res.forEach(item => {
-          item.value = `${item.service_name}/${item.service_module}`
-        })
-        this.serviceAndBuilds = res
-        this.originServiceAndBuilds = res
-      })
     },
     addServiceAndBuild (val) {
       let curService

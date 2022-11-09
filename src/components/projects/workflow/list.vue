@@ -7,7 +7,7 @@
       element-loading-spinner="iconfont iconfont-loading icongongzuoliucheng"
     >
       <ul class="workflow-ul">
-        <div  class="project-header">
+        <div class="project-header">
           <div class="header-start">
             <div class="container">
               <div class="function-container">
@@ -35,7 +35,7 @@
         <div class="view">
           <div>
             <el-radio-group v-model="view" size="small">
-              <el-radio-button label="">所有</el-radio-button>
+              <el-radio-button label>所有</el-radio-button>
               <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
             </el-radio-group>
             <el-tooltip class="item" effect="dark" content="新建视图" placement="top-start" v-if="isProjectAdmin">
@@ -43,8 +43,8 @@
             </el-tooltip>
           </div>
           <div v-if="view&&isProjectAdmin">
-            <el-button type="primary" size="small"  @click="operate('edit')">编辑视图</el-button>
-            <el-button type="danger" size="small"  @click="delView">删除视图</el-button>
+            <el-button type="primary" size="small" @click="operate('edit')">编辑视图</el-button>
+            <el-button type="danger" size="small" @click="delView">删除视图</el-button>
           </div>
         </div>
         <VirtualList
@@ -112,9 +112,9 @@
     <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
       <el-form :model="viewForm" ref="viewForm">
         <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
-          <el-input v-model="viewForm.name"  placeholder="视图名称" clearable></el-input>
+          <el-input v-model="viewForm.name" placeholder="视图名称" clearable></el-input>
         </el-form-item>
-        <el-form-item label="选择工作流" prop="workflows" >
+        <el-form-item label="选择工作流" prop="workflows">
           <div style="width: 100%; max-height: 450px; overflow-y: auto;">
             <el-checkbox
               v-model="item.enabled"
@@ -137,16 +137,16 @@
       <div class="title">发布工作流模版</div>
       <el-card v-if="selectWorkflowType==='release'">
         <div v-for="item in modelList" :key="item.id" class="wrap">
-          <section class="header" @click.stop>
-            <div class="header-name">
+          <section class="name" @click.stop>
+            <div>
               <router-link :to="`/v1/template/workflows/config?id=${item.id}`">
                 <el-tooltip effect="dark" :content="item.template_name" placement="top">
-                  <span class="header-span">{{ item.template_name }}</span>
+                  <span>{{ item.template_name }}</span>
                 </el-tooltip>
               </router-link>
             </div>
+            <div class="desc">{{item.description}}</div>
           </section>
-          <span>{{item.description}}</span>
           <section class="stages">
             <CusTags :values="item.stages"></CusTags>
           </section>
@@ -374,18 +374,22 @@ export default {
       }
       // use new api includes add data
       this.workflowListLoading = false
-      this.workflowsList = [
-        ...commonWorkflows.workflow_list
-      ]
+      this.workflowsList = [...commonWorkflows.workflow_list]
     },
     deleteProductWorkflow (workflow) {
       const name = workflow.display_name
       const projectName = workflow.projectName
       if (workflow.base_refs && workflow.base_refs.length) {
-        this.$alert(`工作流 ${name} 已在协作模式 ${workflow.base_refs.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
-          confirmButtonText: '确定',
-          type: 'warning'
-        })
+        this.$alert(
+          `工作流 ${name} 已在协作模式 ${workflow.base_refs.join(
+            '、'
+          )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
+          '删除工作流',
+          {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }
+        )
         return
       }
       this.$prompt('输入工作流名称确认', '删除工作流 ' + name, {
@@ -410,10 +414,16 @@ export default {
     },
     deleteCommonWorkflow (workflow) {
       if (workflow.base_refs && workflow.base_refs.length) {
-        this.$alert(`工作流 ${workflow.name} 已在协作模式 ${workflow.base_refs.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
-          confirmButtonText: '确定',
-          type: 'warning'
-        })
+        this.$alert(
+          `工作流 ${workflow.name} 已在协作模式 ${workflow.base_refs.join(
+            '、'
+          )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
+          '删除工作流',
+          {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }
+        )
         return
       }
       this.$prompt('输入工作流名称确认', `删除工作流 ${workflow.name}`, {
@@ -429,12 +439,10 @@ export default {
         }
       })
         .then(({ value }) => {
-          deleteWorkflowAPI(workflow.name, this.projectName).then(
-            res => {
-              this.getWorkflows(this.projectName)
-              this.$message.success(`${value}删除成功！`)
-            }
-          )
+          deleteWorkflowAPI(workflow.name, this.projectName).then(res => {
+            this.getWorkflows(this.projectName)
+            this.$message.success(`${value}删除成功！`)
+          })
         })
         .catch(() => {
           this.$message.info('取消删除')
@@ -858,7 +866,7 @@ export default {
       flex-flow: row nowrap;
       flex-grow: 1;
       align-items: center;
-      justify-content: space-between;
+      // justify-content: space-between;
       box-sizing: border-box;
       width: 100%;
       height: 60px;
@@ -869,39 +877,21 @@ export default {
       background: #f5f5f5;
       cursor: pointer;
 
-      .header {
-        max-width: 200px;
-        cursor: auto;
+      .icon {
+        margin-left: 2px;
+        font-size: 12px;
+      }
 
-        &-name {
-          display: flex;
-          align-items: center;
-
-          a {
-            display: flex;
-            font-weight: 500;
-
-            .name-span {
-              display: inline-block;
-              max-width: 180px;
-              margin-right: 8px;
-              overflow: hidden;
-              white-space: nowrap;
-              text-overflow: ellipsis;
-            }
-          }
-        }
-
-        .icon {
-          margin-left: 2px;
-          font-size: 12px;
-        }
+      .name {
+        margin-right: 40px;
+        color: @themeColor;
       }
 
       .desc {
-        flex: 1 0 20%;
+        margin-right: 40px;
+        // flex: 1 0 20%;
         color: @fontLightGray;
-        font-size: 13px;
+        font-size: 12px;
       }
     }
 

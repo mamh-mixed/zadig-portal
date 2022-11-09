@@ -75,7 +75,7 @@
 
 <script>
 import { jobType, validateJobName } from '../../config'
-import { getAllBranchInfoAPI, getCodeScannerListAPI } from '@api'
+import { getAllBranchInfoAPI } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
 export default {
@@ -125,15 +125,7 @@ export default {
       )
     }
   },
-  created () {
-    this.getScanningList()
-  },
   methods: {
-    getScanningList () {
-      getCodeScannerListAPI(this.projectName).then(res => {
-        this.originScannings = cloneDeep(res)
-      })
-    },
     addScanning () {
       let curService
       this.scanning.forEach(scanning => {
