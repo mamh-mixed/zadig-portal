@@ -924,10 +924,8 @@ export default {
       flex-flow: row nowrap;
       flex-grow: 1;
       align-items: center;
-      margin-bottom: 8px;
       overflow: auto;
       font-size: 14px;
-      line-height: 22px;
       cursor: pointer;
 
       .name {
