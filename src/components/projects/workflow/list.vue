@@ -953,10 +953,10 @@ export default {
     .title {
       margin: 16px 0;
     }
-  }
 
-  /deep/.el-card__body {
-    padding: 10px;
+    .el-card__body {
+      padding: 10px;
+    }
   }
 }
 </style>
