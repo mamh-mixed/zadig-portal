@@ -133,29 +133,38 @@
         <el-button size="small" @click="cancelEditView('workflowViewForm')">取消</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择模版" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog">
-      <div class="title">空白工作流</div>
-      <el-card></el-card>
-      <div class="title">发布工作流模版</div>
-      <el-card v-if="selectWorkflowType==='release'">
-        <div v-for="item in modelList" :key="item.id" class="wrap">
-          <section class="name" @click.stop>
-            <div>
-              <router-link :to="`/v1/template/workflows/config?id=${item.id}`">
-                <el-tooltip effect="dark" :content="item.template_name" placement="top">
-                  <span>{{ item.template_name }}</span>
-                </el-tooltip>
-              </router-link>
-            </div>
-            <div class="desc">{{item.description}}</div>
-          </section>
-          <section class="stages">
-            <CusTags :values="item.stages"></CusTags>
-          </section>
-        </div>
-      </el-card>
-      <div class="title">内置模版</div>
-      <el-card></el-card>
+    <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false" class="model-dialog">
+      <div>
+        <div class="title">空白工作流</div>
+        <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}`">
+          <el-card></el-card>
+        </router-link>
+      </div>
+      <div>
+        <div class="title" v-if="selectWorkflowType==='release'">发布工作流模版</div>
+        <div class="title" v-if="selectWorkflowType==='custom'">自定义工作流模版</div>
+        <el-card>
+          <div v-for="item in modelList" :key="item.id" class="wrap">
+            <section class="name">
+              <div>
+                <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}&id=${item.id}`">
+                  <el-tooltip effect="dark" :content="item.template_name" placement="top">
+                    <span>{{ item.template_name }}</span>
+                  </el-tooltip>
+                </router-link>
+              </div>
+              <div class="desc">{{item.description}}</div>
+            </section>
+            <section class="stages">
+              <CusTags :values="item.stages"></CusTags>
+            </section>
+          </div>
+        </el-card>
+      </div>
+      <div>
+        <div class="title">内置模版</div>
+        <el-card></el-card>
+      </div>
       <span slot="footer">
         <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
         <el-button size="small" @click="showWorkflowTemplateDialog=false">取消</el-button>
@@ -185,7 +194,8 @@ import {
   removeWorkflowViewAPI,
   getWorkflowViewListAPI,
   addWorkflowViewAPI,
-  editWorkflowViewAPI
+  editWorkflowViewAPI,
+  getWorkflowTemplateListAPI
 } from '@api'
 import bus from '@utils/eventBus'
 import { mapGetters } from 'vuex'
@@ -223,7 +233,8 @@ export default {
         project_name: '',
         workflows: []
       },
-      modelList: []
+      modelList: [],
+      isShowModelDialog: false
     }
   },
   provide () {
@@ -340,12 +351,9 @@ export default {
         path = '/workflows/product/create'
       } else if (type === 'common') {
         path = '/workflows/common/create'
-      } else if (type === 'release') {
-        this.showSelectWorkflowType = false
-        this.showWorkflowTemplateDialog = true
-        this.getWorkflowTemplateList()
       } else {
-        path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
+        this.isShowModelDialog = true
+        this.getWorkflowTemplateList()
       }
       this.$router.push(
         `${path}?projectName=${this.projectName ? this.projectName : ''}`
