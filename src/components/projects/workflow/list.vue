@@ -194,7 +194,8 @@ import {
   removeWorkflowViewAPI,
   getWorkflowViewListAPI,
   addWorkflowViewAPI,
-  editWorkflowViewAPI
+  editWorkflowViewAPI,
+  getWorkflowTemplateListAPI
 } from '@api'
 import bus from '@utils/eventBus'
 import { mapGetters } from 'vuex'
@@ -232,7 +233,8 @@ export default {
         project_name: '',
         workflows: []
       },
-      modelList: []
+      modelList: [],
+      isShowModelDialog: false
     }
   },
   provide () {
@@ -626,7 +628,6 @@ export default {
     getWorkflowTemplateList () {
       const type = this.selectWorkflowType === 'custom' ? '' : 'release'
       getWorkflowTemplateListAPI(type).then(res => {
-        console.log(res)
         this.modelList = res
       })
     }
