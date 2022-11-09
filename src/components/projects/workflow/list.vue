@@ -33,10 +33,10 @@
                     </el-radio-group>
                     <div v-if="isProjectAdmin" class="view-operation">
                       <el-tooltip effect="dark" content="新建视图" placement="top-start">
-                        <el-button icon="el-icon-plus" type="primary" @click="operate('add')" class="add" size="mini" plain circle></el-button>
+                        <el-button icon="el-icon-plus" type="primary" @click="workflowViewOperation('add')" class="add" size="mini" plain circle></el-button>
                       </el-tooltip>
                       <el-tooltip v-if="view" effect="dark" content="编辑视图" placement="top-start">
-                        <el-button icon="el-icon-edit-outline" type="primary" size="mini" @click="operate('edit')" plain circle></el-button>
+                        <el-button icon="el-icon-edit-outline" type="primary" size="mini" @click="workflowViewOperation('edit')" plain circle></el-button>
                       </el-tooltip>
                       <el-tooltip v-if="view" effect="dark" content="删除视图" placement="top-start">
                         <el-button icon="el-icon-minus" type="danger" size="mini" @click="removeWorkflowView" plain circle></el-button>
@@ -68,11 +68,19 @@
     <el-dialog title="选择工作流类型" :visible.sync="showSelectWorkflowType" width="450px">
       <div class="type-content">
         <el-radio v-model="selectWorkflowType" label="product">工作流</el-radio>
-        <div class="type-desc">具有对项目环境构建、部署、测试和服务版本交付的能力</div>
+        <div class="type-desc">具备模块化组装构建、部署、测试和版本交付能力</div>
         <!-- <el-radio v-model="selectWorkflowType" label="common">通用-工作流</el-radio>
-        <div class="type-desc">可自定义工作流程，内置构建、K8s 部署、小程序发版等步骤</div> -->
-        <el-radio v-model="selectWorkflowType" label="custom">自定义工作流<el-tag type="success" size="small" class="mg-l8">new</el-tag></el-radio>
+        <div class="type-desc">可自定义工作流程，内置构建、K8s 部署、小程序发版等步骤</div>-->
+        <el-radio v-model="selectWorkflowType" label="custom">
+          自定义工作流
+          <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
+        </el-radio>
         <div class="type-desc">可自定义工作流步骤和自由编排执行顺序</div>
+        <el-radio v-model="selectWorkflowType" label="release">
+          发布工作流
+          <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
+        </el-radio>
+        <div class="type-desc">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div>
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">取 消</el-button>
@@ -103,7 +111,7 @@
         @success="hideAfterSuccess"
       />
     </el-dialog>
-    <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="isShowViewDialog" :close-on-click-modal="false">
+    <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="showWorkflowViewDialog" :close-on-click-modal="false">
       <el-form :model="workflowViewForm" ref="workflowViewForm">
         <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
           <el-input v-model="workflowViewForm.name" placeholder="视图名称" clearable></el-input>
@@ -123,6 +131,34 @@
       <span slot="footer">
         <el-button type="primary" size="small" @click="editView('workflowViewForm')">确定</el-button>
         <el-button size="small" @click="cancelEditView('workflowViewForm')">取消</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="选择模版" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog">
+      <div class="title">空白工作流</div>
+      <el-card></el-card>
+      <div class="title">发布工作流模版</div>
+      <el-card v-if="selectWorkflowType==='release'">
+        <div v-for="item in modelList" :key="item.id" class="wrap">
+          <section class="name" @click.stop>
+            <div>
+              <router-link :to="`/v1/template/workflows/config?id=${item.id}`">
+                <el-tooltip effect="dark" :content="item.template_name" placement="top">
+                  <span>{{ item.template_name }}</span>
+                </el-tooltip>
+              </router-link>
+            </div>
+            <div class="desc">{{item.description}}</div>
+          </section>
+          <section class="stages">
+            <CusTags :values="item.stages"></CusTags>
+          </section>
+        </div>
+      </el-card>
+      <div class="title">内置模版</div>
+      <el-card></el-card>
+      <span slot="footer">
+        <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
+        <el-button size="small" @click="showWorkflowTemplateDialog=false">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -180,12 +216,14 @@ export default {
       presetWorkflowInfo: {
         workflows: []
       },
-      isShowViewDialog: false,
+      showWorkflowViewDialog: false,
+      showWorkflowTemplateDialog: false,
       workflowViewForm: {
         name: '',
         project_name: '',
         workflows: []
-      }
+      },
+      modelList: []
     }
   },
   provide () {
@@ -302,6 +340,10 @@ export default {
         path = '/workflows/product/create'
       } else if (type === 'common') {
         path = '/workflows/common/create'
+      } else if (type === 'release') {
+        this.showSelectWorkflowType = false
+        this.showWorkflowTemplateDialog = true
+        this.getWorkflowTemplateList()
       } else {
         path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
       }
@@ -334,18 +376,22 @@ export default {
       }
       // use new api includes add data
       this.workflowListLoading = false
-      this.workflowsList = [
-        ...commonWorkflows.workflow_list
-      ]
+      this.workflowsList = [...commonWorkflows.workflow_list]
     },
     deleteProductWorkflow (workflow) {
       const name = workflow.display_name
       const projectName = workflow.projectName
       if (workflow.base_refs && workflow.base_refs.length) {
-        this.$alert(`工作流 ${name} 已在协作模式 ${workflow.base_refs.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
-          confirmButtonText: '确定',
-          type: 'warning'
-        })
+        this.$alert(
+          `工作流 ${name} 已在协作模式 ${workflow.base_refs.join(
+            '、'
+          )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
+          '删除工作流',
+          {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }
+        )
         return
       }
       this.$prompt('输入工作流名称确认', '删除工作流 ' + name, {
@@ -370,10 +416,16 @@ export default {
     },
     deleteCommonWorkflow (workflow) {
       if (workflow.base_refs && workflow.base_refs.length) {
-        this.$alert(`工作流 ${workflow.name} 已在协作模式 ${workflow.base_refs.join('、')} 中被定义为基准工作流，如需删除请先修改协作模式！`, '删除工作流', {
-          confirmButtonText: '确定',
-          type: 'warning'
-        })
+        this.$alert(
+          `工作流 ${workflow.name} 已在协作模式 ${workflow.base_refs.join(
+            '、'
+          )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
+          '删除工作流',
+          {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }
+        )
         return
       }
       this.$prompt('输入工作流名称确认', `删除工作流 ${workflow.name}`, {
@@ -389,12 +441,10 @@ export default {
         }
       })
         .then(({ value }) => {
-          deleteWorkflowAPI(workflow.name, this.projectName).then(
-            res => {
-              this.getWorkflows(this.projectName)
-              this.$message.success(`${value}删除成功！`)
-            }
-          )
+          deleteWorkflowAPI(workflow.name, this.projectName).then(res => {
+            this.getWorkflows(this.projectName)
+            this.$message.success(`${value}删除成功！`)
+          })
         })
         .catch(() => {
           this.$message.info('取消删除')
@@ -520,7 +570,7 @@ export default {
               this.getWorkflowViewList()
             })
           }
-          this.isShowViewDialog = false
+          this.showWorkflowViewDialog = false
         } else {
           return false
         }
@@ -528,7 +578,7 @@ export default {
     },
     cancelEditView (formName) {
       this.$refs[formName].resetFields()
-      this.isShowViewDialog = false
+      this.showWorkflowViewDialog = false
     },
     getWorkflowViewList () {
       getWorkflowViewListAPI(this.projectName).then(res => {
@@ -540,8 +590,8 @@ export default {
         this.presetWorkflowInfo = res
       })
     },
-    operate (type) {
-      this.isShowViewDialog = true
+    workflowViewOperation (type) {
+      this.showWorkflowViewDialog = true
       this.operateType = type
       if (this.operateType === 'edit') {
         this.workflowViewForm.name = this.view
@@ -565,6 +615,12 @@ export default {
           this.view = ''
           this.getWorkflowViewList()
         })
+      })
+    },
+    getWorkflowTemplateList () {
+      const type = this.selectWorkflowType === 'custom' ? '' : 'release'
+      getWorkflowTemplateListAPI(type).then(res => {
+        this.modelList = res
       })
     }
   },
@@ -814,6 +870,46 @@ export default {
       margin-bottom: 22px;
       margin-left: 25px;
       color: #999;
+    }
+  }
+
+  .model-dialog {
+    .wrap {
+      display: flex;
+      flex-flow: row nowrap;
+      flex-grow: 1;
+      align-items: center;
+      // justify-content: space-between;
+      box-sizing: border-box;
+      width: 100%;
+      height: 60px;
+      padding: 0 16px;
+      overflow: auto;
+      font-size: 14px;
+      line-height: 22px;
+      background: #f5f5f5;
+      cursor: pointer;
+
+      .icon {
+        margin-left: 2px;
+        font-size: 12px;
+      }
+
+      .name {
+        margin-right: 40px;
+        color: @themeColor;
+      }
+
+      .desc {
+        margin-right: 40px;
+        // flex: 1 0 20%;
+        color: @fontLightGray;
+        font-size: 12px;
+      }
+    }
+
+    .title {
+      margin: 16px 0;
     }
   }
 }

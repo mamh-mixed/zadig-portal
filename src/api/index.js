@@ -1827,6 +1827,27 @@ export function deleteBuildTemplateAPI (id) {
   return http.delete(`/api/aslan/template/build/${id}`)
 }
 
+// Template Workflow
+export function getWorkflowTemplateListAPI (category) {
+  return http.get(`/api/aslan/template/workflow?category=${category}`)
+}
+
+export function addWorkflowTemplateAPI (payload) {
+  return http.post(`/api/aslan/template/workflow`, payload)
+}
+
+export function editWorkflowTemplateAPI (payload) {
+  return http.put(`/api/aslan/template/workflow`, payload)
+}
+
+export function deleteWorkflowTemplateAPI (id) {
+  return http.delete(`/api/aslan/template/workflow/${id}`)
+}
+
+export function getWorkflowTemplateDetailAPI (id) {
+  return http.get(`/api/aslan/template/workflow/${id}`)
+}
+
 // Helm env and service
 export function getChartValuesYamlAPI (projectName, envName, serviceName = []) {
   return http.get(`/api/aslan/environment/rendersets/renderchart?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}`)
@@ -2293,4 +2314,19 @@ export function getTestJunitReportAPI (workflowName, taskID, jobName, projectNam
 
 export function getTestFileListAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/workspace/workflowv4/${workflowName}/taskId/${taskID}/job/${jobName}?projectName=${projectName}`)
+}
+export function getResourcesListAPI (clusterID, namespace) {
+  return http.get(`/api/aslan/environment/kube/resources/cluster/${clusterID}/namespace/${namespace}`)
+}
+export function getPatchEnvAPI (payload) {
+  return http.post(`/api/aslan/workflow/v4/patch`, payload)
+}
+export function getDeploymentListAPI (clusterID, namespace) {
+  return http.get(`/api/aslan/environment/kube/deployment/cluster/${clusterID}/namespace/${namespace}`)
+}
+export function getNewWorkloadListAPI (clusterID, namespace) {
+  return http.get(`/api/aslan/environment/kube/workload/cluster/${clusterID}/namespace/${namespace}`)
+}
+export function getCanaryServiceListAPI (clusterID, namespace) {
+  return http.get(`/api/aslan/environment/kube/canary_service/cluster/${clusterID}/namespace/${namespace}`)
 }

@@ -3,8 +3,7 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
-          <CanInput v-model="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
+          <CanInput v-model="payload.template_name" placeholder="模版名称" :from="activeName" class="mg-r8" />
           <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
@@ -17,7 +16,6 @@
           >{{item.label}}</span>
         </div>
         <div>
-          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模版</el-button>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
@@ -148,6 +146,24 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+            <JobCanaryDeploy v-if="job.type === jobType.canaryDeploy" :job="job" :ref="jobType.canaryDeploy" />
+            <JobK8sResourceUpdate v-if="job.type === jobType.k8sResourcePatch" :job="job" :ref="jobType.k8sResourcePatch" />
+            <JobCanaryConfirm v-if="job.type === jobType.canaryConfirm" :job="job" :workflowInfo="payload" :ref="jobType.canaryConfirm" />
+            <JobBlueGreenDeploy v-if="job.type === jobType.blueGreenDeploy" :job="job" :ref="jobType.blueGreenDeploy" />
+            <JobBlueGreenConfirm
+              v-if="job.type === jobType.blueGreenConfirm"
+              :job="job"
+              :workflowInfo="payload"
+              :ref="jobType.blueGreenConfirm"
+            />
+            <JobGrayRollback v-if="job.type === jobType.k8sGrayRollback" :job="job" :workflowInfo="payload" :ref="jobType.k8sGrayRollback" />
+            <JobK8sGrayDeploy
+              v-if="job.type === jobType.grayDeploy"
+              :job="job"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+              :ref="jobType.grayDeploy"
+            />
           </div>
         </footer>
       </Multipane>
@@ -195,20 +211,6 @@
       <div v-if="curDrawer === 'env'">
         <Env :preEnvs="payload" ref="env" />
       </div>
-      <div v-if="curDrawer === 'webhook'">
-        <Webhook
-          :config="payload"
-          :isEdit="isEdit"
-          :isShowDrawer="isShowDrawer"
-          :originalWorkflow="originalWorkflow"
-          @saveWorkflow="operateWorkflow"
-          @closeDrawer="closeDrawer"
-          ref="webhook"
-        />
-      </div>
-      <div v-if="curDrawer === 'notify'">
-        <Notify :config="payload" :isEdit="isEdit" ref="notify" />
-      </div>
     </el-drawer>
     <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate
@@ -221,17 +223,6 @@
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="保存为模版" :visible.sync="isShowModelDialog" width="30%">
-      <el-form inline ref="modelForm" :model="modelFormInfo">
-        <el-form-item label="模版名称" :rules="{required: true,message: '请填写模版名称', trigger: ['blur', 'change']}" prop="name">
-          <el-input placeholder="请输入模版名称" size="small" v-model="modelFormInfo.name"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="isShowModelDialog = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveModel" size="small">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -247,12 +238,10 @@ import {
   globalConstEnvs
 } from './config'
 import {
-  getAssociatedBuildsAPI,
-  addCustomWorkflowAPI,
-  updateCustomWorkflowAPI,
-  getCustomWorkflowDetailAPI,
-  checkCustomWorkflowYaml,
-  addWorkflowTemplateAPI
+  addWorkflowTemplateAPI,
+  editWorkflowTemplateAPI,
+  getWorkflowTemplateDetailAPI,
+  checkCustomWorkflowYaml
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
@@ -265,16 +254,18 @@ import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
 import JobScanning from './components/jobs/jobScanning.vue'
-import RunCustomWorkflow from '../../common/runCustomWorkflow'
+import JobCanaryDeploy from './components/jobs/jobCanaryDeploy.vue'
+import JobCanaryConfirm from './components/jobs/jobCanaryConfirm.vue'
+import JobBlueGreenDeploy from './components/jobs/jobBlueGreenDeploy.vue'
+import JobBlueGreenConfirm from './components/jobs/jobBlueGreenConfirm.vue'
+import JobGrayRollback from './components/jobs/jobGrayRollback.vue'
+import JobK8sGrayDeploy from './components/jobs/jobK8sGrayDeploy'
+import JobK8sResourceUpdate from './components/jobs/jobK8sResourceUpdate'
+
 import Env from './components/base/env.vue'
-import Webhook from './components/base/webhook.vue'
-import Notify from './components/base/notify.vue'
 import jsyaml from 'js-yaml'
-import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
-import { mapState } from 'vuex'
-const pinyin = require('pinyin')
 
 export default {
   name: 'CustomWorkflow',
@@ -307,7 +298,6 @@ export default {
       },
       stageOperateType: 'add',
       payload: {
-        display_name: '',
         name: '',
         project: '',
         description: '',
@@ -332,9 +322,7 @@ export default {
       globalEnv: [],
       scal: '1',
       insertSatgeIndex: 0,
-      notComputedPayload: {},
-      isShowModelDialog: false,
-      modelFormInfo: { name: '' }
+      notComputedPayload: {}
     }
   },
   components: {
@@ -350,16 +338,17 @@ export default {
     JobK8sDeploy,
     JobTest,
     JobScanning,
-    RunCustomWorkflow,
     codemirror,
     Env,
-    Webhook,
-    Notify
+    JobK8sResourceUpdate,
+    JobCanaryDeploy,
+    JobCanaryConfirm,
+    JobBlueGreenDeploy,
+    JobBlueGreenConfirm,
+    JobGrayRollback,
+    JobK8sGrayDeploy
   },
   computed: {
-    isModel () {
-      return this.$route.query.isModel
-    },
     projectName () {
       return this.$route.query.projectName
     },
@@ -370,7 +359,7 @@ export default {
       return this.$store.state.customWorkflow.curOperateType
     },
     isEdit () {
-      return !!this.$route.params.workflow_name
+      return !!this.$route.query.id
     },
     curJobType () {
       if (this.job) {
@@ -410,45 +399,20 @@ export default {
       })
       return res ? res.drawerHideButton : false
     },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    workflowType () {
+      return this.$route.query.type
+    }
   },
   created () {
     this.init()
   },
   methods: {
     init () {
-      this.getServiceAndBuildList()
-      this.setTitle()
       // edit
       if (this.isEdit) {
-        this.getWorkflowDetail(this.$route.params.workflow_name)
+        this.getModelDetail(this.$route.query.id)
       }
       this.$store.dispatch('setIsShowFooter', false)
-    },
-    setTitle () {
-      bus.$emit('set-topbar-title', {
-        title: '',
-        breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
-          {
-            title: this.projectName,
-            isProjectName: true,
-            url: `/v1/projects/detail/${this.projectName}/detail`
-          },
-          {
-            title: '工作流',
-            url: `/v1/projects/detail/${this.projectName}/pipelines`
-          },
-          {
-            title:
-              this.$route.query.display_name ||
-              this.$route.params.workflow_name,
-            url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
-          }
-        ]
-      })
     },
     scale (type) {
       this.$nextTick(() => {
@@ -480,14 +444,11 @@ export default {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
-      if (!this.payload.display_name) {
-        this.$message.error(' 请填写工作流名称')
+      if (!this.payload.template_name) {
+        this.$message.error(' 请填写模版名称')
         return
       }
-      if (!this.payload.name) {
-        this.$message.error(' 请填写工作流标识')
-        return
-      }
+
       if (this.payload.stages.length === 0) {
         this.$message.error(' 请至少填写一个阶段')
         return
@@ -569,30 +530,22 @@ export default {
           }
         })
       })
-      this.payload.project = this.projectName
+      this.payload.category = this.workflowType === 'custom' ? '' : 'release'
       const yamlParams = jsyaml.dump(this.payload)
-      const workflowName = this.payload.name
-      if (this.$route.fullPath.includes('edit')) {
-        updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
+      if (this.isEdit) {
+        editWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('保存成功')
-            if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
-              this.$router.push(
-                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
-              )
-            }
+            this.$router.push(`/v1/template/workflows`)
           })
           .catch(() => {
             this.payload = this.notComputedPayload
           })
       } else {
-        addCustomWorkflowAPI(yamlParams, this.projectName)
+        addWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('新建成功')
-            this.getWorkflowDetail(this.payload.name)
-            this.$router.push(
-              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
-            )
+            this.$router.push(`/v1/template/workflows`)
           })
           .catch(() => {
             this.payload = this.notComputedPayload
@@ -600,18 +553,10 @@ export default {
       }
     },
     cancelWorkflow () {
-      if (this.isEdit) {
-        this.$router.push(
-          `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
-        )
-      } else {
-        this.$router.push(
-          `/v1/projects/detail/${this.projectName}/pipelines?display_name=${this.payload.display_name}`
-        )
-      }
+      this.$router.push(`/v1/template/workflows`)
     },
-    getWorkflowDetail (workflow_name) {
-      getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
+    getModelDetail (id) {
+      getWorkflowTemplateDetailAPI(id).then(res => {
         this.payload = jsyaml.load(res)
         this.workflowCurJobLength = this.payload.stages[
           this.curStageIndex
@@ -806,17 +751,6 @@ export default {
         })
       }
     },
-    getServiceAndBuildList () {
-      const projectName = this.projectName
-      // const key = this.$utils.rsaEncrypt()
-      getAssociatedBuildsAPI(projectName, true).then(res => {
-        res.forEach(item => {
-          item.value = `${item.service_name}/${item.service_module}`
-        })
-        this.serviceAndBuilds = res
-        this.originServiceAndBuilds = res
-      })
-    },
     addServiceAndBuild (val) {
       let curService
       this.service.forEach(service => {
@@ -863,24 +797,6 @@ export default {
       }
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
-    },
-    saveModel () {
-      this.$refs.modelForm.validate(valid => {
-        if (valid) {
-          const params = {
-            template_name: this.modelFormInfo.name,
-            category: '',
-            ...this.payload
-          }
-          addWorkflowTemplateAPI(params).then(res => {
-            this.isShowModelDialog = false
-            this.$message({
-              type: 'success',
-              message: '新增成功'
-            })
-          })
-        }
-      })
     }
   },
   watch: {
@@ -935,15 +851,6 @@ export default {
         }
       },
       deep: true
-    },
-    'payload.display_name': {
-      handler (val, old_val) {
-        if (!this.isEdit) {
-          this.payload.name = pinyin(val, {
-            style: pinyin.STYLE_NORMAL
-          }).join('')
-        }
-      }
     }
   }
 }
