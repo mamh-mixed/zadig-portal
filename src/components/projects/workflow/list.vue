@@ -153,7 +153,7 @@
         <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}`">
           <el-card shadow="hover">
             <div>
-              <i class="el-icon-plus" type="primary"></i>
+              <i class="el-icon-plus"></i>
               新建空白工作流
             </div>
           </el-card>
@@ -930,11 +930,6 @@ export default {
       line-height: 22px;
       cursor: pointer;
 
-      .icon {
-        margin-left: 2px;
-        font-size: 12px;
-      }
-
       .name {
         width: 10em;
         overflow: hidden;
@@ -948,6 +943,10 @@ export default {
         color: @fontLightGray;
         font-size: 12px;
       }
+    }
+
+    .el-icon-plus {
+      color: @themeColor;
     }
 
     .title {
