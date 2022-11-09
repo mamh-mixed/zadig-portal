@@ -33,10 +33,25 @@
                     </el-radio-group>
                     <div v-if="isProjectAdmin" class="view-operation">
                       <el-tooltip effect="dark" content="新建视图" placement="top-start">
-                        <el-button icon="el-icon-plus" type="primary" @click="workflowViewOperation('add')" class="add" size="mini" plain circle></el-button>
+                        <el-button
+                          icon="el-icon-plus"
+                          type="primary"
+                          @click="workflowViewOperation('add')"
+                          class="add"
+                          size="mini"
+                          plain
+                          circle
+                        ></el-button>
                       </el-tooltip>
                       <el-tooltip v-if="view" effect="dark" content="编辑视图" placement="top-start">
-                        <el-button icon="el-icon-edit-outline" type="primary" size="mini" @click="workflowViewOperation('edit')" plain circle></el-button>
+                        <el-button
+                          icon="el-icon-edit-outline"
+                          type="primary"
+                          size="mini"
+                          @click="workflowViewOperation('edit')"
+                          plain
+                          circle
+                        ></el-button>
                       </el-tooltip>
                       <el-tooltip v-if="view" effect="dark" content="删除视图" placement="top-start">
                         <el-button icon="el-icon-minus" type="danger" size="mini" @click="removeWorkflowView" plain circle></el-button>
@@ -135,18 +150,22 @@
     </el-dialog>
     <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false" class="model-dialog">
       <div>
-        <div class="title">空白工作流</div>
         <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}`">
-          <el-card></el-card>
+          <el-card shadow="hover">
+            <div>
+              <i class="el-icon-plus" type="primary"></i>
+              新建空白工作流
+            </div>
+          </el-card>
         </router-link>
       </div>
       <div>
         <div class="title" v-if="selectWorkflowType==='release'">发布工作流模版</div>
         <div class="title" v-if="selectWorkflowType==='custom'">自定义工作流模版</div>
-        <el-card>
-          <div v-for="item in modelList" :key="item.id" class="wrap">
-            <section class="name">
-              <div>
+        <el-card shadow="hover" v-for="item in customModelList" :key="item.id" class="mg-b8">
+          <div class="wrap">
+            <section>
+              <div class="name">
                 <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}&id=${item.id}`">
                   <el-tooltip effect="dark" :content="item.template_name" placement="top">
                     <span>{{ item.template_name }}</span>
@@ -163,12 +182,24 @@
       </div>
       <div>
         <div class="title">内置模版</div>
-        <el-card></el-card>
+        <el-card shadow="hover" v-for="item in inModelList" :key="item.id" class="mg-b8">
+          <div class="wrap">
+            <section>
+              <div class="name">
+                <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}&id=${item.id}`">
+                  <el-tooltip effect="dark" :content="item.template_name" placement="top">
+                    <span>{{ item.template_name }}</span>
+                  </el-tooltip>
+                </router-link>
+              </div>
+              <div class="desc">{{item.description}}</div>
+            </section>
+            <section class="stages">
+              <CusTags :values="item.stages"></CusTags>
+            </section>
+          </div>
+        </el-card>
       </div>
-      <span slot="footer">
-        <el-button type="primary" size="small" @click="submitForm('viewForm')">确定</el-button>
-        <el-button size="small" @click="showWorkflowTemplateDialog=false">取消</el-button>
-      </span>
     </el-dialog>
   </div>
 </template>
@@ -257,6 +288,12 @@ export default {
       return this.workflowsList.filter(pipeline => {
         return !this.getOnboardingTemplates.includes(pipeline.projectName)
       })
+    },
+    inModelList () {
+      return this.modelList.filter(item => item.build_in)
+    },
+    customModelList () {
+      return this.modelList.filter(item => !item.build_in)
     },
     availableWorkflows () {
       const filteredWorkflows = this.filteredWorkflows
@@ -887,15 +924,10 @@ export default {
       flex-flow: row nowrap;
       flex-grow: 1;
       align-items: center;
-      // justify-content: space-between;
-      box-sizing: border-box;
-      width: 100%;
-      height: 60px;
-      padding: 0 16px;
+      margin-bottom: 8px;
       overflow: auto;
       font-size: 14px;
       line-height: 22px;
-      background: #f5f5f5;
       cursor: pointer;
 
       .icon {
@@ -904,13 +936,15 @@ export default {
       }
 
       .name {
-        margin-right: 40px;
+        width: 10em;
+        overflow: hidden;
         color: @themeColor;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
 
       .desc {
         margin-right: 40px;
-        // flex: 1 0 20%;
         color: @fontLightGray;
         font-size: 12px;
       }
@@ -919,6 +953,10 @@ export default {
     .title {
       margin: 16px 0;
     }
+  }
+
+  /deep/.el-card__body {
+    padding: 10px;
   }
 }
 </style>

@@ -36,7 +36,7 @@ export default {
     },
     getWorkflowTemplates (val) {
       const type = val === 'custom' ? '' : 'release'
-      getWorkflowTemplateListAPI(type).then(res => {
+      getWorkflowTemplateListAPI(type, true).then(res => {
         this.workflowTemplates = res
       })
     }
