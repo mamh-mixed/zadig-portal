@@ -252,7 +252,8 @@ import {
   updateCustomWorkflowAPI,
   getCustomWorkflowDetailAPI,
   checkCustomWorkflowYaml,
-  addWorkflowTemplateAPI
+  addWorkflowTemplateAPI,
+  getWorkflowTemplateDetailAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
@@ -357,8 +358,8 @@ export default {
     Notify
   },
   computed: {
-    isModel () {
-      return this.$route.query.isModel
+    modelId () {
+      return this.$route.query.id
     },
     projectName () {
       return this.$route.query.projectName
@@ -421,11 +422,20 @@ export default {
     init () {
       this.getServiceAndBuildList()
       this.setTitle()
-      // edit
-      if (this.isEdit) {
-        this.getWorkflowDetail(this.$route.params.workflow_name)
+      if (this.modelId) {
+        this.getWorkflowTemplateDetail()
+      } else {
+        // edit
+        if (this.isEdit) {
+          this.getWorkflowDetail(this.$route.params.workflow_name)
+        }
       }
       this.$store.dispatch('setIsShowFooter', false)
+    },
+    getWorkflowTemplateDetail () {
+      getWorkflowTemplateDetailAPI(this.modelId).then(res => {
+        this.payload = jsyaml.load(res)
+      })
     },
     setTitle () {
       bus.$emit('set-topbar-title', {
@@ -572,20 +582,7 @@ export default {
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
-      if (this.$route.fullPath.includes('edit')) {
-        updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
-          .then(res => {
-            this.$message.success('保存成功')
-            if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
-              this.$router.push(
-                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
-              )
-            }
-          })
-          .catch(() => {
-            this.payload = this.notComputedPayload
-          })
-      } else {
+      if (this.modelId) {
         addCustomWorkflowAPI(yamlParams, this.projectName)
           .then(res => {
             this.$message.success('新建成功')
@@ -597,6 +594,33 @@ export default {
           .catch(() => {
             this.payload = this.notComputedPayload
           })
+      } else {
+        if (this.$route.fullPath.includes('edit')) {
+          updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
+            .then(res => {
+              this.$message.success('保存成功')
+              if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
+                this.$router.push(
+                  `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
+                )
+              }
+            })
+            .catch(() => {
+              this.payload = this.notComputedPayload
+            })
+        } else {
+          addCustomWorkflowAPI(yamlParams, this.projectName)
+            .then(res => {
+              this.$message.success('新建成功')
+              this.getWorkflowDetail(this.payload.name)
+              this.$router.push(
+                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+              )
+            })
+            .catch(() => {
+              this.payload = this.notComputedPayload
+            })
+        }
       }
     },
     cancelWorkflow () {
