@@ -133,8 +133,8 @@
     </el-dialog>
     <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false" class="model-dialog">
       <div>
+        <div class="title">空白工作流</div>
         <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}`">
-          <div class="title">空白工作流</div>
           <el-card></el-card>
         </router-link>
       </div>
