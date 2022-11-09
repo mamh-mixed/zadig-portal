@@ -71,7 +71,7 @@
         <div class="type-desc">具有对项目环境构建、部署、测试和服务版本交付的能力</div>
         <!-- <el-radio v-model="selectWorkflowType" label="common">通用-工作流</el-radio>
         <div class="type-desc">可自定义工作流程，内置构建、K8s 部署、小程序发版等步骤</div> -->
-        <el-radio v-model="selectWorkflowType" label="custom">自定义工作流<el-tag type="success" size="small" class="mg-l8">new</el-tag></el-radio>
+        <el-radio v-model="selectWorkflowType" label="custom">自定义工作流<el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag></el-radio>
         <div class="type-desc">可自定义工作流步骤和自由编排执行顺序</div>
       </div>
       <div slot="footer">
