@@ -91,11 +91,11 @@
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
         <div class="type-desc">可自定义工作流步骤和自由编排执行顺序</div>
-        <el-radio v-model="selectWorkflowType" label="release">
+        <el-radio v-model="selectWorkflowType" label="release" v-if="hasPlutus">
           发布工作流
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
-        <div class="type-desc">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div>
+        <div class="type-desc" v-if="hasPlutus">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div>
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">取 消</el-button>
@@ -254,7 +254,7 @@ import {
   getWorkflowTemplateListAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { orderBy } from 'lodash'
 
 export default {
@@ -307,6 +307,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getOnboardingTemplates']),
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    }),
     projectName () {
       return this.$route.params.project_name
     },
@@ -415,8 +418,13 @@ export default {
       } else if (type === 'common') {
         path = '/workflows/common/create'
       } else {
-        this.isShowModelDialog = true
-        this.getWorkflowTemplateList()
+        if (this.hasPlutus) {
+          this.isShowModelDialog = true
+          this.getWorkflowTemplateList()
+          return
+        } else {
+          path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
+        }
       }
       this.$router.push(
         `${path}?projectName=${this.projectName ? this.projectName : ''}`
