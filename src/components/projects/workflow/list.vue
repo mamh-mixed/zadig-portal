@@ -149,54 +149,79 @@
       </span>
     </el-dialog>
     <el-dialog title="选择模版" :visible.sync="isShowModelDialog" :close-on-click-modal="false" class="model-dialog">
-      <div>
-        <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}`">
-          <el-card shadow="hover">
-            <div>
-              <i class="el-icon-plus"></i>
-              新建空白工作流
-            </div>
-          </el-card>
-        </router-link>
-      </div>
+      <el-card shadow="hover" @mouseover.native="curTemplate=''">
+        <div class="card" style="height: 30px; line-height: 30px;">
+          <div>
+            <i class="el-icon-plus"></i>
+            新建空白工作流
+          </div>
+          <div v-if="!curTemplate">
+            <router-link class="card-btn" :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}`">使用</router-link>
+          </div>
+        </div>
+      </el-card>
       <div>
         <div class="title" v-if="selectWorkflowType==='release'">发布工作流模版</div>
         <div class="title" v-if="selectWorkflowType==='custom'">自定义工作流模版</div>
-        <el-card shadow="hover" v-for="item in customModelList" :key="item.id" class="mg-b8">
-          <div class="wrap">
-            <section>
-              <div class="name">
-                <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}&id=${item.id}`">
+        <el-card
+          shadow="hover"
+          v-for="(item) in customModelList"
+          :key="item.id"
+          class="mg-b8"
+          @mouseover.native="curTemplate=item.template_name"
+        >
+          <div class="card">
+            <div class="card-content">
+              <section>
+                <div class="name">
                   <el-tooltip effect="dark" :content="item.template_name" placement="top">
                     <span>{{ item.template_name }}</span>
                   </el-tooltip>
-                </router-link>
-              </div>
-              <div class="desc">{{item.description}}</div>
-            </section>
-            <section class="stages">
-              <CusTags :values="item.stages"></CusTags>
-            </section>
+                </div>
+                <div class="desc">{{item.description}}</div>
+              </section>
+              <section class="stages">
+                <CusTags :values="item.stages"></CusTags>
+              </section>
+            </div>
+            <div v-if="curTemplate===item.template_name">
+              <router-link
+                class="card-btn"
+                :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}&id=${item.id}`"
+              >使用</router-link>
+            </div>
           </div>
         </el-card>
       </div>
       <div>
         <div class="title">内置模版</div>
-        <el-card shadow="hover" v-for="item in inModelList" :key="item.id" class="mg-b8">
-          <div class="wrap">
-            <section>
-              <div class="name">
-                <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}&id=${item.id}`">
+        <el-card
+          shadow="hover"
+          v-for="(item) in inModelList"
+          :key="item.id"
+          class="mg-b8"
+          @mouseover.native="curTemplate=item.template_name"
+        >
+          <div class="card">
+            <div class="card-content">
+              <section>
+                <div class="name">
                   <el-tooltip effect="dark" :content="item.template_name" placement="top">
                     <span>{{ item.template_name }}</span>
                   </el-tooltip>
-                </router-link>
-              </div>
-              <div class="desc">{{item.description}}</div>
-            </section>
-            <section class="stages">
-              <CusTags :values="item.stages"></CusTags>
-            </section>
+                </div>
+                <div class="desc">{{item.description}}</div>
+              </section>
+              <section class="stages">
+                <CusTags :values="item.stages"></CusTags>
+              </section>
+            </div>
+            <div v-if="curTemplate === item.template_name">
+              <router-link
+                class="card-btn"
+                :to="`/v1/projects/detail/${projectName}/pipelines/custom/create?projectName=${projectName}&id=${item.id}`"
+              >使用</router-link>
+            </div>
           </div>
         </el-card>
       </div>
@@ -265,7 +290,8 @@ export default {
         workflows: []
       },
       modelList: [],
-      isShowModelDialog: false
+      isShowModelDialog: false,
+      curTemplate: ''
     }
   },
   provide () {
@@ -919,27 +945,44 @@ export default {
   }
 
   .model-dialog {
-    .wrap {
-      display: flex;
-      flex-flow: row nowrap;
-      flex-grow: 1;
-      align-items: center;
-      overflow: auto;
-      font-size: 14px;
-      cursor: pointer;
+    .card {
+      position: relative;
+      height: 30px;
 
-      .name {
-        width: 10em;
-        overflow: hidden;
-        color: @themeColor;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+      &-content {
+        display: flex;
+        flex-flow: row nowrap;
+        flex-grow: 1;
+        align-items: center;
+        font-size: 14px;
+        cursor: pointer;
+
+        .name {
+          width: 10em;
+          overflow: hidden;
+          color: @themeColor;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .desc {
+          margin-right: 40px;
+          color: @fontLightGray;
+          font-size: 12px;
+        }
       }
 
-      .desc {
-        margin-right: 40px;
-        color: @fontLightGray;
+      &-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 40px;
+        height: 50px;
+        color: #fff;
         font-size: 12px;
+        line-height: 50px;
+        text-align: center;
+        background: @themeColor;
       }
     }
 
