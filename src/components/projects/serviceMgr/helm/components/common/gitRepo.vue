@@ -467,7 +467,7 @@ export default {
             repo: this.source.repoName,
             branch: this.source.branchName,
             paths: this.selectPath,
-            namespace: this.source.namespace
+            namespace: this.source.namespace ? this.source.namespace : this.source.repoOwner
           }
         }
       }
