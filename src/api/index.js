@@ -1880,15 +1880,15 @@ export function getCalculatedValuesYamlAPI ({ projectName, serviceName, envName,
   return http.post(`/api/aslan/environment/environments/${envName}/estimated-values?projectName=${projectName}&format=${format}&serviceName=${serviceName}&scene=${scene}`, payload)
 }
 
-export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valuesPaths, namespace }) {
+export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valuesPath, valuesPaths, namespace }) {
   return http.get(`/api/aslan/environment/rendersets/yamlContent`, {
     params: {
       codehostID,
       owner,
       repo,
       branch,
-      valuesPaths: valuesPaths.join(','),
-      namespace
+      valuesPaths: valuesPaths.length > 0 ? valuesPaths.join(',') : valuesPath,
+      namespace: namespace || owner
     }
   })
 }

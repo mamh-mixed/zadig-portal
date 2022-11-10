@@ -25,6 +25,12 @@ const sourceRules = {
     message: '分支不能为空',
     trigger: 'change'
   }],
+  valuesPath: [{
+    type: 'string',
+    required: true,
+    message: '请输入文件路径',
+    trigger: 'change'
+  }],
   valuesPaths: [{
     type: 'array',
     required: true,
@@ -36,6 +42,7 @@ export default {
   data () {
     return {
       allCodeHosts: [],
+      codehostSource: '',
       source: {
         codehostID: null,
         owner: '',
@@ -51,28 +58,32 @@ export default {
     }
   },
   methods: {
-    getGitSource (id) {
+    getGitSourceType (id) {
       const codehostItem = this.allCodeHosts.find(item => {
         return item.id === id
       })
+      this.codehostSource = codehostItem ? codehostItem.type : ''
       return codehostItem ? codehostItem.type : ''
     },
     async queryCodeSource () {
       const key = this.$utils.rsaEncrypt()
       const res = await getCodeSourceMaskedAPI(key).catch(error => console.log(error))
       if (res) {
-        this.allCodeHosts = res.filter(item => item.type !== 'other')
+        this.allCodeHosts = res
       }
     },
-    async queryRepoOwnerById (id, key = '') {
+    async getRepoOwnerById (id, key = '') {
       this.source.owner = ''
       this.source.repo = ''
       this.source.branch = ''
-      const res = await getRepoOwnerByIdAPI(id, key).catch(error =>
-        console.log(error)
-      )
-      if (res) {
-        this.codeInfo.repoOwners = res
+      const codehostSource = this.getGitSourceType(id)
+      if (codehostSource !== 'other') {
+        const res = await getRepoOwnerByIdAPI(id, key).catch(error =>
+          console.log(error)
+        )
+        if (res) {
+          this.codeInfo.repoOwners = res
+        }
       }
     },
     getRepoNameById (id, owner, key = '') {
