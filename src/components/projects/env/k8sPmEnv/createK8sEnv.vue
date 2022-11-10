@@ -126,66 +126,13 @@
         </div>
         <VarList :variables="variables" :rollbackMode="rollbackMode" />
       </div>
-      <div v-if="projectConfig.source==='system'||projectConfig.source==='copy'" class="common-parcel-block">
-        <div class="primary-title">服务列表</div>
-        <div>
-          <div v-if="projectConfig.source==='system'" class="service-filter-block">
-            <span class="service-filter">
-              快速过滤:
-              <el-tooltip class="img-tooltip" effect="dark" placement="top">
-                <div slot="content">
-                  智能选择会优先选择最新的容器镜像，如果在 Registry
-                  <br />下不存在该容器镜像，则会选择模板中的默认镜像进行填充
-                </div>
-                <i class="el-icon-info"></i>
-              </el-tooltip>
-              <el-select
-                :disabled="rollbackMode"
-                size="small"
-                class="img-select"
-                v-model="quickSelection"
-                placeholder="请选择"
-                @change="quickInitImage"
-              >
-                <el-option label="全容器-智能选择镜像" value="latest"></el-option>
-                <el-option label="全容器-全部默认镜像" value="default"></el-option>
-              </el-select>
-            </span>
-          </div>
-          <el-form class="service-form-block" label-width="50%" label-position="left">
-            <div class="service-item" v-for="(typeServiceMap, serviceName) in selectedContainerMap" :key="serviceName">
-              <div class="primary-title">{{ serviceName }}</div>
-              <div class="service-content">
-                <div v-for="service in typeServiceMap" :key="`${service.service_name}-${service.type}`" class="service-block">
-                  <template v-if="service.type==='k8s' && service.containers">
-                    <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name" label-width="40%">
-                      <el-select v-model="con.image" :disabled="rollbackMode" filterable size="small">
-                        <virtual-scroll-list
-                          v-if="imageMap[con.image_name] && imageMap[con.image_name].length > 200"
-                          style="height: 272px; overflow-y: auto;"
-                          :size="virtualData.size"
-                          :keeps="virtualData.keeps"
-                          :start="virtualData.start"
-                          :dataKey="(img)=>{ return img.name+'-'+img.tag}"
-                          :dataSources="imageMap[con.image_name]"
-                          :dataComponent="itemComponent"
-                        ></virtual-scroll-list>
-                        <el-option
-                          v-else
-                          v-for="img of imageMap[con.image_name]"
-                          :key="`${img.name}-${img.tag}`"
-                          :label="img.tag"
-                          :value="img.full"
-                        ></el-option>
-                      </el-select>
-                    </el-form-item>
-                  </template>
-                </div>
-              </div>
-            </div>
-          </el-form>
-        </div>
-      </div>
+      <K8sServiceList
+        v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
+        ref="k8sServiceListRef"
+        :showFilter="showFilter"
+        :cantOperate="rollbackMode"
+        :selectedContainerMap="selectedContainerMap"
+      />
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">取消</el-button>
@@ -209,11 +156,9 @@
 
 <script>
 import EnvConfig from '../env_detail/common/envConfig.vue'
-import virtualListItem from '../../common/imageItem'
-import virtualScrollList from 'vue-virtual-scroll-list'
+import K8sServiceList from './k8sServiceList.vue'
 import VarList from './varList.vue'
 import {
-  imagesAPI,
   productHostingNamespaceAPI,
   initProjectEnvAPI,
   getVersionListAPI,
@@ -225,7 +170,7 @@ import {
   getRegistryWhenBuildAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { uniq, cloneDeep, intersection, flattenDeep } from 'lodash'
+import { uniq, cloneDeep, intersection, flattenDeep, debounce } from 'lodash'
 import { serviceTypeMap } from '@utils/wordTranslate'
 
 const validateEnvName = (rule, value, callback) => {
@@ -258,7 +203,6 @@ const projectConfig = {
 export default {
   data () {
     return {
-      itemComponent: virtualListItem,
       selection: '',
       editButtonDisabled: true,
       currentProductDeliveryVersions: [],
@@ -267,9 +211,7 @@ export default {
       allCluster: [],
       startDeployLoading: false,
       loading: false,
-      imageMap: {},
       containerMap: {},
-      quickSelection: '',
       serviceTypeMap,
       rules: {
         cluster_id: [
@@ -297,11 +239,6 @@ export default {
       imageRegistry: [],
       containerNames: [],
       envNameList: [],
-      virtualData: {
-        keeps: 20,
-        size: 34,
-        start: 0
-      },
       defaultResource: {
         clusterId: '',
         registryId: ''
@@ -366,6 +303,9 @@ export default {
     },
     isBaseEnv () {
       return !this.baseEnvName
+    },
+    showFilter () {
+      return this.projectConfig.source === 'system'
     }
   },
   methods: {
@@ -437,6 +377,7 @@ export default {
             this.hasK8s = true
           }
           ser.picked = true
+          ser.deploy_strategy = ''
           const containers = ser.containers
           if (containers) {
             for (const con of containers) {
@@ -527,6 +468,7 @@ export default {
               containerMap[ser.service_name] || {}
             containerMap[ser.service_name][ser.type] = ser
             ser.picked = true
+            ser.deploy_strategy = ''
             const containers = ser.containers
             if (containers) {
               for (const con of containers) {
@@ -595,6 +537,7 @@ export default {
               containerMap[ser.service_name] || {}
             containerMap[ser.service_name][ser.type] = ser
             ser.picked = true
+            ser.deploy_strategy = ''
             const containers = ser.containers
             if (containers) {
               for (const con of containers) {
@@ -620,31 +563,12 @@ export default {
       this.getImages()
     },
     getImages () {
-      imagesAPI(this.containerNames, this.projectConfig.registry_id || '').then(
-        images => {
-          if (images) {
-            for (const image of images) {
-              image.full = `${image.host}/${image.owner}/${image.name}:${image.tag}`
-            }
-            this.imageMap = this.makeMapOfArray(images, 'name')
-            if (!this.rollbackMode && this.projectConfig.source !== 'copy') {
-              this.quickSelection = 'latest'
-              this.quickInitImage()
-            }
-          }
-        }
+      this.$refs.k8sServiceListRef.getImages(
+        this.containerNames,
+        this.projectConfig.registry_id || '',
+        !this.rollbackMode && this.projectConfig.source !== 'copy',
+        this.projectConfig.services
       )
-    },
-    makeMapOfArray (arr, namePropName) {
-      const map = {}
-      for (const obj of arr) {
-        if (!map[obj[namePropName]]) {
-          map[obj[namePropName]] = [obj]
-        } else {
-          map[obj[namePropName]].push(obj)
-        }
-      }
-      return map
     },
     changeCluster (clusterId) {
       productHostingNamespaceAPI(clusterId, 'create').then(res => {
@@ -766,29 +690,26 @@ export default {
         }
       })
     },
-    quickInitImage () {
-      const select = this.quickSelection
-      for (const group of this.projectConfig.services) {
-        for (const ser of group) {
-          ser.picked =
-            ser.type === 'k8s' && (select === 'latest' || select === 'default')
-          const containers = ser.containers
-          if (containers) {
-            for (const con of ser.containers) {
-              if (select === 'latest') {
-                if (this.imageMap[con.image_name]) {
-                  con.image = this.imageMap[con.image_name][0].full
-                } else {
-                  con.image = con.defaultImage
-                }
-              }
-              if (select === 'default') {
-                con.image = con.defaultImage
-              }
-            }
-          }
-        }
+    checkSvcResource (namespace, clusterID) {
+      if (this.$refs.k8sServiceListRef && namespace && clusterID) {
+        this.$refs.k8sServiceListRef
+          .checkSvcResource(this.projectName, namespace, clusterID)
+          .then(res => {
+            this.serviceNames.forEach(name => {
+              this.containerMap[name].k8s.deploy_strategy = res[name]
+                ? 'import'
+                : 'deploy'
+            })
+          })
       }
+    }
+  },
+  watch: {
+    'projectConfig.defaultNamespace': debounce(function (val) {
+      this.checkSvcResource(val, this.projectConfig.cluster_id)
+    }, 100),
+    'projectConfig.cluster_id' (val) {
+      this.checkSvcResource(this.projectConfig.namespace, val)
     }
   },
   created () {
@@ -826,8 +747,8 @@ export default {
   },
   components: {
     VarList,
-    virtualScrollList,
-    EnvConfig
+    EnvConfig,
+    K8sServiceList
   }
 }
 </script>
@@ -857,54 +778,6 @@ export default {
     border: 1px solid rgba(118, 122, 200, 0.5);
     border-radius: 4px;
     cursor: pointer;
-  }
-
-  .service-filter-block {
-    margin-bottom: 14px;
-
-    .service-filter {
-      color: @themeColor;
-      font-size: 14px;
-
-      .el-input__inner {
-        color: #06f;
-        border-color: #8cc5ff;
-
-        &::placeholder {
-          color: #8cc5ff;
-        }
-      }
-    }
-  }
-
-  .service-form-block {
-    width: 90%;
-    max-width: 1000px;
-
-    .service-item {
-      margin-bottom: 8px;
-      padding: 12px;
-      background: rgba(246, 246, 246, 0.6);
-      border-radius: 6px;
-
-      .service-content {
-        box-sizing: border-box;
-        padding: 15px 12px;
-        background: #fff;
-        border: 1px solid #d2d7dc;
-        border-radius: 6px;
-
-        .service-block {
-          /deep/.el-form-item {
-            margin-bottom: 8px;
-
-            .el-select {
-              width: 100%;
-            }
-          }
-        }
-      }
-    }
   }
 
   .no-resources {

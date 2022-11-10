@@ -313,6 +313,11 @@ export function getTheEnvChangeLogAPI (payload) {
   return http.get(`/api/aslan/environment/operations`, { params: payload })
 }
 
+export function checkK8sSvcResourceAPI (params) {
+  // params: projectName, namespace, clusterID
+  return http.get(`/api/aslan/environment/kube/k8s/resources`, { params })
+}
+
 // Project
 export function getProjectsAPI () {
   return http.get('/api/v1/picket/projects?verbosity=detailed')// verbosity=detailed<brief,minimal>,IgnoreNoVersions,IgnoreNoEnvs
@@ -419,7 +424,7 @@ export function imagesAPI (payload, registry = '') {
   return http.post(`/api/aslan/system/registry/images?registryId=${registry}`, { names: payload })
 }
 
-export function initProjectEnvAPI (projectName, isStcov, envType = 'general', isBaseEnv, baseEnvName) {
+export function initProjectEnvAPI (projectName, isStcov, envType = 'general', isBaseEnv = true, baseEnvName = '') {
   return http.get(`/api/aslan/environment/init_info/${projectName}${isStcov ? '?stcov=true' : '?'}envType=${envType}&isBaseEnv=${isBaseEnv}&baseEnv=${baseEnvName}&projectName=${projectName}`)
 }
 
