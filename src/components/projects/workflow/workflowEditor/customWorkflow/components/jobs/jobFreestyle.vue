@@ -37,6 +37,7 @@
             :validObj="validObj"
             @validateFailed="advanced_setting_modified = true"
             hiddenCache
+            useDockerDaemon
           ></AdvancedConfig>
         </section>
       </div>

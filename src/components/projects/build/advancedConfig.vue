@@ -107,6 +107,10 @@
           </el-form-item>
         </div>
       </el-form-item>
+      <el-form-item v-if="hasPlutus && useDockerDaemon">
+        <div slot="label" style="line-height: 1.2;">使用宿主机 Docker Daemon</div>
+        <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
+      </el-form-item>
     </el-form>
   </section>
 </template>
@@ -131,7 +135,8 @@ export default {
     hiddenCache: {
       default: false,
       type: Boolean
-    }
+    },
+    useDockerDaemon: Boolean
   },
   data () {
     this.validateReqLimit = (rule, value, callback) => {
@@ -186,6 +191,9 @@ export default {
         if (local) {
           currentResource.cluster_id = local.id
         }
+      }
+      if (this.hasPlutus && this.useDockerDaemon && (typeof currentResource.use_host_docker_daemon === 'undefined')) {
+        this.$set(currentResource, 'use_host_docker_daemon', false)
       }
     },
     checkSpec () {
