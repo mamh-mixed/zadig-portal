@@ -585,7 +585,7 @@ export default {
       if (this.modelId) {
         addCustomWorkflowAPI(yamlParams, this.projectName)
           .then(res => {
-            this.$message.success('新建成功')
+            this.$message.success('模版保存成功')
             this.getWorkflowDetail(this.payload.name)
             this.$router.push(
               `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
