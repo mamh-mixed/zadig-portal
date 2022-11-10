@@ -94,7 +94,7 @@
         </div>
       </el-form-item>
       <el-form-item v-if="hasPlutus">
-        <div slot="label" style="line-height: 1.2;">使用宿主机 Docker Daemon</div>
+        <div slot="label" style="width: 110px; line-height: 20px;">使用宿主机 Docker daemon</div>
         <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
       </el-form-item>
     </el-form>
