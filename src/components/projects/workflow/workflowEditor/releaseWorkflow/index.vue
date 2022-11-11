@@ -148,6 +148,24 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+            <JobCanaryDeploy v-if="job.type === jobType.canaryDeploy" :job="job" :ref="jobType.canaryDeploy" />
+            <JobK8sResourceUpdate v-if="job.type === jobType.k8sResourcePatch" :job="job" :ref="jobType.k8sResourcePatch" />
+            <JobCanaryConfirm v-if="job.type === jobType.canaryConfirm" :job="job" :workflowInfo="payload" :ref="jobType.canaryConfirm" />
+            <JobBlueGreenDeploy v-if="job.type === jobType.blueGreenDeploy" :job="job" :ref="jobType.blueGreenDeploy" />
+            <JobBlueGreenConfirm
+              v-if="job.type === jobType.blueGreenConfirm"
+              :job="job"
+              :workflowInfo="payload"
+              :ref="jobType.blueGreenConfirm"
+            />
+            <JobGrayRollback v-if="job.type === jobType.k8sGrayRollback" :job="job" :workflowInfo="payload" :ref="jobType.k8sGrayRollback" />
+            <JobK8sGrayDeploy
+              v-if="job.type === jobType.grayDeploy"
+              :job="job"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+              :ref="jobType.grayDeploy"
+            />
           </div>
         </footer>
       </Multipane>
@@ -266,6 +284,13 @@ import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
 import JobScanning from './components/jobs/jobScanning.vue'
+import JobCanaryDeploy from './components/jobs/jobCanaryDeploy.vue'
+import JobCanaryConfirm from './components/jobs/jobCanaryConfirm.vue'
+import JobBlueGreenDeploy from './components/jobs/jobBlueGreenDeploy.vue'
+import JobBlueGreenConfirm from './components/jobs/jobBlueGreenConfirm.vue'
+import JobGrayRollback from './components/jobs/jobGrayRollback.vue'
+import JobK8sGrayDeploy from './components/jobs/jobK8sGrayDeploy'
+import JobK8sResourceUpdate from './components/jobs/jobK8sResourceUpdate'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -352,6 +377,13 @@ export default {
     JobK8sDeploy,
     JobTest,
     JobScanning,
+    JobK8sResourceUpdate,
+    JobCanaryDeploy,
+    JobCanaryConfirm,
+    JobBlueGreenDeploy,
+    JobBlueGreenConfirm,
+    JobGrayRollback,
+    JobK8sGrayDeploy,
     RunCustomWorkflow,
     codemirror,
     Env,

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { validateJobName, jobType } from '../config'
+import { validateJobName, jobType } from '../../config'
 export default {
   name: 'BuildEnv',
   props: {
@@ -54,7 +54,6 @@ export default {
       return jobs
     }
   },
-  created () {},
   methods: {
     getData () {
       return this.job
