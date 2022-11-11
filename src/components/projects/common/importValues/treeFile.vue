@@ -38,7 +38,7 @@ export default {
     }
   },
   props: {
-    getGitSource: Function,
+    getGitSourceType: Function,
     gitRepoConfig: {
       require: true,
       type: Object,
@@ -88,7 +88,7 @@ export default {
         branchName: this.gitRepoConfig.branch,
         namespace: this.gitRepoConfig.namespace,
         path,
-        type: this.getGitSource(this.gitRepoConfig.codehostID) || 'helm'
+        type: this.getGitSourceType(this.gitRepoConfig.codehostID) || 'helm'
       }
       getRepoFilesAPI(params).then(res => {
         if (path === '') {

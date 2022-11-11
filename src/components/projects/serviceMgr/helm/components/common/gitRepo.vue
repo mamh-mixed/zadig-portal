@@ -22,18 +22,14 @@
           size="small"
           style="width: 100%;"
           placeholder="请选择代码源"
-          @change="queryRepoOwnerById(source.codehostId)"
+          @change="getRepoOwnerById(source.codehostId)"
           filterable
+          clearable
           :disabled="isUpdate"
         >
-          <el-option
-            v-for="(host, index) in allCodeHosts"
-            :key="index"
-            :label="host.address + '('+host.alias+')'"
-            :value="host.id"
-          >
+          <el-option v-for="(host, index) in allCodeHosts" :key="index" :label="host.address + '('+host.alias+')'" :value="host.id">
             {{
-           host.address + '('+host.alias+')'
+            host.address + '('+host.alias+')'
             }}
           </el-option>
         </el-select>
@@ -47,13 +43,16 @@
               trigger: 'change',
             }"
       >
+        <el-input v-if="codehostSource === 'other'" v-model.trim="source.repoOwner" size="small" placeholder="请输入组织名/用户名" :disabled="isUpdate" clearable></el-input>
         <el-select
+          v-else
           v-model="source.repoOwner"
           size="small"
           style="width: 100%;"
           @change="getRepoNameById(source.codehostId, source.repoOwner)"
           placeholder="请选择组织名/用户名"
           filterable
+          clearable
           :disabled="isUpdate"
         >
           <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path">
@@ -75,7 +74,9 @@
                 trigger: 'change',
               }"
         >
+          <el-input v-if="codehostSource === 'other'" v-model.trim="source.repoName" size="small" placeholder="请输入代码库名称" :disabled="isUpdate" clearable></el-input>
           <el-select
+            v-else
             @change="
                   getBranchInfoById(
                     source.codehostId,
@@ -107,7 +108,9 @@
                 trigger: 'change',
               }"
         >
+          <el-input v-if="codehostSource === 'other'" v-model.trim="source.branchName" size="small" placeholder="请输入分支名称" :disabled="isUpdate" clearable></el-input>
           <el-select
+            v-else
             v-model.trim="source.branchName"
             placeholder="请选择分支"
             style="width: 100%;"
@@ -121,6 +124,18 @@
           </el-select>
         </el-form-item>
         <el-form-item
+          v-if="codehostSource === 'other'"
+          label="文件目录"
+          :rules="{
+                required: true,
+                message: '请输入文件目录',
+                trigger: 'change',
+              }"
+        >
+          <el-input v-model.trim="source.path" size="small" placeholder="输入 Chart 模版所在目录，例如 dir1/chart" :disabled="isUpdate" clearable></el-input>
+        </el-form-item>
+        <el-form-item
+          v-else
           label="选择文件夹："
           :rules="{
                 required: true,
@@ -129,7 +144,15 @@
               }"
         >
           <span :key="item" v-for="item in selectPath">[{{ item }}]&nbsp;</span>
-          <el-button @click="openFileTree" :disabled="!showSelectFileBtn || isUpdate" type="primary" plain size="mini" icon="el-icon-plus" circle></el-button>
+          <el-button
+            @click="openFileTree"
+            :disabled="!showSelectFileBtn || isUpdate"
+            type="primary"
+            plain
+            size="mini"
+            icon="el-icon-plus"
+            circle
+          ></el-button>
         </el-form-item>
       </template>
       <el-form-item v-if="!controlParam.hiddenCreateButton" style="text-align: right;">
@@ -144,26 +167,31 @@
         <span :key="item" v-for="item in selectPath">[{{ item }}]&nbsp;</span>
         <el-button @click="openFileTree" :disabled="!source.url || isUpdate" type="primary" plain size="mini" icon="el-icon-plus" circle></el-button>
       </el-form-item>
-      <el-form-item  style="text-align: right;">
+      <el-form-item style="text-align: right;">
         <el-button size="small" :loading="loading" type="primary" @click="submit">加载</el-button>
       </el-form-item>
     </el-form>
 
-    <el-dialog v-if="codehostSource === 'gerrit' || codehostSource === 'gitee' || codehostSource === 'gitee-enterprise'" :append-to-body="true"
-               :visible.sync="workSpaceModalVisible"
-               width="60%"
-               title="请选择要同步的文件或文件目录"
-               class="fileTree-dialog">
-      <GerritFileTree ref="worktree"
-                    :codehostId="source.codehostId"
-                    :repoName="source.repoName"
-                    :repoOwner="source.repoOwner"
-                    :branchName="source.branchName"
-                    :remoteName="source.remoteName"
-                    :namespace="source.namespace"
-                    :gitType="codehostSource"
-                    @getPreloadServices="getPreloadServices"
-                    :showTree="workSpaceModalVisible"/>
+    <el-dialog
+      v-if="codehostSource === 'gerrit' || codehostSource === 'gitee' || codehostSource === 'gitee-enterprise'"
+      :append-to-body="true"
+      :visible.sync="workSpaceModalVisible"
+      width="60%"
+      title="请选择要同步的文件或文件目录"
+      class="fileTree-dialog"
+    >
+      <GerritFileTree
+        ref="worktree"
+        :codehostId="source.codehostId"
+        :repoName="source.repoName"
+        :repoOwner="source.repoOwner"
+        :branchName="source.branchName"
+        :remoteName="source.remoteName"
+        :namespace="source.namespace"
+        :gitType="codehostSource"
+        @getPreloadServices="getPreloadServices"
+        :showTree="workSpaceModalVisible"
+      />
     </el-dialog>
     <el-dialog v-else :append-to-body="true" :visible.sync="workSpaceModalVisible" width="60%" title="请选择要同步的文件目录" class="fileTree-dialog">
       <GitFileTree
@@ -182,7 +210,6 @@
         :justSelectOne="controlParam.justSelectOneFile"
       />
     </el-dialog>
-
   </div>
 </template>
 <script>
@@ -224,7 +251,6 @@ export default {
     return {
       loading: false,
       gitName: 'private',
-      codehostSource: '',
       allCodeHosts: [],
       searchProjectLoading: false,
       workSpaceModalVisible: false,
@@ -273,25 +299,28 @@ export default {
       this.selectPath = []
       this.$refs.sourceForm.resetFields()
     },
-    async queryCodeSource () {
+    async getCodeSource () {
       const key = this.$utils.rsaEncrypt()
       const res = await getCodeSourceMaskedAPI(key).catch(error =>
         console.log(error)
       )
       if (res) {
-        this.allCodeHosts = res.filter(item => item.type !== 'other')
+        this.allCodeHosts = res
       }
     },
-    async queryRepoOwnerById (id, key = '') {
+    async getRepoOwnerById (id, key = '') {
       this.source.repoOwner = ''
       this.source.repoName = ''
       this.source.branchName = ''
-      this.getGitSource(id)
-      const res = await getRepoOwnerByIdAPI(id, key).catch(error =>
-        console.log(error)
-      )
-      if (res) {
-        this.codeInfo.repoOwners = res
+      this.selectPath = []
+      const codehostSource = this.codehostSource
+      if (codehostSource !== 'other') {
+        const res = await getRepoOwnerByIdAPI(id, key).catch(error =>
+          console.log(error)
+        )
+        if (res) {
+          this.codeInfo.repoOwners = res
+        }
       }
     },
     async searchProject (query) {
@@ -384,20 +413,20 @@ export default {
       }
       this.$emit('selectPath', emitParams)
     },
-    getGitSource (codehostId) {
+    getGitSourceType (codehostId) {
       const codehostItem = this.allCodeHosts.find(item => {
         return item.id === codehostId
       })
-      if (codehostItem) {
-        this.codehostSource = codehostItem.type
-      }
       return codehostItem ? codehostItem.type : ''
     },
     async addService () {
       this.loading = true
       const projectName = this.$route.params.project_name
-      this.getGitSource(this.source.codehostId)
-      if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee' || this.codehostSource === 'gitee-enterprise') {
+      if (
+        this.codehostSource === 'gerrit' ||
+        this.codehostSource === 'gitee' ||
+        this.codehostSource === 'gitee-enterprise'
+      ) {
         const params = {
           codehostId: this.source.codehostId,
           repoOwner: this.source.repoOwner,
@@ -421,19 +450,28 @@ export default {
       } else {
         const source = this.codehostSource
         payload = {
-          source: (source === 'gerrit' || source === 'gitee' || source === 'gitee-enterprise') ? source : 'repo',
+          source:
+            source === 'gerrit' ||
+            source === 'gitee' ||
+            source === 'gitee-enterprise'
+              ? source
+              : 'repo',
           createFrom: {
             codehostID: this.source.codehostId,
             owner: this.source.repoOwner,
             repo: this.source.repoName,
             branch: this.source.branchName,
             paths: this.selectPath,
-            namespace: this.source.namespace
+            namespace: this.source.namespace ? this.source.namespace : this.source.repoOwner
           }
         }
       }
-      const reqApi = this.isUpdate ? updateTemplateServiceAPI : createTemplateServiceAPI
-      const res = await reqApi(projectName, payload).catch(error => console.log(error))
+      const reqApi = this.isUpdate
+        ? updateTemplateServiceAPI
+        : createTemplateServiceAPI
+      const res = await reqApi(projectName, payload).catch(error =>
+        console.log(error)
+      )
       if (res) {
         this.closeFileTree(res)
       }
@@ -446,15 +484,54 @@ export default {
     }
   },
   computed: {
+    codehostSource () {
+      const codehostId = this.source.codehostId
+      const codehostItem = this.allCodeHosts.find(item => {
+        return item.id === codehostId
+      })
+      return codehostItem ? codehostItem.type : ''
+    },
     showSelectFileBtn () {
       return (
         this.source.codehostId &&
         this.source.repoName !== '' &&
         this.source.branchName !== ''
       )
+    },
+    loadFromOtherCodeSource () {
+      if (
+        this.codehostSource === 'other' &&
+        this.source.codehostId &&
+        this.source.repoName !== '' &&
+        this.source.branchName !== '' &&
+        this.source.path !== ''
+      ) {
+        return true
+      } else {
+        return false
+      }
+    },
+    emitParams () {
+      const emitParams = {
+        path: [this.source.path],
+        codeHostID: this.source.codehostId,
+        owner: this.source.repoOwner,
+        repo: this.source.repoName,
+        branch: this.source.branchName,
+        namespace: this.source.namespace ? this.source.namespace : this.source.repoOwner
+      }
+      return emitParams
     }
   },
   watch: {
+    emitParams: {
+      handler (value) {
+        if (this.loadFromOtherCodeSource && value) {
+          this.selectPath = value.path
+          this.$emit('selectPath', value)
+        }
+      }
+    },
     currentService: {
       handler (value) {
         const update =
@@ -472,7 +549,8 @@ export default {
               this.source.branchName = gitRepoConfig.branch
               this.source.repoName = gitRepoConfig.repo
               this.source.repoOwner = gitRepoConfig.owner
-              this.source.namespace = value.repo_namespace
+              this.source.path = value.load_path
+              this.source.namespace = value.repo_namespace ? value.repo_namespace : value.repo_owner
             }
             this.selectPath = [createFrom.load_path]
           } else {
@@ -488,7 +566,8 @@ export default {
             this.source.repoOwner = value.repo_owner
             this.source.url = value.src_path
             this.selectPath = [value.load_path]
-            this.source.namespace = value.repo_namespace
+            this.source.path = value.load_path
+            this.source.namespace = value.repo_namespace ? value.repo_namespace : value.repo_owner
           }
           this.isUpdate = true
         } else {
@@ -502,7 +581,7 @@ export default {
     }
   },
   mounted () {
-    this.queryCodeSource()
+    this.getCodeSource()
   }
 }
 </script>
