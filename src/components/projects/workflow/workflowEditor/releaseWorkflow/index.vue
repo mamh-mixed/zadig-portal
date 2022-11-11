@@ -148,19 +148,43 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-            <JobCanaryDeploy v-if="job.type === jobType.canaryDeploy" :job="job" :ref="jobType.canaryDeploy" />
-            <JobK8sResourceUpdate v-if="job.type === jobType.k8sResourcePatch" :job="job" :ref="jobType.k8sResourcePatch" />
-            <JobCanaryConfirm v-if="job.type === jobType.canaryConfirm" :job="job" :workflowInfo="payload" :ref="jobType.canaryConfirm" />
-            <JobBlueGreenDeploy v-if="job.type === jobType.blueGreenDeploy" :job="job" :ref="jobType.blueGreenDeploy" />
+            <JobCanaryDeploy v-if="job.type === jobType.canaryDeploy" :projectName="projectName" :job="job" :ref="jobType.canaryDeploy" />
+            <JobK8sResourceUpdate
+              v-if="job.type === jobType.k8sResourcePatch"
+              :projectName="projectName"
+              :job="job"
+              :ref="jobType.k8sResourcePatch"
+            />
+            <JobCanaryConfirm
+              v-if="job.type === jobType.canaryConfirm"
+              :projectName="projectName"
+              :job="job"
+              :workflowInfo="payload"
+              :ref="jobType.canaryConfirm"
+            />
+            <JobBlueGreenDeploy
+              v-if="job.type === jobType.blueGreenDeploy"
+              :projectName="projectName"
+              :job="job"
+              :ref="jobType.blueGreenDeploy"
+            />
             <JobBlueGreenConfirm
               v-if="job.type === jobType.blueGreenConfirm"
+              :projectName="projectName"
               :job="job"
               :workflowInfo="payload"
               :ref="jobType.blueGreenConfirm"
             />
-            <JobGrayRollback v-if="job.type === jobType.k8sGrayRollback" :job="job" :workflowInfo="payload" :ref="jobType.k8sGrayRollback" />
+            <JobGrayRollback
+              v-if="job.type === jobType.k8sGrayRollback"
+              :projectName="projectName"
+              :job="job"
+              :workflowInfo="payload"
+              :ref="jobType.k8sGrayRollback"
+            />
             <JobK8sGrayDeploy
               v-if="job.type === jobType.grayDeploy"
+              :projectName="projectName"
               :job="job"
               :globalEnv="globalEnv"
               :workflowInfo="payload"

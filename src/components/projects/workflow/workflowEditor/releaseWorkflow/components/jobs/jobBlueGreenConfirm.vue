@@ -24,6 +24,10 @@ import { validateJobName, jobType } from '../../config'
 export default {
   name: 'BuildEnv',
   props: {
+    projectName: {
+      type: String,
+      default: ''
+    },
     job: {
       type: Object,
       default: () => ({})

@@ -142,6 +142,10 @@ import { cloneDeep } from 'lodash'
 export default {
   name: 'JobCanaryDeploy',
   props: {
+    projectName: {
+      type: String,
+      default: ''
+    },
     job: {
       type: Object,
       default: () => ({})

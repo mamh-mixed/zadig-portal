@@ -84,6 +84,10 @@ import { validateJobName, jobType } from '../../config.js'
 export default {
   name: 'JobK8sDeploy',
   props: {
+    projectName: {
+      type: String,
+      default: ''
+    },
     job: {
       type: Object,
       default: () => ({})
