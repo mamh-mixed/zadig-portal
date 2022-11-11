@@ -33,11 +33,15 @@
               <span class="middle">
                 资源监测
                 <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
-                  <i class="el-icon-info"></i>
+                  <i class="el-icon-info gray"></i>
                 </el-tooltip>
               </span>
               <div style="display: inline-block;">
-                <span v-for="(resource, index) in svcResources[serviceName] ? svcResources[serviceName].resources : []" :key="index">
+                <span
+                  class="resource-item"
+                  v-for="(resource, index) in svcResources[serviceName] ? svcResources[serviceName].resources : []"
+                  :key="index"
+                >
                   <i class="middle" :class="[resource.status === 'deployed' ? 'el-icon-success success' : 'el-icon-error fail']"></i>
                   <span>{{ `${resource.type}/${resource.name}` }}</span>
                 </span>
@@ -167,7 +171,9 @@ export default {
         const svcResources = {}
         const svcStatus = {}
         res.forEach(resource => {
-          const deployed = !resource.resource.find(re => re.status === 'undeployed')
+          const deployed = !resource.resource.find(
+            re => re.status === 'undeployed'
+          )
           svcResources[resource.service_name] = {
             ...resource,
             deployed
@@ -226,9 +232,14 @@ export default {
       .service-resource {
         flex: 1 1 auto;
         margin: 0 20px;
+
+        .resource-item {
+          white-space: nowrap;
+        }
       }
 
       .middle {
+        margin-left: 8px;
         vertical-align: middle;
       }
 
@@ -238,6 +249,10 @@ export default {
 
       .fail {
         color: @danger;
+      }
+
+      .gray {
+        color: @info;
       }
 
       /deep/.el-radio {
