@@ -142,7 +142,7 @@
         <el-button size="small" @click="cancelEditView('workflowViewForm')">取消</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择模版" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog">
+    <el-dialog title="选择模板" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog">
       <el-card shadow="hover" @mouseover.native="currentTemplate=''">
         <div class="card" style="height: 30px; line-height: 30px;">
           <div>
@@ -158,8 +158,8 @@
         </div>
       </el-card>
       <div>
-        <div class="title" v-if="selectWorkflowType==='release'">发布工作流模版</div>
-        <div class="title" v-if="selectWorkflowType==='custom'">自定义工作流模版</div>
+        <div class="title" v-if="selectWorkflowType==='release'">发布工作流模板</div>
+        <div class="title" v-if="selectWorkflowType==='custom'">自定义工作流模板</div>
         <el-card
           shadow="hover"
           v-for="(item) in customWorkflowTemplates"
@@ -191,7 +191,7 @@
         </el-card>
       </div>
       <div>
-        <div class="title">内置模版</div>
+        <div class="title">内置模板</div>
         <el-card
           shadow="hover"
           v-for="(item) in buildInWorkflowTemplates"

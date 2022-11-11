@@ -61,7 +61,7 @@ export default {
   methods: {
     deleteModel (modelInfo) {
       const { template_name, id } = modelInfo
-      this.$confirm(`确定要删除 ${template_name} 模版?`, '确认', {
+      this.$confirm(`确定要删除 ${template_name} 模板?`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
