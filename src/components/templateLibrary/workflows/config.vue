@@ -536,7 +536,7 @@ export default {
         editWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('保存成功')
-            this.$router.push(`/v1/template/workflows`)
+            this.$router.push(`/v1/template/workflows?type=${this.workflowType}`)
           })
           .catch(() => {
             this.payload = this.notComputedPayload
@@ -545,7 +545,7 @@ export default {
         addWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('新建成功')
-            this.$router.push(`/v1/template/workflows`)
+            this.$router.push(`/v1/template/workflows?type=${this.workflowType}`)
           })
           .catch(() => {
             this.payload = this.notComputedPayload

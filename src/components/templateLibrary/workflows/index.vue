@@ -42,6 +42,7 @@ export default {
     }
   },
   created () {
+    this.activeTab = this.$route.query.type || 'custom'
     this.getWorkflowTemplates(this.activeTab)
   }
 }
@@ -60,6 +61,7 @@ export default {
   .wrap {
     width: 100%;
     height: 100%;
+    overflow: auto;
 
     /deep/ .workflow-type-tab {
       .el-tabs__header {
