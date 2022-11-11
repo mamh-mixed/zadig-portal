@@ -43,7 +43,7 @@
               trigger: 'change',
             }"
       >
-        <el-input v-if="codehostSource === 'other'" v-model.trim="source.repoOwner" size="small" placeholder="请输入组织名/用户名" clearable></el-input>
+        <el-input v-if="codehostSource === 'other'" v-model.trim="source.repoOwner" size="small" placeholder="请输入组织名/用户名" :disabled="isUpdate" clearable></el-input>
         <el-select
           v-else
           v-model="source.repoOwner"
@@ -74,7 +74,7 @@
                 trigger: 'change',
               }"
         >
-          <el-input v-if="codehostSource === 'other'" v-model.trim="source.repoName" size="small" placeholder="请输入代码库名称" clearable></el-input>
+          <el-input v-if="codehostSource === 'other'" v-model.trim="source.repoName" size="small" placeholder="请输入代码库名称" :disabled="isUpdate" clearable></el-input>
           <el-select
             v-else
             @change="
@@ -108,7 +108,7 @@
                 trigger: 'change',
               }"
         >
-          <el-input v-if="codehostSource === 'other'" v-model.trim="source.branchName" size="small" placeholder="请输入分支名称" clearable></el-input>
+          <el-input v-if="codehostSource === 'other'" v-model.trim="source.branchName" size="small" placeholder="请输入分支名称" :disabled="isUpdate" clearable></el-input>
           <el-select
             v-else
             v-model.trim="source.branchName"
@@ -132,7 +132,7 @@
                 trigger: 'change',
               }"
         >
-          <el-input v-model.trim="source.path" size="small" placeholder="输入 Chart 模版所在目录，例如 dir1/chart" clearable></el-input>
+          <el-input v-model.trim="source.path" size="small" placeholder="输入 Chart 模版所在目录，例如 dir1/chart" :disabled="isUpdate" clearable></el-input>
         </el-form-item>
         <el-form-item
           v-else
@@ -251,7 +251,6 @@ export default {
     return {
       loading: false,
       gitName: 'private',
-      codehostSource: '',
       allCodeHosts: [],
       searchProjectLoading: false,
       workSpaceModalVisible: false,
@@ -314,7 +313,7 @@ export default {
       this.source.repoName = ''
       this.source.branchName = ''
       this.selectPath = []
-      const codehostSource = this.getGitSourceType(id)
+      const codehostSource = this.codehostSource
       if (codehostSource !== 'other') {
         const res = await getRepoOwnerByIdAPI(id, key).catch(error =>
           console.log(error)
@@ -418,15 +417,11 @@ export default {
       const codehostItem = this.allCodeHosts.find(item => {
         return item.id === codehostId
       })
-      if (codehostItem) {
-        this.codehostSource = codehostItem.type
-      }
       return codehostItem ? codehostItem.type : ''
     },
     async addService () {
       this.loading = true
       const projectName = this.$route.params.project_name
-      this.getGitSourceType(this.source.codehostId)
       if (
         this.codehostSource === 'gerrit' ||
         this.codehostSource === 'gitee' ||
@@ -489,6 +484,13 @@ export default {
     }
   },
   computed: {
+    codehostSource () {
+      const codehostId = this.source.codehostId
+      const codehostItem = this.allCodeHosts.find(item => {
+        return item.id === codehostId
+      })
+      return codehostItem ? codehostItem.type : ''
+    },
     showSelectFileBtn () {
       return (
         this.source.codehostId &&
@@ -547,7 +549,7 @@ export default {
               this.source.branchName = gitRepoConfig.branch
               this.source.repoName = gitRepoConfig.repo
               this.source.repoOwner = gitRepoConfig.owner
-              this.source.namespace = value.repo_namespace
+              this.source.namespace = value.repo_namespace ? value.repo_namespace : value.repo_owner
             }
             this.selectPath = [createFrom.load_path]
           } else {
@@ -563,7 +565,8 @@ export default {
             this.source.repoOwner = value.repo_owner
             this.source.url = value.src_path
             this.selectPath = [value.load_path]
-            this.source.namespace = value.repo_namespace
+            this.source.path = value.load_path
+            this.source.namespace = value.repo_namespace ? value.repo_namespace : value.repo_owner
           }
           this.isUpdate = true
         } else {
