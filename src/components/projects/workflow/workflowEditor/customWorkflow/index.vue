@@ -434,7 +434,7 @@ export default {
     },
     getWorkflowTemplateDetail () {
       getWorkflowTemplateDetailAPI(this.modelId).then(res => {
-        this.payload = jsyaml.load(res)
+        this.payload = Object.assign(this.payload, jsyaml.load(res))
         this.handleEnv()
       })
     },

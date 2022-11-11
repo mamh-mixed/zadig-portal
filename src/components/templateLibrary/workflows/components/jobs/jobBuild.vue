@@ -187,7 +187,6 @@ export default {
     }
   },
   created () {
-    // this.setServiceBuilds()
     this.getRegistryWhenBuild()
   },
   methods: {
