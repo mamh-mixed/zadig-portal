@@ -512,11 +512,11 @@ export default {
     emitParams () {
       const emitParams = {
         path: [this.source.path],
-        codehostId: this.source.codehostId,
-        repoOwner: this.source.repoOwner,
-        repoName: this.source.repoName,
-        branchName: this.source.branchName,
-        namespace: this.source.repoOwner
+        codeHostID: this.source.codehostId,
+        owner: this.source.repoOwner,
+        repo: this.source.repoName,
+        branch: this.source.branchName,
+        namespace: this.source.namespace ? this.source.namespace : this.source.repoOwner
       }
       return emitParams
     }
