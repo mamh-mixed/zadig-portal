@@ -7,7 +7,7 @@
         <el-dropdown placement="bottom" style="margin-left: 10px;" v-if="useVarGroup">
           <el-button
             size="mini"
-            icon="el-icon-download"
+            icon="el-icon-s-operation"
             type="text"
           />
           <el-dropdown-menu slot="dropdown">
