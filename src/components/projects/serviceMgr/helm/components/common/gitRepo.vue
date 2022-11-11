@@ -132,7 +132,7 @@
                 trigger: 'change',
               }"
         >
-          <el-input v-model.trim="source.path" size="small" placeholder="输入 Chart 模版所在目录，例如 dir1/chart" :disabled="isUpdate" clearable></el-input>
+          <el-input v-model.trim="source.path" size="small" placeholder="输入 Chart 模板所在目录，例如 dir1/chart" :disabled="isUpdate" clearable></el-input>
         </el-form-item>
         <el-form-item
           v-else
