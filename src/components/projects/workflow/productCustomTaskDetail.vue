@@ -154,7 +154,7 @@
   </div>
 </template>
 <script>
-import { getCustomWorkflowTaskDetailAPI, deleteWorkflowTaskAPI } from '@api'
+import { getCustomWorkflowTaskDetailAPI, deleteCustomWorkflowTaskAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import JobBuildDetail from './productCustomTaskDetail/jobBuildDetail.vue'
 import JobDeployDetail from './productCustomTaskDetail/jobDeployDetail.vue'
@@ -365,7 +365,7 @@ export default {
       return wordTranslate(word, 'approval', 'status')
     },
     cancel () {
-      deleteWorkflowTaskAPI(
+      deleteCustomWorkflowTaskAPI(
         this.workflowName,
         this.taskId,
         this.projectName

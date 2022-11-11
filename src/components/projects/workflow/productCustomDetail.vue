@@ -15,20 +15,36 @@
           <span class="iconfont iconzhixing">&nbsp;执行</span>
         </el-button>
       </el-tooltip>
-      <router-link
-        v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
-        :to="`/v1/projects/detail/${projectName}/pipelines/custom/edit/${workflowName}?projectName=${projectName}&display_name=${displayName}`"
-        class="middle"
-      >
-        <span class="iconfont icondeploy edit-setting"></span>
-      </router-link>
-      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
-        <span class="middle">
-          <span class="permission-disabled iconfont icondeploy edit-setting"></span>
-        </span>
-      </el-tooltip>
+      <template v-if="detail.category === 'release'">
+        <router-link
+          v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
+          :to="`/v1/projects/detail/${projectName}/pipelines/release/edit/${workflowName}?projectName=${projectName}&display_name=${displayName}`"
+          class="middle"
+        >
+          <span class="iconfont icondeploy edit-setting"></span>
+        </router-link>
+        <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <span class="middle">
+            <span class="permission-disabled iconfont icondeploy edit-setting"></span>
+          </span>
+        </el-tooltip>
+      </template>
+      <template v-else>
+        <router-link
+          v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_workflow',resource:{name:workflowName,type:'workflow'}})"
+          :to="`/v1/projects/detail/${projectName}/pipelines/custom/edit/${workflowName}?projectName=${projectName}&display_name=${displayName}`"
+          class="middle"
+        >
+          <span class="iconfont icondeploy edit-setting"></span>
+        </router-link>
+        <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <span class="middle">
+            <span class="permission-disabled iconfont icondeploy edit-setting"></span>
+          </span>
+        </el-tooltip>
+      </template>
       <div class="right">
-        <CusTags :values="stages" class="item" noLimit/>
+        <CusTags :values="stages" class="item" noLimit />
         <span class="item">
           <span class="item left">修改人</span>
           {{ detail.updated_by }}
@@ -51,7 +67,7 @@
           :defaultFilterList="defaultFilterList"
           :getFilterList="getFilterList"
           @updateFilter="updateFilter"
-        /> -->
+        />-->
       </div>
       <TaskList
         :taskList="workflowTasks"
@@ -71,7 +87,7 @@
     </el-card>
 
     <el-dialog :visible.sync="taskDialogVisible" title="执行工作流" custom-class="run-workflow" width="60%" class="dialog" :before-close="close">
-       <RunCustomWorkflow
+      <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
         :displayName="displayName"
@@ -152,7 +168,7 @@ export default {
     },
     stages () {
       if (this.detail.stages && this.detail.stages.length > 0) {
-        return this.detail.stages.map((item) => {
+        return this.detail.stages.map(item => {
           return item.name
         })
       } else {
@@ -217,9 +233,11 @@ export default {
       this.fetchHistory(this.pageStart, this.pageSize)
     },
     getCustomWorkflowDetail () {
-      getCustomWorkflowDetailAPI(this.workflowName, this.projectName).then(res => {
-        this.detail = jsyaml.load(res)
-      })
+      getCustomWorkflowDetailAPI(this.workflowName, this.projectName).then(
+        res => {
+          this.detail = jsyaml.load(res)
+        }
+      )
     },
     close () {
       this.cloneWorkflow = {}

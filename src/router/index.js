@@ -127,6 +127,22 @@ const routes = [
             }
           },
           {
+            path: 'pipelines/release/create',
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/releaseWorkflow'),
+            meta: {
+              requiresAuth: true,
+              title: '新建工作流'
+            }
+          },
+          {
+            path: 'pipelines/release/edit/:workflow_name',
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/releaseWorkflow'),
+            meta: {
+              requiresAuth: true,
+              title: '编辑工作流'
+            }
+          },
+          {
             path: 'pipelines/multi/testcase/:workflow_name/:task_id/:test_name/:test_job_name',
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/report/productWorkflowTestCase.vue'),
             meta: {
@@ -143,27 +159,11 @@ const routes = [
             }
           },
           {
-            path: 'pipelines/common/:workflow_name',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/commonDetail.vue'),
-            meta: {
-              requiresAuth: true,
-              title: '工作流详情'
-            }
-          },
-          {
             path: 'pipelines/custom/:workflow_name',
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomDetail.vue'),
             meta: {
               requiresAuth: true,
               title: '工作流任务列表'
-            }
-          },
-          {
-            path: 'pipelines/common/:workflow_name/:task_id',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/commonTaskDetail.vue'),
-            meta: {
-              requiresAuth: true,
-              title: '任务详情'
             }
           },
           {
@@ -787,22 +787,6 @@ const routes = [
       {
         path: 'product/edit/:name',
         component: () => import(/* webpackChunkName: "Workflow Editor" */ '@/components/projects/workflow/workflowEditor/productWorkflow/workflow.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '编辑工作流'
-        }
-      },
-      {
-        path: 'common/create',
-        component: () => import(/* webpackChunkName: "Workflow Editor" */ '@/components/projects/workflow/workflowEditor/commonWorkflow/workflow.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '新建工作流'
-        }
-      },
-      {
-        path: 'common/edit/:name',
-        component: () => import(/* webpackChunkName: "Workflow Editor" */ '@/components/projects/workflow/workflowEditor/commonWorkflow/workflow.vue'),
         meta: {
           requiresAuth: true,
           title: '编辑工作流'

@@ -6,7 +6,6 @@
     </section>
     <section v-else class="running-time">
       <ProductWorkflowStatus :productWorkflowTasks="productWorkflowTasks" :expandId="productExpandId" />
-      <CommonWorkflowStatus :commonWorkflowTasks="commonWorkflowTasks" />
       <CustomWorkflowStatus :customWorkflowTasks="customWorkflowTasks" />
       <TestStatus :testTasks="testTasks" />
       <ScannerStatus :scannerTasks="scannerTasks" />
@@ -23,7 +22,6 @@ import {
 } from '@api'
 import bus from '@utils/eventBus'
 import ProductWorkflowStatus from './container/productWorkflowStatus'
-import CommonWorkflowStatus from './container/commonWorkflowStatus'
 import CustomWorkflowStatus from './container/customWorkflowStatus'
 import TestStatus from './container/testStatus'
 import ScannerStatus from './container/scannerStatus'
@@ -39,10 +37,6 @@ export default {
       productWorkflowTasks: {
         pending: [],
         running: []
-      },
-      commonWorkflowTasks: {
-        running: [],
-        pending: []
       },
       customWorkflowTasks: {
         running: [],
@@ -74,9 +68,6 @@ export default {
             this.scannerTasks.running = res.data.filter(
               task => task.type === 'scanning'
             )
-            this.commonWorkflowTasks.running = res.data.filter(
-              task => task.type === 'workflow_v3'
-            )
             this.task.running = res.data.length
             if (this.productWorkflowTasks.running.length > 0) {
               this.productExpandId = this.productWorkflowTasks.running[0].task_id
@@ -101,9 +92,6 @@ export default {
             this.scannerTasks.pending = res.data.filter(
               task => task.type === 'scanning'
             )
-            this.commonWorkflowTasks.pending = res.data.filter(
-              task => task.type === 'workflow_v3'
-            )
             this.task.pending = res.data.length
           })
           .closeWhenDestroy(this)
@@ -125,7 +113,6 @@ export default {
     ProductWorkflowStatus,
     TestStatus,
     ScannerStatus,
-    CommonWorkflowStatus,
     CustomWorkflowStatus
   }
 }

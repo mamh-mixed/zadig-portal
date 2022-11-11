@@ -134,7 +134,7 @@ export default {
           {
             type: 'string',
             required: true,
-            validator: this.validatePipelineName,
+            validator: this.validateWorkflowName,
             trigger: ['blur', 'change']
           }
         ],
@@ -172,8 +172,8 @@ export default {
     }
   },
   methods: {
-    validatePipelineName (rule, value, callback) {
-      const result = this.$utils.validatePipelineName([], value)
+    validateWorkflowName (rule, value, callback) {
+      const result = this.$utils.validateWorkflowName([], value)
       if (result === true) {
         callback()
       } else {
