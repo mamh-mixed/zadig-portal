@@ -6,9 +6,7 @@
       </el-form-item>
       <el-form-item label="环境" :required="job.spec.envType && job.spec.envType !== 'runtime'">
         <el-form-item prop="spec.env" v-if="!job.spec.envType ||job.spec.envType === 'runtime'" class="form-item">
-          <el-select v-model="job.spec.env" placeholder="请选择" size="small" clearable filterable>
-            <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
-          </el-select>
+          <el-input v-model="job.spec.env" size="small" placeholder="请输入环境"></el-input>
         </el-form-item>
         <el-form-item prop="spec.env" required v-if="job.spec.envType === 'fixed'" class="form-item">
           <el-select v-model="job.spec.env" placeholder="请选择" size="small">
