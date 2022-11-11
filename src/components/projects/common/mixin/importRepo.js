@@ -42,7 +42,6 @@ export default {
   data () {
     return {
       allCodeHosts: [],
-      codehostSource: '',
       source: {
         codehostID: null,
         owner: '',
@@ -57,12 +56,20 @@ export default {
       }
     }
   },
+  computed: {
+    codehostSource () {
+      const codehostId = this.source.codehostID
+      const codehostItem = this.allCodeHosts.find(item => {
+        return item.id === codehostId
+      })
+      return codehostItem ? codehostItem.type : ''
+    }
+  },
   methods: {
     getGitSourceType (id) {
       const codehostItem = this.allCodeHosts.find(item => {
         return item.id === id
       })
-      this.codehostSource = codehostItem ? codehostItem.type : ''
       return codehostItem ? codehostItem.type : ''
     },
     async queryCodeSource () {
@@ -76,7 +83,7 @@ export default {
       this.source.owner = ''
       this.source.repo = ''
       this.source.branch = ''
-      const codehostSource = this.getGitSourceType(id)
+      const codehostSource = this.codehostSource
       if (codehostSource !== 'other') {
         const res = await getRepoOwnerByIdAPI(id, key).catch(error =>
           console.log(error)
