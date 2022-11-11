@@ -549,6 +549,7 @@ export default {
               this.source.branchName = gitRepoConfig.branch
               this.source.repoName = gitRepoConfig.repo
               this.source.repoOwner = gitRepoConfig.owner
+              this.source.path = value.load_path
               this.source.namespace = value.repo_namespace ? value.repo_namespace : value.repo_owner
             }
             this.selectPath = [createFrom.load_path]
