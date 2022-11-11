@@ -47,6 +47,7 @@ const valueInfo = {
     owner: '',
     repo: '',
     branch: '',
+    valuesPath: '',
     valuesPaths: [],
     autoSync: false,
     namespace: ''
@@ -120,7 +121,10 @@ export default {
         this.loadValueYamls = true
         const res = await getValuesYamlFromGitAPI(
           this.importRepoInfoUse.gitRepoConfig
-        ).catch(error => console.log(error))
+        ).catch(error => {
+          this.loadValueYamls = false
+          console.log(error)
+        })
         this.loadValueYamls = false
         if (res) {
           this.showGitImportDialog = false
