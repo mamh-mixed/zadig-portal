@@ -491,7 +491,7 @@ export default {
     },
     getWorkflowTemplateDetail () {
       getWorkflowTemplateDetailAPI(this.modelId).then(res => {
-        this.payload = jsyaml.load(res)
+        this.payload = Object.assign(this.payload, jsyaml.load(res))
       })
     },
     setTitle () {
@@ -694,100 +694,103 @@ export default {
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
-        this.workflowCurJobLength = this.payload.stages[
-          this.curStageIndex
-        ].jobs.length
-        this.payload.params.forEach(item => {
-          if (item.value.includes('<+fixed>')) {
-            item.command = 'fixed'
-            item.value = item.value.replaceAll('<+fixed>', '')
+        this.handleEnv()
+      })
+    },
+    handleEnv () {
+      this.workflowCurJobLength = this.payload.stages[
+        this.curStageIndex
+      ].jobs.length
+      this.payload.params.forEach(item => {
+        if (item.value.includes('<+fixed>')) {
+          item.command = 'fixed'
+          item.value = item.value.replaceAll('<+fixed>', '')
+        }
+      })
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.type === 'zadig-build') {
+            if (job.spec && job.spec.service_and_builds) {
+              job.spec.service_and_builds.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.value.includes('<+fixed>')) {
+                    item.command = 'fixed'
+                    item.value = item.value.replaceAll('<+fixed>', '')
+                  }
+                  if (item.value.includes('{{')) {
+                    item.command = 'other'
+                  }
+                })
+              })
+            }
+          }
+          if (job.type === 'zadig-deploy') {
+            if (job.spec.env.includes('fixed')) {
+              job.spec.envType = 'fixed'
+              job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
+            }
+            if (job.spec.env.includes('{{')) {
+              job.spec.envType = 'other'
+            }
+            if (job.spec.service_and_images.length > 0) {
+              job.spec.serviceType = 'runtime'
+            }
+            if (job.spec.source === 'fromjob') {
+              job.spec.serviceType = 'other'
+            }
+            // Mapping for value-key
+            if (
+              job.spec &&
+              job.spec.service_and_images &&
+              job.spec.service_and_images.length > 0
+            ) {
+              job.spec.service_and_images.forEach(service => {
+                service.value = `${service.service_name}/${service.service_module}`
+              })
+            }
+          }
+          if (job.type === 'freestyle') {
+            job.spec.properties.envs.forEach(item => {
+              if (item.value.includes('<+fixed>')) {
+                item.command = 'fixed'
+                item.value = item.value.replaceAll('<+fixed>', '')
+              }
+              if (item.value.includes('{{')) {
+                item.command = 'other'
+              }
+            })
+          }
+          if (job.type === 'plugin') {
+            job.spec.plugin.inputs.forEach(item => {
+              if (item.value && item.value.includes('<+fixed>')) {
+                item.command = 'fixed'
+                item.value = item.value.replaceAll('<+fixed>', '')
+              }
+              if (item.value && item.value.includes('{{')) {
+                item.command = 'other'
+              }
+            })
+          }
+          if (job.type === 'zadig-test') {
+            if (job.spec && job.spec.test_modules) {
+              job.spec.test_modules.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.value.includes('<+fixed>')) {
+                    item.command = 'fixed'
+                    item.value = item.value.replaceAll('<+fixed>', '')
+                  }
+                  if (item.value.includes('{{')) {
+                    item.command = 'other'
+                  }
+                })
+              })
+            }
           }
         })
-        this.payload.stages.forEach(stage => {
-          stage.jobs.forEach(job => {
-            if (job.type === 'zadig-build') {
-              if (job.spec && job.spec.service_and_builds) {
-                job.spec.service_and_builds.forEach(service => {
-                  service.key_vals.forEach(item => {
-                    if (item.value.includes('<+fixed>')) {
-                      item.command = 'fixed'
-                      item.value = item.value.replaceAll('<+fixed>', '')
-                    }
-                    if (item.value.includes('{{')) {
-                      item.command = 'other'
-                    }
-                  })
-                })
-              }
-            }
-            if (job.type === 'zadig-deploy') {
-              if (job.spec.env.includes('fixed')) {
-                job.spec.envType = 'fixed'
-                job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
-              }
-              if (job.spec.env.includes('{{')) {
-                job.spec.envType = 'other'
-              }
-              if (job.spec.service_and_images.length > 0) {
-                job.spec.serviceType = 'runtime'
-              }
-              if (job.spec.source === 'fromjob') {
-                job.spec.serviceType = 'other'
-              }
-              // Mapping for value-key
-              if (
-                job.spec &&
-                job.spec.service_and_images &&
-                job.spec.service_and_images.length > 0
-              ) {
-                job.spec.service_and_images.forEach(service => {
-                  service.value = `${service.service_name}/${service.service_module}`
-                })
-              }
-            }
-            if (job.type === 'freestyle') {
-              job.spec.properties.envs.forEach(item => {
-                if (item.value.includes('<+fixed>')) {
-                  item.command = 'fixed'
-                  item.value = item.value.replaceAll('<+fixed>', '')
-                }
-                if (item.value.includes('{{')) {
-                  item.command = 'other'
-                }
-              })
-            }
-            if (job.type === 'plugin') {
-              job.spec.plugin.inputs.forEach(item => {
-                if (item.value && item.value.includes('<+fixed>')) {
-                  item.command = 'fixed'
-                  item.value = item.value.replaceAll('<+fixed>', '')
-                }
-                if (item.value && item.value.includes('{{')) {
-                  item.command = 'other'
-                }
-              })
-            }
-            if (job.type === 'zadig-test') {
-              if (job.spec && job.spec.test_modules) {
-                job.spec.test_modules.forEach(service => {
-                  service.key_vals.forEach(item => {
-                    if (item.value.includes('<+fixed>')) {
-                      item.command = 'fixed'
-                      item.value = item.value.replaceAll('<+fixed>', '')
-                    }
-                    if (item.value.includes('{{')) {
-                      item.command = 'other'
-                    }
-                  })
-                })
-              }
-            }
-          })
-        })
-        this.multi_run = this.payload.multi_run
-        this.originalWorkflow = cloneDeep(this.payload)
-        this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
       })
+      this.multi_run = this.payload.multi_run
+      this.originalWorkflow = cloneDeep(this.payload)
+      this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
     },
     showStageOperateDialog (type, row) {
       this.insertSatgeIndex = this.payload.stages.length
