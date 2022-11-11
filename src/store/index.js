@@ -26,9 +26,6 @@ import k8sService from './modules/k8sService'
 // External Link
 import externalLink from './modules/externalLink'
 
-// Common Workflow
-import commonWorkflow from './modules/commonWorkflow'
-
 // Custom Workflow
 import customWorkflow from './modules/customWorkflow'
 
@@ -50,7 +47,6 @@ export default new Vuex.Store({
     serviceManage,
     k8sService,
     externalLink,
-    commonWorkflow,
     customWorkflow,
     checkPlutus
   },

@@ -33,7 +33,7 @@
           </button>
           <el-dropdown-menu slot="dropdown" class="create-workflow-template">
             <el-dropdown-item command="custom">自定义工作流</el-dropdown-item>
-            <!-- <el-dropdown-item command="release">发布工作流</el-dropdown-item> -->
+            <el-dropdown-item command="release">发布工作流</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </template>

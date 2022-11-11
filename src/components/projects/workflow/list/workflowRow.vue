@@ -14,6 +14,7 @@
         </div>
         <div class="tag-container">
           <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">自定义</el-tag>
+          <el-tag v-else-if="workflowInfo.workflow_type === 'release'" class="workflow-tag" size="mini" effect="plain">发布</el-tag>
           <el-tag v-else class="workflow-tag" size="mini" effect="plain">产品</el-tag>
         </div>
 
@@ -165,19 +166,21 @@ export default {
     }
   },
   computed: {
-    workflowBelongToProject () {
-      return this.$route.params.project_name
-    },
     workflowLink () {
-      return this.type === 'common_workflow'
-        ? `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}?display_name=${this.displayName}`
-        : `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}?display_name=${this.displayName}`
+      if (this.type === 'common_workflow' || this.type === 'release') {
+        return `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.name}?display_name=${this.displayName}`
+      } else {
+        return `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}?display_name=${this.displayName}`
+      }
     }
   },
   methods: {
     setFavorite (projectName, workflowName, type) {
       if (type === 'common_workflow') {
-        this.$message.info('通用工作流暂不支持收藏！')
+        this.$message.info('自定义工作流暂不支持收藏！')
+        return
+      } else if (type === 'release') {
+        this.$message.info('发布工作流暂不支持收藏！')
         return
       }
       const payload = {
@@ -187,10 +190,7 @@ export default {
       }
       if (this.isFavorite) {
         deleteFavoriteAPI(projectName, workflowName, type).then(res => {
-          if (type === 'workflow') {
-            // Refresh the workflow list
-            this.$emit('refreshWorkflow', this.workflowBelongToProject)
-          }
+          this.$emit('refreshWorkflow', this.projectName)
           this.$message({
             type: 'success',
             message: '取消收藏成功'
@@ -198,10 +198,7 @@ export default {
         })
       } else {
         setFavoriteAPI(payload).then(res => {
-          if (type === 'workflow') {
-            // Refresh the workflow list
-            this.$emit('refreshWorkflow', this.workflowBelongToProject)
-          }
+          this.$emit('refreshWorkflow', this.projectName)
           this.$message({
             type: 'success',
             message: '添加收藏成功'

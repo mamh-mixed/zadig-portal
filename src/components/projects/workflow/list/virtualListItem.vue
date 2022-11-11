@@ -1,10 +1,10 @@
 <template>
-  <ProductWorkflowRow
+  <WorkflowRow
     :workflowInfo="workflow"
     :displayName="workflow.display_name"
     :name="workflow.name"
     :isFavorite="workflow.isFavorite || false"
-    :type="workflow.workflow_type === 'common_workflow' ? 'common_workflow' : 'workflow'"
+    :type="workflow.workflow_type?workflow.workflow_type:'workflow'"
     :projectName="workflow.projectName || workflow.project_name"
     :stages="stages"
     :recentTaskStatus="workflow.recentTask?workflow.recentTask.status:''"
@@ -18,7 +18,7 @@
     :description="workflow.description"
     @refreshWorkflow="refreshWorkflow"
   >
-    <template v-if="workflow.workflow_type === 'common_workflow'" slot="operations">
+    <template v-if="workflow.workflow_type === 'common_workflow'||workflow.workflow_type === 'release'" slot="operations">
       <el-button
         type="primary"
         v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'run_workflow',resource:{type:'workflow',name:workflow.name}})"
@@ -32,15 +32,28 @@
           <span class="iconfont iconzhixing">&nbsp;执行</span>
         </el-button>
       </el-tooltip>
-      <router-link
-        v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
-        :to="workflow.workflow_type === 'common_workflow' ? `/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}&display_name=${workflow.display_name}` :  `/workflows/common/edit/${workflow.name}?projectName=${workflow.projectName}&id=${workflow.id}&display_name=${workflow.display_name}`"
-      >
-        <span class="menu-item iconfont icondeploy"></span>
-      </router-link>
-      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
-        <span class="permission-disabled menu-item iconfont icondeploy"></span>
-      </el-tooltip>
+      <template v-if="workflow.workflow_type === 'common_workflow'">
+        <router-link
+          v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
+          :to="`/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}&display_name=${workflow.display_name}`"
+        >
+          <span class="menu-item iconfont icondeploy"></span>
+        </router-link>
+        <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <span class="permission-disabled menu-item iconfont icondeploy"></span>
+        </el-tooltip>
+      </template>
+      <template v-if="workflow.workflow_type === 'release'">
+        <router-link
+          v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
+          :to="`/v1/projects/detail/${workflow.projectName}/pipelines/release/edit/${workflow.name}?projectName=${workflow.projectName}&display_name=${workflow.display_name}`"
+        >
+          <span class="menu-item iconfont icondeploy"></span>
+        </router-link>
+        <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <span class="permission-disabled menu-item iconfont icondeploy"></span>
+        </el-tooltip>
+      </template>
       <el-dropdown>
         <span class="el-dropdown-link">
           <i class="iconfont iconmorelist more-operation"></i>
@@ -48,7 +61,7 @@
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item
             v-hasPermi="{projectName: workflow.projectName, action: 'delete_workflow',resource:{type:'workflow',name:workflow.name},isBtn:true}"
-            @click.native="deleteCommonWorkflow(workflow)"
+            @click.native="deleteCustomWorkflow(workflow)"
           >
             <span>删除</span>
           </el-dropdown-item>
@@ -91,7 +104,7 @@
           </el-dropdown-item>
           <el-dropdown-item
             v-hasPermi="{projectName: workflow.projectName, action: 'create_workflow',resource:{type:'workflow',name:workflow.name},isBtn:true}"
-            @click.native="copyWorkflow(workflow)"
+            @click.native="copyProductWorkflow(workflow)"
           >
             <span>复制</span>
           </el-dropdown-item>
@@ -121,14 +134,18 @@
         </span>
       </el-dialog>
     </template>
-  </ProductWorkflowRow>
+  </WorkflowRow>
 </template>
 
 <script>
-import ProductWorkflowRow from './productRow.vue'
+import WorkflowRow from './workflowRow.vue'
 import mixins from '@/mixin/virtualScrollListMixin'
 import { wordTranslate } from '@utils/wordTranslate.js'
-import { getWorkflowDetailAPI, updateWorkflowAPI, copyWorkflowAPI } from '@api'
+import {
+  getWorkflowDetailAPI,
+  updateWorkflowAPI,
+  copyProductWorkflowAPI
+} from '@api'
 const pinyin = require('pinyin')
 
 export default {
@@ -156,7 +173,7 @@ export default {
           {
             type: 'string',
             required: true,
-            validator: this.validatePipelineName,
+            validator: this.validateWorkflowName,
             trigger: ['blur', 'change']
           }
         ]
@@ -178,9 +195,8 @@ export default {
     'startProductWorkflowBuild',
     'startCustomWorkflowBuild',
     'deleteProductWorkflow',
-    'renamePipeline',
-    'startCommonWorkflowBuild',
-    'deleteCommonWorkflow'
+    'renameWorkflow',
+    'deleteCustomWorkflow'
   ],
   computed: {
     workflow () {
@@ -191,7 +207,10 @@ export default {
     },
     stages () {
       let stages = []
-      if (this.workflow.workflow_type === 'common_workflow') {
+      if (
+        this.workflow.workflow_type === 'common_workflow' ||
+        this.workflow.workflow_type === 'release'
+      ) {
         stages = this.workflow.enabledStages
       } else {
         stages = this.workflow.enabledStages
@@ -204,32 +223,34 @@ export default {
     }
   },
   methods: {
-    validatePipelineName (rule, value, callback) {
-      const result = this.$utils.validatePipelineName([], value)
+    validateWorkflowName (rule, value, callback) {
+      const result = this.$utils.validateWorkflowName([], value)
       if (result === true) {
         callback()
       } else {
         callback(new Error(result))
       }
     },
-    copyWorkflow (workflow) {
+    copyProductWorkflow (workflow) {
       this.curWorkflow = workflow
       this.isShowCopyDialog = true
     },
-    copyWorkflowReq (projectName, oldName, newName, newDisplay) {
-      copyWorkflowAPI(projectName, oldName, newName, newDisplay).then(() => {
-        this.$message({
-          message: '复制流水线成功',
-          type: 'success'
-        })
-        this.refreshWorkflow(this.projectName)
-        this.resetForm('copyForm')
-      })
+    copyProductWorkflowReq (projectName, oldName, newName, newDisplay) {
+      copyProductWorkflowAPI(projectName, oldName, newName, newDisplay).then(
+        () => {
+          this.$message({
+            message: '复制流水线成功',
+            type: 'success'
+          })
+          this.refreshWorkflow(this.projectName)
+          this.resetForm('copyForm')
+        }
+      )
     },
     submitForm (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.copyWorkflowReq(
+          this.copyProductWorkflowReq(
             this.projectName,
             this.curWorkflow.name,
             this.copyWorkflowInfo.name,
@@ -261,7 +282,7 @@ export default {
     },
     makeTaskDetailLink (projectName, taskInfo, type) {
       if (taskInfo) {
-        if (type === 'common_workflow') {
+        if (type === 'common_workflow' || type === 'release') {
           return `/v1/projects/detail/${projectName}/pipelines/custom/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}&display_name=${this.workflow.display_name}`
         } else {
           return `/v1/projects/detail/${projectName}/pipelines/multi/${taskInfo.pipelineName}/${taskInfo.taskID}?status=${taskInfo.status}&display_name=${this.workflow.display_name}`
@@ -305,14 +326,18 @@ export default {
     }
   },
   components: {
-    ProductWorkflowRow
+    WorkflowRow
   },
   watch: {
     'copyWorkflowInfo.display_name': {
       handler (val, old_val) {
-        this.$set(this.copyWorkflowInfo, 'name', pinyin(val, {
-          style: pinyin.STYLE_NORMAL
-        }).join(''))
+        this.$set(
+          this.copyWorkflowInfo,
+          'name',
+          pinyin(val, {
+            style: pinyin.STYLE_NORMAL
+          }).join('')
+        )
       }
     }
   }
