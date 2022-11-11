@@ -82,7 +82,7 @@
 
     <el-dialog title="选择工作流类型" :visible.sync="showSelectWorkflowType" width="450px">
       <div class="type-content">
-        <el-radio v-model="selectWorkflowType" label="product">工作流</el-radio>
+        <el-radio v-model="selectWorkflowType" label="product">产品工作流</el-radio>
         <div class="type-desc">具备模块化组装构建、部署、测试和版本交付能力</div>
         <!-- <el-radio v-model="selectWorkflowType" label="common">通用-工作流</el-radio>
         <div class="type-desc">可自定义工作流程，内置构建、K8s 部署、小程序发版等步骤</div>-->
@@ -91,11 +91,11 @@
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
         <div class="type-desc">可自定义工作流步骤和自由编排执行顺序</div>
-        <el-radio v-model="selectWorkflowType" label="release" v-if="hasPlutus">
+        <!-- <el-radio v-model="selectWorkflowType" label="release" v-if="hasPlutus">
           发布工作流
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
-        <div class="type-desc" v-if="hasPlutus">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div>
+        <div class="type-desc" v-if="hasPlutus">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div> -->
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">取 消</el-button>
