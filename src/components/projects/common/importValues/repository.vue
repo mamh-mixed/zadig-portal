@@ -16,7 +16,7 @@
           size="small"
           style="width: 100%;"
           placeholder="请选择代码源"
-          @change="queryRepoOwnerById(source.codehostID)"
+          @change="getRepoOwnerById(source.codehostID)"
           filterable
           clearable
         >
@@ -30,7 +30,9 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="owner" label="组织名/用户名" :show-message="false">
+        <el-input v-if="codehostSource === 'other'" v-model.trim="source.owner" size="small" placeholder="请输入组织名/用户名" clearable></el-input>
         <el-select
+          v-else
           v-model="source.owner"
           size="small"
           style="width: 100%;"
@@ -43,14 +45,10 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="repo" label="代码库" :show-message="false">
+        <el-input v-if="codehostSource === 'other'" v-model.trim="source.repo" size="small" placeholder="请输入代码库" clearable></el-input>
         <el-select
-          @change="
-                  getBranchInfoById(
-                    source.codehostID,
-                    source.owner,
-                    source.repo
-                  )
-                "
+          v-else
+          @change="getBranchInfoById(source.codehostID,source.owner,source.repo)"
           v-model.trim="source.repo"
           remote
           :remote-method="searchProject"
@@ -65,12 +63,15 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="branch" label="分支" :show-message="false">
-        <el-select v-model.trim="source.branch" placeholder="请选择分支" style="width: 100%;" size="small" filterable allow-create clearable>
+        <el-input v-if="codehostSource === 'other'" v-model.trim="source.branch" size="small" placeholder="请输入分支" clearable></el-input>
+        <el-select v-else v-model.trim="source.branch" placeholder="请选择分支" style="width: 100%;" size="small" filterable allow-create clearable>
           <el-option v-for="(branch, branch_index) in codeInfo['branches']" :key="branch_index" :label="branch.name" :value="branch.name"></el-option>
         </el-select>
       </el-form-item>
-
-      <el-form-item prop="valuesPaths">
+      <el-form-item v-if="codehostSource === 'other'" prop="valuesPath" label="文件路径" :show-message="false">
+        <el-input  v-model.trim="source.valuesPath" size="small" placeholder="输入 Values 文件路径，比如 dir1/chart/values.yaml" clearable></el-input>
+      </el-form-item>
+      <el-form-item v-else prop="valuesPaths">
         <template slot="label">
           <template v-if="fileType === 'valuesYaml'">
             <el-tooltip v-if="!substantial" effect="dark" content="按照覆盖顺序依次选择 values 文件，后选的文件会覆盖先选的文件。" placement="top">
@@ -101,7 +102,7 @@
           <i v-else-if="fileType === 'k8sYaml'" class="el-icon-plus"></i>
         </el-button>
       </el-form-item>
-      <el-form-item v-if="showAutoSync" prop="autoSync" label="自动同步" :show-message="false">
+      <el-form-item v-if="showAutoSync && codehostSource !== 'other'" prop="autoSync" label="自动同步" :show-message="false">
         <span slot="label">
           <span>自动同步</span>
           <el-tooltip effect="dark" content="开启后，Zadig 会定时从代码库拉取配置文件并将其自动更新到环境中，目前只支持 GitHub/GitLab" placement="top">
@@ -114,7 +115,7 @@
         <TreeFile
           v-if="showFileSelectDialog"
           :gitRepoConfig="source"
-          :getGitSource="getGitSource"
+          :getGitSourceType="getGitSourceType"
           @checkedPath="checkedPath"
           :checkOne="!substantial"
           :fileType="typeObject[fileType].fileType"

@@ -1,8 +1,8 @@
 <template>
   <div class="import-chart-container">
-    <el-form ref="gitForm" :model="tempData" label-width="140px" :rules="rules">
+    <el-form ref="gitForm" :model="template" label-width="140px" :rules="rules">
       <el-form-item label="模板名称" prop="name">
-        <el-input v-model="tempData.name" placeholder="请输入模板名称" size="small" :disabled="isUpdate"></el-input>
+        <el-input v-model="template.name" placeholder="请输入模板名称" size="small" :disabled="isUpdate"></el-input>
       </el-form-item>
       <el-form-item label-width="0">
         <GitRepo
@@ -16,11 +16,11 @@
           @selectPath="selectedPath($event)"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item  style="text-align: right;">
         <el-button
           type="primary"
           @click="createChartTemplate"
-          :disabled="!tempData.name || disabled"
+          :disabled="!template.name || disabled"
           size="small"
           :loading="loading"
         >{{isUpdate? '更新':'加载'}}</el-button>
@@ -41,7 +41,7 @@ const controlParam = {
 export default {
   data () {
     return {
-      tempData: {
+      template: {
         name: ''
       },
       disabled: true,
@@ -60,42 +60,44 @@ export default {
   methods: {
     selectedPath (emitParams) {
       emitParams.path = emitParams.path[0]
-      this.tempData = Object.assign({}, this.tempData, emitParams)
+      this.template = Object.assign({}, this.template, emitParams)
       this.disabled = false
     },
     async createChartTemplate () {
       this.loading = true
       let res
-      const name = this.tempData.name
-      const refVal = this.$refs.gitRepo.getGitSource(this.tempData.codeHostID)
+      const name = this.template.name
+      const refVal = this.$refs.gitRepo.getGitSourceType(this.template.codehostId)
       if (refVal === 'gerrit' || refVal === 'gitee' || refVal === 'gitee-enterprise') {
         const params = {
-          codehostId: this.tempData.codeHostID,
-          repoOwner: this.tempData.owner,
-          repoName: this.tempData.repo,
-          branchName: this.tempData.branch,
-          path: this.tempData.path,
+          codehostId: this.template.codeHostID,
+          repoOwner: this.template.owner,
+          repoName: this.template.repo,
+          branchName: this.template.branch,
+          path: this.template.path,
           type: 'gerrit',
-          namespace: this.tempData.namespace
+          namespace: this.template.namespace
         }
         await getRepoFilesAPI(params)
       }
       if (this.isUpdate) {
         res = await updateChartTemplateAPI(
-          this.tempData.name,
-          this.tempData
+          this.template.name,
+          this.template
         ).catch(err => {
+          this.loading = false
           console.log(err)
         })
       } else {
-        res = await createChartTemplateAPI(this.tempData).catch(err => {
+        res = await createChartTemplateAPI(this.template).catch(err => {
+          this.loading = false
           console.log(err)
         })
       }
 
       if (res) {
         this.$message.success(
-          `${this.isUpdate ? '更新' : '导入'}模板 ${this.tempData.name} 成功`
+          `${this.isUpdate ? '更新' : '导入'}模板 ${this.template.name} 成功`
         )
         this.loading = false
         this.resetField()
@@ -108,7 +110,7 @@ export default {
       }
     },
     resetField () {
-      this.tempData.name = ''
+      this.template.name = ''
       this.$refs.gitRepo.closeSelectRepo()
       this.$nextTick(() => {
         this.$refs.gitForm.clearValidate()
@@ -121,9 +123,9 @@ export default {
       handler (val) {
         if (val && this.chartCurrentService) {
           const current = this.chartCurrentService
-          this.tempData = {
+          this.template = {
             name: current.name,
-            codeHostID: current.codehost_id,
+            codehostId: current.codehost_id,
             owner: current.repo_owner,
             repo: current.repo_name,
             branch: current.branch_name,
