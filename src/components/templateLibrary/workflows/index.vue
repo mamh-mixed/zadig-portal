@@ -11,7 +11,7 @@
         </div>
         <div v-else class="empty">
           <img src="@assets/icons/illustration/workflow.svg" alt />
-          <p>暂无可展示的工作流模版</p>
+          <p>暂无可展示的工作流模板</p>
         </div>
       </el-tabs>
     </div>

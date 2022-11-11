@@ -17,7 +17,7 @@
           >{{item.label}}</span>
         </div>
         <div>
-          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模版</el-button>
+          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模板</el-button>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
@@ -223,10 +223,10 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="保存为模版" :visible.sync="isShowModelDialog" width="30%">
+    <el-dialog title="保存为模板" :visible.sync="isShowModelDialog" width="30%">
       <el-form inline ref="modelForm" :model="modelFormInfo">
-        <el-form-item label="模版名称" :rules="{required: true,message: '请填写模版名称', trigger: ['blur', 'change']}" prop="name">
-          <el-input placeholder="请输入模版名称" size="small" v-model="modelFormInfo.name"></el-input>
+        <el-form-item label="模板名称" :rules="{required: true,message: '请填写模板名称', trigger: ['blur', 'change']}" prop="name">
+          <el-input placeholder="请输入模板名称" size="small" v-model="modelFormInfo.name"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">

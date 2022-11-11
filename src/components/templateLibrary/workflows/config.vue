@@ -3,7 +3,7 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.template_name" placeholder="模版名称" :from="activeName" class="mg-r8" />
+          <CanInput v-model="payload.template_name" placeholder="模板名称" :from="activeName" class="mg-r8" />
           <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
@@ -445,7 +445,7 @@ export default {
         this.payload = jsyaml.load(this.yaml)
       }
       if (!this.payload.template_name) {
-        this.$message.error(' 请填写模版名称')
+        this.$message.error(' 请填写模板名称')
         return
       }
 
