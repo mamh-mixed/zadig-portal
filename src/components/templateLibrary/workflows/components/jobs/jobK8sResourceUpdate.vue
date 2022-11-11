@@ -248,7 +248,7 @@ export default {
       this.validateYaml(newCode, item)
     }, 200),
     validateYaml (code, item) {
-      validateYamlAPI({ yaml: code }).then(res => {
+      validateYamlAPI(this.projectName, { yaml: code }).then(res => {
         if (res && res.length > 0) {
           this.$set(item, 'errors', res)
           this.$forceUpdate()
