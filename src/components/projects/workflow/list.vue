@@ -89,11 +89,11 @@
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
         <div class="type-desc">可自定义工作流步骤和自由编排执行顺序</div>
-        <el-radio v-model="selectWorkflowType" label="release" v-if="hasPlutus">
+        <!-- <el-radio v-model="selectWorkflowType" label="release" v-if="hasPlutus">
           发布工作流
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
-        <div class="type-desc" v-if="hasPlutus">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div>
+        <div class="type-desc" v-if="hasPlutus">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div> -->
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">取 消</el-button>
