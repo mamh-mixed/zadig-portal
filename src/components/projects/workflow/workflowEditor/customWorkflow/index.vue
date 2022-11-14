@@ -896,9 +896,9 @@ export default {
       this.$refs.modelForm.validate(valid => {
         if (valid) {
           const params = {
-            template_name: this.modelFormInfo.name,
             category: '',
-            ...this.payload
+            ...this.payload,
+            template_name: this.modelFormInfo.name
           }
           addWorkflowTemplateAPI(params).then(res => {
             this.isShowModelDialog = false

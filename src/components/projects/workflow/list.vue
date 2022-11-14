@@ -142,7 +142,7 @@
         <el-button size="small" @click="cancelEditView('workflowViewForm')">取消</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择模板" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog">
+    <el-dialog title="选择模板" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog"  width="60%" >
       <el-card shadow="hover" @mouseover.native="currentTemplate=''">
         <div class="card" style="height: 30px; line-height: 30px;">
           <div>
@@ -207,7 +207,9 @@
                     <span>{{ item.template_name }}</span>
                   </el-tooltip>
                 </div>
-                <div class="desc">{{item.description}}</div>
+                <el-tooltip effect="dark" :content="item.description" placement="top">
+                  <div class="desc">{{item.description}}</div>
+                </el-tooltip>
               </section>
               <section class="stages">
                 <CusTags :values="item.stages" noLimit />
@@ -679,7 +681,8 @@ export default {
       })
     },
     getWorkflowTemplateList () {
-      const type = this.selectWorkflowType === 'custom' ? '' : this.selectWorkflowType
+      const type =
+        this.selectWorkflowType === 'custom' ? '' : this.selectWorkflowType
       getWorkflowTemplateListAPI(type, this.projectName).then(res => {
         this.workflowTemplates = res
       })
@@ -955,9 +958,13 @@ export default {
         }
 
         .desc {
+          width: 10em;
           margin-right: 40px;
+          overflow: hidden;
           color: @fontLightGray;
           font-size: 12px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
 
