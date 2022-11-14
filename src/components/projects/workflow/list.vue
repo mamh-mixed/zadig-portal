@@ -142,7 +142,7 @@
         <el-button size="small" @click="cancelEditView('workflowViewForm')">取消</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="选择模板" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog"  width="60%" >
+    <el-dialog title="选择模板" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog" width="60%">
       <el-card shadow="hover" @mouseover.native="currentTemplate=''">
         <div class="card" style="height: 30px; line-height: 30px;">
           <div>
@@ -683,7 +683,7 @@ export default {
     getWorkflowTemplateList () {
       const type =
         this.selectWorkflowType === 'custom' ? '' : this.selectWorkflowType
-      getWorkflowTemplateListAPI(type, this.projectName).then(res => {
+      getWorkflowTemplateListAPI(type, false, this.projectName).then(res => {
         this.workflowTemplates = res
       })
     }
