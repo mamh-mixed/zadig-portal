@@ -9,8 +9,8 @@
     :stages="stages"
     :recentTaskStatus="workflow.recentTask?workflow.recentTask.status:''"
     :recentSuccessID="workflow.recentSuccessfulTask?`#${workflow.recentSuccessfulTask.taskID}`:''"
-    :avgRuntime="makeAvgRunTime(workflow.averageExecutionTime)"
-    :avgSuccessRate="makeAvgSuccessRate(workflow.successRate)"
+    :avgRuntime="makeAvgRunTime(workflow)"
+    :avgSuccessRate="makeAvgSuccessRate(workflow)"
     :recentSuccessLink="makeTaskDetailLink(workflow.projectName,workflow.recentSuccessfulTask,workflow.workflow_type)"
     :recentFailID="workflow.recentFailedTask?`#${workflow.recentFailedTask.taskID}`:''"
     :recentFailLink="makeTaskDetailLink(workflow.projectName,workflow.recentFailedTask,workflow.workflow_type)"
@@ -245,18 +245,28 @@ export default {
       this.$refs[formName].resetFields()
       this.isShowCopyDialog = false
     },
-    makeAvgRunTime (number) {
-      if (number > 0) {
-        return number.toFixed(1) + 's'
-      } else {
+    makeAvgRunTime (workflow) {
+      const { averageExecutionTime, never_run } = workflow
+      const x = String(averageExecutionTime).indexOf('.') + 1
+      if (never_run) {
         return ''
       }
-    },
-    makeAvgSuccessRate (number) {
-      if (number) {
-        return (number * 100).toFixed(2) + '%'
+      if (x > 0) {
+        return averageExecutionTime.toFixed(1) + 's'
       } else {
+        return averageExecutionTime + 's'
+      }
+    },
+    makeAvgSuccessRate (workflow) {
+      const { successRate, never_run } = workflow
+      const x = String(successRate).indexOf('.') + 1
+      if (never_run) {
         return ''
+      }
+      if (x > 0) {
+        return (successRate * 100).toFixed(2) + '%'
+      } else {
+        return successRate * 100 + '%'
       }
     },
     makeTaskDetailLink (projectName, taskInfo, type) {
@@ -310,9 +320,13 @@ export default {
   watch: {
     'copyWorkflowInfo.display_name': {
       handler (val, old_val) {
-        this.$set(this.copyWorkflowInfo, 'name', pinyin(val, {
-          style: pinyin.STYLE_NORMAL
-        }).join(''))
+        this.$set(
+          this.copyWorkflowInfo,
+          'name',
+          pinyin(val, {
+            style: pinyin.STYLE_NORMAL
+          }).join('')
+        )
       }
     }
   }
