@@ -490,7 +490,7 @@ export default {
       this.$store.dispatch('setIsShowFooter', false)
     },
     getWorkflowTemplateDetail () {
-      getWorkflowTemplateDetailAPI(this.modelId).then(res => {
+      getWorkflowTemplateDetailAPI(this.modelId, this.projectName).then(res => {
         this.payload = Object.assign(this.payload, jsyaml.load(res))
       })
     },
