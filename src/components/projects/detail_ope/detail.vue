@@ -61,7 +61,7 @@
               >{{row.display_name}}</router-link>
               <el-tag v-if="row.workflow_type === 'common_workflow'" size="mini" class="mg-l16">自定义</el-tag>
               <el-tag v-else-if="row.workflow_type === 'release'" size="mini" class="mg-l16">发布</el-tag>
-              <el-tag v-else size="mini" class="mg-l16">发布</el-tag>
+              <el-tag v-else size="mini" class="mg-l16">产品</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="步骤">

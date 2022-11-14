@@ -77,6 +77,7 @@
           :validObj="validObj"
           @validateFailed="buildConfig.advanced_setting_modified = true"
           :mini="mini"
+          useDockerDaemon
         />
       </section>
       <section>
