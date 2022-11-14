@@ -1771,8 +1771,8 @@ export function deleteBuildTemplateAPI (id) {
 }
 
 // Template Workflow
-export function getWorkflowTemplateListAPI (category, excludeBuildIn = false) {
-  return http.get(`/api/aslan/template/workflow?category=${category}&excludeBuildIn=${excludeBuildIn}`)
+export function getWorkflowTemplateListAPI (category, projectName, excludeBuildIn = false) {
+  return http.get(`/api/aslan/template/workflow?category=${category}&excludeBuildIn=${excludeBuildIn}&projectName=${projectName}`)
 }
 
 export function addWorkflowTemplateAPI (payload) {

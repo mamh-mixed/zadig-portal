@@ -680,7 +680,7 @@ export default {
     },
     getWorkflowTemplateList () {
       const type = this.selectWorkflowType === 'custom' ? '' : this.selectWorkflowType
-      getWorkflowTemplateListAPI(type).then(res => {
+      getWorkflowTemplateListAPI(type, this.projectName).then(res => {
         this.workflowTemplates = res
       })
     }
