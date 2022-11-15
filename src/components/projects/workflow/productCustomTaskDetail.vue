@@ -142,6 +142,12 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
+        <JobK8sResourceUpdateDetail
+          @showFooter="showFooter"
+          v-if="curJob.type=== jobType.k8sResourcePatch"
+          :jobInfo="curJob"
+          :projectName="projectName"
+        />
         <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.k8sDeploy" :jobInfo="curJob" :projectName="projectName" />
         <JobTestDetail
           v-if="curJob.type === jobType.test"
