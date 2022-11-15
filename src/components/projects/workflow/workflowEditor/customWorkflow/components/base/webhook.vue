@@ -187,6 +187,7 @@
             ></el-option>
           </el-select>
           <el-switch
+            v-if="currentWebhook.repo.source!=='gerrit'"
             v-model="currentWebhook.main_repo.is_regular"
             active-text="正则表达式配置"
             @change="currentWebhook.main_repo.branch = '';matchedBranchNames=null;"
