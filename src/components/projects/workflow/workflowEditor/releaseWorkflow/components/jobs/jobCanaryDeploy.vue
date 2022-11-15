@@ -1,20 +1,20 @@
 <template>
   <div class="job-canary-deploy">
     <el-form label-width="120px" :model="job" ref="ruleForm" class="mg-t24 mg-b24" label-position="left">
-      <el-form-item label="任务名称" prop="name">
+      <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item label="镜像仓库" prop="spec.docker_registry_id">
+      <el-form-item label="镜像仓库" prop="spec.docker_registry_id" :rules="{required: true, message: '镜像仓库不能为空', trigger: ['blur','change']}">
         <el-select v-model="job.spec.docker_registry_id" filterable placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="集群" prop="spec.cluster_id">
+      <el-form-item label="集群" prop="spec.cluster_id" :rules="{ required: true, message: '请选择集群名称', trigger: ['change', 'blur'] }">
         <el-select v-model="job.spec.cluster_id" placeholder="请选择集群名称" size="small" style="width: 220px;" @change="getNamespaceList">
           <el-option v-for="cluster in clusters" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="命名空间" prop="spec.namespace">
+      <el-form-item label="命名空间" prop="spec.namespace" :rules="{required: true, message: '命名空间不能为空', trigger: ['blur','change']}">
         <el-select
           v-model="job.spec.namespace"
           filterable
@@ -37,7 +37,10 @@
           </el-row>
           <el-row v-for="(item,index) in job.spec.targets" :key="index" class="mg-b8">
             <el-col :span="4" class="mg-r8">
-              <el-form-item :prop="'spec.targets.'+index+'.k8s_service_name'">
+              <el-form-item
+                :prop="'spec.targets.'+index+'.k8s_service_name'"
+                :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
+              >
                 <el-select
                   v-model="job.spec.targets[index].k8s_service_name"
                   placeholder="请选择"
@@ -50,19 +53,28 @@
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
-              <el-form-item :prop="'spec.targets.'+index+'.container_name'">
+              <el-form-item
+                :prop="'spec.targets.'+index+'.container_name'"
+                :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
+              >
                 <el-select v-model="item.container_name" placeholder="请选择" size="small">
                   <el-option v-for="(item,index) in item.canryContainerList" :key="index" :value="item"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
-              <el-form-item :prop="'spec.targets.'+index+'.canary_percentage'">
+              <el-form-item
+                :prop="'spec.targets.'+index+'.canary_percentage'"
+                :rules="{required: true, message: '请输入', trigger: ['blur','change']}"
+              >
                 <el-input v-model.number="job.spec.targets[index].canary_percentage" :max="100" placeholder="请输入实例数" size="small"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
-              <el-form-item :prop="'spec.targets.'+index+'.deploy_timeout'">
+              <el-form-item
+                :prop="'spec.targets.'+index+'.deploy_timeout'"
+                :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
+              >
                 <el-input v-model.number="job.spec.targets[index].deploy_timeout" placeholder="请输入部署超时时间" size="small"></el-input>
               </el-form-item>
             </el-col>
@@ -86,26 +98,26 @@
           <el-row v-if="originJob.spec.targets.length===0&&flag">
             <el-form ref="serviceRef" :model="serviceInfo">
               <el-col :span="4" class="mg-r8">
-                <el-form-item prop="k8s_service_name">
+                <el-form-item prop="k8s_service_name" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
                   <el-select v-model="serviceInfo.k8s_service_name" placeholder="请选择" size="small">
                     <el-option v-for="(item,index) in canryServiceList" :key="index" :label="item.service_name" :value="item.service_name"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="4" class="mg-r8">
-                <el-form-item prop="container_name">
+                <el-form-item prop="container_name" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
                   <el-select v-model="serviceInfo.container_name" placeholder="请选择" size="small">
                     <el-option v-for="(item,index) in curContainer" :key="index" :value="item"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="4" class="mg-r8">
-                <el-form-item prop="canary_percentage">
+                <el-form-item prop="canary_percentage" :rules="{required: true, message: '请输入', trigger: ['blur','change']}">
                   <el-input v-model.number="serviceInfo.canary_percentage" :max="100" placeholder="请输入实例数" size="small"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="4" class="mg-r8">
-                <el-form-item prop="deploy_timeout">
+                <el-form-item prop="deploy_timeout" :rules="{required: true, message: '请输入', trigger: ['blur','change']}">
                   <el-input v-model.number="serviceInfo.deploy_timeout" placeholder="请输入部署超时时间" size="small"></el-input>
                 </el-form-item>
               </el-col>

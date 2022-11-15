@@ -9,6 +9,7 @@
         label="选择部署金丝雀任务"
         required
         class="form-item"
+        :rules="{required: true, message: '选择部署金丝雀任务', trigger: ['blur', 'change']}"
       >
         <el-select v-model="job.spec.from_job" placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
