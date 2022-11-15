@@ -182,6 +182,17 @@ export default {
           spec: {
             scannings: []
           }
+        },
+        'zadig-distribute-image': {
+          name: 'default',
+          type: 'zadig-distribute-image',
+          spec: {
+            source: '',
+            job_name: '',
+            source_registry_id: '',
+            target_registry_id: '',
+            targets: []
+          }
         }
       },
       isShowJobOperateDialog: false,

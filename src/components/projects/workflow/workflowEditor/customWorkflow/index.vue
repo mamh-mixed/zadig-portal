@@ -141,6 +141,14 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+             <JobImageDistribute
+              :projectName="projectName"
+              v-if="job.type === jobType.distribute"
+              :job="job"
+              :ref="jobType.distribute"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -246,6 +254,7 @@ import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
 import JobScanning from './components/jobs/jobScanning.vue'
+import JobImageDistribute from './components/jobs/jobImageDistribute.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -328,6 +337,7 @@ export default {
     JobK8sDeploy,
     JobTest,
     JobScanning,
+    JobImageDistribute,
     RunCustomWorkflow,
     codemirror,
     Env,
