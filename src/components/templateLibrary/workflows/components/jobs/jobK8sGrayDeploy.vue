@@ -1,6 +1,6 @@
 <template>
   <div class="job-k8s-deploy">
-    <el-form label-width="120px" :model="job" ref="ruleForm" class="mg-t24 mg-b24">
+    <el-form label-width="120px" :model="job" ref="ruleForm" class="mg-t24 mg-b24" label-position="left">
       <el-form-item label="任务名称" prop="name" >
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
