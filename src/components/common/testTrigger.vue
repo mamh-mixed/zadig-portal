@@ -56,24 +56,6 @@
             <span style="display: inline-block; padding-right: 10px;" v-for="branch in matchedBranchNames" :key="branch">{{ branch }}</span>
           </div>
         </el-form-item>
-        <el-form-item label="目标分支" prop="repo.branch"
-          v-else
-          :rules="[
-          { required: true, message: '请选择目标分支', trigger: ['blur', 'change'] }
-        ]">
-          <el-select style="width: 100%;"
-                     v-model="webhookSwap.repo.branch"
-                     size="small"
-                     filterable
-                     clearable
-                     placeholder="请选择">
-            <el-option v-for="(branch,index) in webhookBranches[webhookSwap.repo.repo_name]"
-                       :key="index"
-                       :label="branch.name"
-                       :value="branch.name">
-            </el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item v-if="webhookSwap.repo.source==='gerrit'"
                       label="触发事件"
                       prop="events">
@@ -422,7 +404,7 @@ export default {
       }
     },
     checkGitRepo () {
-      return this.webhookSwap.repo && ['gitlab', 'github'].includes(this.webhookSwap.repo.source)
+      return this.webhookSwap.repo
     }
   },
   watch: {
