@@ -182,6 +182,77 @@ export default {
           spec: {
             scannings: []
           }
+        },
+        'k8s-resource-patch': {
+          name: 'default',
+          type: 'k8s-resource-patch',
+          spec: {
+            cluster_id: '',
+            namespace: '',
+            patch_items: []
+          }
+        },
+        'k8s-canary-deploy': {
+          name: 'default',
+          type: 'k8s-canary-deploy',
+          spec: {
+            cluster_id: '',
+            namespace: '',
+            targets: [],
+            docker_registry_id: '',
+            deploy_timeout: 10
+          }
+        },
+        'k8s-canary-release': {
+          name: 'default',
+          type: 'k8s-canary-release',
+          spec: {
+            from_job: '',
+            release_timeout: 10
+          }
+        },
+        'k8s-blue-green-deploy': {
+          name: 'default',
+          type: 'k8s-blue-green-deploy',
+          spec: {
+            cluster_id: '',
+            namespace: '',
+            targets: [],
+            docker_registry_id: '',
+            deploy_timeout: 10
+          }
+        },
+        'k8s-blue-green-release': {
+          name: 'default',
+          type: 'k8s-blue-green-release',
+          spec: {
+            from_job: '',
+            deploy_timeout: 10
+          }
+        },
+        'k8s-gray-rollback': {
+          name: 'default',
+          type: 'k8s-gray-rollback',
+          spec: {
+            cluster_id: '',
+            namespace: '',
+            rollback_timeout: 10,
+            targets: []
+          }
+        },
+        'k8s-gray-release': {
+          name: 'default',
+          type: 'k8s-gray-release',
+          spec: {
+            first: true,
+            cluster_id: '',
+            namespace: '',
+            from_job: '',
+            deploy_timeout: 10,
+            gray_scale: 50,
+            targets: [],
+            docker_registry_id: ''
+          }
         }
       },
       isShowJobOperateDialog: false,

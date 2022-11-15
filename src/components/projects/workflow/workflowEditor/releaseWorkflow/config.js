@@ -148,10 +148,11 @@ const jobType = {
   canaryConfirm: 'k8s-canary-release',
   blueGreenDeploy: 'k8s-blue-green-deploy',
   blueGreenConfirm: 'k8s-blue-green-release',
-  JobTest: 'zadig-test',
+  test: 'zadig-test',
   k8sResourcePatch: 'k8s-resource-patch',
   k8sGrayRollback: 'k8s-gray-rollback',
-  grayDeploy: 'k8s-gray-release'
+  grayDeploy: 'k8s-gray-release',
+  k8sDeploy: 'custom-deploy'
 }
 const editorOptions = {
   mode: 'yaml',

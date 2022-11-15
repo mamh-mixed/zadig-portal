@@ -433,8 +433,8 @@ export default {
       this.$store.dispatch('setIsShowFooter', false)
     },
     getWorkflowTemplateDetail () {
-      getWorkflowTemplateDetailAPI(this.modelId).then(res => {
-        this.payload = Object.assign(this.payload, jsyaml.load(res))
+      getWorkflowTemplateDetailAPI(this.modelId, this.projectName).then(res => {
+        this.payload = jsyaml.load(res)
         this.handleEnv()
       })
     },
@@ -896,9 +896,9 @@ export default {
       this.$refs.modelForm.validate(valid => {
         if (valid) {
           const params = {
-            template_name: this.modelFormInfo.name,
             category: '',
-            ...this.payload
+            ...this.payload,
+            template_name: this.modelFormInfo.name
           }
           addWorkflowTemplateAPI(params).then(res => {
             this.isShowModelDialog = false

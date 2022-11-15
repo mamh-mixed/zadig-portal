@@ -1771,8 +1771,8 @@ export function deleteBuildTemplateAPI (id) {
 }
 
 // Template Workflow
-export function getWorkflowTemplateListAPI (category, excludeBuildIn = false) {
-  return http.get(`/api/aslan/template/workflow?category=${category}&excludeBuildIn=${excludeBuildIn}`)
+export function getWorkflowTemplateListAPI (category, excludeBuildIn = false, projectName) {
+  return http.get(`/api/aslan/template/workflow?category=${category}&excludeBuildIn=${excludeBuildIn}&projectName=${projectName}`)
 }
 
 export function addWorkflowTemplateAPI (payload) {
@@ -1787,8 +1787,8 @@ export function deleteWorkflowTemplateAPI (id) {
   return http.delete(`/api/aslan/template/workflow/${id}`)
 }
 
-export function getWorkflowTemplateDetailAPI (id) {
-  return http.get(`/api/aslan/template/workflow/${id}`)
+export function getWorkflowTemplateDetailAPI (id, projectName) {
+  return http.get(`/api/aslan/template/workflow/${id}?projectName=${projectName}`)
 }
 
 // Helm env and service
