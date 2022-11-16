@@ -477,6 +477,11 @@ export default {
                 this.getRepoInfo(build.repos)
               })
             }
+            if (job.type === 'zadig-distribute-image') {
+              if (job.spec.source === 'runtime') {
+                job.pickedTargets = job.spec.targets
+              }
+            }
           })
         })
         this.payload = this.cloneWorkflow
@@ -618,7 +623,7 @@ export default {
                 service.value = `${service.service_name}/${service.service_module}`
               })
               this.registry_id = job.spec.source_registry_id
-              job.pickedTargets = []
+              // job.pickedTargets = []
             }
           }
         })

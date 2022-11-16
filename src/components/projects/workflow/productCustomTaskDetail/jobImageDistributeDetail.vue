@@ -39,7 +39,7 @@
           </el-tooltip>
         </el-col>
         <el-col :span="2">
-          <span :class="buildOverallColor">{{ buildOverallStatusZh}}</span>
+          <span :class="buildOverallColor" v-if="build.status==='failed'|| build.status==='success'">{{ buildOverallStatusZh}}</span>
           <el-tooltip effect="dark" :content="build.error" placement="top" v-if="build.status==='failed'">
             <i class="el-icon-warning" :class="buildOverallColor"></i>
           </el-tooltip>
