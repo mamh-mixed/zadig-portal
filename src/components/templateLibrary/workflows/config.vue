@@ -169,7 +169,7 @@
       </Multipane>
       <section v-show="activeName === 'yaml'" class="yaml">
         <div class="yaml-error">{{yamlError}}</div>
-        <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions" @blur="checkYaml"></codemirror>
+        <codemirror class="codemirror" ref="yamlEditor" v-model="yaml" :options="editorOptions"></codemirror>
       </section>
     </div>
     <div class="right">
@@ -240,8 +240,7 @@ import {
 import {
   addWorkflowTemplateAPI,
   editWorkflowTemplateAPI,
-  getWorkflowTemplateDetailAPI,
-  checkCustomWorkflowYaml
+  getWorkflowTemplateDetailAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
@@ -426,15 +425,6 @@ export default {
         }
         main.style.zoom = this.scal
       })
-    },
-    checkYaml () {
-      checkCustomWorkflowYaml(this.yaml)
-        .then(res => {
-          this.yamlError = ''
-        })
-        .catch(error => {
-          this.yamlError = error.response.data.description
-        })
     },
     handleTabChange (name) {
       this.$store.dispatch('setCurOperateType', 'tab')
