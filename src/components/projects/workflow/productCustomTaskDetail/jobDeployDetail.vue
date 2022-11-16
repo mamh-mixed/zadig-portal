@@ -11,7 +11,7 @@
         </div>
       </el-col>
       <el-col :span="2">
-        <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
+        <span class="item-desc">{{jobInfo.interval}}</span>
       </el-col>
       <el-col v-if="jobInfo" :span="6">
         <span class="item-desc status">
@@ -120,6 +120,26 @@ export default {
     },
     buildOverallColor () {
       return this.$translate.calcTaskStatusColor(this.buildOverallStatus)
+    }
+  },
+  methods: {
+    adaptTaskDetail (detail) {
+      detail.intervalSec =
+        (detail.status === 'running'
+          ? Math.round(new Date().getTime() / 1000)
+          : detail.end_time) - detail.start_time
+      detail.interval = this.$utils.timeFormat(detail.intervalSec)
+    }
+  },
+  watch: {
+    jobInfo: {
+      handler (val, oldVal) {
+        if (val) {
+          this.adaptTaskDetail(val)
+        }
+      },
+      deep: true,
+      immediate: true
     }
   }
 }
