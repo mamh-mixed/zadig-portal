@@ -253,7 +253,9 @@
                   <el-table-column prop="prop" label="服务">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
-                  <el-table-column prop="prop" label="原始镜像版本">来自前置构建任务</el-table-column>
+                  <el-table-column prop="prop" label="原始镜像版本">
+                    <span style="color: #909399; font-size: 12px; line-height: 33px;">来自前置构建任务</span>
+                  </el-table-column>
                   <el-table-column prop="prop" label="修改版本">
                     <template slot-scope="scope">
                       <el-switch v-model="scope.row.update_tag"></el-switch>
@@ -266,7 +268,7 @@
                         <el-button size="small" type="text" @click="applyAllImage(fromJobInfo.pickedTargets,scope.row.target_tag)">应用全部</el-button>
                       </div>
                       <span v-else>
-                        <span>来自前置构建任务</span>
+                        <span style="color: #909399; font-size: 12px; line-height: 33px;">来自前置构建任务</span>
                       </span>
                     </template>
                   </el-table-column>
