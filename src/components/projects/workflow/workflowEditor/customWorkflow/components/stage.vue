@@ -187,7 +187,7 @@ export default {
           name: 'default',
           type: 'zadig-distribute-image',
           spec: {
-            source: '',
+            source: 'runtime',
             job_name: '',
             source_registry_id: '',
             target_registry_id: '',

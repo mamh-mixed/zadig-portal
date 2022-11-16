@@ -86,9 +86,7 @@
                     :label="`${pro.projectName} / ${pro.name}`"
                     :value="`${pro.name}`"
                   >
-                    <span>
-                      {{`${pro.projectName} / ${pro.name}`}}
-                    </span>
+                    <span>{{`${pro.projectName} / ${pro.name}`}}</span>
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -180,6 +178,54 @@
             </div>
             <div v-if="job.type === 'plugin'">
               <CustomWorkflowCommonRows :job="job" type="plugin"></CustomWorkflowCommonRows>
+            </div>
+            {{job.type==='zadig-distribute-image'}}
+            <div v-if="job.type==='zadig-distribute-image'">
+              22223{{job.pickedTargets}}
+              <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="value"
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleServiceDeployChange"
+                >
+                  <el-option
+                    v-for="(service,index) of job.spec.targets"
+                    :key="index"
+                    :label="`${service.service_module}(${service.service_name})`"
+                    :value="service"
+                  >
+                    <span>{{service.service_module}}</span>
+                    <span style="color: #ccc;">({{service.service_name}})</span>
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <div v-for="(item,index) in job.pickedTargets" :key="index">
+                <el-form-item :label="`${item.service_module}`">
+                  <el-select
+                    v-model="item.image"
+                    filterable
+                    clearable
+                    reserve-keyword
+                    value-key="service_name"
+                    size="medium"
+                    style="width: 220px;"
+                    placeholder="请选择镜像"
+                  >
+                    <el-option
+                      v-for="(image,index) of item.images"
+                      :key="index"
+                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                      :label="image.tag"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
             </div>
           </el-collapse-item>
         </div>
@@ -360,6 +406,10 @@ export default {
             const len = job.spec.plugin.inputs.filter(item => item.isShow)
             job.isShowPlugin = len.length !== 0
           }
+          if (job.type === 'zadig-distribute-image') {
+            job.pickedTargets = job.spec.targets
+            console.log(job.pickedTargets)
+          }
         })
       })
     },
@@ -525,7 +575,7 @@ export default {
             job.spec.service_and_builds.forEach(item => {
               if (item.repos) {
                 item.repos.forEach(repo => {
-                  if (typeof (repo.prs) === 'string') {
+                  if (typeof repo.prs === 'string') {
                     repo.prs = repo.prs.split(',').map(Number)
                   }
                   if (repo.branchOrTag) {
@@ -544,7 +594,7 @@ export default {
             job.spec.steps.forEach(step => {
               if (step.type === 'git') {
                 step.spec.repos.forEach(repo => {
-                  if (typeof (repo.prs) === 'string') {
+                  if (typeof repo.prs === 'string') {
                     repo.prs = repo.prs.split(',').map(Number)
                   }
                   if (repo.branchOrTag) {

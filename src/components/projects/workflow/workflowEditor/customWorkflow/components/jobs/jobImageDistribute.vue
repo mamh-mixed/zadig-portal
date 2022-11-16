@@ -4,10 +4,9 @@
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-
       <el-form-item label="服务组件" :required="job.spec.source && job.spec.source!=='runtime'">
-        <el-form-item prop="spec.service_and_images" v-if="!job.spec.source || job.spec.source === 'runtime'" class="form-item">
-          <el-select size="small" v-model="job.spec.service_and_images" filterable clearable value-key="value">
+        <el-form-item prop="spec.targets" v-if="job.spec.source === 'runtime'" class="form-item">
+          <el-select size="small" key="2" v-model="job.spec.targets" filterable clearable value-key="value" multiple style="width: 220px;">
             <el-option
               v-for="(service,index) in originServiceAndBuilds"
               :key="index"
@@ -23,7 +22,7 @@
           class="form-item"
           :rules="{required: true, message: '请选择服务', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.job_name" placeholder="请选择" size="small">
+          <el-select key="1" v-model="job.spec.job_name" placeholder="请选择" size="small" style="width: 220px;">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>
@@ -55,16 +54,12 @@
 </template>
 
 <script>
-import {
-  listProductAPI,
-  getRegistryWhenBuildAPI,
-  getAssociatedBuildsAPI
-} from '@/api'
+import { getRegistryWhenBuildAPI, getAssociatedBuildsAPI } from '@/api'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config'
 
 export default {
-  name: 'JobDeploy',
+  name: 'JobImageDistrubute',
   props: {
     projectName: {
       type: String,
@@ -75,10 +70,6 @@ export default {
       default: () => ({})
     },
     globalEnv: {
-      type: Array,
-      default: () => []
-    },
-    originServiceAndBuilds: {
       type: Array,
       default: () => []
     },
@@ -94,7 +85,8 @@ export default {
     return {
       validateJobName,
       formLabelWidth: '90px',
-      dockerList: []
+      dockerList: [],
+      originServiceAndBuilds: []
     }
   },
   computed: {
@@ -104,7 +96,9 @@ export default {
           return stage.jobs
         })
         .flat()
-      return allJobList.filter(job => job.name !== this.job.name)
+      return allJobList.filter(
+        job => job.name !== this.job.name && job.type === 'zadig-build'
+      )
     }
   },
   created () {
@@ -128,9 +122,11 @@ export default {
       })
     },
     getData () {
-      this.job.spec.service_and_images.forEach(item => {
-        delete item.module_builds
-      })
+      if (this.job.spec.targets.length > 0) {
+        this.job.spec.targets.forEach(item => {
+          delete item.module_builds
+        })
+      }
       return this.job
     },
     validate () {

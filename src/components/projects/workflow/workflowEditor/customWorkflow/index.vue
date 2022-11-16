@@ -115,7 +115,13 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-            <JobFreestyle v-if="job.type === jobType.freestyle" :globalEnv="globalEnv" :ref="jobType.freestyle" :job="job" :workflowInfo="payload" />
+            <JobFreestyle
+              v-if="job.type === jobType.freestyle"
+              :globalEnv="globalEnv"
+              :ref="jobType.freestyle"
+              :job="job"
+              :workflowInfo="payload"
+            />
             <JobK8sDeploy
               :projectName="projectName"
               v-if="job.type === jobType.k8sDeploy"
@@ -133,7 +139,7 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-             <JobScanning
+            <JobScanning
               :projectName="projectName"
               v-if="job.type === jobType.scanning"
               :job="job"
@@ -141,7 +147,7 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-             <JobImageDistribute
+            <JobImageDistribute
               :projectName="projectName"
               v-if="job.type === jobType.distribute"
               :job="job"
@@ -424,7 +430,9 @@ export default {
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {
-            title: this.$route.query.display_name || this.$route.params.workflow_name,
+            title:
+              this.$route.query.display_name ||
+              this.$route.params.workflow_name,
             url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
           }
         ]
@@ -547,6 +555,11 @@ export default {
               })
             }
           }
+          if (job.type === 'zadig-distribute-image') {
+            if (job.spec.source === 'other') {
+              job.spec.source = 'fromjob'
+            }
+          }
         })
       })
       this.payload.project = this.projectName
@@ -585,7 +598,9 @@ export default {
           `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
         )
       } else {
-        this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines?display_name=${this.payload.display_name}`)
+        this.$router.push(
+          `/v1/projects/detail/${this.projectName}/pipelines?display_name=${this.payload.display_name}`
+        )
       }
     },
     getWorkflowDetail (workflow_name) {
@@ -677,6 +692,14 @@ export default {
                     }
                   })
                 })
+              }
+            }
+            if (job.type === 'zadig-distribute-image') {
+              job.spec.targets.forEach(item => {
+                item.value = `${item.service_name}/${item.service_module}`
+              })
+              if (job.spec.source === 'fromjob') {
+                job.spec.source = 'other'
               }
             }
           })
