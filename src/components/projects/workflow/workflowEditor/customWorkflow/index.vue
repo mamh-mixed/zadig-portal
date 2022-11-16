@@ -420,6 +420,7 @@ export default {
   },
   methods: {
     init () {
+      this.payload.project = this.projectName
       this.getServiceAndBuildList()
       this.setTitle()
       if (this.modelId) {
