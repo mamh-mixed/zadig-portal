@@ -745,14 +745,13 @@ export default {
                 })
               })
             }
-
-            if (job.type === 'zadig-distribute-image') {
-              job.spec.targets.forEach(item => {
-                item.value = `${item.service_name}/${item.service_module}`
-              })
-              if (job.spec.source === 'fromjob') {
-                job.spec.source = 'other'
-              }
+          }
+          if (job.type === 'zadig-distribute-image') {
+            job.spec.targets.forEach(item => {
+              item.value = `${item.service_name}/${item.service_module}`
+            })
+            if (job.spec.source === 'fromjob') {
+              job.spec.source = 'other'
             }
           }
         })
