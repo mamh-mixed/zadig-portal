@@ -179,6 +179,126 @@
                 </el-form-item>
               </div>
             </div>
+            <div v-if="job.type === 'k8s-resource-patch'">
+              <el-form-item label="资源名称">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="resource_name"
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleResourceChange($event,job)"
+                >
+                  <el-option
+                    v-for="(item,index) of job.spec.patch_items"
+                    :key="index"
+                    :label="`${item.resource_kind}/${item.resource_name}`"
+                    :value="item"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="更新内容">
+                <div v-for="(item,index) in job.pickedTargets" :key="index">
+                  <span>{{item.resource_name}}</span>
+                  <el-table :data="item.params">
+                    <el-table-column label="键" prop="name"></el-table-column>
+                    <el-table-column label="值">
+                      <template slot-scope="scope">
+                        <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
+                          <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
+                        </el-select>
+                        <el-input
+                          v-if="scope.row.type === 'text'"
+                          v-model="scope.row.value"
+                          size="small"
+                          type="textarea"
+                          :rows="2"
+                          style="width: 220px;"
+                        ></el-input>
+                        <el-input
+                          v-if="scope.row.type === 'string'"
+                          class="password"
+                          v-model="scope.row.value"
+                          size="small"
+                          :type="scope.row.is_credential ? 'passsword' : ''"
+                          :show-password="scope.row.is_credential ? true : false"
+                          style="width: 220px;"
+                        ></el-input>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </el-form-item>
+            </div>
+            <div v-if="job.type === 'k8s-gray-release'">
+              <el-form-item label="灰度百分比">{{job.spec.gray_scale}}</el-form-item>
+              <el-form-item label="选择容器" v-if="!job.spec.from_job">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="value"
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleContainerChange($event,job)"
+                >
+                  <el-option
+                    v-for="(item,index) of job.spec.targets"
+                    :key="index"
+                    :label="`${item.container_name}/${item.workload_name}`"
+                    :value="item"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-for="(item,index) in job.pickedTargets" :key="index">
+                <el-form-item :label="`${item.container_name}/${item.workload_name}`">
+                  <el-select
+                    v-model="item.image"
+                    filterable
+                    clearable
+                    @change="handleCurImageChange"
+                    reserve-keyword
+                    size="medium"
+                    style="width: 220px;"
+                    placeholder="请选择镜像"
+                  >
+                    <el-option
+                      v-for="(image,index) of item.images"
+                      :key="index"
+                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                      :label="image.tag"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </div>
+            <div v-if="job.type === 'k8s-gray-rollback'">
+              <el-form-item label="选择 Deployment">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  value-key="workload_name"
+                  reserve-keyword
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleContainerChange($event,job)"
+                >
+                  <el-option v-for="(item,index) of job.spec.targets" :key="index" :label="item.workload_name" :value="item"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-table :data="job.pickedTargets">
+                <el-table-column label="Deployment  名称" prop="workload_name"></el-table-column>
+                <el-table-column label="镜像名称" prop="origin_image"></el-table-column>
+                <el-table-column label="副本数量" prop="origin_replica"></el-table-column>
+              </el-table>
+            </div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job" />
             </div>
@@ -192,7 +312,7 @@
             </div>
             <div v-if="job.type === 'zadig-scanning'">
               <div v-if="job.pickedTargets">
-                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning"/>
+                <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning" />
               </div>
             </div>
           </el-collapse-item>

@@ -1,7 +1,7 @@
 <template>
   <div class="build-env">
     <el-form label-width="120px" :model="job" ref="ruleForm" class="mg-t24 mg-b24" label-position="left">
-      <el-form-item label="任务名称" prop="name">
+      <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
       <el-form-item
@@ -9,6 +9,7 @@
         label="选择部署金丝雀任务"
         required
         class="form-item"
+        :rules="{required: true, message: '选择部署金丝雀任务', trigger: ['blur', 'change']}"
       >
         <el-select v-model="job.spec.from_job" placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>

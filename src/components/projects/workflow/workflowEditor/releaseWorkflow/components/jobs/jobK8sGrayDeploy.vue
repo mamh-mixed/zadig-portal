@@ -53,8 +53,8 @@
           value-key="workload_name"
         >
           <el-option
-            v-for="item in workloadList"
-            :key="item.workload_name"
+            v-for="(item,index) in workloadList"
+            :key="index"
             :label="`${item.container_name}/${item.workload_name}`"
             :value="item"
           ></el-option>

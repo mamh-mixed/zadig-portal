@@ -122,7 +122,15 @@ const jobType = {
   plugin: 'plugin',
   k8sDeploy: 'custom-deploy',
   test: 'zadig-test',
-  scanning: 'zadig-scanning'
+  scanning: 'zadig-scanning',
+  customDeploy: 'custom-deploy',
+  canaryDeploy: 'k8s-canary-deploy',
+  canaryConfirm: 'k8s-canary-release',
+  blueGreenDeploy: 'k8s-blue-green-deploy',
+  blueGreenConfirm: 'k8s-blue-green-release',
+  k8sResourcePatch: 'k8s-resource-patch',
+  k8sGrayRollback: 'k8s-gray-rollback',
+  grayDeploy: 'k8s-gray-release'
 }
 const editorOptions = {
   mode: 'yaml',

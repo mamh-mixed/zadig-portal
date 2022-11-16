@@ -1,20 +1,20 @@
 <template>
   <div class="job-k8s-deploy">
-    <el-form label-width="120px" :model="job" ref="ruleForm" class="mg-t24 mg-b24" label-position="left">
-      <el-form-item label="任务名称" prop="name">
+    <el-form label-width="120px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
+      <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item label="集群" prop="spec.cluster_id">
+      <el-form-item label="集群" prop="spec.cluster_id" :rules="{ required: true, message: '请选择集群名称', trigger: ['change', 'blur'] }">
         <el-select v-model="job.spec.cluster_id" placeholder="请选择集群名称" size="small" style="width: 220px;" @change="getNamespaceList">
           <el-option v-for="cluster in clusters" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="命名空间" prop="spec.namespace">
+      <el-form-item label="命名空间" prop="spec.namespace" :rules="{required: true, message: '命名空间不能为空', trigger: ['blur','change']}">
         <el-select v-model="job.spec.namespace" filterable placeholder="请选择" size="small" style="width: 220px;" @change="getResourceList">
           <el-option v-for="item in namespaceList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="资源名称" prop="spec.patch_items">
+      <el-form-item label="资源名称" prop="spec.patch_items" :rules="{required: true, message: '资源名称不能为空', trigger: ['blur','change']}">
         <el-select
           placeholder="请选择"
           size="small"
@@ -37,7 +37,7 @@
               <div class="content">
                 <div class="content-editor">
                   <div class="flex">
-                    <span>模板</span>
+                    <span>模版</span>
                     <el-dropdown @command="handleCommand($event,item)">
                       <span class="el-dropdown-link">
                         {{item.patch_strategy}}
@@ -248,7 +248,7 @@ export default {
       this.validateYaml(newCode, item)
     }, 200),
     validateYaml (code, item) {
-      validateYamlAPI(this.projectName, { yaml: code }).then(res => {
+      validateYamlAPI({ yaml: code }).then(res => {
         if (res && res.length > 0) {
           this.$set(item, 'errors', res)
           this.$forceUpdate()

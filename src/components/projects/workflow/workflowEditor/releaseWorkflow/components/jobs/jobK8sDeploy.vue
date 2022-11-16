@@ -16,12 +16,12 @@
       </el-form-item>
       <el-form-item label="命名空间" prop="spec.namespace" :rules="{required: true, message: '命名空间不能为空', trigger: ['blur','change']}">
         <el-select v-model="job.spec.namespace" filterable placeholder="请选择" size="small" style="width: 220px;" @change="getWorkloadList">
-          <el-option v-for="item in namespaceList" :key="item" :label="item" :value="item"></el-option>
+          <el-option v-for="(item,index) in namespaceList" :key="index" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="容器" prop="spec.targets"  :required="job.spec.source && job.spec.source !== 'runtime'" >
         <el-select v-model="job.spec.targets" placeholder="请选择" size="small" style="width: 220px;" filterable multiple value-key="target">
-          <el-option v-for="item in workloadList" :key="item.target" :label="item.target" :value="item"></el-option>
+          <el-option v-for="(item,index) in workloadList" :key="index" :label="item.target" :value="item"></el-option>
         </el-select>
         <EnvTypeSelect v-model="job.spec.source" isRuntime isFixed style="display: inline-block;" />
       </el-form-item>
