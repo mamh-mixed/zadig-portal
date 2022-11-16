@@ -71,36 +71,11 @@
                 :value="branch.name"
               ></el-option>
             </el-select>
-            <el-switch v-model="webhookSwap.repo.is_regular" active-text="正则表达式配置" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
+            <el-switch v-if="webhookSwap.repo.source!=='gerrit'" v-model="webhookSwap.repo.is_regular" active-text="正则表达式配置" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
             <div v-show="webhookSwap.repo.is_regular">
               <span v-show="matchedBranchNames">当前正则匹配到的分支：{{matchedBranchNames && matchedBranchNames.length === 0 ? '无': ''}}</span>
               <span style="display: inline-block; padding-right: 10px;" v-for="branch in matchedBranchNames" :key="branch">{{ branch }}</span>
             </div>
-          </el-form-item>
-          <el-form-item
-            v-else
-            label="目标分支"
-            prop="repo.branch"
-            :rules="[
-            { required: true, message: '请选择目标分支', trigger: ['blur', 'change'] }
-          ]"
-          >
-            <el-select
-              style="width: 100%;"
-              v-model="webhookSwap.repo.branch"
-              size="small"
-              filterable
-              allow-create
-              clearable
-              placeholder="请选择分支"
-            >
-              <el-option
-                v-for="(branch,index) in webhookBranches[webhookSwap.repo.repo_name]"
-                :key="index"
-                :label="branch.name"
-                :value="branch.name"
-              ></el-option>
-            </el-select>
           </el-form-item>
           <el-form-item label="部署环境" prop="namespace">
             <el-select
@@ -911,7 +886,7 @@ export default {
       )
     },
     checkGitRepo () {
-      return this.webhookSwap.repo && ['gitlab', 'github'].includes(this.webhookSwap.repo.source)
+      return this.webhookSwap.repo
     }
   },
   watch: {
