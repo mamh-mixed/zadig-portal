@@ -26,7 +26,7 @@
         </span>
       </div>
       <el-form class="service-form-block" label-width="50%" label-position="left">
-        <div class="service-item" v-for="(typeServiceMap, serviceName) in selectedContainerMap" :key="serviceName">
+        <div class="service-item" v-for="(service, serviceName) in selectedContainerMap" :key="serviceName">
           <div class="primary-title service-title">
             <div class="service-name">{{ serviceName }}</div>
             <div class="service-resource">
@@ -48,38 +48,36 @@
               </div>
             </div>
             <div class="service-operation">
-              <el-radio-group v-model="typeServiceMap.k8s.deploy_strategy">
+              <el-radio-group v-model="service.deploy_strategy">
                 <el-radio label="import" :disabled="!(svcResources[serviceName] && svcResources[serviceName].deployed)">仅导入服务</el-radio>
                 <el-radio label="deploy">执行部署</el-radio>
               </el-radio-group>
             </div>
           </div>
           <div class="service-content">
-            <div v-for="service in typeServiceMap" :key="`${service.service_name}-${service.type}`" class="service-block">
-              <template v-if="service.type==='k8s' && service.containers">
-                <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name" label-width="40%">
-                  <el-select v-model="con.image" :disabled="cantOperate" filterable size="small">
-                    <virtual-scroll-list
-                      v-if="imageMap[con.image_name] && imageMap[con.image_name].length > 200"
-                      style="height: 272px; overflow-y: auto;"
-                      :size="virtualData.size"
-                      :keeps="virtualData.keeps"
-                      :start="virtualData.start"
-                      :dataKey="(img)=>{ return img.name+'-'+img.tag}"
-                      :dataSources="imageMap[con.image_name]"
-                      :dataComponent="itemComponent"
-                    ></virtual-scroll-list>
-                    <el-option
-                      v-else
-                      v-for="img of imageMap[con.image_name]"
-                      :key="`${img.name}-${img.tag}`"
-                      :label="img.tag"
-                      :value="img.full"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </template>
-            </div>
+            <template v-if="service.type==='k8s' && service.containers">
+              <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name" label-width="40%">
+                <el-select v-model="con.image" :disabled="cantOperate" filterable size="small">
+                  <virtual-scroll-list
+                    v-if="imageMap[con.image_name] && imageMap[con.image_name].length > 200"
+                    style="height: 272px; overflow-y: auto;"
+                    :size="virtualData.size"
+                    :keeps="virtualData.keeps"
+                    :start="virtualData.start"
+                    :dataKey="(img)=>{ return img.name+'-'+img.tag}"
+                    :dataSources="imageMap[con.image_name]"
+                    :dataComponent="itemComponent"
+                  ></virtual-scroll-list>
+                  <el-option
+                    v-else
+                    v-for="img of imageMap[con.image_name]"
+                    :key="`${img.name}-${img.tag}`"
+                    :label="img.tag"
+                    :value="img.full"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </template>
           </div>
         </div>
       </el-form>
@@ -95,7 +93,11 @@ export default {
   props: {
     showFilter: Boolean,
     cantOperate: Boolean,
-    selectedContainerMap: Object
+    selectedContainerMap: Object,
+    registryId: {
+      required: true,
+      type: String
+    }
   },
   data () {
     return {
@@ -106,24 +108,36 @@ export default {
         start: 0
       },
       quickSelection: '',
-      imageMap: {},
+      imageMapById: {},
       svcResources: {}
     }
   },
+  computed: {
+    imageMap () {
+      return this.imageMapById[this.registryId] || {}
+    }
+  },
   methods: {
-    getImages (containerNames, registryId, init, services) {
-      imagesAPI(containerNames, registryId).then(images => {
+    async getImages (containerNames, registryId, init, services) {
+      if (!this.imageMapById[registryId]) {
+        const images = await imagesAPI(containerNames, registryId).catch(err =>
+          console.log(err)
+        )
         if (images) {
           for (const image of images) {
             image.full = `${image.host}/${image.owner}/${image.name}:${image.tag}`
           }
-          this.imageMap = this.makeMapOfArray(images, 'name')
-          if (init) {
-            this.quickSelection = 'latest'
-            this.quickInitImage(services)
-          }
+          this.$set(
+            this.imageMapById,
+            registryId,
+            this.makeMapOfArray(images, 'name')
+          )
         }
-      })
+      }
+      if (init) {
+        this.quickSelection = 'latest'
+        this.quickInitImage(services, this.imageMapById[registryId])
+      }
     },
     makeMapOfArray (arr, namePropName) {
       const map = {}
@@ -136,7 +150,7 @@ export default {
       }
       return map
     },
-    quickInitImage (services) {
+    quickInitImage (services, imageMap = this.imageMap) {
       const select = this.quickSelection
       for (const group of services) {
         for (const ser of group) {
@@ -146,8 +160,8 @@ export default {
           if (containers) {
             for (const con of ser.containers) {
               if (select === 'latest') {
-                if (this.imageMap[con.image_name]) {
-                  con.image = this.imageMap[con.image_name][0].full
+                if (imageMap[con.image_name]) {
+                  con.image = imageMap[con.image_name][0].full
                 } else {
                   con.image = con.defaultImage
                 }
@@ -160,18 +174,18 @@ export default {
         }
       }
     },
-    async checkSvcResource (projectName, namespace, clusterID) {
+    async checkSvcResource (projectName, payload) {
+      // payload: env_name, namespace, cluster_id, vars
       this.svcResources = {}
-      const res = await checkK8sSvcResourceAPI({
+      const res = await checkK8sSvcResourceAPI(
         projectName,
-        namespace,
-        clusterID
-      }).catch(err => console.log(err))
+        payload
+      ).catch(err => console.log(err))
       if (res) {
         const svcResources = {}
         const svcStatus = {}
         res.forEach(resource => {
-          const deployed = !resource.resource.find(
+          const deployed = !resource.resources.find(
             re => re.status === 'undeployed'
           )
           svcResources[resource.service_name] = {
@@ -230,7 +244,7 @@ export default {
       }
 
       .service-resource {
-        flex: 1 1 auto;
+        flex: 0 0 60%;
         margin: 0 20px;
 
         .resource-item {
@@ -277,13 +291,11 @@ export default {
       border: 1px solid #d2d7dc;
       border-radius: 6px;
 
-      .service-block {
-        /deep/.el-form-item {
-          margin-bottom: 8px;
+      /deep/.el-form-item {
+        margin-bottom: 8px;
 
-          .el-select {
-            width: 100%;
-          }
+        .el-select {
+          width: 100%;
         }
       }
     }

@@ -313,9 +313,8 @@ export function getTheEnvChangeLogAPI (payload) {
   return http.get(`/api/aslan/environment/operations`, { params: payload })
 }
 
-export function checkK8sSvcResourceAPI (params) {
-  // params: projectName, namespace, clusterID
-  return http.get(`/api/aslan/environment/kube/k8s/resources`, { params })
+export function checkK8sSvcResourceAPI (projectName, payload) {
+  return http.post(`/api/aslan/environment/kube/k8s/resources?projectName=${projectName}`, payload)
 }
 
 // Project
@@ -1445,8 +1444,8 @@ export function updateEnvTemplateAPI (projectName, payload) {
 }
 
 // Env and Service
-export function createEnvAPI (payload, envType = '', scene = '') {
-  return http.post(`/api/aslan/environment/environments?projectName=${payload.product_name}&scene=${scene}`, payload)
+export function createEnvAPI (projectName, payload, scene = '', type = '') {
+  return http.post(`/api/aslan/environment/environments?projectName=${projectName}&scene=${scene}&type=${type}`, payload)
 }
 
 export function updateServiceAPI (projectName, serviceName, serviceType, envName, data, envType = '') {
@@ -1846,7 +1845,7 @@ export function getEnvDefaultVariableAPI (projectName, envName, ifPassFilter = t
 }
 
 export function createHelmEnvAPI (projectName, payload, scene = '') {
-  return http.post(`/api/aslan/environment/environments?helm=true&projectName=${projectName}&scene=${scene}`, payload)
+  return http.post(`/api/aslan/environment/environments?type=helm&projectName=${projectName}&scene=${scene}`, payload)
 }
 
 export function updateHelmTemplateAPI (templateName) {
@@ -1854,7 +1853,7 @@ export function updateHelmTemplateAPI (templateName) {
 }
 
 export function updateHelmEnvAPI (projectName, payload) {
-  return http.put(`/api/aslan/environment/environments?helm=true&projectName=${projectName}`, payload)
+  return http.put(`/api/aslan/environment/environments?type=helm&projectName=${projectName}`, payload)
 }
 
 export function updateHelmEnvVarAPI (projectName, envName, payload) {

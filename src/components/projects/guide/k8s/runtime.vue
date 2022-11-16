@@ -1,11 +1,11 @@
 <template>
   <div class="projects-runtime-container">
     <div class="guide-container">
-      <Step :activeStep="2" :stepThreeTitle="`配置环境`"/>
+      <Step :activeStep="2" :stepThreeTitle="`创建环境`" />
       <div class="current-step-container">
         <div class="title-container">
           <span class="first">第三步</span>
-          <span class="second">配置变量，按需创建环境，后续可在项目中调整。</span>
+          <span class="second">按需创建环境，后续可在项目中调整。</span>
         </div>
         <div class="account-integrations block-list">
           <div class="second">配置以下几套环境：</div>
@@ -19,8 +19,13 @@
             >
               <span slot="label">
                 <span v-if="env.isEdit && canHandle" class="tab-label">
-                  <el-input v-model="env.envName" :placeholder="env.initName" v-focus @keyup.enter.native="env.isEdit = false"></el-input>
-                  <i class="el-icon-finished" @click="env.isEdit = false" v-if="canHandle"></i>
+                  <el-input
+                    v-model="env.envName"
+                    :placeholder="env.initName"
+                    v-focus
+                    @keyup.enter.native="validateEnvName(env.envName, env)"
+                  ></el-input>
+                  <i class="el-icon-finished" @click="validateEnvName(env.envName, env)" v-if="canHandle"></i>
                 </span>
                 <span v-else class="tab-label">
                   <span @dblclick="env.isEdit = true">{{env.envName}}</span>
@@ -32,32 +37,18 @@
               <span slot="label" @click="handleTabsEdit('', 'add')">创建环境</span>
             </el-tab-pane>
           </el-tabs>
-          <el-form label-width="100px" ref="createEnvRef" :model="currentInfo" :rules="rules" label-position="left" inline>
-            <el-form-item label="集群" prop="clusterID">
-              <el-select class="select" filterable v-model="currentInfo.clusterID" size="small" placeholder="请选择集群">
-                <el-option v-for="cluster in allCluster" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="镜像仓库">
-              <el-select class="select" filterable v-model.trim="currentInfo.registry_id" placeholder="请选择镜像仓库" size="small">
-                <el-option
-                  v-for="registry in imageRegistry"
-                  :key="registry.id"
-                  :label="registry.namespace ? `${registry.reg_addr}/${registry.namespace}` : registry.reg_addr"
-                  :value="registry.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <HelmEnvTemplate
-            class="chart-value"
-            ref="helmEnvTemplateRef"
-            :envNames="envNames"
-            :handledEnv="activeName"
-            :envScene="`createEnv`"
-          />
+          <!-- 创建环境 -->
+          <div
+            :class="[cantNext ? '' : 'frozen']"
+            v-loading="!cantNext"
+            element-loading-spinner="el-icon-d-arrow-right"
+            element-loading-text="点击下一步"
+            element-loading-background="rgba(255, 255, 255, 0.6)"
+          >
+            <CreateEnv ref="createEnvRef" :envInfos="envInfos" :currentEnv="activeName" />
+          </div>
           <div class="ai-bottom">
-            <el-button type="primary" size="small" @click="createHelmProductEnv" :loading="isCreating" :disabled="!cantNext">创建环境</el-button>
+            <el-button type="primary" size="small" @click="createK8sProductEnv" :loading="isCreating" :disabled="!cantNext">创建环境</el-button>
             <div v-for="(env, index) in createRes" :key="index" class="ai-status">
               <span class="env-name">{{env.name}}:</span>
               <span>{{getStatusDesc(env)}}</span>
@@ -76,49 +67,55 @@
   </div>
 </template>
 <script>
-import HelmEnvTemplate from '@/components/projects/env/env_detail/components/updateHelmEnvTemp.vue'
 import bus from '@utils/eventBus'
 import Step from '../common/step.vue'
-import {
-  createHelmEnvAPI,
-  getEnvironmentsAPI,
-  getClusterListAPI,
-  getRegistryWhenBuildAPI
-} from '@api'
+import CreateEnv from './createEnv.vue'
+
+import { createEnvAPI, getEnvironmentsAPI } from '@api'
 export default {
   data () {
-    this.rules = {
-      clusterID: [{ required: true, trigger: 'change', message: '请选择集群' }]
-    }
     return {
       envInfos: [
         {
           envName: 'dev',
           isEdit: false,
           initName: 'dev',
-          infos: { clusterID: '', registry_id: '' }
+          projectConfig: null
         },
         {
           envName: 'qa',
           isEdit: false,
           initName: 'qa',
-          infos: { clusterID: '', registry_id: '' }
+          projectConfig: null
         }
       ],
       cantNext: true,
       activeName: 'dev',
       isCreating: false,
       createRes: [],
-      sId: null,
-      allCluster: [],
-      imageRegistry: [],
-      defaultInfo: {
-        clusterID: '',
-        registry_id: ''
-      }
+      sId: null
     }
   },
   methods: {
+    // valid environment name
+    // valid when creating environment as well
+    validateEnvName (name, env) {
+      let message = ''
+      if (typeof name === 'undefined' || name === '') {
+        message = '填写环境名称!'
+      } else if (!/^[a-z0-9-]+$/.test(name)) {
+        message = '环境名称只支持小写字母和数字，特殊字符只支持中划线!'
+      }
+      if (message) {
+        this.$message.error(message)
+        return false
+      }
+      if (env) {
+        env.isEdit = false
+        this.$refs.createEnvRef.changeEnvName(name)
+      }
+      return true
+    },
     async getProducts () {
       const res = await getEnvironmentsAPI(this.projectName).catch(err => {
         console.log(err)
@@ -129,10 +126,7 @@ export default {
             envName: re.name,
             isEdit: false,
             initName: re.name,
-            infos: {
-              clusterID: re.cluster_id || '',
-              registry_id: re.registry_id || ''
-            }
+            projectConfig: null
           }
         })
         this.activeName = this.envInfos[0].initName
@@ -161,36 +155,23 @@ export default {
       }
       return res
     },
-    async createHelmProductEnv () {
-      const { envInfo, chartInfo } = this.$refs.helmEnvTemplateRef.getAllInfo()
-      const payloadObj = {}
-      const projectName = this.projectName
-
-      this.envInfos.forEach(info => {
-        payloadObj[info.initName] = {
-          envName: info.envName,
-          clusterID: info.infos.clusterID || this.defaultInfo.clusterID,
-          registry_id: info.infos.registry_id || this.defaultInfo.registry_id,
-          chartValues: [],
-          defaultValues: envInfo[info.initName].envValue || '',
-          namespace: `${projectName}-env-${info.envName}`,
-          valuesData: envInfo[info.initName].valuesData
+    async createK8sProductEnv () {
+      // todo: create k8s env
+      const payload = await this.$refs.createEnvRef.deployK8sEnv()
+      if (payload) {
+        this.isCreating = true
+        const res = await createEnvAPI(
+          this.projectName,
+          payload,
+          '',
+          'k8s'
+        ).catch(err => {
+          console.log(err)
+          this.isCreating = false
+        })
+        if (res) {
+          this.sId = setTimeout(this.checkEnvStatus, 0)
         }
-      })
-      chartInfo.forEach(chart => {
-        payloadObj[chart.envName].chartValues.push(chart)
-        chart.envName = payloadObj[chart.envName].envName
-      })
-
-      const payload = Object.values(payloadObj)
-
-      this.isCreating = true
-      const res = await createHelmEnvAPI(projectName, payload).catch(err => {
-        console.log(err)
-        this.isCreating = false
-      })
-      if (res) {
-        this.sId = setTimeout(this.checkEnvStatus, 0)
       }
     },
     async checkEnvStatus () {
@@ -219,32 +200,17 @@ export default {
           envName: newTabName,
           isEdit: true,
           initName: newTabName,
-          infos: { clusterID: '', registry_id: '' }
+          projectConfig: null
         })
         setTimeout(() => {
           this.activeName = newTabName
         })
-      }
-      if (action === 'remove') {
+      } else if (action === 'remove') {
         this.envInfos = this.envInfos.filter(env => env.initName !== targetName)
         if (this.activeName === targetName) {
           this.activeName = this.envInfos[0] ? this.envInfos[0].envName : ''
         }
       }
-    },
-    getClusterAndRegistry () {
-      getClusterListAPI(this.projectName).then(res => {
-        this.allCluster = res.filter(element => {
-          return element.status === 'normal'
-        })
-        this.defaultInfo.clusterID =
-          this.allCluster.find(cluster => cluster.local).id || ''
-      })
-      getRegistryWhenBuildAPI(this.projectName).then(res => {
-        this.imageRegistry = res
-        const defaultRegistry = res.find(reg => reg.is_default)
-        this.defaultInfo.registry_id = defaultRegistry ? defaultRegistry.id : ''
-      })
     }
   },
   computed: {
@@ -256,16 +222,6 @@ export default {
     },
     canHandle () {
       return !this.isCreating && this.cantNext
-    },
-    currentInfo () {
-      if (this.activeName === 'addNew') {
-        return {}
-      }
-      const activeName = this.activeName
-      const info = this.envInfos.find(info => info.initName === activeName).infos
-      info.clusterID = info.clusterID || this.defaultInfo.clusterID
-      info.registry_id = info.registry_id || this.defaultInfo.registry_id
-      return info
     }
   },
   created () {
@@ -279,14 +235,13 @@ export default {
     })
 
     this.getProducts()
-    this.getClusterAndRegistry()
   },
   beforeDestroy () {
     this.sId = null
   },
   components: {
     Step,
-    HelmEnvTemplate
+    CreateEnv
   },
   directives: {
     focus: {
@@ -379,6 +334,11 @@ export default {
             width: 14px;
             margin-left: 10px;
           }
+        }
+
+        .frozen {
+          height: calc(~'100vh - 480px');
+          overflow: hidden;
         }
 
         .ai-bottom {

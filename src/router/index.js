@@ -517,7 +517,7 @@ const routes = [
       },
       {
         path: 'projects/create/:project_name/k8s/runtime',
-        component: () => import(/* webpackChunkName: "Onboarding K8s" */ '@/components/projects/guide/common/runtime.vue'),
+        component: () => import(/* webpackChunkName: "Onboarding K8s" */ '@/components/projects/guide/k8s/runtime.vue'),
         meta: {
           requiresAuth: true,
           title: '新建项目'

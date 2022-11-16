@@ -235,7 +235,7 @@ export default {
             return new Promise(resolve => setTimeout(resolve, time))
           }
           this.$store.commit('SET_MASK_STATUS', true)
-          createEnvAPI(payload).then(
+          createEnvAPI(this.projectName, payload).then(
             res => {
               // Add delay to solve the back-end permission synchronization problem
               sleep(5000).then(() => {

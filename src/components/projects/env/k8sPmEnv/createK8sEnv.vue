@@ -132,6 +132,7 @@
         :showFilter="showFilter"
         :cantOperate="rollbackMode"
         :selectedContainerMap="selectedContainerMap"
+        :registryId="projectConfig.registry_id"
       />
       <el-form label-width="35%" class="ops">
         <el-form-item>
@@ -267,10 +268,8 @@ export default {
     variables () {
       if (this.projectConfig.source === 'system') {
         const services = this.projectConfig.selectedService
-        const currentVars = cloneDeep(
-          (this.projectConfig.vars || []).filter(
-            item => intersection(item.services, services).length
-          )
+        const currentVars = this.projectConfig.vars.filter(
+          item => intersection(item.services, services).length
         )
         currentVars.forEach(item => {
           item.allServices = item.services
@@ -317,6 +316,7 @@ export default {
       ) {
         this.projectConfig.defaultNamespace = this.projectName + '-env-' + value
       }
+      this.checkSvcResource({ env_name: value, namespace: this.projectConfig.defaultNamespace })
     },
     async getCluster () {
       const projectName = this.projectName
@@ -371,13 +371,12 @@ export default {
       const map = {}
       for (const group of template.services) {
         for (const ser of group) {
-          map[ser.service_name] = map[ser.service_name] || {}
-          map[ser.service_name][ser.type] = ser
+          map[ser.service_name] = ser
           if (ser.type === 'k8s') {
             this.hasK8s = true
           }
           ser.picked = true
-          ser.deploy_strategy = ''
+          ser.deploy_strategy = 'deploy'
           const containers = ser.containers
           if (containers) {
             for (const con of containers) {
@@ -464,11 +463,9 @@ export default {
       for (const group of envInfo.services) {
         for (const ser of group) {
           if (ser.type === 'k8s') {
-            containerMap[ser.service_name] =
-              containerMap[ser.service_name] || {}
-            containerMap[ser.service_name][ser.type] = ser
+            containerMap[ser.service_name] = ser
             ser.picked = true
-            ser.deploy_strategy = ''
+            ser.deploy_strategy = 'deploy'
             const containers = ser.containers
             if (containers) {
               for (const con of containers) {
@@ -533,11 +530,9 @@ export default {
       for (const group of template.services) {
         for (const ser of group) {
           if (ser.type === 'k8s') {
-            containerMap[ser.service_name] =
-              containerMap[ser.service_name] || {}
-            containerMap[ser.service_name][ser.type] = ser
+            containerMap[ser.service_name] = ser
             ser.picked = true
-            ser.deploy_strategy = ''
+            ser.deploy_strategy = 'deploy'
             const containers = ser.containers
             if (containers) {
               for (const con of containers) {
@@ -588,22 +583,6 @@ export default {
     deployK8sEnv () {
       this.$refs.createEnvRef.validate(valid => {
         if (valid) {
-          // 同名至少要选一个
-          for (const name in this.containerMap) {
-            let atLeastOnePicked = false
-            const typeServiceMap = this.containerMap[name]
-            for (const type in typeServiceMap) {
-              const service = typeServiceMap[type]
-              if (service.type === 'k8s' && service.picked) {
-                atLeastOnePicked = true
-              }
-            }
-            if (!atLeastOnePicked) {
-              this.$message.warning(`每个服务至少要选择一种，${name} 未勾选`)
-              return
-            }
-          }
-
           const selectedServices = [] // filtered service: keep the same format as the original services
           const selectedServiceNames = this.projectConfig.selectedService
           for (const group of this.projectConfig.services) {
@@ -613,9 +592,7 @@ export default {
               if (containers && ser.picked && ser.type === 'k8s') {
                 if (selectedServiceNames.includes(ser.service_name)) {
                   if (this.projectConfig.source === 'copy') {
-                    ser.containers = this.containerMap[ser.service_name][
-                      ser.type
-                    ].containers
+                    ser.containers = this.containerMap[ser.service_name].containers
                   }
                   currentGroup.push(ser)
                 }
@@ -647,7 +624,7 @@ export default {
           payload.namespace = payload.defaultNamespace
           payload.is_existed = this.nsIsExisted
 
-          payload.env_configs = this.$refs.envConfigRef.getEnvConfig()
+          payload.env_configs = this.$refs.envConfigRef.getEnvConfig().default
 
           if (this.createShare && this.baseEnvName) {
             payload.share_env = {
@@ -662,9 +639,10 @@ export default {
           }
           this.$store.commit('SET_MASK_STATUS', true)
           createEnvAPI(
-            payload,
-            '',
-            this.projectConfig.source === 'copy' ? 'copy' : ''
+            this.projectName,
+            [payload],
+            this.projectConfig.source === 'copy' ? 'copy' : '',
+            'k8s'
           ).then(
             res => {
               // Add delay to solve the back-end permission synchronization problem
@@ -690,26 +668,43 @@ export default {
         }
       })
     },
-    checkSvcResource (namespace, clusterID) {
-      if (this.$refs.k8sServiceListRef && namespace && clusterID) {
+    checkSvcResource: debounce(function ({
+      env_name = this.projectConfig.env_name,
+      namespace = this.projectConfig.defaultNamespace,
+      cluster_id = this.projectConfig.cluster_id,
+      vars = this.projectConfig.vars
+    }) {
+      const payload = {
+        env_name,
+        namespace,
+        cluster_id,
+        vars: vars.map(va => ({ alias: va.alias, key: va.key, value: va.value }))
+      }
+      if (this.$refs.k8sServiceListRef && env_name && namespace && cluster_id && vars.length) {
         this.$refs.k8sServiceListRef
-          .checkSvcResource(this.projectName, namespace, clusterID)
+          .checkSvcResource(this.projectName, payload)
           .then(res => {
             this.serviceNames.forEach(name => {
-              this.containerMap[name].k8s.deploy_strategy = res[name]
+              this.containerMap[name].deploy_strategy = res[name]
                 ? 'import'
                 : 'deploy'
             })
           })
       }
-    }
+    }, 300)
   },
   watch: {
-    'projectConfig.defaultNamespace': debounce(function (val) {
-      this.checkSvcResource(val, this.projectConfig.cluster_id)
-    }, 100),
+    'projectConfig.defaultNamespace' (val) {
+      this.checkSvcResource({ namespace: val })
+    },
     'projectConfig.cluster_id' (val) {
-      this.checkSvcResource(this.projectConfig.namespace, val)
+      this.checkSvcResource({ cluster_id: val })
+    },
+    variables: {
+      handler (val) {
+        this.checkSvcResource({ vars: val })
+      },
+      deep: true
     }
   },
   created () {
