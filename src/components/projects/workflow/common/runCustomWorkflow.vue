@@ -214,70 +214,63 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item>
-                  <el-row>
-                    <el-col :span="10">原始镜像版本</el-col>
-                    <el-col :span="12">修改版本</el-col>
-                  </el-row>
-                </el-form-item>
-                <div v-for="(item,index) in job.pickedTargets" :key="index">
-                  <el-form-item :label="`${item.service_module}(${item.service_name})`">
-                    <el-row>
-                      <el-col :span="10">
-                        <el-select
-                          v-model="item.source_tag"
-                          filterable
-                          clearable
-                          reserve-keyword
-                          value-key="service_name"
-                          size="medium"
-                          placeholder="请选择原始镜像版本"
-                        >
-                          <el-option
-                            v-for="(image,index) of item.images"
-                            :key="index"
-                            :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
-                            :label="image.tag"
-                          ></el-option>
-                        </el-select>
-                      </el-col>
-                      <el-col :span="12" class="flex">
-                        <el-input size="medium" v-model="item.target_tag" placeholder="请输入目标镜像版本" class="input"></el-input>
-                        <el-button v-if="index===0" size="small" type="text" @click="applyAllImage(job.pickedTargets,item.target_tag)">应用全部</el-button>
-                      </el-col>
-                    </el-row>
-                  </el-form-item>
-                </div>
+                <el-table :data="job.pickedTargets">
+                  <el-table-column prop="prop" label="服务">
+                    <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
+                  </el-table-column>
+                  <el-table-column prop="prop" label="原始镜像版本">
+                    <template slot-scope="scope">
+                      <el-select
+                        v-model="scope.row.source_tag"
+                        filterable
+                        clearable
+                        reserve-keyword
+                        value-key="service_name"
+                        size="small"
+                        placeholder="请选择原始镜像版本"
+                      >
+                        <el-option
+                          v-for="(image,index) of scope.row.images"
+                          :key="index"
+                          :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                          :label="image.tag"
+                        ></el-option>
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="prop" label="修改版本" width="240">
+                    <template slot-scope="{row,$index}">
+                      <div class="flex">
+                        <el-input v-model="row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
+                        <el-button v-if="$index===0" size="small" type="text" @click="applyAllImage(job.pickedTargets,row.target_tag)">应用全部</el-button>
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
               </div>
               <div v-else>
-                <el-form-item>
-                  <el-row>
-                    <el-col :span="6">原始镜像版本</el-col>
-                    <el-col :span="4">修改版本</el-col>
-                    <el-col :span="12">目标镜像版本</el-col>
-                  </el-row>
-                </el-form-item>
-                <div v-for="(item,index) in fromJobInfo.pickedTargets" :key="index">
-                  <el-form-item :label="`${item.service_module}(${item.service_name})`">
-                    <el-row>
-                      <el-col :span="6">
-                        <span style="color: #909399;">来自前置构建任务</span>
-                      </el-col>
-                      <el-col :span="4">
-                        <el-switch v-model="item.update_tag"></el-switch>
-                      </el-col>
-                      <el-col :span="12">
-                        <div v-if="item.update_tag" class="flex">
-                          <el-input v-model="item.target_tag" placeholder="请输入目标镜像版本" class="input"></el-input>
-                          <el-button size="small" type="text" @click="applyAllImage(fromJobInfo.pickedTargets,item.target_tag)">应用全部</el-button>
-                        </div>
-                        <span v-else>
-                          <span style="color: #909399;">来自前置构建任务</span>
-                        </span>
-                      </el-col>
-                    </el-row>
-                  </el-form-item>
-                </div>
+                <el-table :data="fromJobInfo.pickedTargets">
+                  <el-table-column prop="prop" label="服务">
+                    <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
+                  </el-table-column>
+                  <el-table-column prop="prop" label="原始镜像版本">来自前置构建任务</el-table-column>
+                  <el-table-column prop="prop" label="修改版本">
+                    <template slot-scope="scope">
+                      <el-switch v-model="scope.row.update_tag"></el-switch>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="prop" label="目标镜像版本" width="240">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.update_tag" class="flex">
+                        <el-input v-model="scope.row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
+                        <el-button size="small" type="text" @click="applyAllImage(fromJobInfo.pickedTargets,scope.row.target_tag)">应用全部</el-button>
+                      </div>
+                      <span v-else>
+                        <span>来自前置构建任务</span>
+                      </span>
+                    </template>
+                  </el-table-column>
+                </el-table>
               </div>
             </div>
           </el-collapse-item>
@@ -852,20 +845,6 @@ export default {
         this.$set(item, 'target_tag', curTag)
       })
     }
-  },
-  watch: {
-    // payload: {
-    //   handler (val) {
-    //     val.stages.forEach(stage => {
-    //       stage.jobs.forEach(job => {
-    //         if (job.type === 'zadig-build') {
-    //           this.fromJobInfo = cloneDeep(job)
-    //         }
-    //       })
-    //     })
-    //   },
-    //   deep: true
-    // }
   }
 }
 </script>
@@ -880,7 +859,7 @@ export default {
     justify-content: space-between;
 
     .input {
-      width: 200px;
+      width: 160px;
     }
   }
 }
