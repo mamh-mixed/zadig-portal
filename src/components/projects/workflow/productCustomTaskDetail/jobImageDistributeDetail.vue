@@ -94,6 +94,9 @@ export default {
     },
     buildOverallColor () {
       return this.$translate.calcTaskStatusColor(this.buildOverallStatus)
+    },
+    buildIsRunning () {
+      return this.jobInfo && this.jobInfo.status === 'running'
     }
   },
   methods: {

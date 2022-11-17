@@ -193,7 +193,7 @@ export default {
             source_registry_id: '',
             target_registry_id: '',
             targets: [],
-            timeout: 60,
+            timeout: 10,
             cluster_id: ''
           }
         }
