@@ -237,7 +237,7 @@ export default {
             icon: 'iconfont logo icontengxunyun'
           },
           {
-            value: 'tcr',
+            value: 'tcr-enterprise',
             label: '腾讯云 TCR（企业版）',
             reg_addr: '地址',
             namespace: '命名空间',
