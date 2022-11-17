@@ -97,7 +97,6 @@ import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,
   getClusterListAPI,
-  createEnvAPI,
   getRegistryWhenBuildAPI
 } from '@api'
 import { uniq, cloneDeep, intersection, debounce } from 'lodash'
