@@ -14,9 +14,9 @@
       <div class="input-tip">
         <ul>
           <li>- 格式：服务组件(服务),代码源标识,带分支信息的代码库 URL</li>
-          <li>- 请确保代码库信息 URL 在 Zadig 中已经成功集成</li>
-          <li>- URL 最后不可为 '/'，一行一条数据</li>
           <li>- 例如：aslan(zadig),koderover,https://github.com/koderover/zadig/tree/main</li>
+          <li>- 请确保代码库信息 URL 在 Zadig 中已经成功集成</li>
+          <li>- 请确保一行一条数据</li>
           <li>- 支持 GitHub、GitLab、Gitee</li>
         </ul>
       </div>
@@ -807,90 +807,94 @@ export default {
       const prefixPaddings = []
       this.serviceTargets.forEach(element => {
         prefixPaddings.push(
-          `${element.service_module}(${element.service_name}),代码源标识,`
+          `${element.service_module}(${element.service_name}),代码源标识`
         )
       })
       this.multiImportTxt = prefixPaddings.join('\n')
       this.showMultiImport = true
     },
-    parseReposInfo (reposStrArray) {
-      const allCodeHosts = this.allCodeHosts
-      function parseRepo (providerAlias, repoStr) {
-        try {
-          const URLObject = new URL(repoStr)
-          const providerAddress = URLObject.origin
-          const provider = allCodeHosts.find(item => {
-            return (
-              item.address === providerAddress && item.alias === providerAlias
-            )
-          })
-          if (provider) {
-            let repoName = ''
-            let branch = ''
-            let namespace = ''
-            const type = provider.type
-            if (type === 'github') {
-              // /koderover/zadig/tree/main
-              const splitBySlash = drop(URLObject.pathname.split('/'), 1)
-              namespace = URLObject.pathname.split('/')[1]
-              repoName = splitBySlash[1]
-              branch = splitBySlash[splitBySlash.length - 1]
-            } else if (type === 'gitee') {
-              // /koderover/zadig/tree/main/
-              const splitBySlash = drop(URLObject.pathname.split('/'), 1)
-              namespace = URLObject.pathname.split('/')[1]
-              repoName = splitBySlash[1]
-              branch = splitBySlash[splitBySlash.length - 1]
-            } else if (type === 'gitlab') {
-              // /kr-test-org1/microservice-demo/-/tree/main
-              // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/-/tree/main
-              const splitBySlash = URLObject.pathname.split('-/tree')
-              // /kr-test-org1/microservice-demo/ + /main
-              // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/ + /main
-              branch = splitBySlash[splitBySlash.length - 1].split('/')[1]
-              // /kr-test-org1/microservice-demo/
-              // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/
-              const repoOwnerAndRepoNameSplit = drop(
-                dropRight(splitBySlash[0].split('/'), 1),
-                1
-              )
-              if (repoOwnerAndRepoNameSplit.length > 2) {
-                // subgroup
-                repoName =
-                  repoOwnerAndRepoNameSplit[
-                    repoOwnerAndRepoNameSplit.length - 1
-                  ]
-                namespace = dropRight(repoOwnerAndRepoNameSplit).join('/')
-              } else {
-                namespace = URLObject.pathname.split('/')[1]
-                repoName = repoOwnerAndRepoNameSplit[1]
-              }
-            } else if (type === 'gitee-enterprise') {
-              // /enterprise/dashboard/programs/215/projects/enterprise/multiservice-demo/tree/feature-1
-              const splitBySlash = drop(URLObject.pathname.split('/'), 1)
-              branch = splitBySlash[splitBySlash.length - 1]
-              repoName = splitBySlash[splitBySlash.length - 3]
-              namespace = splitBySlash[splitBySlash.length - 4]
-            }
-            return {
-              address: provider.address,
-              branch: branch,
-              codehost_id: provider.id,
-              is_primary: false,
-              remote_name: 'origin',
-              repo_name: repoName,
-              repo_namespace: namespace,
-              repo_owner: namespace,
-              source: provider.type
-            }
-          }
-        } catch (error) {
-          console.log(error)
+    parseRepo (providerAlias, repoStr) {
+      try {
+        let trimedRepoStr = ''
+        const allCodeHosts = this.allCodeHosts
+        if (repoStr.endsWith('/')) {
+          trimedRepoStr = repoStr.slice(0, -1)
+        } else {
+          trimedRepoStr = repoStr
         }
+        const URLObject = new URL(trimedRepoStr)
+        const providerAddress = URLObject.origin
+        const provider = allCodeHosts.find(item => {
+          return (
+            item.address === providerAddress && item.alias === providerAlias
+          )
+        })
+        if (provider) {
+          let repoName = ''
+          let branch = ''
+          let namespace = ''
+          const type = provider.type
+          if (type === 'github') {
+            // /koderover/zadig/tree/main
+            const splitBySlash = drop(URLObject.pathname.split('/'), 1)
+            namespace = URLObject.pathname.split('/')[1]
+            repoName = splitBySlash[1]
+            branch = splitBySlash[splitBySlash.length - 1]
+          } else if (type === 'gitee') {
+            // /koderover/zadig/tree/main/
+            const splitBySlash = drop(URLObject.pathname.split('/'), 1)
+            namespace = URLObject.pathname.split('/')[1]
+            repoName = splitBySlash[1]
+            branch = splitBySlash[splitBySlash.length - 1]
+          } else if (type === 'gitlab') {
+            // /kr-test-org1/microservice-demo/-/tree/main
+            // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/-/tree/main
+            const splitBySlash = URLObject.pathname.split('-/tree')
+            // /kr-test-org1/microservice-demo/ + /main
+            // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/ + /main
+            branch = splitBySlash[splitBySlash.length - 1].split('/')[1]
+            // /kr-test-org1/microservice-demo/
+            // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/
+            const repoOwnerAndRepoNameSplit = drop(
+              dropRight(splitBySlash[0].split('/'), 1),
+              1
+            )
+            if (repoOwnerAndRepoNameSplit.length > 2) {
+              // subgroup
+              repoName =
+                repoOwnerAndRepoNameSplit[repoOwnerAndRepoNameSplit.length - 1]
+              namespace = dropRight(repoOwnerAndRepoNameSplit).join('/')
+            } else {
+              namespace = URLObject.pathname.split('/')[1]
+              repoName = repoOwnerAndRepoNameSplit[1]
+            }
+          } else if (type === 'gitee-enterprise') {
+            // /enterprise/dashboard/programs/215/projects/enterprise/multiservice-demo/tree/feature-1
+            const splitBySlash = drop(URLObject.pathname.split('/'), 1)
+            branch = splitBySlash[splitBySlash.length - 1]
+            repoName = splitBySlash[splitBySlash.length - 3]
+            namespace = splitBySlash[splitBySlash.length - 4]
+          }
+          return {
+            address: provider.address,
+            branch: branch,
+            codehost_id: provider.id,
+            is_primary: false,
+            remote_name: 'origin',
+            repo_name: repoName,
+            repo_namespace: namespace,
+            repo_owner: namespace,
+            source: provider.type
+          }
+        }
+      } catch (error) {
+        console.log(error)
       }
+    },
+    parseReposInfo (reposStrArray) {
       const providerAlias = reposStrArray[0]
       reposStrArray = drop(reposStrArray).map(repoStr => {
-        return parseRepo(providerAlias, repoStr)
+        return this.parseRepo(providerAlias, repoStr)
       })
       return reposStrArray
     },
@@ -909,18 +913,25 @@ export default {
     parseMultiImport () {
       const lines = this.multiImportTxt.split('\n')
       const targets = []
-      lines.forEach(line => {
-        const service = this.parseServiceInfo(line)
-        const reposStrArray = drop(line.split(','), 1)
-        const repos = this.parseReposInfo(reposStrArray)
-        targets.push({
-          repos: repos,
-          service: service
-        })
+      this.parseErr = ''
+      lines.every((line, index) => {
+        if (line.split(',').length >= 3) {
+          const service = this.parseServiceInfo(line)
+          const reposStrArray = drop(line.split(','), 1)
+          const repos = this.parseReposInfo(reposStrArray)
+          targets.push({
+            repos: repos,
+            service: service
+          })
+          this.getInitRepoInfo(targets)
+          this.$emit('update:targets', targets)
+          this.showMultiImport = false
+          return true
+        } else {
+          this.parseErr = `格式错误解析失败，请检查第 ${index + 1} 行!`
+          return false
+        }
       })
-      this.getInitRepoInfo(targets)
-      this.$emit('update:targets', targets)
-      this.showMultiImport = false
     }
   },
   mounted () {
@@ -963,7 +974,7 @@ export default {
   .input-tip {
     margin-bottom: 10px;
     padding: 6px;
-    background: #fafafa;
+    background: #f5f5f5;
     border-radius: 4px;
   }
 
