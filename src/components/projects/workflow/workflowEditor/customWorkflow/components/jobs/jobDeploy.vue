@@ -119,7 +119,11 @@ export default {
           return stage.jobs
         })
         .flat()
-      return allJobList.filter(job => job.name !== this.job.name)
+      return allJobList.filter(
+        job =>
+          job.name !== this.job.name &&
+          (job.type === 'zadig-build' || job.type === 'zadig-distribute-image')
+      )
     }
   },
   created () {

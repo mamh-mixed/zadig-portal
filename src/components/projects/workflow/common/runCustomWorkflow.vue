@@ -345,6 +345,7 @@
                         filterable
                         clearable
                         reserve-keyword
+                        @change="handleSourceTagChange(scope.row)"
                         value-key="service_name"
                         size="small"
                         placeholder="请选择原始镜像版本"
@@ -353,7 +354,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="prop" label="修改版本" width="240">
+                  <el-table-column prop="prop" label="目标镜像版本" width="240">
                     <template slot-scope="{row,$index}">
                       <div class="flex">
                         <el-input v-model="row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
@@ -901,35 +902,35 @@ export default {
                 }
               })
             }
-            if (job.type === 'k8s-resource-patch') {
-              job.spec.patch_items = cloneDeep(job.pickedTargets)
-              delete job.pickedTargets
-            }
-            if (job.type === 'k8s-gray-rollback') {
-              job.spec.targets = cloneDeep(job.pickedTargets)
-              delete job.pickedTargets
-            }
-            if (job.type === 'k8s-blue-green-deploy') {
-              job.pickedTargets.forEach(item => {
-                delete item.images
-              })
-              job.spec.targets = job.pickedTargets
-              delete job.pickedTargets
-            }
-            if (job.type === 'k8s-canary-deploy') {
-              job.pickedTargets.forEach(item => {
-                delete item.images
-              })
-              job.spec.targets = job.pickedTargets
-              delete job.pickedTargets
-            }
-            if (job.type === 'k8s-gray-release') {
-              job.pickedTargets.forEach(item => {
-                delete item.images
-              })
-              job.spec.targets = job.pickedTargets
-              delete job.pickedTargets
-            }
+          }
+          if (job.type === 'k8s-resource-patch') {
+            job.spec.patch_items = cloneDeep(job.pickedTargets)
+            delete job.pickedTargets
+          }
+          if (job.type === 'k8s-gray-rollback') {
+            job.spec.targets = cloneDeep(job.pickedTargets)
+            delete job.pickedTargets
+          }
+          if (job.type === 'k8s-blue-green-deploy') {
+            job.pickedTargets.forEach(item => {
+              delete item.images
+            })
+            job.spec.targets = job.pickedTargets
+            delete job.pickedTargets
+          }
+          if (job.type === 'k8s-canary-deploy') {
+            job.pickedTargets.forEach(item => {
+              delete item.images
+            })
+            job.spec.targets = job.pickedTargets
+            delete job.pickedTargets
+          }
+          if (job.type === 'k8s-gray-release') {
+            job.pickedTargets.forEach(item => {
+              delete item.images
+            })
+            job.spec.targets = job.pickedTargets
+            delete job.pickedTargets
           }
         })
         runCustomWorkflowTaskAPI(payload, this.projectName)
@@ -1036,6 +1037,9 @@ export default {
       allTags.forEach(item => {
         this.$set(item, 'target_tag', curTag)
       })
+    },
+    handleSourceTagChange (row) {
+      console.log(row)
     }
   }
 }
