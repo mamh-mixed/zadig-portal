@@ -774,7 +774,6 @@ export default {
       payload.stages.forEach(stage => {
         stage.jobs = stage.jobs.filter(job => job.checked)
         stage.jobs.forEach(job => {
-          delete job.checked
           if (job.type === 'zadig-build') {
             if (
               job.spec.service_and_builds &&
@@ -891,16 +890,16 @@ export default {
               delete job.pickedTargets
             } else {
               // fromjob
-              job.spec.targets = this.fromJobInfo.pickedTargets
-              job.spec.targets = job.spec.targets.map(item => {
-                return {
-                  service_name: item.service_name,
-                  service_module: item.service_module,
-                  source_tag: item.source_tag,
-                  target_tag: item.target_tag,
-                  update_tag: item.update_tag
-                }
-              })
+              // job.spec.targets = this.fromJobInfo.pickedTargets
+              // job.spec.targets = job.spec.targets.map(item => {
+              //   return {
+              //     service_name: item.service_name,
+              //     service_module: item.service_module,
+              //     source_tag: item.source_tag,
+              //     target_tag: item.target_tag,
+              //     update_tag: item.update_tag
+              //   }
+              // })
             }
           }
           if (job.type === 'k8s-resource-patch') {
@@ -933,27 +932,28 @@ export default {
             delete job.pickedTargets
           }
         })
-        runCustomWorkflowTaskAPI(payload, this.projectName)
-          .then(res => {
-            const taskId = res.task_id || 1
-            this.$message.success('创建成功')
-            this.$emit('success')
-            this.$router.push(
-              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running&display_name=${this.displayName}`
-            )
-          })
-          .catch(error => {
-            this.$message({
-              message: error.message,
-              type: 'warning',
-              dangerouslyUseHTMLString: true,
-              duration: 5000
-            })
-          })
-          .finally(() => {
-            this.startTaskLoading = false
-          })
+        console.log(this.payload)
       })
+      runCustomWorkflowTaskAPI(payload, this.projectName)
+        .then(res => {
+          const taskId = res.task_id || 1
+          this.$message.success('创建成功')
+          this.$emit('success')
+          this.$router.push(
+            `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}/${taskId}?status=running&display_name=${this.displayName}`
+          )
+        })
+        .catch(error => {
+          this.$message({
+            message: error.message,
+            type: 'warning',
+            dangerouslyUseHTMLString: true,
+            duration: 5000
+          })
+        })
+        .finally(() => {
+          this.startTaskLoading = false
+        })
     },
     getRegistryId (val) {
       if (val) {

@@ -202,6 +202,7 @@ import {
   getAssociatedBuildsAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
+
 export default {
   data () {
     return {
@@ -439,6 +440,7 @@ export default {
           repo.branchNames = []
         }
       })
+
       const repoInfoMap = keyBy(res, repo => {
         return `${repo.repo_owner}/${repo.repo}`
       })
