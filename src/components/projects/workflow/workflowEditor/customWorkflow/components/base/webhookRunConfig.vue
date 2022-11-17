@@ -491,6 +491,8 @@ export default {
                 service.value = `${service.service_name}/${service.service_module}`
               })
               this.registry_id = job.spec.source_registry_id
+            } else {
+              this.cloneWorkflow.fromJobInfo.pickedTargets = job.spec.targets
             }
           }
         })
