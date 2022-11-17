@@ -861,6 +861,18 @@ export default {
                     delete item.images
                   })
                   delete job.pickedTargets
+                } else {
+                  // fromjob
+                  job.spec.targets = this.fromJobInfo.pickedTargets
+                  job.spec.targets = job.spec.targets.map(item => {
+                    return {
+                      service_name: item.service_name,
+                      service_module: item.service_module,
+                      source_tag: item.source_tag,
+                      target_tag: item.target_tag,
+                      update_tag: item.update_tag
+                    }
+                  })
                 }
               }
             })

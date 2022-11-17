@@ -221,10 +221,10 @@
                   </el-select>
                 </el-form-item>
                 <el-table :data="job.pickedTargets">
-                  <el-table-column prop="prop" label="服务">
+                  <el-table-column label="服务">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
-                  <el-table-column prop="prop" label="原始镜像版本">
+                  <el-table-column label="原始镜像版本">
                     <template slot-scope="scope">
                       <el-select
                         v-model="scope.row.source_tag"
@@ -240,7 +240,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="prop" label="目标镜像版本" width="240">
+                  <el-table-column label="目标镜像版本" width="240">
                     <template slot-scope="{row,$index}">
                       <div class="flex">
                         <el-input v-model="row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
@@ -252,18 +252,18 @@
               </div>
               <div v-else>
                 <el-table :data="fromJobInfo.pickedTargets">
-                  <el-table-column prop="prop" label="服务">
+                  <el-table-column label="服务">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
-                  <el-table-column prop="prop" label="原始镜像版本">
+                  <el-table-column label="原始镜像版本">
                     <span style="color: #909399; font-size: 12px; line-height: 33px;">来自前置构建任务</span>
                   </el-table-column>
-                  <el-table-column prop="prop" label="修改版本">
+                  <el-table-column label="修改版本">
                     <template slot-scope="scope">
                       <el-switch v-model="scope.row.update_tag"></el-switch>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="prop" label="目标镜像版本" width="240">
+                  <el-table-column label="目标镜像版本" width="240">
                     <template slot-scope="scope">
                       <div v-if="scope.row.update_tag" class="flex">
                         <el-input v-model="scope.row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
