@@ -374,7 +374,6 @@
                   </el-table-column>
                   <el-table-column label="修改版本">
                     <template slot-scope="scope">
-                      {{scope.row.update_tag}}
                       <el-switch v-model="scope.row.update_tag"></el-switch>
                     </template>
                   </el-table-column>
