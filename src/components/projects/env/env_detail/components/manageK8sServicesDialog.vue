@@ -101,7 +101,8 @@ export default {
       },
       updateServices: {
         // env_names: [], // use this parameter when adding or updating services
-        service_names: []
+        service_names: [] // not use
+        // services: [{service_name: '', deploy_strategy: ''}] // use
         // vars: []  // use this parameter when adding or updating services
       },
       loading: false,
@@ -150,26 +151,11 @@ export default {
   },
   methods: {
     updateEnvironment () {
-      const isAdd = this.opeType === 'add'
-      let payload = {
-        service_names: this.currentResourceCheck.map(resource => {
-          return {
-            service_name: resource.service_name,
-            deploy_strategy: isAdd ? resource.deploy_strategy : 'deploy'
-          }
-        })
-      }
-      if (this.opeType !== 'delete') {
-        payload = [
-          {
-            ...payload,
-            env_name: this.productInfo.env_name,
-            vars: this.currentVars
-          }
-        ]
-      }
       this.loading = true
       if (this.opeType === 'delete') {
+        const payload = {
+          service_names: cloneDeep(this.updateServices.service_names)
+        }
         deleteEnvServicesAPI(
           this.projectName,
           this.productInfo.env_name,
@@ -209,6 +195,19 @@ export default {
             this.loading = false
           })
       } else if (this.opeType === 'add' || this.opeType === 'update') {
+        const isAdd = this.opeType === 'add'
+        const payload = [
+          {
+            services: this.currentResourceCheck.map(resource => {
+              return {
+                service_name: resource.service_name,
+                deploy_strategy: isAdd ? resource.deploy_strategy : 'deploy'
+              }
+            }),
+            env_name: this.productInfo.env_name,
+            vars: this.currentVars
+          }
+        ]
         autoUpgradeEnvAPI(this.projectName, payload, false)
           .then(() => {
             this.$message.success(`${this.opeDesc}服务成功！`)
