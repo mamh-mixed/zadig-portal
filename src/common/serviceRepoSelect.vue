@@ -14,7 +14,7 @@
       <div class="input-tip">
         <ul>
           <li>- 格式：服务组件(服务),代码源标识,带分支信息的代码库 URL</li>
-          <li>- 请确保代码库信息 URL 在 Zadig 中已经集成</li>
+          <li>- 请确保代码库信息 URL 在 Zadig 中已经成功集成</li>
           <li>- URL 最后不可为 '/'，一行一条数据</li>
           <li>- 例如：aslan(zadig),koderover,https://github.com/koderover/zadig/tree/main</li>
           <li>- 支持 GitHub、GitLab、Gitee</li>
@@ -24,7 +24,7 @@
         <el-input
           type="textarea"
           :autosize="{ minRows: 10}"
-          placeholder="例如：aslan(zadig),https://github.com/koderover/zadig/tree/main"
+          placeholder="例如：aslan(zadig),koderover,https://github.com/koderover/zadig/tree/main"
           v-model="multiImportTxt"
         ></el-input>
         <span v-if="parseErr" class="error-msg">{{parseErr}}</span>
@@ -807,7 +807,7 @@ export default {
       const prefixPaddings = []
       this.serviceTargets.forEach(element => {
         prefixPaddings.push(
-          `${element.service_module}(${element.service_name}),`
+          `${element.service_module}(${element.service_name}),代码源标识,`
         )
       })
       this.multiImportTxt = prefixPaddings.join('\n')
