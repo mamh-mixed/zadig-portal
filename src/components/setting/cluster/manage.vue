@@ -77,29 +77,9 @@
         </el-form-item>
         <el-form-item label="集群提供商" prop="provider">
           <el-select v-model="cluster.provider" style="width: 100%;" size="small" placeholder="请选择集群提供商">
-            <el-option :value="1" label="阿里云 ACK">
-              <i class="iconfont iconaliyun"></i>
-              <span>阿里云 ACK</span>
-            </el-option>
-            <el-option :value="2" label="腾讯云 TKE">
-              <i class="iconfont icontengxunyun"></i>
-              <span>腾讯云 TKE</span>
-            </el-option>
-            <el-option :value="5" label="腾讯云 EKS">
-              <i class="iconfont icontengxunyun"></i>
-              <span>腾讯云 EKS</span>
-            </el-option>
-            <el-option :value="3" label="华为云 CCE">
-              <i class="iconfont iconhuawei"></i>
-              <span>华为云 CCE</span>
-            </el-option>
-            <el-option :value="4" label="Amazon EKS">
-              <i class="iconfont iconaws"></i>
-              <span>Amazon EKS</span>
-            </el-option>
-            <el-option :value="0" label="其他">
-              <i class="iconfont iconqita"></i>
-              <span>其他</span>
+            <el-option v-for="(provider,index) in providers" :key="index" :value="provider.value"
+                       :label="provider.label">
+              <i class="iconfont" :class="provider.icon"></i> <span>{{provider.label}}</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -445,7 +425,7 @@ import {
 } from '@api'
 import { wordTranslate } from '@utils/wordTranslate'
 import bus from '@utils/eventBus'
-import { cloneDeep, omit } from 'lodash'
+import { cloneDeep, omit, keyBy } from 'lodash'
 import { mapState } from 'vuex'
 const validateClusterName = (rule, value, callback) => {
   if (value === '') {
@@ -517,33 +497,6 @@ export default {
       allPvc: [],
       deployType: 'Deployment',
       cluster: cloneDeep(clusterInfo),
-      providerMap: {
-        0: {
-          icon: 'iconfont logo iconqita',
-          name: '其他'
-        },
-
-        1: {
-          icon: 'iconfont logo iconaliyun ',
-          name: '阿里云'
-        },
-        2: {
-          icon: 'iconfont logo icontengxunyun',
-          name: '腾讯云'
-        },
-        3: {
-          icon: 'iconfont logo iconhuawei',
-          name: '华为云'
-        },
-        4: {
-          icon: 'iconfont logo iconaws',
-          name: 'Amazon EKS'
-        },
-        5: {
-          icon: 'iconfont logo icontengxunyun',
-          name: '腾讯云'
-        }
-      },
       accessCluster: {
         yaml: 'init',
         name: 'test'
@@ -670,7 +623,74 @@ export default {
     },
     ...mapState({
       hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }),
+    providers () {
+      if (this.hasPlutus) {
+        return [
+          {
+            value: 1,
+            label: '阿里云 ACK',
+            icon: 'iconfont iconaliyun'
+          },
+          {
+            value: 2,
+            label: '腾讯云 TKE',
+            icon: 'iconfont icontengxunyun'
+          },
+          {
+            value: 5,
+            label: '腾讯云 EKS',
+            icon: 'iconfont icontengxunyun'
+          },
+          {
+            value: 3,
+            label: '华为云 CCE',
+            icon: 'iconfont iconhuawei'
+          },
+          {
+            value: 4,
+            label: 'Amazon EKS',
+            icon: 'iconfont iconaws'
+          },
+          {
+            value: 0,
+            label: '其它',
+            icon: 'iconfont iconqita'
+          }
+        ]
+      } else {
+        return [
+          {
+            value: 1,
+            label: '阿里云 ACK',
+            icon: 'iconfont iconaliyun'
+          },
+          {
+            value: 2,
+            label: '腾讯云 TKE',
+            icon: 'iconfont icontengxunyun'
+          },
+          {
+            value: 3,
+            label: '华为云 CCE',
+            icon: 'iconfont iconhuawei'
+          },
+          {
+            value: 4,
+            label: 'Amazon EKS',
+            icon: 'iconfont iconaws'
+          },
+          {
+            value: 0,
+            label: '其它',
+            icon: 'iconfont iconqita'
+          }
+        ]
+      }
+    },
+    providerMap () {
+      return keyBy(this.providers, 'value')
+    }
   },
   watch: {
     dialogClusterFormVisible (nVal, oldV) {
