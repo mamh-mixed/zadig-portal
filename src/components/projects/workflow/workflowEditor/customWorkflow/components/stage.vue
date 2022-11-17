@@ -186,12 +186,15 @@ export default {
         'zadig-distribute-image': {
           name: 'default',
           type: 'zadig-distribute-image',
+          isCreate: true,
           spec: {
             source: 'runtime',
             job_name: '',
             source_registry_id: '',
             target_registry_id: '',
-            targets: []
+            targets: [],
+            timeout: 60,
+            cluster_id: ''
           }
         }
       },

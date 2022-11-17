@@ -49,6 +49,27 @@
           <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
+      <section>
+        <div style="margin-bottom: 8px;">
+          <el-button type="primary" size="small" plain @click="advanced_setting_modified = !advanced_setting_modified">
+            高级配置
+            <i :class="[advanced_setting_modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
+          </el-button>
+        </div>
+        <AdvancedConfig
+          v-if="advanced_setting_modified"
+          ref="advancedConfigRef"
+          class="common-parcel-block"
+          :isCreate="job.isCreate"
+          :buildConfig="job"
+          secondaryProp="spec"
+          @validateFailed="advanced_setting_modified = true"
+          :validObj="validObj"
+          hiddenCache
+          hiddenSystem
+          useDockerDaemon
+        ></AdvancedConfig>
+      </section>
     </el-form>
   </div>
 </template>
@@ -57,6 +78,8 @@
 import { getRegistryWhenBuildAPI, getAssociatedBuildsAPI } from '@/api'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config'
+import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
+import ValidateSubmit from '@utils/validateAsync'
 
 export default {
   name: 'JobImageDistrubute',
@@ -79,14 +102,17 @@ export default {
     }
   },
   components: {
-    EnvTypeSelect
+    EnvTypeSelect,
+    AdvancedConfig
   },
   data () {
     return {
       validateJobName,
+      validObj: new ValidateSubmit(),
       formLabelWidth: '90px',
       dockerList: [],
-      originServiceAndBuilds: []
+      originServiceAndBuilds: [],
+      advanced_setting_modified: false
     }
   },
   computed: {
