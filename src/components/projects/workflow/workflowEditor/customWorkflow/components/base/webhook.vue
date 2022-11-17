@@ -592,9 +592,7 @@ export default {
       ]
     },
     checkGitRepo () {
-      return (
-        this.currentWebhook.repo
-      )
+      return this.currentWebhook.repo
     }
   },
   methods: {
@@ -855,6 +853,15 @@ export default {
                   })
                 }
                 delete job.pickedTargets
+              }
+              if (job.type === 'zadig-distribute-image') {
+                if (job.spec.source === 'runtime') {
+                  job.spec.targets = cloneDeep(job.pickedTargets)
+                  job.spec.targets.forEach(item => {
+                    delete item.images
+                  })
+                  delete job.pickedTargets
+                }
               }
             })
           })

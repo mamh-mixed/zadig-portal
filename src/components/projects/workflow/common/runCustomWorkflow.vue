@@ -624,7 +624,6 @@ export default {
                 service.value = `${service.service_name}/${service.service_module}`
               })
               this.registry_id = job.spec.source_registry_id
-              // job.pickedTargets = []
             }
           }
         })
@@ -1039,7 +1038,9 @@ export default {
       })
     },
     handleSourceTagChange (row) {
-      console.log(row)
+      if (!row.target_tag) {
+        this.$set(row, 'target_tag', row.source_tag)
+      }
     }
   }
 }
