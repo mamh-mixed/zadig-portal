@@ -16,13 +16,13 @@
                 <span style="margin-left: 10px;">{{ scope.row.name }}</span>
               </template>
             </el-table-column>
-            <el-table-column width="200px"
+            <el-table-column width="120px"
                              label="环境信息">
               <template slot-scope="scope">
                 <a v-if="scope.row.env_name"
                    class="env-name"
                    :href="`/v1/projects/detail/${ scope.row.projectName}/envs/detail?envName=${ scope.row.env_name}`"
-                   target="_blank">{{ `${scope.row.projectName}-env-${scope.row.env_name}` }}</a>
+                   target="_blank">{{ scope.row.env_name }}</a>
               </template>
             </el-table-column>
             <el-table-column label="服务入口">
@@ -126,16 +126,14 @@ export default {
       const ingresses = await getProjectIngressAPI(projectName)
       if (workflows && ingresses) {
         this.loading = false
-        const w1 = 'workflow-qa'
-        const w2 = 'workflow-dev'
-        const w3 = 'ops-workflow'
-        const currentWorkflows = workflows.filter(element => {
-          return element.name.includes(w1) || element.name.includes(w2) || (element.name.includes(w3))
-        }).map((ele) => {
+        const prefixLen = `${projectName}-workflow-`.length
+        const currentWorkflows = workflows.map((ele) => {
           const element = Object.assign({}, ele)
-          if (element.name.includes(w1)) element.env_name = 'qa'
-          if (element.name.includes(w2)) element.env_name = 'dev'
-          if (element.name.includes(w3)) element.env_name = ''
+          if (element.name === `${projectName}-ops-workflow`) {
+            element.env_name = ''
+          } else {
+            element.env_name = element.name.slice(prefixLen)
+          }
           return element
         })
         currentWorkflows.forEach(workflow => {
