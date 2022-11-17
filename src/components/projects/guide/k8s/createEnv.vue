@@ -385,7 +385,7 @@ export default {
         cluster_id,
         vars: vars.map(va => ({ alias: va.alias, key: va.key, value: va.value }))
       }
-      if (this.$refs.k8sServiceListRef && env_name && namespace && cluster_id && vars.length) {
+      if (this.$refs.k8sServiceListRef && env_name && namespace && cluster_id) {
         this.$refs.k8sServiceListRef
           .checkSvcResource(this.projectName, payload)
           .then(res => {
