@@ -190,6 +190,14 @@
               :workflowInfo="payload"
               :ref="jobType.grayDeploy"
             />
+            <JobImageDistribute
+              :projectName="projectName"
+              v-if="job.type === jobType.distribute"
+              :job="job"
+              :ref="jobType.distribute"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -314,6 +322,7 @@ import JobBlueGreenConfirm from './components/jobs/jobBlueGreenConfirm.vue'
 import JobGrayRollback from './components/jobs/jobGrayRollback.vue'
 import JobK8sGrayDeploy from './components/jobs/jobK8sGrayDeploy'
 import JobK8sResourceUpdate from './components/jobs/jobK8sResourceUpdate'
+import JobImageDistribute from './components/jobs/jobImageDistribute.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -407,6 +416,7 @@ export default {
     JobBlueGreenConfirm,
     JobGrayRollback,
     JobK8sGrayDeploy,
+    JobImageDistribute,
     RunCustomWorkflow,
     codemirror,
     Env,
@@ -775,6 +785,14 @@ export default {
                   }
                 })
               })
+            }
+          }
+          if (job.type === 'zadig-distribute-image') {
+            job.spec.targets.forEach(item => {
+              item.value = `${item.service_name}/${item.service_module}`
+            })
+            if (job.spec.source === 'fromjob') {
+              job.spec.source = 'other'
             }
           }
         })
