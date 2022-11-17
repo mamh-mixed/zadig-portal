@@ -13,10 +13,10 @@
     >
       <div class="input-tip">
         <ul>
-          <li>- 格式：服务组件（服务），带分支信息的代码库 URL。</li>
+          <li>- 格式：服务组件(服务),代码源标识,带分支信息的代码库 URL</li>
           <li>- 请确保代码库信息 URL 在 Zadig 中已经集成</li>
           <li>- URL 最后不可为 '/'，一行一条数据</li>
-          <li>- 例如：aslan(zadig),https://github.com/koderover/zadig/tree/main</li>
+          <li>- 例如：aslan(zadig),koderover,https://github.com/koderover/zadig/tree/main</li>
           <li>- 支持 GitHub、GitLab、Gitee</li>
         </ul>
       </div>
@@ -815,15 +815,13 @@ export default {
     },
     parseReposInfo (reposStrArray) {
       const allCodeHosts = this.allCodeHosts
-      function parseRepo (repoStr) {
+      function parseRepo (providerAlias, repoStr) {
         try {
           const URLObject = new URL(repoStr)
           const providerAddress = URLObject.origin
-          const namespace = URLObject.pathname.split('/')[1]
           const provider = allCodeHosts.find(item => {
             return (
-              item.address === providerAddress &&
-              (item.alias === namespace || item.namespace === namespace)
+              item.address === providerAddress && item.alias === providerAlias
             )
           })
           if (provider) {
@@ -852,15 +850,27 @@ export default {
               branch = splitBySlash[splitBySlash.length - 1].split('/')[1]
               // /kr-test-org1/microservice-demo/
               // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/
-              const repoOwnerAndRepoNameSplit = drop(dropRight(splitBySlash[0].split('/'), 1), 1)
+              const repoOwnerAndRepoNameSplit = drop(
+                dropRight(splitBySlash[0].split('/'), 1),
+                1
+              )
               if (repoOwnerAndRepoNameSplit.length > 2) {
                 // subgroup
-                repoName = repoOwnerAndRepoNameSplit[repoOwnerAndRepoNameSplit.length - 1]
+                repoName =
+                  repoOwnerAndRepoNameSplit[
+                    repoOwnerAndRepoNameSplit.length - 1
+                  ]
                 namespace = dropRight(repoOwnerAndRepoNameSplit).join('/')
               } else {
                 namespace = URLObject.pathname.split('/')[1]
                 repoName = repoOwnerAndRepoNameSplit[1]
               }
+            } else if (type === 'gitee-enterprise') {
+              // /enterprise/dashboard/programs/215/projects/enterprise/multiservice-demo/tree/feature-1
+              const splitBySlash = drop(URLObject.pathname.split('/'), 1)
+              branch = splitBySlash[splitBySlash.length - 1]
+              repoName = splitBySlash[splitBySlash.length - 3]
+              namespace = splitBySlash[splitBySlash.length - 4]
             }
             return {
               address: provider.address,
@@ -878,8 +888,9 @@ export default {
           console.log(error)
         }
       }
-      reposStrArray = reposStrArray.map(repoStr => {
-        return parseRepo(repoStr)
+      const providerAlias = reposStrArray[0]
+      reposStrArray = drop(reposStrArray).map(repoStr => {
+        return parseRepo(providerAlias, repoStr)
       })
       return reposStrArray
     },
