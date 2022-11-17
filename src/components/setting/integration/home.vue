@@ -2,19 +2,19 @@
   <div class="integration-home">
     <div class="tab-container">
       <el-tabs @tab-click="changeTab" type="card" style="height: 200px;" v-model="currentTab">
-        <el-tab-pane name="code" label="代码源集成">
-          <keep-alive>
-            <Code v-if="currentTab === 'code'" />
-          </keep-alive>
-        </el-tab-pane>
-        <el-tab-pane name="account" label="账号系统集成">
+        <el-tab-pane name="account" label="账号系统">
           <keep-alive>
             <Account v-if="currentTab === 'account'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="githubapp" label="GitHub App 集成">
+        <el-tab-pane name="project" label="项目管理">
           <keep-alive>
-            <GitHubApp v-if="currentTab === 'githubapp'" />
+            <Project v-if="currentTab === 'project'" />
+          </keep-alive>
+        </el-tab-pane>
+        <el-tab-pane name="code" label="代码源">
+          <keep-alive>
+            <Code v-if="currentTab === 'code'" />
           </keep-alive>
         </el-tab-pane>
         <el-tab-pane name="jenkins" label="Jenkins 集成">
@@ -22,17 +22,12 @@
             <Jenkins v-if="currentTab === 'jenkins'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="jira" label="Jira 集成">
-          <keep-alive>
-            <Jira v-if="currentTab === 'jira'" />
-          </keep-alive>
-        </el-tab-pane>
         <el-tab-pane name="sonar" label="Sonar 集成">
           <keep-alive>
             <Sonar v-if="currentTab === 'sonar'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="external" label="其他系统集成">
+        <el-tab-pane name="external" label="其他系统">
           <keep-alive>
             <External v-if="currentTab === 'external'" />
           </keep-alive>
@@ -43,28 +38,26 @@
 </template>
 <script>
 import bus from '@utils/eventBus'
-import Code from './code.vue'
-import GitHubApp from './githubApp.vue'
-import Jenkins from './jenkins.vue'
-import Jira from './jira.vue'
-import External from './external.vue'
 import Account from './account.vue'
+import Project from './project.vue'
+import Code from './code.vue'
+import Jenkins from './jenkins.vue'
 import Sonar from './sonar.vue'
+import External from './external.vue'
 
 export default {
   name: 'integration',
   components: {
-    Code,
-    GitHubApp,
-    Jenkins,
-    Jira,
     Account,
-    External,
-    Sonar
+    Project,
+    Code,
+    Jenkins,
+    Sonar,
+    External
   },
   data () {
     return {
-      currentTab: 'code'
+      currentTab: 'account'
     }
   },
   methods: {

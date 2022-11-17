@@ -105,7 +105,7 @@ http.interceptors.response.use(
       return response
     } else if (isInReg) {
       return response
-    } else if (response.data.code === 10000) {
+    } else if (response.data && response.data.code && response.data.code === 10000) {
       const currentRoute = Router.history.current
       if (currentRoute.fullPath.startsWith(userInitEnvRoute)) {
         return response.data
@@ -909,23 +909,6 @@ export function getTagsInfoByIdAPI (id, repoOwner, repoName, page = 1, perPage =
     key: key
   }
   return http.get(`/api/aslan/code/codehost/${id}/tags`, { params })
-}
-
-// GitHub App
-export function getGithubAppAPI (payload) {
-  return http.get(`/api/aslan/system/githubApp`, payload)
-}
-
-export function createGithubAppAPI (payload) {
-  return http.post(`/api/aslan/system/githubApp`, payload)
-}
-
-export function updateGithubAppAPI (payload) {
-  return http.post(`/api/aslan/system/githubApp`, payload)
-}
-
-export function deleteGithubAppAPI (id) {
-  return http.delete(`/api/aslan/system/githubApp/${id}`)
 }
 
 // Account

@@ -1,5 +1,5 @@
 <template>
-  <div class="integration-jira-container">
+  <div class="integration-project-container">
 
     <!--start of edit jira dialog-->
     <el-dialog title="Jira 配置-修改"
@@ -221,6 +221,7 @@ export default {
     getJiraConfig () {
       const key = this.$utils.rsaEncrypt()
       getJiraAPI(key).then((res) => {
+        console.log(res)
         if (res) {
           res.access_token = this.$utils.aesDecrypt(res.access_token)
           this.$set(this.jira, [0], res)
@@ -303,7 +304,7 @@ export default {
 </script>
 
 <style lang="less">
-.integration-jira-container {
+.integration-project-container {
   position: relative;
   flex: 1;
   overflow: auto;
