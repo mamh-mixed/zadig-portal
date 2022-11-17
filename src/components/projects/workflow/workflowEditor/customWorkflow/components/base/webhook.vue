@@ -863,8 +863,7 @@ export default {
                   delete job.pickedTargets
                 } else {
                   // fromjob
-                  job.spec.targets = this.fromJobInfo.pickedTargets
-                  job.spec.targets = job.spec.targets.map(item => {
+                  job.spec.targets = payload.workflow_arg.fromJobInfo.pickedTargets.map(item => {
                     return {
                       service_name: item.service_name,
                       service_module: item.service_module,
@@ -873,6 +872,7 @@ export default {
                       update_tag: item.update_tag
                     }
                   })
+                  delete payload.workflow_arg.fromJobInfo
                 }
               }
             })

@@ -251,7 +251,7 @@
                 </el-table>
               </div>
               <div v-else>
-                <el-table :data="fromJobInfo.pickedTargets">
+                <el-table :data="cloneWorkflow.fromJobInfo.pickedTargets">
                   <el-table-column label="服务">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
@@ -267,7 +267,11 @@
                     <template slot-scope="scope">
                       <div v-if="scope.row.update_tag" class="flex">
                         <el-input v-model="scope.row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
-                        <el-button size="small" type="text" @click="applyAllImage(fromJobInfo.pickedTargets,scope.row.target_tag)">应用全部</el-button>
+                        <el-button
+                          size="small"
+                          type="text"
+                          @click="applyAllImage(cloneWorkflow.fromJobInfo.pickedTargets,scope.row.target_tag)"
+                        >应用全部</el-button>
                       </div>
                       <span v-else>
                         <span style="color: #909399; font-size: 12px; line-height: 33px;">来自前置构建任务</span>
@@ -294,7 +298,7 @@ import {
   getRegistryWhenBuildAPI,
   getAssociatedBuildsAPI
 } from '@api'
-import { keyBy, orderBy } from 'lodash'
+import { keyBy, orderBy, cloneDeep } from 'lodash'
 
 export default {
   data () {
@@ -314,8 +318,7 @@ export default {
           }
         ]
       },
-      originServiceAndBuilds: [],
-      fromJobInfo: {}
+      originServiceAndBuilds: []
     }
   },
   props: {
@@ -401,6 +404,7 @@ export default {
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
           if (job.spec && job.spec.service_and_builds) {
+            this.cloneWorkflow.fromJobInfo = cloneDeep(job)
             job.spec.service_and_builds.forEach(service => {
               service.key_vals.forEach(item => {
                 if (item.value.includes('fixed') || item.value.includes('{{')) {
@@ -625,7 +629,7 @@ export default {
       })
     },
     handleServiceBuildChange (services, job) {
-      this.fromJobInfo = cloneDeep(job)
+      this.cloneWorkflow.fromJobInfo = cloneDeep(job)
       services.forEach(service => {
         this.getRepoInfo(service.repos)
         service.repos.forEach(repo => {
