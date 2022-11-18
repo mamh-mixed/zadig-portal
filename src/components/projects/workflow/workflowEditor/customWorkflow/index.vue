@@ -3,9 +3,9 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
-          <CanInput v-model="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
-          <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
+          <CanInput v-model.trim="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
+          <CanInput v-model.trim="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
+          <CanInput v-model.trim="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
           <span
@@ -148,6 +148,14 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+            <JobImageDistribute
+              :projectName="projectName"
+              v-if="job.type === jobType.distribute"
+              :job="job"
+              :ref="jobType.distribute"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -266,6 +274,7 @@ import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
 import JobScanning from './components/jobs/jobScanning.vue'
+import JobImageDistribute from './components/jobs/jobImageDistribute.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -351,6 +360,7 @@ export default {
     JobK8sDeploy,
     JobTest,
     JobScanning,
+    JobImageDistribute,
     RunCustomWorkflow,
     codemirror,
     Env,
@@ -579,6 +589,11 @@ export default {
               })
             }
           }
+          if (job.type === 'zadig-distribute-image') {
+            if (job.spec.source === 'other') {
+              job.spec.source = 'fromjob'
+            }
+          }
         })
       })
       this.payload.project = this.projectName
@@ -729,6 +744,14 @@ export default {
                   }
                 })
               })
+            }
+          }
+          if (job.type === 'zadig-distribute-image') {
+            job.spec.targets.forEach(item => {
+              item.value = `${item.service_name}/${item.service_module}`
+            })
+            if (job.spec.source === 'fromjob') {
+              job.spec.source = 'other'
             }
           }
         })

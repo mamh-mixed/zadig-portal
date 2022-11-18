@@ -55,7 +55,7 @@
                   value-key="value"
                   size="medium"
                   style="width: 220px;"
-                  @change="handleServiceBuildChange"
+                  @change="handleServiceBuildChange($event,job)"
                 >
                   <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
@@ -387,6 +387,88 @@
                 <CustomWorkflowBuildRows :pickedTargets="job.pickedTargets" type="zadig-scanning" />
               </div>
             </div>
+            <div v-if="job.type==='zadig-distribute-image'">
+              <div v-if="job.spec.source === 'runtime'">
+                <el-form-item label="服务组件">
+                  <el-select
+                    v-model="job.pickedTargets"
+                    filterable
+                    multiple
+                    clearable
+                    reserve-keyword
+                    value-key="value"
+                    size="medium"
+                    style="width: 220px;"
+                    @change="handleServiceDeployChange(job.pickedTargets)"
+                  >
+                    <el-option
+                      v-for="(service,index) of job.spec.targets"
+                      :key="index"
+                      :label="`${service.service_module}(${service.service_name})`"
+                      :value="service"
+                    >
+                      <span>{{service.service_module}}</span>
+                      <span style="color: #ccc;">({{service.service_name}})</span>
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-table :data="job.pickedTargets">
+                  <el-table-column label="服务" min-width="15%">
+                    <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
+                  </el-table-column>
+                  <el-table-column label="原始镜像版本" min-width="25%">
+                    <template slot-scope="scope">
+                      <el-select
+                        v-model="scope.row.source_tag"
+                        filterable
+                        clearable
+                        reserve-keyword
+                        @change="handleSourceTagChange(scope.row)"
+                        value-key="service_name"
+                        size="small"
+                        placeholder="请选择原始镜像版本"
+                      >
+                        <el-option v-for="(image,index) of scope.row.images" :key="index" :value="image.tag" :label="image.tag"></el-option>
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="目标镜像版本" min-width="30%">
+                    <template slot-scope="{row,$index}">
+                      <div class="flex">
+                        <el-input v-model="row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
+                        <el-button v-if="$index===0" size="small" type="text" @click="applyAllImage(job.pickedTargets,row.target_tag)">应用全部</el-button>
+                      </div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+              <div v-else>
+                <el-table :data="fromJobInfo.pickedTargets">
+                  <el-table-column label="服务" min-width="20%">
+                    <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
+                  </el-table-column>
+                  <el-table-column label="原始镜像版本" min-width="20%">
+                    <span style="color: #909399; font-size: 12px; line-height: 33px;">来自前置构建任务</span>
+                  </el-table-column>
+                  <el-table-column label="修改版本" min-width="12%">
+                    <template slot-scope="scope">
+                      <el-switch v-model="scope.row.update_tag"></el-switch>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="目标镜像版本" min-width="48%">
+                    <template slot-scope="scope">
+                      <div v-if="scope.row.update_tag" class="flex">
+                        <el-input v-model="scope.row.target_tag" placeholder="请输入目标镜像版本" size="small" class="input"></el-input>
+                        <el-button size="small" type="text" @click="applyAllImage(fromJobInfo.pickedTargets,scope.row.target_tag)">应用全部</el-button>
+                      </div>
+                      <span v-else>
+                        <span style="color: #909399; font-size: 12px; line-height: 33px;">来自前置构建任务</span>
+                      </span>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </div>
           </el-collapse-item>
         </div>
       </el-collapse>
@@ -427,7 +509,8 @@ export default {
         ]
       },
       originServiceAndBuilds: [],
-      isShowParams: true
+      isShowParams: true,
+      fromJobInfo: {}
     }
   },
   props: {
@@ -472,6 +555,12 @@ export default {
               job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
               })
+              this.fromJobInfo = cloneDeep(job)
+            }
+            if (job.type === 'zadig-distribute-image') {
+              if (job.spec.source === 'runtime') {
+                job.pickedTargets = job.spec.targets
+              }
             }
           })
         })
@@ -607,6 +696,14 @@ export default {
             job.spec.scannings.forEach(service => {
               this.getRepoInfo(service.repos)
             })
+          }
+          if (job.type === 'zadig-distribute-image') {
+            if (job.spec.source === 'runtime') {
+              job.spec.targets.forEach(service => {
+                service.value = `${service.service_name}/${service.service_module}`
+              })
+              this.registry_id = job.spec.source_registry_id
+            }
           }
         })
       })
@@ -755,7 +852,6 @@ export default {
       payload.stages.forEach(stage => {
         stage.jobs = stage.jobs.filter(job => job.checked)
         stage.jobs.forEach(job => {
-          delete job.checked
           if (job.type === 'zadig-build') {
             if (
               job.spec.service_and_builds &&
@@ -863,6 +959,27 @@ export default {
             }
             delete job.pickedTargets
           }
+          if (job.type === 'zadig-distribute-image') {
+            if (job.spec.source === 'runtime') {
+              job.spec.targets = cloneDeep(job.pickedTargets)
+              job.spec.targets.forEach(item => {
+                delete item.images
+              })
+              delete job.pickedTargets
+            } else {
+              // fromjob
+              job.spec.targets = this.fromJobInfo.pickedTargets
+              job.spec.targets = job.spec.targets.map(item => {
+                return {
+                  service_name: item.service_name,
+                  service_module: item.service_module,
+                  source_tag: item.source_tag,
+                  target_tag: item.target_tag,
+                  update_tag: item.update_tag
+                }
+              })
+            }
+          }
           if (job.type === 'k8s-resource-patch') {
             job.spec.patch_items = cloneDeep(job.pickedTargets)
             delete job.pickedTargets
@@ -938,7 +1055,8 @@ export default {
       })
       this.$forceUpdate()
     },
-    handleServiceBuildChange (services) {
+    handleServiceBuildChange (services, job) {
+      this.fromJobInfo = cloneDeep(job)
       services.forEach(service => {
         this.getRepoInfo(service.repos)
       })
@@ -953,6 +1071,7 @@ export default {
           }
         )
       })
+      this.$forceUpdate()
     },
     handleK8sServiceChange (val, job) {
       val.forEach(item => {
@@ -991,15 +1110,33 @@ export default {
         })
         this.originServiceAndBuilds = res
       })
+    },
+    applyAllImage (allTags, curTag) {
+      allTags.forEach(item => {
+        this.$set(item, 'target_tag', curTag)
+      })
+    },
+    handleSourceTagChange (row) {
+      if (!row.target_tag) {
+        this.$set(row, 'target_tag', row.source_tag)
+      }
     }
-  },
-  watch: {}
+  }
 }
 </script>
 <style lang="less" scoped>
 .custom-workflow {
   /deep/.el-collapse-item__header {
     font-weight: 700;
+  }
+
+  .flex {
+    display: flex;
+    justify-content: space-between;
+
+    .input {
+      width: 220px;
+    }
   }
 }
 </style>

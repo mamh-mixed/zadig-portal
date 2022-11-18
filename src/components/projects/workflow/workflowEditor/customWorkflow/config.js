@@ -89,6 +89,13 @@ const jobTypeList = [
     type: 'zadig-scanning',
     is_offical: true,
     description: '可直接引用「项目」-「代码扫描」模块中的配置。'
+  },
+  {
+    label: '镜像分发',
+    name: 'zadig-distribute-image',
+    type: 'zadig-distribute-image',
+    is_offical: true,
+    description: '可将镜像 Retag 后推送到镜像仓库'
   }
 ]
 const configList = [
@@ -123,6 +130,7 @@ const jobType = {
   k8sDeploy: 'custom-deploy',
   test: 'zadig-test',
   scanning: 'zadig-scanning',
+  distribute: 'zadig-distribute-image',
   customDeploy: 'custom-deploy',
   canaryDeploy: 'k8s-canary-deploy',
   canaryConfirm: 'k8s-canary-release',

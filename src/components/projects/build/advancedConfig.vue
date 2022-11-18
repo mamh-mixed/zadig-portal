@@ -59,6 +59,7 @@
         </el-select>
       </el-form-item>
       <el-form-item
+        v-if="!hiddenSystem"
         label="操作系统规格"
         :prop="`${secondaryProp}.res_req`"
         :rules="{ required: true, message: '请选择操作系统', trigger: ['change', 'blur'] }"
@@ -133,6 +134,10 @@ export default {
       type: String
     },
     hiddenCache: {
+      default: false,
+      type: Boolean
+    },
+    hiddenSystem: {
       default: false,
       type: Boolean
     },

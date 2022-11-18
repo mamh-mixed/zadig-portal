@@ -167,6 +167,15 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
+        <JobImageDistributeDetail
+          v-if="curJob.type === jobType.distribute"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
       </footer>
     </Multipane>
     <div v-if="activeName==='env'" class="env">
@@ -226,6 +235,7 @@ import JobCanaryDeployDetail from './productCustomTaskDetail/jobCanaryDeployDeta
 import JobCanaryConfirmDetail from './productCustomTaskDetail/jobCanaryConfirmDetail.vue'
 import JobK8sGrayDeployDetail from './productCustomTaskDetail/jobK8sGrayDeployDetail.vue'
 import JobGrayRollbackDetail from './productCustomTaskDetail/jobGrayRollbackDetail.vue'
+import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -264,7 +274,8 @@ export default {
     JobCanaryDeployDetail,
     JobCanaryConfirmDetail,
     JobGrayRollbackDetail,
-    JobK8sGrayDeployDetail
+    JobK8sGrayDeployDetail,
+    JobImageDistributeDetail
   },
   computed: {
     taskId () {

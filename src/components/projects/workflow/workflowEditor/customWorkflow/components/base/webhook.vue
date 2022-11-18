@@ -592,9 +592,7 @@ export default {
       ]
     },
     checkGitRepo () {
-      return (
-        this.currentWebhook.repo
-      )
+      return this.currentWebhook.repo
     }
   },
   methods: {
@@ -855,6 +853,27 @@ export default {
                   })
                 }
                 delete job.pickedTargets
+              }
+              if (job.type === 'zadig-distribute-image') {
+                if (job.spec.source === 'runtime') {
+                  job.spec.targets = cloneDeep(job.pickedTargets)
+                  job.spec.targets.forEach(item => {
+                    delete item.images
+                  })
+                  delete job.pickedTargets
+                } else {
+                  // fromjob
+                  job.spec.targets = payload.workflow_arg.fromJobInfo.pickedTargets.map(item => {
+                    return {
+                      service_name: item.service_name,
+                      service_module: item.service_module,
+                      source_tag: item.source_tag,
+                      target_tag: item.target_tag,
+                      update_tag: item.update_tag
+                    }
+                  })
+                  delete payload.workflow_arg.fromJobInfo
+                }
               }
             })
           })

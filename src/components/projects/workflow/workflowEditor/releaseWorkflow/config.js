@@ -112,6 +112,13 @@ const jobTypeList = [
     type: 'k8s-gray-release',
     is_offical: true,
     description: '基于 Kubernetes 原生的能力执行灰度发布'
+  },
+  {
+    label: '镜像分发',
+    name: 'zadig-distribute-image',
+    type: 'zadig-distribute-image',
+    is_offical: true,
+    description: '可将镜像 Retag 后推送到镜像仓库'
   }
 ]
 const configList = [
@@ -152,7 +159,8 @@ const jobType = {
   k8sResourcePatch: 'k8s-resource-patch',
   k8sGrayRollback: 'k8s-gray-rollback',
   grayDeploy: 'k8s-gray-release',
-  k8sDeploy: 'custom-deploy'
+  k8sDeploy: 'custom-deploy',
+  distribute: 'zadig-distribute-image'
 }
 const editorOptions = {
   mode: 'yaml',

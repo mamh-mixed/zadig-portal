@@ -164,6 +164,13 @@
               :workflowInfo="payload"
               :ref="jobType.grayDeploy"
             />
+             <JobImageDistribute
+              v-if="job.type === jobType.distribute"
+              :job="job"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+              :ref="jobType.distribute"
+            />
           </div>
         </footer>
       </Multipane>
@@ -260,6 +267,7 @@ import JobBlueGreenConfirm from './components/jobs/jobBlueGreenConfirm.vue'
 import JobGrayRollback from './components/jobs/jobGrayRollback.vue'
 import JobK8sGrayDeploy from './components/jobs/jobK8sGrayDeploy'
 import JobK8sResourceUpdate from './components/jobs/jobK8sResourceUpdate'
+import JobImageDistribute from './components/jobs/jobImageDistribute'
 
 import Env from './components/base/env.vue'
 import jsyaml from 'js-yaml'
@@ -345,7 +353,8 @@ export default {
     JobBlueGreenDeploy,
     JobBlueGreenConfirm,
     JobGrayRollback,
-    JobK8sGrayDeploy
+    JobK8sGrayDeploy,
+    JobImageDistribute
   },
   computed: {
     projectName () {

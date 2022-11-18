@@ -182,6 +182,20 @@ export default {
           spec: {
             scannings: []
           }
+        },
+        'zadig-distribute-image': {
+          name: 'default',
+          type: 'zadig-distribute-image',
+          isCreate: true,
+          spec: {
+            source: 'runtime',
+            job_name: '',
+            source_registry_id: '',
+            target_registry_id: '',
+            targets: [],
+            timeout: 10,
+            cluster_id: ''
+          }
         }
       },
       isShowJobOperateDialog: false,
