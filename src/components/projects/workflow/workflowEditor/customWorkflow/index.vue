@@ -3,9 +3,9 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
-          <CanInput v-model="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
-          <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
+          <CanInput v-model.trim="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
+          <CanInput v-model.trim="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
+          <CanInput v-model.trim="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
           <span
@@ -991,7 +991,7 @@ export default {
     'payload.display_name': {
       handler (val, old_val) {
         if (!this.isEdit) {
-          this.payload.name = pinyin(val, {
+          this.payload.name = pinyin(val.trim(), {
             style: pinyin.STYLE_NORMAL
           }).join('')
         }
