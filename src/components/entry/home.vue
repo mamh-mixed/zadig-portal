@@ -35,7 +35,7 @@ export default {
       announcements: [],
       SMTPDisabled: false,
       htmlTemplate:
-        '管理员请及时配置 <a href="/v1/system/integration?currentTab=mail">SMTP 邮箱服务器</a> 以便于用户密码丢失找回'
+        '管理员请及时配置 <a href="/v1/system/config">SMTP 邮箱服务器</a> 以便于用户密码丢失找回'
     }
   },
   methods: {
