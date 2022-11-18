@@ -1,6 +1,6 @@
 <template>
   <div class="job-deploy">
-    <el-form label-width="90px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
+    <el-form label-width="120px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
@@ -171,6 +171,10 @@ export default {
     /deep/ .el-form-item__label {
       line-height: 20px;
     }
+  }
+
+  .common-parcel-block {
+    padding: 0;
   }
 }
 </style>
