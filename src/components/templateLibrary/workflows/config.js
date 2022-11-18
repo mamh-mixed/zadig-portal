@@ -157,7 +157,8 @@ const jobTypeList = [
     name: 'zadig-distribute-image',
     type: 'zadig-distribute-image',
     is_offical: true,
-    description: '可将镜像 Retag 后推送到镜像仓库'
+    description: '可将镜像 Retag 后推送到镜像仓库',
+    workflowType: 'common'
   }
 ]
 const configList = [

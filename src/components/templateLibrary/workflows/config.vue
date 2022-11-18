@@ -165,11 +165,11 @@
               :ref="jobType.grayDeploy"
             />
              <JobImageDistribute
-              v-if="job.type === jobType.grayDeploy"
+              v-if="job.type === jobType.distribute"
               :job="job"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
-              :ref="jobType.grayDeploy"
+              :ref="jobType.distribute"
             />
           </div>
         </footer>
