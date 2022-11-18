@@ -26,7 +26,8 @@
         :envScene="envScene"
         :showEnvTabs="showEnvTabs"
         :defaultEnvValue="defaultEnvValue"
-        :baseEnvObj="baseEnvObj" />
+        :baseEnvObj="baseEnvObj"
+        :checkResource="checkResource" />
     </div>
   </div>
 </template>
@@ -71,7 +72,7 @@ export default {
       type: String,
       required: true
     },
-    baseEnvObj: {
+    baseEnvObj: { // init environment for collaborative mode
       type: Object,
       default: () => null // {envName: baseEvnName}
     },
@@ -79,7 +80,8 @@ export default {
       // current env object
       type: Object,
       required: false
-    }
+    },
+    checkResource: Object
   },
   computed: {
     defaultEnvValue () {

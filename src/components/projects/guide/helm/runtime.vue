@@ -5,7 +5,7 @@
       <div class="current-step-container">
         <div class="title-container">
           <span class="first">第三步</span>
-          <span class="second">配置变量，按需创建环境，后续可在项目中调整。</span>
+          <span class="second">按需创建环境，后续可在项目中调整。</span>
         </div>
         <div class="account-integrations block-list">
           <div class="second">配置以下几套环境：</div>
@@ -55,6 +55,7 @@
             :envNames="envNames"
             :handledEnv="activeName"
             :envScene="`createEnv`"
+            :checkResource="checkResource"
           />
           <div class="ai-bottom">
             <el-button type="primary" size="small" @click="createHelmProductEnv" :loading="isCreating" :disabled="!cantNext">创建环境</el-button>
@@ -168,8 +169,8 @@ export default {
 
       this.envInfos.forEach(info => {
         payloadObj[info.initName] = {
-          envName: info.envName,
-          clusterID: info.infos.clusterID || this.defaultInfo.clusterID,
+          env_name: info.envName,
+          cluster_id: info.infos.clusterID || this.defaultInfo.clusterID,
           registry_id: info.infos.registry_id || this.defaultInfo.registry_id,
           chartValues: [],
           defaultValues: envInfo[info.initName].envValue || '',
@@ -266,6 +267,18 @@ export default {
       info.clusterID = info.clusterID || this.defaultInfo.clusterID
       info.registry_id = info.registry_id || this.defaultInfo.registry_id
       return info
+    },
+    checkResource () {
+      if (this.activeName === 'addNew') {
+        return null
+      }
+      const activeName = this.activeName
+      const info = this.envInfos.find(info => info.initName === activeName)
+      return {
+        env_name: info.envName,
+        cluster_id: info.infos.clusterID,
+        namespace: this.projectName + '-env-' + info.envName
+      }
     }
   },
   created () {

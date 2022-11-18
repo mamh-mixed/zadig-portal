@@ -21,6 +21,17 @@
         <el-tabs v-if="showEnvTabs" v-model="selectedEnv" :before-leave="switchTabs">
           <el-tab-pane :label="env" :name="env" v-for="env in envNames" :key="env" :disabled="disabledEnv.includes(env)"></el-tab-pane>
         </el-tabs>
+        <!-- hasPlutus &&  -->
+        <div v-if="checkResource" class="release-check">
+          <el-radio-group v-model="usedChartNameInfo.deploy_strategy">
+            <el-radio label="import" :disabled="!usedChartNameInfo.deployed">仅导入服务</el-radio>
+            <el-radio label="deploy">执行部署</el-radio>
+          </el-radio-group>
+          <span v-show="usedChartNameInfo.deployed" class="tooltip">
+            <i class="el-icon-warning-outline"></i>
+            release 名称在命名空间已存在
+          </span>
+        </div>
         <div class="v-content" v-if="usedChartNameInfo">
           <div v-show="usedChartNameInfo.yamlSource === 'default'" class="default-values">
             <el-button type="text" @click="usedChartNameInfo.yamlSource = 'customEdit'">添加 values 文件</el-button>
@@ -63,9 +74,10 @@ import Codemirror from '@/components/projects/common/codemirror.vue'
 import {
   getChartValuesYamlAPI,
   getAllChartValuesYamlAPI,
-  getCalculatedValuesYamlAPI
+  getCalculatedValuesYamlAPI,
+  checkHelmSvcResourceAPI
 } from '@api'
-import { cloneDeep, pick, differenceBy, get } from 'lodash'
+import { cloneDeep, pick, differenceBy, get, debounce } from 'lodash'
 
 const chartInfoTemp = {
   envName: '', // ?: String
@@ -75,7 +87,9 @@ const chartInfoTemp = {
   overrideValues: [], // : Object{key,value}[]
   overrideYaml: '', // : String
   gitRepoConfig: null, // : Object [Not use, just record]
-  yamlContent: '' // 预览 YAML 内容
+  yamlContent: '', // 预览 YAML 内容
+  deploy_strategy: 'deploy', // 是否部署，deploy：部署，import: 仅导入
+  deployed: false // 是否已部署 用来操作 deploy_strategy
 }
 
 export default {
@@ -126,7 +140,8 @@ export default {
     showServicesTab: {
       type: Boolean,
       default: true
-    }
+    },
+    checkResource: Object
   },
   data () {
     this.cmOption = {
@@ -268,7 +283,9 @@ export default {
                 initInfo.overrideYaml = ''
                 break
               case 'repo':
-                initInfo.gitRepoConfig = cloneDeep(chartInfo[envName].gitRepoConfig)
+                initInfo.gitRepoConfig = cloneDeep(
+                  chartInfo[envName].gitRepoConfig
+                )
                 initInfo.overrideYaml = chartInfo[envName].overrideYaml
                 break
               case 'customEdit':
@@ -291,10 +308,15 @@ export default {
             'serviceName',
             'chartVersion',
             'overrideValues',
-            'overrideYaml'
+            'overrideYaml',
+            'deploy_strategy'
           ])
           values.valuesData = null
-          if (chartInfo[envName].yamlSource === 'repo' && (chartInfo[envName].gitRepoConfig && chartInfo[envName].gitRepoConfig.codehostID)) {
+          if (
+            chartInfo[envName].yamlSource === 'repo' &&
+            chartInfo[envName].gitRepoConfig &&
+            chartInfo[envName].gitRepoConfig.codehostID
+          ) {
             values.valuesData = {
               yamlSource: 'repo',
               autoSync: chartInfo[envName].gitRepoConfig.autoSync,
@@ -325,7 +347,8 @@ export default {
           ...cloneDeep(initInfo || chartInfoTemp),
           ...cloneDeep(chart),
           envName: envName === 'DEFAULT' ? '' : envName,
-          yamlSource: chart.yamlSource || (initInfo && initInfo.yamlSource) || 'default', // watch: test
+          yamlSource:
+            chart.yamlSource || (initInfo && initInfo.yamlSource) || 'default', // watch: test
           initInfo // watch: why? what is the priority? Sufficient information is either in chart or initInfo
         }
         this.$set(this.allChartNameInfo, chart.serviceName, {
@@ -374,7 +397,8 @@ export default {
             ...cloneDeep(chartInfoTemp),
             ...re,
             envName,
-            yamlSource: re.overrideYaml ? 'customEdit' : 'default'
+            yamlSource: re.overrideYaml ? 'customEdit' : 'default',
+            deploy_strategy: re.deploy_strategy || 'deploy'
           }
           if (
             envInfo.yaml_data &&
@@ -390,7 +414,8 @@ export default {
               repo: envInfo.yaml_data.source_detail.git_repo_config.repo,
               valuesPaths: [envInfo.yaml_data.source_detail.load_path],
               autoSync: envInfo.yaml_data.auto_sync,
-              namespace: envInfo.yaml_data.source_detail.git_repo_config.namespace
+              namespace:
+                envInfo.yaml_data.source_detail.git_repo_config.namespace
             }
             envInfo.yamlSource = re.yaml_data.source
           }
@@ -435,7 +460,26 @@ export default {
           copy: true
         })
       })
-    }
+    },
+    checkSvcResource: debounce(async function (payload) {
+      // payload: env_name, namespace, cluster_id
+      const res = await checkHelmSvcResourceAPI(
+        this.projectName,
+        payload
+      ).catch(err => console.log(err))
+      if (res) {
+        res.forEach(resource => {
+          const deployed = !resource.resources.find(
+            re => re.status === 'undeployed'
+          )
+          const cur = this.allChartNameInfo[resource.service_name][
+            this.selectedEnv
+          ]
+          cur.deploy_strategy = deployed ? 'import' : 'deploy'
+          cur.deployed = deployed
+        })
+      }
+    }, 300)
   },
   watch: {
     envNames: {
@@ -500,6 +544,15 @@ export default {
           this.copyEnvChartInfo(env, this.baseEnvObj[env])
         })
       }
+    },
+    checkResource: {
+      handler (val) {
+        if (val && val.cluster_id && val.env_name && val.namespace) {
+          this.checkSvcResource(val)
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   components: {
@@ -600,6 +653,19 @@ export default {
     .values-content {
       position: relative;
       z-index: 0;
+
+      .release-check {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: space-between;
+        margin: 10px 0;
+
+        .tooltip {
+          color: @warning;
+          font-size: 14px;
+        }
+      }
 
       .v-content {
         padding-bottom: 10px;

@@ -117,7 +117,8 @@
         :chartNames="projectConfig.selectedService"
         :envNames="envNames"
         :handledEnv="envName"
-        :envScene="`createEnv`" />
+        :envScene="`createEnv`"
+        :checkResource="checkResource" />
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">取消</el-button>
@@ -244,11 +245,20 @@ export default {
     },
     isBaseEnv () {
       return !this.baseEnvName
+    },
+    checkResource () {
+      return {
+        env_name: this.projectConfig.env_name,
+        cluster_id: this.projectConfig.cluster_id,
+        namespace: this.projectConfig.defaultNamespace
+      }
     }
   },
   methods: {
     changeEnvName (value) {
-      this.projectConfig.defaultNamespace = this.projectName + '-env-' + value
+      if (!this.nsIsExisted) {
+        this.projectConfig.defaultNamespace = this.projectName + '-env-' + value
+      }
     },
     async getCluster () {
       const projectName = this.projectName
@@ -351,10 +361,10 @@ export default {
 
           const defaultEnv = isCopy ? baseEnvName : 'DEFAULT'
           const payload = {
-            envName: this.projectConfig.env_name,
-            clusterID: this.projectConfig.cluster_id,
+            env_name: this.projectConfig.env_name,
+            cluster_id: this.projectConfig.cluster_id,
             registry_id: this.projectConfig.registry_id,
-            baseEnvName: isCopy ? baseEnvName : '',
+            base_env_name: isCopy ? baseEnvName : '',
             chartValues: valueInfo.chartInfo,
             defaultValues: valueInfo.envInfo[defaultEnv].envValue || '',
             valuesData: valueInfo.envInfo[defaultEnv].valuesData,
@@ -383,7 +393,7 @@ export default {
             res => {
               // Add delay to solve the back-end permission synchronization problem
               sleep(5000).then(() => {
-                const envName = payload.envName
+                const envName = payload.env_name
                 this.startDeployLoading = false
                 this.$message({
                   message: '创建环境成功',

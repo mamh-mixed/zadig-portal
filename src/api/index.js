@@ -317,6 +317,10 @@ export function checkK8sSvcResourceAPI (projectName, payload) {
   return http.post(`/api/aslan/environment/kube/k8s/resources?projectName=${projectName}`, payload)
 }
 
+export function checkHelmSvcResourceAPI (projectName, payload) {
+  return http.post(`/api/aslan/environment/kube/helm/releases?projectName=${projectName}`, payload)
+}
+
 // Project
 export function getProjectsAPI () {
   return http.get('/api/v1/picket/projects?verbosity=detailed')// verbosity=detailed<brief,minimal>,IgnoreNoVersions,IgnoreNoEnvs
