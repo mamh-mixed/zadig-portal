@@ -15,16 +15,17 @@
           </header>
           <div class="service-aside-box__content">
             <el-table :data="buildReference" stripe style="width: 100%;">
-              <el-table-column prop="build_name" label="构建名称"></el-table-column>
+              <el-table-column prop="build_name" label="构建名称">
+                <template slot-scope="scope">
+                  <router-link
+                    :to="`/v1/projects/detail/${scope.row.project_name}/builds/detail/${scope.row.build_name}`"
+                  >{{scope.row.build_name}}</router-link>
+                </template>
+              </el-table-column>
               <el-table-column prop="service_module" label="服务组件">
                 <template slot-scope="scope">
                   <template v-if="scope.row.service_module.length > 0">
-                    <router-link
-                      v-for="(item,index) in scope.row.service_module"
-                      :key="index"
-                      style="display: block;"
-                      :to="`/v1/projects/detail/${scope.row.project_name}/builds/detail/${scope.row.build_name}`"
-                    >{{item}}</router-link>
+                    <span v-for="(item,index) in scope.row.service_module" :key="index" style="display: block;">{{item}}</span>
                   </template>
                   <span v-else>空</span>
                 </template>
