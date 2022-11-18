@@ -886,6 +886,8 @@ export default {
             repo_owner: namespace,
             source: provider.type
           }
+        } else {
+          this.parseErr = '代码源标识不匹配，请检查。如需 添加/修改 代码源，可前往：系统设置-代码源'
         }
       } catch (error) {
         console.log(error)
