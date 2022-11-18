@@ -14,7 +14,7 @@
           <el-button type="primary" size="mini" plain @click="updateServices.service_names = currentAllInfo.services">全选</el-button>
         </el-form-item>
       </el-form>
-      <template v-if="opeType === 'add'">
+      <template v-if="hasPlutus && opeType === 'add'">
         <div class="header">服务名称</div>
         <el-table :data="currentResourceCheck" style="width: 100%;">
           <el-table-column prop="service_name" label="服务名称"></el-table-column>
@@ -80,6 +80,8 @@ import {
   checkK8sSvcResourceAPI
 } from '@api'
 import { cloneDeep, flatten, difference, intersection } from 'lodash'
+import { mapState } from 'vuex'
+
 export default {
   props: {
     fetchAllData: Function,
@@ -147,7 +149,10 @@ export default {
       return this.updateServices.service_names.map(item => {
         return { service_name: item }
       })
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     updateEnvironment () {
@@ -331,7 +336,7 @@ export default {
   watch: {
     productInfo: {
       handler (val, oVal) {
-        if (val.env_name) {
+        if (this.hasPlutus && val.env_name) {
           this.checkSvcResource()
         }
       },

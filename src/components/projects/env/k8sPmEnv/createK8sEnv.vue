@@ -689,7 +689,7 @@ export default {
                 ? 'import'
                 : 'deploy'
             })
-          })
+          }).catch((err) => console.log(err))
       }
     }, 300)
   },

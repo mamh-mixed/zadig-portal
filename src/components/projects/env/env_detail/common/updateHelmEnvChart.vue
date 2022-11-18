@@ -21,8 +21,7 @@
         <el-tabs v-if="showEnvTabs" v-model="selectedEnv" :before-leave="switchTabs">
           <el-tab-pane :label="env" :name="env" v-for="env in envNames" :key="env" :disabled="disabledEnv.includes(env)"></el-tab-pane>
         </el-tabs>
-        <!-- hasPlutus &&  -->
-        <div v-if="checkResource" class="release-check">
+        <div v-if="hasPlutus && checkResource" class="release-check">
           <el-radio-group v-model="usedChartNameInfo.deploy_strategy">
             <el-radio label="import" :disabled="!usedChartNameInfo.deployed">仅导入服务</el-radio>
             <el-radio label="deploy">执行部署</el-radio>
@@ -78,6 +77,7 @@ import {
   checkHelmSvcResourceAPI
 } from '@api'
 import { cloneDeep, pick, differenceBy, get, debounce } from 'lodash'
+import { mapState } from 'vuex'
 
 const chartInfoTemp = {
   envName: '', // ?: String
@@ -200,7 +200,10 @@ export default {
         (this.showEnvTabs && this.selectedEnv === 'DEFAULT') ||
         (!this.selectedChart && !this.serviceNames.length)
       )
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     closeReview () {
@@ -547,7 +550,7 @@ export default {
     },
     checkResource: {
       handler (val) {
-        if (val && val.cluster_id && val.env_name && val.namespace) {
+        if (this.hasPlutus && val && val.cluster_id && val.env_name && val.namespace) {
           this.checkSvcResource(val)
         }
       },

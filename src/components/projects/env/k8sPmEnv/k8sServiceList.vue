@@ -29,30 +29,32 @@
         <div class="service-item" v-for="(service, serviceName) in selectedContainerMap" :key="serviceName">
           <div class="primary-title service-title">
             <div class="service-name">{{ serviceName }}</div>
-            <div class="service-resource">
-              <span class="middle">
-                资源监测
-                <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
-                  <i class="el-icon-info gray"></i>
-                </el-tooltip>
-              </span>
-              <div style="display: inline-block;">
-                <span
-                  class="resource-item"
-                  v-for="(resource, index) in svcResources[serviceName] ? svcResources[serviceName].resources : []"
-                  :key="index"
-                >
-                  <i class="middle" :class="[resource.status === 'deployed' ? 'el-icon-success success' : 'el-icon-error fail']"></i>
-                  <span>{{ `${resource.type}/${resource.name}` }}</span>
+            <template v-if="hasPlutus">
+              <div class="service-resource">
+                <span class="middle">
+                  资源监测
+                  <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
+                    <i class="el-icon-info gray"></i>
+                  </el-tooltip>
                 </span>
+                <div style="display: inline-block;">
+                  <span
+                    class="resource-item"
+                    v-for="(resource, index) in svcResources[serviceName] ? svcResources[serviceName].resources : []"
+                    :key="index"
+                  >
+                    <i class="middle" :class="[resource.status === 'deployed' ? 'el-icon-success success' : 'el-icon-error fail']"></i>
+                    <span>{{ `${resource.type}/${resource.name}` }}</span>
+                  </span>
+                </div>
               </div>
-            </div>
-            <div class="service-operation">
-              <el-radio-group v-model="service.deploy_strategy">
-                <el-radio label="import" :disabled="!(svcResources[serviceName] && svcResources[serviceName].deployed)">仅导入服务</el-radio>
-                <el-radio label="deploy">执行部署</el-radio>
-              </el-radio-group>
-            </div>
+              <div class="service-operation">
+                <el-radio-group v-model="service.deploy_strategy">
+                  <el-radio label="import" :disabled="!(svcResources[serviceName] && svcResources[serviceName].deployed)">仅导入服务</el-radio>
+                  <el-radio label="deploy">执行部署</el-radio>
+                </el-radio-group>
+              </div>
+            </template>
           </div>
           <div class="service-content">
             <template v-if="service.type==='k8s' && service.containers">
@@ -89,6 +91,8 @@
 import virtualListItem from '../../common/imageItem'
 import virtualScrollList from 'vue-virtual-scroll-list'
 import { imagesAPI, checkK8sSvcResourceAPI } from '@api'
+import { mapState } from 'vuex'
+
 export default {
   props: {
     showFilter: Boolean,
@@ -115,7 +119,10 @@ export default {
   computed: {
     imageMap () {
       return this.imageMapById[this.registryId] || {}
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     async getImages (containerNames, registryId, init, services) {
@@ -175,6 +182,9 @@ export default {
       }
     },
     async checkSvcResource (projectName, payload) {
+      if (!this.hasPlutus) {
+        return Promise.reject()
+      }
       // payload: env_name, namespace, cluster_id, vars
       this.svcResources = {}
       const res = await checkK8sSvcResourceAPI(
