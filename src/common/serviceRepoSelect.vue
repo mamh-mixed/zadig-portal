@@ -894,6 +894,7 @@ export default {
     },
     parseReposInfo (reposStrArray) {
       const providerAlias = reposStrArray[0]
+      console.log(providerAlias)
       reposStrArray = drop(reposStrArray).map(repoStr => {
         return this.parseRepo(providerAlias, repoStr)
       })
@@ -920,14 +921,18 @@ export default {
           const service = this.parseServiceInfo(line)
           const reposStrArray = drop(line.split(','), 1)
           const repos = this.parseReposInfo(reposStrArray)
-          targets.push({
-            repos: repos,
-            service: service
-          })
-          this.getInitRepoInfo(targets)
-          this.$emit('update:targets', targets)
-          this.showMultiImport = false
-          return true
+          if (repos[0] && service) {
+            targets.push({
+              repos: repos,
+              service: service
+            })
+            this.getInitRepoInfo(targets)
+            this.$emit('update:targets', targets)
+            this.showMultiImport = false
+            return true
+          } else {
+            return false
+          }
         } else {
           this.parseErr = `格式错误解析失败，请检查第 ${index + 1} 行!`
           return false
