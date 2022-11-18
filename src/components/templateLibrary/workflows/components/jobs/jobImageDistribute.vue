@@ -1,6 +1,6 @@
 <template>
   <div class="job-deploy">
-    <el-form label-width="90px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
+    <el-form label-width="120px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
       <el-form-item label="任务名称" prop="name">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
@@ -32,6 +32,26 @@
           <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
+      <section>
+        <div style="margin-bottom: 8px;">
+          <el-button type="primary" size="small" plain @click="advanced_setting_modified = !advanced_setting_modified">
+            高级配置
+            <i :class="[advanced_setting_modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
+          </el-button>
+        </div>
+        <AdvancedConfig
+          v-if="advanced_setting_modified"
+          ref="advancedConfigRef"
+          class="common-parcel-block"
+          :isCreate="job.isCreate"
+          :buildConfig="job"
+          secondaryProp="spec"
+          @validateFailed="advanced_setting_modified = true"
+          :validObj="validObj"
+          hiddenCache
+          hiddenSystem
+        ></AdvancedConfig>
+      </section>
     </el-form>
   </div>
 </template>
@@ -40,6 +60,8 @@
 import { getRegistryWhenBuildAPI, getAssociatedBuildsAPI } from '@/api'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config'
+import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
+import ValidateSubmit from '@utils/validateAsync'
 
 export default {
   name: 'JobImageDistrubute',
@@ -62,14 +84,17 @@ export default {
     }
   },
   components: {
-    EnvTypeSelect
+    EnvTypeSelect,
+    AdvancedConfig
   },
   data () {
     return {
       validateJobName,
+      validObj: new ValidateSubmit(),
       formLabelWidth: '90px',
       dockerList: [],
-      originServiceAndBuilds: []
+      originServiceAndBuilds: [],
+      advanced_setting_modified: false
     }
   },
   computed: {
@@ -129,6 +154,10 @@ export default {
     /deep/ .el-form-item__label {
       line-height: 20px;
     }
+  }
+
+  .common-parcel-block {
+    padding: 0;
   }
 }
 </style>
