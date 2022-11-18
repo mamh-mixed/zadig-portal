@@ -894,7 +894,6 @@ export default {
     },
     parseReposInfo (reposStrArray) {
       const providerAlias = reposStrArray[0]
-      console.log(providerAlias)
       reposStrArray = drop(reposStrArray).map(repoStr => {
         return this.parseRepo(providerAlias, repoStr)
       })
