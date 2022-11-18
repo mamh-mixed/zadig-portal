@@ -461,7 +461,7 @@
     <UpdateK8sVarDialog :fetchAllData="fetchAllData" :productInfo="productInfo" ref="updateK8sVarDialog" />
     <PmServiceLog ref="pmServiceLog" />
     <ManageK8sServicesDialog
-      v-if="envSource === '' && envSource === 'spock'"
+      v-if="envSource === '' || envSource === 'spock'"
       :fetchAllData="fetchAllData"
       :productInfo="productInfo"
       ref="manageK8sServicesRef"
