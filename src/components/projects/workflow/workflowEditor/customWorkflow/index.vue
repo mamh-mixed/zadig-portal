@@ -991,7 +991,7 @@ export default {
     'payload.display_name': {
       handler (val, old_val) {
         if (!this.isEdit) {
-          this.payload.name = pinyin(val.trim(), {
+          this.payload.name = pinyin(val, {
             style: pinyin.STYLE_NORMAL
           }).join('')
         }

@@ -1,7 +1,7 @@
 <template>
   <div class="notify">
     <el-button type="primary" size="mini" icon="el-icon-plus" plain @click="editNotify('add')" class="mg-b24">添加</el-button>
-    <div v-if="config.notify_ctls.length > 0">
+    <div v-if="config.notify_ctls&&config.notify_ctls.length > 0">
       <el-row :gutter="20" class="title">
         <el-col :span="4"></el-col>
         <el-col :span="4">类型</el-col>
@@ -90,6 +90,9 @@ export default {
       this.$refs.notifyOperate.validate().then(res => {
         const data = this.$refs.notifyOperate.getData()
         data.enabled = true
+        if (!this.config.notify_ctls) {
+          this.config.notify_ctls = []
+        }
         if (this.operateType === 'add') {
           this.config.notify_ctls.push(data)
         } else {
