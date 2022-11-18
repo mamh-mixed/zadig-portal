@@ -52,29 +52,23 @@
           </span>
           <el-input style="width: 350px;" size="small" v-model="notify.dingding_webhook"></el-input>
         </el-form-item>
-        <el-form-item v-if="notify.webhook_type==='dingding'" prop="at_mobiles">
+        <el-form-item v-if="hasPlutus&&notify.webhook_type==='dingding'" prop="at_mobiles">
           <span slot="label">
             <span>@指定成员（输入指定通知接收人的手机号码，使用 ; 分割，为空则全员通知）：</span>
           </span>
           <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的手机号码，使用用 ; 分割" v-model="mobileStr"></el-input>
         </el-form-item>
-        <el-form-item v-if="notify.webhook_type==='wechat'" prop="wechat_user_ids">
+        <el-form-item v-if="hasPlutus&&notify.webhook_type==='wechat'" prop="wechat_user_ids">
           <span slot="label">
-            <span>@指定成员（输入指定通知接收人的 user_id，使用 ; 分割）：</span>
+            <span>@指定成员（输入指定通知接收人的 UserID，使用 ; 分割）：</span>
           </span>
-          <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的 user_id，使用 ; 分割" v-model="wechatMobileStr"></el-input>
+          <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的 UserID，使用 ; 分割" v-model="wechatMobileStr"></el-input>
         </el-form-item>
-        <el-form-item v-if="notify.webhook_type==='feishu'" prop="lark_user_ids">
+        <el-form-item v-if="hasPlutus&&notify.webhook_type==='feishu'" prop="lark_user_ids">
           <span slot="label">
-            <span>@指定成员（输入指定通知接收人的 user_id，使用 ; 分割，为空则全员通知）：</span>
+            <span>@指定成员（输入指定通知接收人的用户 ID，使用 ; 分割，为空则全员通知）：</span>
           </span>
-          <el-input
-            style="width: 350px;"
-            type="textarea"
-            :rows="3"
-            placeholder="输入指定通知接收人的 user_id，使用 ; 分割，为空则全员通知"
-            v-model="feishuMobileStr"
-          ></el-input>
+          <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的用户 ID，使用 ; 分割，为空则全员通知" v-model="feishuMobileStr"></el-input>
         </el-form-item>
         <el-form-item prop="notify_type" label="通知事件：">
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -88,6 +82,8 @@
 </template>
 
 <script type="text/javascript">
+import { mapState } from 'vuex'
+
 export default {
   name: 'NotifyItem',
   data () {
@@ -236,7 +232,10 @@ export default {
           this.$set(this.notify, 'at_mobiles', newValue.split(';'))
         }
       }
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     delNotify () {
