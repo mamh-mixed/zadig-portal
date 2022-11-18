@@ -67,7 +67,6 @@
           :validObj="validObj"
           hiddenCache
           hiddenSystem
-          useDockerDaemon
         ></AdvancedConfig>
       </section>
     </el-form>
