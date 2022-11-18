@@ -179,7 +179,7 @@ export default {
           }
           this.files.push(data)
           this.setFileSelected(data.name)
-          this.$router.replace({ query: { name: data.name, rightbar: 'var' } })
+          this.$router.replace({ query: { name: data.name, rightbar: 'reference' } })
           this.$emit('onSelectFileChange', data)
           this.showNewServiceInput = false
           this.file.newFileName = ''
@@ -262,7 +262,7 @@ export default {
     },
     switchTreeNode (data, node, levelOneNodeLabel) {
       this.previousNodeKey = levelOneNodeLabel
-      this.$router.replace({ query: { id: data.id, status: data.status, name: data.name, rightbar: 'var' } })
+      this.$router.replace({ query: { id: data.id, status: data.status, name: data.name, rightbar: 'reference' } })
       this.$emit('onSelectFileChange', data)
     },
     setFileSelected (key) {
@@ -299,7 +299,7 @@ export default {
 
           if (data && !this.showNewServiceInput) {
             this.setFileSelected(data.name)
-            this.$router.replace({ query: { id: data.id, status: data.status, name: data.name } })
+            this.$router.replace({ query: { id: data.id, status: data.status, name: data.name, rightbar: 'reference' } })
             this.$emit('onSelectFileChange', data)
           }
         })

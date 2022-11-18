@@ -4,7 +4,7 @@
       <div class="aside-bar">
         <div class="tabs__wrap tabs__wrap_vertical">
           <div class="tabs__item" :class="{'selected': $route.query.rightbar === 'var'}" @click="changeRoute('var')">
-            <span class="step-name">变量</span>
+            <span class="step-name">变量列表</span>
           </div>
           <div class="tabs__item" :class="{'selected': $route.query.rightbar === 'reference'}" @click="changeRoute('reference')">
             <span class="step-name">引用列表</span>

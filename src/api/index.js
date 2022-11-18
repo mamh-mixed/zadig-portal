@@ -1654,6 +1654,10 @@ export function saveHelmTemplateVariableAPI (name, payload) {
   return http.put(`/api/aslan/template/charts/${name}/variables`, payload)
 }
 
+export function getHelmTemplateReferenceAPI (chartName) {
+  return http.get(`/api/aslan/template/charts/${chartName}/reference`)
+}
+
 // Template Dockerfile
 export function getDockerfileTemplatesAPI (projectName = '') {
   return http.get(`/api/aslan/template/dockerfile?page_num=1&page_size=9999&projectName=${projectName}`)
@@ -1751,6 +1755,10 @@ export function getBuildTemplateDetailAPI (id) {
 
 export function deleteBuildTemplateAPI (id) {
   return http.delete(`/api/aslan/template/build/${id}`)
+}
+
+export function getBuildTemplateReferenceAPI (id) {
+  return http.get(`/api/aslan/template/build/${id}/reference`)
 }
 
 // Template Workflow
