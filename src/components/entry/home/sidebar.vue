@@ -241,21 +241,21 @@ export default {
         }
       ],
       plutusMenu: {
-        release_center: {
-          category_name: '发布中心',
-          items: [
-            {
-              name: '工作流',
-              icon: 'iconfont iconvery-pipeline',
-              url: 'release/workflow'
-            },
-            {
-              name: '环境组',
-              icon: 'iconfont iconvery-environ',
-              url: 'release/environment'
-            }
-          ]
-        },
+        // release_center: {
+        //   category_name: '发布中心',
+        //   items: [
+        //     {
+        //       name: '工作流',
+        //       icon: 'iconfont iconvery-pipeline',
+        //       url: 'release/workflow'
+        //     },
+        //     {
+        //       name: '环境组',
+        //       icon: 'iconfont iconvery-environ',
+        //       url: 'release/environment'
+        //     }
+        //   ]
+        // },
         delivery: {
           category_name: '客户交付',
           items: [
