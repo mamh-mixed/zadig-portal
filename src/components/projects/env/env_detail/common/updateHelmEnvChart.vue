@@ -5,6 +5,7 @@
       <el-tabs class="service-list" tab-position="left" type="border-card" v-model="selectedChart" :before-leave="switchTabs">
         <el-tab-pane :name="name.serviceName" v-for="name in filteredServiceNames" :key="name.serviceName" :disabled="name.type==='delete'">
           <template slot="label">
+            <span v-if="hasPlutus && name.deployed" class="imported-icon"></span>
             <el-tooltip effect="dark" :content="name.serviceName" placement="top">
               <span class="tab-title">{{name.serviceName}}</span>
             </el-tooltip>
@@ -480,6 +481,10 @@ export default {
           ]
           cur.deploy_strategy = deployed ? 'import' : 'deploy'
           cur.deployed = deployed
+          const sur = this.serviceNames.find(svc => svc.serviceName === resource.service_name)
+          if (sur) {
+            this.$set(sur, 'deployed', deployed)
+          }
         })
       }
     }, 300)
@@ -612,6 +617,15 @@ export default {
           width: 180px;
           font-weight: 300;
           text-align: left;
+
+          .imported-icon {
+            position: absolute;
+            left: 8px;
+            width: 6px;
+            height: 6px;
+            background: @warning;
+            border-radius: 50%;
+          }
 
           .tab-title {
             flex: 1 1 calc(~'100% - 40px');
