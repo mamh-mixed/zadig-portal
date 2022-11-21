@@ -1,7 +1,7 @@
 <template>
   <div class="service-repo-select">
     <span class="primary-title">选择服务和代码信息</span>
-    <span class="multi-import" @click="openMultiImport">
+    <span v-if="hasPlutus" class="multi-import" @click="openMultiImport">
       <i class="el-icon-sort"></i> 批量录入
     </span>
     <el-dialog
@@ -329,6 +329,7 @@ import {
   getRepoNameByIdAPI,
   getBranchInfoByIdAPI
 } from '@api'
+import { mapState } from 'vuex'
 import { orderBy, cloneDeep, drop, dropRight } from 'lodash'
 export default {
   data () {
@@ -422,7 +423,10 @@ export default {
   computed: {
     projectName () {
       return this.$route.params.project_name
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     addService () {
