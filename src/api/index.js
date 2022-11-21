@@ -1842,7 +1842,7 @@ export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valu
       owner,
       repo,
       branch,
-      valuesPaths: valuesPaths.length > 0 ? valuesPaths.join(',') : valuesPath,
+      valuesPaths: valuesPaths.length > 0 && valuesPaths[0] ? valuesPaths.join(',') : valuesPath,
       namespace: namespace || owner
     }
   })

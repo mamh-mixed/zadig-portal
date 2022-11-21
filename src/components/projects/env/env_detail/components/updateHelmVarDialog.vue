@@ -13,6 +13,7 @@
 <script>
 import EnvValues from '../common/updateHelmEnvVariable.vue'
 import { updateHelmEnvVarAPI } from '@/api'
+import { cloneDeep } from 'lodash'
 export default {
   name: 'updateHelmVarDialog',
   props: {
@@ -41,7 +42,7 @@ export default {
       if (!res) {
         return
       }
-      const envValues = this.defaultEnvsValues[this.envName]
+      const envValues = cloneDeep(this.defaultEnvsValues[this.envName])
       // correct wrong data
       if (envValues.yamlSource === 'repo' && !envValues.gitRepoConfig) {
         envValues.yamlSource = 'customEdit'
@@ -66,6 +67,10 @@ export default {
         envValues.gitRepoConfig = null
       }
       this.updateHelmEnvVarLoading = true
+      // Remove temp data
+      if (payload.valuesData.gitRepoConfig.valuesPath) {
+        delete payload.valuesData.gitRepoConfig.valuesPath
+      }
       updateHelmEnvVarAPI(this.projectName, this.envName, payload)
         .then(() => {
           this.updateHelmEnvVarLoading = false
