@@ -100,7 +100,7 @@ import {
   updateHelmServiceVarAPI,
   getRunningValuesYamlAPI
 } from '@api'
-
+import { cloneDeep } from 'lodash'
 export default {
   props: {
     envSource: String,
@@ -260,9 +260,15 @@ export default {
       done && done()
     },
     updateChart () {
-      const chartValues = this.$refs.chartValuesRef.getAllChartNameInfo()
+      const chartValues = cloneDeep(this.$refs.chartValuesRef.getAllChartNameInfo())
       const payload = {
         chartValues: chartValues.map(chart => {
+          if (chart.valuesData && chart.valuesData.gitRepoConfig) {
+            chart.valuesData.gitRepoConfig.valuesPaths = chart.valuesData.gitRepoConfig.valuesPaths[0] ? chart.valuesData.gitRepoConfig.valuesPaths : [chart.valuesData.gitRepoConfig.valuesPath]
+            if (chart.valuesData.gitRepoConfig.valuesPath) {
+              delete chart.valuesData.gitRepoConfig.valuesPath
+            }
+          }
           return {
             serviceName: chart.serviceName,
             overrideYaml: chart.overrideYaml,
