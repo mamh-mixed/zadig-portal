@@ -894,8 +894,8 @@ export default {
       )
       if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
         this.$nextTick(() => {
-          this.$refs[this.beInitCompRef] &&
-            this.$refs[this.beInitCompRef].initOpe()
+          this.$refs[this.job.type] &&
+            this.$refs[this.job.type].initOpe()
         })
       }
     },
