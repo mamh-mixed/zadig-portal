@@ -147,9 +147,9 @@ export default {
             memory_limit: 512
           },
           installs: [{ name: '', version: '' }],
-          envs: [],
-          outputs: []
+          envs: []
         },
+        outputs: [],
         artifact_paths: [],
         scripts: '#!/bin/bash\nset -e',
         test_result_path: '',

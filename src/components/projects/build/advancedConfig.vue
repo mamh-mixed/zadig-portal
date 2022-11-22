@@ -119,8 +119,8 @@
         </el-tooltip>
       </div>
       <el-form-item label="变量">
-        <div v-for="(item,index) in currentResource.outputs" :key="index">
-          <el-input v-model="currentResource.outputs[index].name" placeholder="请输入变量" size="small" :disabled="item.name==='IMAGE'||item.name==='PKG_FILE'"></el-input>
+        <div v-for="(item,index) in buildConfig.outputs" :key="index">
+          <el-input v-model="buildConfig.outputs[index].name" placeholder="请输入变量" size="small" :disabled="item.name==='IMAGE'||item.name==='PKG_FILE'"></el-input>
           <el-button v-if="item.name!=='IMAGE'&&item.name!=='PKG_FILE'" @click="delVars(index)" type="danger" size="mini" icon="el-icon-minus" circle plain></el-button>
         </div>
         <el-button type="text" @click="addVars">+添加</el-button>
@@ -257,13 +257,13 @@ export default {
       })
     },
     addVars () {
-      if (!this.currentResource.outputs) {
-        this.$set(this.currentResource, 'outputs', [])
+      if (!this.buildConfig.outputs) {
+        this.$set(this.buildConfig, 'outputs', [])
       }
-      this.currentResource.outputs.push({ name: '' })
+      this.buildConfig.outputs.push({ name: '' })
     },
     delVars (index) {
-      this.currentResource.outputs.splice(index, 1)
+      this.buildConfig.outputs.splice(index, 1)
     }
   },
   watch: {

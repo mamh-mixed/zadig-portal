@@ -234,8 +234,7 @@ export default {
           hook_ctl: {
             enabled: true,
             items: []
-          },
-          outputs: []
+          }
           // schedules: { // for timing trigger
           //   enabled: false,
           //   items: []
@@ -246,6 +245,7 @@ export default {
           //   notify_type: []
           // }
         },
+        outputs: [],
         advanced_setting_modified: false
       },
       validObj: new ValidateSubmit(),
