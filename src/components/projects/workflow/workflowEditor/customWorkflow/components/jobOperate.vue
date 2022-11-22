@@ -48,6 +48,7 @@ export default {
       })
     },
     setCurTask (index, item) {
+      this.$store.dispatch('setIsEditJob', false)
       if (item.type === 'plugin') {
         const obj = {
           name: 'default',

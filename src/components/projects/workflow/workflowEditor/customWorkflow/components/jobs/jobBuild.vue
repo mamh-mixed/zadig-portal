@@ -84,7 +84,7 @@
               isFixed
               isRuntime
               isOther
-              @change="handleEnvChange(scope.row)"
+              @change="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block;"
             />
           </template>
@@ -162,6 +162,14 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
   components: { EnvTypeSelect },
@@ -209,8 +217,11 @@ export default {
     this.getGlobalEnv()
   },
   methods: {
-    handleEnvChange (row) {
+    handleEnvChange (row, command) {
       row.value = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
     },
     delServiceAndBuild (index) {
       this.serviceAndBuilds.splice(index, 1)
@@ -301,11 +312,11 @@ export default {
       this.curItem = cloneDeep(item)
     },
     getGlobalEnv () {
-      getWorkflowglobalVars(this.job.name, jsyaml.dump(this.workflowInfo)).then(
-        res => {
-          this.globalEnv = res
-        }
-      )
+      const params = cloneDeep(this.workflowInfo)
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
     },
     saveCurSetting (type) {
       this.serviceAndBuilds.forEach((item, index) => {

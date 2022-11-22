@@ -80,7 +80,7 @@
               isFixed
               isRuntime
               isOther
-              @change="handleEnvChange(scope.row)"
+              @change="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block;"
             />
           </template>
@@ -154,6 +154,14 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
   components: { EnvTypeSelect },
@@ -191,14 +199,17 @@ export default {
   },
   methods: {
     getGlobalEnv () {
-      getWorkflowglobalVars(this.job.name, jsyaml.dump(this.workflowInfo)).then(
-        res => {
-          this.globalEnv = res
-        }
-      )
+      const params = cloneDeep(this.workflowInfo)
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
     },
-    handleEnvChange (row) {
+    handleEnvChange (row, command) {
       row.value = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
     },
     getTestList () {
       getTestListAPI(this.projectName).then(res => {

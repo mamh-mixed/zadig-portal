@@ -78,6 +78,8 @@
                 :globalEnv="globalEnv"
                 :ref="jobType.build"
                 :workflowInfo="payload"
+                :curStageIndex="curStageIndex"
+                :curJobIndex="curJobIndex"
               />
               <el-select size="small" v-model="service" multiple filterable clearable>
                 <el-option
@@ -107,7 +109,15 @@
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
               >+ 添加</el-button>
             </div>
-            <JobPlugin v-if="job.type === jobType.plugin" :job="job" :ref="jobType.plugin" :globalEnv="globalEnv" :workflowInfo="payload" />
+            <JobPlugin
+              v-if="job.type === jobType.plugin"
+              :job="job"
+              :ref="jobType.plugin"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
+            />
             <JobDeploy
               :projectName="projectName"
               v-if="job.type === jobType.deploy"
@@ -116,6 +126,8 @@
               :originServiceAndBuilds="originServiceAndBuilds"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobFreestyle
               v-if="job.type === jobType.freestyle"
@@ -123,6 +135,8 @@
               :ref="jobType.freestyle"
               :job="job"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobK8sDeploy
               :projectName="projectName"
@@ -140,6 +154,8 @@
               :ref="jobType.test"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobScanning
               :projectName="projectName"
@@ -375,9 +391,6 @@ export default {
     projectName () {
       return this.$route.query.projectName
     },
-    isShowFooter () {
-      return this.$store.state.customWorkflow.isShowFooter
-    },
     curOperateType () {
       return this.$store.state.customWorkflow.curOperateType
     },
@@ -423,7 +436,9 @@ export default {
       return res ? res.drawerHideButton : false
     },
     ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
+      hasPlutus: state => state.checkPlutus.hasPlutus,
+      isEditJob: state => state.customWorkflow.isEditJob,
+      isShowFooter: state => state.customWorkflow.isShowFooter
     })
   },
   created () {
@@ -835,9 +850,18 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
+      const allJobList = this.payload.stages
+        .map(stage => {
+          return stage.jobs.map(job => job.name)
+        })
+        .flat()
       this.$refs[this.job.type].validate().then(valid => {
         if (valid) {
           const curJob = this.$refs[this.job.type].getData()
+          if (!this.isEditJob && allJobList.includes(curJob.name)) {
+            this.$message.error(' Job 名称重复')
+            return false
+          }
           this.$set(
             this.payload.stages[this.curStageIndex].jobs,
             this.curJobIndex,

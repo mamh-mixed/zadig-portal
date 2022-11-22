@@ -57,6 +57,7 @@ import OtherSteps from '../otherSteps.vue'
 import { buildEnvs, validateJobName } from '../../config.js'
 import jsyaml from 'js-yaml'
 import { getCodeSourceMaskedAPI, getWorkflowglobalVars } from '@api'
+import { cloneDeep } from 'lodash'
 
 export default {
   name: 'JobFreestyle',
@@ -82,6 +83,14 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
     // globalEnv: {
     //   type: Array,
@@ -117,11 +126,11 @@ export default {
       })
     },
     getGlobalEnv () {
-      getWorkflowglobalVars(this.job.name, jsyaml.dump(this.workflowInfo)).then(
-        res => {
-          this.globalEnv = res
-        }
-      )
+      const params = cloneDeep(this.workflowInfo)
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
     },
     getData () {
       delete this.job.isCreate

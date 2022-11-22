@@ -294,9 +294,8 @@ export default {
         this.$refs.buildEnvRef.initData()
 
         // Automatic selection of local clusters
-        this.$nextTick(() => {
-          this.$refs.advancedConfigRef.initAdvancedConfig(buildConfig)
-        })
+        this.$refs.advancedConfigRef.initAdvancedConfig(buildConfig)
+
         if (!buildConfig.id && buildConfig.repos.length === 0) {
           this.$refs.repoSelectRef.addFirstBuildRepo()
         }

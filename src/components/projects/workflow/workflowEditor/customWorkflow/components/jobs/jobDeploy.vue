@@ -37,7 +37,7 @@
           isFixed
           isRuntime
           isOther
-          @change="handleEnvChange(job.spec)"
+          @change="handleEnvChange(job.spec, job.spec.envType)"
           style="display: inline-block;"
         />
       </el-form-item>
@@ -85,6 +85,7 @@ import { listProductAPI, getWorkflowglobalVars } from '@/api'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config'
 import jsyaml from 'js-yaml'
+import { cloneDeep } from 'lodash'
 
 export default {
   name: 'JobDeploy',
@@ -108,6 +109,14 @@ export default {
     job: {
       type: Object,
       default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
   components: {
@@ -146,15 +155,18 @@ export default {
         this.envList = res
       })
     },
-    handleEnvChange (row) {
+    handleEnvChange (row, command) {
       row.env = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
     },
     getGlobalEnv () {
-      getWorkflowglobalVars(this.job.name, jsyaml.dump(this.workflowInfo)).then(
-        res => {
-          this.globalEnv = res
-        }
-      )
+      const params = cloneDeep(this.workflowInfo)
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
     },
     getData () {
       this.job.spec.service_and_images.forEach(item => {

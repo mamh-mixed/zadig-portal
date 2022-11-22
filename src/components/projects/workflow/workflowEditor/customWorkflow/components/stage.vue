@@ -251,6 +251,7 @@ export default {
       this.$store.dispatch('setCurOperateType', 'jobChange')
       this.JobIndex = index
       this.$store.dispatch('setIsShowFooter', true)
+      this.$store.dispatch('setIsEditJob', true)
     },
     setJob (newVal) {
       if (Object.keys(newVal).length === 0) {
