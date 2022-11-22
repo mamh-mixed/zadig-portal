@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item label="环境" :required="job.spec.envType && job.spec.envType !== 'runtime'">
         <el-form-item prop="spec.env" v-if="!job.spec.envType ||job.spec.envType === 'runtime'" class="form-item">
-          <el-select v-model="job.spec.env" placeholder="请选择" size="small" clearable>
+          <el-select v-model="job.spec.env" placeholder="请选择" size="small" clearable style="width: 220px;">
             <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
@@ -17,7 +17,7 @@
           class="form-item"
           :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.env" placeholder="请选择" size="small">
+          <el-select v-model="job.spec.env" placeholder="请选择" size="small" style="width: 220px;">
             <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
@@ -28,7 +28,7 @@
           class="form-item"
           :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.env" placeholder="请选择" filterable size="small">
+          <el-select v-model="job.spec.env" placeholder="请选择" filterable size="small" style="width: 220px;">
             <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
@@ -43,7 +43,15 @@
       </el-form-item>
       <el-form-item label="服务" :required="job.spec.serviceType && job.spec.serviceType!=='runtime'">
         <el-form-item prop="spec.service_and_images" v-if="!job.spec.serviceType || job.spec.serviceType === 'runtime'" class="form-item">
-          <el-select size="small" v-model="job.spec.service_and_images" multiple filterable clearable value-key="value">
+          <el-select
+            size="small"
+            v-model="job.spec.service_and_images"
+            multiple
+            filterable
+            clearable
+            value-key="value"
+            style="width: 220px;"
+          >
             <el-option
               v-for="(service,index) in originServiceAndBuilds"
               :key="index"
@@ -59,7 +67,7 @@
           class="form-item"
           :rules="{required: true, message: '请选择服务', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.job_name" placeholder="请选择" size="small">
+          <el-select v-model="job.spec.job_name" placeholder="请选择" size="small" style="width: 220px;">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>
