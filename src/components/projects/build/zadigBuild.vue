@@ -218,6 +218,7 @@ export default {
             ])
           }
         }
+        this.buildConfig = { ...cloneDeep(initBuildConfig), ...cloneDeep(nVal) }
       },
       deep: true,
       immediate: true
@@ -285,6 +286,7 @@ export default {
       if (!buildConfig) {
         buildConfig = this.buildConfig
       }
+      console.log(buildConfig)
       // template_id: useTemplate
       if (!buildConfig.template_id) {
         this.$refs.otherStepsRef.initStepStatus(buildConfig.post_build)
@@ -292,8 +294,9 @@ export default {
         this.$refs.buildEnvRef.initData()
 
         // Automatic selection of local clusters
-        this.$refs.advancedConfigRef.initAdvancedConfig(buildConfig)
-
+        this.$nextTick(() => {
+          this.$refs.advancedConfigRef.initAdvancedConfig(buildConfig)
+        })
         if (!buildConfig.id && buildConfig.repos.length === 0) {
           this.$refs.repoSelectRef.addFirstBuildRepo()
         }
