@@ -348,7 +348,25 @@ export default {
         owner: false,
         repo: false,
         branch: false
-      }
+      },
+      codeInfoRepoOwnerCache: {
+
+      },
+      codeInfoRepoNameCache: [
+        {
+          codehostId: 0,
+          repoOwner: '',
+          repoNames: []
+        }
+      ],
+      codeInfoRepoBranchCache: [
+        {
+          codehostId: 0,
+          repoOwner: '',
+          repoName: '',
+          branches: []
+        }
+      ]
     }
   },
   props: {
@@ -691,10 +709,19 @@ export default {
         this.targets[targetIndex].repos[repoIndex].branch = ''
       }
     },
-    getInitRepoInfo (targets) {
-      targets.forEach((target, targetIndex) => {
+    makeRepoOwnerCache (codehostId, repoOwners) {
+      if (!this.codeInfoRepoOwnerCache[codehostId]) {
+        this.$set(this.codeInfoRepoOwnerCache, codehostId, {
+          repoOwners: repoOwners
+        })
+      }
+    },
+    async getInitRepoInfo (targets) {
+      for (let targetIndex = 0; targetIndex < targets.length; targetIndex++) {
+        const target = targets[targetIndex]
         this.$set(this.codeInfo, targetIndex, {})
-        target.repos.forEach((repo, repoIndex) => {
+        for (let repoIndex = 0; repoIndex < target.repos.length; repoIndex++) {
+          const repo = target.repos[repoIndex]
           const codehostId = repo.codehost_id
           const repoOwner = repo.source === 'other' ? 'other' : repo.repo_owner
           const repoName = repo.source === 'other' ? 'other' : repo.repo_name
@@ -705,17 +732,32 @@ export default {
             loading: this.$utils.cloneObj(this.loading)
           })
           if (codehostId) {
-            getRepoOwnerByIdAPI(codehostId).then(res => {
+            if (this.codeInfoRepoOwnerCache[codehostId] && this.codeInfoRepoOwnerCache[codehostId].repoOwners.length > 0) {
               this.$set(
                 this.codeInfo[targetIndex][repoIndex],
                 'repo_owners',
-                orderBy(res, ['name'])
+                orderBy(this.codeInfoRepoOwnerCache[codehostId].repoOwners, ['name'])
               )
               this.$set(
                 this.codeInfo[targetIndex][repoIndex],
                 'origin_repo_owners',
-                orderBy(res, ['name'])
+                orderBy(this.codeInfoRepoOwnerCache[codehostId].repoOwners, ['name'])
               )
+            } else {
+              const repoOwners = await getRepoOwnerByIdAPI(codehostId)
+              if (repoOwners) {
+                this.makeRepoOwnerCache(codehostId, repoOwners)
+                this.$set(
+                  this.codeInfo[targetIndex][repoIndex],
+                  'repo_owners',
+                  orderBy(repoOwners, ['name'])
+                )
+                this.$set(
+                  this.codeInfo[targetIndex][repoIndex],
+                  'origin_repo_owners',
+                  orderBy(repoOwners, ['name'])
+                )
+              }
               const item = this.codeInfo[targetIndex][
                 repoIndex
               ].repo_owners.find(item => {
@@ -731,15 +773,15 @@ export default {
                 this.$set(
                   this.codeInfo[targetIndex][repoIndex],
                   'repos',
-                  orderBy(res, ['name'])
+                  orderBy(repoNames, ['name'])
                 )
                 this.$set(
                   this.codeInfo[targetIndex][repoIndex],
                   'origin_repos',
-                  orderBy(res, ['name'])
+                  orderBy(repoNames, ['name'])
                 )
               })
-            })
+            }
             getBranchInfoByIdAPI(
               codehostId,
               repo.repo_namespace,
@@ -757,8 +799,93 @@ export default {
               )
             })
           }
-        })
-      })
+        }
+      }
+      // targets.forEach(async (target, targetIndex) => {
+      //   target.repos.forEach(async (repo, repoIndex) => {
+      //     const codehostId = repo.codehost_id
+      //     const repoOwner = repo.source === 'other' ? 'other' : repo.repo_owner
+      //     const repoName = repo.source === 'other' ? 'other' : repo.repo_name
+      //     this.$set(this.codeInfo[targetIndex], repoIndex, {
+      //       repo_owners: [],
+      //       repos: [],
+      //       branches: [],
+      //       loading: this.$utils.cloneObj(this.loading)
+      //     })
+      //     if (codehostId) {
+      //       console.log(this.codeInfoRepoOwnerCache)
+      //       console.log(codehostId)
+      //       console.log(this.codeInfoRepoOwnerCache[67])
+      //       if (this.codeInfoRepoOwnerCache[codehostId] && this.codeInfoRepoOwnerCache[codehostId].repoOwners.length > 0) {
+      //         // this.$set(
+      //         //   this.codeInfo[targetIndex][repoIndex],
+      //         //   'repo_owners',
+      //         //   orderBy(this.codeInfoRepoOwnerCache[codehostId].repoOwners, ['name'])
+      //         // )
+      //         // this.$set(
+      //         //   this.codeInfo[targetIndex][repoIndex],
+      //         //   'origin_repo_owners',
+      //         //   orderBy(this.codeInfoRepoOwnerCache[codehostId].repoOwners, ['name'])
+      //         // )
+      //       } else {
+      //         const repoOwners = await getRepoOwnerByIdAPI(codehostId)
+      //         if (repoOwners) {
+      //           this.makeRepoOwnerCache(codehostId, repoOwners)
+      //           this.$set(
+      //             this.codeInfo[targetIndex][repoIndex],
+      //             'repo_owners',
+      //             orderBy(repoOwners, ['name'])
+      //           )
+      //           this.$set(
+      //             this.codeInfo[targetIndex][repoIndex],
+      //             'origin_repo_owners',
+      //             orderBy(repoOwners, ['name'])
+      //           )
+      //         }
+      //         const item = this.codeInfo[targetIndex][
+      //           repoIndex
+      //         ].repo_owners.find(item => {
+      //           return item.path === repoOwner
+      //         })
+      //         const type = item ? item.kind : 'group'
+      //         const repoNames = await getRepoNameByIdAPI(
+      //           codehostId,
+      //           type,
+      //           encodeURI(repoOwner),
+      //           ''
+      //         )
+      //         if (repoNames) {
+      //           this.$set(
+      //             this.codeInfo[targetIndex][repoIndex],
+      //             'repos',
+      //             orderBy(repoNames, ['name'])
+      //           )
+      //           this.$set(
+      //             this.codeInfo[targetIndex][repoIndex],
+      //             'origin_repos',
+      //             orderBy(repoNames, ['name'])
+      //           )
+      //         }
+      //       }
+      //       getBranchInfoByIdAPI(
+      //         codehostId,
+      //         repo.repo_namespace,
+      //         repoName
+      //       ).then(res => {
+      //         this.$set(
+      //           this.codeInfo[targetIndex][repoIndex],
+      //           'branches',
+      //           res || []
+      //         )
+      //         this.$set(
+      //           this.codeInfo[targetIndex][repoIndex],
+      //           'origin_branches',
+      //           res || []
+      //         )
+      //       })
+      //     }
+      //   })
+      // })
     },
     searchProject (targetIndex, repoIndex, query) {
       const id = this.targets[targetIndex].repos[repoIndex].codehost_id
