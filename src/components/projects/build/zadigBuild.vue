@@ -136,7 +136,8 @@ const initBuildConfig = {
     envs: [],
     enable_proxy: false,
     enable_gocov: false,
-    parameters: []
+    parameters: [],
+    outputs: [{ name: 'IMAGE' }, { name: 'PKG_FILE' }]
   },
   scripts: '#!/bin/bash\nset -e',
   post_build: {}
@@ -209,6 +210,17 @@ export default {
   watch: {
     buildConfigData: {
       handler (nVal, oVal) {
+        if (nVal.pre_build) {
+          if (
+            (!nVal.pre_build.outputs) ||
+            (nVal.pre_build.outputs && nVal.pre_build.outputs.length === 0)
+          ) {
+            this.$set(nVal.pre_build, 'outputs', [
+              { name: 'IMAGE' },
+              { name: 'PKG_FILE' }
+            ])
+          }
+        }
         this.buildConfig = { ...cloneDeep(initBuildConfig), ...cloneDeep(nVal) }
       },
       deep: true,

@@ -32,7 +32,14 @@
             <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
-        <EnvTypeSelect v-model="job.spec.envType" isFixed isRuntime isOther style="display: inline-block;" />
+        <EnvTypeSelect
+          v-model="job.spec.envType"
+          isFixed
+          isRuntime
+          isOther
+          @change="handleEnvChange(job.spec)"
+          style="display: inline-block;"
+        />
       </el-form-item>
       <el-form-item label="服务" :required="job.spec.serviceType && job.spec.serviceType!=='runtime'">
         <el-form-item prop="spec.service_and_images" v-if="!job.spec.serviceType || job.spec.serviceType === 'runtime'" class="form-item">
@@ -74,9 +81,10 @@
 </template>
 
 <script>
-import { listProductAPI } from '@/api'
+import { listProductAPI, getWorkflowglobalVars } from '@/api'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config'
+import jsyaml from 'js-yaml'
 
 export default {
   name: 'JobDeploy',
@@ -89,10 +97,10 @@ export default {
       type: Object,
       default: () => ({})
     },
-    globalEnv: {
-      type: Array,
-      default: () => []
-    },
+    // globalEnv: {
+    //   type: Array,
+    //   default: () => []
+    // },
     originServiceAndBuilds: {
       type: Array,
       default: () => []
@@ -109,7 +117,8 @@ export default {
     return {
       validateJobName,
       formLabelWidth: '90px',
-      envList: []
+      envList: [],
+      globalEnv: []
     }
   },
   computed: {
@@ -128,6 +137,7 @@ export default {
   },
   created () {
     this.getEnvList()
+    this.getGlobalEnv()
   },
   methods: {
     getEnvList () {
@@ -135,6 +145,16 @@ export default {
       listProductAPI(projectName).then(res => {
         this.envList = res
       })
+    },
+    handleEnvChange (row) {
+      row.env = ''
+    },
+    getGlobalEnv () {
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(this.workflowInfo)).then(
+        res => {
+          this.globalEnv = res
+        }
+      )
     },
     getData () {
       this.job.spec.service_and_images.forEach(item => {

@@ -234,7 +234,8 @@ export default {
           hook_ctl: {
             enabled: true,
             items: []
-          }
+          },
+          outputs: []
           // schedules: { // for timing trigger
           //   enabled: false,
           //   items: []

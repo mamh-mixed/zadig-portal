@@ -77,6 +77,7 @@
                 class="mg-b24"
                 :globalEnv="globalEnv"
                 :ref="jobType.build"
+                :workflowInfo="payload"
               />
               <el-select size="small" v-model="service" multiple filterable clearable>
                 <el-option
@@ -106,7 +107,7 @@
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
               >+ 添加</el-button>
             </div>
-            <JobPlugin v-if="job.type === jobType.plugin" :job="job" :ref="jobType.plugin" :globalEnv="globalEnv" />
+            <JobPlugin v-if="job.type === jobType.plugin" :job="job" :ref="jobType.plugin" :globalEnv="globalEnv" :workflowInfo="payload" />
             <JobDeploy
               :projectName="projectName"
               v-if="job.type === jobType.deploy"
@@ -853,8 +854,7 @@ export default {
       )
       if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
         this.$nextTick(() => {
-          this.$refs[this.job.type] &&
-            this.$refs[this.job.type].initOpe()
+          this.$refs[this.job.type] && this.$refs[this.job.type].initOpe()
         })
       }
     },

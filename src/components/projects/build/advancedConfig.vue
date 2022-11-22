@@ -112,6 +112,19 @@
         <div slot="label" style="width: 110px; line-height: 20px;">使用宿主机 Docker daemon</div>
         <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
       </el-form-item>
+      <div class="item-title">
+        输出变量
+        <el-tooltip effect="dark" :content="fromWorkflow?'将脚本中的环境变量定义为输出变量，供其他任务使用': '将脚本中的环境变量定义为输出变量，供「自定义工作流」中的其他任务使用'" placement="top">
+          <i class="pointer el-icon-question"></i>
+        </el-tooltip>
+      </div>
+      <el-form-item label="变量">
+        <div v-for="(item,index) in currentResource.outputs" :key="index">
+          <el-input v-model="currentResource.outputs[index].name" placeholder="请输入变量" size="small" :disabled="item.name==='IMAGE'||item.name==='PKG_FILE'"></el-input>
+          <el-button v-if="item.name!=='IMAGE'&&item.name!=='PKG_FILE'" @click="delVars(index)" type="danger" size="mini" icon="el-icon-minus" circle plain></el-button>
+        </div>
+        <el-button type="text" @click="addVars">+添加</el-button>
+      </el-form-item>
     </el-form>
   </section>
 </template>
@@ -138,6 +151,10 @@ export default {
       type: Boolean
     },
     hiddenSystem: {
+      default: false,
+      type: Boolean
+    },
+    fromWorkflow: {
       default: false,
       type: Boolean
     },
@@ -238,6 +255,15 @@ export default {
         this.$emit('validateFailed')
         return Promise.reject('advancedConfigCacheValid')
       })
+    },
+    addVars () {
+      if (!this.currentResource.outputs) {
+        this.$set(this.currentResource, 'outputs', [])
+      }
+      this.currentResource.outputs.push({ name: '' })
+    },
+    delVars (index) {
+      this.currentResource.outputs.splice(index, 1)
     }
   },
   watch: {
@@ -278,6 +304,10 @@ export default {
     font-weight: 300;
     font-size: 14px;
     line-height: 28px;
+
+    .pointer {
+      cursor: pointer;
+    }
   }
 
   /deep/.el-form.build-advanced-form {

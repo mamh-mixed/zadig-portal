@@ -35,6 +35,7 @@
             :buildConfig="job.spec"
             :secondaryProp="`properties`"
             :validObj="validObj"
+            fromWorkflow
             @validateFailed="advanced_setting_modified = true"
             hiddenCache
             useDockerDaemon
@@ -54,8 +55,8 @@ import EnvVariable from '@/components/projects/build/envVariable.vue'
 import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import OtherSteps from '../otherSteps.vue'
 import { buildEnvs, validateJobName } from '../../config.js'
-
-import { getCodeSourceMaskedAPI } from '@api'
+import jsyaml from 'js-yaml'
+import { getCodeSourceMaskedAPI, getWorkflowglobalVars } from '@api'
 
 export default {
   name: 'JobFreestyle',
@@ -69,7 +70,8 @@ export default {
         title: '',
         vars: buildEnvs
       },
-      allCodeHosts: []
+      allCodeHosts: [],
+      globalEnv: []
     }
   },
   props: {
@@ -80,11 +82,11 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
-    },
-    globalEnv: {
-      type: Array,
-      default: () => []
     }
+    // globalEnv: {
+    //   type: Array,
+    //   default: () => []
+    // }
   },
   computed: {
     steps () {
@@ -114,6 +116,13 @@ export default {
         }
       })
     },
+    getGlobalEnv () {
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(this.workflowInfo)).then(
+        res => {
+          this.globalEnv = res
+        }
+      )
+    },
     getData () {
       delete this.job.isCreate
       const payload = this.$utils.cloneObj(this.job)
@@ -135,6 +144,7 @@ export default {
     getCodeSourceMaskedAPI(key).then(response => {
       this.allCodeHosts = response
     })
+    this.getGlobalEnv()
   },
   components: {
     Editor,

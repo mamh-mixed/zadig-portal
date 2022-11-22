@@ -101,7 +101,8 @@ const initBuildConfig = {
     envs: [],
     enable_proxy: false,
     enable_gocov: false,
-    parameters: []
+    parameters: [],
+    outputs: []
   },
   scripts: '#!/bin/bash\nset -e',
   post_build: {}

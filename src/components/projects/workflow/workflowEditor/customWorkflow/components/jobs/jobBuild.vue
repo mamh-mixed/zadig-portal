@@ -79,7 +79,14 @@
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+            <EnvTypeSelect
+              v-model="scope.row.command"
+              isFixed
+              isRuntime
+              isOther
+              @change="handleEnvChange(scope.row)"
+              style="display: inline-block;"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -125,9 +132,14 @@
 
 <script>
 import { jobType, buildTabList, validateJobName } from '../../config'
-import { getAllBranchInfoAPI, getRegistryWhenBuildAPI } from '@api'
+import {
+  getAllBranchInfoAPI,
+  getRegistryWhenBuildAPI,
+  getWorkflowglobalVars
+} from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
+import jsyaml from 'js-yaml'
 export default {
   name: 'JobBuild',
   props: {
@@ -139,11 +151,15 @@ export default {
       type: Array,
       default: () => []
     },
-    globalEnv: {
-      type: Array,
-      default: () => []
-    },
+    // globalEnv: {
+    //   type: Array,
+    //   default: () => []
+    // },
     job: {
+      type: Object,
+      default: () => ({})
+    },
+    workflowInfo: {
       type: Object,
       default: () => ({})
     }
@@ -157,7 +173,8 @@ export default {
       isShowBranchDialog: false,
       isShowVarDialog: false,
       curItem: {},
-      dockerList: []
+      dockerList: [],
+      globalEnv: []
     }
   },
   computed: {
@@ -189,9 +206,12 @@ export default {
   created () {
     this.setServiceBuilds()
     this.getRegistryWhenBuild()
+    this.getGlobalEnv()
   },
   methods: {
-    // validateJob: validateJobName,
+    handleEnvChange (row) {
+      row.value = ''
+    },
     delServiceAndBuild (index) {
       this.serviceAndBuilds.splice(index, 1)
       this.$emit('input', this.serviceAndBuilds)
@@ -207,12 +227,11 @@ export default {
         const res = this.originServiceAndBuilds.find(
           build => build.service_name === item.service_name
         )
-        this.$set(item, 'module_builds', res.module_builds)
+        this.$set(item, 'module_builds', res ? res.module_builds : [])
 
         // set repos
-        const result = item.module_builds.find(
-          build => build.name === item.build_name
-        ) || []
+        const result =
+          item.module_builds.find(build => build.name === item.build_name) || []
         const originRepos = differenceWith(
           result.repos || [],
           item.repos,
@@ -281,6 +300,13 @@ export default {
       }
       this.curItem = cloneDeep(item)
     },
+    getGlobalEnv () {
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(this.workflowInfo)).then(
+        res => {
+          this.globalEnv = res
+        }
+      )
+    },
     saveCurSetting (type) {
       this.serviceAndBuilds.forEach((item, index) => {
         if (item.build_name === this.curItem.build_name) {
@@ -325,8 +351,10 @@ export default {
     }
   },
   watch: {
-    isShowFooter () {
-      this.setServiceBuilds()
+    isShowFooter (val) {
+      if (val) {
+        this.setServiceBuilds()
+      }
     }
   }
 }
