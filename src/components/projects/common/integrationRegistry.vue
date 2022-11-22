@@ -82,6 +82,7 @@
 <script>
 import { createRegistryAPI } from '@api'
 import { keyBy } from 'lodash'
+import { mapState } from 'vuex'
 export default {
   name: 'IntegrationRegistry',
   data () {
@@ -95,80 +96,172 @@ export default {
         region: '',
         is_default: true
       },
-      providers: [
-        {
-          value: 'acr',
-          label: '阿里云 ACR',
-          reg_addr: '地址',
-          namespace: '命名空间',
-          access_key: 'Docker 用户名',
-          secret_key: 'Docker 密码',
-          icon: 'iconfont logo iconaliyun'
-        },
-        {
-          value: 'swr',
-          label: '华为云 SWR',
-          reg_addr: '地址',
-          namespace: '组织名称',
-          region: '区域',
-          access_key: 'Access Key',
-          secret_key: 'Secret Key',
-          icon: 'iconfont logo iconhuawei'
-        },
-
-        {
-          value: 'tcr',
-          label: '腾讯云 TCR',
-          reg_addr: '地址',
-          namespace: '命名空间',
-          access_key: 'Docker 用户名',
-          secret_key: 'Docker 密码',
-          icon: 'iconfont logo icontengxunyun'
-        },
-        {
-          value: 'harbor',
-          label: 'Harbor',
-          reg_addr: '地址',
-          namespace: '项目',
-          access_key: 'Docker 用户名',
-          secret_key: 'Docker 密码',
-          icon: 'iconfont logo iconHarbor'
-        },
-        {
-          value: 'dockerhub',
-          label: 'DockerHub',
-          reg_addr: '地址',
-          namespace: 'Organization',
-          access_key: 'Docker 用户名',
-          secret_key: 'Docker 密码',
-          icon: 'iconfont logo icondocker'
-        },
-        {
-          value: 'ecr',
-          label: 'Amazon ECR',
-          reg_addr: 'URI',
-          namespace: '',
-          region: 'Region',
-          access_key: 'Access Key ID',
-          secret_key: 'Secret Access Key',
-          icon: 'iconfont logo icondocker'
-        },
-        {
-          value: 'native',
-          label: '其他',
-          reg_addr: '地址',
-          namespace: 'Namespace',
-          access_key: 'Docker 用户名',
-          secret_key: 'Docker 密码',
-          icon: 'iconfont logo iconqita'
-        }
-      ],
       rules: {
         reg_provider: [{ required: true, message: '请选择镜像仓库提供商', trigger: ['blur'] }]
       }
     }
   },
   computed: {
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    }),
+    providers () {
+      if (this.hasPlutus) {
+        return [
+          {
+            value: 'acr',
+            label: '阿里云 ACR',
+            reg_addr: '地址',
+            namespace: '命名空间',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo iconaliyun'
+          },
+          {
+            value: 'acr-enterprise',
+            label: '阿里云 ACR（企业版）',
+            reg_addr: '地址',
+            namespace: '命名空间',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo iconaliyun'
+          },
+          {
+            value: 'swr',
+            label: '华为云 SWR',
+            reg_addr: '地址',
+            namespace: '组织名称',
+            region: '区域',
+            access_key: 'Access Key',
+            secret_key: 'Secret Key',
+            icon: 'iconfont logo iconhuawei'
+          },
+          {
+            value: 'tcr',
+            label: '腾讯云 TCR',
+            reg_addr: '地址',
+            namespace: '命名空间',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo icontengxunyun'
+          },
+          {
+            value: 'tcr',
+            label: '腾讯云 TCR（企业版）',
+            reg_addr: '地址',
+            namespace: '命名空间',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo icontengxunyun'
+          },
+          {
+            value: 'harbor',
+            label: 'Harbor',
+            reg_addr: '地址',
+            namespace: '项目',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo iconHarbor'
+          },
+          {
+            value: 'dockerhub',
+            label: 'DockerHub',
+            reg_addr: '地址',
+            namespace: 'Organization',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo icondocker'
+          },
+          {
+            value: 'ecr',
+            label: 'Amazon ECR',
+            reg_addr: 'URI',
+            namespace: '',
+            region: 'Region',
+            access_key: 'Access Key ID',
+            secret_key: 'Secret Access Key',
+            icon: 'iconfont logo iconaws'
+          },
+          {
+            value: 'native',
+            label: '其他',
+            reg_addr: '地址',
+            namespace: 'Namespace',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo iconqita'
+          }
+        ]
+      } else {
+        return [
+          {
+            value: 'acr',
+            label: '阿里云 ACR',
+            reg_addr: '地址',
+            namespace: '命名空间',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo iconaliyun'
+          },
+          {
+            value: 'swr',
+            label: '华为云 SWR',
+            reg_addr: '地址',
+            namespace: '组织名称',
+            region: '区域',
+            access_key: 'Access Key',
+            secret_key: 'Secret Key',
+            icon: 'iconfont logo iconhuawei'
+          },
+          {
+            value: 'tcr',
+            label: '腾讯云 TCR',
+            reg_addr: '地址',
+            namespace: '命名空间',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo icontengxunyun'
+          },
+          {
+            value: 'harbor',
+            label: 'Harbor',
+            reg_addr: '地址',
+            namespace: '项目',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo iconHarbor'
+          },
+          {
+            value: 'dockerhub',
+            label: 'DockerHub',
+            reg_addr: '地址',
+            namespace: 'Organization',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo icondocker'
+          },
+          {
+            value: 'ecr',
+            label: 'Amazon ECR',
+            reg_addr: 'URI',
+            namespace: '',
+            region: 'Region',
+            access_key: 'Access Key ID',
+            secret_key: 'Secret Access Key',
+            icon: 'iconfont logo iconaws'
+          },
+          {
+            value: 'native',
+            label: '其他',
+            reg_addr: '地址',
+            namespace: 'Namespace',
+            access_key: 'Docker 用户名',
+            secret_key: 'Docker 密码',
+            icon: 'iconfont logo iconqita'
+          }
+        ]
+      }
+    },
     providerMap () {
       return keyBy(this.providers, 'value')
     }

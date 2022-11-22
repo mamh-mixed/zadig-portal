@@ -105,7 +105,7 @@ http.interceptors.response.use(
       return response
     } else if (isInReg) {
       return response
-    } else if (response.data.code === 10000) {
+    } else if (response.data && response.data.code && response.data.code === 10000) {
       const currentRoute = Router.history.current
       if (currentRoute.fullPath.startsWith(userInitEnvRoute)) {
         return response.data
@@ -911,23 +911,6 @@ export function getTagsInfoByIdAPI (id, repoOwner, repoName, page = 1, perPage =
   return http.get(`/api/aslan/code/codehost/${id}/tags`, { params })
 }
 
-// GitHub App
-export function getGithubAppAPI (payload) {
-  return http.get(`/api/aslan/system/githubApp`, payload)
-}
-
-export function createGithubAppAPI (payload) {
-  return http.post(`/api/aslan/system/githubApp`, payload)
-}
-
-export function updateGithubAppAPI (payload) {
-  return http.post(`/api/aslan/system/githubApp`, payload)
-}
-
-export function deleteGithubAppAPI (id) {
-  return http.delete(`/api/aslan/system/githubApp/${id}`)
-}
-
 // Account
 export function getConnectorsAPI (key) {
   return http.get(`/api/v1/connectors?encryptedKey=${key}`)
@@ -1671,6 +1654,10 @@ export function saveHelmTemplateVariableAPI (name, payload) {
   return http.put(`/api/aslan/template/charts/${name}/variables`, payload)
 }
 
+export function getHelmTemplateReferenceAPI (chartName) {
+  return http.get(`/api/aslan/template/charts/${chartName}/reference`)
+}
+
 // Template Dockerfile
 export function getDockerfileTemplatesAPI (projectName = '') {
   return http.get(`/api/aslan/template/dockerfile?page_num=1&page_size=9999&projectName=${projectName}`)
@@ -1770,6 +1757,10 @@ export function deleteBuildTemplateAPI (id) {
   return http.delete(`/api/aslan/template/build/${id}`)
 }
 
+export function getBuildTemplateReferenceAPI (id) {
+  return http.get(`/api/aslan/template/build/${id}/reference`)
+}
+
 // Template Workflow
 export function getWorkflowTemplateListAPI (category, excludeBuildIn = false, projectName) {
   return http.get(`/api/aslan/template/workflow?category=${category}&excludeBuildIn=${excludeBuildIn}&projectName=${projectName}`)
@@ -1851,7 +1842,7 @@ export function getValuesYamlFromGitAPI ({ codehostID, owner, repo, branch, valu
       owner,
       repo,
       branch,
-      valuesPaths: valuesPaths.length > 0 ? valuesPaths.join(',') : valuesPath,
+      valuesPaths: valuesPaths.length > 0 && valuesPaths[0] ? valuesPaths.join(',') : valuesPath,
       namespace: namespace || owner
     }
   })

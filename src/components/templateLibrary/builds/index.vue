@@ -3,7 +3,7 @@
     <div class="service-wrap">
       <div class="service-container">
         <multipane class="vertical-panes" layout="vertical">
-          <div class="file-tree-container" :style="{width: '240px', maxWidth: '400px'}">
+          <div class="file-tree-container" :style="{width: '400px', maxWidth: '400px'}">
             <FileTree
               :files="templates"
               :configChanged="configChanged"
@@ -26,13 +26,24 @@
                   @onUpdateFile="onUpdateFile"
                 />
               </div>
+              <multipane-resizer></multipane-resizer>
+              <aside class="service-aside service-aside-right" :style="{ flexGrow: 1 }">
+                <FileAside :isEdit="isEdit" :buildConfig="buildConfigStatus" />
+              </aside>
             </template>
           </template>
           <div v-else class="no-content">
             <img src="@assets/icons/illustration/editorNoService.svg" alt />
             <p v-if="templates.length === 0">
               暂无模板，点击
-              <el-button v-hasPermi="{type: 'system', action: 'create_template'}" size="mini" icon="el-icon-plus" @click="createFile()" plain circle></el-button>创建模板
+              <el-button
+                v-hasPermi="{type: 'system', action: 'create_template'}"
+                size="mini"
+                icon="el-icon-plus"
+                @click="createFile()"
+                plain
+                circle
+              ></el-button>创建模板
             </p>
             <p v-else-if="file.name==='模板列表' && templates.length >0">请在左侧选择需要编辑的模板</p>
             <p v-else-if="!file.name && templates.length >0">请在左侧选择需要编辑的模板</p>
@@ -102,7 +113,7 @@ export default {
           {},
           {
             name: name,
-            rightbar: 'var'
+            rightbar: 'reference'
           }
         )
       })

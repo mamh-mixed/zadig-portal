@@ -47,7 +47,7 @@
         <RepoSelect ref="repoSelectRef" :config="buildConfig" :validObj="validObj" class="build-secondary-form" showFirstLine />
       </div>
       <section v-if="useTemplate">
-        <ServiceRepoSelect ref="serviceRepoSelectRef" :serviceTargets="serviceTargets" :targets="buildConfig.target_repos" :currentTemplateEnvs="currentTemplateEnvs" :isCreate="isCreate" :validObj="validObj" :mini="mini" class="build-secondary-form" showFirstLine />
+        <ServiceRepoSelect ref="serviceRepoSelectRef" :serviceTargets="serviceTargets" :targets.sync="buildConfig.target_repos" :currentTemplateEnvs="currentTemplateEnvs" :isCreate="isCreate" :validObj="validObj" :mini="mini" class="build-secondary-form" showFirstLine />
       </section>
       <section v-show="!useTemplate">
         <div class="primary-title not-first-child">构建变量</div>

@@ -293,6 +293,84 @@
                 </el-form-item>
               </div>
             </div>
+            <div v-if="job.type === 'k8s-canary-deploy'">
+              <el-form-item label="K8s service 名称">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  size="medium"
+                  value-key="container_name"
+                  @change="handleK8sServiceChange($event,job)"
+                  style="width: 220px;"
+                >
+                  <el-option v-for="(service,index) of job.spec.targets" :key="index" :label="`${service.container_name}`" :value="service"></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-for="(item,index) in job.pickedTargets" :key="index">
+                <el-form-item :label="`${item.container_name}`">
+                  <el-select
+                    v-model="item.image"
+                    filterable
+                    clearable
+                    reserve-keyword
+                    size="medium"
+                    @change="handleCurImageChange"
+                    style="width: 220px;"
+                    placeholder="请选择镜像"
+                  >
+                    <el-option
+                      v-for="(image,index) of item.images"
+                      :key="index"
+                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                      :label="image.tag"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </div>
+            <div style="color: #666;" v-if="job.type === 'k8s-canary-release'">无需输入变量</div>
+            <div v-if="job.type === 'k8s-blue-green-deploy'">
+              <el-form-item label="K8s service 名称">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="container_name"
+                  size="medium"
+                  @change="handleK8sServiceChange($event,job)"
+                  style="width: 220px;"
+                >
+                  <el-option v-for="(service,index) of job.spec.targets" :key="index" :label="`${service.container_name}`" :value="service"></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-for="(item,index) in job.pickedTargets" :key="index">
+                <el-form-item :label="`${item.container_name}`">
+                  <el-select
+                    v-model="item.image"
+                    filterable
+                    clearable
+                    reserve-keyword
+                    size="medium"
+                    @change="handleCurImageChange"
+                    style="width: 220px;"
+                    placeholder="请选择镜像"
+                  >
+                    <el-option
+                      v-for="(image,index) of item.images"
+                      :key="index"
+                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                      :label="image.tag"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </div>
+            <div style="color: #666;" v-if="job.type === 'k8s-blue-green-release'">无需输入变量</div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job" />
             </div>

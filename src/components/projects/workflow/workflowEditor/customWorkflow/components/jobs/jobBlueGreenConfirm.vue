@@ -54,7 +54,6 @@ export default {
       return jobs
     }
   },
-  created () {},
   methods: {
     getData () {
       return this.job

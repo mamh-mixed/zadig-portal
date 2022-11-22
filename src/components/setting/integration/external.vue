@@ -5,14 +5,9 @@
 </template>
 
 <script>
-import Jira from './jira.vue'
-import Jenkins from './jenkins.vue'
 import Other from './other.vue'
-
 export default {
   components: {
-    Jira,
-    Jenkins,
     Other
   }
 }

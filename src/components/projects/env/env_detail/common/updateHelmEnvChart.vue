@@ -389,6 +389,7 @@ export default {
               owner: envInfo.yaml_data.source_detail.git_repo_config.owner,
               repo: envInfo.yaml_data.source_detail.git_repo_config.repo,
               valuesPaths: [envInfo.yaml_data.source_detail.load_path],
+              valuesPath: envInfo.yaml_data.source_detail.load_path,
               autoSync: envInfo.yaml_data.auto_sync,
               namespace: envInfo.yaml_data.source_detail.git_repo_config.namespace
             }
