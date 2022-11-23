@@ -90,7 +90,8 @@ export default {
               owner: repoConfig.owner,
               repo: repoConfig.repo,
               autoSync: res.yaml_data.auto_sync,
-              valuesPaths: [res.yaml_data.source_detail.load_path]
+              valuesPaths: [res.yaml_data.source_detail.load_path],
+              valuesPath: res.yaml_data.source_detail.load_path
             }
           }
           if (res.yaml_data && res.yaml_data.source === 'variableSet') {

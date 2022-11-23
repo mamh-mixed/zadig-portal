@@ -1,60 +1,18 @@
 <template>
   <div class="doc-link-container">
-    <el-popover placement="bottom" popper-class="doc-link-droplist" trigger="hover">
-      <ul class="dropdown-menu" uib-dropdown-menu>
-        <li>
-          <a href="https://docs.koderover.com/zadig/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>文档站</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://docs.koderover.com/zadig/quick-start/introduction/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>入门</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.koderover.com/tutorials/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>最佳实践</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://docs.koderover.com/zadig/workflow/trigger/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>工作流</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://docs.koderover.com/zadig/env/loadbalance/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>环境</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://docs.koderover.com/zadig/project/overview/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>项目管理</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://docs.koderover.com/zadig/delivery/artifact/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>交付中心</span>
-          </a>
-        </li>
+    <el-popover placement="bottom" popper-class="doc-droplist" trigger="hover">
+      <ul class="dropdown-menu">
+        <span class="title">文档链接</span>
         <li role="separator" class="divider"></li>
-        <li>
-          <a href="https://docs.koderover.com/zadig/settings/codehost/gitlab/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>系统设置</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://docs.koderover.com/zadig/api/usage/" target="_blank">
-            <i class="icon el-icon-link"></i>
-            <span>开发者中心</span>
+        <li v-for="(link, index) in links" :key="index" class="link-container">
+          <a :href="link.url" target="_blank">
+            <span class="icon">
+              <img src="@assets/icons/others/doc.svg" />
+            </span>
+            <div class="info-wrap">
+              <span class="link-name">{{link.name}}</span>
+              <span class="link-desc">{{link.desc}}</span>
+            </div>
           </a>
         </li>
       </ul>
@@ -64,11 +22,63 @@
     </el-popover>
   </div>
 </template>
+<script>
+export default {
+  data () {
+    return {
+      links: [
+        {
+          name: '文档站',
+          desc: 'Zadig 官方文档站入口',
+          url: 'https://docs.koderover.com'
+        },
+        {
+          name: '入门',
+          desc: '了解 Zadig 的业务架构以及核心能力',
+          url: 'https://docs.koderover.com/zadig/quick-start/introduction/'
+        },
+        {
+          name: '最佳实践',
+          desc: '查看来自官方的最佳实践',
+          url: 'https://koderover.com/tutorials/'
+        },
+        {
+          name: '工作流',
+          desc: '学习工作流的配置和使用',
+          url: 'https://docs.koderover.com/zadig/project/workflow/'
+        },
+        {
+          name: '环境',
+          desc: '查看环境的相关操作',
+          url: 'https://docs.koderover.com/zadig/project/env/k8s/'
+        },
+        {
+          name: '项目管理',
+          desc: '了解不同项目的适应场景以及如何创建项目',
+          url: 'https://docs.koderover.com/zadig/project/overview/'
+        },
+        {
+          name: '系统设置',
+          desc: '了解系统中的相关配置项',
+          url: 'https://docs.koderover.com/zadig/settings/codehost/overview'
+        },
+        {
+          name: '开发者中心',
+          desc: '通过 Open API 调用的方式，玩转 Zadig',
+          url: 'https://docs.koderover.com/zadig/api/usage/'
+        }
+      ]
+    }
+  }
+}
+</script>
 <style lang="less">
-.doc-link-droplist {
+.doc-droplist {
   min-width: 0;
 
   .dropdown-menu {
+    display: flex;
+    flex-direction: column;
     padding: 4px 0;
     padding-bottom: 0;
     list-style: none;
@@ -81,32 +91,54 @@
       background-color: #e5e5e5;
     }
 
+    .title {
+      display: flex;
+    }
+
     li {
-      padding: 4px 8px;
+      display: flex;
+    }
 
-      & > a {
-        display: block;
-        clear: both;
-        color: #333;
-        font-weight: normal;
-        line-height: 1.42857143;
-        white-space: nowrap;
-
-        .icon {
-          position: relative;
-          margin-right: 2px;
-          font-size: 16px;
-        }
-      }
+    .link-container {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 10px;
+      border-radius: 6px;
 
       &:hover {
-        color: #262626;
-        text-decoration: none;
         background-color: rgba(0, 102, 255, 0.07);
-        border-radius: 6px;
+      }
 
-        & > a {
-          color: @themeColor;
+      a {
+        display: flex;
+        align-items: center;
+
+        .icon {
+          display: flex;
+          margin-right: 10px;
+
+          img {
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        .info-wrap {
+          display: flex;
+          flex-direction: column;
+
+          .link-name {
+            display: flex;
+            color: rgb(16, 16, 16);
+            font-weight: 500;
+            font-size: 13px;
+          }
+
+          .link-desc {
+            display: flex;
+            color: #909399;
+            font-size: 12px;
+          }
         }
       }
     }

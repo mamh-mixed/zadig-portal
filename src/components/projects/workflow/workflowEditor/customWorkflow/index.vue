@@ -3,9 +3,9 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
-          <CanInput v-model="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
-          <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
+          <CanInput v-model.trim="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
+          <CanInput v-model.trim="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
+          <CanInput v-model.trim="payload.description" :from="activeName" placeholder="描述信息" />
         </div>
         <div class="tab">
           <span
@@ -17,6 +17,7 @@
           >{{item.label}}</span>
         </div>
         <div>
+          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模板</el-button>
           <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
           <el-button size="small" @click="cancelWorkflow">取消</el-button>
         </div>
@@ -115,7 +116,13 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-            <JobFreestyle v-if="job.type === jobType.freestyle" :globalEnv="globalEnv" :ref="jobType.freestyle" :job="job" :workflowInfo="payload" />
+            <JobFreestyle
+              v-if="job.type === jobType.freestyle"
+              :globalEnv="globalEnv"
+              :ref="jobType.freestyle"
+              :job="job"
+              :workflowInfo="payload"
+            />
             <JobK8sDeploy
               :projectName="projectName"
               v-if="job.type === jobType.k8sDeploy"
@@ -133,11 +140,19 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
-             <JobScanning
+            <JobScanning
               :projectName="projectName"
               v-if="job.type === jobType.scanning"
               :job="job"
               :ref="jobType.scanning"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
+            <JobImageDistribute
+              :projectName="projectName"
+              v-if="job.type === jobType.distribute"
+              :job="job"
+              :ref="jobType.distribute"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
@@ -216,6 +231,17 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="保存为模板" :visible.sync="isShowModelDialog" width="30%">
+      <el-form inline ref="modelForm" :model="modelFormInfo">
+        <el-form-item label="模板名称" :rules="{required: true,message: '请填写模板名称', trigger: ['blur', 'change']}" prop="name">
+          <el-input placeholder="请输入模板名称" size="small" v-model="modelFormInfo.name"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer">
+        <el-button @click="isShowModelDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveModel" size="small">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -233,7 +259,9 @@ import {
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
   getCustomWorkflowDetailAPI,
-  checkCustomWorkflowYaml
+  checkCustomWorkflowYaml,
+  addWorkflowTemplateAPI,
+  getWorkflowTemplateDetailAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import CanInput from './components/canInput'
@@ -246,6 +274,7 @@ import JobPlugin from './components/jobs/jobPlugin.vue'
 import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
 import JobScanning from './components/jobs/jobScanning.vue'
+import JobImageDistribute from './components/jobs/jobImageDistribute.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -254,6 +283,7 @@ import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
+import { mapState } from 'vuex'
 const pinyin = require('pinyin')
 
 export default {
@@ -312,7 +342,9 @@ export default {
       globalEnv: [],
       scal: '1',
       insertSatgeIndex: 0,
-      notComputedPayload: {}
+      notComputedPayload: {},
+      isShowModelDialog: false,
+      modelFormInfo: { name: '' }
     }
   },
   components: {
@@ -328,6 +360,7 @@ export default {
     JobK8sDeploy,
     JobTest,
     JobScanning,
+    JobImageDistribute,
     RunCustomWorkflow,
     codemirror,
     Env,
@@ -335,6 +368,9 @@ export default {
     Notify
   },
   computed: {
+    modelId () {
+      return this.$route.query.id
+    },
     projectName () {
       return this.$route.query.projectName
     },
@@ -384,20 +420,34 @@ export default {
         return item.value === this.curDrawer
       })
       return res ? res.drawerHideButton : false
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   created () {
     this.init()
   },
   methods: {
     init () {
+      this.payload.project = this.projectName
       this.getServiceAndBuildList()
       this.setTitle()
-      // edit
-      if (this.isEdit) {
-        this.getWorkflowDetail(this.$route.params.workflow_name)
+      if (this.modelId) {
+        this.getWorkflowTemplateDetail()
+      } else {
+        // edit
+        if (this.isEdit) {
+          this.getWorkflowDetail(this.$route.params.workflow_name)
+        }
       }
       this.$store.dispatch('setIsShowFooter', false)
+    },
+    getWorkflowTemplateDetail () {
+      getWorkflowTemplateDetailAPI(this.modelId, this.projectName).then(res => {
+        this.payload = jsyaml.load(res)
+        this.handleEnv()
+      })
     },
     setTitle () {
       bus.$emit('set-topbar-title', {
@@ -414,7 +464,9 @@ export default {
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {
-            title: this.$route.query.display_name || this.$route.params.workflow_name,
+            title:
+              this.$route.query.display_name ||
+              this.$route.params.workflow_name,
             url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
           }
         ]
@@ -537,36 +589,55 @@ export default {
               })
             }
           }
+          if (job.type === 'zadig-distribute-image') {
+            if (job.spec.source === 'other') {
+              job.spec.source = 'fromjob'
+            }
+          }
         })
       })
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
-      if (this.$route.fullPath.includes('edit')) {
-        updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
-          .then(res => {
-            this.$message.success('保存成功')
-            if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
-              this.$router.push(
-                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
-              )
-            }
-          })
-          .catch(() => {
-            this.payload = this.notComputedPayload
-          })
-      } else {
+      if (this.modelId) {
         addCustomWorkflowAPI(yamlParams, this.projectName)
           .then(res => {
-            this.$message.success('新建成功')
+            this.$message.success('模板保存成功')
             this.getWorkflowDetail(this.payload.name)
             this.$router.push(
-              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}`
+              `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
             )
           })
           .catch(() => {
             this.payload = this.notComputedPayload
           })
+      } else {
+        if (this.$route.fullPath.includes('edit')) {
+          updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
+            .then(res => {
+              this.$message.success('保存成功')
+              if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
+                this.$router.push(
+                  `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
+                )
+              }
+            })
+            .catch(() => {
+              this.payload = this.notComputedPayload
+            })
+        } else {
+          addCustomWorkflowAPI(yamlParams, this.projectName)
+            .then(res => {
+              this.$message.success('新建成功')
+              this.getWorkflowDetail(this.payload.name)
+              this.$router.push(
+                `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
+              )
+            })
+            .catch(() => {
+              this.payload = this.notComputedPayload
+            })
+        }
       }
     },
     cancelWorkflow () {
@@ -575,106 +646,119 @@ export default {
           `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
         )
       } else {
-        this.$router.push(`/v1/projects/detail/${this.projectName}/pipelines?display_name=${this.payload.display_name}`)
+        this.$router.push(
+          `/v1/projects/detail/${this.projectName}/pipelines?display_name=${this.payload.display_name}`
+        )
       }
     },
     getWorkflowDetail (workflow_name) {
       getCustomWorkflowDetailAPI(workflow_name, this.projectName).then(res => {
         this.payload = jsyaml.load(res)
-        this.workflowCurJobLength = this.payload.stages[
-          this.curStageIndex
-        ].jobs.length
-        this.payload.params.forEach(item => {
-          if (item.value.includes('<+fixed>')) {
-            item.command = 'fixed'
-            item.value = item.value.replaceAll('<+fixed>', '')
+        this.handleEnv()
+      })
+    },
+    handleEnv () {
+      this.workflowCurJobLength = this.payload.stages[
+        this.curStageIndex
+      ].jobs.length
+      this.payload.params.forEach(item => {
+        if (item.value.includes('<+fixed>')) {
+          item.command = 'fixed'
+          item.value = item.value.replaceAll('<+fixed>', '')
+        }
+      })
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          if (job.type === 'zadig-build') {
+            if (job.spec && job.spec.service_and_builds) {
+              job.spec.service_and_builds.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.value.includes('<+fixed>')) {
+                    item.command = 'fixed'
+                    item.value = item.value.replaceAll('<+fixed>', '')
+                  }
+                  if (item.value.includes('{{')) {
+                    item.command = 'other'
+                  }
+                })
+              })
+            }
+          }
+          if (job.type === 'zadig-deploy') {
+            if (job.spec.env.includes('fixed')) {
+              job.spec.envType = 'fixed'
+              job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
+            }
+            if (job.spec.env.includes('{{')) {
+              job.spec.envType = 'other'
+            }
+            if (job.spec.service_and_images.length > 0) {
+              job.spec.serviceType = 'runtime'
+            }
+            if (job.spec.source === 'fromjob') {
+              job.spec.serviceType = 'other'
+            }
+            // Mapping for value-key
+            if (
+              job.spec &&
+              job.spec.service_and_images &&
+              job.spec.service_and_images.length > 0
+            ) {
+              job.spec.service_and_images.forEach(service => {
+                service.value = `${service.service_name}/${service.service_module}`
+              })
+            }
+          }
+          if (job.type === 'freestyle') {
+            job.spec.properties.envs.forEach(item => {
+              if (item.value.includes('<+fixed>')) {
+                item.command = 'fixed'
+                item.value = item.value.replaceAll('<+fixed>', '')
+              }
+              if (item.value.includes('{{')) {
+                item.command = 'other'
+              }
+            })
+          }
+          if (job.type === 'plugin') {
+            job.spec.plugin.inputs.forEach(item => {
+              if (item.value && item.value.includes('<+fixed>')) {
+                item.command = 'fixed'
+                item.value = item.value.replaceAll('<+fixed>', '')
+              }
+              if (item.value && item.value.includes('{{')) {
+                item.command = 'other'
+              }
+            })
+          }
+          if (job.type === 'zadig-test') {
+            if (job.spec && job.spec.test_modules) {
+              job.spec.test_modules.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.value.includes('<+fixed>')) {
+                    item.command = 'fixed'
+                    item.value = item.value.replaceAll('<+fixed>', '')
+                  }
+                  if (item.value.includes('{{')) {
+                    item.command = 'other'
+                  }
+                })
+              })
+            }
+          }
+          if (job.type === 'zadig-distribute-image') {
+            job.spec.targets.forEach(item => {
+              item.value = `${item.service_name}/${item.service_module}`
+            })
+            if (job.spec.source === 'fromjob') {
+              job.spec.source = 'other'
+            }
           }
         })
-        this.payload.stages.forEach(stage => {
-          stage.jobs.forEach(job => {
-            if (job.type === 'zadig-build') {
-              if (job.spec && job.spec.service_and_builds) {
-                job.spec.service_and_builds.forEach(service => {
-                  service.key_vals.forEach(item => {
-                    if (item.value.includes('<+fixed>')) {
-                      item.command = 'fixed'
-                      item.value = item.value.replaceAll('<+fixed>', '')
-                    }
-                    if (item.value.includes('{{')) {
-                      item.command = 'other'
-                    }
-                  })
-                })
-              }
-            }
-            if (job.type === 'zadig-deploy') {
-              if (job.spec.env.includes('fixed')) {
-                job.spec.envType = 'fixed'
-                job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
-              }
-              if (job.spec.env.includes('{{')) {
-                job.spec.envType = 'other'
-              }
-              if (job.spec.service_and_images.length > 0) {
-                job.spec.serviceType = 'runtime'
-              }
-              if (job.spec.source === 'fromjob') {
-                job.spec.serviceType = 'other'
-              }
-              // Mapping for value-key
-              if (
-                job.spec &&
-                job.spec.service_and_images &&
-                job.spec.service_and_images.length > 0
-              ) {
-                job.spec.service_and_images.forEach(service => {
-                  service.value = `${service.service_name}/${service.service_module}`
-                })
-              }
-            }
-            if (job.type === 'freestyle') {
-              job.spec.properties.envs.forEach(item => {
-                if (item.value.includes('<+fixed>')) {
-                  item.command = 'fixed'
-                  item.value = item.value.replaceAll('<+fixed>', '')
-                }
-                if (item.value.includes('{{')) {
-                  item.command = 'other'
-                }
-              })
-            }
-            if (job.type === 'plugin') {
-              job.spec.plugin.inputs.forEach(item => {
-                if (item.value && item.value.includes('<+fixed>')) {
-                  item.command = 'fixed'
-                  item.value = item.value.replaceAll('<+fixed>', '')
-                }
-                if (item.value && item.value.includes('{{')) {
-                  item.command = 'other'
-                }
-              })
-            }
-            if (job.type === 'zadig-test') {
-              if (job.spec && job.spec.test_modules) {
-                job.spec.test_modules.forEach(service => {
-                  service.key_vals.forEach(item => {
-                    if (item.value.includes('<+fixed>')) {
-                      item.command = 'fixed'
-                      item.value = item.value.replaceAll('<+fixed>', '')
-                    }
-                    if (item.value.includes('{{')) {
-                      item.command = 'other'
-                    }
-                  })
-                })
-              }
-            }
-          })
-        })
-        this.multi_run = this.payload.multi_run
-        this.originalWorkflow = cloneDeep(this.payload)
-        this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
       })
+      this.multi_run = this.payload.multi_run
+      this.originalWorkflow = cloneDeep(this.payload)
+      this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
     },
     showStageOperateDialog (type, row) {
       this.insertSatgeIndex = this.payload.stages.length
@@ -769,8 +853,8 @@ export default {
       )
       if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
         this.$nextTick(() => {
-          this.$refs[this.beInitCompRef] &&
-            this.$refs[this.beInitCompRef].initOpe()
+          this.$refs[this.job.type] &&
+            this.$refs[this.job.type].initOpe()
         })
       }
     },
@@ -831,6 +915,24 @@ export default {
       }
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
+    },
+    saveModel () {
+      this.$refs.modelForm.validate(valid => {
+        if (valid) {
+          const params = {
+            category: '',
+            ...this.payload,
+            template_name: this.modelFormInfo.name
+          }
+          addWorkflowTemplateAPI(params).then(res => {
+            this.isShowModelDialog = false
+            this.$message({
+              type: 'success',
+              message: '新增成功'
+            })
+          })
+        }
+      })
     }
   },
   watch: {

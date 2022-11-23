@@ -52,14 +52,16 @@
           <i class="icon iconfont icongongzuoliucheng"></i>
           工作流信息
         </h4>
-        <el-table :data="customWorkflows" stripe style="width: 100%;">
+        <el-table :data="workflows" stripe style="width: 100%;">
           <el-table-column label="名称">
             <template slot-scope="{ row }">
               <router-link
                 class="pipeline-name"
-                :to=" row.workflow_type === 'common_workflow'? `/v1/projects/detail/${projectName}/pipelines/custom/${row.name}?display_name=${row.display_name}`  :  `/v1/projects/detail/${projectName}/pipelines/multi/${row.name}?display_name=${row.display_name}`"
+                :to=" (row.workflow_type === 'common_workflow' || row.workflow_type === 'release')? `/v1/projects/detail/${projectName}/pipelines/custom/${row.name}?display_name=${row.display_name}`  :  `/v1/projects/detail/${projectName}/pipelines/multi/${row.name}?display_name=${row.display_name}`"
               >{{row.display_name}}</router-link>
               <el-tag v-if="row.workflow_type === 'common_workflow'" size="mini" class="mg-l16">自定义</el-tag>
+              <el-tag v-else-if="row.workflow_type === 'release'" size="mini" class="mg-l16">发布</el-tag>
+              <el-tag v-else size="mini" class="mg-l16">产品</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="步骤">
@@ -99,7 +101,6 @@ import {
   getProjectInfoAPI,
   getEnvInfoAPI,
   queryUserBindingsAPI,
-  getProductWorkflowsInProjectAPI,
   listProductAPI,
   getCustomWorkflowListAPI
 } from '@api'
@@ -114,7 +115,6 @@ export default {
     return {
       envList: [],
       workflows: [],
-      customWorkflows: [],
       userBindings: [],
       detailLoading: true
     }
@@ -124,15 +124,19 @@ export default {
       return translateEnvStatus(status, updateble)
     },
     async getWorkflows (projectName) {
-      const res = await getProductWorkflowsInProjectAPI(projectName)
-      if (res) {
-        this.workflows = res.filter(item => item.projectName === projectName)
-      }
-    },
-    async getCustomWorkflows (projectName) {
       const res = await getCustomWorkflowListAPI(projectName)
       if (res) {
-        this.customWorkflows = res.workflow_list
+        res.workflow_list.forEach(workflow => {
+          if (
+            workflow.workflow_type !== 'common_workflow' &&
+            workflow.workflow_type !== 'release'
+          ) {
+            workflow.enabledStages = workflow.enabledStages.map(stage => {
+              return this.wordTranslation(stage, 'workflowStage')
+            })
+          }
+        })
+        this.workflows = res.workflow_list
       }
     },
     getEnvList () {
@@ -175,7 +179,6 @@ export default {
     initProjectInfo () {
       this.getProject(this.projectName)
       this.getWorkflows(this.projectName)
-      this.getCustomWorkflows(this.projectName)
       this.getEnvList()
       bus.$emit(`show-sidebar`, false)
       bus.$emit('set-topbar-title', {

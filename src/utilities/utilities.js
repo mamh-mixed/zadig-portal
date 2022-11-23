@@ -466,7 +466,7 @@ const utils = {
       }
     }
   },
-  validatePipelineName (pipeline_names, new_name) {
+  validateWorkflowName (pipeline_names, new_name) {
     if (!new_name || new_name === '') {
       return '请输入工作流标识'
     } else if (pipeline_names.includes(new_name)) {

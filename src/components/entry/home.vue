@@ -11,7 +11,6 @@
             <Announcement v-for="(ann,index) in announcements" :key="index" :title="ann.content.title" :content="ann.content.content" />
             <Announcement title="系统提示" isHtml v-if="isAdmin && SMTPDisabled" :content="htmlTemplate" />
           </div>
-          <FloatLink class="main-float" />
           <router-view></router-view>
           <div class="content-mask" v-show="showMask"></div>
         </div>
@@ -27,7 +26,6 @@ import Sidebar from './home/sidebar.vue'
 import Topbar from './home/topbar.vue'
 import BottomBar from './home/bottomBar.vue'
 import Announcement from './home/announcement.vue'
-import FloatLink from './home/floatLink.vue'
 import { mapGetters } from 'vuex'
 import localStore from 'storejs'
 
@@ -37,7 +35,7 @@ export default {
       announcements: [],
       SMTPDisabled: false,
       htmlTemplate:
-        '管理员请及时配置 <a href="/v1/system/integration?currentTab=mail">SMTP 邮箱服务器</a> 以便于用户密码丢失找回'
+        '管理员请及时配置 <a href="/v1/system/config">SMTP 邮箱服务器</a> 以便于用户密码丢失找回'
     }
   },
   methods: {
@@ -104,8 +102,7 @@ export default {
     Sidebar,
     Topbar,
     BottomBar,
-    Announcement,
-    FloatLink
+    Announcement
   },
   created () {
     this.$store.dispatch('GETUSERINFO')

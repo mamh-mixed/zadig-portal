@@ -49,7 +49,7 @@
 <script>
 import RepoJump from '@/components/projects/workflow/common/repoJump.vue'
 import mixin from '@/mixin/killSSELogMixin'
-import { getHistoryLogsAPI } from '@api'
+import { getJobHistoryLogsAPI } from '@api'
 
 export default {
   data () {
@@ -146,7 +146,7 @@ export default {
         })
     },
     getHistoryBuildLog () {
-      return getHistoryLogsAPI(
+      return getJobHistoryLogsAPI(
         this.workflowName,
         this.taskId,
         this.pluginInfo.name,

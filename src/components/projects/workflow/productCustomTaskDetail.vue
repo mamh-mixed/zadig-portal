@@ -96,6 +96,58 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
+        <JobBlueGreenConfirmDetail
+          v-if="curJob.type === jobType.blueGreenDeploy"
+          :jobInfo="curJob"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          @showFooter="showFooter"
+        />
+        <JobBlueGreenConfirmDetail
+          v-if="curJob.type === jobType.blueGreenConfirm"
+          :jobInfo="curJob"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          @showFooter="showFooter"
+        />
+        <JobCanaryDeployDetail
+          v-if="curJob.type === jobType.canaryDeploy"
+          :jobInfo="curJob"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          @showFooter="showFooter"
+        />
+        <JobCanaryConfirmDetail
+          v-if="curJob.type === jobType.canaryConfirm"
+          :jobInfo="curJob"
+          :workflowName="workflowName"
+          :taskId="taskId"
+          @showFooter="showFooter"
+        />
+        <JobGrayRollbackDetail
+          v-if="curJob.type === jobType.k8sGrayRollback"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
+        <JobK8sGrayDeployDetail
+          v-if="curJob.type === jobType.grayDeploy"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
+        <JobK8sResourceUpdateDetail
+          @showFooter="showFooter"
+          v-if="curJob.type=== jobType.k8sResourcePatch"
+          :jobInfo="curJob"
+          :projectName="projectName"
+        />
         <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.k8sDeploy" :jobInfo="curJob" :projectName="projectName" />
         <JobTestDetail
           v-if="curJob.type === jobType.test"
@@ -108,6 +160,15 @@
         />
         <JobScanningDetail
           v-if="curJob.type === jobType.scanning"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
+        <JobImageDistributeDetail
+          v-if="curJob.type === jobType.distribute"
           :jobInfo="curJob"
           :taskId="taskId"
           :workflowName="workflowName"
@@ -154,7 +215,10 @@
   </div>
 </template>
 <script>
-import { getCustomWorkflowTaskDetailAPI, deleteWorkflowTaskAPI } from '@api'
+import {
+  getCustomWorkflowTaskDetailAPI,
+  deleteCustomWorkflowTaskAPI
+} from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import JobBuildDetail from './productCustomTaskDetail/jobBuildDetail.vue'
 import JobDeployDetail from './productCustomTaskDetail/jobDeployDetail.vue'
@@ -164,7 +228,14 @@ import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
 import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue'
 import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
 import JobScanningDetail from './productCustomTaskDetail/jobScanningDetail.vue'
-
+import JobK8sResourceUpdateDetail from './productCustomTaskDetail/jobK8sResourceUpdateDetail.vue'
+import JobBlueGreenConfirmDetail from './productCustomTaskDetail/jobBlueGreenConfirmDetail.vue'
+import JobBlueGreenDeployDetail from './productCustomTaskDetail/jobBlueGreenDeployDetail.vue'
+import JobCanaryDeployDetail from './productCustomTaskDetail/jobCanaryDeployDetail.vue'
+import JobCanaryConfirmDetail from './productCustomTaskDetail/jobCanaryConfirmDetail.vue'
+import JobK8sGrayDeployDetail from './productCustomTaskDetail/jobK8sGrayDeployDetail.vue'
+import JobGrayRollbackDetail from './productCustomTaskDetail/jobGrayRollbackDetail.vue'
+import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -196,7 +267,15 @@ export default {
     JobK8sDeployDetail,
     JobTestDetail,
     JobScanningDetail,
-    StageApproval
+    StageApproval,
+    JobK8sResourceUpdateDetail,
+    JobBlueGreenConfirmDetail,
+    JobBlueGreenDeployDetail,
+    JobCanaryDeployDetail,
+    JobCanaryConfirmDetail,
+    JobGrayRollbackDetail,
+    JobK8sGrayDeployDetail,
+    JobImageDistributeDetail
   },
   computed: {
     taskId () {
@@ -365,7 +444,7 @@ export default {
       return wordTranslate(word, 'approval', 'status')
     },
     cancel () {
-      deleteWorkflowTaskAPI(
+      deleteCustomWorkflowTaskAPI(
         this.workflowName,
         this.taskId,
         this.projectName
