@@ -113,12 +113,6 @@ export default {
               cache_dir_type: 'workspace', // workspace/user_defined
               cache_user_dir: ''
             },
-            outputs: [
-              {
-                name: 'output',
-                description: 'value pass to other job'
-              }
-            ],
             steps: [
               {
                 name: 'tools',

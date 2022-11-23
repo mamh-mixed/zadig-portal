@@ -968,19 +968,19 @@ export default {
         this.payload = jsyaml.load(this.yaml)
       }
     },
-    payload: {
-      handler (val, oldVal) {
-        let res = []
-        if (val.params.length > 0) {
-          res = val.params.map(item => {
-            return `{{.workflow.params.${item.name}}}`
-          })
-        }
-        this.globalEnv = this.globalConstEnvs.concat(res)
-        this.setJob()
-      },
-      deep: true
-    },
+    // payload: {
+    //   handler (val, oldVal) {
+    //     let res = []
+    //     if (val.params.length > 0) {
+    //       res = val.params.map(item => {
+    //         return `{{.workflow.params.${item.name}}}`
+    //       })
+    //     }
+    //     this.globalEnv = this.globalConstEnvs.concat(res)
+    //     this.setJob()
+    //   },
+    //   deep: true
+    // },
     curJobIndex (val) {
       if (val !== -2) {
         // 保存构建后设置为-2，什么都不执行，目的是为了两次点击同一个stage，能触发这个函数（有初始化动作 没有地方能看到触发的）
