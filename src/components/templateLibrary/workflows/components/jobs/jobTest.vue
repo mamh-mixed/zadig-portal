@@ -75,7 +75,14 @@
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+            <EnvTypeSelect
+              v-model="scope.row.command"
+              isFixed
+              isRuntime
+              isOther
+              @change="handleEnvChange(scope.row, scope.row.command)"
+              style="display: inline-block;"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -116,19 +123,21 @@
 
 <script>
 import { jobType, validateJobName } from '../../config'
-import { getAllBranchInfoAPI, getTestListAPI } from '@api'
+import {
+  getAllBranchInfoAPI,
+  getTestListAPI,
+  getWorkflowglobalVars
+} from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
+import jsyaml from 'js-yaml'
+
 export default {
   name: 'JobBuild',
   props: {
     projectName: {
       type: String,
       default: ''
-    },
-    globalEnv: {
-      type: Array,
-      default: () => []
     },
     job: {
       type: Object,
@@ -137,6 +146,18 @@ export default {
           test_modules: []
         }
       })
+    },
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
   components: { EnvTypeSelect },
@@ -148,23 +169,45 @@ export default {
       isShowVarDialog: false,
       curItem: {},
       curIndex: 0,
-      testList: [],
       originTestList: [],
-      test: ''
+      test: '',
+      globalEnv: []
     }
   },
   computed: {
     isShowFooter () {
       return this.$store.state.customWorkflow.isShowFooter
+    },
+    testList () {
+      return differenceWith(
+        this.originTestList,
+        this.job.spec.test_modules,
+        (a, b) => {
+          return a.name === b.name
+        }
+      )
     }
   },
   created () {
     this.getTestList()
+    this.getGlobalEnv()
   },
   methods: {
+    getGlobalEnv () {
+      const params = cloneDeep(this.workflowInfo)
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
+    },
+    handleEnvChange (row, command) {
+      row.value = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
+    },
     getTestList () {
       getTestListAPI(this.projectName).then(res => {
-        this.testList = cloneDeep(res)
         this.originTestList = cloneDeep(res)
       })
     },

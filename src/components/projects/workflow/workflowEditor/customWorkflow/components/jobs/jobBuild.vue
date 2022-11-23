@@ -151,10 +151,6 @@ export default {
       type: Array,
       default: () => []
     },
-    // globalEnv: {
-    //   type: Array,
-    //   default: () => []
-    // },
     job: {
       type: Object,
       default: () => ({})

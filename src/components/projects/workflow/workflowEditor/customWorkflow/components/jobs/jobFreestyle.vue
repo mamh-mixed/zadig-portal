@@ -13,7 +13,7 @@
         </div>
         <section>
           <div class="primary-title not-first-child">变量</div>
-          <EnvVariable :preEnvs="job.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv"></EnvVariable>
+          <EnvVariable :preEnvs="job.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv" @getList="getGlobalEnv"></EnvVariable>
         </section>
       </section>
       <div>
@@ -92,10 +92,6 @@ export default {
       type: Number,
       default: 0
     }
-    // globalEnv: {
-    //   type: Array,
-    //   default: () => []
-    // }
   },
   computed: {
     steps () {

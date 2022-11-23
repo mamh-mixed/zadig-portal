@@ -3,7 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path');
-const backEndAddr = 'http://frontend.8slan.com/';
+const backEndAddr = 'http://zadig-ee-dev1.8slan.com/';
 
 module.exports = {
   dev: {

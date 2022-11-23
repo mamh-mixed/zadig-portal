@@ -139,10 +139,6 @@ export default {
       type: String,
       default: ''
     },
-    // globalEnv: {
-    //   type: Array,
-    //   default: () => []
-    // },
     job: {
       type: Object,
       default: () => ({
@@ -173,7 +169,6 @@ export default {
       isShowVarDialog: false,
       curItem: {},
       curIndex: 0,
-      // testList: [],
       originTestList: [],
       test: '',
       globalEnv: []

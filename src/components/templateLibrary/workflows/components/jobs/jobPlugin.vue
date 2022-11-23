@@ -52,7 +52,14 @@
               >
                 <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
               </el-select>
-              <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+              <EnvTypeSelect
+                v-model="scope.row.command"
+                isFixed
+                isRuntime
+                isOther
+                @change="handleEnvChange(scope.row, scope.row.command)"
+                style="display: inline-block;"
+              />
             </template>
           </el-table-column>
           <el-table-column label="敏感信息">
@@ -106,7 +113,8 @@ import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config.js'
 import { cloneDeep } from 'lodash'
-
+import jsyaml from 'js-yaml'
+import { getWorkflowglobalVars } from '@api'
 export default {
   name: 'JobPlugin',
   data () {
@@ -117,7 +125,8 @@ export default {
       dialogVisible: false,
       currentVars: [],
       curDialogInfo: {},
-      allCodeHosts: []
+      allCodeHosts: [],
+      globalEnv: []
     }
   },
   components: { AdvancedConfig, EnvTypeSelect },
@@ -126,12 +135,36 @@ export default {
       type: Object,
       default: () => ({})
     },
-    globalEnv: {
-      type: Array,
-      default: () => []
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
+  created () {
+    this.getGlobalEnv()
+  },
   methods: {
+    getGlobalEnv () {
+      const params = cloneDeep(this.workflowInfo)
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
+      getWorkflowglobalVars(this.job.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
+    },
+    handleEnvChange (row, command) {
+      row.value = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
+    },
     updateParams (row) {
       this.dialogVisible = true
       this.curDialogInfo = row

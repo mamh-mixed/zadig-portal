@@ -59,7 +59,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="1" class="mg-t16">
-          <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther @change="handleEnvChange(preEnvs.envs[build_env_index])"/>
+          <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther @change="handleEnvChange(preEnvs.envs[build_env_index],preEnvs.envs[build_env_index].command)"/>
         </el-col>
         <el-col :span="12" v-if="isJenkins&&preEnvs.envs[build_env_index].name==='IMAGE'" class="tip">
           <el-checkbox v-model="preEnvs.envs[build_env_index].auto_generate"></el-checkbox>
@@ -328,8 +328,11 @@ export default {
     }
   },
   methods: {
-    handleEnvChange (row) {
+    handleEnvChange (row, command) {
       row.value = ''
+      if (command === 'other') {
+        this.$emit('getList')
+      }
     },
     addFirstBuildEnv () {
       this.preEnvs.envs.push({

@@ -152,10 +152,6 @@ export default {
       type: Number,
       default: 0
     }
-    // globalEnv: {
-    //   type: Array,
-    //   default: () => []
-    // }
   },
   created () {
     this.getGlobalEnv()

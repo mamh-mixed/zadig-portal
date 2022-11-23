@@ -1,34 +1,32 @@
 <template>
   <div class="job-deploy">
-    <el-form label-width="90px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
+    <el-form label-width="90px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24 form-item">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
-        <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
+        <el-input v-model="job.name" size="small" class="fix-width"></el-input>
       </el-form-item>
       <el-form-item label="环境" :required="job.spec.envType && job.spec.envType !== 'runtime'">
         <el-form-item prop="spec.env" v-if="!job.spec.envType ||job.spec.envType === 'runtime'" class="form-item">
-          <el-select v-model="job.spec.env" placeholder="请选择" size="small" clearable style="width: 220px;">
+          <el-select v-model="job.spec.env" placeholder="请选择" size="small" clearable class="fix-width">
             <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
           prop="spec.env"
-          required
           v-if="job.spec.envType === 'fixed'"
           class="form-item"
           :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.env" placeholder="请选择" size="small" style="width: 220px;">
+          <el-select v-model="job.spec.env" placeholder="请选择" size="small" class="fix-width">
             <el-option v-for="item in envList" :key="item.id" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
           prop="spec.env"
-          required
           v-if="job.spec.envType === 'other'"
           class="form-item"
           :rules="{required: true, message: '请选择环境', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.env" placeholder="请选择" filterable size="small" style="width: 220px;">
+          <el-select v-model="job.spec.env" placeholder="请选择" filterable size="small" class="fix-width">
             <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
@@ -43,15 +41,7 @@
       </el-form-item>
       <el-form-item label="服务" :required="job.spec.serviceType && job.spec.serviceType!=='runtime'">
         <el-form-item prop="spec.service_and_images" v-if="!job.spec.serviceType || job.spec.serviceType === 'runtime'" class="form-item">
-          <el-select
-            size="small"
-            v-model="job.spec.service_and_images"
-            multiple
-            filterable
-            clearable
-            value-key="value"
-            style="width: 220px;"
-          >
+          <el-select size="small" v-model="job.spec.service_and_images" multiple filterable clearable value-key="value" class="fix-width">
             <el-option
               v-for="(service,index) in originServiceAndBuilds"
               :key="index"
@@ -63,11 +53,10 @@
         <el-form-item
           prop="spec.job_name"
           v-if="job.spec.serviceType === 'other'"
-          required
           class="form-item"
           :rules="{required: true, message: '请选择服务', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.job_name" placeholder="请选择" size="small" style="width: 220px;">
+          <el-select v-model="job.spec.job_name" placeholder="请选择" size="small" class="fix-width">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>
@@ -106,10 +95,6 @@ export default {
       type: Object,
       default: () => ({})
     },
-    // globalEnv: {
-    //   type: Array,
-    //   default: () => []
-    // },
     originServiceAndBuilds: {
       type: Array,
       default: () => []
@@ -133,7 +118,6 @@ export default {
   data () {
     return {
       validateJobName,
-      formLabelWidth: '90px',
       envList: [],
       globalEnv: []
     }
@@ -192,7 +176,10 @@ export default {
 .job-deploy {
   .form-item {
     display: inline-block;
-    width: 220px;
+
+    .fix-width {
+      width: 220px;
+    }
   }
 
   .status-check {
