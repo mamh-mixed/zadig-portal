@@ -17,6 +17,11 @@
             <Code v-if="currentTab === 'code'" />
           </keep-alive>
         </el-tab-pane>
+        <el-tab-pane name="config" label="配置管理">
+          <keep-alive>
+            <ConfigManage v-if="currentTab === 'config'" />
+          </keep-alive>
+        </el-tab-pane>
         <el-tab-pane name="jenkins" label="Jenkins 集成">
           <keep-alive>
             <Jenkins v-if="currentTab === 'jenkins'" />
@@ -41,6 +46,7 @@ import bus from '@utils/eventBus'
 import Account from './account.vue'
 import Project from './project.vue'
 import Code from './code.vue'
+import ConfigManage from './configManage.vue'
 import Jenkins from './jenkins.vue'
 import Sonar from './sonar.vue'
 import External from './external.vue'
@@ -51,6 +57,7 @@ export default {
     Account,
     Project,
     Code,
+    ConfigManage,
     Jenkins,
     Sonar,
     External
