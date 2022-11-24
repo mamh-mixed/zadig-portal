@@ -118,11 +118,29 @@
           <i class="pointer el-icon-question"></i>
         </el-tooltip>
       </div>
-      <el-form-item label="变量">
-        <div v-for="(item,index) in buildConfig.outputs" :key="index">
-          <el-input v-model="buildConfig.outputs[index].name" placeholder="请输入变量" size="small" :disabled="item.name==='IMAGE'||item.name==='PKG_FILE'"></el-input>
-          <el-button v-if="item.name!=='IMAGE'&&item.name!=='PKG_FILE'" @click="delVars(index)" type="danger" size="mini" icon="el-icon-minus" circle plain></el-button>
-        </div>
+      <el-form-item label="变量" label-width="120px">
+        <el-form-item
+          v-for="(item,index) in buildConfig.outputs"
+          :key="index"
+          :prop="'outputs.' + index + '.name'"
+          :rules="{ required:true, validator: validateVars,trigger: ['change', 'blur'] }"
+        >
+          <el-input
+            v-model="buildConfig.outputs[index].name"
+            placeholder="请输入变量"
+            size="small"
+            :disabled="item.name==='IMAGE'||item.name==='PKG_FILE'"
+          ></el-input>
+          <el-button
+            v-if="item.name!=='IMAGE'&&item.name!=='PKG_FILE'"
+            @click="delVars(index)"
+            type="danger"
+            size="mini"
+            icon="el-icon-minus"
+            circle
+            plain
+          ></el-button>
+        </el-form-item>
         <el-button type="text" @click="addVars">+添加</el-button>
       </el-form-item>
     </el-form>
@@ -191,7 +209,19 @@ export default {
         callback()
       }
     }
-
+    (this.validateVars = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入变量'))
+      } else if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(value)) {
+        callback(
+          new Error(
+            '变量名称仅支持英文字母、数字、下划线且首个字符不以数字开头'
+          )
+        )
+      } else {
+        callback()
+      }
+    })
     return {
       clusters: []
     }
@@ -308,6 +338,10 @@ export default {
     .pointer {
       cursor: pointer;
     }
+  }
+
+  /deep/.el-form-item__error--inline {
+    display: block;
   }
 
   /deep/.el-form.build-advanced-form {
