@@ -86,10 +86,6 @@ export default {
   display: inline-block;
   width: 25px;
 
-  // &.iconapollo {
-  //   font-size: 20px;
-  // }
-
   &.iconnacos {
     font-size: 12px;
   }

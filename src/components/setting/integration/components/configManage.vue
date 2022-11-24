@@ -4,13 +4,9 @@
     <el-form :model="opeForm" ref="opeForm" :rules="formRules" class="form" label-position="left" label-width="100px">
       <el-form-item label="系统类型">
         <el-select v-model="opeForm.type" @change="validate('checkConnection')">
-          <el-option label="Apollo" value="apollo">
-            <i class="config-icon iconfont iconapollo"></i>
-            <span>Apollo</span>
-          </el-option>
-          <el-option label="Nacos" value="nacos">
-            <i class="config-icon iconfont iconnacos"></i>
-            <span>Nacos</span>
+          <el-option v-for="type in typeList" :key="type.value" :label="type.label" :value="type.value">
+            <i class="config-icon iconfont" :class="[type.icon]"></i>
+            <span>{{ type.label }}</span>
           </el-option>
         </el-select>
       </el-form-item>
@@ -76,6 +72,18 @@ export default {
     getConfigList: Function
   },
   data () {
+    this.typeList = [
+      {
+        icon: 'iconapollo',
+        label: 'Apollo',
+        value: 'apollo'
+      },
+      {
+        icon: 'iconnacos',
+        label: 'Nacos',
+        value: 'nacos'
+      }
+    ]
     return {
       formRules: {
         server_address: [
