@@ -953,6 +953,23 @@ export function createJiraAPI (payload) {
   return http.post(`/api/v1/jira`, payload)
 }
 
+// config management
+export function createConfigManageAPI (payload) {
+  return http.post('/api/aslan/system/configuration', payload)
+}
+export function getConfigManagesAPI () {
+  return http.get(`/api/aslan/system/configuration`)
+}
+export function updateConfigManageAPI (id, payload) {
+  return http.put(`/api/aslan/system/configuration/${id}`, payload)
+}
+export function deleteConfigManageAPI (id) {
+  return http.delete(`/api/aslan/system/configuration/${id}`)
+}
+export function checkConfigConnectionAPI (payload) {
+  return http.post('/api/aslan/system/configuration/validate', payload)
+}
+
 // Jenkins
 export function addJenkins (payload) {
   return http.post('/api/aslan/system/jenkins/integration', payload)
