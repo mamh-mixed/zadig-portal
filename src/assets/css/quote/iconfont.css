@@ -1,11 +1,11 @@
 @font-face {
   font-family: "iconfont"; /* Project id 1282370 */
-  src: url('~@assets/fonts/iconfont/iconfont.eot?t=1669260649051'); /* IE9 */
-  src: url('~@assets/fonts/iconfont/iconfont.eot?t=1669260649051#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('~@assets/fonts/iconfont/iconfont.woff2?t=1669260649051') format('woff2'),
-       url('~@assets/fonts/iconfont/iconfont.woff?t=1669260649051') format('woff'),
-       url('~@assets/fonts/iconfont/iconfont.ttf?t=1669260649051') format('truetype'),
-       url('~@assets/icons/font/iconfont.svg?t=1669260649051#iconfont') format('svg');
+  src: url('~@assets/fonts/iconfont/iconfont.eot?t=1669262063865'); /* IE9 */
+  src: url('~@assets/fonts/iconfont/iconfont.eot?t=1669262063865#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('~@assets/fonts/iconfont/iconfont.woff2?t=1669262063865') format('woff2'),
+       url('~@assets/fonts/iconfont/iconfont.woff?t=1669262063865') format('woff'),
+       url('~@assets/fonts/iconfont/iconfont.ttf?t=1669262063865') format('truetype'),
+       url('~@assets/icons/font/iconfont.svg?t=1669262063865#iconfont') format('svg');
 }
 
 .iconfont {
