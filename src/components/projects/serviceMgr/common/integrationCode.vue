@@ -345,7 +345,7 @@ export default {
       this.$refs.codeForm.validate((valid) => {
         if (valid) {
           const payload = this.codeAdd
-          const redirectUrl = window.location.href.split('?')[0]
+          const redirectUrl = window.location.href
           const provider = this.codeAdd.type
           if (provider === 'github') {
             payload.address = 'https://github.com'
