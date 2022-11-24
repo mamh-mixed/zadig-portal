@@ -9,7 +9,7 @@
     >
       <div class="mg-b8">
         <span class="item-title">{{item.label || item.name}}</span>
-        <el-tag size="small" class="mg-l8" v-if="item.is_offical">官方</el-tag>
+        <el-tag size="mini" class="item-tag mg-l8" v-if="item.is_offical" effect="plain">官方</el-tag>
       </div>
       <span class="item-dec">{{item.description}}</span>
     </div>
@@ -85,6 +85,10 @@ export default {
 
     &-title {
       font-size: 16px;
+    }
+
+    &-tag {
+      vertical-align: text-top;
     }
 
     &-dec {
