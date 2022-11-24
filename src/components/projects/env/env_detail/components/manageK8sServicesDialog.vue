@@ -124,7 +124,9 @@ export default {
     currentResourceCheck () {
       const res = []
       this.updateServices.service_names.forEach(name => {
-        res.push(this.svcResources[name])
+        res.push(
+          this.svcResources[name] || { service_name: name, deploy_strategy: '' }
+        )
       })
       return res
     },
