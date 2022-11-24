@@ -112,13 +112,13 @@
         <div slot="label" style="width: 110px; line-height: 20px;">使用宿主机 Docker daemon</div>
         <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
       </el-form-item>
-      <div class="item-title">
+      <div class="item-title" v-if="!hiddenVars">
         输出变量
         <el-tooltip effect="dark" :content="fromWorkflow?'将脚本中的环境变量定义为输出变量，供其他任务使用': '将脚本中的环境变量定义为输出变量，供「自定义工作流」中的其他任务使用'" placement="top">
           <i class="pointer el-icon-question"></i>
         </el-tooltip>
       </div>
-      <el-form-item label="变量" label-width="120px">
+      <el-form-item label="变量" label-width="120px"  v-if="!hiddenVars">
         <el-form-item
           v-for="(item,index) in buildConfig.outputs"
           :key="index"
@@ -173,6 +173,10 @@ export default {
       type: Boolean
     },
     fromWorkflow: {
+      default: false,
+      type: Boolean
+    },
+    hiddenVars: {
       default: false,
       type: Boolean
     },

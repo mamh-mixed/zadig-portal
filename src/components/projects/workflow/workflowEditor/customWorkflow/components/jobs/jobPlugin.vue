@@ -91,6 +91,7 @@
             :validObj="validObj"
             @validateFailed="advanced_setting_modified = true"
             hiddenCache
+            hiddenVars
           ></AdvancedConfig>
         </section>
       </div>
