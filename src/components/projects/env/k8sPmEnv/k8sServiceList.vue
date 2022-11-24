@@ -32,7 +32,7 @@
             <template v-if="hasPlutus">
               <div class="service-resource">
                 <span class="middle">
-                  资源监测
+                  资源检测
                   <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
                     <i class="el-icon-info gray"></i>
                   </el-tooltip>
