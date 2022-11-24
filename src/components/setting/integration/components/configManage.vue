@@ -4,8 +4,14 @@
     <el-form :model="opeForm" ref="opeForm" :rules="formRules" class="form" label-position="left" label-width="100px">
       <el-form-item label="系统类型">
         <el-select v-model="opeForm.type" @change="validate('checkConnection')">
-          <el-option label="Apollo" value="apollo"></el-option>
-          <el-option label="Nacos" value="nacos"></el-option>
+          <el-option label="Apollo" value="apollo">
+            <i class="config-icon iconfont iconapollo"></i>
+            <span>Apollo</span>
+          </el-option>
+          <el-option label="Nacos" value="nacos">
+            <i class="config-icon iconfont iconnacos"></i>
+            <span>Nacos</span>
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="服务地址" prop="server_address">
@@ -203,6 +209,15 @@ export default {
 
   .el-input {
     display: inline-block;
+  }
+}
+
+.config-icon {
+  display: inline-block;
+  width: 25px;
+
+  &.iconnacos {
+    font-size: 12px;
   }
 }
 </style>

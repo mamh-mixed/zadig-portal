@@ -19,7 +19,7 @@
       <el-table :data="configList" style="width: 100%;">
         <el-table-column label="服务地址">
           <template slot-scope="{ row }">
-            <i :class="[row.type === 'apollo' ? 'apollo' : 'nacos']"></i>
+            <i :class="['iconfont config-icon', row.type === 'apollo' ? 'iconapollo' : 'iconnacos']"></i>
             <span>{{ row.server_address }}</span>
           </template>
         </el-table-column>
@@ -80,3 +80,18 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.config-icon {
+  display: inline-block;
+  width: 25px;
+
+  // &.iconapollo {
+  //   font-size: 20px;
+  // }
+
+  &.iconnacos {
+    font-size: 12px;
+  }
+}
+</style>

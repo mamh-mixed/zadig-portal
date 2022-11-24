@@ -17,7 +17,7 @@
             <Code v-if="currentTab === 'code'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="config" label="配置管理">
+        <el-tab-pane v-if="hasPlutus" name="config" label="配置管理">
           <keep-alive>
             <ConfigManage v-if="currentTab === 'config'" />
           </keep-alive>
@@ -51,6 +51,8 @@ import Jenkins from './jenkins.vue'
 import Sonar from './sonar.vue'
 import External from './external.vue'
 
+import { mapState } from 'vuex'
+
 export default {
   name: 'integration',
   components: {
@@ -81,7 +83,11 @@ export default {
       })
     }
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
+  },
   mounted () {
     bus.$emit('set-topbar-title', { title: '集成管理', breadcrumb: [] })
     this.showCurrentTab()
