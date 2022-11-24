@@ -23,7 +23,7 @@
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
       </div>
-      <el-row class="item" :gutter="0" :key="index">
+      <el-row class="item" :gutter="0">
         <el-col :span="4">
           <div class="item-title">容器名称</div>
         </el-col>
