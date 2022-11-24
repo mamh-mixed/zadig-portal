@@ -71,6 +71,7 @@
               size="small"
               required
               v-if="scope.row.command === 'other'"
+              @focus="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block; width: 220px;"
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
@@ -80,7 +81,6 @@
               isFixed
               isRuntime
               isOther
-              @change="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block;"
             />
           </template>

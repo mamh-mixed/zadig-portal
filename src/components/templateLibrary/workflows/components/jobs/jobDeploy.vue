@@ -14,18 +14,18 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="spec.env" required v-if="job.spec.envType === 'other'" class="form-item">
-          <el-select v-model="job.spec.env" placeholder="请选择" filterable size="small" class="fix-width">
+          <el-select
+            v-model="job.spec.env"
+            placeholder="请选择"
+            filterable
+            size="small"
+            class="fix-width"
+            @focus="handleEnvChange(job.spec, job.spec.envType)"
+          >
             <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
-        <EnvTypeSelect
-          v-model="job.spec.envType"
-          isFixed
-          isRuntime
-          isOther
-          @change="handleEnvChange(job.spec, job.spec.envType)"
-          style="display: inline-block;"
-        />
+        <EnvTypeSelect v-model="job.spec.envType" isFixed isRuntime isOther style="display: inline-block;" />
       </el-form-item>
       <el-form-item label="服务">
         <el-form-item prop="spec.service_and_images" v-if="!job.spec.serviceType || job.spec.serviceType === 'runtime'" class="form-item">

@@ -74,6 +74,7 @@
               filterable
               size="small"
               required
+              @focus="handleEnvChange(scope.row, scope.row.command)"
               v-if="scope.row.command === 'other'"
               style="display: inline-block; width: 220px;"
             >
@@ -84,7 +85,6 @@
               isFixed
               isRuntime
               isOther
-              @change="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block;"
             />
           </template>

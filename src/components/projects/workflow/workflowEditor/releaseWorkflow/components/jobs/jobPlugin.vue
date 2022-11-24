@@ -54,6 +54,8 @@
                 placeholder="请选择"
                 filterable
                 size="small"
+                @focus="handleEnvChange(scope.row, scope.row.command)"
+
               >
                 <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
               </el-select>
@@ -62,7 +64,6 @@
                 isFixed
                 isRuntime
                 isOther
-                @change="handleEnvChange(scope.row, scope.row.command)"
                 style="display: inline-block;"
               />
             </template>
