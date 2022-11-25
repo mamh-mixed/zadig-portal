@@ -2279,6 +2279,6 @@ export function getNewWorkloadListAPI (clusterID, namespace) {
 export function getCanaryServiceListAPI (clusterID, namespace) {
   return http.get(`/api/aslan/environment/kube/canary_service/cluster/${clusterID}/namespace/${namespace}`)
 }
-export function getWorkflowglobalVars (currentJobName, payload) {
+export function getWorkflowglobalVarsAPI (currentJobName, payload) {
   return http.post(`/api/aslan/workflow/v4/output/${currentJobName}`, payload)
 }

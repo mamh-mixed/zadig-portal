@@ -286,7 +286,6 @@ export default {
       if (!buildConfig) {
         buildConfig = this.buildConfig
       }
-      console.log(buildConfig)
       // template_id: useTemplate
       if (!buildConfig.template_id) {
         this.$refs.otherStepsRef.initStepStatus(buildConfig.post_build)

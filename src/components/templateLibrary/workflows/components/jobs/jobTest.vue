@@ -126,7 +126,7 @@ import { jobType, validateJobName } from '../../config'
 import {
   getAllBranchInfoAPI,
   getTestListAPI,
-  getWorkflowglobalVars
+  getWorkflowglobalVarsAPI
 } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
@@ -198,7 +198,7 @@ export default {
       const curJob = cloneDeep(this.job)
       curJob.name = Math.random()
       params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
-      getWorkflowglobalVars(curJob.name, jsyaml.dump(params)).then(res => {
+      getWorkflowglobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
         this.globalEnv = res
       })
     },

@@ -13,7 +13,7 @@
         </div>
         <section>
           <div class="primary-title not-first-child">变量</div>
-          <EnvVariable :preEnvs="job.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv" @getList="getGlobalEnv"></EnvVariable>
+          <EnvVariable :preEnvs="job.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv" @getList="getGlobalEnv" />
         </section>
       </section>
       <div>
@@ -56,7 +56,7 @@ import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import OtherSteps from '../otherSteps.vue'
 import { buildEnvs, validateJobName } from '../../config.js'
 import jsyaml from 'js-yaml'
-import { getCodeSourceMaskedAPI, getWorkflowglobalVars } from '@api'
+import { getCodeSourceMaskedAPI, getWorkflowglobalVarsAPI } from '@api'
 import { cloneDeep } from 'lodash'
 
 export default {
@@ -126,7 +126,7 @@ export default {
       const curJob = cloneDeep(this.job)
       curJob.name = Math.random()
       params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
-      getWorkflowglobalVars(curJob.name, jsyaml.dump(params)).then(res => {
+      getWorkflowglobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
         this.globalEnv = res
       })
     },
