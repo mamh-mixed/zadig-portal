@@ -241,21 +241,6 @@ export default {
         }
       ],
       plutusMenu: {
-        // release_center: {
-        //   category_name: '发布中心',
-        //   items: [
-        //     {
-        //       name: '工作流',
-        //       icon: 'iconfont iconvery-pipeline',
-        //       url: 'release/workflow'
-        //     },
-        //     {
-        //       name: '环境组',
-        //       icon: 'iconfont iconvery-environ',
-        //       url: 'release/environment'
-        //     }
-        //   ]
-        // },
         delivery: {
           category_name: '客户交付',
           items: [
@@ -376,12 +361,6 @@ export default {
           !defaultMenu.find(menu => menu.category_name === '客户交付')
         ) {
           defaultMenu.splice(1, 0, this.plutusMenu.delivery)
-        }
-        if (
-          this.signatureFeatures.release_center &&
-          !defaultMenu.find(menu => menu.category_name === '发布中心')
-        ) {
-          defaultMenu.splice(1, 0, this.plutusMenu.release_center)
         }
         if (!adminMenu[0].items.find(menu => menu.name === '企业管理')) {
           adminMenu[0].items.splice(1, 0, this.plutusMenu.manage)
