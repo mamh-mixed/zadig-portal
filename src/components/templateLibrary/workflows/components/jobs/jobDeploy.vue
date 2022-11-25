@@ -138,8 +138,10 @@ export default {
     },
     getGlobalEnv () {
       const params = cloneDeep(this.workflowInfo)
-      params.stages[this.curStageIndex].jobs[this.curJobIndex] = this.job
-      getWorkflowglobalVars(this.job.name, jsyaml.dump(params)).then(res => {
+      const curJob = cloneDeep(this.job)
+      curJob.name = Math.random()
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
+      getWorkflowglobalVars(curJob.name, jsyaml.dump(params)).then(res => {
         this.globalEnv = res
       })
     },
