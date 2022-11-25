@@ -1341,6 +1341,10 @@ export function getProjectInfoAPI (projectName) {
   return http.get(`/api/aslan/project/products/${projectName}?projectName=${projectName}`)
 }
 
+export function updateProjectTypeAPI (projectName) {
+  return http.put(`/api/aslan/project/products/${projectName}/type?projectName=${projectName}`)
+}
+
 export function updateSingleProjectAPI (projectName, payload) {
   return http.put(`/api/v1/picket/projects/${projectName}?projectName=${projectName}`, payload)
 }
