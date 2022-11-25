@@ -163,16 +163,25 @@ export default {
   },
   computed: {
     serviceNames () {
-      return (
-        this.chartNames ||
-        Object.keys(this.allChartNameInfo)
-          .filter(name => {
-            return this.allChartNameInfo[name][this.selectedEnv]
-          })
-          .map(name => {
-            return { serviceName: name, type: 'common' }
-          })
-      )
+      const cur = {}
+      Object.keys(this.allChartNameInfo)
+        .filter(name => {
+          return this.allChartNameInfo[name][this.selectedEnv]
+        })
+        .forEach(name => {
+          cur[name] = {
+            serviceName: name,
+            type: 'common',
+            deployed: this.allChartNameInfo[name][this.selectedEnv].deployed
+          }
+        })
+
+      return this.chartNames
+        ? this.chartNames.map(chart => ({
+          ...cur[chart.serviceName],
+          ...chart
+        }))
+        : Object.values(cur)
     },
     filteredServiceNames () {
       return this.serviceNames.filter(name => {
@@ -482,9 +491,15 @@ export default {
           ]
           cur.deploy_strategy = deployed ? 'import' : 'deploy'
           cur.deployed = deployed
-          const sur = this.serviceNames.find(svc => svc.serviceName === resource.service_name)
-          if (sur) {
-            this.$set(sur, 'deployed', deployed)
+
+          const init = {
+            deploy_strategy: cur.deploy_strategy,
+            deployed: cur.deployed
+          }
+          if (cur.initInfo) {
+            cur.initInfo = { ...cur.initInfo, ...init }
+          } else {
+            this.$set(cur, 'initInfo', init)
           }
         })
       }
@@ -556,7 +571,13 @@ export default {
     },
     checkResource: {
       handler (val) {
-        if (this.hasPlutus && val && val.cluster_id && val.env_name && val.namespace) {
+        if (
+          this.hasPlutus &&
+          val &&
+          val.cluster_id &&
+          val.env_name &&
+          val.namespace
+        ) {
           this.checkSvcResource(val)
         }
       },
