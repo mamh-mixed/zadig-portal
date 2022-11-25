@@ -850,18 +850,21 @@ export default {
       this.curStageInfo = item
     },
     saveJobConfig () {
-      const allJobList = this.payload.stages
-        .map(stage => {
-          return stage.jobs.map(job => job.name)
+      const allJobList = []
+      this.payload.stages.forEach((stage, index) => {
+        stage.jobs.forEach((job, j) => {
+          if (j !== this.curJobIndex) {
+            allJobList.push(job.name)
+          }
         })
-        .flat()
+      })
       this.$refs[this.job.type].validate().then(valid => {
         if (valid) {
           const curJob = this.$refs[this.job.type].getData()
-          // if (!this.isEditJob && allJobList.includes(curJob.name)) {
-          //   this.$message.error(' Job 名称重复')
-          //   return false
-          // }
+          if (!this.isEditJob && allJobList.includes(curJob.name)) {
+            this.$message.error(' Job 名称重复')
+            return false
+          }
           this.$set(
             this.payload.stages[this.curStageIndex].jobs,
             this.curJobIndex,
