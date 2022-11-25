@@ -113,12 +113,6 @@ export default {
               cache_dir_type: 'workspace', // workspace/user_defined
               cache_user_dir: ''
             },
-            outputs: [
-              {
-                name: 'output',
-                description: 'value pass to other job'
-              }
-            ],
             steps: [
               {
                 name: 'tools',
@@ -251,6 +245,7 @@ export default {
       this.$store.dispatch('setCurOperateType', 'jobChange')
       this.JobIndex = index
       this.$store.dispatch('setIsShowFooter', true)
+      this.$store.dispatch('setIsEditJob', true)
     },
     setJob (newVal) {
       if (Object.keys(newVal).length === 0) {

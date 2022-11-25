@@ -22,7 +22,12 @@
           </el-table-column>
           <el-table-column label="值">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'&&scope.row.command !== 'other'" size="small" style="width: 220px;">
+              <el-select
+                v-model="scope.row.value"
+                v-if="scope.row.type === 'choice'&&scope.row.command !== 'other'"
+                size="small"
+                style="width: 220px;"
+              >
                 <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
               </el-select>
               <el-input
@@ -48,11 +53,18 @@
                 v-model="scope.row.value"
                 placeholder="请选择"
                 filterable
+                @focus="handleEnvChange(scope.row, scope.row.command)"
                 size="small"
               >
                 <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
               </el-select>
-              <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+              <EnvTypeSelect
+                v-model="scope.row.command"
+                isFixed
+                isRuntime
+                isOther
+                style="display: inline-block;"
+              />
             </template>
           </el-table-column>
           <el-table-column label="敏感信息">
@@ -79,6 +91,7 @@
             :validObj="validObj"
             @validateFailed="advanced_setting_modified = true"
             hiddenCache
+            hiddenVars
           ></AdvancedConfig>
         </section>
       </div>
@@ -106,7 +119,8 @@ import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config.js'
 import { cloneDeep } from 'lodash'
-
+import jsyaml from 'js-yaml'
+import { getWorkflowGlobalVarsAPI } from '@api'
 export default {
   name: 'JobPlugin',
   data () {
@@ -117,7 +131,8 @@ export default {
       dialogVisible: false,
       currentVars: [],
       curDialogInfo: {},
-      allCodeHosts: []
+      allCodeHosts: [],
+      globalEnv: []
     }
   },
   components: { AdvancedConfig, EnvTypeSelect },
@@ -126,12 +141,38 @@ export default {
       type: Object,
       default: () => ({})
     },
-    globalEnv: {
-      type: Array,
-      default: () => []
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
+  created () {
+    this.getGlobalEnv()
+  },
   methods: {
+    getGlobalEnv () {
+      const params = cloneDeep(this.workflowInfo)
+      const curJob = cloneDeep(this.job)
+      curJob.name = Math.random()
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
+      getWorkflowGlobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
+    },
+    handleEnvChange (row, command) {
+      row.value = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
+    },
     updateParams (row) {
       this.dialogVisible = true
       this.curDialogInfo = row

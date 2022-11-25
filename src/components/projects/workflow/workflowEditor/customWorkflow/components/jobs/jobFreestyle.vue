@@ -13,7 +13,7 @@
         </div>
         <section>
           <div class="primary-title not-first-child">变量</div>
-          <EnvVariable :preEnvs="job.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv"></EnvVariable>
+          <EnvVariable :preEnvs="job.spec.properties" :validObj="validObj" :fromWhere="fromWhere" :envs="globalEnv" @getList="getGlobalEnv" />
         </section>
       </section>
       <div>
@@ -35,6 +35,7 @@
             :buildConfig="job.spec"
             :secondaryProp="`properties`"
             :validObj="validObj"
+            fromWorkflow
             @validateFailed="advanced_setting_modified = true"
             hiddenCache
             useDockerDaemon
@@ -54,8 +55,9 @@ import EnvVariable from '@/components/projects/build/envVariable.vue'
 import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import OtherSteps from '../otherSteps.vue'
 import { buildEnvs, validateJobName } from '../../config.js'
-
-import { getCodeSourceMaskedAPI } from '@api'
+import jsyaml from 'js-yaml'
+import { getCodeSourceMaskedAPI, getWorkflowGlobalVarsAPI } from '@api'
+import { cloneDeep } from 'lodash'
 
 export default {
   name: 'JobFreestyle',
@@ -69,7 +71,8 @@ export default {
         title: '',
         vars: buildEnvs
       },
-      allCodeHosts: []
+      allCodeHosts: [],
+      globalEnv: []
     }
   },
   props: {
@@ -81,9 +84,13 @@ export default {
       type: Object,
       default: () => ({})
     },
-    globalEnv: {
-      type: Array,
-      default: () => []
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
@@ -114,6 +121,15 @@ export default {
         }
       })
     },
+    getGlobalEnv () {
+      const params = cloneDeep(this.workflowInfo)
+      const curJob = cloneDeep(this.job)
+      curJob.name = Math.random()
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
+      getWorkflowGlobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
+    },
     getData () {
       delete this.job.isCreate
       const payload = this.$utils.cloneObj(this.job)
@@ -135,6 +151,7 @@ export default {
     getCodeSourceMaskedAPI(key).then(response => {
       this.allCodeHosts = response
     })
+    this.getGlobalEnv()
   },
   components: {
     Editor,

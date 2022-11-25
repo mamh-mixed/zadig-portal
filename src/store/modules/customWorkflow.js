@@ -2,7 +2,8 @@ import * as Mutation from '../mutations'
 const state = {
   isShowFooter: false,
   curOperateType: 'jobAdd',
-  workflowInfo: {}
+  workflowInfo: {},
+  isEditJob: false
 }
 
 const mutations = {
@@ -14,6 +15,9 @@ const mutations = {
   },
   [Mutation.SET_WORKFLOW_INFO] (state, payload) {
     state.workflowInfo = payload
+  },
+  [Mutation.SET_IS_EDIT_JOB] (state, payload) {
+    state.isEditJob = payload
   }
 }
 const actions = {
@@ -25,6 +29,9 @@ const actions = {
   },
   setWorkflowInfo ({ commit }, payload) {
     commit(Mutation.SET_WORKFLOW_INFO, payload)
+  },
+  setIsEditJob ({ commit }, payload) {
+    commit(Mutation.SET_IS_EDIT_JOB, payload)
   }
 }
 

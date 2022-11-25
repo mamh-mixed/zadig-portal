@@ -74,12 +74,19 @@
               filterable
               size="small"
               required
+              @focus="handleEnvChange(scope.row, scope.row.command)"
               v-if="scope.row.command === 'other'"
               style="display: inline-block; width: 220px;"
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+            <EnvTypeSelect
+              v-model="scope.row.command"
+              isFixed
+              isRuntime
+              isOther
+              style="display: inline-block;"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -125,9 +132,14 @@
 
 <script>
 import { jobType, buildTabList, validateJobName } from '../../config'
-import { getAllBranchInfoAPI, getRegistryWhenBuildAPI } from '@api'
+import {
+  getAllBranchInfoAPI,
+  getRegistryWhenBuildAPI,
+  getWorkflowGlobalVarsAPI
+} from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
+import jsyaml from 'js-yaml'
 export default {
   name: 'JobBuild',
   props: {
@@ -139,13 +151,21 @@ export default {
       type: Array,
       default: () => []
     },
-    globalEnv: {
-      type: Array,
-      default: () => []
-    },
     job: {
       type: Object,
       default: () => ({})
+    },
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
   components: { EnvTypeSelect },
@@ -157,7 +177,8 @@ export default {
       isShowBranchDialog: false,
       isShowVarDialog: false,
       curItem: {},
-      dockerList: []
+      dockerList: [],
+      globalEnv: []
     }
   },
   computed: {
@@ -188,9 +209,15 @@ export default {
   },
   created () {
     this.getRegistryWhenBuild()
+    this.getGlobalEnv()
   },
   methods: {
-    // validateJob: validateJobName,
+    handleEnvChange (row, command) {
+      row.value = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
+    },
     delServiceAndBuild (index) {
       this.serviceAndBuilds.splice(index, 1)
       this.$emit('input', this.serviceAndBuilds)
@@ -206,7 +233,7 @@ export default {
         const res = this.originServiceAndBuilds.find(
           build => build.service_name === item.service_name
         )
-        this.$set(item, 'module_builds', res.module_builds)
+        this.$set(item, 'module_builds', res ? res.module_builds : [])
 
         // set repos
         const result =
@@ -279,6 +306,15 @@ export default {
       }
       this.curItem = cloneDeep(item)
     },
+    getGlobalEnv () {
+      const params = cloneDeep(this.workflowInfo)
+      const curJob = cloneDeep(this.job)
+      curJob.name = Math.random()
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
+      getWorkflowGlobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
+      })
+    },
     saveCurSetting (type) {
       this.serviceAndBuilds.forEach((item, index) => {
         if (item.build_name === this.curItem.build_name) {
@@ -311,8 +347,10 @@ export default {
     }
   },
   watch: {
-    isShowFooter () {
-      this.setServiceBuilds()
+    isShowFooter (val) {
+      if (val) {
+        this.setServiceBuilds()
+      }
     }
   }
 }
