@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { listProductAPI, getWorkflowglobalVarsAPI } from '@/api'
+import { listProductAPI, getWorkflowGlobalVarsAPI } from '@/api'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config'
 import jsyaml from 'js-yaml'
@@ -158,7 +158,7 @@ export default {
       const curJob = cloneDeep(this.job)
       curJob.name = Math.random()
       params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
-      getWorkflowglobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
+      getWorkflowGlobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
         this.globalEnv = res
       })
     },

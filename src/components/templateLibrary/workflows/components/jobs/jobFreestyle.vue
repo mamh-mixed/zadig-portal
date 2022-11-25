@@ -56,7 +56,7 @@ import AdvancedConfig from '@/components/projects/build/advancedConfig.vue'
 import OtherSteps from '../otherSteps.vue'
 import { buildEnvs, validateJobName } from '../../config.js'
 import jsyaml from 'js-yaml'
-import { getCodeSourceMaskedAPI, getWorkflowglobalVarsAPI } from '@api'
+import { getCodeSourceMaskedAPI, getWorkflowGlobalVarsAPI } from '@api'
 import { cloneDeep } from 'lodash'
 
 export default {
@@ -126,7 +126,7 @@ export default {
       const curJob = cloneDeep(this.job)
       curJob.name = Math.random()
       params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
-      getWorkflowglobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
+      getWorkflowGlobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
         this.globalEnv = res
       })
     },
