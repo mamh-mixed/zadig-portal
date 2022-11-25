@@ -97,6 +97,37 @@
         <div slot="label" style="width: 110px; line-height: 20px;">使用宿主机 Docker daemon</div>
         <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
       </el-form-item>
+      <div class="item-title" v-if="!hiddenVars">
+        输出变量
+        <el-tooltip effect="dark" :content="fromWorkflow?'将脚本中的环境变量定义为输出变量，供其他任务使用': '将脚本中的环境变量定义为输出变量，供「自定义工作流」中的其他任务使用'" placement="top">
+          <i class="pointer el-icon-question"></i>
+        </el-tooltip>
+      </div>
+      <el-form-item label="变量" label-width="120px"  v-if="!hiddenVars">
+        <el-form-item
+          v-for="(item,index) in buildConfig.outputs"
+          :key="index"
+          :prop="'outputs.' + index + '.name'"
+          :rules="{ required:true, validator: validateVars,trigger: ['change', 'blur'] }"
+        >
+          <el-input
+            v-model="buildConfig.outputs[index].name"
+            placeholder="请输入变量"
+            size="small"
+            :disabled="item.name==='IMAGE'||item.name==='PKG_FILE'"
+          ></el-input>
+          <el-button
+            v-if="item.name!=='IMAGE'&&item.name!=='PKG_FILE'"
+            @click="delVars(index)"
+            type="danger"
+            size="mini"
+            icon="el-icon-minus"
+            circle
+            plain
+          ></el-button>
+        </el-form-item>
+        <el-button type="text" @click="addVars">+添加</el-button>
+      </el-form-item>
     </el-form>
   </section>
 </template>
@@ -117,6 +148,14 @@ export default {
     secondaryProp: {
       default: 'pre_build',
       type: String
+    },
+    fromWorkflow: {
+      default: false,
+      type: Boolean
+    },
+    hiddenVars: {
+      default: false,
+      type: Boolean
     }
   },
   data () {
@@ -150,7 +189,19 @@ export default {
         callback()
       }
     }
-
+    (this.validateVars = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入变量'))
+      } else if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(value)) {
+        callback(
+          new Error(
+            '变量名称仅支持英文字母、数字、下划线且首个字符不以数字开头'
+          )
+        )
+      } else {
+        callback()
+      }
+    })
     return {
       clusters: []
     }
@@ -214,6 +265,15 @@ export default {
         this.$emit('validateFailed')
         return Promise.reject('advancedConfigCacheValid')
       })
+    },
+    addVars () {
+      if (!this.buildConfig.outputs) {
+        this.$set(this.buildConfig, 'outputs', [])
+      }
+      this.buildConfig.outputs.push({ name: '' })
+    },
+    delVars (index) {
+      this.buildConfig.outputs.splice(index, 1)
     }
   },
   watch: {
