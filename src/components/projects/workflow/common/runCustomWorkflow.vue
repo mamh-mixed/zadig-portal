@@ -555,11 +555,12 @@ export default {
               job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
               })
-              this.fromJobInfo = cloneDeep(job)
             }
             if (job.type === 'zadig-distribute-image') {
               if (job.spec.source === 'runtime') {
                 job.pickedTargets = job.spec.targets
+              } else {
+                this.fromJobInfo.pickedTargets = cloneDeep(job.spec.targets)
               }
             }
           })
