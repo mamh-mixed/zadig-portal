@@ -127,7 +127,7 @@
     >
       <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
-          <el-switch v-model="curItem.share_storage_info.enabled" :active-value="true" :inactive-value="false" active-color="#0066ff"></el-switch>
+          <el-switch v-model="curItem.share_storage_info.enabled"  :disabled="!isCanOpenShareStorage" :active-value="true" :inactive-value="false" active-color="#0066ff"></el-switch>
         </el-form-item>
         <el-form-item label="选择共享目录">
           <el-select
@@ -155,7 +155,8 @@ import { jobType, validateJobName } from '../../config'
 import {
   getAllBranchInfoAPI,
   getTestListAPI,
-  getWorkflowGlobalVarsAPI
+  getWorkflowGlobalVarsAPI,
+  getClusterStatusAPI
 } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
@@ -201,7 +202,8 @@ export default {
       curIndex: 0,
       originTestList: [],
       test: '',
-      globalEnv: []
+      globalEnv: [],
+      isCanOpenShareStorage: false
     }
   },
   computed: {
@@ -223,6 +225,11 @@ export default {
     this.getGlobalEnv()
   },
   methods: {
+    getClusterStatus (id) {
+      getClusterStatusAPI(id).then(res => {
+        this.isCanOpenShareStorage = res
+      })
+    },
     getGlobalEnv () {
       const params = cloneDeep(this.workflowInfo)
       const curJob = cloneDeep(this.job)
@@ -304,6 +311,7 @@ export default {
             share_storages: []
           })
         }
+        this.getClusterStatus(item.cluster_id)
         this.isShowPvDialog = true
       }
       const res = this.originTestList.find(test => test.name === item.name)

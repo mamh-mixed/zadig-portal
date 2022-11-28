@@ -148,7 +148,7 @@
         label="开启共享存储"
         v-if="isShowShareStorage"
       >
-        <el-switch v-model="currentResource.share_storage_info.enabled"  @change="update"  active-color="#0066ff"></el-switch>
+        <el-switch v-model="currentResource.share_storage_info.enabled"  :disabled="!isCanOpenShareStorage"  @change="update"  active-color="#0066ff"></el-switch>
       </el-form-item>
       <el-form-item
         label="选择共享目录"
@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { getClusterListAPI } from '@api'
+import { getClusterListAPI, getClusterStatusAPI } from '@api'
 import { mapState } from 'vuex'
 
 export default {
@@ -250,7 +250,8 @@ export default {
       }
     })
     return {
-      clusters: []
+      clusters: [],
+      isCanOpenShareStorage: false
     }
   },
   computed: {
@@ -272,6 +273,11 @@ export default {
     })
   },
   methods: {
+    getClusterStatus (id) {
+      getClusterStatusAPI(id).then(res => {
+        this.isCanOpenShareStorage = res
+      })
+    },
     initAdvancedConfig (buildConfig = this.buildConfig) {
       const currentResource = buildConfig[this.secondaryProp]
       if (this.isCreate || !currentResource.cluster_id) {

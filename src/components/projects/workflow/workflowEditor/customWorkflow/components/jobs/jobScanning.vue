@@ -78,7 +78,13 @@
     <el-dialog :title="`${curItem.name} 共享存储配置`" :visible.sync="isShowPvDialog" :append-to-body="true" width="40%">
       <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
-          <el-switch v-model="curItem.share_storage_info.enabled" :active-value="true" :inactive-value="false" active-color="#0066ff"></el-switch>
+          <el-switch
+            v-model="curItem.share_storage_info.enabled"
+            :disabled="!isCanOpenShareStorage"
+            :active-value="true"
+            :inactive-value="false"
+            active-color="#0066ff"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="选择共享目录">
           <el-select
@@ -103,7 +109,11 @@
 
 <script>
 import { jobType, validateJobName } from '../../config'
-import { getAllBranchInfoAPI, getCodeScannerListAPI } from '@api'
+import {
+  getAllBranchInfoAPI,
+  getCodeScannerListAPI,
+  getClusterStatusAPI
+} from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
 export default {
@@ -141,7 +151,8 @@ export default {
       curItem: {},
       curIndex: 0,
       originScannings: [],
-      scanning: ''
+      scanning: '',
+      isCanOpenShareStorage: false
     }
   },
   computed: {
@@ -162,6 +173,11 @@ export default {
     this.getScanningList()
   },
   methods: {
+    getClusterStatus (id) {
+      getClusterStatusAPI(id).then(res => {
+        this.isCanOpenShareStorage = res
+      })
+    },
     getScanningList () {
       getCodeScannerListAPI(this.projectName).then(res => {
         this.originScannings = cloneDeep(res)
@@ -225,6 +241,7 @@ export default {
             share_storages: []
           })
         }
+        this.getClusterStatus(item.cluster_id)
         this.isShowPvDialog = true
       }
       const res = this.originScannings.find(

@@ -1,6 +1,5 @@
 <template>
   <div class="job-build">
-    {{workflowInfo.share_storages}}
     <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
@@ -137,7 +136,7 @@
     >
       <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
-          <el-switch v-model="curItem.share_storage_info.enabled" :active-value="true" :inactive-value="false" active-color="#0066ff"></el-switch>
+          <el-switch v-model="curItem.share_storage_info.enabled" :disabled="!isCanOpenShareStorage" :active-value="true" :inactive-value="false" active-color="#0066ff"></el-switch>
         </el-form-item>
         <el-form-item label="选择共享目录">
           <el-select
@@ -165,7 +164,8 @@ import { jobType, buildTabList, validateJobName } from '../../config'
 import {
   getAllBranchInfoAPI,
   getRegistryWhenBuildAPI,
-  getWorkflowGlobalVarsAPI
+  getWorkflowGlobalVarsAPI,
+  getClusterStatusAPI
 } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
@@ -210,7 +210,8 @@ export default {
       curItem: {},
       curIndex: 0,
       dockerList: [],
-      globalEnv: []
+      globalEnv: [],
+      isCanOpenShareStorage: false
     }
   },
   computed: {
@@ -245,6 +246,11 @@ export default {
     this.getGlobalEnv()
   },
   methods: {
+    getClusterStatus (id) {
+      getClusterStatusAPI(id).then(res => {
+        this.isCanOpenShareStorage = res
+      })
+    },
     handleEnvChange (row, command) {
       row.value = ''
       if (command === 'other') {
@@ -344,6 +350,7 @@ export default {
             share_storages: []
           })
         }
+        this.getClusterStatus(item.module_builds[0].cluster_id)
         this.isShowPvDialog = true
       }
       this.curItem = cloneDeep(item)
