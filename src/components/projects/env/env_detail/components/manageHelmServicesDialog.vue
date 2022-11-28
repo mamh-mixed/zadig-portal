@@ -38,6 +38,7 @@
           :envNames="[productInfo.env_name]"
           :handledEnv="productInfo.env_name"
           :envScene="`updateEnv`"
+          :checkResource="checkResource"
         />
       </template>
     </div>
@@ -99,6 +100,17 @@ export default {
     },
     envType () {
       return this.productInfo.share_env_enable ? 'share' : 'general'
+    },
+    checkResource () {
+      if (this.opeType === 'add' && this.dialogVisible) {
+        return {
+          env_name: this.productInfo.env_name,
+          cluster_id: this.productInfo.cluster_id,
+          namespace: this.productInfo.namespace
+        }
+      } else {
+        return null
+      }
     }
   },
   methods: {

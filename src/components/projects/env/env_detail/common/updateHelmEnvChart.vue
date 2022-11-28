@@ -5,6 +5,7 @@
       <el-tabs class="service-list" tab-position="left" type="border-card" v-model="selectedChart" :before-leave="switchTabs">
         <el-tab-pane :name="name.serviceName" v-for="name in filteredServiceNames" :key="name.serviceName" :disabled="name.type==='delete'">
           <template slot="label">
+            <span v-if="hasPlutus && name.deployed" class="imported-icon"></span>
             <el-tooltip effect="dark" :content="name.serviceName" placement="top">
               <span class="tab-title">{{name.serviceName}}</span>
             </el-tooltip>
@@ -21,6 +22,16 @@
         <el-tabs v-if="showEnvTabs" v-model="selectedEnv" :before-leave="switchTabs">
           <el-tab-pane :label="env" :name="env" v-for="env in envNames" :key="env" :disabled="disabledEnv.includes(env)"></el-tab-pane>
         </el-tabs>
+        <div v-if="hasPlutus && checkResource" class="release-check">
+          <el-radio-group v-model="usedChartNameInfo.deploy_strategy">
+            <el-radio label="import" :disabled="!usedChartNameInfo.deployed">仅导入服务</el-radio>
+            <el-radio label="deploy">执行部署</el-radio>
+          </el-radio-group>
+          <span v-show="usedChartNameInfo.deployed" class="tooltip">
+            <i class="el-icon-warning-outline"></i>
+            release 名称在命名空间已存在
+          </span>
+        </div>
         <div class="v-content" v-if="usedChartNameInfo">
           <div v-show="usedChartNameInfo.yamlSource === 'default'" class="default-values">
             <el-button type="text" @click="usedChartNameInfo.yamlSource = 'customEdit'">添加 values 文件</el-button>
@@ -63,9 +74,11 @@ import Codemirror from '@/components/projects/common/codemirror.vue'
 import {
   getChartValuesYamlAPI,
   getAllChartValuesYamlAPI,
-  getCalculatedValuesYamlAPI
+  getCalculatedValuesYamlAPI,
+  checkHelmSvcResourceAPI
 } from '@api'
-import { cloneDeep, pick, differenceBy, get } from 'lodash'
+import { cloneDeep, pick, differenceBy, get, debounce } from 'lodash'
+import { mapState } from 'vuex'
 
 const chartInfoTemp = {
   envName: '', // ?: String
@@ -75,7 +88,9 @@ const chartInfoTemp = {
   overrideValues: [], // : Object{key,value}[]
   overrideYaml: '', // : String
   gitRepoConfig: null, // : Object [Not use, just record]
-  yamlContent: '' // 预览 YAML 内容
+  yamlContent: '', // 预览 YAML 内容
+  deploy_strategy: 'deploy', // 是否部署，deploy：部署，import: 仅导入
+  deployed: false // 是否已部署 用来操作 deploy_strategy
 }
 
 export default {
@@ -126,7 +141,8 @@ export default {
     showServicesTab: {
       type: Boolean,
       default: true
-    }
+    },
+    checkResource: Object
   },
   data () {
     this.cmOption = {
@@ -147,16 +163,25 @@ export default {
   },
   computed: {
     serviceNames () {
-      return (
-        this.chartNames ||
-        Object.keys(this.allChartNameInfo)
-          .filter(name => {
-            return this.allChartNameInfo[name][this.selectedEnv]
-          })
-          .map(name => {
-            return { serviceName: name, type: 'common' }
-          })
-      )
+      const cur = {}
+      Object.keys(this.allChartNameInfo)
+        .filter(name => {
+          return this.allChartNameInfo[name][this.selectedEnv]
+        })
+        .forEach(name => {
+          cur[name] = {
+            serviceName: name,
+            type: 'common',
+            deployed: this.allChartNameInfo[name][this.selectedEnv].deployed
+          }
+        })
+
+      return this.chartNames
+        ? this.chartNames.map(chart => ({
+          ...cur[chart.serviceName],
+          ...chart
+        }))
+        : Object.values(cur)
     },
     filteredServiceNames () {
       return this.serviceNames.filter(name => {
@@ -185,7 +210,10 @@ export default {
         (this.showEnvTabs && this.selectedEnv === 'DEFAULT') ||
         (!this.selectedChart && !this.serviceNames.length)
       )
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
     closeReview () {
@@ -268,7 +296,9 @@ export default {
                 initInfo.overrideYaml = ''
                 break
               case 'repo':
-                initInfo.gitRepoConfig = cloneDeep(chartInfo[envName].gitRepoConfig)
+                initInfo.gitRepoConfig = cloneDeep(
+                  chartInfo[envName].gitRepoConfig
+                )
                 initInfo.overrideYaml = chartInfo[envName].overrideYaml
                 break
               case 'customEdit':
@@ -291,10 +321,15 @@ export default {
             'serviceName',
             'chartVersion',
             'overrideValues',
-            'overrideYaml'
+            'overrideYaml',
+            'deploy_strategy'
           ])
           values.valuesData = null
-          if (chartInfo[envName].yamlSource === 'repo' && (chartInfo[envName].gitRepoConfig && chartInfo[envName].gitRepoConfig.codehostID)) {
+          if (
+            chartInfo[envName].yamlSource === 'repo' &&
+            chartInfo[envName].gitRepoConfig &&
+            chartInfo[envName].gitRepoConfig.codehostID
+          ) {
             values.valuesData = {
               yamlSource: 'repo',
               autoSync: chartInfo[envName].gitRepoConfig.autoSync,
@@ -325,7 +360,8 @@ export default {
           ...cloneDeep(initInfo || chartInfoTemp),
           ...cloneDeep(chart),
           envName: envName === 'DEFAULT' ? '' : envName,
-          yamlSource: chart.yamlSource || (initInfo && initInfo.yamlSource) || 'default', // watch: test
+          yamlSource:
+            chart.yamlSource || (initInfo && initInfo.yamlSource) || 'default', // watch: test
           initInfo // watch: why? what is the priority? Sufficient information is either in chart or initInfo
         }
         this.$set(this.allChartNameInfo, chart.serviceName, {
@@ -374,7 +410,8 @@ export default {
             ...cloneDeep(chartInfoTemp),
             ...re,
             envName,
-            yamlSource: re.overrideYaml ? 'customEdit' : 'default'
+            yamlSource: re.overrideYaml ? 'customEdit' : 'default',
+            deploy_strategy: re.deploy_strategy || 'deploy'
           }
           if (
             envInfo.yaml_data &&
@@ -391,7 +428,8 @@ export default {
               valuesPaths: [envInfo.yaml_data.source_detail.load_path],
               valuesPath: envInfo.yaml_data.source_detail.load_path,
               autoSync: envInfo.yaml_data.auto_sync,
-              namespace: envInfo.yaml_data.source_detail.git_repo_config.namespace
+              namespace:
+                envInfo.yaml_data.source_detail.git_repo_config.namespace
             }
             envInfo.yamlSource = re.yaml_data.source
           }
@@ -436,7 +474,36 @@ export default {
           copy: true
         })
       })
-    }
+    },
+    checkSvcResource: debounce(async function (payload) {
+      // payload: env_name, namespace, cluster_id
+      const res = await checkHelmSvcResourceAPI(
+        this.projectName,
+        payload
+      ).catch(err => console.log(err))
+      if (res) {
+        res.forEach(resource => {
+          const deployed = !resource.resources.find(
+            re => re.status === 'undeployed'
+          )
+          const cur = this.allChartNameInfo[resource.service_name][
+            this.selectedEnv
+          ]
+          cur.deploy_strategy = deployed ? 'import' : 'deploy'
+          cur.deployed = deployed
+
+          const init = {
+            deploy_strategy: cur.deploy_strategy,
+            deployed: cur.deployed
+          }
+          if (cur.initInfo) {
+            cur.initInfo = { ...cur.initInfo, ...init }
+          } else {
+            this.$set(cur, 'initInfo', init)
+          }
+        })
+      }
+    }, 300)
   },
   watch: {
     envNames: {
@@ -501,6 +568,21 @@ export default {
           this.copyEnvChartInfo(env, this.baseEnvObj[env])
         })
       }
+    },
+    checkResource: {
+      handler (val) {
+        if (
+          this.hasPlutus &&
+          val &&
+          val.cluster_id &&
+          val.env_name &&
+          val.namespace
+        ) {
+          this.checkSvcResource(val)
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   components: {
@@ -558,6 +640,15 @@ export default {
           font-weight: 300;
           text-align: left;
 
+          .imported-icon {
+            position: absolute;
+            left: 8px;
+            width: 6px;
+            height: 6px;
+            background: @warning;
+            border-radius: 50%;
+          }
+
           .tab-title {
             flex: 1 1 calc(~'100% - 40px');
             overflow: hidden;
@@ -601,6 +692,19 @@ export default {
     .values-content {
       position: relative;
       z-index: 0;
+
+      .release-check {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: space-between;
+        margin: 10px 0;
+
+        .tooltip {
+          color: @warning;
+          font-size: 14px;
+        }
+      }
 
       .v-content {
         padding-bottom: 10px;

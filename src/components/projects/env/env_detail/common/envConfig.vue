@@ -9,12 +9,12 @@
       ></i>
     </div>
     <div v-if="showConfig">
-      <el-table v-show="configInfo.length" :data="configInfo" style="width: 90%; max-width: 800px; margin-bottom: 18px;">
+      <el-table v-show="curConfigInfo.length" :data="curConfigInfo" style="width: 90%; max-width: 800px; margin-bottom: 18px;">
         <el-table-column prop="name" label="名称"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="{ row, $index }">
             <el-button type="text" @click="editConfig(row)">编辑</el-button>
-            <el-button type="text" @click="configInfo.splice($index, 1)">删除</el-button>
+            <el-button type="text" @click="curConfigInfo.splice($index, 1)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -35,12 +35,26 @@
 <script>
 import ImportConfig from '@/components/projects/common/importConfig/index.vue'
 export default {
+  props: {
+    envName: {
+      default: 'default'
+    }
+  },
   data () {
     return {
-      configInfo: [],
-      repoConfig: {},
+      configInfo: {}, // all config information { envName: value }
+      repoConfig: {}, // current edit config information
       dialogVisible: false,
       showConfig: false
+    }
+  },
+  computed: {
+    curConfigInfo () {
+      const cur = this.configInfo[this.envName]
+      if (!cur) {
+        this.$set(this.configInfo, this.envName, [])
+      }
+      return this.configInfo[this.envName]
     }
   },
   methods: {
@@ -57,32 +71,38 @@ export default {
       this.repoConfig = current
     },
     addEnvConfig () {
-      const index = this.configInfo.index || 1
+      const index = this.curConfigInfo.index || 1
       const next = {
         name: `配置 ${index}`,
         overrideYaml: '',
         initYaml: ''
       }
-      this.configInfo.push(next)
-      this.configInfo.index = index + 1
+      this.curConfigInfo.push(next)
+      this.curConfigInfo.index = index + 1
       this.editConfig(next)
     },
     getEnvConfig () {
-      return this.configInfo.filter(info => info.initYaml).map(info => {
-        const config = info.gitRepoConfig
-        return {
-          yaml_data: info.initYaml,
-          git_repo_config: {
-            branch: config.branch,
-            codehost_id: config.codehostID,
-            owner: config.owner,
-            repo: config.repo,
-            values_paths: config.valuesPaths,
-            namespace: config.namespace
-          },
-          auto_sync: config.autoSync
-        }
-      })
+      const filtered = {}
+      for (const key in this.configInfo) {
+        filtered[key] = this.configInfo[key]
+          .filter(info => info.initYaml)
+          .map(info => {
+            const config = info.gitRepoConfig
+            return {
+              yaml_data: info.initYaml,
+              git_repo_config: {
+                branch: config.branch,
+                codehost_id: config.codehostID,
+                owner: config.owner,
+                repo: config.repo,
+                values_paths: config.valuesPaths,
+                namespace: config.namespace
+              },
+              auto_sync: config.autoSync
+            }
+          })
+      }
+      return filtered
     }
   },
   components: {

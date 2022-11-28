@@ -460,8 +460,14 @@
     <UpdateHelmVarDialog :fetchAllData="fetchAllData" ref="updateHelmVarDialog" :projectName="projectName" :envName="envName" />
     <UpdateK8sVarDialog :fetchAllData="fetchAllData" :productInfo="productInfo" ref="updateK8sVarDialog" />
     <PmServiceLog ref="pmServiceLog" />
-    <ManageK8sServicesDialog :fetchAllData="fetchAllData" :productInfo="productInfo" ref="manageK8sServicesRef" />
+    <ManageK8sServicesDialog
+      v-if="envSource === '' || envSource === 'spock'"
+      :fetchAllData="fetchAllData"
+      :productInfo="productInfo"
+      ref="manageK8sServicesRef"
+    />
     <ManageHelmServicesDialog
+      v-else-if="envSource === 'helm'"
       :fetchAllData="fetchAllData"
       :productInfo="productInfo"
       ref="manageHelmServicesRef"
