@@ -16,7 +16,7 @@
       </el-dropdown-item>
       <el-dropdown-item command="other" v-if="isOther">
         <span class="iconfont iconhanshu"></span>
-        {{isService?'其他任务输出':'全局变量'}}
+        全局变量/其他任务输出
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
