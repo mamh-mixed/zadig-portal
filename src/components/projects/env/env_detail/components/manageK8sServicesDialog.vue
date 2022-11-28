@@ -16,31 +16,7 @@
       </el-form>
       <template v-if="hasPlutus && opeType === 'add'">
         <div class="header">服务名称</div>
-        <el-table :data="currentResourceCheck" style="width: 100%;">
-          <el-table-column prop="service_name" label="服务名称"></el-table-column>
-          <el-table-column>
-            <span slot="header">
-              资源检测
-              <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
-                <i class="el-icon-info gray"></i>
-              </el-tooltip>
-            </span>
-            <template slot-scope="{ row }">
-              <div class="resource-item" v-for="(resource, index) in row.resources" :key="index">
-                <i class="middle" :class="[resource.status === 'deployed' ? 'el-icon-success success' : 'el-icon-error fail']"></i>
-                <span>{{ `${resource.type}/${resource.name}` }}</span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="200px">
-            <template slot-scope="{ row }">
-              <el-radio-group v-model="row.deploy_strategy">
-                <el-radio label="import" :disabled="!row.deployed">仅导入服务</el-radio>
-                <el-radio label="deploy">执行部署</el-radio>
-              </el-radio-group>
-            </template>
-          </el-table-column>
-        </el-table>
+        <CheckResource :checkResource="checkResource" :currentResourceCheck="currentResourceCheck" @checkRes="svcResources = $event" />
       </template>
       <template v-if="opeType !== 'delete'">
         <div v-show="opeType === 'update' || currentVars.length">
@@ -73,11 +49,11 @@
 </template>
 
 <script>
+import CheckResource from '@/components/projects/serviceMgr/common/checkResource.vue'
 import {
   autoUpgradeEnvAPI,
   deleteEnvServicesAPI,
-  getSingleProjectAPI,
-  checkK8sSvcResourceAPI
+  getSingleProjectAPI
 } from '@api'
 import { cloneDeep, flatten, difference, intersection } from 'lodash'
 import { mapState } from 'vuex'
@@ -108,7 +84,8 @@ export default {
         // vars: []  // use this parameter when adding or updating services
       },
       loading: false,
-      svcResources: {}
+      svcResources: {},
+      checkResource: null
     }
   },
   computed: {
@@ -301,49 +278,30 @@ export default {
           break
       }
       this.currentAllInfo = { vars, services }
-    },
-    async checkSvcResource () {
-      // payload: env_name, namespace, cluster_id, vars
-      this.svcResources = {}
-      const payload = {
-        env_name: this.productInfo.env_name,
-        namespace: this.productInfo.namespace,
-        cluster_id: this.productInfo.cluster_id,
-        vars: this.productInfo.vars.map(va => ({
-          alias: va.alias,
-          key: va.key,
-          value: va.value
-        }))
-      }
-      const res = await checkK8sSvcResourceAPI(
-        this.projectName,
-        payload
-      ).catch(err => console.log(err))
-      if (res) {
-        const svcResources = {}
-        res.forEach(resource => {
-          const deployed = !resource.resources.find(
-            re => re.status === 'undeployed'
-          )
-          svcResources[resource.service_name] = {
-            ...resource,
-            deployed,
-            deploy_strategy: deployed ? 'import' : 'deploy'
-          }
-        })
-        this.svcResources = svcResources
-      }
     }
   },
   watch: {
     productInfo: {
       handler (val, oVal) {
         if (this.hasPlutus && val.env_name) {
-          this.checkSvcResource()
+          this.svcResources = {}
+          this.checkResource = {
+            env_name: this.productInfo.env_name,
+            namespace: this.productInfo.namespace,
+            cluster_id: this.productInfo.cluster_id,
+            vars: this.productInfo.vars.map(va => ({
+              alias: va.alias,
+              key: va.key,
+              value: va.value
+            }))
+          }
         }
       },
       immediate: true
     }
+  },
+  components: {
+    CheckResource
   }
 }
 </script>
@@ -384,14 +342,6 @@ export default {
       .el-radio__label {
         padding-left: 4px;
       }
-    }
-
-    .success {
-      color: @success;
-    }
-
-    .fail {
-      color: @danger;
     }
   }
 }
