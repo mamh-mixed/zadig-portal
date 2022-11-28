@@ -106,7 +106,8 @@
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
               >+ 添加</el-button>
             </div>
-            <JobPlugin v-if="job.type === jobType.plugin" :job="job" :ref="jobType.plugin" :globalEnv="globalEnv" />
+            <JobPlugin v-if="job.type === jobType.plugin" :job="job" :ref="jobType.plugin" :globalEnv="globalEnv"   :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"/>
             <JobDeploy
               :projectName="projectName"
               v-if="job.type === jobType.deploy"
@@ -115,6 +116,8 @@
               :originServiceAndBuilds="originServiceAndBuilds"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobFreestyle
               v-if="job.type === jobType.freestyle"
@@ -122,6 +125,8 @@
               :ref="jobType.freestyle"
               :job="job"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobK8sDeploy
               :projectName="projectName"
@@ -131,6 +136,8 @@
               :originServiceAndBuilds="originServiceAndBuilds"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobTest
               :projectName="projectName"
@@ -139,6 +146,8 @@
               :ref="jobType.test"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobScanning
               :projectName="projectName"
@@ -147,6 +156,8 @@
               :ref="jobType.scanning"
               :globalEnv="globalEnv"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobCanaryDeploy v-if="job.type === jobType.canaryDeploy" :projectName="projectName" :job="job" :ref="jobType.canaryDeploy" />
             <JobK8sResourceUpdate
