@@ -863,6 +863,12 @@ export default {
                   delete job.pickedTargets
                 } else {
                   // fromjob
+                  payload.workflow_arg.fromJobInfo.pickedTargets.forEach(item => {
+                    if (!item.target_tag) {
+                      this.$message.error(`请填写 ${item.service_name} 中的目标镜像版本`)
+                      throw Error()
+                    }
+                  })
                   job.spec.targets = payload.workflow_arg.fromJobInfo.pickedTargets.map(item => {
                     return {
                       service_name: item.service_name,

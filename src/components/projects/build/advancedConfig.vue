@@ -143,6 +143,21 @@
         </el-form-item>
         <el-button type="text" @click="addVars">+添加</el-button>
       </el-form-item>
+      <div class="item-title" v-if="isShowShareStorage">共享存储</div>
+      <el-form-item
+        label="开启共享存储"
+        v-if="isShowShareStorage"
+      >
+        <el-switch v-model="currentResource.share_storage_info.enabled"  @change="update"  active-color="#0066ff"></el-switch>
+      </el-form-item>
+      <el-form-item
+        label="选择共享目录"
+        v-if="isShowShareStorage"
+      >
+        <el-select v-model="currentResource.share_storage_info.share_storages" size="small" value-key="name" @change="update">
+          <el-option :label="item.name" :value="item" v-for="item in shareStorage" :key="item.name"></el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
   </section>
 </template>
@@ -179,6 +194,14 @@ export default {
     hiddenVars: {
       default: false,
       type: Boolean
+    },
+    isShowShareStorage: {
+      default: false,
+      type: Boolean
+    },
+    shareStorage: {
+      default: () => [],
+      type: Array
     },
     useDockerDaemon: Boolean
   },
@@ -232,6 +255,16 @@ export default {
   },
   computed: {
     currentResource () {
+      if (!this.buildConfig[this.secondaryProp].share_storage_info) {
+        // this.buildConfig[this.secondaryProp].share_storage_info = {
+        //   enabled: false,
+        //   share_storages: []
+        // }
+        this.$set(this.buildConfig[this.secondaryProp], 'share_storage_info', {
+          enabled: false,
+          share_storages: []
+        })
+      }
       return this.buildConfig[this.secondaryProp]
     },
     ...mapState({
@@ -269,6 +302,9 @@ export default {
         this.clusters = res.filter(element => element.status === 'normal')
         this.initAdvancedConfig()
       })
+    },
+    update () {
+      this.$forceUpdate()
     },
     validate () {
       return this.$refs.advancedConfig.validate().then(() => {

@@ -297,15 +297,15 @@
                 style="position: absolute; right: 10px; z-index: 1;"
               ></el-button>
               <!-- <span @click="isShowPv=false"><i class="el-icon-delete"></i></span> -->
-              <el-form-item prop="cache.medium_type">
+              <el-form-item prop="share_storage.nfs_properties.provision_type">
                 <span slot="label">选择存储资源</span>
-                <el-radio-group v-model="cluster.share_storage.medium_type" @change="changeMediumType" class="storage-medium">
-                  <el-radio label="pvc" value="pvc">动态生成资源</el-radio>
-                  <el-radio label="pv" value="pv">使用现有存储资源</el-radio>
+                <el-radio-group v-model="cluster.share_storage.nfs_properties.provision_type" @change="changeMediumType">
+                  <el-radio label="dynamic">动态生成资源</el-radio>
+                  <el-radio label="static">使用现有存储资源</el-radio>
                 </el-radio-group>
               </el-form-item>
               <template>
-                <template v-if="cluster.share_storage.medium_type === 'pvc'">
+                <template v-if="cluster.share_storage.nfs_properties.provision_type === 'dynamic'">
                   <el-form-item prop="share_storage.nfs_properties.storage_class">
                     <span slot="label">选择 Storage Class</span>
                     <el-select v-model="cluster.share_storage.nfs_properties.storage_class" placeholder="请选择" style="width: 100%;" size="small">
@@ -537,6 +537,15 @@ const clusterInfo = {
       subpath: '$PROJECT/$WORKFLOW/$SERVICE_MODULE'
     }
   },
+  share_storage: {
+    medium_type: '',
+    nfs_properties: {
+      provision_type: 'dynamic',
+      storage_class: 'cfs',
+      storage_size_in_gib: 10,
+      pvc: 'cache-cfs-10'
+    }
+  },
   advanced_config: {
     project_names: [],
     strategy: 'normal',
@@ -645,6 +654,26 @@ export default {
               callback()
             }
           }
+        },
+        'share_storage.nfs_properties.provision_type': {
+          required: true,
+          message: '请选择存储资源',
+          type: 'string'
+        },
+        'share_storage.nfs_properties.storage_class': {
+          required: true,
+          message: '请选择 Storage Class',
+          type: 'string'
+        },
+        'share_storage.nfs_properties.storage_size_in_gib': {
+          required: true,
+          message: '请输入存储空间大小',
+          type: 'number'
+        },
+        'share_storage.nfs_properties.pvc': {
+          required: true,
+          message: '请选择 PVC',
+          type: 'string'
         },
         'dind_cfg.replicas': {
           required: true,
@@ -921,9 +950,9 @@ export default {
       this.hasNotified = true
       const namesapce = this.cluster.local ? 'unknown' : 'koderover-agent'
       const id = this.cluster.id
-      if (type === 'object') {
+      if (type === 'object' || type === 'static') {
         await this.getStorage()
-      } else if (type === 'nfs') {
+      } else if (type === 'nfs' || type === 'dynamic') {
         this.allPvc = await getClusterPvcAPI(id, namesapce)
         this.allFileStorageClass = await getClusterStorageClassAPI(id)
       }

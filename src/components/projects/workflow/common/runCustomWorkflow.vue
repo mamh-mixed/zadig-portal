@@ -555,11 +555,12 @@ export default {
               job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
               })
-              this.fromJobInfo = cloneDeep(job)
             }
             if (job.type === 'zadig-distribute-image') {
               if (job.spec.source === 'runtime') {
                 job.pickedTargets = job.spec.targets
+              } else {
+                this.fromJobInfo.pickedTargets = cloneDeep(job.spec.targets)
               }
             }
           })
@@ -846,7 +847,6 @@ export default {
       }
     },
     runTask () {
-      this.startTaskLoading = true
       // 数据处理
       const payload = cloneDeep(this.payload)
       payload.stages.forEach(stage => {
@@ -968,6 +968,12 @@ export default {
               delete job.pickedTargets
             } else {
               // fromjob
+              this.fromJobInfo.pickedTargets.forEach(item => {
+                if (!item.target_tag) {
+                  this.$message.error(`请填写 ${item.service_name} 中的目标镜像版本`)
+                  throw Error()
+                }
+              })
               job.spec.targets = this.fromJobInfo.pickedTargets
               job.spec.targets = job.spec.targets.map(item => {
                 return {
@@ -1011,6 +1017,7 @@ export default {
           }
         })
       })
+      this.startTaskLoading = true
       runCustomWorkflowTaskAPI(payload, this.projectName)
         .then(res => {
           const taskId = res.task_id || 1

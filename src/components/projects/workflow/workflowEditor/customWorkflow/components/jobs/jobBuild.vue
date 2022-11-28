@@ -30,13 +30,13 @@
             </el-col>
             <el-col :span="6">
               <el-tooltip class="item" effect="dark" content="变量配置" placement="top">
-                <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
+                <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="分支配置" placement="top">
-                <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
+                <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
               </el-tooltip>
               <el-tooltip class="item" effect="dark" content="共享存储配置" placement="top">
-                <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item)"></span>
+                <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item,index)"></span>
               </el-tooltip>
             </el-col>
             <el-col :span="4">
@@ -135,17 +135,26 @@
       :append-to-body="true"
       width="40%"
     >
-      <el-form-item label="开启共享存储">
-        <el-switch v-model="curItem.share_storage_info.enabled" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
-      </el-form-item>
-      <el-form-item label="选择共享目录">
-        <el-select v-model="curItem.share_storage_info.share_storages" placeholder="选择共享目录" filterable multiple>
-          <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="item.name" :value="item.path"></el-option>
-        </el-select>
-      </el-form-item>
+      <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
+        <el-form-item label="开启共享存储">
+          <el-switch v-model="curItem.share_storage_info.enabled" :active-value="true" :inactive-value="false" active-color="#0066ff"></el-switch>
+        </el-form-item>
+        <el-form-item label="选择共享目录">
+          <el-select
+            v-model="curItem.share_storage_info.share_storages"
+            placeholder="选择共享目录"
+            filterable
+            multiple
+            value-key="name"
+            size="small"
+          >
+            <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="`${item.name}(${item.path})}`" :value="item"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowPvDialog = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveCurSetting('pv',curItem)" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -199,6 +208,7 @@ export default {
       isShowVarDialog: false,
       isShowPvDialog: false,
       curItem: {},
+      curIndex: 0,
       dockerList: [],
       globalEnv: []
     }
@@ -321,12 +331,19 @@ export default {
         this.$set(item, 'branches', res[0].branches)
       }
     },
-    handleVarBranchChange (type, item) {
+    handleVarBranchChange (type, item, index) {
+      this.curIndex = index
       if (type === 'var') {
         this.isShowVarDialog = true
       } else if (type === 'branch') {
         this.isShowBranchDialog = true
       } else {
+        if (!item.share_storage_info) {
+          this.$set(item, 'share_storage_info', {
+            enabled: false,
+            share_storages: []
+          })
+        }
         this.isShowPvDialog = true
       }
       this.curItem = cloneDeep(item)
@@ -341,15 +358,13 @@ export default {
       })
     },
     saveCurSetting (type) {
-      this.serviceAndBuilds.forEach((item, index) => {
-        if (item.build_name === this.curItem.build_name) {
-          this.$set(this.serviceAndBuilds, index, this.curItem)
-        }
-      })
+      this.$set(this.serviceAndBuilds, this.curIndex, this.curItem)
       if (type === 'var') {
         this.isShowVarDialog = false
-      } else {
+      } else if (type === 'branch') {
         this.isShowBranchDialog = false
+      } else {
+        this.isShowPvDialog = false
       }
     },
     validate () {

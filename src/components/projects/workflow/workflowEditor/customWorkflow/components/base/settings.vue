@@ -3,7 +3,6 @@
     <el-form :model="workflowInfo" ref="settings">
       <div class="mg-b16 title">运行策略</div>
       <el-form-item>
-        {{workflowInfo.share_storages}}
         <span class="mg-r16">
           <span class="text">并发运行</span>
           <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
@@ -15,18 +14,6 @@
       <div class="mg-b16 title">
         <span>共享目录</span>
         <el-button type="text" v-if="!workflowInfo.share_storages ||workflowInfo.share_storages.length===0" @click="addBuildEnv">添加</el-button>
-        <!-- <el-table :data="workflowInfo.data" style="width: 100%">
-          <el-table-column prop="name" label="名称">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.name" placeholder="名称"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="path" label="共享目录">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.path" placeholder="共享目录"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>-->
       </div>
       <div v-if="workflowInfo.share_storages&&workflowInfo.share_storages.length>0">
         <el-row :gutter="10">
@@ -41,7 +28,7 @@
           <el-col :span="6">
             <el-form-item
               :prop="'share_storages.' + index + '.name'"
-              :rules="{required: true, message: '名称不能为空', trigger: ['blur','change']}"
+              :rules="{required: true, validator: validateName, trigger: ['blur','change']}"
             >
               <el-input v-model="workflowInfo.share_storages[index].name" size="small" placeholder="名称" @input="update($event,item,'name')"></el-input>
             </el-form-item>
@@ -65,9 +52,21 @@
 </template>
 
 <script>
+const validateName = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入名称'))
+  } else {
+    if (!/^[a-z0-9-]{1,63}$/.test(value)) {
+      callback(new Error('名称只支持小写字母和数字，特殊字符只支持中划线'))
+    } else {
+      callback()
+    }
+  }
+}
 export default {
   data () {
     return {
+      validateName,
       isShowConfig: false
     }
   },
@@ -97,7 +96,8 @@ export default {
       this.$forceUpdate()
     },
     update (val, item, type) {
-      // this.$set(item, type, val)
+      this.$set(item, type, val)
+      console.log(item)
       this.$forceUpdate()
     }
   }
