@@ -309,7 +309,7 @@ export default {
     getData () {
       this.job.spec.test_modules.forEach(item => {
         delete item.curRepo
-        item.project_name = item.product_name || ''
+        item.project_name = item.product_name || item.project_name
       })
       return this.job
     }

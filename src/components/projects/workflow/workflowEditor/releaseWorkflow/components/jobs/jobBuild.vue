@@ -28,8 +28,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
-              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
+              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
+              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
             </el-col>
             <el-col :span="4">
               <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
@@ -80,13 +80,7 @@
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect
-              v-model="scope.row.command"
-              isFixed
-              isRuntime
-              isOther
-              style="display: inline-block;"
-            />
+            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
       </el-table>
@@ -177,6 +171,7 @@ export default {
       isShowBranchDialog: false,
       isShowVarDialog: false,
       curItem: {},
+      curIndex: 0,
       dockerList: [],
       globalEnv: []
     }
@@ -299,7 +294,8 @@ export default {
         this.$set(item, 'branches', res[0].branches)
       }
     },
-    handleVarBranchChange (type, item) {
+    handleVarBranchChange (type, item, index) {
+      this.curIndex = index
       if (type === 'var') {
         this.isShowVarDialog = true
       } else {
@@ -317,11 +313,7 @@ export default {
       })
     },
     saveCurSetting (type) {
-      this.serviceAndBuilds.forEach((item, index) => {
-        if (item.build_name === this.curItem.build_name) {
-          this.$set(this.serviceAndBuilds, index, this.curItem)
-        }
-      })
+      this.$set(this.serviceAndBuilds, this.curIndex, this.curItem)
       if (type === 'var') {
         this.isShowVarDialog = false
       } else {
