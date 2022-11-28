@@ -204,8 +204,9 @@
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
-        <div class="mg-b16">运行策略</div>
-        <el-form>
+        <Settings :workflowInfo="payload" ref="Settings" />
+        <!-- <div class="mg-b16">运行策略</div> -->
+        <!-- <el-form>
           <el-form-item>
             <span class="mg-r16">
               <span>并发运行</span>
@@ -215,7 +216,7 @@
             </span>
             <el-switch v-model="multi_run"></el-switch>
           </el-form-item>
-        </el-form>
+        </el-form>-->
       </div>
       <div v-if="curDrawer === 'env'">
         <Env :preEnvs="payload" ref="env" />
@@ -296,6 +297,7 @@ import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
 import Notify from './components/base/notify.vue'
+import Settings from './components/base/settings'
 import jsyaml from 'js-yaml'
 import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
@@ -341,7 +343,8 @@ export default {
         multi_run: false,
         notify_ctls: [],
         stages: [],
-        params: []
+        params: [],
+        share_storages: []
       },
       originalWorkflow: {},
       curStageIndex: 0,
@@ -355,7 +358,6 @@ export default {
       yaml: '',
       yamlError: '',
       isShowDrawer: false,
-      multi_run: false,
       globalEnv: [],
       scal: '1',
       insertSatgeIndex: 0,
@@ -382,7 +384,8 @@ export default {
     codemirror,
     Env,
     Webhook,
-    Notify
+    Notify,
+    Settings
   },
   computed: {
     modelId () {
@@ -772,7 +775,6 @@ export default {
           }
         })
       })
-      this.multi_run = this.payload.multi_run
       this.originalWorkflow = cloneDeep(this.payload)
       this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
     },
@@ -910,7 +912,6 @@ export default {
     },
     handleDrawerChange () {
       if (this.curDrawer === 'high') {
-        this.$set(this.payload, 'multi_run', this.multi_run)
         this.isShowDrawer = false
       }
       if (this.curDrawer === 'env') {

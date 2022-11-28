@@ -54,7 +54,7 @@
             >帮助</el-link> 查看 Agent 部署样例。
           </span>
           <span class="tip-item">
-            - 如需配置工作流任务的“调度策略”和“缓存资源配置”，请在集群正常接入后进行配置，请参阅
+            - 如需配置工作流任务的“调度策略”、“缓存资源配置”和“共享存储资源配置”，请在集群正常接入后进行配置，请参阅
             <el-link
               style="font-size: 14px; vertical-align: baseline;"
               type="primary"
@@ -270,6 +270,84 @@
                 </el-input>
               </el-form-item>
             </template>
+          </section>
+          <section v-show="isEdit">
+            <h4>
+              共享存储资源配置
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content" style="line-height: 1.5;">调度到当前集群的工作流任务将会使用指定存储资源进行共享存储</div>
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/zadig/pages/cluster_manage/#共享存储资源配置`"
+                :underline="false"
+                target="_blank"
+              >帮助</el-link>
+              <el-button type="primary" size="mini" v-if="!isShowPv" @click="isShowPv=true" class="mg-l8">+ 添加</el-button>
+            </h4>
+            <div v-if="isShowPv" style="position: relative; padding: 10px; border: 1px solid #ddd;">
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                @click.native="isShowPv=false"
+                circle
+                style="position: absolute; right: 10px; z-index: 1;"
+              ></el-button>
+              <!-- <span @click="isShowPv=false"><i class="el-icon-delete"></i></span> -->
+              <el-form-item prop="cache.medium_type">
+                <span slot="label">选择存储资源</span>
+                <el-radio-group v-model="cluster.share_storage.medium_type" @change="changeMediumType" class="storage-medium">
+                  <el-radio label="pvc" value="pvc">动态生成资源</el-radio>
+                  <el-radio label="pv" value="pv">使用现有存储资源</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <template>
+                <template v-if="cluster.share_storage.medium_type === 'pvc'">
+                  <el-form-item prop="share_storage.nfs_properties.storage_class">
+                    <span slot="label">选择 Storage Class</span>
+                    <el-select v-model="cluster.share_storage.nfs_properties.storage_class" placeholder="请选择" style="width: 100%;" size="small">
+                      <el-option v-for="(item,index) in allFileStorageClass" :key="index" :label="item" :value="item"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item prop="share_storage.nfs_properties.storage_size_in_gib">
+                    <span slot="label">存储空间大小</span>
+                    <el-input
+                      v-model.number="cluster.share_storage.nfs_properties.storage_size_in_gib"
+                      style="width: 100%; vertical-align: baseline;"
+                      size="small"
+                      placeholder="请输入存储空间大小"
+                    >
+                      <template slot="append">GiB</template>
+                    </el-input>
+                  </el-form-item>
+                </template>
+                <template v-else>
+                  <el-form-item prop="share_storage.nfs_properties.pvc">
+                    <span slot="label">
+                      指定 PVC
+                      <el-link
+                        style="font-size: 14px; vertical-align: baseline;"
+                        type="primary"
+                        :href="`https://docs.koderover.com/zadig/pages/cluster_manage/`"
+                        :underline="false"
+                        target="_blank"
+                      >帮助</el-link>
+                    </span>
+                    <el-select v-model="cluster.share_storage.nfs_properties.pvc" placeholder="请选择" style="width: 100%;" size="small">
+                      <el-option
+                        v-for="(item,index) in allPvc"
+                        :key="index"
+                        :label="`${item.name} ${$utils.formatBytes(item.storage_size_in_bytes)}`"
+                        :value="item.name"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                </template>
+              </template>
+            </div>
           </section>
           <section>
             <h4>
@@ -600,7 +678,8 @@ export default {
       },
       expandAdvanced: false,
       hasNotified: false,
-      tolerancePlaceholder: '- key: "key1"\n  operator: "Equal"\n  value: "value1"\n  effect: "NoSchedule"'
+      tolerancePlaceholder: '- key: "key1"\n  operator: "Equal"\n  value: "value1"\n  effect: "NoSchedule"',
+      isShowPv: false
     }
   },
   computed: {

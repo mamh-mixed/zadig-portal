@@ -1,5 +1,6 @@
 <template>
   <div class="job-build">
+    {{workflowInfo.share_storages}}
     <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
@@ -28,8 +29,15 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
-              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
+              <el-tooltip class="item" effect="dark" content="变量配置" placement="top">
+                <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="分支配置" placement="top">
+                <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" content="共享存储配置" placement="top">
+                <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item)"></span>
+              </el-tooltip>
             </el-col>
             <el-col :span="4">
               <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
@@ -80,13 +88,7 @@
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect
-              v-model="scope.row.command"
-              isFixed
-              isRuntime
-              isOther
-              style="display: inline-block;"
-            />
+            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
       </el-table>
@@ -124,6 +126,25 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowBranchDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :title="`${curItem.service_name}/${curItem.service_module} 共享存储配置`"
+      :visible.sync="isShowPvDialog"
+      :append-to-body="true"
+      width="40%"
+    >
+      <el-form-item label="开启共享存储">
+        <el-switch v-model="curItem.share_storage_info.enabled" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+      </el-form-item>
+      <el-form-item label="选择共享目录">
+        <el-select v-model="curItem.share_storage_info.share_storages" placeholder="选择共享目录" filterable multiple>
+          <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="item.name" :value="item.path"></el-option>
+        </el-select>
+      </el-form-item>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isShowPvDialog = false" size="small">取 消</el-button>
         <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
       </span>
     </el-dialog>
@@ -176,6 +197,7 @@ export default {
       buildTabList,
       isShowBranchDialog: false,
       isShowVarDialog: false,
+      isShowPvDialog: false,
       curItem: {},
       dockerList: [],
       globalEnv: []
@@ -302,8 +324,10 @@ export default {
     handleVarBranchChange (type, item) {
       if (type === 'var') {
         this.isShowVarDialog = true
-      } else {
+      } else if (type === 'branch') {
         this.isShowBranchDialog = true
+      } else {
+        this.isShowPvDialog = true
       }
       this.curItem = cloneDeep(item)
     },
