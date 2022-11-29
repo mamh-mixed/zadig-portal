@@ -54,7 +54,11 @@
               <span class="name">测试</span>
             </li>
           </router-link>
-          <router-link v-hasPermi="{projectName: projectName, action: 'get_scan'}" active-class="active" :to="`/v1/projects/detail/${projectName}/scanner`">
+          <router-link
+            v-hasPermi="{projectName: projectName, action: 'get_scan'}"
+            active-class="active"
+            :to="`/v1/projects/detail/${projectName}/scanner`"
+          >
             <li class="nav-item">
               <i class="icon iconfont iconvery-scanner"></i>
               <span class="name">代码扫描</span>
@@ -76,7 +80,12 @@
     </div>
     <div class="operation">
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/pipelines`">
-        <el-button v-hasPermi="{projectName: projectName, action: 'create_workflow',isBtn:true}"  @click="bindComp(comp,'workflow')" icon="el-icon-plus" plain>新建工作流</el-button>
+        <el-button
+          v-hasPermi="{projectName: projectName, action: 'create_workflow',isBtn:true}"
+          @click="bindComp(comp,'workflow')"
+          icon="el-icon-plus"
+          plain
+        >新建工作流</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail`">
         <el-button
@@ -87,7 +96,12 @@
         >创建环境</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/builds`">
-        <el-button v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" @click="bindComp(comp,'build')" icon="el-icon-plus" plain>新建构建</el-button>
+        <el-button
+          v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}"
+          @click="bindComp(comp,'build')"
+          icon="el-icon-plus"
+          plain
+        >新建构建</el-button>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/test`">
         <el-button
@@ -113,9 +127,9 @@
           plain
         >创建版本</el-button>
       </template>
-      <template>
+      <template v-if="comp && comp.isProjectAdmin && $route.path === `/v1/projects/detail/${projectName}/detail`">
+        <el-button v-if="hasPlutus && deployType === 'external'" type="text" @click="convertType">切换项目类型</el-button>
         <el-dropdown
-          v-if="comp && comp.isProjectAdmin && $route.path === `/v1/projects/detail/${projectName}/detail`"
           placement="bottom"
           trigger="click"
         >
@@ -127,7 +141,7 @@
           <el-dropdown-menu slot="dropdown" class="project-config">
             <el-dropdown-item icon="el-icon-edit-outline" @click.native="$router.push(`/v1/projects/edit/${projectName}`)">修改</el-dropdown-item>
             <el-dropdown-item v-if="deployType === 'cloud_host'" @click.native="$router.push(`/v1/projects/detail/${projectName}/host`)">
-             <i class="iconfont iconwuliji"></i>主机管理
+              <i class="iconfont iconwuliji"></i>主机管理
             </el-dropdown-item>
             <el-dropdown-item icon="el-icon-lock" @click.native="$router.push(`/v1/projects/detail/${projectName}/rbac`)">权限</el-dropdown-item>
             <el-dropdown-item
@@ -148,6 +162,9 @@
   </div>
 </template>
 <script>
+import { updateProjectTypeAPI } from '@api'
+import { mapState } from 'vuex'
+
 export default {
   data () {
     return {}
@@ -167,9 +184,42 @@ export default {
         project => project.name === this.projectName
       )
       return project ? project.deployType : ''
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   methods: {
+    convertType () {
+      const content = `
+      <div style="line-height: 2.5;">
+        <div>从「托管项目」切换为「K8s YAML 项目」，项目内资源确认：</div>
+        <p>1. 现有项目资源不会变化，将新增服务管理能力</p>
+        <p>2. 托管项目中的所有服务将被纳入到服务管理，环境中关联的 workload 将作为服务配置</p>
+        <p>3. 切换操作不可逆，请谨慎操作</p>
+      </div>
+      `
+      this.$confirm(content, '确认切换项目类型？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true
+      })
+        .then(() => {
+          updateProjectTypeAPI(this.projectName).then(() => {
+            this.$message({
+              type: 'success',
+              message: '切换项目类型成功!'
+            })
+            this.$router.push(`/v1/projects`)
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消切换项目类型'
+          })
+        })
+    },
     bindComp (comp, type) {
       if (type === 'workflow') {
         comp.showSelectWorkflowType = true
@@ -252,13 +302,17 @@ export default {
     display: flex;
     margin-right: 80px;
 
-    .el-button {
+    .el-button:not(.el-button--text) {
       padding: 10px 15px;
       color: @themeColor;
       font-weight: 400;
       border: 1px solid @themeColor;
       border-radius: 4px;
       box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .el-button--text {
+      margin-right: 10px;
     }
 
     .display-btn {
