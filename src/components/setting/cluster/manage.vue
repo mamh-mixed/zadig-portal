@@ -285,14 +285,14 @@
                 :underline="false"
                 target="_blank"
               >帮助</el-link>
-              <el-button type="primary" size="mini" v-if="!isShowPv" @click="isShowPv=true" class="mg-l8">+ 添加</el-button>
+              <el-button type="primary" size="mini" v-if="!cluster.share_storage.nfs_properties.provision_type" @click="cluster.share_storage.nfs_properties.provision_type='dynamic'" class="mg-l8">+ 添加</el-button>
             </h4>
-            <div v-if="isShowPv" style="position: relative; padding: 10px; border: 1px solid #ddd;">
+            <div v-if="cluster.share_storage.nfs_properties.provision_type" style="position: relative; padding: 10px; border: 1px solid #ddd;">
               <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                @click.native="isShowPv=false"
+                @click.native="cluster.share_storage.nfs_properties.provision_type=''"
                 circle
                 style="position: absolute; right: 10px; z-index: 1;"
               ></el-button>
@@ -887,6 +887,7 @@ export default {
         if (currentCluster.cache.medium_type === '') {
           currentCluster.cache.nfs_properties.subpath = '$PROJECT/$WORKFLOW/$SERVICE_MODULE'
         }
+        currentCluster.share_storage.medium_type = 'nfs'
         const namesapce = currentCluster.local ? 'unknown' : 'koderover-agent'
         this.cluster = cloneDeep(currentCluster)
         if (this.isConfigurable) {
