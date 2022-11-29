@@ -95,7 +95,10 @@
             value-key="name"
             size="small"
           >
-            <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="`${item.name}(${item.path})`" :value="item"></el-option>
+            <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="`${item.name}(${item.path})`" :value="item">
+              <span>{{item.name}}</span>
+              <span style="color: #ccc;">({{item.path}})</span>
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>

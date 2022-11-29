@@ -119,15 +119,16 @@
         <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      :title="`${curItem.name} 共享存储配置`"
-      :visible.sync="isShowPvDialog"
-      :append-to-body="true"
-      width="40%"
-    >
+    <el-dialog :title="`${curItem.name} 共享存储配置`" :visible.sync="isShowPvDialog" :append-to-body="true" width="40%">
       <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
-          <el-switch v-model="curItem.share_storage_info.enabled"  :disabled="!isCanOpenShareStorage" :active-value="true" :inactive-value="false" active-color="#0066ff"></el-switch>
+          <el-switch
+            v-model="curItem.share_storage_info.enabled"
+            :disabled="!isCanOpenShareStorage"
+            :active-value="true"
+            :inactive-value="false"
+            active-color="#0066ff"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="选择共享目录">
           <el-select
@@ -138,7 +139,10 @@
             value-key="name"
             size="small"
           >
-            <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="`${item.name}(${item.path})`" :value="item"></el-option>
+            <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="`${item.name}(${item.path})`" :value="item">
+              <span>{{item.name}}</span>
+              <span style="color: #ccc;">({{item.path}})</span>
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>

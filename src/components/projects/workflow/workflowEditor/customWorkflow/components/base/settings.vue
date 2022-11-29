@@ -11,26 +11,32 @@
         </span>
         <el-switch v-model="workflowInfo.multi_run"></el-switch>
       </el-form-item>
-      <div class="mg-b16 title">
+      <div class="mg-b16 mg-t24 title">
         <span>共享目录</span>
         <el-button type="text" v-if="!workflowInfo.share_storages ||workflowInfo.share_storages.length===0" @click="addBuildEnv">添加</el-button>
       </div>
       <div v-if="workflowInfo.share_storages&&workflowInfo.share_storages.length>0">
-        <el-row :gutter="10">
+        <el-row :gutter="10" class="th">
           <el-col :span="6">
-            <span class="text">名称</span>
+            <span class="th-title">名称</span>
           </el-col>
           <el-col :span="6">
-            <span class="text">共享目录</span>
+            <span class="th-title">共享目录</span>
           </el-col>
         </el-row>
+
         <el-row :gutter="10" v-for="(item,index) in workflowInfo.share_storages" :key="index">
           <el-col :span="6">
             <el-form-item
               :prop="'share_storages.' + index + '.name'"
               :rules="{required: true, validator: validateName, trigger: ['blur','change']}"
             >
-              <el-input v-model="workflowInfo.share_storages[index].name" size="small" placeholder="名称" @input="update($event,item,'name')"></el-input>
+              <el-input
+                v-model="workflowInfo.share_storages[index].name"
+                size="small"
+                placeholder="shared-path"
+                @input="update($event,item,'name')"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -38,7 +44,7 @@
               :prop="'share_storages.' + index + '.path'"
               :rules="{required: true, message: '共享目录不能为空', trigger: ['blur','change']}"
             >
-              <el-input v-model="item.path" size="small" placeholder="共享目录" @input="update($event,item,'path')"></el-input>
+              <el-input v-model="item.path" size="small" placeholder="/workspace" @input="update($event,item,'path')"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -106,9 +112,28 @@ export default {
 
 <style lang="less" scoped>
 .settings {
+  .th {
+    margin-bottom: 16px;
+    padding: 4px;
+    font-weight: 500;
+    background: #eaeaea;
+
+    &-title {
+      display: inline-block;
+      color: @primaryColor;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 28px;
+    }
+  }
+
   .text {
     color: #72767b;
     font-size: 14px;
+  }
+
+  /deep/.el-form-item {
+    margin-bottom: 8px;
   }
 }
 </style>
