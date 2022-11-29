@@ -426,8 +426,8 @@ export default {
         env.hasDeployed = env.services.includes(curServiceName)
         env.checkResource = {
           env_name: env.env_name,
-          namespace: env.namespace || env.env_name,
-          cluster_id: env.cluster_id || '0123456789abcdef12345678',
+          namespace: env.namespace,
+          cluster_id: env.cluster_id,
           services: [curServiceName],
           vars: env.vars
         }
