@@ -154,7 +154,7 @@
         label="选择共享目录"
         v-if="isShowShareStorage"
       >
-        <el-select v-model="currentResource.share_storage_info.share_storages" size="small" value-key="name" @change="update">
+        <el-select v-model="currentResource.share_storage_info.share_storages" size="small" value-key="name" filterable multiple  @change="update">
           <el-option :label="`${item.name}(${item.path})`" :value="item" v-for="item in shareStorage" :key="item.name">
             <span>{{item.name}}</span>
             <span style="color: #ccc;">({{item.path}})</span>
