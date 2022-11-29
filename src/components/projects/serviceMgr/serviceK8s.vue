@@ -34,36 +34,38 @@
       <el-dialog :title="`选择 ${service.service_name} 需要加入的环境？`"
                  custom-class="dialog-upgrade-env"
                  :visible.sync="joinToEnvDialogVisible"
-                 width="40%">
+                 width="50%">
         <div class="title">
           <el-checkbox-group v-model="checkedEnvList" @change="changeUpgradeEnv">
             <el-checkbox v-for="(env,index) in deployableEnvListWithVars"
                          :key="index"
-                         :label="env">{{env.name}}</el-checkbox>
+                         :label="env">{{env.env_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <div v-if="checkedEnvList.length > 0 && checkedEnvList[0] && checkedEnvList[0].vars &&checkedEnvList[0].vars.length > 0" class="env-tabs">
+        <div v-if="checkedEnvList.length > 0 && (checkedEnvList[0].vars &&checkedEnvList[0].vars.length > 0 || hasPlutus)" class="env-tabs">
           <span class="desc">该服务有使用变量，请确认该服务在不同环境中对应的变量值</span>
           <el-tabs v-model="activeEnvTabName" type="card">
-            <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.name" :name="env.name">
-              <el-table :data="env.vars" style="width: 100%;">
-                  <el-table-column label="键">
-                    <template slot-scope="scope">
-                      <span>{{ scope.row.key }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="值">
-                    <template slot-scope="scope">
-                      <el-input
-                        size="small"
-                        v-model="scope.row.value"
-                        type="textarea"
-                        :autosize="{ minRows: 1, maxRows: 4}"
-                        placeholder="请输入内容"
-                      ></el-input>
-                    </template>
-                  </el-table-column>
-                </el-table>
+            <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
+              <CheckResource v-if="hasPlutus && !env.hasDeployed" :checkResource="env.checkResource" :serviceNames="env.serviceNames" />
+              <el-table v-if="env.vars.length" :data="env.vars" style="width: 100%;">
+                <el-table-column label="键">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.key }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="值">
+                  <template slot-scope="scope">
+                    <el-input
+                      size="small"
+                      v-model="scope.row.value"
+                      type="textarea"
+                      :autosize="{ minRows: 1, maxRows: 4}"
+                      placeholder="请输入内容"
+                    ></el-input>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div v-else style="margin-top: 10px;">该服务未引用全局变量！</div>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -159,6 +161,7 @@
 </template>
 <script>
 import mixin from '@/mixin/serviceModuleMixin'
+import CheckResource from '@/components/projects/serviceMgr/common/checkResource.vue'
 import ServiceAside from './k8s/serviceAside.vue'
 import ServiceEditor from './k8s/serviceEditor.vue'
 import ServiceTree from './common/serviceTree.vue'
@@ -166,6 +169,7 @@ import IntegrationCode from './common/integrationCode.vue'
 import { sortBy, cloneDeep } from 'lodash'
 import { getSingleProjectAPI, getServiceTemplatesAPI, getServicesTemplateWithSharedAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
+import { mapState } from 'vuex'
 export default {
   props: {
     isOnboarding: {
@@ -249,8 +253,8 @@ export default {
       this.joinToEnvDialogVisible = true
     },
     changeUpgradeEnv (val) {
-      if (this.checkedEnvList[0].vars.length > 0) {
-        this.activeEnvTabName = val[val.length - 1].name
+      if (this.checkedEnvList.length && (this.hasPlutus || this.checkedEnvList[0].vars.length > 0)) {
+        this.activeEnvTabName = val[val.length - 1].env_name
       }
     },
     onUpdateService ({ serviceName, serviceStatus, res }) {
@@ -301,6 +305,7 @@ export default {
     async checkProjectFeature () {
       const projectName = this.projectName
       this.projectInfo = await getSingleProjectAPI(projectName)
+      return this.projectInfo.vars
     },
     showJoinToEnvBtnEvent () {
       this.showJoinToEnvBtn = true
@@ -308,8 +313,8 @@ export default {
     joinToEnv () {
       const payload = this.checkedEnvList.map(item => {
         return {
-          env_name: item.name,
-          service_names: item.vars.length > 0 ? item.vars[0].services : [this.service.service_name],
+          env_name: item.env_name,
+          services: item.serviceNames.map(svc => ({ service_name: svc.service_name, deploy_strategy: svc.deploy_strategy })),
           vars: item.vars
         }
       })
@@ -396,11 +401,7 @@ export default {
       const projectName = this.projectName
       const serviceName = this.service.service_name
       getServiceDeployableEnvsAPI(projectName, serviceName).then(res => {
-        this.deployableEnvs = res.map(env => {
-          return {
-            name: env
-          }
-        })
+        this.deployableEnvs = res.envs
       })
     },
     showOnboardingNext () {
@@ -408,6 +409,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    }),
     projectName () {
       return this.$route.params.project_name
     },
@@ -415,8 +419,22 @@ export default {
       return this.$route.query.service_name
     },
     deployableEnvListWithVars () {
+      const curServiceName = this.service.service_name
       return this.deployableEnvs.map(env => {
-        env.vars = cloneDeep(this.detectedEnvs.filter(item => item.services.includes(this.service.service_name)))
+        const vars = cloneDeep(this.detectedEnvs.filter(item => item.services.includes(curServiceName)))
+        this.$set(env, 'vars', vars)
+        env.hasDeployed = env.services.includes(curServiceName)
+        env.checkResource = {
+          env_name: env.env_name,
+          namespace: env.namespace,
+          cluster_id: env.cluster_id,
+          services: [curServiceName],
+          vars: env.vars
+        }
+        env.serviceNames = [{
+          service_name: curServiceName,
+          deploy_strategy: 'deploy'
+        }]
         return env
       })
     },
@@ -431,7 +449,9 @@ export default {
   },
   mounted () {
     this.getEnvNameList()
-    this.checkProjectFeature()
+    this.checkProjectFeature().then(vars => {
+      this.detectedEnvs = vars || []
+    })
     this.getServices()
     this.getSharedServices()
   },
@@ -441,7 +461,8 @@ export default {
     ServiceTree,
     Multipane,
     MultipaneResizer,
-    IntegrationCode
+    IntegrationCode,
+    CheckResource
   },
   mixins: [mixin]
 }
