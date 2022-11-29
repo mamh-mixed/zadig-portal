@@ -77,6 +77,9 @@
                 class="mg-b24"
                 :globalEnv="globalEnv"
                 :ref="jobType.build"
+                :workflowInfo="payload"
+                :curStageIndex="curStageIndex"
+                :curJobIndex="curJobIndex"
               />
               <el-select size="small" v-model="service" multiple filterable clearable>
                 <el-option
@@ -106,8 +109,15 @@
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
               >+ 添加</el-button>
             </div>
-            <JobPlugin v-if="job.type === jobType.plugin" :job="job" :ref="jobType.plugin" :globalEnv="globalEnv"   :curStageIndex="curStageIndex"
-              :curJobIndex="curJobIndex"/>
+            <JobPlugin
+              v-if="job.type === jobType.plugin"
+              :job="job"
+              :ref="jobType.plugin"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
+            />
             <JobDeploy
               :projectName="projectName"
               v-if="job.type === jobType.deploy"
