@@ -266,8 +266,8 @@ export default {
       })
       this.isShowPvDialog = false
     },
-    getClusterStatus (id) {
-      getClusterStatusAPI(id).then(res => {
+    getClusterStatus (type, projectName, name, id) {
+      getClusterStatusAPI(type, projectName, name, id).then(res => {
         this.isCanOpenShareStorage = res
       })
     },
@@ -370,8 +370,12 @@ export default {
             share_storages: []
           })
         }
-        const cluster_id = item.module_builds.length > 0 ? item.module_builds[0].cluster_id : ''
-        this.getClusterStatus(cluster_id)
+        this.getClusterStatus(
+          this.jobType.build,
+          this.projectName,
+          item.build_name,
+          ''
+        )
         this.isShowPvDialog = true
       }
       this.curItem = cloneDeep(item)

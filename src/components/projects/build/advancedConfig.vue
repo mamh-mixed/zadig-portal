@@ -276,8 +276,8 @@ export default {
     })
   },
   methods: {
-    getClusterStatus (id) {
-      getClusterStatusAPI(id).then(res => {
+    getClusterStatus (type, projectName, name, id) {
+      getClusterStatusAPI(type, projectName, name, id).then(res => {
         this.isCanOpenShareStorage = res
       })
     },
@@ -362,7 +362,7 @@ export default {
     'currentResource.cluster_id': {
       handler (newVal, oldVal) {
         if (newVal && this.isShowShareStorage) {
-          this.getClusterStatus(newVal)
+          this.getClusterStatus('', '', '', newVal)
         }
       },
       immediate: true

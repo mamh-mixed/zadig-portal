@@ -1,7 +1,7 @@
 <template>
   <div class="job-scanning">
     <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
-      <el-form-item label="任务名称" prop="name" >
+      <el-form-item label="任务名称" prop="name">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
       <div class="mg-b24 title">选择扫描</div>
@@ -176,8 +176,8 @@ export default {
     this.getScanningList()
   },
   methods: {
-    getClusterStatus (id) {
-      getClusterStatusAPI(id).then(res => {
+    getClusterStatus (type, projectName, name, id) {
+      getClusterStatusAPI(type, projectName, name, id).then(res => {
         this.isCanOpenShareStorage = res
       })
     },
@@ -244,7 +244,12 @@ export default {
             share_storages: []
           })
         }
-        this.getClusterStatus(item.cluster_id)
+        this.getClusterStatus(
+          this.jobType.scanning,
+          this.projectName,
+          item.build_name,
+          ''
+        )
         this.isShowPvDialog = true
       }
       const res = this.originScannings.find(

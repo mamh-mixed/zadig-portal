@@ -176,8 +176,8 @@ export default {
     this.getScanningList()
   },
   methods: {
-    getClusterStatus (id) {
-      getClusterStatusAPI(id).then(res => {
+    getClusterStatus (type, projectName, name, id) {
+      getClusterStatusAPI(type, projectName, name, id).then(res => {
         this.isCanOpenShareStorage = res
       })
     },
@@ -244,7 +244,7 @@ export default {
             share_storages: []
           })
         }
-        this.getClusterStatus(item.cluster_id)
+        this.getClusterStatus(this.jobType.scanning, this.projectName, item.name, '')
         this.isShowPvDialog = true
       }
       const res = this.originScannings.find(
