@@ -285,14 +285,14 @@
                 :underline="false"
                 target="_blank"
               >帮助</el-link>
-              <el-button type="primary" size="mini" v-if="!cluster.share_storage.nfs_properties.provision_type" @click="cluster.share_storage.nfs_properties.provision_type='dynamic'" class="mg-l8">+ 添加</el-button>
+              <el-button type="primary" size="mini" v-if="isShowShareStorage || !cluster.share_storage.nfs_properties.provision_type" @click="addShareStorage" class="mg-l8">+ 添加</el-button>
             </h4>
-            <div v-if="cluster.share_storage.nfs_properties.provision_type" style="position: relative; padding: 10px; border: 1px solid #ddd;">
+            <div v-if="isShowShareStorage || cluster.share_storage.nfs_properties.provision_type" style="position: relative; padding: 10px; border: 1px solid #ddd;">
               <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
-                @click.native="cluster.share_storage.nfs_properties.provision_type=''"
+                @click.native="delShareStorage"
                 circle
                 style="position: absolute; right: 10px; z-index: 1;"
               ></el-button>
@@ -591,6 +591,7 @@ export default {
       dialogClusterFormVisible: false,
       dialogClusterAccessVisible: false,
       loading: false,
+      isShowShareStorage: false,
       rules: {
         name: [
           {
@@ -826,6 +827,21 @@ export default {
         )
       })
     },
+    addShareStorage () {
+      this.isShowShareStorage = true
+    },
+    delShareStorage () {
+      this.cluster.share_storage = {
+        medium_type: '',
+        nfs_properties: {
+          provision_type: '',
+          storage_class: '',
+          storage_size_in_gib: 10,
+          pvc: ''
+        }
+      }
+      this.isShowShareStorage = false
+    },
     getClusterNode (clusterId) {
       getClusterNodeInfo(clusterId).then(res => {
         this.clusterNodes = res
@@ -893,9 +909,9 @@ export default {
         if (this.isConfigurable) {
           this.getClusterNode(currentCluster.id)
         }
-        if (this.cluster.cache.medium_type === 'object') {
+        if (this.cluster.cache.medium_type === 'object' || this.cluster.share_storage.nfs_properties.provision_type === 'dynamic') {
           await this.getStorage()
-        } else if (this.cluster.cache.medium_type === 'nfs') {
+        } else if (this.cluster.cache.medium_type === 'nfs' || this.cluster.share_storage.nfs_properties.provision_type === 'static') {
           this.allFileStorageClass = await getClusterStorageClassAPI(
             currentCluster.id
           )

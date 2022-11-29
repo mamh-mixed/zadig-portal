@@ -317,7 +317,8 @@ export default {
         multi_run: false,
         notify_ctls: [],
         stages: [],
-        params: []
+        params: [],
+        share_storages: []
       },
       originalWorkflow: {},
       curStageIndex: 0,
