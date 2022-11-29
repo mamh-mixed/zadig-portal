@@ -358,6 +358,14 @@ export default {
         }
       },
       immediate: true
+    },
+    'currentResource.cluster_id': {
+      handler (newVal, oldVal) {
+        if (newVal && this.isShowShareStorage) {
+          this.getClusterStatus(newVal)
+        }
+      },
+      immediate: true
     }
   },
   created () {

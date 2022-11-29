@@ -16,17 +16,17 @@
         <el-button type="text" v-if="!workflowInfo.share_storages ||workflowInfo.share_storages.length===0" @click="addBuildEnv">添加</el-button>
       </div>
       <div v-if="workflowInfo.share_storages&&workflowInfo.share_storages.length>0">
-        <el-row :gutter="10" class="th">
-          <el-col :span="6">
+        <el-row :gutter="6" class="th">
+          <el-col :span="8">
             <span class="th-title">名称</span>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <span class="th-title">共享目录</span>
           </el-col>
         </el-row>
 
-        <el-row :gutter="10" v-for="(item,index) in workflowInfo.share_storages" :key="index">
-          <el-col :span="6">
+        <el-row :gutter="6" v-for="(item,index) in workflowInfo.share_storages" :key="index">
+          <el-col :span="8">
             <el-form-item
               :prop="'share_storages.' + index + '.name'"
               :rules="{required: true, validator: validateName, trigger: ['blur','change']}"
@@ -39,17 +39,19 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item
               :prop="'share_storages.' + index + '.path'"
-              :rules="{required: true, message: '共享目录不能为空', trigger: ['blur','change']}"
+              :rules="{required: true, message: '请输入共享目录', trigger: ['blur','change']}"
             >
               <el-input v-model="item.path" size="small" placeholder="/workspace" @input="update($event,item,'path')"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-button @click="deleteBuildEnv(index)" type="danger" size="mini" icon="el-icon-minus" circle plain></el-button>
-            <el-button @click="addBuildEnv()" type="primary" size="mini" icon="el-icon-plus" circle plain></el-button>
+          <el-col :span="8">
+            <el-form-item>
+              <el-button @click="deleteBuildEnv(index)" type="danger" size="mini" icon="el-icon-minus" circle plain></el-button>
+              <el-button @click="addBuildEnv()" type="primary" size="mini" icon="el-icon-plus" circle plain></el-button>
+            </el-form-item>
           </el-col>
         </el-row>
       </div>
@@ -102,9 +104,13 @@ export default {
       this.$forceUpdate()
     },
     update (val, item, type) {
-      this.$set(item, type, val)
-      console.log(item)
       this.$forceUpdate()
+    },
+    validate () {
+      return this.$refs.settings.validate()
+    },
+    getData () {
+      return this.workflowInfo.share_storages
     }
   }
 }
