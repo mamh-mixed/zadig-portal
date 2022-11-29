@@ -149,6 +149,7 @@ export default {
           installs: [{ name: '', version: '' }],
           envs: []
         },
+        outputs: [],
         artifact_paths: [],
         scripts: '#!/bin/bash\nset -e',
         test_result_path: '',

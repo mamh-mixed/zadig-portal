@@ -46,21 +46,6 @@
           <el-col :span="4">
             <div class="item-title">
               镜像名称
-              <el-tooltip effect="dark" placement="top">
-                <div slot="content">
-                  构建镜像标签生成规则 ：
-                  <br />选择 Tag 进行构建 ： 构建时间戳 -
-                  Tag
-                  <br />只选择分支进行构建：构建时间戳
-                  - 任务 ID - 分支名称
-                  <br />选择分支和 PR 进行构建：构建时间戳 - 任务 ID - 分支名称 - PR ID
-                  <br />只选择 PR
-                  进行构建：构建时间戳 - 任务 ID - PR ID
-                </div>
-                <span>
-                  <i class="el-icon-question"></i>
-                </span>
-              </el-tooltip>
             </div>
           </el-col>
           <el-col :span="8">

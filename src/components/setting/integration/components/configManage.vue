@@ -13,7 +13,7 @@
       <el-form-item label="服务地址" prop="server_address">
         <el-input
           v-model="opeForm.server_address"
-          :placeholder="`${opeForm.type.toUpperCase()} 服务地址`"
+          :placeholder="`${opeForm.type.replace(/^\S/, s => s.toUpperCase())} 服务地址`"
           @change="validate('checkConnection')"
         ></el-input>
       </el-form-item>

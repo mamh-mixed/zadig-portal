@@ -35,8 +35,8 @@
             <div class="item-title">镜像信息</div>
           </el-col>
           <el-col :span="6">
-            <el-tooltip effect="dark" :content="build.target_name" placement="top">
-              <span class="file-name item-desc">{{ build.target_name.split('/')[2]}}</span>
+            <el-tooltip effect="dark" :content="build.target_image" placement="top">
+              <span class="file-name item-desc">{{ build.target_image.split('/')[2]}}</span>
             </el-tooltip>
           </el-col>
         </el-row>

@@ -138,6 +138,7 @@ const initBuildConfig = {
     enable_gocov: false,
     parameters: []
   },
+  outputs: [{ name: 'IMAGE' }, { name: 'PKG_FILE' }],
   scripts: '#!/bin/bash\nset -e',
   post_build: {}
 }
@@ -209,6 +210,14 @@ export default {
   watch: {
     buildConfigData: {
       handler (nVal, oVal) {
+        if (nVal) {
+          if (!nVal.outputs || (nVal.outputs && nVal.outputs.length === 0)) {
+            this.$set(nVal, 'outputs', [
+              { name: 'IMAGE' },
+              { name: 'PKG_FILE' }
+            ])
+          }
+        }
         this.buildConfig = { ...cloneDeep(initBuildConfig), ...cloneDeep(nVal) }
       },
       deep: true,

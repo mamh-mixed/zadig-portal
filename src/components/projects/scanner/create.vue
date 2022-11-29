@@ -245,6 +245,7 @@ export default {
           //   notify_type: []
           // }
         },
+        outputs: [],
         advanced_setting_modified: false
       },
       validObj: new ValidateSubmit(),

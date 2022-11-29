@@ -153,9 +153,7 @@ export default {
   },
   computed: {
     info () {
-      return this.pickedTargets.filter(item => {
-        return item.repos.length > 0
-      })
+      return this.pickedTargets
     }
   },
   data () {

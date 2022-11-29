@@ -28,8 +28,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item)"></span>
-              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item)"></span>
+              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
+              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
             </el-col>
             <el-col :span="4">
               <el-button type="danger" size="mini" plain @click="delServiceAndBuild(index)">删除</el-button>
@@ -74,6 +74,7 @@
               filterable
               size="small"
               required
+              @focus="handleEnvChange(scope.row, scope.row.command)"
               v-if="scope.row.command === 'other'"
               style="display: inline-block; width: 220px;"
             >
@@ -125,9 +126,14 @@
 
 <script>
 import { jobType, buildTabList, validateJobName } from '../../config'
-import { getAllBranchInfoAPI, getRegistryWhenBuildAPI } from '@api'
+import {
+  getAllBranchInfoAPI,
+  getRegistryWhenBuildAPI,
+  getWorkflowGlobalVarsAPI
+} from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
+import jsyaml from 'js-yaml'
 export default {
   name: 'JobBuild',
   props: {
@@ -139,13 +145,21 @@ export default {
       type: Array,
       default: () => []
     },
-    globalEnv: {
-      type: Array,
-      default: () => []
-    },
     job: {
       type: Object,
       default: () => ({})
+    },
+    workflowInfo: {
+      type: Object,
+      default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
+    },
+    curJobIndex: {
+      type: Number,
+      default: 0
     }
   },
   components: { EnvTypeSelect },
@@ -157,7 +171,9 @@ export default {
       isShowBranchDialog: false,
       isShowVarDialog: false,
       curItem: {},
-      dockerList: []
+      curIndex: 0,
+      dockerList: [],
+      globalEnv: []
     }
   },
   computed: {
@@ -188,9 +204,15 @@ export default {
   },
   created () {
     this.getRegistryWhenBuild()
+    this.getGlobalEnv()
   },
   methods: {
-    // validateJob: validateJobName,
+    handleEnvChange (row, command) {
+      row.value = ''
+      if (command === 'other') {
+        this.getGlobalEnv()
+      }
+    },
     delServiceAndBuild (index) {
       this.serviceAndBuilds.splice(index, 1)
       this.$emit('input', this.serviceAndBuilds)
@@ -206,7 +228,7 @@ export default {
         const res = this.originServiceAndBuilds.find(
           build => build.service_name === item.service_name
         )
-        this.$set(item, 'module_builds', res.module_builds)
+        this.$set(item, 'module_builds', res ? res.module_builds : [])
 
         // set repos
         const result =
@@ -271,7 +293,8 @@ export default {
         this.$set(item, 'branches', res[0].branches)
       }
     },
-    handleVarBranchChange (type, item) {
+    handleVarBranchChange (type, item, index) {
+      this.curIndex = index
       if (type === 'var') {
         this.isShowVarDialog = true
       } else {
@@ -279,12 +302,17 @@ export default {
       }
       this.curItem = cloneDeep(item)
     },
-    saveCurSetting (type) {
-      this.serviceAndBuilds.forEach((item, index) => {
-        if (item.build_name === this.curItem.build_name) {
-          this.$set(this.serviceAndBuilds, index, this.curItem)
-        }
+    getGlobalEnv () {
+      const params = cloneDeep(this.workflowInfo)
+      const curJob = cloneDeep(this.job)
+      curJob.name = Math.random()
+      params.stages[this.curStageIndex].jobs[this.curJobIndex] = curJob
+      getWorkflowGlobalVarsAPI(curJob.name, jsyaml.dump(params)).then(res => {
+        this.globalEnv = res
       })
+    },
+    saveCurSetting (type) {
+      this.$set(this.serviceAndBuilds, this.curIndex, this.curItem)
       if (type === 'var') {
         this.isShowVarDialog = false
       } else {
@@ -311,8 +339,10 @@ export default {
     }
   },
   watch: {
-    isShowFooter () {
-      this.setServiceBuilds()
+    isShowFooter (val) {
+      if (val) {
+        this.setServiceBuilds()
+      }
     }
   }
 }
