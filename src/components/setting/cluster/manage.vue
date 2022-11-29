@@ -538,7 +538,7 @@ const clusterInfo = {
     }
   },
   share_storage: {
-    medium_type: '',
+    medium_type: 'nfs',
     nfs_properties: {
       provision_type: 'dynamic',
       storage_class: 'cfs',

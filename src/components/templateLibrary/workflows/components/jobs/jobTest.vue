@@ -20,8 +20,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
-            <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
+            <el-tooltip class="item" effect="dark" content="变量配置" placement="top">
+              <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="分支配置" placement="top">
+              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="共享存储配置" placement="top">
+              <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item,index)"></span>
+            </el-tooltip>
           </el-col>
           <el-col :span="4">
             <el-button type="danger" size="mini" plain @click="delTest(index)">删除</el-button>
@@ -70,19 +77,13 @@
               filterable
               size="small"
               required
-              @focus="handleEnvChange(scope.row, scope.row.command)"
               v-if="scope.row.command === 'other'"
+              @focus="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block; width: 220px;"
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect
-              v-model="scope.row.command"
-              isFixed
-              isRuntime
-              isOther
-              style="display: inline-block;"
-            />
+            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
           </template>
         </el-table-column>
       </el-table>
@@ -118,6 +119,38 @@
         <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog :title="`${curItem.name} 共享存储配置`" :visible.sync="isShowPvDialog" :append-to-body="true" width="40%">
+      <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
+        <el-form-item label="开启共享存储">
+          <el-switch
+            v-model="curItem.share_storage_info.enabled"
+            :disabled="!isCanOpenShareStorage"
+            :active-value="true"
+            :inactive-value="false"
+            active-color="#0066ff"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="选择共享目录">
+          <el-select
+            v-model="curItem.share_storage_info.share_storages"
+            placeholder="选择共享目录"
+            filterable
+            multiple
+            value-key="name"
+            size="small"
+          >
+            <el-option v-for="item in workflowInfo.share_storages" :key="item.value" :label="`${item.name}(${item.path})`" :value="item">
+              <span>{{item.name}}</span>
+              <span style="color: #ccc;">({{item.path}})</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isShowPvDialog = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="saveCurSetting('pv',curItem)" size="small">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -126,7 +159,8 @@ import { jobType, validateJobName } from '../../config'
 import {
   getAllBranchInfoAPI,
   getTestListAPI,
-  getWorkflowGlobalVarsAPI
+  getWorkflowGlobalVarsAPI,
+  getClusterStatusAPI
 } from '@api'
 import { differenceWith, cloneDeep } from 'lodash'
 import EnvTypeSelect from '../envTypeSelect.vue'
@@ -167,11 +201,13 @@ export default {
       jobType,
       isShowBranchDialog: false,
       isShowVarDialog: false,
+      isShowPvDialog: false,
       curItem: {},
       curIndex: 0,
       originTestList: [],
       test: '',
-      globalEnv: []
+      globalEnv: [],
+      isCanOpenShareStorage: false
     }
   },
   computed: {
@@ -193,6 +229,11 @@ export default {
     this.getGlobalEnv()
   },
   methods: {
+    getClusterStatus (id) {
+      getClusterStatusAPI(id).then(res => {
+        this.isCanOpenShareStorage = res
+      })
+    },
     getGlobalEnv () {
       const params = cloneDeep(this.workflowInfo)
       const curJob = cloneDeep(this.job)
@@ -262,10 +303,20 @@ export default {
       }
     },
     handleVarBranchChange (type, item, index) {
+      this.curIndex = index
       if (type === 'var') {
         this.isShowVarDialog = true
-      } else {
+      } else if (type === 'branch') {
         this.isShowBranchDialog = true
+      } else {
+        if (!item.share_storage_info) {
+          this.$set(item, 'share_storage_info', {
+            enabled: false,
+            share_storages: []
+          })
+        }
+        this.getClusterStatus(item.cluster_id)
+        this.isShowPvDialog = true
       }
       const res = this.originTestList.find(test => test.name === item.name)
       if (
@@ -288,7 +339,6 @@ export default {
           }
         )
       }
-      this.curIndex = index
       this.curItem = cloneDeep(item)
     },
     saveCurSetting (type) {
@@ -299,8 +349,10 @@ export default {
       })
       if (type === 'var') {
         this.isShowVarDialog = false
-      } else {
+      } else if (type === 'branch') {
         this.isShowBranchDialog = false
+      } else {
+        this.isShowPvDialog = false
       }
     },
     validate () {
