@@ -149,10 +149,13 @@
         v-if="isShowShareStorage"
       >
         <el-switch v-model="currentResource.share_storage_info.enabled"  :disabled="!isCanOpenShareStorage"  @change="update"  active-color="#0066ff"></el-switch>
+        <el-tooltip v-if="!isCanOpenShareStorage" content="集群无共享存储资源" placement="top">
+          <i class="el-icon-warning" style="color: red;"></i>
+        </el-tooltip>
       </el-form-item>
       <el-form-item
         label="选择共享目录"
-        v-if="isShowShareStorage"
+        v-if="isShowShareStorage&&isCanOpenShareStorage"
       >
         <el-select v-model="currentResource.share_storage_info.share_storages" size="small" value-key="name" filterable multiple  @change="update">
           <el-option :label="`${item.name}(${item.path})`" :value="item" v-for="item in shareStorage" :key="item.name">

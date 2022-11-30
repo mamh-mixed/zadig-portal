@@ -129,8 +129,11 @@
             :inactive-value="false"
             active-color="#0066ff"
           ></el-switch>
+          <el-tooltip v-if="!isCanOpenShareStorage" content="集群无共享存储资源" placement="top">
+            <i class="el-icon-warning" style="color: red;"></i>
+          </el-tooltip>
         </el-form-item>
-        <el-form-item label="选择共享目录">
+        <el-form-item label="选择共享目录" v-if="isCanOpenShareStorage">
           <el-select
             v-model="curItem.share_storage_info.share_storages"
             placeholder="选择共享目录"
