@@ -263,10 +263,6 @@ export default {
   computed: {
     currentResource () {
       if (!this.buildConfig[this.secondaryProp].share_storage_info) {
-        // this.buildConfig[this.secondaryProp].share_storage_info = {
-        //   enabled: false,
-        //   share_storages: []
-        // }
         this.$set(this.buildConfig[this.secondaryProp], 'share_storage_info', {
           enabled: false,
           share_storages: []
