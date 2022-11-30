@@ -127,13 +127,14 @@
             :disabled="!isCanOpenShareStorage"
             :active-value="true"
             :inactive-value="false"
+            @change="handleSwitchChange($event,curItem)"
             active-color="#0066ff"
           ></el-switch>
-          <el-tooltip v-if="!isCanOpenShareStorage" content="集群无共享存储资源" placement="top">
-            <i class="el-icon-warning" style="color: red;"></i>
+          <el-tooltip v-if="!isCanOpenShareStorage" content="集群无共享存储资源，请前往「系统设置」-「集群管理」配置" placement="top">
+            <i class="el-icon-warning" style="color: red; vertical-align: -2px;"></i>
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="选择共享目录" v-if="isCanOpenShareStorage">
+        <el-form-item label="选择共享目录" v-if="isCanOpenShareStorage&&curItem.share_storage_info.enabled">
           <el-select
             v-model="curItem.share_storage_info.share_storages"
             placeholder="选择共享目录"
@@ -232,6 +233,11 @@ export default {
     this.getGlobalEnv()
   },
   methods: {
+    handleSwitchChange (val, item) {
+      if (!val) {
+        item.share_storage_info.share_storages = []
+      }
+    },
     getClusterStatus (type, projectName, name, id) {
       getClusterStatusAPI(type, projectName, name, id).then(res => {
         this.isCanOpenShareStorage = res

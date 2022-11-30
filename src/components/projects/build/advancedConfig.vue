@@ -148,16 +148,16 @@
         label="开启共享存储"
         v-if="isShowShareStorage"
       >
-        <el-switch v-model="currentResource.share_storage_info.enabled"  :disabled="!isCanOpenShareStorage"  @change="update"  active-color="#0066ff"></el-switch>
-        <el-tooltip v-if="!isCanOpenShareStorage" content="集群无共享存储资源" placement="top">
-          <i class="el-icon-warning" style="color: red;"></i>
+        <el-switch v-model="currentResource.share_storage_info.enabled"  :disabled="!isCanOpenShareStorage" @change="handleSwitchChange($event,currentResource)" active-color="#0066ff"></el-switch>
+        <el-tooltip v-if="!isCanOpenShareStorage" content="集群无共享存储资源，请前往「系统设置」-「集群管理」配置" placement="top">
+          <i class="el-icon-warning" style="color: red; vertical-align: -2px;"></i>
         </el-tooltip>
       </el-form-item>
       <el-form-item
         label="选择共享目录"
-        v-if="isShowShareStorage&&isCanOpenShareStorage"
+        v-if="isShowShareStorage&&isCanOpenShareStorage&&currentResource.share_storage_info.enabled"
       >
-        <el-select v-model="currentResource.share_storage_info.share_storages" size="small" value-key="name" filterable multiple  @change="update">
+        <el-select v-model="currentResource.share_storage_info.share_storages" size="small" value-key="name" filterable multiple>
           <el-option :label="`${item.name}(${item.path})`" :value="item" v-for="item in shareStorage" :key="item.name">
             <span>{{item.name}}</span>
             <span style="color: #ccc;">({{item.path}})</span>
@@ -279,6 +279,11 @@ export default {
     })
   },
   methods: {
+    handleSwitchChange (val, item) {
+      if (!val) {
+        item.share_storage_info.share_storages = []
+      }
+    },
     getClusterStatus (type, projectName, name, id) {
       getClusterStatusAPI(type, projectName, name, id).then(res => {
         this.isCanOpenShareStorage = res
@@ -314,9 +319,6 @@ export default {
         this.clusters = res.filter(element => element.status === 'normal')
         this.initAdvancedConfig()
       })
-    },
-    update () {
-      this.$forceUpdate()
     },
     validate () {
       return this.$refs.advancedConfig.validate().then(() => {
