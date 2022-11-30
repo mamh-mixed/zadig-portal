@@ -285,7 +285,7 @@
                 :underline="false"
                 target="_blank"
               >帮助</el-link>
-              <el-button type="primary" size="mini" v-if="isShowShareStorage || !cluster.share_storage.nfs_properties.provision_type" @click="addShareStorage" class="mg-l8">+ 添加</el-button>
+              <el-button size="mini" type="primary" plain v-if="isShowShareStorage || !cluster.share_storage.nfs_properties.provision_type" @click="addShareStorage" class="mg-l8">+ 添加</el-button>
             </h4>
             <div v-if="isShowShareStorage || cluster.share_storage.nfs_properties.provision_type" style="position: relative; padding: 10px; border: 1px solid #ddd;">
               <el-button
