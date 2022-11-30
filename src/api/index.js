@@ -1526,6 +1526,10 @@ export function getCurrentUserInfoAPI (uid) {
   return http.get(`/api/v1/users/${uid}/personal`)
 }
 
+export function updateCurrentUserMailAPI (uid, payload) {
+  return http.put(`/api/v1/users/${uid}/personal`, payload)
+}
+
 export function updateCurrentUserInfoAPI (id, payload) {
   return http.put(`/api/v1/users/${id}/password`, payload)
 }

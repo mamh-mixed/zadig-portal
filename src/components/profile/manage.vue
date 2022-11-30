@@ -5,23 +5,39 @@
     element-loading-spinner="iconfont iconfont-loading iconfenzucopy"
     class="setting-profile-container"
   >
-    <el-dialog title="修改密码" :fullscreen="true" class="modifiled-pwd" :visible.sync="modifiedPwdDialogVisible" center>
+    <el-dialog title="修改密码" class="modifiled-pwd" :visible.sync="modifiedPwdDialogVisible" center>
       <div class="modifiled-pwd-container">
-        <el-form label-position="top" label-width="100px" :rules="rules" ref="ruleForm" :model="pwd">
+        <el-form label-position="left" label-width="100px" :rules="pwdRules" ref="passwordForm" :model="pwd">
           <el-form-item label="旧密码" prop="oldPassword">
-            <el-input show-password v-model="pwd.oldPassword"></el-input>
+            <el-input size="small" show-password v-model="pwd.oldPassword"></el-input>
           </el-form-item>
           <el-form-item label="新密码" prop="newPassword">
-            <el-input show-password v-model="pwd.newPassword"></el-input>
+            <el-input size="small" show-password v-model="pwd.newPassword"></el-input>
           </el-form-item>
           <el-form-item label="确认新密码" prop="confirmPassword">
-            <el-input show-password v-model="pwd.confirmPassword"></el-input>
+            <el-input size="small" show-password v-model="pwd.confirmPassword"></el-input>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="cancelUpdateUserInfo">取 消</el-button>
-        <el-button type="primary" @click="updateUserInfo">确 定</el-button>
+        <el-button size="small" @click="cancelUpdateUserInfo" plain>取 消</el-button>
+        <el-button size="small" type="primary" @click="updateUserInfo" plains>确 定</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="修改邮箱" class="modifiled-pwd" :visible.sync="modifiedMailDialogVisible" center>
+      <div class="modifiled-pwd-container">
+        <el-form label-position="left" label-width="100px" :rules="mailRules" ref="mailForm" :model="mail">
+          <el-form-item label="原邮箱">
+            <span v-if="currentEditUserInfo">{{currentEditUserInfo.email}}</span>
+          </el-form-item>
+          <el-form-item label="新邮箱" prop="newMail">
+            <el-input v-model="mail.newMail" size="small" placeholder="请输入企业邮箱"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelUpdateMail" plain>取 消</el-button>
+        <el-button size="small" type="primary" @click="updateMail">确 定</el-button>
       </span>
     </el-dialog>
     <div v-if="currentEditUserInfo" class="section">
@@ -33,7 +49,7 @@
             </div>
           </div>
           <div class="info-tag">
-            <span  class="username">{{currentEditUserInfo.name}}</span>
+            <span v-if="currentEditUserInfo.name" class="mail">{{currentEditUserInfo.name}}</span>
             <el-tag v-if="role.includes('admin')" size="mini" type="primary">管理员</el-tag>
             <el-tag v-else size="mini" type="primary">普通用户</el-tag>
           </div>
@@ -47,23 +63,12 @@
                     <td class>{{$utils.convertTimestamp(currentEditUserInfo.last_login_time)}}</td>
                   </tr>
                 </template>
-                <!-- <tr>
-                  <td>
-                    <span>Kube Config</span>
-                    <HelpLink :inline="true"
-                                 :keyword="{location:'个人中心',key:'KubeConfig'}"></HelpLink>
-                  </td>
-                  <td class="">
-                    <el-button @click="downloadConfig()"
-                               type="text">点击下载</el-button>
-                  </td>
-                </tr>-->
                 <tr v-if="currentEditUserInfo.identity_type">
                   <td>
                     <span>用户来源</span>
                   </td>
                   <td>
-                    <span >
+                    <span>
                       <i class="iconfont" :class="'icon'+currentEditUserInfo.identity_type"></i>
                       <span>{{identityTypeMap[currentEditUserInfo.identity_type]}}</span>
                     </span>
@@ -74,7 +79,16 @@
                     <span>修改密码</span>
                   </td>
                   <td>
-                    <el-button @click="modifiedPwd" type="text">点击修改</el-button>
+                    <el-button class="edit-password" @click="modifiedPwd" type="text">点击修改</el-button>
+                  </td>
+                </tr>
+                <tr v-if="currentEditUserInfo.identity_type ==='system'">
+                  <td>
+                    <span>修改邮箱</span>
+                  </td>
+                  <td>
+                    <span>{{currentEditUserInfo.email}}</span>
+                    <el-button class="edit-password" @click="modifiedMail" type="text">点击修改</el-button>
                   </td>
                 </tr>
                 <tr>
@@ -83,12 +97,13 @@
                     <HelpLink :inline="true" :keyword="{location:'个人中心',key:'APIToken'}" />
                   </td>
                   <td>
-                    <el-input size="small" placeholder readonly type="text" v-model="currentEditUserInfo.token">
+                    <el-input size="mini" readonly type="text" v-model="currentEditUserInfo.token">
                       <el-button
                         v-clipboard:copy="currentEditUserInfo.token"
                         v-clipboard:success="copySuccess"
                         v-clipboard:error="copyError"
                         slot="append"
+                        size="mini"
                         icon="el-icon-document-copy"
                       >复制</el-button>
                     </el-input>
@@ -117,10 +132,11 @@ import HelpLink from './common/helpLink.vue'
 import {
   getCurrentUserInfoAPI,
   updateCurrentUserInfoAPI,
+  updateCurrentUserMailAPI,
   getSubscribeAPI,
-  saveSubscribeAPI,
-  downloadConfigAPI
+  saveSubscribeAPI
 } from '@api'
+import { cloneDeep } from 'lodash'
 import { mapState } from 'vuex'
 
 export default {
@@ -130,7 +146,7 @@ export default {
         callback(new Error('请输入新密码'))
       } else {
         if (this.pwd.confirmPassword !== '') {
-          this.$refs.ruleForm.validateField('confirmPassword')
+          this.$refs.passwordForm.validateField('confirmPassword')
         }
         callback()
       }
@@ -157,18 +173,32 @@ export default {
         newPassword: '',
         confirmPassword: ''
       },
+      mail: {
+        newMail: ''
+      },
       loading: false,
       modifiedPwdDialogVisible: false,
+      modifiedMailDialogVisible: false,
       workflowNoti: {},
-      rules: {
+      pwdRules: {
         oldPassword: [
-          { required: true, message: '请输入旧密码', trigger: 'blur' }
+          { required: true, message: '请输入旧密码', trigger: ['blur', 'change'] }
         ],
         newPassword: [
-          { required: true, validator: validateNewPass, trigger: 'blur' }
+          { required: true, validator: validateNewPass, trigger: ['blur', 'change'] }
         ],
         confirmPassword: [
-          { required: true, validator: validateConfirmPass, trigger: 'blur' }
+          { required: true, validator: validateConfirmPass, trigger: ['blur', 'change'] }
+        ]
+      },
+      mailRules: {
+        newMail: [
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }
         ]
       }
     }
@@ -199,8 +229,11 @@ export default {
     modifiedPwd () {
       this.modifiedPwdDialogVisible = true
     },
+    modifiedMail () {
+      this.modifiedMailDialogVisible = true
+    },
     updateUserInfo () {
-      this.$refs.ruleForm.validate(valid => {
+      this.$refs.passwordForm.validate(valid => {
         if (valid) {
           const id = this.currentEditUserInfo.uid
           const payload = {
@@ -224,32 +257,35 @@ export default {
         }
       })
     },
-    cancelUpdateUserInfo () {
-      this.$refs.ruleForm.resetFields()
-      this.modifiedPwdDialogVisible = false
-    },
-    downloadConfig () {
-      this.$message({
-        message: '获取配置中，请稍候...',
-        type: 'info'
-      })
-      downloadConfigAPI().then(res => {
-        this.$message({
-          message: '配置获取完毕，下载后请按照文档使用',
-          type: 'success'
-        })
-        const content = res
-        const fileName = 'config'
-        const aTag = document.createElement('a')
-        const blob = new Blob([content], { type: 'binary/octet-stream' })
-        if (aTag.download !== undefined) {
-          aTag.setAttribute('href', window.URL.createObjectURL(blob))
-          aTag.setAttribute('download', fileName)
-          document.body.appendChild(aTag)
-          aTag.click()
-          document.body.removeChild(aTag)
+    updateMail () {
+      this.$refs.mailForm.validate(valid => {
+        if (valid) {
+          const id = this.currentEditUserInfo.uid
+          const payload = cloneDeep(this.currentEditUserInfo)
+          payload.email = this.mail.newMail
+          updateCurrentUserMailAPI(id, payload).then(res => {
+            this.$message({
+              message: '邮箱修改成功',
+              type: 'success'
+            })
+            this.getCurrentUserInfo()
+            this.cancelUpdateMail()
+            this.mail = {
+              newMail: ''
+            }
+          })
+        } else {
+          return false
         }
       })
+    },
+    cancelUpdateUserInfo () {
+      this.$refs.passwordForm.resetFields()
+      this.modifiedPwdDialogVisible = false
+    },
+    cancelUpdateMail () {
+      this.$refs.mailForm.resetFields()
+      this.modifiedMailDialogVisible = false
     },
     getSubscribe () {
       getSubscribeAPI().then(res => {
@@ -375,13 +411,8 @@ export default {
             padding-left: 0;
             border-top: 1px solid #e6e9f0;
 
-            .download-desc {
-              color: #666f80;
-              cursor: pointer;
-
-              &:hover {
-                color: @themeColor;
-              }
+            .edit-password {
+              padding: 0;
             }
           }
 
