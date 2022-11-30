@@ -285,7 +285,7 @@
                 :underline="false"
                 target="_blank"
               >帮助</el-link>
-              <el-button size="mini" type="primary" plain v-if="isShowShareStorage || !cluster.share_storage.nfs_properties.provision_type" @click="addShareStorage" class="mg-l8">+ 添加</el-button>
+              <el-button size="mini" type="primary" plain v-if="!cluster.share_storage.nfs_properties.provision_type" @click="addShareStorage" class="mg-l8">+ 添加</el-button>
             </h4>
             <div v-if="isShowShareStorage || cluster.share_storage.nfs_properties.provision_type" style="position: relative; padding: 10px; border: 1px solid #ddd;">
               <el-button
@@ -299,7 +299,7 @@
               <!-- <span @click="isShowPv=false"><i class="el-icon-delete"></i></span> -->
               <el-form-item prop="share_storage.nfs_properties.provision_type">
                 <span slot="label">选择存储资源</span>
-                <el-radio-group v-model="cluster.share_storage.nfs_properties.provision_type" @change="changeMediumType">
+                <el-radio-group v-model="cluster.share_storage.nfs_properties.provision_type" @change="handleStorageChange">
                   <el-radio label="dynamic">动态生成资源</el-radio>
                   <el-radio label="static">使用现有存储资源</el-radio>
                 </el-radio-group>
@@ -828,6 +828,9 @@ export default {
       })
     },
     addShareStorage () {
+      this.cluster.share_storage.nfs_properties.provision_type = 'dynamic'
+      this.hasNotified = true
+      this.changeMediumType('dynamic')
       this.isShowShareStorage = true
     },
     delShareStorage () {
@@ -841,6 +844,10 @@ export default {
         }
       }
       this.isShowShareStorage = false
+    },
+    handleStorageChange ($event) {
+      this.hasNotified = true
+      this.changeMediumType($event)
     },
     getClusterNode (clusterId) {
       getClusterNodeInfo(clusterId).then(res => {
