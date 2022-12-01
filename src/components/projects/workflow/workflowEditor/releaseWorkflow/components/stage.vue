@@ -261,6 +261,34 @@ export default {
             timeout: 10,
             cluster_id: ''
           }
+        },
+        'istio-release': {
+          name: 'default',
+          type: 'istio-release',
+          isCreate: true,
+          spec: {
+            registry_id: '',
+            from_job: '',
+            first: true,
+            cluster_id: '',
+            namespace: '',
+            timeout: 10,
+            replica_percentage: 10,
+            weight: 0,
+            services: []
+          }
+        },
+        'istio-rollback': {
+          name: 'default',
+          type: 'istio-rollback',
+          isCreate: true,
+          spec: {
+            cluster_id: '',
+            namespace: '',
+            services: [],
+            timeout: 10
+
+          }
         }
       },
       isShowJobOperateDialog: false,

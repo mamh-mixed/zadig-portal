@@ -219,6 +219,22 @@
               :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
+            <JobIstioRelease
+              :projectName="projectName"
+              v-if="job.type === jobType.istioRelease"
+              :job="job"
+              :ref="jobType.istioRelease"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
+            <JobIstioReleaseRollback
+              :projectName="projectName"
+              v-if="job.type === jobType.istioRollback"
+              :job="job"
+              :ref="jobType.istioRollback"
+              :globalEnv="globalEnv"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -333,6 +349,8 @@ import JobGrayRollback from './components/jobs/jobGrayRollback.vue'
 import JobK8sGrayDeploy from './components/jobs/jobK8sGrayDeploy'
 import JobK8sResourceUpdate from './components/jobs/jobK8sResourceUpdate'
 import JobImageDistribute from './components/jobs/jobImageDistribute.vue'
+import JobIstioRelease from './components/jobs/jobIstioRelease.vue'
+import JobIstioReleaseRollback from './components/jobs/jobIstioReleaseRollback.vue'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Settings from './components/base/settings'
@@ -428,6 +446,8 @@ export default {
     JobGrayRollback,
     JobK8sGrayDeploy,
     JobImageDistribute,
+    JobIstioRelease,
+    JobIstioReleaseRollback,
     RunCustomWorkflow,
     codemirror,
     Env,
