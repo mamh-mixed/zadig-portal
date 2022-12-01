@@ -264,15 +264,6 @@ export default {
         item.share_storage_info.share_storages = []
       }
     },
-    apply (curItem) {
-      // 使用相同构建的服务组件都应用当前配置
-      this.serviceAndBuilds.forEach(item => {
-        if (item.build_name === curItem.build_name) {
-          item.share_storage_info = this.curItem.share_storage_info
-        }
-      })
-      this.isShowPvDialog = false
-    },
     getClusterStatus (type, projectName, name, id) {
       getClusterStatusAPI(type, projectName, name, id).then(res => {
         this.isCanOpenShareStorage = res
