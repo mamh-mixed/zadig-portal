@@ -260,6 +260,9 @@ export default {
   },
   methods: {
     getData () {
+      if (this.$refs.serviceRef) {
+        this.job.spec.targets.push(this.serviceInfo)
+      }
       return this.job
     },
     getRegistryWhenBuild () {
