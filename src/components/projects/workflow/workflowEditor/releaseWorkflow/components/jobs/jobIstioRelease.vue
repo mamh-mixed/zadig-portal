@@ -7,10 +7,10 @@
       <el-form-item label="任务类型" prop="spec.first">
         <el-select v-model="job.spec.first" filterable placeholder="请选择" size="small" style="width: 220px;">
           <el-option label="首个 Istio 发布任务" :value="true"></el-option>
-          <el-option label="非首个灰度任务" :value="false"></el-option>
+          <el-option label="非首个 Istio 发布任务" :value="false"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item v-if="!job.spec.first" label="选择首个灰度任务" prop="spec.from_job" class="select">
+      <el-form-item v-if="!job.spec.first" label="选择首个 Istio 发布任务" prop="spec.from_job" class="select">
         <el-select v-model="job.spec.from_job" placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="(item,index) in allJobList" :key="index" :label="item" :value="item">{{item}}</el-option>
         </el-select>
