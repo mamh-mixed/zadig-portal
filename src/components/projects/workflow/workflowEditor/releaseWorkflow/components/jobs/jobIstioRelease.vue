@@ -245,10 +245,18 @@ export default {
       return jobs
     }
   },
-  created () {
-    this.originJob = cloneDeep(this.job)
-    this.getClusterList()
-    this.getRegistryWhenBuild()
+  watch: {
+    'job.spec': {
+      handler (val) {
+        if (!val.from_job) {
+          this.$set(this.job.spec, 'first', true)
+        } else {
+          this.$set(this.job.spec, 'first', false)
+        }
+        this.getDeploymentsAndVirtualServices()
+      },
+      immediate: true
+    }
   },
   methods: {
     getData () {
@@ -333,6 +341,11 @@ export default {
     validate () {
       return this.$refs.ruleForm.validate()
     }
+  },
+  created () {
+    this.originJob = cloneDeep(this.job)
+    this.getClusterList()
+    this.getRegistryWhenBuild()
   }
 }
 </script>
