@@ -56,7 +56,7 @@
               </div>
             </template>
           </div>
-          <div class="service-content">
+          <div class="service-content" v-show="service.deploy_strategy !== 'import'">
             <template v-if="service.type==='k8s' && service.containers">
               <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name" label-width="40%">
                 <el-select v-model="con.image" :disabled="cantOperate" filterable size="small">
@@ -248,6 +248,7 @@ export default {
     .service-title {
       display: flex;
       align-items: center;
+      margin-bottom: 0;
 
       .service-name {
         flex: 1 0 auto;
@@ -296,6 +297,7 @@ export default {
 
     .service-content {
       box-sizing: border-box;
+      margin-top: 14px;
       padding: 15px 12px;
       background: #fff;
       border: 1px solid #d2d7dc;

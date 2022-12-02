@@ -32,7 +32,7 @@
             release 名称在命名空间已存在
           </span>
         </div>
-        <div class="v-content" v-if="usedChartNameInfo">
+        <div class="v-content" v-if="usedChartNameInfo" :class="{hidden: usedChartNameInfo.deploy_strategy === 'import'}">
           <div v-show="usedChartNameInfo.yamlSource === 'default'" class="default-values">
             <el-button type="text" @click="usedChartNameInfo.yamlSource = 'customEdit'">添加 values 文件</el-button>
           </div>
@@ -60,6 +60,7 @@
             </div>
             <Codemirror class="codemirror" ref="codemirror" v-if="showReview" :value="usedChartNameInfo.yamlContent" :cmOption="cmOption" />
           </section>
+          <div class="mask"></div>
         </div>
       </div>
       <div class="mask"></div>
@@ -216,9 +217,12 @@ export default {
       hasPlutus: state => state.checkPlutus.hasPlutus
     }),
     showCheckResource () {
-      return this.hasPlutus && (
-        this.checkResource ||
-        (this.envInfos && this.envInfos[this.selectedEnv] && !this.envInfos[this.selectedEnv].hasDeployed)
+      return (
+        this.hasPlutus &&
+        (this.checkResource ||
+          (this.envInfos &&
+            this.envInfos[this.selectedEnv] &&
+            !this.envInfos[this.selectedEnv].hasDeployed))
       )
     }
   },
@@ -531,7 +535,12 @@ export default {
               return
             }
             this.getChartValuesYaml({ envName: env })
-            if (this.hasPlutus && this.envInfos && this.envInfos[env] && !this.envInfos[env].hasDeployed) {
+            if (
+              this.hasPlutus &&
+              this.envInfos &&
+              this.envInfos[env] &&
+              !this.envInfos[env].hasDeployed
+            ) {
               const payload = cloneDeep(this.envInfos[env])
               delete payload.hasDeployed
               this.checkSvcResource(payload, payload.env_name)
@@ -722,6 +731,7 @@ export default {
       }
 
       .v-content {
+        position: relative;
         padding-bottom: 10px;
 
         .version-title {
@@ -755,18 +765,18 @@ export default {
     &.max-width {
       width: 100%;
     }
+  }
 
-    &.hidden {
-      .mask {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1;
-        background-color: rgba(255, 255, 255, 0.5);
-        cursor: not-allowed;
-      }
+  .hidden {
+    .mask {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: not-allowed;
     }
   }
 }
