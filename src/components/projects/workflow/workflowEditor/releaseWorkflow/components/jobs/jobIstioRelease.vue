@@ -318,6 +318,14 @@ export default {
           })
         }
       }
+      setTimeout(() => {
+        this.serviceInfo = {
+          workload_name: '',
+          container_name: '',
+          virtual_service_name: '',
+          host: ' '
+        }
+      }, 500)
     },
     deleteService (index) {
       this.job.spec.targets.splice(index, 1)
