@@ -487,7 +487,7 @@
                   @change="handleResourceChange($event,job)"
                 >
                   <el-option
-                    v-for="(item,index) of job.spec.services"
+                    v-for="(item,index) of job.spec.targets"
                     :key="index"
                     :label="`${item.container_name}/${item.workload_name}`"
                     :value="item"
@@ -530,7 +530,7 @@
                   @change="handleResourceChange($event,job)"
                 >
                   <el-option
-                    v-for="(item,index) of job.spec.services"
+                    v-for="(item,index) of job.spec.targets"
                     :key="index"
                     :label="`${item.container_name}/${item.workload_name}`"
                     :value="item"
@@ -776,17 +776,17 @@ export default {
             }
           }
           if (job.type === 'istio-release') {
-            job.spec.services.forEach(item => {
+            job.spec.targets.forEach(item => {
               item.value = `${item.workload_name}/${item.container_name}`
             })
-            // job.pickedTargets = cloneDeep(job.spec.services)
+            // job.pickedTargets = cloneDeep(job.spec.targets)
             // this.handleContainerChange(job.pickedTargets, job)
           }
           if (job.type === 'istio-rollback') {
-            job.spec.services.forEach(item => {
+            job.spec.targets.forEach(item => {
               item.value = `${item.workload_name}/${item.container_name}`
             })
-            // job.pickedTargets = cloneDeep(job.spec.services)
+            // job.pickedTargets = cloneDeep(job.spec.targets)
             // this.handleContainerChange(job.pickedTargets, job)
           }
         })

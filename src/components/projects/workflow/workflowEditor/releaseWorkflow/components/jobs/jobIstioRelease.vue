@@ -57,10 +57,10 @@
         <span>分钟</span>
       </el-form-item>
       <el-form-item label="新版本副本百分比" prop="spec.replica_percentage">
-        <el-input-number style="width: 220px;" size="mini" :min="1" v-model="job.spec.replica_percentage"></el-input-number>
+        <el-input-number style="width: 220px;" size="mini" :min="1" :max="100" v-model="job.spec.replica_percentage"></el-input-number>
       </el-form-item>
       <el-form-item label="新版本流量百分比" prop="spec.weight">
-        <el-input-number style="width: 220px;" size="mini" :min="1" v-model="job.spec.weight"></el-input-number>
+        <el-input-number style="width: 220px;" size="mini" :min="1"  :max="100" v-model="job.spec.weight"></el-input-number>
       </el-form-item>
       <el-form-item v-if="job.spec.first" label="实例列表">
         <div class="service">
@@ -71,20 +71,20 @@
             <el-col :span="4" class="mg-r8">Virtual Service Host</el-col>
             <el-col :span="4"></el-col>
           </el-row>
-          <el-row v-for="(item,index) in job.spec.services" :key="index" class="mg-b8">
+          <el-row v-for="(item,index) in job.spec.targets" :key="index" class="mg-b8">
             <el-col :span="4" class="mg-r8">
               <el-form-item
-                :prop="'spec.services.'+index+'.workload_name'"
+                :prop="'spec.targets.'+index+'.workload_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
-                <el-select v-model="job.spec.services[index].workload_name" placeholder="请选择" size="small">
+                <el-select v-model="job.spec.targets[index].workload_name" placeholder="请选择" size="small">
                   <el-option v-for="(item,index) in deployments" :key="index" :value="item.name" :label="item.name"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
               <el-form-item
-                :prop="'spec.services.'+index+'.container_name'"
+                :prop="'spec.targets.'+index+'.container_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
                 <el-select v-model="item.container_name" placeholder="请选择" size="small">
@@ -94,7 +94,7 @@
             </el-col>
             <el-col :span="4" class="mg-r8">
               <el-form-item
-                :prop="'spec.services.'+index+'.virtual_service_name'"
+                :prop="'spec.targets.'+index+'.virtual_service_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
                 <el-select v-model="item.virtual_service_name" placeholder="请选择" size="small">
@@ -103,7 +103,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
-              <el-form-item :prop="'spec.services.'+index+'.host'" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
+              <el-form-item :prop="'spec.targets.'+index+'.host'" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
                 <el-select v-model="item.host" placeholder="请选择" size="small">
                   <el-option
                     v-for="(item,index) in virtualHosts[item.virtual_service_name]"
@@ -118,7 +118,7 @@
               <el-form-item>
                 <div class="app-operation">
                   <el-button
-                    v-if="job.spec.services.length>1&&!$refs.serviceRef ||job.spec.services.length>0 &&$refs.serviceRef"
+                    v-if="job.spec.targets.length>1&&!$refs.serviceRef ||job.spec.targets.length>0 &&$refs.serviceRef"
                     @click="deleteService(index)"
                     type="danger"
                     size="mini"
@@ -131,7 +131,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-if="originJob.spec.services.length===0&&flag">
+          <el-row v-if="originJob.spec.targets.length===0&&flag">
             <el-form ref="serviceRef" :model="serviceInfo">
               <el-col :span="4" class="mg-r8">
                 <el-form-item prop="workload_name" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
@@ -165,7 +165,7 @@
                 <el-form-item>
                   <div class="app-operation">
                     <el-button
-                      v-if="job.spec.services.length>0"
+                      v-if="job.spec.targets.length>0"
                       @click="flag=false"
                       type="danger"
                       size="mini"
@@ -303,24 +303,24 @@ export default {
       this.getIstioVirtualServices()
     },
     addService () {
-      if (this.job.spec.services.length === 0) {
+      if (this.job.spec.targets.length === 0) {
         this.$refs.serviceRef.validate().then(valid => {
-          this.job.spec.services.push(cloneDeep(this.serviceInfo))
+          this.job.spec.targets.push(cloneDeep(this.serviceInfo))
         })
       } else {
         if (this.$refs.serviceRef) {
           this.$refs.serviceRef.validate().then(valid => {
-            this.job.spec.services.push(cloneDeep(this.serviceInfo))
+            this.job.spec.targets.push(cloneDeep(this.serviceInfo))
           })
         } else {
           this.$refs.ruleForm.validate().then(valid => {
-            this.job.spec.services.push(cloneDeep(this.serviceInfo))
+            this.job.spec.targets.push(cloneDeep(this.serviceInfo))
           })
         }
       }
     },
     deleteService (index) {
-      this.job.spec.services.splice(index, 1)
+      this.job.spec.targets.splice(index, 1)
     },
     validate () {
       return this.$refs.ruleForm.validate()

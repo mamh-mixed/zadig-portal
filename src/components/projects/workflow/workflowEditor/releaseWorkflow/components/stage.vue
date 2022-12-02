@@ -273,9 +273,9 @@ export default {
             cluster_id: '',
             namespace: '',
             timeout: 10,
-            replica_percentage: 10,
-            weight: 0,
-            services: []
+            replica_percentage: 1,
+            weight: 1,
+            targets: []
           }
         },
         'istio-rollback': {
@@ -285,9 +285,8 @@ export default {
           spec: {
             cluster_id: '',
             namespace: '',
-            services: [],
+            targets: [],
             timeout: 10
-
           }
         }
       },

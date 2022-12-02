@@ -15,7 +15,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="容器名称">
-        <el-select v-model="job.spec.services" value-key="workload_name" multiple filterable placeholder="请选择" size="small" style="width: 220px;">
+        <el-select v-model="job.spec.targets" value-key="workload_name" multiple filterable placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="(item,index) in workloadList" :key="index" :label="`${item.workload_name}/${item.container_name}`" :value="item"></el-option>
         </el-select>
       </el-form-item>
