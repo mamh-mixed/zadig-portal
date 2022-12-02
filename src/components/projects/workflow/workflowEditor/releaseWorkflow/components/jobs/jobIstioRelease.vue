@@ -77,7 +77,7 @@
                 :prop="'spec.targets.'+index+'.workload_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
-                <el-select v-model="job.spec.targets[index].workload_name" placeholder="请选择" size="small">
+                <el-select v-model="job.spec.targets[index].workload_name" placeholder="请选择" size="small" clearable>
                   <el-option v-for="(item,index) in deployments" :key="index" :value="item.name" :label="item.name"></el-option>
                 </el-select>
               </el-form-item>
@@ -87,7 +87,7 @@
                 :prop="'spec.targets.'+index+'.container_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
-                <el-select v-model="item.container_name" placeholder="请选择" size="small">
+                <el-select v-model="item.container_name" placeholder="请选择" size="small" clearable>
                   <el-option v-for="(item,index) in containers[item.workload_name]" :key="index" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
@@ -97,14 +97,14 @@
                 :prop="'spec.targets.'+index+'.virtual_service_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
-                <el-select v-model="item.virtual_service_name" placeholder="请选择" size="small">
+                <el-select v-model="item.virtual_service_name" placeholder="请选择" size="small" clearable>
                   <el-option v-for="(item,index) in virtualServices" :key="index" :value="item.name" :label="item.name"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
               <el-form-item :prop="'spec.targets.'+index+'.host'" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
-                <el-select v-model="item.host" placeholder="请选择" size="small">
+                <el-select v-if="virtualHosts[item.virtual_service_name]" v-model="item.host" placeholder="请选择" size="small" clearable>
                   <el-option
                     v-for="(item,index) in virtualHosts[item.virtual_service_name]"
                     :key="index"
@@ -112,6 +112,7 @@
                     :label="item"
                   ></el-option>
                 </el-select>
+                <el-input v-else size="small" v-model="item.host" placeholder="请输入 Host"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="4">
@@ -135,30 +136,31 @@
             <el-form ref="serviceRef" :model="serviceInfo">
               <el-col :span="4" class="mg-r8">
                 <el-form-item prop="workload_name" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
-                  <el-select v-model="serviceInfo.workload_name" placeholder="请选择" size="small">
+                  <el-select v-model="serviceInfo.workload_name" placeholder="请选择" size="small" clearable>
                     <el-option v-for="(item,index) in deployments" :key="index" :label="item.name" :value="item.name"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="4" class="mg-r8">
                 <el-form-item prop="container_name" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
-                  <el-select v-model="serviceInfo.container_name" placeholder="请选择" size="small">
+                  <el-select v-model="serviceInfo.container_name" placeholder="请选择" size="small" clearable>
                     <el-option v-for="(item,index) in containers[serviceInfo.workload_name]" :key="index" :value="item.name"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="4" class="mg-r8">
                 <el-form-item prop="virtual_service_name" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
-                  <el-select v-model="serviceInfo.virtual_service_name" placeholder="请选择" size="small">
+                  <el-select v-model="serviceInfo.virtual_service_name" placeholder="请选择" size="small" clearable>
                     <el-option v-for="(item,index) in virtualServices" :key="index" :value="item.name" :label="item.name"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="4" class="mg-r8">
                 <el-form-item prop="host" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
-                  <el-select v-model="serviceInfo.host" placeholder="请选择" size="small">
+                  <el-select v-if="virtualHosts[serviceInfo.virtual_service_name]" v-model="serviceInfo.host" placeholder="请选择" size="small" clearable>
                     <el-option v-for="(item,index) in virtualHosts[serviceInfo.virtual_service_name]" :key="index" :value="item"></el-option>
                   </el-select>
+                  <el-input v-else size="small" v-model="serviceInfo.host" placeholder="请输入 Host"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="4">
