@@ -28,37 +28,37 @@
           <div class="item-title">容器名称</div>
         </el-col>
         <el-col :span="8">
-          <span class="item-desc">{{jobInfo.spec.workload_type}}/{{jobInfo.spec.workload_name}}</span>
-        </el-col>
-        <el-col :span="4">
-          <div class="item-title">集群</div>
-        </el-col>
-        <el-col :span="8">
-          <span class="item-desc">{{jobInfo.spec.gray_scale}}</span>
+          <span class="item-desc">{{jobInfo.spec.targets.workload_name}}/{{jobInfo.spec.targets.container_name}}</span>
         </el-col>
       </el-row>
       <el-row class="item" :span="24">
         <el-col :span="4">
+          <div class="item-title">集群</div>
+        </el-col>
+        <el-col :span="8">
+          <span class="item-desc">{{jobInfo.spec.cluster_name}}</span>
+        </el-col>
+        <el-col :span="4">
           <div class="item-title">命名空间</div>
         </el-col>
         <el-col :span="8">
-          <div class="item-desc">{{jobInfo.spec.cluster_name}}</div>
-        </el-col>
-        <el-col :span="4">
-          <div class="item-title">镜像名称</div>
-        </el-col>
-        <el-col :span="8">
-          <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-            <span class="file-name item-desc">{{ jobInfo.spec.image.split('/')[2] }}</span>
-          </el-tooltip>
+          <div class="item-desc">{{jobInfo.spec.namespace}}</div>
         </el-col>
       </el-row>
       <el-row class="item">
         <el-col :span="4">
+          <div class="item-title">镜像名称</div>
+        </el-col>
+        <el-col :span="8">
+          <el-tooltip v-if="jobInfo.spec.targets.image" effect="dark" :content="jobInfo.spec.targets.image" placement="top">
+            <span class="file-name item-desc">{{ jobInfo.spec.targets.image.split('/')[2] }}</span>
+          </el-tooltip>
+        </el-col>
+        <el-col :span="4">
           <div class="item-title">副本数量</div>
         </el-col>
         <el-col :span="8">
-          <span class="file-name item-desc"></span>
+          <span class="file-name item-desc">{{jobInfo.spec.target.target_replicas}}</span>
         </el-col>
       </el-row>
     </main>
