@@ -778,16 +778,18 @@ export default {
           if (job.type === 'istio-release') {
             job.spec.targets.forEach(item => {
               item.value = `${item.workload_name}/${item.container_name}`
+              item.service = item.container_name
             })
-            // job.pickedTargets = cloneDeep(job.spec.targets)
-            // this.handleContainerChange(job.pickedTargets, job)
+            job.pickedTargets = cloneDeep(job.spec.targets)
+            this.handleContainerChange(job.pickedTargets, job)
           }
           if (job.type === 'istio-rollback') {
             job.spec.targets.forEach(item => {
               item.value = `${item.workload_name}/${item.container_name}`
+              item.service = item.container_name
             })
-            // job.pickedTargets = cloneDeep(job.spec.targets)
-            // this.handleContainerChange(job.pickedTargets, job)
+            job.pickedTargets = cloneDeep(job.spec.targets)
+            this.handleContainerChange(job.pickedTargets, job)
           }
         })
       })
