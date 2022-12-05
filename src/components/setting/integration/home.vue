@@ -37,6 +37,11 @@
             <External v-if="currentTab === 'external'" />
           </keep-alive>
         </el-tab-pane>
+        <el-tab-pane name="approval" label="审批系统">
+          <keep-alive>
+            <Approval v-if="currentTab === 'approval'" />
+          </keep-alive>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -50,7 +55,7 @@ import ConfigManage from './configManage.vue'
 import Jenkins from './jenkins.vue'
 import Sonar from './sonar.vue'
 import External from './external.vue'
-
+import Approval from './approval.vue'
 import { mapState } from 'vuex'
 
 export default {
@@ -62,7 +67,8 @@ export default {
     ConfigManage,
     Jenkins,
     Sonar,
-    External
+    External,
+    Approval
   },
   data () {
     return {

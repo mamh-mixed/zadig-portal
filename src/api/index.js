@@ -1053,6 +1053,27 @@ export function deleteExternalSystemAPI (id) {
   return http.delete(`/api/aslan/system/external/${id}`)
 }
 
+// Approval
+export function getApprovalListAPI () {
+  return http.get(`/api/aslan/system/approval`)
+}
+
+export function createApprovalAPI (payload) {
+  return http.post(`/api/aslan/system/approval`, payload)
+}
+
+export function updateApprovalAPI (id, payload) {
+  return http.put(`/api/aslan/system/approval/${id}`, payload)
+}
+
+export function deleteApprovalAPI (id) {
+  return http.delete(`/api/aslan/system/approval/${id}`)
+}
+
+export function checkApprovalConfigAPI (payload) {
+  return http.post('/api/aslan/system/approval/validate', payload)
+}
+
 // Mail
 export function getEmailHostAPI (key) {
   return http.get(`/api/v1/emails/internal/host?encryptedKey=${key}`)
