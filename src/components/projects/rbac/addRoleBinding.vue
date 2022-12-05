@@ -1,6 +1,6 @@
 <template>
   <el-dialog class="form" title="添加成员" width="550px" :visible.sync="addUserFormVisible">
-    <el-form :model="form" ref="form" :rules="formRules" label-width="100px">
+    <el-form :model="form" ref="form" :rules="formRules" label-position="left" label-width="100px">
       <el-form-item label="用户名称" prop="uids">
         <el-select class="select" v-model="form.uids" filterable multiple remote :remote-method="remoteMethod" :loading="userSearchLoading" size="small" placeholder="请输入用户名称进行搜索">
           <el-option label="所有用户" value="*">

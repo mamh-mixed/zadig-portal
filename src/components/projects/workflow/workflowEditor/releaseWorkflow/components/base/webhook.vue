@@ -124,7 +124,7 @@
       :close-on-click-modal="false"
       append-to-body
     >
-      <el-form ref="webhookForm" :model="currentWebhook" label-width="90px" :rules="webhookRules">
+      <el-form ref="webhookForm" :model="currentWebhook" label-position="left" label-width="90px" :rules="webhookRules">
         <el-form-item label="名称" prop="name">
           <el-input
             size="small"

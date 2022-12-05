@@ -121,7 +121,7 @@
       />
     </el-dialog>
     <el-dialog :title="operateType==='add'?'新建视图': '编辑视图'" :visible.sync="showWorkflowViewDialog" :close-on-click-modal="false">
-      <el-form :model="workflowViewForm" ref="workflowViewForm">
+      <el-form :model="workflowViewForm" ref="workflowViewForm" label-position="left">
         <el-form-item label="视图名称" prop="name" :rules="{required: true, message: '请填写视图名称', trigger: ['blur', 'change']}">
           <el-input v-model="workflowViewForm.name" placeholder="视图名称" clearable></el-input>
         </el-form-item>

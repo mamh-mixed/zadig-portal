@@ -284,7 +284,7 @@
       </div>
     </el-dialog>
     <el-dialog title="保存为模板" :visible.sync="isShowModelDialog" width="30%">
-      <el-form inline ref="modelForm" :model="modelFormInfo">
+      <el-form inline ref="modelForm" :model="modelFormInfo" label-position="left">
         <el-form-item label="模板名称" :rules="{required: true,message: '请填写模板名称', trigger: ['blur', 'change']}" prop="name">
           <el-input placeholder="请输入模板名称" size="small" v-model="modelFormInfo.name"></el-input>
         </el-form-item>

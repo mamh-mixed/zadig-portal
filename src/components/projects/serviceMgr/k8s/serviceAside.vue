@@ -180,7 +180,7 @@
                   <el-table :data="addKeyData" :show-header="false" style="width: 100%;">
                     <el-table-column>
                       <template slot-scope="{ row }">
-                        <el-form :model="row" :rules="keyCheckRule" ref="addKeyForm" hide-required-asterisk>
+                        <el-form :model="row" :rules="keyCheckRule" ref="addKeyForm" label-position="left" hide-required-asterisk>
                           <el-form-item label="Key" prop="key" inline-message>
                             <el-input
                               size="small"
@@ -194,7 +194,7 @@
                     </el-table-column>
                     <el-table-column>
                       <template slot-scope="{ row }">
-                        <el-form :model="row" :rules="keyCheckRule" ref="addValueForm" hide-required-asterisk>
+                        <el-form :model="row" :rules="keyCheckRule" ref="addValueForm" label-position="left" hide-required-asterisk>
                           <el-form-item label="Value" prop="value" inline-message>
                             <VariableEditor style="line-height: 22px;" :varKey="row.key" :value.sync="row.value" />
                           </el-form-item>

@@ -9,6 +9,7 @@
       <el-form :model="mailHostEdit"
                @submit.native.prevent
                :rules="mailRules"
+               label-position="left"
                ref="mailHostForm">
         <el-form-item label="主机"
                       label-width="100px"
@@ -53,6 +54,7 @@
       <h3>邮件发送</h3>
       <el-form :model="mailServiceEdit"
                :rules="mailRules"
+               label-position="left"
                ref="mailServiceForm">
         <el-form-item label="发信地址"
                       label-width="100px"
@@ -96,6 +98,7 @@
       <el-form :model="mailHostAdd"
                @submit.native.prevent
                :rules="mailRules"
+               label-position="left"
                ref="mailHostForm">
         <el-form-item label="主机"
                       label-width="100px"
@@ -140,6 +143,7 @@
       <h3>邮件发送</h3>
       <el-form :model="mailServiceAdd"
                :rules="mailRules"
+               label-position="left"
                ref="mailServiceForm">
         <el-form-item label="发信地址"
                       label-width="100px"

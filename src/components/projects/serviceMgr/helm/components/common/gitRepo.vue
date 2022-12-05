@@ -7,7 +7,7 @@
         <el-radio label="public">公开库</el-radio>
       </el-radio-group>
     </div>
-    <el-form v-if="gitName === 'private'" :model="source" :rules="sourceRules" ref="sourceForm" label-width="140px">
+    <el-form v-if="gitName === 'private'" :model="source" :rules="sourceRules" ref="sourceForm" label-position="left" label-width="140px">
       <el-form-item
         label="代码源"
         prop="codehostId"
@@ -159,7 +159,7 @@
         <el-button size="small" type="primary" :loading="loading" :disabled="selectPath.length === 0" @click="submit">加载</el-button>
       </el-form-item>
     </el-form>
-    <el-form v-if="gitName === 'public'" :model="source" :rules="sourceRules" ref="sourceForm" label-width="140px">
+    <el-form v-if="gitName === 'public'" :model="source" :rules="sourceRules" ref="sourceForm" label-position="left" label-width="140px">
       <el-form-item prop="url" label="仓库地址">
         <el-input v-model="source.url" placeholder="https://github.com/owner/repo" size="small" :disabled="isUpdate"></el-input>
       </el-form-item>

@@ -1,7 +1,7 @@
 <template>
   <div class="key-value-container">
     <div class="secondary-title" style="margin-bottom: 10px;">指定需要覆盖的键值对</div>
-    <el-form ref="form" :model="keyValueForm">
+    <el-form ref="form" :model="keyValueForm" label-position="left">
       <el-table :data="keyValues">
         <el-table-column label="键">
           <template slot-scope="{ $index }">
