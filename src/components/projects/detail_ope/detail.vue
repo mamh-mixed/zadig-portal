@@ -33,7 +33,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column width="300" label="更新">
+          <el-table-column width="300" label="最后修改时间">
             <template slot-scope="{ row }">
               <span class="update-time">
                 <i class="icon el-icon-time"></i>
@@ -78,7 +78,7 @@
               <span v-else>-</span>
             </template>
           </el-table-column>
-          <el-table-column width="300" label="更新">
+          <el-table-column width="300" label="最后修改时间">
             <template slot-scope="{ row }">
               <span class="update-time">
                 <i class="icon el-icon-time"></i>

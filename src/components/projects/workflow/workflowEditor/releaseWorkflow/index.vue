@@ -242,7 +242,7 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain icon="el-icon-circle-close" @click="closeDrawer"></el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || '取消'}}</el-button>
         </div>
         <div v-else>
           <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>

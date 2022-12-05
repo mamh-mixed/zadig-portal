@@ -5,7 +5,7 @@
       <el-row :gutter="20" class="webhook-row" v-for="(item,index) in webhooks" :key="index">
         <el-col :span="2">
           <div class="content">
-            <el-switch v-model="item.enabled" active-color="#13ce66" @change="changeWebhookStatus(item)"></el-switch>
+            <el-switch v-model="item.enabled" @change="changeWebhookStatus(item)"></el-switch>
           </div>
         </el-col>
         <el-col :span="1">
@@ -73,7 +73,7 @@
       <el-row :gutter="20" class="webhook-row" v-for="(item,index) in timers" :key="item.id">
         <el-col :span="2">
           <div class="content">
-            <el-switch v-model="item.enabled" active-color="#13ce66" @change="changeTimerStatus(item)"></el-switch>
+            <el-switch v-model="item.enabled" @change="changeTimerStatus(item)"></el-switch>
           </div>
         </el-col>
         <el-col :span="1">

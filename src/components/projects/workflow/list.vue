@@ -995,4 +995,9 @@ export default {
     }
   }
 }
+
+.el-message-box__title {
+  margin-right: 14px;
+  word-break: break-all;
+}
 </style>

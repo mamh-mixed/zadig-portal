@@ -72,7 +72,7 @@ export default {
       },
       formRules: {
         name: [
-          { trigger: ['blur', 'change'], validator: this.validateFileName }
+          { trigger: ['blur', 'change'], validator: this.validateFileName, required: true }
         ],
         isPublic: [
           { required: true, message: '请选择项目类型', trigger: 'blur' }

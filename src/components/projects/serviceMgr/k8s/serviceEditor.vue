@@ -93,7 +93,7 @@ export default {
       },
       importTemplateEditorOption: {
         tabSize: 2,
-        readOnly: 'nocursor',
+        readOnly: true,
         theme: 'neo',
         mode: 'text/x-dockerfile',
         lineNumbers: false,
@@ -298,7 +298,7 @@ export default {
               val.product_name !== this.projectName) ||
               (val.source === 'template' && this.service.auto_sync)
           ) {
-            this.cmOptions.readOnly = 'nocursor'
+            this.cmOptions.readOnly = true
           } else {
             this.cmOptions.readOnly = false
           }

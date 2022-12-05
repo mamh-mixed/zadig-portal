@@ -205,7 +205,7 @@
                       @click="$set(showAdvancedSetting,repoIndex,true)"
                     >
                       展开
-                      &#x3E;
+                      <i class="el-icon-arrow-down" />
                     </el-button>
                     <el-button
                       type="primary"
@@ -216,7 +216,7 @@
                       @click="$set(showAdvancedSetting,repoIndex,false)"
                     >
                       收起
-                      &#x3C;
+                      <i class="el-icon-arrow-up" />
                     </el-button>
                   </div>
                 </el-form-item>
