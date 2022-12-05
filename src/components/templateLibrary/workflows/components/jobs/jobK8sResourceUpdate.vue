@@ -37,7 +37,7 @@
               <div class="content">
                 <div class="content-editor">
                   <div class="flex">
-                    <span>模版</span>
+                    <span>模板</span>
                     <el-dropdown @command="handleCommand($event,item)">
                       <span class="el-dropdown-link">
                         {{item.patch_strategy}}
