@@ -215,7 +215,7 @@ export default {
   data () {
     return {
       validateJobName,
-      formLabelWidth: '150px',
+      formLabelWidth: '180px',
       namespaceList: [],
       registryList: [],
       clusters: [],
