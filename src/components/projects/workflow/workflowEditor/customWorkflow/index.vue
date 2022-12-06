@@ -3,9 +3,32 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model.trim="payload.display_name" placeholder="工作流名称" :from="activeName" class="mg-r8" />
-          <CanInput v-model.trim="payload.name" placeholder="工作流标识" :from="activeName" :disabled="isEdit" class="mg-r8" />
-          <CanInput v-model.trim="payload.description" :from="activeName" placeholder="描述信息" />
+          <el-form ref="form" :model="payload" inline>
+            <el-form-item prop="display_name" :rules="{required: true,message:'请输入工作流名称', trigger: ['blur', 'change']}" class="mg-r16">
+              <el-tooltip effect="dark" :content="payload.display_name" placement="top" :disabled="!payload.display_name">
+                <el-input v-model="payload.display_name" placeholder="工作流名称" size="small" :disabled="!editDisplayName" class="name-input"></el-input>
+              </el-tooltip>
+              <span @click="editDisplayName = editDisplayName ? false : true" class="mg-r8">
+                <i :class="[editDisplayName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+              </span>
+            </el-form-item>
+            <el-form-item prop="name" :rules="{required: true,validator:validateWorkflowName, trigger: ['blur', 'change']}" class="mg-r16">
+              <el-tooltip effect="dark" :content="payload.name" placement="top" :disabled="!payload.name">
+                <el-input v-model="payload.name" placeholder="工作流标识" size="small" :disabled="!editName" class="name-input"></el-input>
+              </el-tooltip>
+              <span @click="editName = editName ? false : true" class="mg-r8">
+                <i :class="[editName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+              </span>
+            </el-form-item>
+            <el-form-item prop="description">
+              <el-tooltip effect="dark" :content="payload.description" placement="top" :disabled="!payload.description">
+                <el-input v-model="payload.description" placeholder="描述信息" size="small" :disabled="!editDesc" class="name-input"></el-input>
+              </el-tooltip>
+              <span @click="editDesc = editDesc ? false : true" class="mg-r8">
+                <i :class="[editDesc ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+              </span>
+            </el-form-item>
+          </el-form>
         </div>
         <div class="tab">
           <span
@@ -75,7 +98,6 @@
                 :job="job"
                 :originServiceAndBuilds="originServiceAndBuilds"
                 class="mg-b24"
-                :globalEnv="globalEnv"
                 :ref="jobType.build"
                 :workflowInfo="payload"
                 :curStageIndex="curStageIndex"
@@ -113,7 +135,6 @@
               v-if="job.type === jobType.plugin"
               :job="job"
               :ref="jobType.plugin"
-              :globalEnv="globalEnv"
               :workflowInfo="payload"
               :curStageIndex="curStageIndex"
               :curJobIndex="curJobIndex"
@@ -124,14 +145,12 @@
               :job="job"
               :ref="jobType.deploy"
               :originServiceAndBuilds="originServiceAndBuilds"
-              :globalEnv="globalEnv"
               :workflowInfo="payload"
               :curStageIndex="curStageIndex"
               :curJobIndex="curJobIndex"
             />
             <JobFreestyle
               v-if="job.type === jobType.freestyle"
-              :globalEnv="globalEnv"
               :ref="jobType.freestyle"
               :job="job"
               :workflowInfo="payload"
@@ -144,7 +163,6 @@
               :job="job"
               :ref="jobType.k8sDeploy"
               :originServiceAndBuilds="originServiceAndBuilds"
-              :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
             <JobTest
@@ -152,7 +170,6 @@
               v-if="job.type === jobType.test"
               :job="job"
               :ref="jobType.test"
-              :globalEnv="globalEnv"
               :workflowInfo="payload"
               :curStageIndex="curStageIndex"
               :curJobIndex="curJobIndex"
@@ -162,7 +179,6 @@
               v-if="job.type === jobType.scanning"
               :job="job"
               :ref="jobType.scanning"
-              :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
             <JobImageDistribute
@@ -170,7 +186,6 @@
               v-if="job.type === jobType.distribute"
               :job="job"
               :ref="jobType.distribute"
-              :globalEnv="globalEnv"
               :workflowInfo="payload"
             />
           </div>
@@ -258,7 +273,7 @@ import {
   editorOptions,
   jobType,
   jobTypeList,
-  globalConstEnvs
+  validateWorkflowName
 } from './config'
 import {
   getAssociatedBuildsAPI,
@@ -270,7 +285,6 @@ import {
   getWorkflowTemplateDetailAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
-import CanInput from './components/canInput'
 import Stage from './components/stage.vue'
 import StageOperate from './components/stageOperate.vue'
 import JobBuild from './components/jobs/jobBuild'
@@ -292,17 +306,19 @@ import { codemirror } from 'vue-codemirror'
 import { cloneDeep, differenceWith } from 'lodash'
 import { mapState } from 'vuex'
 const pinyin = require('pinyin')
-
 export default {
   name: 'CustomWorkflow',
   data () {
     return {
+      validateWorkflowName,
       tabList,
       configList,
-      globalConstEnvs,
       activeName: 'ui',
       editorOptions,
       jobType,
+      editDisplayName: false,
+      editName: false,
+      editDesc: false,
       stage: {
         name: '',
         parallel: true,
@@ -336,7 +352,6 @@ export default {
       },
       originalWorkflow: {},
       curStageIndex: 0,
-      tempStageIndex: 0,
       curJobIndex: -2, // 不指向 job
       curDrawer: 'high',
       isShowStageOperateDialog: false,
@@ -346,7 +361,6 @@ export default {
       yaml: '',
       yamlError: '',
       isShowDrawer: false,
-      globalEnv: [],
       scal: '1',
       insertSatgeIndex: 0,
       notComputedPayload: {},
@@ -355,7 +369,6 @@ export default {
     }
   },
   components: {
-    CanInput,
     Stage,
     StageOperate,
     Multipane,
@@ -509,29 +522,25 @@ export default {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
-      if (!this.payload.display_name) {
-        this.$message.error(' 请填写工作流名称')
-        return
-      }
-      if (!this.payload.name) {
-        this.$message.error(' 请填写工作流标识')
-        return
-      }
-      if (this.payload.stages.length === 0) {
-        this.$message.error(' 请至少填写一个阶段')
-        return
-      }
-      this.payload.stages.forEach(item => {
-        if (item.jobs.length === 0) {
-          this.$message.error(`请填写 ${item.name} 中的任务`)
-          throw Error()
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          if (this.payload.stages.length === 0) {
+            this.$message.error(' 请至少填写一个阶段')
+            return
+          }
+          this.payload.stages.forEach(item => {
+            if (item.jobs.length === 0) {
+              this.$message.error(`请填写 ${item.name} 中的任务`)
+              throw Error()
+            }
+          })
+          if (this.isShowFooter) {
+            this.$message.error('请先保存任务配置')
+            return
+          }
+          this.saveWorkflow()
         }
       })
-      if (this.isShowFooter) {
-        this.$message.error('请先保存任务配置')
-        return
-      }
-      this.saveWorkflow()
     },
     saveWorkflow () {
       this.notComputedPayload = cloneDeep(this.payload)
@@ -603,6 +612,9 @@ export default {
           }
         })
       })
+      // display_name 中间支持空格 结尾不支持
+      this.payload.name = this.payload.name.trim()
+      this.payload.display_name = this.payload.display_name.trim()
       this.payload.project = this.projectName
       const yamlParams = jsyaml.dump(this.payload)
       const workflowName = this.payload.name
@@ -901,7 +913,11 @@ export default {
     handleDrawerChange () {
       if (this.curDrawer === 'high') {
         this.$refs.settings.validate().then(() => {
-          this.$set(this.payload, 'share_storages', this.$refs.settings.getData())
+          this.$set(
+            this.payload,
+            'share_storages',
+            this.$refs.settings.getData()
+          )
           this.isShowDrawer = false
         })
       }
@@ -1027,13 +1043,22 @@ export default {
       justify-content: space-between;
       height: 42px;
       margin: 24px;
-      padding: 0 24px;
+      padding: 0 8px;
       color: #121212;
       line-height: 42px;
       box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 
       .name {
         display: flex;
+
+        &-input {
+          display: inline-block;
+          width: 180px;
+        }
+
+        /deep/.el-form-item {
+          margin: 8px 0;
+        }
       }
 
       .tab {

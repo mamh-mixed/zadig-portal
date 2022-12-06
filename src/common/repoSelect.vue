@@ -199,17 +199,17 @@
         </el-col>
       </el-row>
       <el-row v-if="showAdvancedSetting[repo_index]" style="padding: 4px; background-color: rgb(246, 246, 246, 0.5); border-radius: 6px;">
-        <el-col :span="6">
+        <el-col :span="showAdvanced || showTrigger ?4:5 ">
           <el-form-item label="Remote name">
             <el-input v-model="repo.remote_name" size="small" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="showAdvanced || showTrigger ?4:5 ">
           <el-form-item label="克隆目录名">
             <el-input v-model="repo.checkout_path" size="small" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="4" style="margin-left: 4px;">
+        <el-col :span="2" style="margin-left: 4px;">
           <el-form-item label="子模块">
             <el-switch v-model="repo.submodules"></el-switch>
           </el-form-item>

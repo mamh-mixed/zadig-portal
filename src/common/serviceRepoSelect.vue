@@ -261,12 +261,12 @@
               v-if="showAdvancedSetting[repoIndex]"
               style="padding: 4px; background-color: rgb(246, 246, 246, 0.5); border-radius: 6px;"
             >
-              <el-col :span="6">
+              <el-col :span="showAdvanced || showTrigger ?4:5 ">
                 <el-form-item label="Remote name">
                   <el-input v-model="repo.remote_name" size="small" placeholder="请输入"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="5">
+              <el-col :span="showAdvanced || showTrigger ?4:5 ">
                 <el-form-item label="克隆目录名">
                   <el-input v-model="repo.checkout_path" size="small" placeholder="请输入"></el-input>
                 </el-form-item>
