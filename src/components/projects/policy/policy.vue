@@ -179,7 +179,7 @@
     </div>
 
     <div class="bottom">
-      <el-button type="primary" @click="handleCollaboration" :disabled="saveDisabled">保存</el-button>
+      <el-button type="primary" size="small" @click="handleCollaboration" :disabled="saveDisabled">保存</el-button>
     </div>
     <PolicyDialog
       :changedInfo="changedInfo"
@@ -190,7 +190,7 @@
       :deleteMode="deleteMode"
       :updateActiveName="updateActiveName"
       @resetDisabled="resetDisabled"
-    ></PolicyDialog>
+    />
   </section>
 </template>
 
