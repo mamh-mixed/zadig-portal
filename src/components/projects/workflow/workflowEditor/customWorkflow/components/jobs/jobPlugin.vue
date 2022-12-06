@@ -53,6 +53,7 @@
                 v-model="scope.row.value"
                 placeholder="请选择"
                 filterable
+                ref="select"
                 @focus="handleEnvChange(scope.row, scope.row.command)"
                 size="small"
               >
@@ -64,6 +65,7 @@
                 isRuntime
                 isOther
                 style="display: inline-block;"
+                @change="handleEnvTypeChange"
               />
             </template>
           </el-table-column>
@@ -173,6 +175,13 @@ export default {
       row.value = ''
       if (command === 'other') {
         this.getGlobalEnv()
+      }
+    },
+    handleEnvTypeChange (val) {
+      if (val === 'other') {
+        this.$nextTick(() => {
+          this.$refs.select.toggleMenu()
+        })
       }
     },
     updateParams (row) {

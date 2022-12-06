@@ -81,13 +81,14 @@
               filterable
               size="small"
               required
+              ref="select"
               @focus="handleEnvChange(scope.row, scope.row.command)"
               v-if="scope.row.command === 'other'"
               style="display: inline-block; width: 220px;"
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" @change="handleEnvTypeChange" />
           </template>
         </el-table-column>
       </el-table>
@@ -273,6 +274,13 @@ export default {
       row.value = ''
       if (command === 'other') {
         this.getGlobalEnv()
+      }
+    },
+    handleEnvTypeChange (val) {
+      if (val === 'other') {
+        this.$nextTick(() => {
+          this.$refs.select.toggleMenu()
+        })
       }
     },
     delServiceAndBuild (index) {

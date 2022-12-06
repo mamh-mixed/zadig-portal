@@ -78,12 +78,20 @@
               size="small"
               required
               v-if="scope.row.command === 'other'"
+              ref="select"
               @focus="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block; width: 220px;"
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+            <EnvTypeSelect
+              v-model="scope.row.command"
+              isFixed
+              isRuntime
+              isOther
+              style="display: inline-block;"
+              @change="handleEnvTypeChange"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -258,6 +266,13 @@ export default {
         this.getGlobalEnv()
       }
     },
+    handleEnvTypeChange (val) {
+      if (val === 'other') {
+        this.$nextTick(() => {
+          this.$refs.select.toggleMenu()
+        })
+      }
+    },
     getTestList () {
       getTestListAPI(this.projectName).then(res => {
         this.originTestList = cloneDeep(res)
@@ -324,7 +339,12 @@ export default {
             share_storages: []
           })
         }
-        this.getClusterStatus(this.jobType.test, this.projectName, item.name, '')
+        this.getClusterStatus(
+          this.jobType.test,
+          this.projectName,
+          item.name,
+          ''
+        )
         this.isShowPvDialog = true
       }
       const res = this.originTestList.find(test => test.name === item.name)

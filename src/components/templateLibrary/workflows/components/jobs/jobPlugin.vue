@@ -1,7 +1,7 @@
 <template>
   <section class="job-plugin">
     <el-form label-width="90px" :model="job" ref="ruleForm" class="mg-t24 mg-b24">
-      <el-form-item label="任务名称" prop="name" >
+      <el-form-item label="任务名称" prop="name">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
       <section class="common-parcel-block">
@@ -53,6 +53,7 @@
                 v-model="scope.row.value"
                 placeholder="请选择"
                 filterable
+                ref="select"
                 @focus="handleEnvChange(scope.row, scope.row.command)"
                 size="small"
               >
@@ -64,6 +65,7 @@
                 isRuntime
                 isOther
                 style="display: inline-block;"
+                @change="handleEnvTypeChange"
               />
             </template>
           </el-table-column>
@@ -173,6 +175,13 @@ export default {
       row.value = ''
       if (command === 'other') {
         this.getGlobalEnv()
+      }
+    },
+    handleEnvTypeChange (val) {
+      if (val === 'other') {
+        this.$nextTick(() => {
+          this.$refs.select.toggleMenu()
+        })
       }
     },
     updateParams (row) {
