@@ -527,7 +527,8 @@ export default {
     buildBaseUrl: {
       required: true,
       type: String
-    }
+    },
+    changeEditorWidth: Function
   },
   watch: {
     detectedServices (val) {
@@ -558,7 +559,13 @@ export default {
     },
     selected () {
       const defaultAside = this.service.status === 'named' ? 'help' : 'var'
-      return this.$route.query.rightbar || defaultAside
+      const selected = this.$route.query.rightbar || defaultAside
+      if (selected === 'build') {
+        this.changeEditorWidth('30%')
+      } else {
+        this.changeEditorWidth('50%')
+      }
+      return selected
     }
   },
   components: {
