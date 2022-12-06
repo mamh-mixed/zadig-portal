@@ -223,7 +223,7 @@ import bus from '@utils/eventBus'
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/yaml/yaml.js'
-import 'codemirror/theme/xq-light.css'
+import 'codemirror/theme/neo.css'
 export default {
   data () {
     return {
@@ -235,6 +235,7 @@ export default {
       activeName: 'summary',
       commentContent: '',
       yamlOptions: {
+        theme: 'neo',
         tabSize: 5,
         mode: 'text/yaml',
         lineNumbers: true,
