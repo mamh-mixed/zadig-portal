@@ -10,37 +10,45 @@
         v-if="mode === 'updated' && collaborationData.initName !== collaborationData.name"
       >协作模式名称修改为：{{ collaborationData.name }}</div>
       <div v-for="key in Object.keys(changedInfo)" :key="key">
-        <div class="title">
-          您将
-          <span class="title-weight" :class="[key]">{{ key | desc }}</span>
-          以下用户权限：
+        <div v-if="key !== 'updated'" class="title-container">
+          <span>确认为以下用户</span>
         </div>
-        <div class="content" :style="{ 'margin-top' : key === 'updated' ? '10px' : '0' }">
-          <div class="role" v-if="key !== 'updated'">
-            <span class="member" v-for="member in changedInfo[key].members" :key="member">{{ member }}</span>
-          </div>
-          <div v-for="workflow in changedInfo[key].workflows" :key="workflow.name">
-            {{ workflow.collaboration_type === 'new' ? '独享': '共享' }}工作流 {{ workflow.display_name }} ：
-            <span
-              v-for="(verb, index) in workflow.verbs"
-              :key="verb"
-            >{{ policyMap.workflow[verb] }}{{ workflow.verbs.length - 1 !== index ? '、' : '' }}</span>
+        <ul class="member-container" v-if="key !== 'updated'">
+          <li v-for="member in changedInfo[key].members" :key="member" class="member">
+            <span class="icon iconfont iconvery-user"></span>
+            <span class="name">{{ member }}</span>
+          </li>
+        </ul>
+        <div class="permission-desc">
+          <span :class="[key]">{{ key | desc }}</span>
+          <span>以下权限</span>
+        </div>
+        <div class="content">
+          <div v-for="workflow in changedInfo[key].workflows" :key="workflow.name" class="resource-container">
+            <div class="resource-name">{{ workflow.collaboration_type === 'new' ? '独享': '共享' }}工作流 {{ workflow.display_name }} ：</div>
+            <ul class="permission-list">
+              <li v-for="(verb, index) in workflow.verbs" :key="index" class="permission">
+                <span v-if="key ==='added'||key ==='updated'" class="icon added el-icon-circle-check"></span>
+                <span v-if="key ==='deleted'" class="icon deleted el-icon-circle-close"></span>
+                <span class="name">{{ policyMap.workflow[verb] }}</span>
+              </li>
+            </ul>
             <span v-if="workflow.verbs.length === 0">无</span>
-            权限
           </div>
-          <div v-for="product in changedInfo[key].products" :key="product.name">
-            {{ product.collaboration_type === 'new' ? '独享': '共享' }}环境 {{ product.name }} ：
-            <span
-              v-for="(verb, index) in product.verbs"
-              :key="verb"
-            >{{ policyMap.environment[verb] }}{{ product.verbs.length - 1 !== index ? '、' : '' }}</span>
-            <span v-if="product.verbs.length === 0">无</span>
-            权限
+          <div v-for="product in changedInfo[key].products" :key="product.name" class="resource-container">
+            <div class="resource-name">{{ product.collaboration_type === 'new' ? '独享': '共享' }}环境 {{ product.name }} ：</div>
+            <ul class="permission-list">
+              <li v-for="(verb, index) in product.verbs" :key="index" class="permission">
+                <span v-if="key ==='added'||key ==='updated'" class="icon added el-icon-circle-check"></span>
+                <span v-if="key ==='deleted'" class="icon deleted el-icon-circle-close"></span>
+                <span class="name">{{ policyMap.environment[verb] }}</span>
+              </li>
+              <span v-if="product.verbs.length === 0">无</span>
+            </ul>
           </div>
           <div v-if="changedInfo.updated && changedInfo.updated.recycle_day">资源回收策略更新为 {{ changedInfo.updated.recycle_day }} 天。</div>
         </div>
       </div>
-      <div class="title">请确认！</div>
     </div>
     <div slot="footer">
       <el-button size="small" @click="dialogVisible = false" :disabled="loading">取 消</el-button>
@@ -90,7 +98,7 @@ export default {
   filters: {
     desc (val) {
       const info = {
-        added: '增加',
+        added: '添加',
         deleted: '删除',
         updated: '更新'
       }
@@ -192,38 +200,97 @@ export default {
     font-weight: 500;
   }
 
-  .added {
-    color: #06f;
-  }
-
-  .deleted {
-    color: #f56c6c;
-  }
-
-  .updated {
-    color: #e6a23c;
-  }
-
-  .member {
-    margin-right: 10px;
-    color: #888;
-  }
-
   .update-name {
     margin-bottom: 15px;
   }
 
-  .title {
-    font-size: 15px;
+  .title-container {
+    span {
+      color: #303133;
+      font-size: 16px;
+    }
+  }
+
+  .member-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5px 5px 5px 0;
+
+    .member {
+      display: flex;
+      padding: 2px 0;
+      font-size: 16px;
+
+      .icon {
+        color: @themeColor;
+      }
+
+      .name {
+        margin-left: 5px;
+        color: #333;
+        font-weight: 300;
+      }
+    }
+  }
+
+  .permission-desc {
+    span {
+      color: #303133;
+      font-size: 16px;
+
+      &.added {
+        color: @themeColor;
+      }
+
+      &.deleted {
+        color: #f56c6c;
+      }
+
+      &.updated {
+        color: #e6a23c;
+      }
+    }
   }
 
   .content {
     margin-bottom: 10px;
-    padding: 0 8px;
-    line-height: 2;
 
-    .role {
-      line-height: 2.5;
+    .resource-container {
+      margin: 10px 0;
+      padding: 4px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      .resource-name {
+        padding-bottom: 4px;
+        color: #29292f;
+        font-size: 14px;
+      }
+
+      .permission-list {
+        .permission {
+          .icon {
+            margin-right: 2px;
+
+            &.added {
+              color: @themeColor;
+            }
+
+            &.deleted {
+              color: #f56c6c;
+            }
+
+            &.updated {
+              color: #e6a23c;
+            }
+          }
+
+          .name {
+            font-size: 13px;
+          }
+        }
+      }
     }
   }
 }
