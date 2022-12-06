@@ -244,11 +244,11 @@ export default {
       margin-top: 8px;
 
       &-title {
-        color: #4a4a4a;
+        color: #8d9199;
       }
 
       &-desc {
-        color: #8d9199;
+        color: #4a4a4a;
       }
     }
   }
