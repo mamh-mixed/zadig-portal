@@ -8,14 +8,16 @@
       <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput" v-if="from==='ui'&&!disabled"></i>
     </span>
     <span v-else class="input">
-      <el-input
-        v-model="inputValue"
-        type="text"
-        size="mini"
-        :placeholder="placeholder"
-        @focus="handleInput(true)"
-        @blur="handleInput(false)"
-      ></el-input>
+      <el-form-item prop="display_name" :rules="{required: true,message:'请输入工作流名称', trigger: ['blur', 'change']}">
+        <el-input
+          v-model="inputValue"
+          type="text"
+          size="mini"
+          :placeholder="placeholder"
+          @focus="handleInput(true)"
+          @blur="handleInput(false)"
+        ></el-input>
+      </el-form-item>
       <el-button type="text" @click="handleInput(false)" size="mini" class="mg-l8">确定</el-button>
     </span>
   </div>
