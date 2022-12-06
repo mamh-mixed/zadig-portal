@@ -1,6 +1,7 @@
 <template>
   <el-form class="run-workflow"
-           label-width="90px">
+           label-width="90px"
+           label-position="left">
     <el-form-item prop="productName"
                   label="环境">
       <el-select :value="runner.product_tmpl_name && runner.namespace ? `${runner.product_tmpl_name} / ${runner.namespace}` : ''"

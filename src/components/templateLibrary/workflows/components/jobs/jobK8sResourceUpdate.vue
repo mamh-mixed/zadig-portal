@@ -37,7 +37,7 @@
               <div class="content">
                 <div class="content-editor">
                   <div class="flex">
-                    <span>模版</span>
+                    <span>模板</span>
                     <el-dropdown @command="handleCommand($event,item)">
                       <span class="el-dropdown-link">
                         {{item.patch_strategy}}
@@ -117,7 +117,7 @@
       </el-form-item>
     </el-form>
     <el-dialog :visible.sync="dialogVisible" title="枚举" width="600px" :close-on-click-modal="false" :show-close="false" append-to-body>
-      <el-form ref="form" :model="currentVars" label-width="90px">
+      <el-form ref="form" :model="currentVars" label-position="left" label-width="90px">
         <el-form-item label="变量名称">
           <el-input v-model="currentVars.name" size="small"></el-input>
         </el-form-item>

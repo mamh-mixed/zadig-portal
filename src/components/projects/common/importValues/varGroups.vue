@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="使用变量组" :visible.sync="dialogVisible" width="55%" append-to-body>
     <div>
-      <el-form ref="groupForm" :model="group" label-width="120px">
+      <el-form ref="groupForm" :model="group" label-position="left" label-width="120px">
         <el-form-item label="选择变量组">
           <el-select v-model="group.source_id" placeholder="选择变量组" filterable size="small" style="width: 100%;">
             <el-option v-for="(group, index) in groupList" :key="index" :label="group.label" :value="group.id">

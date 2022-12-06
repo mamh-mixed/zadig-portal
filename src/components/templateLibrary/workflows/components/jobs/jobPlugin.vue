@@ -1,7 +1,7 @@
 <template>
   <section class="job-plugin">
-    <el-form label-width="90px" :model="job" ref="ruleForm" class="mg-t24 mg-b24">
-      <el-form-item label="任务名称" prop="name">
+    <el-form label-width="90px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
+      <el-form-item label="任务名称" prop="name" >
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
       <section class="common-parcel-block">
@@ -101,7 +101,7 @@
       </div>
     </el-form>
     <el-dialog :visible.sync="dialogVisible" title="枚举" width="600px" :close-on-click-modal="false" :show-close="false" append-to-body>
-      <el-form ref="form" :model="currentVars" label-width="90px">
+      <el-form ref="form" :model="currentVars" label-position="left" label-width="90px">
         <el-form-item label="变量名称">
           <el-input v-model="currentVars.name" disabled size="small"></el-input>
         </el-form-item>

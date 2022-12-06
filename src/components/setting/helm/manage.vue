@@ -13,7 +13,7 @@
       custom-class="dialog-style"
       width="35%"
     >
-      <el-form ref="helm" :rules="rules" label-width="90px" tab-position="left" :model="helm">
+      <el-form ref="helm" :rules="rules" label-width="90px" label-position="left" tab-position="left" :model="helm">
         <el-form-item label="URL" prop="url">
           <el-input size="small" placeholder="请输入 http/https/acr 开头的 URL" v-model.trim="helm.url"></el-input>
         </el-form-item>
@@ -42,7 +42,7 @@
       custom-class="dialog-style"
       width="35%"
     >
-      <el-form ref="swapHelm" :rules="rules" label-width="90px" tab-position="left" :model="swapHelm">
+      <el-form ref="swapHelm" :rules="rules" label-position="left" label-width="90px" tab-position="left" :model="swapHelm">
         <el-form-item label="URL" prop="url">
           <el-input size="small" placeholder="请输入 http/https/acr 开头的 URL" v-model="swapHelm.url"></el-input>
         </el-form-item>

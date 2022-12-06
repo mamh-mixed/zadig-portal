@@ -9,6 +9,7 @@
       <el-form ref="announcement"
                :rules="rules"
                :model="announcement"
+               label-position="left"
                label-width="90px">
         <el-form-item label="标题"
                       prop="content.title">
@@ -65,6 +66,7 @@
       <el-form ref="swapAnnouncement"
                :rules="rules"
                :model="swapAnnouncement"
+               label-position="left"
                label-width="90px">
         <el-form-item label="标题"
                       prop="content.title">

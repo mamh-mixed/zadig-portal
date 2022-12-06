@@ -15,7 +15,7 @@
         <el-col :span="6" class="title">构建配置</el-col>
       </el-row>
       <div v-for="(item,index) in serviceAndBuilds" :key="index">
-        <el-form :model="item" :ref="`ruleForm${index}`" size="small">
+        <el-form :model="item" :ref="`ruleForm${index}`" label-position="left" size="small">
           <el-row :gutter="24" style="line-height: 30px;">
             <el-col :span="6">
               <div>{{item.service_name}}/{{item.service_module}}</div>
@@ -142,7 +142,7 @@
       :append-to-body="true"
       width="40%"
     >
-      <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
+      <el-form ref="form" label-width="120px" label-position="left" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
           <el-switch
             v-model="curItem.share_storage_info.enabled"

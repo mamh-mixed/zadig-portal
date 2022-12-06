@@ -1,6 +1,6 @@
 <template>
   <div class="settings">
-    <el-form :model="workflowInfo" ref="settings">
+    <el-form :model="workflowInfo" label-position="left" ref="settings">
       <div class="mg-b16 title">运行策略</div>
       <el-form-item>
         <span class="mg-r16">

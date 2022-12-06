@@ -3,7 +3,7 @@
     <div v-if="currentStep === 'account'">
       <h1 class="title">找回密码</h1>
       <h2 class="subtitle">请输入用户名</h2>
-      <el-form :model="retrieveForm" :rules="retrieveRules" ref="retrieveForm">
+      <el-form :model="retrieveForm" :rules="retrieveRules" label-position="left" ref="retrieveForm">
         <el-form-item prop="account">
           <el-input v-model="retrieveForm.account" placeholder="用户名"></el-input>
         </el-form-item>
@@ -18,7 +18,7 @@
     <div v-else-if="currentStep === 'setpass'">
       <h1 class="title">设置新密码</h1>
       <h2 class="subtitle">请输入新密码</h2>
-      <el-form :model="form" ref="form" :rules="rules">
+      <el-form :model="form" ref="form" label-position="left" :rules="rules">
         <el-form-item prop="password">
           <el-input type="password" v-model="form.password" placeholder="新密码" show-password></el-input>
         </el-form-item>

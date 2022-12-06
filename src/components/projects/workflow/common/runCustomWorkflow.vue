@@ -1,6 +1,6 @@
 <template>
   <div class="custom-workflow">
-    <el-form label-width="140px" size="small">
+    <el-form label-position="left" label-width="140px" size="small">
       <el-collapse v-model="activeName">
         <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">

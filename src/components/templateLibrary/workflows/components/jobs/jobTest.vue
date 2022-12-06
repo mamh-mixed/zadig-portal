@@ -1,6 +1,6 @@
 <template>
   <div class="job-test">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" >
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
@@ -121,7 +121,7 @@
       </span>
     </el-dialog>
     <el-dialog :title="`${curItem.name} 共享存储配置`" :visible.sync="isShowPvDialog" :append-to-body="true" width="40%">
-      <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
+      <el-form ref="form" label-position="left" label-width="120px" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
           <el-switch
             v-model="curItem.share_storage_info.enabled"
