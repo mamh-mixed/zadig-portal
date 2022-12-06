@@ -1,6 +1,6 @@
 <template>
   <div class="chart-repo-container">
-    <el-form ref="chartRepoForm" :model="chartForm.createFrom" label-width="140px">
+    <el-form ref="chartRepoForm" :model="chartForm.createFrom" label-position="left" label-width="140px">
       <el-form-item label="选择 Chart 仓库" prop="chartRepoName" :rules="{
               required: true,
               message: '请选择 Chart 仓库',

@@ -11,7 +11,7 @@
                 </a>
               </header>
               <section>
-                <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" hide-required-asterisk>
+                <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" label-position="left" hide-required-asterisk>
                   <el-form-item label="用户名" prop="account">
                     <el-input v-model="loginForm.account" placeholder="请输入用户名" autocomplete="off"></el-input>
                   </el-form-item>

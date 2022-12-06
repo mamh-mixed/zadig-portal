@@ -211,7 +211,7 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain icon="el-icon-circle-close" @click="closeDrawer"></el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || '取消'}}</el-button>
         </div>
         <div v-else>
           <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
@@ -253,7 +253,7 @@
       </div>
     </el-dialog>
     <el-dialog title="保存为模板" :visible.sync="isShowModelDialog" width="30%">
-      <el-form inline ref="modelForm" :model="modelFormInfo">
+      <el-form inline ref="modelForm" :model="modelFormInfo" label-position="left">
         <el-form-item label="模板名称" :rules="{required: true,message: '请填写模板名称', trigger: ['blur', 'change']}" prop="name">
           <el-input placeholder="请输入模板名称" size="small" v-model="modelFormInfo.name"></el-input>
         </el-form-item>

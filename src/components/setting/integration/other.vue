@@ -1,7 +1,7 @@
 <template>
   <div class="integration-other-container">
     <el-dialog title="其他外部系统" :close-on-click-modal="false" :visible.sync="dialogExternalVisible">
-      <el-form :model="externalEdit" @submit.native.prevent :rules="externalRules" ref="externalForm" label-width="100px">
+      <el-form :model="externalEdit" @submit.native.prevent :rules="externalRules" ref="externalForm" label-position="left" label-width="100px">
         <el-form-item label="系统名称" prop="name">
           <el-input v-model="externalEdit.name" placeholder="输入系统名称" size="small"></el-input>
         </el-form-item>

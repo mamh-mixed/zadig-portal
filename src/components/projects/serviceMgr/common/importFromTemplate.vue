@@ -11,7 +11,7 @@
       :visible="dialogImportFromYamlVisible"
       @update:visible="$emit('update:dialogImportFromYamlVisible', $event)"
     >
-      <el-form :model="importYaml" @submit.native.prevent ref="importYamlForm">
+      <el-form :model="importYaml" @submit.native.prevent label-position="left" ref="importYamlForm">
         <el-form-item label="服务名称" prop="serviceName" :rules="{ required: true, message: '服务名称不能为空', trigger: ['change','blur'] }">
           <el-input
             style="width: 400px;"

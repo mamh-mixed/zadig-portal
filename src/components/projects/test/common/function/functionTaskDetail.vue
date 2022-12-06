@@ -19,7 +19,8 @@
         </div>
 
         <el-form class="basic-info"
-                 label-width="100px">
+                 label-width="100px"
+                 label-position="left">
           <el-form-item label="状态">
             <el-tag size="small"
                     effect="dark"

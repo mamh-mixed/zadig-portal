@@ -1,6 +1,6 @@
 <template>
   <div class="import-chart-container">
-    <el-form ref="gitForm" :model="template" label-width="140px" :rules="rules">
+    <el-form ref="gitForm" :model="template" label-position="left" label-width="140px" :rules="rules">
       <el-form-item label="模板名称" prop="name">
         <el-input v-model="template.name" placeholder="请输入模板名称" size="small" :disabled="isUpdate"></el-input>
       </el-form-item>

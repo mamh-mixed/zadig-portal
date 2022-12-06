@@ -140,24 +140,24 @@
               <el-button
                 type="primary"
                 size="mini"
-                icon="el-icon-arrow-down"
                 round
                 plain
                 v-if="!showAdvancedSetting[repo_index]"
                 @click="$set(showAdvancedSetting,repo_index,true)"
               >
                 展开
+                <i class="el-icon-arrow-down" />
               </el-button>
               <el-button
                 type="primary"
                 size="mini"
-                icon="el-icon-arrow-up"
                 round
                 plain
                 v-if="showAdvancedSetting[repo_index]"
                 @click="$set(showAdvancedSetting,repo_index,false)"
               >
                 收起
+                <i class="el-icon-arrow-up" />
               </el-button>
             </div>
           </el-form-item>

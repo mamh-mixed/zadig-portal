@@ -79,7 +79,7 @@
       <div v-hasPermi="{projectName: projectName, action: 'create_delivery'}" class="create-checkbox">
         <el-checkbox v-model="versionInfo.enabled">创建版本</el-checkbox>
       </div>
-      <el-form v-if="versionInfo.enabled" :model="versionInfo"  ref="versionForm" :rules="versionRules">
+      <el-form v-if="versionInfo.enabled" :model="versionInfo"  ref="versionForm" label-position="left" :rules="versionRules">
         <el-form-item label="版本名称" prop="version">
           <el-input class="full-width" v-model="versionInfo.version" size="small" autocomplete="off"></el-input>
         </el-form-item>

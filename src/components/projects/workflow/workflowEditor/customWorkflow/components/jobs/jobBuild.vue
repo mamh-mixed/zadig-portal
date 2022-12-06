@@ -1,6 +1,6 @@
 <template>
   <div class="job-build">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
@@ -15,7 +15,7 @@
         <el-col :span="6" class="title">构建配置</el-col>
       </el-row>
       <div v-for="(item,index) in serviceAndBuilds" :key="index">
-        <el-form :model="item" :ref="`ruleForm${index}`" size="small">
+        <el-form :model="item" :ref="`ruleForm${index}`" label-position="left" size="small">
           <el-row :gutter="24" style="line-height: 30px;">
             <el-col :span="6">
               <div>{{item.service_name}}/{{item.service_module}}</div>
@@ -134,7 +134,7 @@
       :append-to-body="true"
       width="40%"
     >
-      <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
+      <el-form ref="form" label-position="left" label-width="120px" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
           <el-switch
             v-model="curItem.share_storage_info.enabled"

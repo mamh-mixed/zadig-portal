@@ -1,7 +1,7 @@
 <template>
   <div class="workflow-distribute">
     <el-card class="box-card">
-      <el-form ref="distributeForm" :model="distributeStageDetail" label-width="100px">
+      <el-form ref="distributeForm" :model="distributeStageDetail" label-position="left" label-width="100px">
         <el-form-item label="服务选择" prop="serviceTargets">
           <el-select
             v-model="distributeStageDetail.serviceTargets"
