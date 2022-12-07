@@ -818,6 +818,12 @@ export default {
             payload.address = 'https://github.com'
           } else if (provider === 'gitee') {
             payload.address = 'https://gitee.com'
+          } else if (provider === 'other') {
+            // Add newline to the end of the ssh key
+            const sshKeyLastCharacter = payload.ssh_key.charAt(payload.ssh_key.length - 1)
+            if (sshKeyLastCharacter !== '\n') {
+              payload.ssh_key = payload.ssh_key + '\n'
+            }
           }
           createCodeSourceAPI(payload).then((res) => {
             const codehostId = res.id
@@ -847,6 +853,12 @@ export default {
             payload.address = 'https://github.com'
           } else if (provider === 'gitee') {
             payload.address = 'https://gitee.com'
+          } else if (provider === 'other') {
+            // Add newline to the end of the ssh key
+            const sshKeyLastCharacter = payload.ssh_key.charAt(payload.ssh_key.length - 1)
+            if (sshKeyLastCharacter !== '\n') {
+              payload.ssh_key = payload.ssh_key + '\n'
+            }
           }
           updateCodeSourceAPI(codehostId, payload).then((res) => {
             this.getCodeConfig()
