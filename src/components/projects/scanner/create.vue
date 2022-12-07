@@ -365,7 +365,7 @@ export default {
       this.scannerConfig.image_id = scannerType === 'sonarQube' ? this.defaultSonarImageId : this.systems[0].id
     },
     getImageList (scannerType, initConfig = true) {
-      getImgListAPI().then(res => {
+      getImgListAPI('', 'sonar').then(res => {
         this.systems = res
         const find = res.find(re => re.image_type === 'sonar')
         if (find) {
