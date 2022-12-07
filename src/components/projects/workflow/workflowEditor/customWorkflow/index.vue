@@ -545,7 +545,6 @@ export default {
         })
       }
       this.payload.stages.forEach(stage => {
-        console.log(stage)
         if (stage.approval.type === 'native') {
           const native_approval = {
             approve_users: stage.approval.approve_users,
@@ -558,8 +557,8 @@ export default {
             const users = []
             stage.approval.approve_users.forEach(item => {
               const obj = {}
-              obj.user_id = item.split(',')[0]
-              obj.user_name = item.split(',')[1]
+              obj.id = item.split(',')[0]
+              obj.name = item.split(',')[1]
               users.push(obj)
             })
             const lark_approval = {
@@ -702,6 +701,14 @@ export default {
         }
       })
       this.payload.stages.forEach(stage => {
+        if (stage.approval.type === 'lark') {
+          stage.approval.approval_id = stage.approval.lark_approval.approval_id
+          stage.approval.timeout = stage.approval.lark_approval.timeout
+        } else {
+          stage.approval.approve_users = stage.approval.native_approval.approve_users
+          stage.approval.needed_approvers = stage.approval.native_approval.needed_approvers
+          stage.approval.timeout = stage.approval.native_approval.timeout
+        }
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {

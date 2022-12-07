@@ -26,7 +26,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="审批方式" prop="approval.type">
-          <el-radio-group v-model="form.approval.type">
+          <el-radio-group v-model="form.approval.type" @change="handleTypeChange">
             <el-radio label="native">zadig</el-radio>
             <el-radio label="lark">飞书</el-radio>
             <el-radio disabled>钉钉</el-radio>
@@ -52,6 +52,7 @@
             multiple
             filterable
             remote
+            key="1"
             reserve-keyword
             placeholder="请输入关键词"
             :remote-method="getUserList"
@@ -71,8 +72,8 @@
           <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0" size="small"></el-input>
         </el-form-item>
         <el-form-item label="审核人" v-if="form.approval.type==='lark'">
-          <el-button type="primary" plain @click="addApprovalUser" size="small">添加</el-button>
-          <span v-for="item in users" :key="item.user_id">{{item.user_name}}</span>
+          <el-button type="primary" plain @click="addApprovalUser" size="mini">添加</el-button>
+          <span v-for="item in users" :key="item.id">{{item.name}}</span>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行" size="small"></el-input>
@@ -146,6 +147,7 @@ export default {
       appList: [],
       departmentList: [],
       departmentId: 'root',
+      userList: [],
       users: [],
       breadMenu: [{ label: 'root', id: 'root' }],
       isShowLarkTransferDialog: false,
@@ -243,12 +245,15 @@ export default {
       }
       this.getDepartmentInfo()
     },
+    handleTypeChange (val) {
+      this.form.approval.approve_users = []
+    },
     saveApprovalUser () {
       if (this.form.approval.type === 'lark') {
         this.form.approval.approve_users.forEach(item => {
           const obj = {}
-          obj.user_id = item.split(',')[0]
-          obj.user_name = item.split(',')[1]
+          obj.id = item.split(',')[0]
+          obj.name = item.split(',')[1]
           this.users.push(obj)
         })
       }
@@ -289,22 +294,17 @@ export default {
   watch: {
     stageInfo: {
       handler (val) {
-        if (this.type === 'edit') {
-          this.form = cloneDeep(val)
-        }
         if (val) {
-          if (val.approval.type === 'lark') {
-            this.form.approval.approval_id =
-              val.approval.lark_approval.approval_id
-            val.approval.lark_approval.approve_users.forEach(item => {
-              item.user_name = item.name
-              item.user_id = item.id
-            })
+          if (this.type === 'edit') {
+            this.form = cloneDeep(val)
+          }
+          if (val.approval.type === 'lark' && val.approval.lark_approval) {
             this.users = val.approval.lark_approval.approve_users
           }
         }
       },
-      immediate: true
+      immediate: true,
+      deep: true
     },
     type (newVal, oldVal) {
       if (newVal === 'add') {
