@@ -311,7 +311,9 @@ export default {
           approve_users: [],
           timeout: null,
           needed_approvers: null,
-          description: ''
+          description: '',
+          type: 'native',
+          approval_id: ''
         },
         jobs: []
       },
@@ -543,6 +545,31 @@ export default {
         })
       }
       this.payload.stages.forEach(stage => {
+        console.log(stage)
+        if (stage.approval.type === 'native') {
+          const native_approval = {
+            approve_users: stage.approval.approve_users,
+            timeout: stage.approval.timeout,
+            needed_approvers: stage.approval.needed_approvers
+          }
+          stage.approval.native_approval = native_approval
+        } else {
+          if (stage.approval.approve_users) {
+            const users = []
+            stage.approval.approve_users.forEach(item => {
+              const obj = {}
+              obj.user_id = item.split(',')[0]
+              obj.user_name = item.split(',')[1]
+              users.push(obj)
+            })
+            const lark_approval = {
+              approve_users: users,
+              approval_id: stage.approval.approval_id,
+              timeout: stage.approval.timeout
+            }
+            stage.approval.lark_approval = lark_approval
+          }
+        }
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
@@ -901,7 +928,11 @@ export default {
     handleDrawerChange () {
       if (this.curDrawer === 'high') {
         this.$refs.settings.validate().then(() => {
-          this.$set(this.payload, 'share_storages', this.$refs.settings.getData())
+          this.$set(
+            this.payload,
+            'share_storages',
+            this.$refs.settings.getData()
+          )
           this.isShowDrawer = false
         })
       }

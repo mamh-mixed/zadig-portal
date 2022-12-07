@@ -1073,6 +1073,9 @@ export function deleteApprovalAPI (id) {
 export function checkApprovalConfigAPI (payload) {
   return http.post('/api/aslan/system/approval/validate', payload)
 }
+export function getDepartmentAPI (id, department_id) {
+  return http.get(`/api/aslan/system/lark/${id}/department/${department_id}`)
+}
 
 // Mail
 export function getEmailHostAPI (key) {
