@@ -103,8 +103,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
-              <el-form-item :prop="'spec.targets.'+index+'.host'" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
-                <el-select v-model="item.host" placeholder="可选填" size="small" allow-create filterable clearable>
+              <el-form-item :prop="'spec.targets.'+index+'.host'" :rules="{required: true, message: '请选择或者填写', trigger: ['blur','change']}">
+                <el-select v-model="item.host" placeholder="请选择或者填写" size="small" allow-create filterable clearable>
                   <el-option
                     v-for="(item,index) in virtualHosts[item.virtual_service_name]"
                     :key="index"
