@@ -2314,3 +2314,11 @@ export function getWorkflowGlobalVarsAPI (currentJobName, payload) {
 export function getClusterStatusAPI (type, projectName, name, id) {
   return http.get(`/api/aslan/workflow/v4/sharestorage?type=${type}&project=${projectName}&name=${name}&id=${id}`)
 }
+
+export function getDeploymentsAPI (clusterId, namespace) {
+  return http.get(`/api/aslan/cluster/${clusterId}/${namespace}/deployments`)
+}
+
+export function getIstioVirtualServicesAPI (clusterId, namespace) {
+  return http.get(`/api/aslan/cluster/${clusterId}/${namespace}/istio/virtualservices`)
+}

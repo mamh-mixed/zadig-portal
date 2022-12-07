@@ -138,7 +138,9 @@ const jobType = {
   blueGreenConfirm: 'k8s-blue-green-release',
   k8sResourcePatch: 'k8s-resource-patch',
   k8sGrayRollback: 'k8s-gray-rollback',
-  grayDeploy: 'k8s-gray-release'
+  grayDeploy: 'k8s-gray-release',
+  istioRelease: 'istio-release',
+  istioRollback: 'istio-rollback'
 }
 const editorOptions = {
   mode: 'yaml',

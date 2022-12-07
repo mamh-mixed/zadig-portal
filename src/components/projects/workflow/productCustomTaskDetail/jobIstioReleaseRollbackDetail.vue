@@ -1,8 +1,8 @@
 <template>
-  <div class="job-canary-deploy">
+  <div class="job-istio-rollback-detail">
     <header class="mg-b8">
       <el-col :span="6">
-        <span class="type">灰度发布</span>
+        <span class="type">Istio 灰度发布回滚</span>
         <span>{{jobInfo.name}}</span>
       </el-col>
       <el-col v-if="jobInfo.status!=='running'" :span="2">
@@ -28,13 +28,7 @@
           <div class="item-title">容器名称</div>
         </el-col>
         <el-col :span="8">
-          <span class="item-desc">{{jobInfo.spec.workload_type}}/{{jobInfo.spec.workload_name}}</span>
-        </el-col>
-        <el-col :span="4">
-          <div class="item-title">灰度百分比</div>
-        </el-col>
-        <el-col :span="8">
-          <span class="item-desc">{{jobInfo.spec.gray_scale}}</span>
+          <span class="item-desc">{{jobInfo.spec.targets.workload_name}}/{{jobInfo.spec.targets.container_name}}</span>
         </el-col>
       </el-row>
       <el-row class="item" :span="24">
@@ -42,13 +36,13 @@
           <div class="item-title">集群</div>
         </el-col>
         <el-col :span="8">
-          <div class="item-desc">{{jobInfo.spec.cluster_name}}</div>
+          <span class="item-desc">{{jobInfo.spec.cluster_name}}</span>
         </el-col>
         <el-col :span="4">
           <div class="item-title">命名空间</div>
         </el-col>
         <el-col :span="8">
-          <div class="item-desc">{{jobInfo.spec.namespace.toString()}}</div>
+          <div class="item-desc">{{jobInfo.spec.namespace}}</div>
         </el-col>
       </el-row>
       <el-row class="item">
@@ -56,16 +50,17 @@
           <div class="item-title">镜像名称</div>
         </el-col>
         <el-col :span="8">
-          <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-            <span class="file-name item-desc">{{ jobInfo.spec.image.split('/')[2] }}</span>
+          <el-tooltip v-if="jobInfo.spec.targets.image" effect="dark" :content="jobInfo.spec.targets.image" placement="top">
+            <span class="file-name item-desc">{{ jobInfo.spec.targets.image.split('/')[2] }}</span>
           </el-tooltip>
         </el-col>
+        <el-col :span="4">
+          <div class="item-title">副本数量</div>
+        </el-col>
+        <el-col :span="8">
+          <span class="file-name item-desc">{{jobInfo.spec.targets.target_replica}}</span>
+        </el-col>
       </el-row>
-      <el-table :data="jobInfo.spec.events" size="small" class="mg-t24">
-        <el-table-column label="时间" prop="time"></el-table-column>
-        <el-table-column label="类型" prop="event_type"></el-table-column>
-        <el-table-column label="信息" prop="message"></el-table-column>
-      </el-table>
     </main>
   </div>
 </template>
@@ -111,7 +106,7 @@ export default {
 <style lang="less" scoped>
 @themeColor: #0066ff;
 
-.job-canary-deploy {
+.job-istio-rollback-detail {
   position: relative;
   height: 100%;
   font-size: 14px;

@@ -469,6 +469,87 @@
                 </el-table>
               </div>
             </div>
+            <div v-if="job.type === 'istio-release'">
+              <div style="margin-bottom: 10px; color: #606266;">
+                <span>新版本副本数百分比:{{job.spec.replica_percentage}}%</span>
+                <span style="margin-left: 10px;">新版本流量百分比:{{job.spec.weight}}%</span>
+              </div>
+              <el-form-item label="选择容器" v-if="!job.spec.from_job">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="value"
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleResourceChange($event,job)"
+                >
+                  <el-option
+                    v-for="(item,index) of job.spec.targets"
+                    :key="index"
+                    :label="`${item.container_name}/${item.workload_name}`"
+                    :value="item"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <div v-for="(item,index) in job.pickedTargets" :key="index">
+                <el-form-item :label="`${item.container_name}/${item.workload_name}`">
+                  <el-select
+                    v-model="item.image"
+                    filterable
+                    clearable
+                    @change="handleCurImageChange"
+                    reserve-keyword
+                    size="medium"
+                    style="width: 220px;"
+                    placeholder="请选择镜像"
+                  >
+                    <el-option
+                      v-for="(image,index) of item.images"
+                      :key="index"
+                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
+                      :label="image.tag"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+            </div>
+            <div v-if="job.type === 'istio-rollback'">
+              <el-form-item label="选择容器">
+                <el-select
+                  v-model="job.pickedTargets"
+                  filterable
+                  multiple
+                  clearable
+                  reserve-keyword
+                  value-key="value"
+                  size="medium"
+                  style="width: 220px;"
+                  @change="handleResourceChange($event,job)"
+                >
+                  <el-option
+                    v-for="(item,index) of job.spec.targets"
+                    :key="index"
+                    :label="`${item.workload_name}/${item.container_name}`"
+                    :value="item"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+              <template v-if="job.pickedTargets.length > 0">
+                <span style="color: #606266;">回滚版本信息</span>
+                <el-table :data="job.pickedTargets">
+                  <el-table-column label="容器名称" prop="value">
+                    <template slot-scope="scope">
+                      <span>{{`${scope.row.workload_name}/${scope.row.container_name}`}}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="镜像名称" prop="image"></el-table-column>
+                  <el-table-column label="副本数量" prop="target_replica"></el-table-column>
+                </el-table>
+              </template>
+            </div>
           </el-collapse-item>
         </div>
       </el-collapse>
@@ -705,6 +786,22 @@ export default {
               })
               this.registry_id = job.spec.source_registry_id
             }
+          }
+          if (job.type === 'istio-release') {
+            job.spec.targets.forEach(item => {
+              item.value = `${item.workload_name}/${item.container_name}`
+              item.service = item.container_name
+            })
+            job.pickedTargets = cloneDeep(job.spec.targets)
+            this.handleContainerChange(job.pickedTargets, job)
+          }
+          if (job.type === 'istio-rollback') {
+            job.spec.targets.forEach(item => {
+              item.value = `${item.workload_name}/${item.container_name}`
+              item.service = item.container_name
+            })
+            job.pickedTargets = cloneDeep(job.spec.targets)
+            this.handleContainerChange(job.pickedTargets, job)
           }
         })
       })
@@ -970,7 +1067,9 @@ export default {
               // fromjob
               this.fromJobInfo.pickedTargets.forEach(item => {
                 if (item.update_tag && !item.target_tag) {
-                  this.$message.error(`请填写 ${item.service_name} 中的目标镜像版本`)
+                  this.$message.error(
+                    `请填写 ${item.service_name} 中的目标镜像版本`
+                  )
                   throw Error()
                 }
               })
@@ -1009,6 +1108,20 @@ export default {
             delete job.pickedTargets
           }
           if (job.type === 'k8s-gray-release') {
+            job.pickedTargets.forEach(item => {
+              delete item.images
+            })
+            job.spec.targets = job.pickedTargets
+            delete job.pickedTargets
+          }
+          if (job.type === 'istio-release') {
+            job.pickedTargets.forEach(item => {
+              delete item.images
+            })
+            job.spec.targets = job.pickedTargets
+            delete job.pickedTargets
+          }
+          if (job.type === 'istio-rollback') {
             job.pickedTargets.forEach(item => {
               delete item.images
             })
@@ -1071,12 +1184,13 @@ export default {
     },
     handleContainerChange (val, job) {
       val.forEach(item => {
-        this.getRegistryList([item.service || item.container_name], job.spec.docker_registry_id).then(
-          res => {
-            this.$set(item, 'images', res)
-            this.$forceUpdate()
-          }
-        )
+        this.getRegistryList(
+          [item.service || item.container_name],
+          job.spec.docker_registry_id
+        ).then(res => {
+          this.$set(item, 'images', res)
+          this.$forceUpdate()
+        })
       })
       this.$forceUpdate()
     },

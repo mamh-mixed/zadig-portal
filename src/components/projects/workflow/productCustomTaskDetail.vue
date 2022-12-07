@@ -176,6 +176,24 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
+        <JobIstioReleaseDetail
+          v-if="curJob.type === jobType.istioRelease"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
+        <JobIstioReleaseRollbackDetail
+          v-if="curJob.type === jobType.istioRollback"
+          :jobInfo="curJob"
+          :taskId="taskId"
+          :workflowName="workflowName"
+          :projectName="projectName"
+          @showFooter="showFooter"
+          :isShowConsoleFooter.sync="isShowConsoleFooter"
+        />
       </footer>
     </Multipane>
     <div v-if="activeName==='env'" class="env">
@@ -236,6 +254,8 @@ import JobCanaryConfirmDetail from './productCustomTaskDetail/jobCanaryConfirmDe
 import JobK8sGrayDeployDetail from './productCustomTaskDetail/jobK8sGrayDeployDetail.vue'
 import JobGrayRollbackDetail from './productCustomTaskDetail/jobGrayRollbackDetail.vue'
 import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
+import JobIstioReleaseDetail from './productCustomTaskDetail/jobIstioReleaseDetail.vue'
+import JobIstioReleaseRollbackDetail from './productCustomTaskDetail/jobIstioReleaseRollbackDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 import { wordTranslate } from '@utils/wordTranslate.js'
@@ -275,7 +295,9 @@ export default {
     JobCanaryConfirmDetail,
     JobGrayRollbackDetail,
     JobK8sGrayDeployDetail,
-    JobImageDistributeDetail
+    JobImageDistributeDetail,
+    JobIstioReleaseDetail,
+    JobIstioReleaseRollbackDetail
   },
   computed: {
     taskId () {
