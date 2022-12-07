@@ -58,7 +58,7 @@
           <div class="item-title">副本数量</div>
         </el-col>
         <el-col :span="8">
-          <span class="file-name item-desc">{{jobInfo.spec.target.target_replicas}}</span>
+          <span class="file-name item-desc">{{jobInfo.spec.targets.target_replica}}</span>
         </el-col>
       </el-row>
     </main>
