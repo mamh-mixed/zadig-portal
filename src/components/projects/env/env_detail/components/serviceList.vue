@@ -10,11 +10,16 @@
             </span>
           </router-link>
           <template v-if="serviceStatus[scope.row.service_name] && envSource!=='helm'">
+            <template v-if="serviceStatus[scope.row.service_name].raw.error">
+              <el-tooltip  effect="dark" :content="`更新错误：${serviceStatus[scope.row.service_name].raw.error}`" placement="top">
+                <i class="el-icon-warning operation error"></i>
+              </el-tooltip>
+            </template>
             <template v-if="serviceStatus[scope.row.service_name].raw.deploy_strategy === 'import'">
-                <el-tooltip  effect="dark" content="该服务尚未通过 Zadig 部署，可执行「更新服务」或「重启服务」操作使用 Zadig 上管理的服务配置重新部署" placement="top">
-                  <i class="el-icon-warning-outline operation"></i>
-                </el-tooltip>
-              </template>
+              <el-tooltip  effect="dark" content="该服务尚未通过 Zadig 部署，可执行「更新服务」或「重启服务」操作使用 Zadig 上管理的服务配置重新部署" placement="top">
+                <i class="el-icon-info operation"></i>
+              </el-tooltip>
+            </template>
             <template v-if="serviceStatus[scope.row.service_name]['tpl_updatable']">
               <el-popover placement="right" popper-class="diff-popper" width="600" trigger="click">
                 <el-tabs v-model="activeDiffTab" type="card">
