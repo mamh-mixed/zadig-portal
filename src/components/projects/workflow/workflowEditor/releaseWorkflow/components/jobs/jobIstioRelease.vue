@@ -87,7 +87,7 @@
                 :prop="'spec.targets.'+index+'.container_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
-                <el-select v-model="item.container_name" placeholder="请选择" size="small" clearable>
+                <el-select v-model="item.container_name" @change="changeContainer(item)" placeholder="请选择" size="small" clearable>
                   <el-option v-for="(item,index) in containers[item.workload_name]" :key="index" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
@@ -97,9 +97,10 @@
                 :prop="'spec.targets.'+index+'.virtual_service_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
-                <el-select v-model="item.virtual_service_name" placeholder="请选择" size="small" clearable>
+                <el-select v-if="virtualServices.length > 0"  v-model="item.virtual_service_name" placeholder="请选择" size="small" clearable>
                   <el-option v-for="(item,index) in virtualServices" :key="index" :value="item.name" :label="item.name"></el-option>
                 </el-select>
+                <el-input v-else size="small" v-model="item.virtual_service_name" placeholder="请输入 Service 名称"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
@@ -339,6 +340,10 @@ export default {
           host: ' '
         }
       }, 500)
+    },
+    changeContainer (item) {
+      item.virtual_service_name = item.container_name
+      item.host = item.container_name
     },
     deleteService (index) {
       this.job.spec.targets.splice(index, 1)
