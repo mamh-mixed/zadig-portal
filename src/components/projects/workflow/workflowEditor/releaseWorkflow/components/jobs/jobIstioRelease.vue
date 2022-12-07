@@ -87,7 +87,7 @@
                 :prop="'spec.targets.'+index+'.container_name'"
                 :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
               >
-                <el-select v-model="item.container_name" @change="changeContainer(item)" placeholder="请选择" size="small" clearable>
+                <el-select v-model="item.container_name" placeholder="请选择" size="small" clearable>
                   <el-option v-for="(item,index) in containers[item.workload_name]" :key="index" :value="item.name"></el-option>
                 </el-select>
               </el-form-item>
@@ -95,16 +95,16 @@
             <el-col :span="4" class="mg-r8">
               <el-form-item
                 :prop="'spec.targets.'+index+'.virtual_service_name'"
-                :rules="{required: true, message: '请选择', trigger: ['blur','change']}"
+                :rules="{required: false, message: '可选填', trigger: ['blur','change']}"
               >
-                <el-select v-model="item.virtual_service_name" placeholder="请选择" size="small" allow-create filterable clearable>
+                <el-select v-model="item.virtual_service_name" placeholder="可选填" size="small" allow-create filterable clearable>
                   <el-option v-for="(item,index) in virtualServices" :key="index" :value="item.name" :label="item.name"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="mg-r8">
-              <el-form-item :prop="'spec.targets.'+index+'.host'" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
-                <el-select v-model="item.host" placeholder="请选择" size="small" allow-create filterable clearable>
+              <el-form-item :prop="'spec.targets.'+index+'.host'" :rules="{required: false, message: '可选填', trigger: ['blur','change']}">
+                <el-select v-model="item.host" placeholder="可选填" size="small" allow-create filterable clearable>
                   <el-option
                     v-for="(item,index) in virtualHosts[item.virtual_service_name]"
                     :key="index"
@@ -338,10 +338,6 @@ export default {
           host: ' '
         }
       }, 500)
-    },
-    changeContainer (item) {
-      item.virtual_service_name = item.container_name
-      item.host = item.container_name
     },
     deleteService (index) {
       this.job.spec.targets.splice(index, 1)
