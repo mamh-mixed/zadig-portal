@@ -223,7 +223,7 @@ export default {
 
   },
   created () {
-    bus.$emit(`set-topbar-title`, { title: '构建镜像管理', breadcrumb: [] })
+    bus.$emit(`set-topbar-title`, { title: '自定义镜像管理', breadcrumb: [] })
 
     this.getImgList()
   },
