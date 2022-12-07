@@ -48,7 +48,7 @@ import { debounce } from 'lodash'
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/yaml/yaml.js'
-import 'codemirror/theme/xq-light.css'
+import 'codemirror/theme/neo.css'
 import 'codemirror/addon/scroll/annotatescrollbar.js'
 import 'codemirror/addon/search/matchesonscrollbar.js'
 import 'codemirror/addon/search/matchesonscrollbar.css'
@@ -84,6 +84,7 @@ export default {
     return {
       // codemirror options
       cmOptions: {
+        theme: 'neo',
         tabSize: 5,
         readOnly: false,
         mode: 'text/yaml',
