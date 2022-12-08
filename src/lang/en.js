@@ -100,7 +100,7 @@ exports.default = {
     users: 'Users',
     sysSetting: 'System Setting',
     enterprise: 'Enterprise',
-    account: 'Account',
+    profile: 'Profile',
     signOut: 'Sign Out'
   },
   profile: {

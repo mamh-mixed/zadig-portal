@@ -100,7 +100,7 @@ exports.default = {
     users: '用户管理',
     sysSetting: '系统设置',
     enterprise: '企业管理',
-    account: '账号设置',
+    profile: '账号设置',
     signOut: '登出'
   },
   profile: {

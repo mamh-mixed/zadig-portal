@@ -107,7 +107,7 @@
                   <router-link to="/v1/profile/info">
                     <li class="profile-list__item">
                       <i class="iconfont iconfenzucopy"></i>
-                      <span class="profile-list__text">{{$t(`topbarMenu.account`)}}</span>
+                      <span class="profile-list__text">{{$t(`topbarMenu.profile`)}}</span>
                     </li>
                   </router-link>
                   <li class="profile-list__item profile-list__with-icon">
