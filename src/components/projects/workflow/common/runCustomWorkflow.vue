@@ -872,7 +872,7 @@ export default {
           this.isShowCheckErrorTip = false
         })
         .catch(error => {
-          if (error.response && error.response.data.code === 6940) {
+          if (error) {
             this.isShowCheckErrorTip = true
             this.mailInfo.originMail = error.response.data.description.split(
               'email: '
