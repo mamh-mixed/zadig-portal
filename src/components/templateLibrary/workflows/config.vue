@@ -513,9 +513,15 @@ export default {
           if (stage.approval.approve_users) {
             stage.approval.approve_users.forEach(item => {
               const obj = {}
-              obj.id = item.split(',')[0]
-              obj.name = item.split(',')[1]
-              users.push(obj)
+              if (!item.name) {
+                obj.id = item.split(',')[0]
+                obj.name = item.split(',')[1]
+                users.push(obj)
+              } else {
+                obj.id = item.id
+                obj.name = item.name
+                users.push(obj)
+              }
             })
           }
           const lark_approval = {
@@ -627,6 +633,8 @@ export default {
             stage.approval.approval_id =
               stage.approval.lark_approval.approval_id
             stage.approval.timeout = stage.approval.lark_approval.timeout
+            stage.approval.approve_users =
+              stage.approval.lark_approval.approve_users
           } else {
             stage.approval.approve_users =
               stage.approval.native_approval.approve_users

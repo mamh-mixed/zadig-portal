@@ -72,7 +72,13 @@
           <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0" size="small"></el-input>
         </el-form-item>
         <el-form-item label="审核人" v-if="form.approval.type==='lark'">
-          <el-button type="primary" plain @click="addApprovalUser" size="mini" :disabled="!form.approval.approval_id || appList.length === 0">添加</el-button>
+          <el-button
+            type="primary"
+            plain
+            @click="addApprovalUser"
+            size="mini"
+            :disabled="!form.approval.approval_id || appList.length === 0"
+          >添加</el-button>
           <el-tooltip effect="dark" :content="approvalUsers" placement="top">
             <span>{{ $utils.tailCut(approvalUsers,10) }}</span>
           </el-tooltip>
@@ -84,14 +90,14 @@
     </el-form>
     <el-dialog
       :visible.sync="isShowLarkTransferDialog"
-      width="40%"
+      width="50%"
       :close-on-click-modal="false"
       :show-close="false"
       custom-class="approval-dialog"
       append-to-body
     >
       <span>当前位置：</span>
-      <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8 mg-b8">
+      <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8">
         <el-breadcrumb-item
           v-for="(item,index) in breadMenu"
           :key="item.id"
@@ -99,9 +105,14 @@
           style="cursor: pointer;"
         >{{item.label}}</el-breadcrumb-item>
       </el-breadcrumb>
+      <div class="mg-t8 mg-b8">
+        <span>已选审批人：</span>
+        <el-tooltip effect="dark" :content="approvalUsers" placement="top">
+          <span>{{ $utils.tailCut(approvalUsers,30) }}</span>
+        </el-tooltip>
+      </div>
       <el-transfer
         v-loading="loading"
-        size="small"
         element-loading-text="加载中..."
         element-loading-spinner="iconfont iconfont-loading iconvery-build"
         style=" display: inline-block; text-align: left;"
@@ -109,7 +120,7 @@
         filterable
         :left-default-checked="[]"
         :right-default-checked="[]"
-        :titles="['选择审批人', '已选审批人']"
+        :titles="['选择审批人', '当前组织已选审批人']"
         :button-texts="['删除','添加']"
         :format="{
         noChecked: '${total}',
@@ -192,7 +203,20 @@ export default {
   },
   computed: {
     approvalUsers () {
-      return this.users.map(item => item.name).toString()
+      const users = []
+      if (
+        this.form.approval.type === 'lark' && this.form.approval.approve_users &&
+        this.form.approval.approve_users.length > 0
+      ) {
+        this.form.approval.approve_users.forEach(item => {
+          if (item.name) {
+            users.push(item.name)
+          } else {
+            users.push(item.split(',')[1])
+          }
+        })
+      }
+      return users.toString()
     }
   },
   created () {
@@ -240,6 +264,7 @@ export default {
     },
     addApprovalUser () {
       this.isShowLarkTransferDialog = true
+      this.form.approval.approve_users = []
       this.getDepartmentInfo()
     },
     handleClick (item) {
@@ -252,7 +277,6 @@ export default {
     handleBreadMenuClick (item, index) {
       this.departmentId = item.id
       if (index === this.breadMenu.length - 1) return
-
       if (index > 0) {
         this.breadMenu = this.breadMenu.slice(0, index)
       } else {
@@ -264,15 +288,6 @@ export default {
       this.form.approval.approve_users = []
     },
     saveApprovalUser () {
-      if (this.form.approval.type === 'lark') {
-        this.users = []
-        this.form.approval.approve_users.forEach(item => {
-          const obj = {}
-          obj.id = item.split(',')[0]
-          obj.name = item.split(',')[1]
-          this.users.push(obj)
-        })
-      }
       this.isShowLarkTransferDialog = false
     },
     validateName (rule, value, callback) {
@@ -313,9 +328,6 @@ export default {
         if (val) {
           if (this.type === 'edit') {
             this.form = cloneDeep(val)
-          }
-          if (val.approval.type === 'lark' && val.approval.lark_approval) {
-            this.users = val.approval.lark_approval.approve_users
           }
         }
       },
