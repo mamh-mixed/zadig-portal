@@ -1,6 +1,6 @@
 <template>
   <el-card class="product-extension">
-    <el-form ref="extensionForm" :model="extensionStage" :rules="rules" label-width="100px">
+    <el-form ref="extensionForm" :model="extensionStage" :rules="rules" label-position="left" label-width="100px">
       <el-form-item label="URL">
         <el-row :gutter="10">
           <el-col :span="8">

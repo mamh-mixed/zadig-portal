@@ -104,7 +104,7 @@
             <template v-if="service.service_name  &&  services.length >0">
                 <MultipaneResizer/>
                 <div class="service-editor-container"
-                     :style="{ minWidth: '300px', width: '500px' }">
+                     :style="{ minWidth: '300px', width: middleWidth }">
                   <ServiceEditor ref="serviceEditor"
                                     :serviceInTree="service"
                                     :showNext.sync="showNext"
@@ -128,7 +128,8 @@
                                 :detectedServices="detectedServices"
                                 :systemEnvs="systemEnvs"
                                 :buildBaseUrl="isOnboarding?`/v1/projects/create/${projectName}/k8s/service`:`/v1/projects/detail/${projectName}/services`"
-                                @getServiceModules="getServiceModules"/>
+                                @getServiceModules="getServiceModules"
+                                :changeEditorWidth="changeEditorWidth" />
                 </aside>
 
             </template>
@@ -196,10 +197,14 @@ export default {
       envNameList: [],
       deployableEnvs: [],
       activeEnvTabName: '',
-      deletedService: ''
+      deletedService: '',
+      middleWidth: '50%'
     }
   },
   methods: {
+    changeEditorWidth (width) {
+      this.middleWidth = width
+    },
     addCodeSource () {
       if (!this.$utils.roleCheck('admin')) {
         this.$message('私有镜像仓库未集成，请联系系统管理员前往「系统设置 -> 镜像仓库」进行集成！')

@@ -96,7 +96,7 @@
             </el-col>
           </el-row>
           <el-row v-if="originJob.spec.targets.length===0&&flag">
-            <el-form ref="serviceRef" :model="serviceInfo">
+            <el-form ref="serviceRef" label-position="left" :model="serviceInfo">
               <el-col :span="4" class="mg-r8">
                 <el-form-item prop="k8s_service_name" :rules="{required: true, message: '请选择', trigger: ['blur','change']}">
                   <el-select v-model="serviceInfo.k8s_service_name" placeholder="请选择" size="small">

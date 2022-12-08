@@ -1,9 +1,10 @@
 <template>
   <div class="workflow-distribute">
     <el-card class="box-card">
-      <el-form ref="distributeForm" :model="distributeStageDetail" label-width="100px">
+      <el-form ref="distributeForm" :model="distributeStageDetail" label-position="left" label-width="100px">
         <el-form-item label="服务选择" prop="serviceTargets">
           <el-select
+            @change="changeServiceSelect"
             v-model="distributeStageDetail.serviceTargets"
             multiple
             filterable
@@ -13,6 +14,7 @@
             size="small"
             value-key="key"
           >
+            <el-checkbox style="padding-left: 20px;" v-model="selectAllIsChecked" @change='selectAll'>全选</el-checkbox>
             <el-option v-for="service in allTargets" :key="service.key" :label="service.key" :value="service"></el-option>
           </el-select>
         </el-form-item>
@@ -91,6 +93,7 @@ export default {
       imageRepos: [],
       storageList: [],
       envList: [],
+      selectAllIsChecked: false,
       distributeStageDetail: {
         methods: [],
         serviceTargets: []
@@ -180,6 +183,23 @@ export default {
     }
   },
   methods: {
+    selectAll () {
+      this.distributeStageDetail.serviceTargets = []
+      if (this.selectAllIsChecked) {
+        this.allTargets.forEach((service) => {
+          this.distributeStageDetail.serviceTargets.push(service)
+        })
+      } else {
+        this.distributeStageDetail.serviceTargets = []
+      }
+    },
+    changeServiceSelect (val) {
+      if (val.length === this.allTargets.length) {
+        this.selectAllIsChecked = true
+      } else {
+        this.selectAllIsChecked = false
+      }
+    },
     checkDistribute () {
       const errors = []
       this.distributeStageDetail.distributes = this.distributeStageDetail.serviceTargets.map(

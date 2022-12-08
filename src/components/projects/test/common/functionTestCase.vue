@@ -58,10 +58,12 @@
             <span
                   :class="`el-icon-caret-${showFailureMetaFlag[scope.$index] ? 'top' : 'bottom'} icon`"></span>
           </el-button>
+          <span v-else-if="checkStatus(scope.row)==='成功'" class="success-span">
+            {{ checkStatus(scope.row) }}
+          </span>
           <span v-else>
             {{ checkStatus(scope.row) }}
           </span>
-
         </template>
       </el-table-column>
       <el-table-column label="运行时间(s)"
@@ -207,6 +209,10 @@ export default {
   span {
     color: #e6a23c !important;
   }
+}
+
+.success-span {
+  color: @success !important;
 }
 
 .case-desc {

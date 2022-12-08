@@ -12,6 +12,17 @@ const validateJobName = (rule, value, callback) => {
     callback()
   }
 }
+const validateWorkflowName = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入工作流标识'))
+  } else {
+    if (!/^[a-z0-9-]+$/.test(value)) {
+      callback(new Error('工作流标识支持小写字母和数字，特殊字符只支持中划线'))
+    } else {
+      callback()
+    }
+  }
+}
 const tabList = [
   {
     label: '界面化',
@@ -311,6 +322,7 @@ const notifyPlatform = [
   }]
 export {
   validateJobName,
+  validateWorkflowName,
   tabList,
   buildTabList,
   configList,

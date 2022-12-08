@@ -18,7 +18,7 @@
         <div v-if="notifications.length===0" class="no-msg">没有通知</div>
         <div>
           <ul class="notifications-list">
-            <li v-for="(notification,index) in notifications" :key="index" class="notification hasSeen level-error">
+            <li v-for="(notification,index) in notifications" :key="index" class="notification" :class="{'has-read':notification.is_read}">
               <div v-if="notification.type===2">
                 <h3>
                   <span>
@@ -41,20 +41,22 @@
                     <em>{{notification.content.pipeline_name}}</em>
                   </span>
                 </h3>
-                <div class="event-extra">
-                  <span :class="{'is-read':notification.is_read,'unread':!notification.is_read}">{{notification.is_read?'已读':'未读'}}</span>
-                  <span class="time">{{$utils.convertTimestamp(notification.create_time)}}</span>
+                <div class="item-bottom">
+                  <div class="event-extra">
+                    <span :class="{'is-read':notification.is_read,'unread':!notification.is_read}">{{notification.is_read?'已读':'未读'}}</span>
+                    <span class="time">{{$utils.convertTimestamp(notification.create_time)}}</span>
+                  </div>
+                  <span v-if="!notification.is_read" @click="notificationOperation('mark_as_read', notification, index)" class="operation read">
+                    <el-tooltip effect="dark" content="设为已读" placement="top">
+                      <i class="el-icon-check"></i>
+                    </el-tooltip>
+                  </span>
+                  <span @click="notificationOperation('delete', notification, index)" class="operation delete">
+                    <el-tooltip effect="dark" content="删除该通知" placement="top">
+                      <i class="el-icon-delete"></i>
+                    </el-tooltip>
+                  </span>
                 </div>
-                <span @click="notificationOperation('mark_as_read', notification, index)" class="operation read">
-                  <el-tooltip effect="dark" content="设为已读" placement="top">
-                    <i class="el-icon-check"></i>
-                  </el-tooltip>
-                </span>
-                <span @click="notificationOperation('delete', notification, index)" class="operation delete">
-                  <el-tooltip effect="dark" content="删除该通知" placement="top">
-                    <i class="el-icon-delete"></i>
-                  </el-tooltip>
-                </span>
               </div>
               <div v-if="notification.type===3">
                 <h3>
@@ -63,20 +65,22 @@
                 <div class="announcement-content">
                   <p>{{notification.content.content}}{{"("+notification.content.req_id+")"}}</p>
                 </div>
-                <div class="event-extra">
-                  <span class="is-read">{{notification.is_read?'已读':'未读'}}</span>
-                  <span class="time">{{$utils.convertTimestamp(notification.create_time)}}</span>
+                <div class="item-bottom">
+                  <div class="event-extra">
+                    <span class="is-read">{{notification.is_read?'已读':'未读'}}</span>
+                    <span class="time">{{$utils.convertTimestamp(notification.create_time)}}</span>
+                  </div>
+                  <span v-if="!notification.is_read" @click="notificationOperation('mark_as_read', notification, index)" class="operation read">
+                    <el-tooltip effect="dark" content="设为已读" placement="top">
+                      <i class="el-icon-check"></i>
+                    </el-tooltip>
+                  </span>
+                  <span @click="notificationOperation('delete', notification, index)" class="operation delete">
+                    <el-tooltip effect="dark" content="删除该通知" placement="top">
+                      <i class="el-icon-delete"></i>
+                    </el-tooltip>
+                  </span>
                 </div>
-                <span @click="notificationOperation('mark_as_read', notification, index)" class="operation read">
-                  <el-tooltip effect="dark" content="设为已读" placement="top">
-                    <i class="el-icon-check"></i>
-                  </el-tooltip>
-                </span>
-                <span @click="notificationOperation('delete', notification, index)" class="operation delete">
-                  <el-tooltip effect="dark" content="删除该通知" placement="top">
-                    <i class="el-icon-delete"></i>
-                  </el-tooltip>
-                </span>
               </div>
             </li>
           </ul>
@@ -261,6 +265,11 @@ export default {
         border-bottom: 1px solid #e2dee6;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 
+        .item-bottom {
+          display: flex;
+          justify-content: space-between;
+        }
+
         .operation {
           display: inline-block;
           margin-left: 10px;
@@ -329,8 +338,19 @@ export default {
           }
         }
 
+        &.has-read {
+          h3 {
+            color: #606266;
+            filter: grayscale(80%);
+
+            em {
+              color: inherit;
+            }
+          }
+        }
+
         .event-extra {
-          display: inline-block;
+          flex: 1 1 auto;
 
           .is-read {
             margin-right: 10px;

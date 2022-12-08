@@ -2,7 +2,7 @@
   <div class="service-details-container">
     <el-dialog :visible.sync="ephemeralContainersDialog.visible" title="启动调试容器" width="600px" :close-on-click-modal="false" class="ephemeralContainers-dialog" :show-close="false" append-to-body>
       <el-alert style="background: #fff;" title="调试容器正常启动后，点击「调试」按钮可对服务进行诊断" type="info" :closable="false"></el-alert>
-      <el-form ref="ephemeralContainerForm" :model="ephemeralContainersDialog" label-width="90px">
+      <el-form ref="ephemeralContainerForm" :model="ephemeralContainersDialog" label-position="left" label-width="90px">
         <el-form-item label="镜像来源">
           <el-select style="width: 100%;" v-model="ephemeralContainersDialog.source" size="small" placeholder="请选择镜像来源">
             <el-option label="使用内置镜像" value="builtin"> </el-option>

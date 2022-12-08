@@ -98,7 +98,7 @@ export default {
     }
 
     /deep/.CodeMirror-sizer {
-      padding: 0 10px;
+      padding: 0 5px;
     }
   }
 }

@@ -12,6 +12,7 @@
       <el-form ref="createImg"
                :rules="rules"
                :model="createImg"
+               label-position="left"
                label-width="125px">
         <el-form-item label="标签"
                       prop="label">
@@ -45,6 +46,7 @@
       <el-form ref="updateImg"
                :rules="rules"
                :model="swapImg"
+               label-position="left"
                label-width="125px">
         <el-form-item label="标签"
                       prop="label">

@@ -1,6 +1,6 @@
 <template>
   <div class="template-repo-container">
-    <el-form ref="tempForm" :model="tempData" label-width="140px" :rules="rules">
+    <el-form ref="tempForm" :model="tempData" label-position="left" label-width="140px" :rules="rules">
       <h4 class="flex-center" style="padding-left: 40px;">
         <el-button type="text" @click="triggerSubstantial(substantial)" :disabled="isUpdate">{{substantial ? '关闭批量创建' : '批量创建'}}</el-button>
       </h4>

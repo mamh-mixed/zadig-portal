@@ -1,5 +1,5 @@
 <template>
-  <el-form class="run-workflow" label-width="90px">
+  <el-form class="run-workflow" label-position="left" label-width="90px">
     <el-form-item prop="pipelines" label="工作流">
       <el-select v-model="workflowName" size="medium" class="full-width" @change="getWorkflow" placeholder="请选择">
         <el-option v-for="(item,index) in workflows" :key="index" :label="item.display_name" :value="item.name"></el-option>

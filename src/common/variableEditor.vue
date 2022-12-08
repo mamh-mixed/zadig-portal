@@ -17,7 +17,7 @@
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/yaml/yaml.js'
-import 'codemirror/theme/xq-light.css'
+import 'codemirror/theme/neo.css'
 export default {
   name: 'VariableEditor',
   components: {
@@ -27,6 +27,7 @@ export default {
     return {
       dialogVisible: false,
       options: {
+        theme: 'neo',
         tabSize: 2,
         mode: 'text/yaml',
         lineNumbers: false,

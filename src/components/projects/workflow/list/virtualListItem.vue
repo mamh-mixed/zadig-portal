@@ -117,7 +117,7 @@
         </el-dropdown-menu>
       </el-dropdown>
       <el-dialog :visible.sync="isShowCopyDialog" title="复制工作流" width="40%">
-        <el-form :model="copyWorkflowInfo" @submit.native.prevent ref="copyForm" :rules="rules" label-width="120px">
+        <el-form :model="copyWorkflowInfo" @submit.native.prevent ref="copyForm" :rules="rules" label-position="left" label-width="120px">
           <el-form-item label="新工作流名称" prop="display_name">
             <el-input v-model="copyWorkflowInfo.display_name" placeholder="新工作流名称" size="small"></el-input>
           </el-form-item>

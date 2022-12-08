@@ -50,7 +50,7 @@
           {{ detail.updated_by }}
         </span>
         <span class="item">
-          <span class="item left">更新时间</span>
+          <span class="item left">最后修改时间</span>
           {{ $utils.convertTimestamp(detail.update_time) }}
         </span>
       </div>

@@ -10,7 +10,7 @@
       </el-row>
       <el-row :gutter="20" class="content mg-t8" v-for="(item,index) in config.notify_ctls" :key="index">
         <el-col :span="4">
-          <el-switch v-model="item.enabled" active-color="#13ce66" @change="handleEnabledChange($event,item)"></el-switch>
+          <el-switch v-model="item.enabled" @change="handleEnabledChange($event,item)"></el-switch>
         </el-col>
         <el-col :span="4">{{filterPlatform(item.webhook_type) }}</el-col>
         <el-col :span="12">
