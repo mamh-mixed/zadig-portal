@@ -1542,10 +1542,6 @@ export function saveSubscribeAPI (payload) {
   return http.post('/api/aslan/system/notification/subscribe', payload)
 }
 
-export function downloadConfigAPI () {
-  return http.get('/api/v1/picket/kubeconfig')
-}
-
 export function updateServiceImageAPI (payload, type, projectName, envName, envType = '') {
   return http.post(`/api/aslan/environment/image/${type}/${envName}?projectName=${projectName}&envType=${envType}`, payload)
 }
