@@ -10,7 +10,7 @@
       <ImportConfig :importRepoInfo="repoConfig" :cmOption="cmOption" :placeholder="placeholder" />
       <div slot="footer">
         <el-button size="small" :disabled="dialogBtnLoading" @click="dialogVisible = false" v-show="repoConfig.actionType !== 'view'">{{$t(`global.cancel`)}}</el-button>
-        <el-button size="small" type="primary" :loading="dialogBtnLoading" @click="handleConfig">确 定</el-button>
+        <el-button size="small" type="primary" :loading="dialogBtnLoading" @click="handleConfig">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <VersionHistory ref="versionRef" @actionConfig="actionConfig" />

@@ -14,7 +14,7 @@
             class="dialog-footer">
         <el-button type="primary"
                    size="small"
-                   @click="payloadDialogVisiable = false">确 定</el-button>
+                   @click="payloadDialogVisiable = false">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <div class="section">

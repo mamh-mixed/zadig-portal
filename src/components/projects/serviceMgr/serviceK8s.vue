@@ -25,7 +25,7 @@
               class="dialog-footer">
           <el-button size="small"
                      type="primary"
-                     @click="autoUpgradeEnv">确 定</el-button>
+                     @click="autoUpgradeEnv">{{$t(`global.confirm`)}}</el-button>
           <el-button size="small"
                      @click="updateEnvDialogVisible=false">跳过</el-button>
 

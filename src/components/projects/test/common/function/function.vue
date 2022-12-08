@@ -16,7 +16,7 @@
       </el-select>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="selectWorkflowDialogVisible = false">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" size="small" :disabled="!selectWorkflow" @click="bindWorkflow">确 定</el-button>
+        <el-button type="primary" size="small" :disabled="!selectWorkflow" @click="bindWorkflow">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <div v-if="testList.length > 0" class="tab-container">

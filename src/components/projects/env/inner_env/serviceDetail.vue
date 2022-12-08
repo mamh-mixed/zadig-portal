@@ -21,7 +21,7 @@
       </el-alert>
       <div slot="footer">
         <el-button @click="ephemeralContainersDialog.visible = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="startEphemeralContainersDebug" size="small">确 定</el-button>
+        <el-button type="primary" @click="startEphemeralContainersDebug" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <div class="info-card">

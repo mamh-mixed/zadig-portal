@@ -52,7 +52,7 @@
     </div>
     <div slot="footer">
       <el-button size="small" @click="dialogVisible = false" :disabled="loading">{{$t(`global.cancel`)}}</el-button>
-      <el-button size="small" type="primary" @click="handleCollaboration" :loading="loading">确 定</el-button>
+      <el-button size="small" type="primary" @click="handleCollaboration" :loading="loading">{{$t(`global.confirm`)}}</el-button>
     </div>
   </el-dialog>
 </template>

@@ -97,7 +97,7 @@
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">{{$t(`global.cancel`)}}</el-button>
-        <el-button size="small" type="primary" @click="createWorkflow">确 定</el-button>
+        <el-button size="small" type="primary" @click="createWorkflow">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
 

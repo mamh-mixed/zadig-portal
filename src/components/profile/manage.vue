@@ -5,39 +5,39 @@
     element-loading-spinner="iconfont iconfont-loading iconfenzucopy"
     class="setting-profile-container"
   >
-    <el-dialog title="修改密码" class="modifiled-pwd" :visible.sync="modifiedPwdDialogVisible" center>
+    <el-dialog :title="$t(`profile.changePassword`)" class="modifiled-pwd" :visible.sync="modifiedPwdDialogVisible" center>
       <div class="modifiled-pwd-container">
-        <el-form label-position="left" label-width="100px" :rules="pwdRules" ref="passwordForm" :model="pwd">
-          <el-form-item label="旧密码" prop="oldPassword">
+        <el-form label-position="top" label-width="100px" :rules="pwdRules" ref="passwordForm" :model="pwd">
+          <el-form-item :label="$t(`profile.oldPassword`)" prop="oldPassword">
             <el-input size="small" show-password v-model="pwd.oldPassword"></el-input>
           </el-form-item>
-          <el-form-item label="新密码" prop="newPassword">
+          <el-form-item :label="$t(`profile.newPassword`)" prop="newPassword">
             <el-input size="small" show-password v-model="pwd.newPassword"></el-input>
           </el-form-item>
-          <el-form-item label="确认新密码" prop="confirmPassword">
+          <el-form-item :label="$t(`profile.confirmNewPassword`)" prop="confirmPassword">
             <el-input size="small" show-password v-model="pwd.confirmPassword"></el-input>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelUpdateUserInfo" plain>{{$t(`global.cancel`)}}</el-button>
-        <el-button size="small" type="primary" @click="updateUserInfo" plains>确 定</el-button>
+        <el-button size="small" type="primary" @click="updateUserInfo" plains>{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="修改邮箱" class="modifiled-pwd" :visible.sync="modifiedMailDialogVisible" center>
+    <el-dialog :title="$t(`profile.changeMail`)" class="modifiled-pwd" :visible.sync="modifiedMailDialogVisible" center>
       <div class="modifiled-pwd-container">
-        <el-form label-position="left" label-width="100px" :rules="mailRules" ref="mailForm" :model="mail">
-          <el-form-item label="原邮箱">
+        <el-form label-position="top" label-width="120px" :rules="mailRules" ref="mailForm" :model="mail">
+          <el-form-item :label="$t(`profile.oldMail`)">
             <span v-if="currentEditUserInfo">{{currentEditUserInfo.email}}</span>
           </el-form-item>
-          <el-form-item label="新邮箱" prop="newMail">
-            <el-input v-model="mail.newMail" size="small" placeholder="请输入企业邮箱"></el-input>
+          <el-form-item :label="$t(`profile.newMail`)" prop="newMail">
+            <el-input v-model="mail.newMail" size="small" :placeholder="$t(`profile.inputMail`)"></el-input>
           </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelUpdateMail" plain>{{$t(`global.cancel`)}}</el-button>
-        <el-button size="small" type="primary" @click="updateMail">确 定</el-button>
+        <el-button size="small" type="primary" @click="updateMail">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <div v-if="currentEditUserInfo" class="section">
@@ -50,8 +50,8 @@
           </div>
           <div class="info-tag">
             <span v-if="currentEditUserInfo.name" class="mail">{{currentEditUserInfo.name}}</span>
-            <el-tag v-if="role.includes('admin')" size="mini" type="primary">管理员</el-tag>
-            <el-tag v-else size="mini" type="primary">普通用户</el-tag>
+            <el-tag v-if="role.includes('admin')" size="mini" type="primary">{{$t(`profile.admin`)}}</el-tag>
+            <el-tag v-else size="mini" type="primary">{{$t(`profile.user`)}}</el-tag>
           </div>
 
           <div class="info-details">
@@ -59,13 +59,13 @@
               <tbody>
                 <template>
                   <tr>
-                    <td>最近登录</td>
+                    <td>{{$t(`profile.lastAccessedOn`)}}</td>
                     <td class>{{$utils.convertTimestamp(currentEditUserInfo.last_login_time)}}</td>
                   </tr>
                 </template>
                 <tr v-if="currentEditUserInfo.identity_type">
                   <td>
-                    <span>用户来源</span>
+                    <span>{{$t(`profile.source`)}}</span>
                   </td>
                   <td>
                     <span>
@@ -76,19 +76,19 @@
                 </tr>
                 <tr v-if="currentEditUserInfo.identity_type ==='system'">
                   <td>
-                    <span>修改密码</span>
+                    <span>{{$t(`profile.updatePassword`)}}</span>
                   </td>
                   <td>
-                    <el-button class="edit-password" @click="modifiedPwd" type="text">点击修改</el-button>
+                    <el-button class="edit-password" @click="modifiedPwd" type="text">{{$t(`profile.clickToChange`)}}</el-button>
                   </td>
                 </tr>
                 <tr v-if="currentEditUserInfo.identity_type ==='system'">
                   <td>
-                    <span>修改邮箱</span>
+                    <span>{{$t(`profile.updateMail`)}}</span>
                   </td>
                   <td>
                     <span>{{currentEditUserInfo.email}}</span>
-                    <el-button class="edit-password" @click="modifiedMail" type="text">点击修改</el-button>
+                    <el-button class="edit-password" @click="modifiedMail" type="text">{{$t(`profile.clickToChange`)}}</el-button>
                   </td>
                 </tr>
                 <tr>
@@ -111,10 +111,15 @@
                 </tr>
                 <tr>
                   <td>
-                    <span>通知设置</span>
+                    <span>{{$t(`profile.notificationSetting`)}}</span>
                   </td>
                   <td>
-                    <el-checkbox v-model="workflowNoti.pipelinestatus" @change="saveSubscribe()" true-label="*" false-label>工作流状态变更</el-checkbox>
+                    <el-checkbox
+                      v-model="workflowNoti.pipelinestatus"
+                      @change="saveSubscribe()"
+                      true-label="*"
+                      false-label
+                    >{{$t(`profile.workflowStatusChanged`)}}</el-checkbox>
                   </td>
                 </tr>
               </tbody>
@@ -141,32 +146,7 @@ import { mapState } from 'vuex'
 
 export default {
   data () {
-    const validateNewPass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入新密码'))
-      } else {
-        if (this.pwd.confirmPassword !== '') {
-          this.$refs.passwordForm.validateField('confirmPassword')
-        }
-        callback()
-      }
-    }
-    const validateConfirmPass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入新密码'))
-      } else if (value !== this.pwd.newPassword) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback()
-      }
-    }
     return {
-      identityTypeMap: {
-        github: 'GitHub',
-        system: '系统创建',
-        ldap: 'OpenLDAP',
-        oauth: 'OAuth'
-      },
       currentEditUserInfo: null,
       pwd: {
         oldPassword: '',
@@ -179,28 +159,7 @@ export default {
       loading: false,
       modifiedPwdDialogVisible: false,
       modifiedMailDialogVisible: false,
-      workflowNoti: {},
-      pwdRules: {
-        oldPassword: [
-          { required: true, message: '请输入旧密码', trigger: ['blur', 'change'] }
-        ],
-        newPassword: [
-          { required: true, validator: validateNewPass, trigger: ['blur', 'change'] }
-        ],
-        confirmPassword: [
-          { required: true, validator: validateConfirmPass, trigger: ['blur', 'change'] }
-        ]
-      },
-      mailRules: {
-        newMail: [
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: ['blur', 'change']
-          }
-        ]
-      }
+      workflowNoti: {}
     }
   },
   methods: {
@@ -216,13 +175,13 @@ export default {
     },
     copySuccess (event) {
       this.$message({
-        message: '已成功复制到剪贴板',
+        message: this.$t(`profile.copiedToClipboard`),
         type: 'success'
       })
     },
     copyError (event) {
       this.$message({
-        message: '复制失败',
+        message: this.$t(`profile.copyFailed`),
         type: 'error'
       })
     },
@@ -242,7 +201,7 @@ export default {
           }
           updateCurrentUserInfoAPI(id, payload).then(res => {
             this.$message({
-              message: '密码修改成功',
+              message: this.$t(`profile.passwordChangedSuccessfully`),
               type: 'success'
             })
             this.cancelUpdateUserInfo()
@@ -297,7 +256,7 @@ export default {
       payload.type = 2
       saveSubscribeAPI(payload).then(res => {
         this.$message({
-          message: '通知设置保存成功',
+          message: this.$t(`profile.notificationSettingSavedSuccessfully`),
           type: 'success'
         })
         this.getSubscribe()
@@ -317,11 +276,67 @@ export default {
     ...mapState({
       userinfo: state => state.login.userinfo,
       role: state => state.login.role
-    })
+    }),
+    identityTypeMap () {
+      return {
+        github: 'GitHub',
+        system: this.$t(`profile.system`),
+        ldap: 'OpenLDAP',
+        oauth: 'OAuth'
+      }
+    },
+    pwdRules () {
+      const validateNewPass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t(`profile.inputNewPass`)))
+        } else {
+          if (this.pwd.confirmPassword !== '') {
+            this.$refs.ruleForm.validateField('confirmPassword')
+          }
+          callback()
+        }
+      }
+      const validateConfirmPass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t(`profile.inputNewPassAgain`)))
+        } else if (value !== this.pwd.newPassword) {
+          callback(new Error(this.$t(`profile.passwordDontMatch`)))
+        } else {
+          callback()
+        }
+      }
+      return {
+        oldPassword: [
+          {
+            required: true,
+            message: this.$t(`profile.inputOldPass`),
+            trigger: 'blur'
+          }
+        ],
+        newPassword: [
+          { required: true, validator: validateNewPass, trigger: 'blur' }
+        ],
+        confirmPassword: [
+          { required: true, validator: validateConfirmPass, trigger: 'blur' }
+        ]
+      }
+    },
+    mailRules () {
+      return {
+        newMail: [
+          { required: true, message: this.$t(`profile.inputMail`), trigger: 'blur' },
+          {
+            type: 'email',
+            message: this.$t(`profile.pleaseCheckMail`),
+            trigger: ['blur', 'change']
+          }
+        ]
+      }
+    }
   },
   created () {
     bus.$emit('set-topbar-title', {
-      breadcrumb: [{ title: '账号设置', url: '' }]
+      breadcrumb: [{ title: this.$t(`profile.profile`), url: '' }]
     })
     this.getSubscribe()
     this.getCurrentUserInfo()
