@@ -12,6 +12,7 @@
       <el-form ref="createImg"
                :rules="rules"
                :model="createImg"
+               label-position="left"
                label-width="125px">
         <el-form-item label="标签"
                       prop="label">
@@ -45,6 +46,7 @@
       <el-form ref="updateImg"
                :rules="rules"
                :model="swapImg"
+               label-position="left"
                label-width="125px">
         <el-form-item label="标签"
                       prop="label">
@@ -73,7 +75,7 @@
       <el-alert type="info"
                 :closable="false">
         <template slot>
-          <span>项目的构建和测试可以使用构建镜像作为基础环境镜像，构建镜像中需要添加一些必要软件包，详情可参考
+          <span>项目的构建、测试和代码扫描可以使用自定义镜像作为基础环境镜像，自定义镜像中需要添加一些必要软件包，详情可参考
             <el-link style="vertical-align: baseline;"
                      type="primary"
                      href="https://docs.koderover.com/zadig/settings/custom-image/"
@@ -223,7 +225,7 @@ export default {
 
   },
   created () {
-    bus.$emit(`set-topbar-title`, { title: '构建镜像管理', breadcrumb: [] })
+    bus.$emit(`set-topbar-title`, { title: '自定义镜像管理', breadcrumb: [] })
 
     this.getImgList()
   },

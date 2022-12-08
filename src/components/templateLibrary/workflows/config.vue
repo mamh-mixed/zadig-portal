@@ -3,8 +3,24 @@
     <div class="left">
       <header>
         <div class="name">
-          <CanInput v-model="payload.template_name" placeholder="模板名称" :from="activeName" class="mg-r8" />
-          <CanInput v-model="payload.description" :from="activeName" placeholder="描述信息" />
+          <el-form ref="form" :model="payload" inline>
+            <el-form-item prop="template_name" :rules="{required: true,message:'请输入模板名称', trigger: ['blur', 'change']}" class="mg-r16">
+              <el-tooltip effect="dark" :content="payload.template_name" placement="top" :disabled="!payload.template_name">
+                <el-input v-model="payload.template_name" placeholder="模板名称" size="small" :disabled="!editName" class="name-input"></el-input>
+              </el-tooltip>
+              <span @click="editName = editName ? false : true" class="mg-r8">
+                <i :class="[editName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+              </span>
+            </el-form-item>
+            <el-form-item prop="description">
+              <el-tooltip effect="dark" :content="payload.description" placement="top" :disabled="!payload.description">
+                <el-input v-model="payload.description" placeholder="描述信息" size="small" :disabled="!editDesc" class="name-input"></el-input>
+              </el-tooltip>
+              <span @click="editDesc = editDesc ? false : true" class="mg-r8">
+                <i :class="[editDesc ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+              </span>
+            </el-form-item>
+          </el-form>
         </div>
         <div class="tab">
           <span
@@ -211,7 +227,7 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain icon="el-icon-circle-close" @click="closeDrawer"></el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || '取消'}}</el-button>
         </div>
         <div v-else>
           <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
@@ -290,6 +306,8 @@ export default {
       activeName: 'ui',
       editorOptions,
       jobType,
+      editName: false,
+      editDesc: false,
       stage: {
         name: '',
         parallel: true,
@@ -451,26 +469,25 @@ export default {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
-      if (!this.payload.template_name) {
-        this.$message.error(' 请填写模板名称')
-        return
-      }
-
-      if (this.payload.stages.length === 0) {
-        this.$message.error(' 请至少填写一个阶段')
-        return
-      }
-      this.payload.stages.forEach(item => {
-        if (item.jobs.length === 0) {
-          this.$message.error(`请填写 ${item.name} 中的任务`)
-          throw Error()
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          if (this.payload.stages.length === 0) {
+            this.$message.error(' 请至少填写一个阶段')
+            return
+          }
+          this.payload.stages.forEach(item => {
+            if (item.jobs.length === 0) {
+              this.$message.error(`请填写 ${item.name} 中的任务`)
+              throw Error()
+            }
+          })
+          if (this.isShowFooter) {
+            this.$message.error('请先保存任务配置')
+            return
+          }
+          this.saveWorkflow()
         }
       })
-      if (this.isShowFooter) {
-        this.$message.error('请先保存任务配置')
-        return
-      }
-      this.saveWorkflow()
     },
     saveWorkflow () {
       this.notComputedPayload = cloneDeep(this.payload)
@@ -537,6 +554,7 @@ export default {
           }
         })
       })
+      this.payload.template_name = this.payload.template_name.trim()
       this.payload.category = this.workflowType === 'custom' ? '' : 'release'
       const yamlParams = jsyaml.dump(this.payload)
       if (this.isEdit) {
@@ -891,6 +909,15 @@ export default {
 
       .name {
         display: flex;
+
+        &-input {
+          display: inline-block;
+          width: 180px;
+        }
+
+        /deep/.el-form-item {
+          margin: 8px 0;
+        }
       }
 
       .tab {

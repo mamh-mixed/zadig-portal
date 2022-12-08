@@ -118,7 +118,7 @@ export default {
               url: 'system/apps'
             },
             {
-              name: '构建镜像管理',
+              name: '自定义镜像管理',
               icon: 'iconfont iconjingxiang',
               url: 'system/imgs'
             },
@@ -751,7 +751,7 @@ export default {
       display: flex;
       align-items: center;
       min-width: 130px;
-      margin-left: 17px;
+      margin-left: 10px;
       padding-left: 0;
       color: #4a4a4a;
       font-weight: 400;

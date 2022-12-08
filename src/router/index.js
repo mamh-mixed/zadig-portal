@@ -850,7 +850,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '构建镜像管理'
+          title: '自定义镜像管理'
         }
       },
       {

@@ -20,7 +20,7 @@
           </span>
           <el-switch v-model="versionHook.enable" style="margin-left: 10px;" @change="saveHook" :disabled="!isProjectAdmin"></el-switch>
         </span>
-        <el-form ref="hookRef" :model="versionHook" v-if="versionHook.enable" inline class="hook-form">
+        <el-form ref="hookRef" :model="versionHook" v-if="versionHook.enable" label-position="left" inline class="hook-form">
           <el-form-item prop="hook_host" :rules="{required: true, message: '请选择外部系统', trigger: 'blur'}">
             <el-select v-model="versionHook.hook_host" placeholder="选择外部系统" size="small" clearable style="width: 100%;">
               <el-option v-for="external in externalList" :key="external.id" :label="external.server" :value="external.server"></el-option>

@@ -33,7 +33,7 @@
               </span>
             </template>
           </el-table-column>
-          <el-table-column width="300" label="更新">
+          <el-table-column width="300" label="最后修改时间">
             <template slot-scope="{ row }">
               <span class="update-time">
                 <i class="icon el-icon-time"></i>
@@ -55,13 +55,13 @@
         <el-table :data="workflows" stripe style="width: 100%;">
           <el-table-column label="名称">
             <template slot-scope="{ row }">
+              <el-tag v-if="row.workflow_type === 'common_workflow'" size="mini" class="mg-r8">自定义</el-tag>
+              <el-tag v-else-if="row.workflow_type === 'release'" size="mini" class="mg-r8">发布</el-tag>
+              <el-tag v-else size="mini" class="mg-r8">产品</el-tag>
               <router-link
                 class="pipeline-name"
                 :to=" (row.workflow_type === 'common_workflow' || row.workflow_type === 'release')? `/v1/projects/detail/${projectName}/pipelines/custom/${row.name}?display_name=${row.display_name}`  :  `/v1/projects/detail/${projectName}/pipelines/multi/${row.name}?display_name=${row.display_name}`"
               >{{row.display_name}}</router-link>
-              <el-tag v-if="row.workflow_type === 'common_workflow'" size="mini" class="mg-l16">自定义</el-tag>
-              <el-tag v-else-if="row.workflow_type === 'release'" size="mini" class="mg-l16">发布</el-tag>
-              <el-tag v-else size="mini" class="mg-l16">产品</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="步骤">
@@ -78,7 +78,7 @@
               <span v-else>-</span>
             </template>
           </el-table-column>
-          <el-table-column width="300" label="更新">
+          <el-table-column width="300" label="最后修改时间">
             <template slot-scope="{ row }">
               <span class="update-time">
                 <i class="icon el-icon-time"></i>

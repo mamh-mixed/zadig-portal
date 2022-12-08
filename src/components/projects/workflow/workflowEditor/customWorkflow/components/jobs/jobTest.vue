@@ -1,6 +1,6 @@
 <template>
   <div class="job-test">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="90px" size="small">
       <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
@@ -78,12 +78,20 @@
               size="small"
               required
               v-if="scope.row.command === 'other'"
+              ref="select"
               @focus="handleEnvChange(scope.row, scope.row.command)"
               style="display: inline-block; width: 220px;"
             >
               <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
-            <EnvTypeSelect v-model="scope.row.command" isFixed isRuntime isOther style="display: inline-block;" />
+            <EnvTypeSelect
+              v-model="scope.row.command"
+              isFixed
+              isRuntime
+              isOther
+              style="display: inline-block;"
+              @change="handleEnvTypeChange"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -120,7 +128,7 @@
       </span>
     </el-dialog>
     <el-dialog :title="`${curItem.name} 共享存储配置`" :visible.sync="isShowPvDialog" :append-to-body="true" width="40%">
-      <el-form ref="form" label-width="120px" v-if="curItem.share_storage_info">
+      <el-form ref="form" label-position="left" label-width="120px" v-if="curItem.share_storage_info">
         <el-form-item label="开启共享存储">
           <el-switch
             v-model="curItem.share_storage_info.enabled"
@@ -258,6 +266,13 @@ export default {
         this.getGlobalEnv()
       }
     },
+    handleEnvTypeChange (val) {
+      if (val === 'other') {
+        this.$nextTick(() => {
+          this.$refs.select.toggleMenu()
+        })
+      }
+    },
     getTestList () {
       getTestListAPI(this.projectName).then(res => {
         this.originTestList = cloneDeep(res)
@@ -324,7 +339,12 @@ export default {
             share_storages: []
           })
         }
-        this.getClusterStatus(this.jobType.test, this.projectName, item.name, '')
+        this.getClusterStatus(
+          this.jobType.test,
+          this.projectName,
+          item.name,
+          ''
+        )
         this.isShowPvDialog = true
       }
       const res = this.originTestList.find(test => test.name === item.name)

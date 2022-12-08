@@ -104,7 +104,7 @@
             <template v-if="service.service_name  &&  services.length >0">
                 <MultipaneResizer/>
                 <div class="service-editor-container"
-                     :style="{ minWidth: '300px', width: '500px' }">
+                     :style="{ minWidth: '300px', width: middleWidth }">
                   <ServiceEditor ref="serviceEditor"
                                     :serviceInTree="service"
                                     :showNext.sync="showNext"
@@ -128,7 +128,8 @@
                                 :detectedServices="detectedServices"
                                 :systemEnvs="systemEnvs"
                                 :buildBaseUrl="isOnboarding?`/v1/projects/create/${projectName}/k8s/service`:`/v1/projects/detail/${projectName}/services`"
-                                @getServiceModules="getServiceModules"/>
+                                @getServiceModules="getServiceModules"
+                                :changeEditorWidth="changeEditorWidth" />
                 </aside>
 
             </template>
@@ -165,7 +166,7 @@ import ServiceAside from './k8s/serviceAside.vue'
 import ServiceEditor from './k8s/serviceEditor.vue'
 import ServiceTree from './common/serviceTree.vue'
 import IntegrationCode from './common/integrationCode.vue'
-import { sortBy, cloneDeep } from 'lodash'
+import { sortBy, cloneDeep, uniqBy } from 'lodash'
 import { getSingleProjectAPI, getServiceTemplatesAPI, getServicesTemplateWithSharedAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import { mapState } from 'vuex'
@@ -196,10 +197,14 @@ export default {
       envNameList: [],
       deployableEnvs: [],
       activeEnvTabName: '',
-      deletedService: ''
+      deletedService: '',
+      middleWidth: '50%'
     }
   },
   methods: {
+    changeEditorWidth (width) {
+      this.middleWidth = width
+    },
     addCodeSource () {
       if (!this.$utils.roleCheck('admin')) {
         this.$message('私有镜像仓库未集成，请联系系统管理员前往「系统设置 -> 镜像仓库」进行集成！')
@@ -419,9 +424,10 @@ export default {
     },
     deployableEnvListWithVars () {
       const curServiceName = this.service.service_name
+      const vars = cloneDeep(this.detectedEnvs.filter(item => item.services.includes(curServiceName)))
       return this.deployableEnvs.map(env => {
-        const vars = cloneDeep(this.detectedEnvs.filter(item => item.services.includes(curServiceName)))
-        this.$set(env, 'vars', vars)
+        const envVars = env.vars.filter(item => item.services.includes(curServiceName))
+        this.$set(env, 'vars', uniqBy([].concat(envVars, vars), 'key'))
         env.hasDeployed = env.services.includes(curServiceName)
         env.checkResource = {
           env_name: env.env_name,

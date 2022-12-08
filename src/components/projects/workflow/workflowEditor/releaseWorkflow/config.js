@@ -12,6 +12,17 @@ const validateJobName = (rule, value, callback) => {
     callback()
   }
 }
+const validateWorkflowName = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请输入工作流标识'))
+  } else {
+    if (!/^[a-z0-9-]+$/.test(value)) {
+      callback(new Error('工作流标识支持小写字母和数字，特殊字符只支持中划线'))
+    } else {
+      callback()
+    }
+  }
+}
 const tabList = [
   {
     label: '界面化',
@@ -119,6 +130,20 @@ const jobTypeList = [
     type: 'zadig-distribute-image',
     is_offical: true,
     description: '可将镜像 Retag 后推送到镜像仓库'
+  },
+  {
+    label: 'Istio 发布',
+    name: 'istio-release',
+    type: 'istio-release',
+    is_offical: true,
+    description: '基于 Istio 执行发布过程'
+  },
+  {
+    label: 'Istio 发布回滚',
+    name: 'istio-rollback',
+    type: 'istio-rollback',
+    is_offical: true,
+    description: '基于 Istio 执行回滚任务，回滚到 Istio 发布之前状态'
   }
 ]
 const configList = [
@@ -160,7 +185,9 @@ const jobType = {
   k8sGrayRollback: 'k8s-gray-rollback',
   grayDeploy: 'k8s-gray-release',
   k8sDeploy: 'custom-deploy',
-  distribute: 'zadig-distribute-image'
+  distribute: 'zadig-distribute-image',
+  istioRelease: 'istio-release',
+  istioRollback: 'istio-rollback'
 }
 const editorOptions = {
   mode: 'yaml',
@@ -295,6 +322,7 @@ const notifyPlatform = [
   }]
 export {
   validateJobName,
+  validateWorkflowName,
   tabList,
   buildTabList,
   configList,

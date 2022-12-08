@@ -32,12 +32,20 @@
             filterable
             size="small"
             class="fix-width"
+            ref="select"
             @focus="handleEnvChange(job.spec, job.spec.envType)"
           >
             <el-option v-for="(item,index) in globalEnv" :key="index" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
-        <EnvTypeSelect v-model="job.spec.envType" isFixed isRuntime isOther style="display: inline-block;" />
+        <EnvTypeSelect
+          v-model="job.spec.envType"
+          isFixed
+          isRuntime
+          isOther
+          style="display: inline-block;"
+          @change="handleEnvTypeChange($event,'select')"
+        />
       </el-form-item>
       <el-form-item label="服务" :required="job.spec.serviceType && job.spec.serviceType!=='runtime'">
         <el-form-item prop="spec.service_and_images" v-if="!job.spec.serviceType || job.spec.serviceType === 'runtime'" class="form-item">
@@ -56,11 +64,18 @@
           class="form-item"
           :rules="{required: true, message: '请选择服务', trigger: ['blur', 'change']}"
         >
-          <el-select v-model="job.spec.job_name" placeholder="请选择" size="small" class="fix-width">
+          <el-select v-model="job.spec.job_name" placeholder="请选择" size="small" class="fix-width" ref="select1">
             <el-option v-for="(item,index) in allJobList" :key="index" :label="item.name" :value="item.name">{{item.name}}</el-option>
           </el-select>
         </el-form-item>
-        <EnvTypeSelect v-model="job.spec.serviceType" isRuntime isOther isService style="display: inline-block;" />
+        <EnvTypeSelect
+          v-model="job.spec.serviceType"
+          isRuntime
+          isOther
+          isService
+          style="display: inline-block;"
+          @change="handleEnvTypeChange($event,'select1')"
+        />
       </el-form-item>
       <el-form-item label="服务状态检测" class="status-check">
         <span slot="label">
@@ -151,6 +166,13 @@ export default {
       row.env = ''
       if (command === 'other') {
         this.getGlobalEnv()
+      }
+    },
+    handleEnvTypeChange (val, ref) {
+      if (val === 'other') {
+        this.$nextTick(() => {
+          this.$refs[ref].toggleMenu()
+        })
       }
     },
     getGlobalEnv () {

@@ -1,6 +1,6 @@
 <template>
   <el-dialog class="form" title="添加角色" :visible.sync="dialogRoleAddFormVisible">
-    <el-form ref="form" :model="form" :rules="formRules" >
+    <el-form ref="form" :model="form" :rules="formRules" label-position="left">
       <el-form-item label="角色名称" prop="name" label-width="100px">
         <el-input size="small" :disabled="isEdit" v-model="form.name"  placeholder="请输入角色名称"></el-input>
       </el-form-item>
@@ -72,7 +72,7 @@ export default {
       },
       formRules: {
         name: [
-          { trigger: ['blur', 'change'], validator: this.validateFileName }
+          { trigger: ['blur', 'change'], validator: this.validateFileName, required: true }
         ],
         isPublic: [
           { required: true, message: '请选择项目类型', trigger: 'blur' }

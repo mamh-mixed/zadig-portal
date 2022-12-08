@@ -1550,6 +1550,10 @@ export function getCurrentUserInfoAPI (uid) {
   return http.get(`/api/v1/users/${uid}/personal`)
 }
 
+export function updateCurrentUserMailAPI (uid, payload) {
+  return http.put(`/api/v1/users/${uid}/personal`, payload)
+}
+
 export function updateCurrentUserInfoAPI (id, payload) {
   return http.put(`/api/v1/users/${id}/password`, payload)
 }
@@ -2341,4 +2345,12 @@ export function getWorkflowGlobalVarsAPI (currentJobName, payload) {
 }
 export function getClusterStatusAPI (type, projectName, name, id) {
   return http.get(`/api/aslan/workflow/v4/sharestorage?type=${type}&project=${projectName}&name=${name}&id=${id}`)
+}
+
+export function getDeploymentsAPI (clusterId, namespace) {
+  return http.get(`/api/aslan/cluster/${clusterId}/${namespace}/deployments`)
+}
+
+export function getIstioVirtualServicesAPI (clusterId, namespace) {
+  return http.get(`/api/aslan/cluster/${clusterId}/${namespace}/istio/virtualservices`)
 }

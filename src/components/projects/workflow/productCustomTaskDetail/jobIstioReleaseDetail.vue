@@ -1,34 +1,17 @@
 <template>
-  <div class="build-console">
+  <div class="job-istio-release-detail">
     <header class="mg-b8">
       <el-col :span="6">
-        <span class="type">Kubernetes 部署:</span>
-        <span>
-          <el-tooltip effect="dark" placement="top" :content="jobInfo.name">
-            <span>{{$utils.tailCut(jobInfo.name, 20)}}</span>
-          </el-tooltip>
-        </span>
+        <span class="type">Istio 灰度发布</span>
+        <span>{{jobInfo.name}}</span>
       </el-col>
-      <el-col :span="2">
+      <el-col v-if="jobInfo.status!=='running'" :span="2">
         <div class="item-desc">
           <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
         </div>
       </el-col>
-      <el-col :span="2">
+      <el-col v-if="jobInfo.status!=='running'" :span="2">
         <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
-      </el-col>
-      <el-col v-if="jobInfo" :span="6">
-        <span class="item-desc status">
-          <span v-if="jobInfo.spec.skip_check_run_status">
-            <i class="el-icon-warning"></i>未开启容器状态检测
-          </span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">
-            <i class="el-icon-warning"></i>服务容器检测通过
-          </span>
-          <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">
-            <i class="el-icon-warning"></i>服务容器检测未通过
-          </span>
-        </span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">
@@ -42,51 +25,53 @@
       </div>
       <el-row class="item" :gutter="0">
         <el-col :span="4">
-          <div class="item-title">容器</div>
+          <div class="item-title">容器名称</div>
         </el-col>
         <el-col :span="8">
-          <span class="item-desc">{{jobInfo.spec.target}}</span>
+          <span class="item-desc">{{jobInfo.spec.targets.workload_name}}/{{jobInfo.spec.targets.container_name}}</span>
         </el-col>
         <el-col :span="4">
-          <div class="item-title">
-            镜像名称
-            <el-tooltip effect="dark" placement="top">
-              <div slot="content">
-                构建镜像标签生成规则 ：
-                <br />选择 Tag 进行构建 ： 构建时间戳 -
-                Tag
-                <br />只选择分支进行构建：构建时间戳
-                - 任务 ID - 分支名称
-                <br />选择分支和 PR 进行构建：构建时间戳 - 任务 ID - 分支名称 - PR ID
-                <br />只选择 PR
-                进行构建：构建时间戳 - 任务 ID - PR ID
-              </div>
-              <span>
-                <i class="el-icon-question"></i>
-              </span>
-            </el-tooltip>
-          </div>
+          <div class="item-title">集群</div>
         </el-col>
         <el-col :span="8">
-          <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
-            <span class="file-name item-desc">{{ jobInfo.spec.image.split('/')[2] }}</span>
+          <span class="item-desc">{{jobInfo.spec.cluster_name}}</span>
+        </el-col>
+      </el-row>
+      <el-row class="item" :span="24">
+        <el-col :span="4">
+          <div class="item-title">命名空间</div>
+        </el-col>
+        <el-col :span="8">
+          <div class="item-desc">{{jobInfo.spec.namespace}}</div>
+        </el-col>
+        <el-col :span="4">
+          <div class="item-title">镜像名称</div>
+        </el-col>
+        <el-col :span="8">
+          <el-tooltip v-if="jobInfo.spec.targets.image" effect="dark" :content="jobInfo.spec.targets.image" placement="top">
+            <span class="file-name item-desc">{{ jobInfo.spec.targets.image.split('/')[2] }}</span>
           </el-tooltip>
         </el-col>
       </el-row>
       <el-row class="item">
         <el-col :span="4">
-          <div class="item-title">集群</div>
+          <div class="item-title">新版本副本数百分比</div>
         </el-col>
         <el-col :span="8">
-          <div class="item-desc">{{jobInfo.spec.cluster_name}}</div>
+          <span class="file-name item-desc">{{jobInfo.spec.replica_percentage}}%</span>
         </el-col>
         <el-col :span="4">
-          <div class="item-title">命名空间</div>
+          <div class="item-title">新版本流量百分比</div>
         </el-col>
         <el-col :span="8">
-          <div class="item-desc">{{jobInfo.spec.namespace.toString()}}</div>
+          <span class="file-name item-desc">{{jobInfo.spec.weight}}%</span>
         </el-col>
       </el-row>
+      <el-table :data="jobInfo.spec.event" size="small" class="mg-t24">
+        <el-table-column label="时间" prop="time"></el-table-column>
+        <el-table-column label="类型" prop="event_type"></el-table-column>
+        <el-table-column label="信息" prop="message"></el-table-column>
+      </el-table>
     </main>
   </div>
 </template>
@@ -132,7 +117,7 @@ export default {
 <style lang="less" scoped>
 @themeColor: #0066ff;
 
-.build-console {
+.job-istio-release-detail {
   position: relative;
   height: 100%;
   font-size: 14px;
@@ -169,11 +154,11 @@ export default {
       margin-top: 8px;
 
       &-title {
-        color: #8d9199;
+        color: #4a4a4a;
       }
 
       &-desc {
-        color: #4a4a4a;
+        color: #8d9199;
       }
     }
 

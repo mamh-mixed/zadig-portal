@@ -7,7 +7,7 @@
   >
     <section v-if="buildConfigs.length > 0" class="tab-container">
       <div class="build-search-container">
-        <el-input v-model.lazy="searchBuildConfig" placeholder="请输入构建名称" class="search-test" autofocus prefix-icon="el-icon-search"></el-input>
+        <el-input v-model.lazy="searchBuildConfig" placeholder="搜索构建" class="search-test" autofocus prefix-icon="el-icon-search"></el-input>
       </div>
       <el-table :data="filteredBuildConfigs">
         <el-table-column label="名称" prop="name" min-width="180"></el-table-column>

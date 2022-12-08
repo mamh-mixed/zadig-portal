@@ -52,13 +52,13 @@
               v-model="preEnvs.envs[build_env_index].value"
               size="small"
             ></el-input>
-            <el-select v-if="preEnvs.envs[build_env_index].command === 'other'" v-model="preEnvs.envs[build_env_index].value" filterable placeholder="请选择" size="small" @focus="handleEnvChange(preEnvs.envs[build_env_index],preEnvs.envs[build_env_index].command)">
+            <el-select v-if="preEnvs.envs[build_env_index].command === 'other'" v-model="preEnvs.envs[build_env_index].value" filterable placeholder="请选择" size="small" ref="select" @focus="handleEnvChange(preEnvs.envs[build_env_index],preEnvs.envs[build_env_index].command)">
               <el-option v-for="(item,index) in envs" :key="index" :label="item" :value="item">{{item}}</el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="1" class="mg-t16">
-          <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther />
+          <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther  @change="handleEnvTypeChange($event, build_env_index)"/>
         </el-col>
         <el-col :span="12" v-if="isJenkins&&preEnvs.envs[build_env_index].name==='IMAGE'" class="tip">
           <el-checkbox v-model="preEnvs.envs[build_env_index].auto_generate"></el-checkbox>
@@ -89,7 +89,7 @@
       </el-row>
     </el-form>
     <el-dialog :visible.sync="dialogVisible" title="枚举" width="600px" :close-on-click-modal="false" :show-close="false" append-to-body>
-      <el-form ref="form" :model="currentVars" label-width="90px">
+      <el-form ref="form" :model="currentVars" label-position="left" label-width="90px">
         <el-form-item label="变量名称">
           <el-input v-model="currentVars.key" size="small"></el-input>
         </el-form-item>
@@ -331,6 +331,13 @@ export default {
       row.value = ''
       if (command === 'other') {
         this.$emit('getList')
+      }
+    },
+    handleEnvTypeChange (val, index) {
+      if (val === 'other') {
+        this.$nextTick(() => {
+          this.$refs.select[index].toggleMenu()
+        })
       }
     },
     addFirstBuildEnv () {

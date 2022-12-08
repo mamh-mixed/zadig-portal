@@ -1,6 +1,6 @@
 <template>
   <div class="version-info">
-    <el-form ref="infoRef" :rules="rules" :model="releaseInfo" label-width="90px">
+    <el-form ref="infoRef" :rules="rules" :model="releaseInfo" label-width="90px" label-position="left">
       <el-form-item label="版本名称" prop="version">
         <el-input v-model="releaseInfo.version" placeholder="输入版本名称" size="small"></el-input>
       </el-form-item>

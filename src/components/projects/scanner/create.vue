@@ -17,7 +17,7 @@
           <el-input v-model="scannerConfig.description" placeholder="请输入描述信息" autofocus size="small" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="扫描工具">
-          <el-select v-model="scannerConfig.scanner_type" placeholder="选择扫描工具" size="small" @change="getImageList">
+          <el-select v-model="scannerConfig.scanner_type" placeholder="选择扫描工具" size="small" @change="initDefaultImage">
             <el-option label="SonarQube" value="sonarQube"></el-option>
             <el-option label="其他" value="other"></el-option>
           </el-select>
@@ -26,7 +26,7 @@
         <el-form-item label="扫描环境" prop="image_id">
           <el-select v-model="scannerConfig.image_id" placeholder="选择扫描环境" size="small">
             <el-option v-for="(sys,index) in systems" :key="index" :label="sys.label" :value="sys.id">{{sys.label}}</el-option>
-            <el-option disabled value="NEWCUSTOM" v-if="scannerConfig.scanner_type !== 'sonarQube'">
+            <el-option disabled value="NEWCUSTOM">
               <router-link to="/v1/system/imgs" class="env-link">
                 <i class="el-icon-circle-plus-outline" style="margin-right: 3px;"></i>
                 新建扫描环境
@@ -252,7 +252,8 @@ export default {
       saveLoading: false,
       allCodeHosts: [],
       systems: [],
-      sonarList: []
+      sonarList: [],
+      defaultSonarImageId: ''
     }
   },
   computed: {
@@ -360,12 +361,18 @@ export default {
         this.currentEnv.build_os = imageSys.value
       }
     },
+    initDefaultImage (scannerType) {
+      this.scannerConfig.image_id = scannerType === 'sonarQube' ? this.defaultSonarImageId : this.systems[0].id
+    },
     getImageList (scannerType, initConfig = true) {
-      const imageFrom = scannerType === 'sonarQube' ? 'sonar' : ''
-      getImgListAPI('', imageFrom).then(res => {
+      getImgListAPI('', 'sonar').then(res => {
         this.systems = res
+        const find = res.find(re => re.image_type === 'sonar')
+        if (find) {
+          this.defaultSonarImageId = find.id
+        }
         if (initConfig && res.length) {
-          this.scannerConfig.image_id = res[0].id
+          this.initDefaultImage(scannerType)
         }
       })
     }
