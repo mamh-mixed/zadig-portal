@@ -6,21 +6,7 @@
       custom-class="form-dialog"
       :visible.sync="dialogVisible"
     >
-      <el-alert type="info" :closable="false">
-        <slot>
-          <span class="tips">{{`- 首次填写的请求地址请填写:`}}</span>
-          <span class="tips code-line">
-            {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
-            <span
-              v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
-              v-clipboard:success="copyCommandSuccess"
-              v-clipboard:error="copyCommandError"
-              class="el-icon-document-copy copy"
-            ></span>
-          </span>
-        </slot>
-      </el-alert>
-      <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
+      <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'&&errorMessage" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
       <el-form :model="approvalInfo" @submit.native.prevent :rules="rules" ref="approval" label-position="left" label-width="120px">
         <el-form-item label="IM" prop="type">
           <el-radio-group v-model="approvalInfo.type">
@@ -47,6 +33,20 @@
           <el-input v-model.trim="approvalInfo.encrypt_key" @blur="validate" placeholder="Encrypt Key"></el-input>
           <div class="tip">由飞书进行校验，请确保正确</div>
         </el-form-item>
+        <el-alert type="info" :closable="false" v-if="checkRes === 'pass'">
+          <slot>
+            <span class="tips">{{`需配置飞书应用的「事件订阅」-「请求地址配置」为`}}</span>
+            <span class="tips code-line">
+              {{`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`}}
+              <span
+                v-clipboard:copy="`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`"
+                v-clipboard:success="copyCommandSuccess"
+                v-clipboard:error="copyCommandError"
+                class="el-icon-document-copy copy"
+              ></span>
+            </span>
+          </slot>
+        </el-alert>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button

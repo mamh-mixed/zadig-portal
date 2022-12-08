@@ -2177,6 +2177,10 @@ export function getCustomWorkfloweTaskPresetAPI (workflow_name, projectName, key
   return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
 }
 
+export function checkWorkflowApprovalAPI (workflowName) {
+  return http.post(`/api/aslan/workflow/v4/check/lark/${workflowName}`)
+}
+
 export function runCustomWorkflowTaskAPI (payload, projectName) {
   return http.post(`/api/aslan/workflow/v4/workflowtask?projectName=${projectName}`, payload)
 }

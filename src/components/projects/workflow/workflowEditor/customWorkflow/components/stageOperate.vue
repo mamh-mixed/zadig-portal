@@ -73,7 +73,7 @@
         </el-form-item>
         <el-form-item label="审核人" v-if="form.approval.type==='lark'">
           <el-button type="primary" plain @click="addApprovalUser" size="mini">添加</el-button>
-          <span v-for="item in users" :key="item.id">{{item.name}}</span>
+          <span>{{approvalUsers}}</span>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行" size="small"></el-input>
@@ -88,11 +88,13 @@
       custom-class="approval-dialog"
       append-to-body
     >
+      <span>当前位置：</span>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item v-for="(item,index) in breadMenu" :key="item.id" @click.native="handleBreadMenuClick(item,index)">{{item.label}}</el-breadcrumb-item>
       </el-breadcrumb>
       <el-transfer
         v-loading="loading"
+        size="small"
         element-loading-text="加载中..."
         element-loading-spinner="iconfont iconfont-loading iconvery-build"
         style=" display: inline-block; text-align: left;"
@@ -108,7 +110,6 @@
       }"
         :data="departmentList"
       >
-        {{form.approval.approve_users}}
         <div slot-scope="{ option }" @click="handleClick(option)">
           <span v-if="option.avatar">
             <img :src="option.avatar" alt="avatar" style=" width: 16px; height: 16px; border-radius: 50%;" />
@@ -182,6 +183,11 @@ export default {
       default: () => ({})
     }
   },
+  computed: {
+    approvalUsers () {
+      return this.users.map(item => item.name).toString()
+    }
+  },
   created () {
     this.getUserList()
     this.getAppList()
@@ -250,6 +256,7 @@ export default {
     },
     saveApprovalUser () {
       if (this.form.approval.type === 'lark') {
+        this.users = []
         this.form.approval.approve_users.forEach(item => {
           const obj = {}
           obj.id = item.split(',')[0]

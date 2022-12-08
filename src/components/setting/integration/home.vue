@@ -37,7 +37,7 @@
             <External v-if="currentTab === 'external'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="approval" label="审批系统">
+        <el-tab-pane name="approval" label="审批系统" v-if="hasPlutus">
           <keep-alive>
             <Approval v-if="currentTab === 'approval'" />
           </keep-alive>

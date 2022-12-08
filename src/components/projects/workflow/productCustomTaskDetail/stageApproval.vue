@@ -97,9 +97,16 @@ export default {
       userInfo: state => state.login.userinfo
     }),
     isDisabled () {
-      const curUser = this.approvalInfo.approval.approve_users.find(
-        item => item.user_id === this.userInfo.uid
-      )
+      let curUser = ''
+      if (this.approvalInfo.approval.type === 'lark') {
+        curUser = this.approvalInfo.approval.lark_approval.approve_users.find(
+          item => item.id === this.userInfo.uid
+        )
+      } else {
+        curUser = this.approvalInfo.approval.native_approval.approve_users.find(
+          item => item.user_id === this.userInfo.uid
+        )
+      }
       if (!curUser) {
         return true
       }

@@ -1,5 +1,9 @@
 <template>
   <div class="custom-workflow">
+    <div class="error" v-if="isShowCheckErrorTip">
+      审批发起人邮箱未找到，请正确配置您的企业邮箱
+      <el-button type="text" plain size="mini" @click="updateEmail">点击修改</el-button>
+    </div>
     <el-form label-width="140px" size="small">
       <el-collapse v-model="activeName">
         <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
@@ -472,14 +476,54 @@
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
+      <el-button
+        @click="runTask"
+        :disabled="hasPlutus && isShowCheckErrorTip"
+        :loading="startTaskLoading"
+        type="primary"
+        size="small"
+        class="mg-t16"
+      >{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
     </el-form>
+    <el-dialog
+      title="修改邮箱"
+      :close-on-click-modal="false"
+      :append-to-body="true"
+      custom-class="edit-form-dialog"
+      :visible.sync="dialogMailEditFormVisible"
+    >
+      <el-form :model="mailInfo" @submit.native.prevent ref="mailForm">
+        <el-form-item label="原邮箱" label-width="100px" prop="name">
+          <el-input :value="mailInfo.originMail" placeholder="主机" size="small"></el-input>
+        </el-form-item>
+        <el-form-item
+          label="新邮箱"
+          label-width="100px"
+          prop="mail"
+          size="small"
+          :rules="{
+            required: true,
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }"
+        >
+          <el-input v-model="mailInfo.mail"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" native-type="submit" size="small" @click="updateUser" class="start-create">确定</el-button>
+        <el-button plain native-type="submit" size="small" @click="dialogMailEditFormVisible=false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import CustomWorkflowBuildRows from '@/components/common/customWorkflowBuildRows.vue'
 import CustomWorkflowCommonRows from '@/components/common/customWorkflowCommonRows.vue'
+import { mapState } from 'vuex'
+import store from 'storejs'
 import {
   listProductAPI,
   getAllBranchInfoAPI,
@@ -487,7 +531,9 @@ import {
   imagesAPI,
   getCustomWorkfloweTaskPresetAPI,
   getRegistryWhenBuildAPI,
-  getAssociatedBuildsAPI
+  getAssociatedBuildsAPI,
+  updateUserAPI,
+  checkWorkflowApprovalAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
 
@@ -510,7 +556,13 @@ export default {
       },
       originServiceAndBuilds: [],
       isShowParams: true,
-      fromJobInfo: {}
+      fromJobInfo: {},
+      dialogMailEditFormVisible: false,
+      isShowCheckErrorTip: false,
+      mailInfo: {
+        originMail: '',
+        mail: ''
+      }
     }
   },
   props: {
@@ -535,11 +587,19 @@ export default {
     CustomWorkflowBuildRows,
     CustomWorkflowCommonRows
   },
+  computed: {
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
+  },
   created () {
     this.init()
   },
   methods: {
     init () {
+      if (this.hasPlutus) {
+        this.checkWorkflowApproval()
+      }
       this.getEnvList()
       this.getRegistryWhenBuild()
       this.getServiceAndBuildList()
@@ -709,10 +769,40 @@ export default {
         })
       })
     },
+    checkWorkflowApproval () {
+      checkWorkflowApprovalAPI(this.workflowName)
+        .then(res => {
+          this.isShowCheckErrorTip = false
+        })
+        .catch(error => {
+          if (error.response && error.response.data.code === 6940) {
+            this.isShowCheckErrorTip = true
+            this.mailInfo.originMail = error.response.data.description.split(
+              'email:'
+            )[1]
+          }
+        })
+    },
+    updateUser () {
+      const userInfo = store.get('userInfo')
+      this.$refs.mailForm.validate().then(valid => {
+        if (valid) {
+          updateUserAPI(userInfo.uid, this.mailInfo).then(res => {
+            this.checkWorkflowApproval(this.workflowName)
+            this.dialogMailEditFormVisible = false
+          })
+        }
+      })
+    },
+    updateEmail () {
+      this.isShowCheckErrorTip = false
+      this.dialogMailEditFormVisible = true
+    },
     getWorkflowPresetInfo (workflowName) {
       // const key = this.$utils.rsaEncrypt()
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
+          console.log(res)
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
               this.$set(job, 'checked', true)
@@ -970,7 +1060,9 @@ export default {
               // fromjob
               this.fromJobInfo.pickedTargets.forEach(item => {
                 if (item.update_tag && !item.target_tag) {
-                  this.$message.error(`请填写 ${item.service_name} 中的目标镜像版本`)
+                  this.$message.error(
+                    `请填写 ${item.service_name} 中的目标镜像版本`
+                  )
                   throw Error()
                 }
               })
@@ -1071,12 +1163,13 @@ export default {
     },
     handleContainerChange (val, job) {
       val.forEach(item => {
-        this.getRegistryList([item.service || item.container_name], job.spec.docker_registry_id).then(
-          res => {
-            this.$set(item, 'images', res)
-            this.$forceUpdate()
-          }
-        )
+        this.getRegistryList(
+          [item.service || item.container_name],
+          job.spec.docker_registry_id
+        ).then(res => {
+          this.$set(item, 'images', res)
+          this.$forceUpdate()
+        })
       })
       this.$forceUpdate()
     },
@@ -1135,6 +1228,15 @@ export default {
 .custom-workflow {
   /deep/.el-collapse-item__header {
     font-weight: 700;
+  }
+
+  .error {
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    padding: 0 16px;
+    background: #fde2e2;
+    transform: translateX(-50%);
   }
 
   .flex {
