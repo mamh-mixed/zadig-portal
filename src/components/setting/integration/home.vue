@@ -32,14 +32,14 @@
             <Sonar v-if="currentTab === 'sonar'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="external" label="其他系统">
-          <keep-alive>
-            <External v-if="currentTab === 'external'" />
-          </keep-alive>
-        </el-tab-pane>
         <el-tab-pane name="approval" label="审批系统" v-if="hasPlutus">
           <keep-alive>
             <Approval v-if="currentTab === 'approval'" />
+          </keep-alive>
+        </el-tab-pane>
+        <el-tab-pane name="external" label="其他系统">
+          <keep-alive>
+            <External v-if="currentTab === 'external'" />
           </keep-alive>
         </el-tab-pane>
       </el-tabs>

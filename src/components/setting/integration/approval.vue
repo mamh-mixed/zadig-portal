@@ -15,10 +15,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item prop="name" label="应用名称">
-          <el-input v-model.trim="approvalInfo.name" @blur="validate" placeholder="应用名称"></el-input>
+          <el-input v-model.trim="approvalInfo.name" placeholder="应用名称"></el-input>
         </el-form-item>
         <el-form-item prop="app_id" label="App ID">
-          <el-input v-model.trim="approvalInfo.app_id" @blur="validate" placeholder="App ID"></el-input>
+          <el-input v-model.trim="approvalInfo.app_id" placeholder="App ID"></el-input>
         </el-form-item>
         <el-form-item prop="app_secret" label="App Secret">
           <el-input
@@ -30,12 +30,15 @@
           ></el-input>
         </el-form-item>
         <el-form-item prop="encrypt_key" label="Encrypt Key">
-          <el-input v-model.trim="approvalInfo.encrypt_key" @blur="validate" placeholder="Encrypt Key"></el-input>
+          <el-input v-model.trim="approvalInfo.encrypt_key" placeholder="Encrypt Key"></el-input>
           <div class="tip">由飞书进行校验，请确保正确</div>
         </el-form-item>
-        <el-alert type="info" :closable="false" v-if="checkRes === 'pass'">
+        <el-alert type="info" :closable="false" v-if="checkRes === 'pass'" style="background: #fff;">
           <slot>
-            <span class="tips">{{`需配置飞书应用的「事件订阅」-「请求地址配置」为`}}</span>
+            <span class="tips">
+              <i class="el-icon-warning"></i>
+              {{`请前往飞书开放平台，配置飞书应用的「事件订阅」-「请求地址配置」为`}}
+            </span>
             <span class="tips code-line">
               {{`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`}}
               <span
@@ -69,7 +72,7 @@
             <el-link
               style="font-size: 14px; vertical-align: baseline;"
               type="primary"
-              :href="`https://docs.koderover.com/zadig/settings/account/ldap/`"
+              :href="`https://docs.koderover.com/zadig/settings/approval/`"
               :underline="false"
               target="_blank"
             >帮助文档</el-link>。
@@ -308,11 +311,11 @@ export default {
       &.code-line {
         display: inline-block;
         padding-left: 10px;
-        color: #ecf0f1;
+        color: #333;
         font-size: 14px;
         word-wrap: break-word;
         word-break: break-all;
-        background-color: #334851;
+        background-color: #ddd;
         border-radius: 2px;
 
         .copy {
