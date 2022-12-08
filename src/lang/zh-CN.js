@@ -105,7 +105,6 @@ exports.default = {
   },
   profile: {
     profile: '账号设置',
-    loading: '加载中...',
     changePassword: '修改密码',
     oldPassword: '旧密码',
     newPassword: '新密码',

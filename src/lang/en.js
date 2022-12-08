@@ -105,7 +105,6 @@ exports.default = {
   },
   profile: {
     profile: 'Profile',
-    loading: 'Loading...',
     changePassword: 'Change Password',
     oldPassword: 'Old password',
     newPassword: 'New password',
