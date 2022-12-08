@@ -22,8 +22,8 @@
       </el-form-item>
     </el-form>
     <div class="bottom">
-      <el-button @click="$router.back()" :loading="handleLoading" size="medium">取消</el-button>
-      <el-button @click="handleOpe" :loading="handleLoading" type="primary" size="medium">确定</el-button>
+      <el-button @click="$router.back()" :loading="handleLoading" size="medium">{{$t(`global.cancel`)}}</el-button>
+      <el-button @click="handleOpe" :loading="handleLoading" type="primary" size="medium">{{$t(`global.confirm`)}}</el-button>
     </div>
   </div>
 </template>

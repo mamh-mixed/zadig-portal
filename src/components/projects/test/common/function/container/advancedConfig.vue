@@ -10,7 +10,7 @@
           size="small"
           class="mg-l36"
           plain
-        >添加</el-button>
+        >{{$t(`global.add`)}}</el-button>
       </div>
       <el-form-item class="label-icon" v-if="isShowTestReport || testConfig.artifact_paths.length>0">
         <template slot="label">
@@ -57,7 +57,7 @@
       <div class="trigger">
         <el-form-item>
           <template slot="label">代码变更触发</template>
-          <el-button @click="addTrigger" type="primary" size="small" plain>添加</el-button>
+          <el-button @click="addTrigger" type="primary" size="small" plain>{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <TestTrigger
           ref="trigger"
@@ -70,7 +70,7 @@
       <div class="timer">
         <el-form-item>
           <template slot="label">定时器触发</template>
-          <el-button @click="addTimer" type="primary" size="small" plain>添加</el-button>
+          <el-button @click="addTimer" type="primary" size="small" plain>{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <TestTimer
           ref="timer"
@@ -85,7 +85,7 @@
       <div class="notify">
         <el-form-item>
           <template slot="label">通知配置</template>
-          <el-button @click="addNotify" type="primary" size="small" plain >添加</el-button>
+          <el-button @click="addNotify" type="primary" size="small" plain >{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <Notify
           ref="notifyComp"

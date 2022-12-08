@@ -10,7 +10,7 @@
                    type="primary"
                    :href="`https://docs.koderover.com/zadig/settings/system-settings/#缓存清理`"
                    :underline="false"
-                   target="_blank">帮助文档</el-link>
+                   target="_blank">{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
     </template>
@@ -27,7 +27,7 @@
         <el-switch v-model="cleanStatus.cron_enabled"></el-switch>
         <span v-if="cleanStatus.cron_enabled">
           <el-input style="width: 200px;" size="small" v-model="cleanStatus.cron"  placeholder="Cron 表达式"></el-input>
-          <el-button size="mini" type="primary" @click="timingClean" plain round>保存</el-button>
+          <el-button size="mini" type="primary" @click="timingClean" plain round>{{$t(`global.save`)}}</el-button>
         </span>
       </div>
       <template v-if="cleanStatus">

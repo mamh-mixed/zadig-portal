@@ -32,7 +32,7 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}"  type="primary" @click="saveCustomVariables" size="small" :loading="saveLoading">保存</el-button>
+        <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}"  type="primary" @click="saveCustomVariables" size="small" :loading="saveLoading">{{$t(`global.save`)}}</el-button>
         <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}" type="default" size="small" @click="multiUpdate">应用到服务</el-button>
       </article>
     </section>

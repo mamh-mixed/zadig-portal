@@ -327,7 +327,7 @@
           size="small"
           @click="createAccountUser()"
           class="start-create"
-        >确定</el-button>
+        >{{$t(`global.confirm`)}}</el-button>
         <el-button
           v-else-if="userAccount.mode==='edit'"
           :disabled="userAccount.name === ''"
@@ -336,8 +336,8 @@
           size="small"
           @click="updateAccountUser()"
           class="start-create"
-        >保存</el-button>
-        <el-button plain native-type="submit" size="small" @click="handleUserAccountCancel">取消</el-button>
+        >{{$t(`global.save`)}}</el-button>
+        <el-button plain native-type="submit" size="small" @click="handleUserAccountCancel">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of add account dialog-->
@@ -353,12 +353,12 @@
               :href="`https://docs.koderover.com/zadig/settings/account/ldap/`"
               :underline="false"
               target="_blank"
-            >帮助文档</el-link>。
+            >{{$t(`global.helpDoc`)}}</el-link>。
           </template>
         </el-alert>
       </template>
       <div class="sync-container">
-        <el-button size="small" type="primary" plain @click="addAccount()">添加</el-button>
+        <el-button size="small" type="primary" plain @click="addAccount()">{{$t(`global.add`)}}</el-button>
       </div>
       <el-table :data="accounts" style="width: 100%;"  @cell-mouse-enter="enter" @cell-mouse-leave="leave">
         <el-table-column label="账号系统名称">
@@ -372,10 +372,10 @@
             <el-checkbox  :value="scope.row.is_default"  @change="setDefaultAccount(scope.row)">设置为默认账号系统</el-checkbox >
           </span>
         </el-table-column>
-        <el-table-column label="操作" width="300">
+        <el-table-column :label="$t(`global.operation`)" width="300">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" plain @click="handleUserAccountEdit(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="handleUserAccountDelete(scope.row)" plain>删除</el-button>
+            <el-button type="primary" size="mini" plain @click="handleUserAccountEdit(scope.row)">{{$t(`global.edit`)}}</el-button>
+            <el-button type="danger" size="mini" @click="handleUserAccountDelete(scope.row)" plain>{{$t(`global.delete`)}}</el-button>
             <el-button
               v-if="scope.row.name === 'OpenLDAP' || scope.row.name === 'Microsoft Active Directory'"
               type="primary"

@@ -1,7 +1,7 @@
 <template>
   <div class="service-list">
     <el-table v-if="containerServiceList.length > 0" :data="containerServiceList">
-      <el-table-column label="服务名" width="280px">
+      <el-table-column :label="$t(`global.serviceName`)" width="280px">
         <template slot-scope="scope">
           <router-link :to="setRoute(scope)">
             <span :class="$utils._getStatusColor(scope.row.status)" class="service-name">
@@ -51,7 +51,7 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="状态" width="220px">
+      <el-table-column align="left" :label="$t(`global.status`)" width="220px">
         <template slot="header" slot-scope="{}">
           状态{{`(${runningContainerService}/${containerServiceList.length})`}}
           <el-tooltip effect="dark" placement="top">
@@ -90,7 +90,7 @@
           <span v-else>N/A</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="操作" width="150px">
+      <el-table-column align="center" :label="$t(`global.operation`)" width="150px">
         <template slot-scope="scope">
           <span v-if="envSource !=='external' && envSource !=='helm'" class="operation">
             <el-tooltip

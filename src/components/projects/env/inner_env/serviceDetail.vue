@@ -20,7 +20,7 @@
         </span>
       </el-alert>
       <div slot="footer">
-        <el-button @click="ephemeralContainersDialog.visible = false" size="small">取 消</el-button>
+        <el-button @click="ephemeralContainersDialog.visible = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="startEphemeralContainersDebug" size="small">确 定</el-button>
       </div>
     </el-dialog>
@@ -168,7 +168,7 @@
              slot="reference"></i>
         </el-popover>
         <el-tooltip effect="dark" content="刷新服务实例" placement="top">
-          <el-button icon="el-icon-refresh" type="text" @click="fetchServiceData">刷新</el-button>
+          <el-button icon="el-icon-refresh" type="text" @click="fetchServiceData">{{$t(`global.refresh`)}}</el-button>
         </el-tooltip>
       </div>
       <div class="info-body" v-loading="servicesLoading">
@@ -180,7 +180,7 @@
                     style="width: 100%;">
             <el-table-column width="140"
                              prop="name"
-                             label="名称">
+                             :label="$t(`global.name`)">
               <template slot-scope="scope">
                 <span>{{ scope.row.name }}</span>
               </template>
@@ -224,12 +224,12 @@
                       <span>
                         <i title="取消"
                            @click="cancelEditImage(item)"
-                           class="el-icon-circle-close icon-color icon-color-cancel operation">取消</i>
+                           class="el-icon-circle-close icon-color icon-color-cancel operation">{{$t(`global.cancel`)}}</i>
                       </span>
                       <span>
                         <i title="保存"
                            @click="saveImage(item,scope.row.name,scope.row.type)"
-                           class="el-icon-circle-check icon-color icon-color-confirm operation">保存</i>
+                           class="el-icon-circle-check icon-color icon-color-confirm operation">{{$t(`global.save`)}}</i>
                       </span>
                     </div>
                   </template>
@@ -251,7 +251,7 @@
                                  v-model="scope.row.replicas"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column  label="操作"
+            <el-table-column  :label="$t(`global.operation`)"
                              width="220px">
               <template slot-scope="scope">
                 <el-button v-hasPermi="{projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="restartService(scope.row.name,scope.row.type)"
@@ -472,7 +472,7 @@
                          type="primary"
                          plain
                          size="small"
-                         class="at-right">复制</el-button>
+                         class="at-right">{{$t(`global.copy`)}}</el-button>
             </div>
             <Editor v-show="obj.expanded"
                     :value="obj.readableText"
@@ -506,7 +506,7 @@
         <el-table-column prop="message"
                          label="消息"></el-table-column>
         <el-table-column prop="reason"
-                         label="状态"
+                         :label="$t(`global.status`)"
                          width="240"></el-table-column>
         <el-table-column prop="count"
                          label="总数"

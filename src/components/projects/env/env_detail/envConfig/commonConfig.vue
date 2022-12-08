@@ -7,7 +7,7 @@
       plain
       @click="operateConfig('add')"
       style="margin-bottom: 12px;"
-    >添加</el-button>
+    >{{$t(`global.add`)}}</el-button>
     <div v-loading="configLoading">
       <ETable :tableData="currentInfos.tableData" :tableColumns="currentInfos.tableColumns" :id="currentInfos.id" />
     </div>

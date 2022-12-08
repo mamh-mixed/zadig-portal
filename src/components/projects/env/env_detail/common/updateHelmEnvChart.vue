@@ -56,7 +56,7 @@
                 预览最终 values 文件
                 <i style="margin-left: 8px;" :class="{'el-icon-arrow-down': showReview, 'el-icon-arrow-right': !showReview}"></i>
               </el-button>
-              <el-button type="text" v-show="showReview" @click="getCalculatedValuesYaml(false)">刷新</el-button>
+              <el-button type="text" v-show="showReview" @click="getCalculatedValuesYaml(false)">{{$t(`global.refresh`)}}</el-button>
             </div>
             <Codemirror class="codemirror" ref="codemirror" v-if="showReview" :value="usedChartNameInfo.yamlContent" :cmOption="cmOption" />
           </section>

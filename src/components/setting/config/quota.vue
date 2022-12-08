@@ -10,7 +10,7 @@
                    type="primary"
                    :href="`https://docs.koderover.com/zadig/settings/system-settings/#任务配置`"
                    :underline="false"
-                   target="_blank">帮助文档</el-link>
+                   target="_blank">{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
     </template>
@@ -44,7 +44,7 @@
       <section class="save-concurrency-setting">
         <el-button @click="updateConcurrencySettings(workflowConcurrency, buildConcurrency)"
                    size="small"
-                   type="primary">保存</el-button>
+                   type="primary">{{$t(`global.save`)}}</el-button>
       </section>
       <br/>
       <section>
@@ -85,7 +85,7 @@
       <section class="operation">
         <el-button @click="setCapacity('WorkflowTaskRetention',selectType,WorkflowTaskRetention[selectType])"
                    size="small"
-                   type="primary">保存</el-button>
+                   type="primary">{{$t(`global.save`)}}</el-button>
       </section>
     </div>
   </div>

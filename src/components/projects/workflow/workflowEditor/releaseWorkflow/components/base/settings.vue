@@ -13,7 +13,7 @@
       </el-form-item>
       <div class="mg-b16 mg-t24 title">
         <span>共享目录</span>
-        <el-button type="text" v-if="!workflowInfo.share_storages ||workflowInfo.share_storages.length===0" @click="addBuildEnv">添加</el-button>
+        <el-button type="text" v-if="!workflowInfo.share_storages ||workflowInfo.share_storages.length===0" @click="addBuildEnv">{{$t(`global.add`)}}</el-button>
       </div>
       <div v-if="workflowInfo.share_storages&&workflowInfo.share_storages.length>0">
         <el-row :gutter="6" class="th">

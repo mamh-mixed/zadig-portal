@@ -74,7 +74,7 @@
         <el-checkbox v-model="currentChart.updateServiceTmpl">同时更新服务配置</el-checkbox>
       </div>
       <div slot="footer">
-        <el-button size="small" @click="dialogBeforeClose()">取 消</el-button>
+        <el-button size="small" @click="dialogBeforeClose()">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" size="small" @click="updateChart()">确 定</el-button>
       </div>
     </el-dialog>
@@ -89,7 +89,7 @@
         <Codemirror class="value-codemirror" ref="codemirror" :value="currentChart.valuesYaml" :cmOption="cmOption" />
       </div>
       <div slot="footer">
-        <el-button size="small" @click="dialogBeforeClose()">取 消</el-button>
+        <el-button size="small" @click="dialogBeforeClose()">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
   </div>

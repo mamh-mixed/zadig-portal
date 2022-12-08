@@ -1,6 +1,6 @@
 <template>
     <div v-loading="loading"
-         element-loading-text="加载中..."
+         :element-loading-text="$t(`global.loading`)"
          element-loading-spinner="iconfont iconfont-loading iconyingyongshezhi"
          class="setting-app-container">
       <!--apps-create-dialog-->
@@ -14,7 +14,7 @@
                  :model="createApp"
                  label-position="left"
                  label-width="100px">
-          <el-form-item label="名称"
+          <el-form-item :label="$t(`global.name`)"
                         prop="name">
             <el-input size="small"
                       v-model="createApp.name"></el-input>
@@ -65,11 +65,11 @@
         <div slot="footer"
              class="dialog-footer">
           <el-button size="small"
-                     @click="dialogAppCreateFormVisible = false">取 消</el-button>
+                     @click="dialogAppCreateFormVisible = false">{{$t(`global.cancel`)}}</el-button>
           <el-button :plain="true"
                      type="success"
                      size="small"
-                     @click="appOperation('add')">保存</el-button>
+                     @click="appOperation('add')">{{$t(`global.save`)}}</el-button>
         </div>
       </el-dialog>
       <!--apps-create-dialog-->
@@ -126,11 +126,11 @@
         <div slot="footer"
              class="dialog-footer">
           <el-button size="small"
-                     @click="dialogAppEditFormVisible = false">取 消</el-button>
+                     @click="dialogAppEditFormVisible = false">{{$t(`global.cancel`)}}</el-button>
           <el-button size="small"
                      :plain="true"
                      type="success"
-                     @click="appOperation('update')">保存</el-button>
+                     @click="appOperation('update')">{{$t(`global.save`)}}</el-button>
         </div>
       </el-dialog>
       <!--apps-edit-dialog-->
@@ -143,7 +143,7 @@
                      type="primary"
                      :href="`https://docs.koderover.com/zadig/settings/app/`"
                      :underline="false"
-                     target="_blank">帮助文档</el-link>
+                     target="_blank">{{$t(`global.helpDoc`)}}</el-link>
           </template>
         </el-alert>
         <div class="sync-container">
@@ -187,14 +187,14 @@
                     <span>{{scope.row.update_by }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column :label="$t(`global.operation`)">
                   <template slot-scope="scope">
                     <el-button @click="appOperation('edit',scope.row)"
                                type="primary"
-                               size="mini" plain>编辑</el-button>
+                               size="mini" plain>{{$t(`global.edit`)}}</el-button>
                     <el-button size="mini"
                                @click="deleteApp(scope.row)"
-                               type="danger" plain>删除</el-button>
+                               type="danger" plain>{{$t(`global.delete`)}}</el-button>
                   </template>
                 </el-table-column>
               </el-table>

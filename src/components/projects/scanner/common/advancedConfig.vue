@@ -14,7 +14,7 @@
       <div class="trigger">
         <el-form-item>
           <template slot="label">代码变更触发</template>
-          <el-button @click="addTrigger" type="primary" size="small" plain>添加</el-button>
+          <el-button @click="addTrigger" type="primary" size="small" plain>{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <TestTrigger
           ref="trigger"
@@ -29,7 +29,7 @@
       <!-- <div class="timer">
         <el-form-item>
           <template slot="label">定时器触发</template>
-          <el-button @click="addTimer" type="primary" size="small" plain>添加</el-button>
+          <el-button @click="addTimer" type="primary" size="small" plain>{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <TestTimer
           ref="timer"

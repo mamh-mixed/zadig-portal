@@ -14,7 +14,7 @@
           <span class="date-info">{{ $utils.convertTimestamp(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="status" width="60px" label="状态">
+      <el-table-column prop="status" width="60px" :label="$t(`global.status`)">
         <template slot-scope="scope">
           <el-tag
             effect="dark"

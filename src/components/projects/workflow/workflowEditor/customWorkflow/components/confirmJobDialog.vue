@@ -3,7 +3,7 @@
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="handleCurJobDrawer('confirm')" size="small">确认</el-button>
       <el-button @click="handleCurJobDrawer('abort')" size="small">放弃修改</el-button>
-      <el-button @click="handleCurJobDrawer('cancel')" size="small">取消</el-button>
+      <el-button @click="handleCurJobDrawer('cancel')" size="small">{{$t(`global.cancel`)}}</el-button>
     </span>
   </el-dialog>
 </template>

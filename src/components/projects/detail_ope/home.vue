@@ -36,7 +36,7 @@
     <div
       v-if="currentTab==='grid'"
       v-loading="loading"
-      element-loading-text="加载中..."
+      :element-loading-text="$t(`global.loading`)"
       element-loading-spinner="iconfont iconfont-loading iconxiangmuloading"
       class="projects-grid"
     >
@@ -50,7 +50,7 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item :command="{action:'edit',projectName:project.name}">修改</el-dropdown-item>
-                  <el-dropdown-item :command="{action:'delete',projectName:project.name}">删除</el-dropdown-item>
+                  <el-dropdown-item :command="{action:'delete',projectName:project.name}">{{$t(`global.delete`)}}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -91,7 +91,7 @@
     <div
       v-if="currentTab==='list'"
       v-loading="loading"
-      element-loading-text="加载中..."
+      :element-loading-text="$t(`global.loading`)"
       element-loading-spinner="iconfont iconfont-loading iconxiangmuloading"
       class="projects-list"
     >
@@ -126,7 +126,7 @@
             <router-link :to="`/v1/projects/detail/${scope.row.name}/detail`">
               <el-button class="operation" type="text">配置</el-button>
             </router-link>
-            <el-button @click="deleteProject(scope.row.name)" class="operation" type="text">删除</el-button>
+            <el-button @click="deleteProject(scope.row.name)" class="operation" type="text">{{$t(`global.delete`)}}</el-button>
           </template>
         </el-table-column>
       </el-table>

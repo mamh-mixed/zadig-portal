@@ -4,10 +4,10 @@
       <h4 class="flex-center" style="padding-left: 40px;">
         <el-button type="text" @click="triggerSubstantial(substantial)" :disabled="isUpdate">{{substantial ? '关闭批量创建' : '批量创建'}}</el-button>
       </h4>
-      <el-form-item label="服务名称" prop="serviceName" v-if="!substantial">
+      <el-form-item :label="$t(`global.serviceName`)" prop="serviceName" v-if="!substantial">
         <el-input v-model="tempData.serviceName" placeholder="请输入服务名称" size="small" :disabled="isUpdate"></el-input>
       </el-form-item>
-      <el-form-item v-else label="服务名称">
+      <el-form-item v-else :label="$t(`global.serviceName`)">
         <span style="line-height: 41px;">批量创建的服务名称为 values 文件名称</span>
       </el-form-item>
       <el-form-item label="选择模板" prop="moduleName">
@@ -45,7 +45,7 @@
         <el-switch v-model="tempData.auto_sync" />
       </el-form-item>
       <el-form-item style="text-align: right;">
-        <el-button size="small" @click="commitDialogVisible(false)">取消</el-button>
+        <el-button size="small" @click="commitDialogVisible(false)">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" size="small" @click="importTempRepo" :loading="importLoading">导入</el-button>
       </el-form-item>
     </el-form>

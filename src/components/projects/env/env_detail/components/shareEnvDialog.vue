@@ -63,7 +63,7 @@
       <span class="desc">关闭 {{envName}} 环境的自测模式，子环境会被全部删除，请确认</span>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button size="small" @click="shareEnvDialogVisible = false">取消</el-button>
+      <el-button size="small" @click="shareEnvDialogVisible = false">{{$t(`global.cancel`)}}</el-button>
       <el-button
         v-if="mode === 'enable'"
         size="small"

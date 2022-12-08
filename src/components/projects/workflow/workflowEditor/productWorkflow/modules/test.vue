@@ -45,13 +45,13 @@
               </el-popover>
             </template>
           </el-table-column>
-          <el-table-column label="操作"
+          <el-table-column :label="$t(`global.operation`)"
                            width="100px">
             <template slot-scope="scope">
               <el-button @click="removeTest(scope.$index)"
                          type="danger"
                          icon="el-icon-delete"
-                         size="mini">删除</el-button>
+                         size="mini">{{$t(`global.delete`)}}</el-button>
             </template>
           </el-table-column>
         </el-table>

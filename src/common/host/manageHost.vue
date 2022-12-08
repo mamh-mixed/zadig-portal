@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconzhuji"
     class="setting-host-container"
   >
@@ -9,8 +9,8 @@
     <el-dialog :title="title" :visible.sync="dialogHostFormVisible" custom-class="dialog-style" :close-on-click-modal="false" width="45%">
       <AddHost ref="add-host" :host="host" />
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogHostFormVisible = false">取 消</el-button>
-        <el-button :plain="true" size="small" type="success" @click="hostOperation">保存</el-button>
+        <el-button size="small" @click="dialogHostFormVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" size="small" type="success" @click="hostOperation">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--Host-edit-dialog-->
@@ -19,8 +19,8 @@
     <el-dialog :title="title" :visible.sync="dialogImportHostVisible" custom-class="dialog-style" :close-on-click-modal="false" width="35%">
       <ImportHosts ref="import-hosts" :originHosts="allHost" :type="type" />
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogImportHostVisible = false">取 消</el-button>
-        <el-button :plain="true" size="small" type="success" @click="hostOperation">保存</el-button>
+        <el-button size="small" @click="dialogImportHostVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" size="small" type="success" @click="hostOperation">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--Host-import-dialog-->
@@ -35,7 +35,7 @@
             :href="`https://docs.koderover.com/zadig/settings/vm-management/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
       <div class="sync-container">
@@ -51,7 +51,7 @@
                 <span>{{scope.row.name}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="状态">
+            <el-table-column :label="$t(`global.status`)">
               <template slot-scope="{ row }">
                 <el-tag
                   size="small"
@@ -75,10 +75,10 @@
                 <span>{{scope.row.user_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column width="240" label="操作">
+            <el-table-column width="240" :label="$t(`global.operation`)">
               <template slot-scope="scope">
-                <el-button @click="hostOperation('update',scope.row)" size="mini" type="primary" plain>编辑</el-button>
-                <el-button @click="hostOperation('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
+                <el-button @click="hostOperation('update',scope.row)" size="mini" type="primary" plain>{{$t(`global.edit`)}}</el-button>
+                <el-button @click="hostOperation('delete',scope.row)" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
               </template>
             </el-table-column>
           </el-table>

@@ -14,7 +14,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="update_user_name" label="最后修改"></el-table-column>
-        <el-table-column label="操作" width>
+        <el-table-column :label="$t(`global.operation`)" width>
           <template slot-scope="scope">
             <el-button v-if="scope.$index!==0" v-hasPermi="{projectName: projectName, action: 'config_environment', resource:{name:envName,type:'env'},isBtn: true }" @click="rollbackTo(scope.row)" icon="el-icon-refresh-left" size="mini">回滚</el-button>
           </template>

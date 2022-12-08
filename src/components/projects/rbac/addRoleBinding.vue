@@ -31,7 +31,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button size="small" @click="addUserFormVisible = false">取 消</el-button>
+      <el-button size="small" @click="addUserFormVisible = false">{{$t(`global.cancel`)}}</el-button>
       <el-button size="small" @click="submit()" type="primary">确 定</el-button>
     </div>
   </el-dialog>

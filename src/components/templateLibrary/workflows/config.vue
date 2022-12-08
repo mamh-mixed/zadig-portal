@@ -32,8 +32,8 @@
           >{{item.label}}</span>
         </div>
         <div>
-          <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
-          <el-button size="small" @click="cancelWorkflow">取消</el-button>
+          <el-button type="primary" size="small" @click="operateWorkflow">{{$t(`global.save`)}}</el-button>
+          <el-button size="small" @click="cancelWorkflow">{{$t(`global.cancel`)}}</el-button>
         </div>
       </header>
       <Multipane layout="horizontal" style="height: 100%;" v-show="activeName === 'ui'">
@@ -78,8 +78,8 @@
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
-              <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
-              <el-button size="mini" @click.stop="closeFooter">取消</el-button>
+              <el-button size="mini" type="primary" @click="saveJobConfig">{{$t(`global.confirm`)}}</el-button>
+              <el-button size="mini" @click.stop="closeFooter">{{$t(`global.cancel`)}}</el-button>
             </div>
           </div>
           <div v-if="payload.stages.length > 0 && job" class="main">
@@ -250,7 +250,7 @@
         @submitEvent="operateStage('',stage)"
       />
       <div slot="footer">
-        <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
+        <el-button @click="isShowStageOperateDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
       </div>
     </el-dialog>

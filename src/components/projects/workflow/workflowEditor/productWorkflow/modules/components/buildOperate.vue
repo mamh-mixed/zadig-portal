@@ -38,9 +38,9 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="100px">
+          <el-table-column :label="$t(`global.operation`)" width="100px">
             <template slot-scope="scope">
-              <el-button @click="delBuild(scope.$index,scope.row)" type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+              <el-button @click="delBuild(scope.$index,scope.row)" type="danger" icon="el-icon-delete" size="mini">{{$t(`global.delete`)}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -48,7 +48,7 @@
           <el-select v-model="form.repo" value-key="repo_name" filterable size="small" placeholder="请选择代码库" style="width: 200px;">
             <el-option v-for="repo of originRepoList" :key="repo.repo_name" :label="repo.repo_name" :value="repo"></el-option>
           </el-select>
-          <el-button @click="addBuild" type="default" size="small" icon="el-icon-plus">添加</el-button>
+          <el-button @click="addBuild" type="default" size="small" icon="el-icon-plus">{{$t(`global.add`)}}</el-button>
         </div>
       </div>
     </template>

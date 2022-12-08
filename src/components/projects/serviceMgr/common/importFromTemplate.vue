@@ -12,7 +12,7 @@
       @update:visible="$emit('update:dialogImportFromYamlVisible', $event)"
     >
       <el-form :model="importYaml" @submit.native.prevent label-position="left" ref="importYamlForm">
-        <el-form-item label="服务名称" prop="serviceName" :rules="{ required: true, message: '服务名称不能为空', trigger: ['change','blur'] }">
+        <el-form-item :label="$t(`global.serviceName`)" prop="serviceName" :rules="{ required: true, message: '服务名称不能为空', trigger: ['change','blur'] }">
           <el-input
             style="width: 400px;"
             v-model.trim="importYaml.serviceName"
@@ -71,7 +71,7 @@
         <codemirror v-model="renderedYaml" :options="importTemplateEditorOption" />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button plain native-type="submit" @click="$emit('update:dialogImportFromYamlVisible', false)" size="small">取消</el-button>
+        <el-button plain native-type="submit" @click="$emit('update:dialogImportFromYamlVisible', false)" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button
           type="primary"
           native-type="submit"

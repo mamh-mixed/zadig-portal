@@ -63,9 +63,9 @@
         <el-col :span="12">
           <div class="grid-content button-container">
             <el-button @click="stepBack"
-                       type="primary" plain>取消</el-button>
+                       type="primary" plain>{{$t(`global.cancel`)}}</el-button>
             <el-button @click="savePipeline()"
-                       type="primary">保存</el-button>
+                       type="primary">{{$t(`global.save`)}}</el-button>
           </div>
         </el-col>
       </el-row>

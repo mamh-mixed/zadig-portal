@@ -21,7 +21,7 @@
         <el-form class="basic-info"
                  label-width="100px"
                  label-position="left">
-          <el-form-item label="状态">
+          <el-form-item :label="$t(`global.status`)">
             <el-tag size="small"
                     effect="dark"
                     :type="$utils.taskElTagType(taskDetail.status)"
@@ -40,7 +40,7 @@
             {{ taskDetail.interval }}
           </el-form-item>
           <el-form-item v-if="showOperation()"
-                        label="操作">
+                        :label="$t(`global.operation`)">
             <el-button v-hasPermi="{projectName: projectName, action: 'run_test',isBtn:true}" v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
                        @click="rerun"
                        type="text"
@@ -78,7 +78,7 @@
         </el-table-column>
 
         <el-table-column prop="_target"
-                         label="名称"
+                         :label="$t(`global.name`)"
                          width="200px">
           <template slot-scope="scope">
             <span>{{$utils.showServiceName(scope.row._target)}}</span>

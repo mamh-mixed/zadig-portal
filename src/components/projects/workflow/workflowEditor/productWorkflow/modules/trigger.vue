@@ -17,11 +17,11 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        <el-tag size="mini" type="success" effect="dark" class="help-tag">帮助文档</el-tag>
+        <el-tag size="mini" type="success" effect="dark" class="help-tag">{{$t(`global.helpDoc`)}}</el-tag>
       </a>
     </div>
       <el-form :model="webhookSwap" ref="triggerForm" label-position="left" label-width="125px" :rules="rules">
-        <el-form-item label="名称" prop="name" class="bottom-22">
+        <el-form-item :label="$t(`global.name`)" prop="name" class="bottom-22">
           <el-input size="small" autofocus ref="webhookNamedRef" v-model="webhookSwap.name" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="描述">
@@ -189,8 +189,8 @@
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" round @click="webhookAddMode?webhookAddMode=false:webhookEditMode=false">取 消</el-button>
-        <el-button size="small" round type="primary" @click="validateForm('updateWebhook', webhookAddMode?'add':'save')">确定</el-button>
+        <el-button size="small" round @click="webhookAddMode?webhookAddMode=false:webhookEditMode=false">{{$t(`global.cancel`)}}</el-button>
+        <el-button size="small" round type="primary" @click="validateForm('updateWebhook', webhookAddMode?'add':'save')">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of edit webhook dialog -->
@@ -228,7 +228,7 @@
                   ref="pipelineConfig"
                 ></workflow-args>
                 <div class="timer-dialog-footer">
-                  <el-button @click="addTimerSchedule" size="small" type="primary">确定</el-button>
+                  <el-button @click="addTimerSchedule" size="small" type="primary">{{$t(`global.confirm`)}}</el-button>
                 </div>
               </template>
             </TestTimer>
@@ -249,7 +249,7 @@
           <div v-if="webhook.enabled" class="trigger-list">
             <el-button @click="addWebhookBtn" type="text">添加配置</el-button>
             <el-table class="add-border" :data="webhook.items" style="width: 100%;">
-              <el-table-column label="名称">
+              <el-table-column :label="$t(`global.name`)">
                 <template slot-scope="{ row }">
                   <span>{{ row.main_repo.name?row.main_repo.name:'' }}</span>
                 </template>
@@ -302,9 +302,9 @@
                   <span>{{ row.yaml_path || 'N/A' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="操作">
+              <el-table-column :label="$t(`global.operation`)">
                 <template slot-scope="{ $index }">
-                  <el-button @click.native.prevent="editWebhook($index)" type="text" size="small">编辑</el-button>
+                  <el-button @click.native.prevent="editWebhook($index)" type="text" size="small">{{$t(`global.edit`)}}</el-button>
                   <el-button @click.native.prevent="deleteWebhook($index)" type="text" size="small">移除</el-button>
                 </template>
               </el-table-column>

@@ -54,7 +54,7 @@ exports.default = {
     companyInfo: '筑栈（上海）信息技术有限公司 KodeRover'
   },
   sidebarMenu: {
-    delivery: '产品交付',
+    productDelivery: '产品交付',
     status: '运行状态',
     projects: '项目',
     forum: '论坛',
@@ -68,7 +68,7 @@ exports.default = {
     integration: '集成管理',
     systemIntegration: '系统集成',
     packages: '软件包管理',
-    images: '构建镜像管理',
+    images: '自定义镜像管理',
     plugins: '工作流任务',
     infraIntegration: '基础设施',
     dockerRegistry: '镜像仓库',
@@ -100,7 +100,7 @@ exports.default = {
     users: '用户管理',
     sysSetting: '系统设置',
     enterprise: '企业管理',
-    account: '账号设置',
+    profile: '账号设置',
     signOut: '登出'
   },
   profile: {

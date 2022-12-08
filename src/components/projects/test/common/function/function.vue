@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconvery-testing"
     class="function-test-manage"
   >
@@ -15,7 +15,7 @@
         ></el-option>
       </el-select>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="selectWorkflowDialogVisible = false">取 消</el-button>
+        <el-button size="small" @click="selectWorkflowDialogVisible = false">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" size="small" :disabled="!selectWorkflow" @click="bindWorkflow">确 定</el-button>
       </span>
     </el-dialog>

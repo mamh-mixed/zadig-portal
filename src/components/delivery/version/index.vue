@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconvery-versionmana"
     class="version-list-container"
   >
@@ -62,7 +62,7 @@
           <span>{{ scope.row.versionInfo.productName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" v-if="showStatus">
+      <el-table-column :label="$t(`global.status`)" v-if="showStatus">
         <template slot-scope="{ row }">
           <el-tag
             :type="helmStatusEnum[row.versionInfo.status].tag || 'info'"
@@ -77,7 +77,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="create_by" label="创建人">
+      <el-table-column prop="create_by" :label="$t(`global.creator`)">
         <template slot-scope="scope">
           <span>{{ scope.row.versionInfo.createdBy }}</span>
         </template>
@@ -87,7 +87,7 @@
           <span>{{ $utils.convertTimestamp(scope.row.versionInfo.created_at) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column :label="$t(`global.operation`)">
         <template slot-scope="scope">
           <el-button
             v-if="checkPermissionSyncMixin({type:'project',projectName: projectName, action: 'delete_delivery'})"
@@ -95,9 +95,9 @@
             @click="deleteVersion(scope.row.versionInfo)"
             type="danger"
             plain
-          >删除</el-button>
+          >{{$t(`global.delete`)}}</el-button>
           <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
-            <el-button class="permission-disabled" size="mini" type="danger" plain>删除</el-button>
+            <el-button class="permission-disabled" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
           </el-tooltip>
         </template>
       </el-table-column>

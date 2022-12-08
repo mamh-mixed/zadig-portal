@@ -8,7 +8,7 @@
         <div class="basic-left">
           <div class="primary-title not-first-child">基本信息</div>
           <el-form class="secondary-form" label-width="100px" label-position="left">
-            <el-form-item label="状态">
+            <el-form-item :label="$t(`global.status`)">
               <el-tag
                 size="small"
                 effect="dark"
@@ -35,7 +35,7 @@
                 </span>
               </router-link>
             </el-form-item>
-            <el-form-item v-if="showOperation()" label="操作">
+            <el-form-item v-if="showOperation()" :label="$t(`global.operation`)">
               <el-button
                 v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
                 v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
@@ -311,7 +311,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="_target" label="名称" width="200px">
+          <el-table-column prop="_target" :label="$t(`global.name`)" width="200px">
             <template slot-scope="scope">
               <span>{{$utils.showServiceName(scope.row._target)}}</span>
             </template>

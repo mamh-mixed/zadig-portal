@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconhelmrepo"
     class="setting-helm-container"
   >
@@ -28,8 +28,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogHelmCreateFormVisible = false">取 消</el-button>
-        <el-button :plain="true" type="success" size="small" @click="repoOperation('add')">保存</el-button>
+        <el-button size="small" @click="dialogHelmCreateFormVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" type="success" size="small" @click="repoOperation('add')">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--helm-create-dialog-->
@@ -58,8 +58,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogHelmEditFormVisible = false">取 消</el-button>
-        <el-button :plain="true" type="success" size="small" @click="repoOperation('update')">保存</el-button>
+        <el-button size="small" @click="dialogHelmEditFormVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" type="success" size="small" @click="repoOperation('update')">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--helm-edit-dialog-->
@@ -73,7 +73,7 @@
             :href="`https://docs.koderover.com/zadig/settings/helm/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
       <div class="sync-container">
@@ -91,10 +91,10 @@
                 <span>{{ scope.row.update_by }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column :label="$t(`global.operation`)">
               <template slot-scope="scope">
-                <el-button @click="repoOperation('edit',scope.row)" type="primary" size="mini" plain>编辑</el-button>
-                <el-button @click="repoOperation('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
+                <el-button @click="repoOperation('edit',scope.row)" type="primary" size="mini" plain>{{$t(`global.edit`)}}</el-button>
+                <el-button @click="repoOperation('delete',scope.row)" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
               </template>
             </el-table-column>
           </el-table>

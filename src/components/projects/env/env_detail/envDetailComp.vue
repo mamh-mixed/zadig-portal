@@ -106,8 +106,8 @@
                     :value="registry.id"
                   ></el-option>
                 </el-select>
-                <i class="icon el-icon-circle-close icon-gray" @click="editEnvImageRegistry('cancel')">取消</i>
-                <i class="icon el-icon-circle-check icon-primary" @click="editEnvImageRegistry('update')">保存</i>
+                <i class="icon el-icon-circle-close icon-gray" @click="editEnvImageRegistry('cancel')">{{$t(`global.cancel`)}}</i>
+                <i class="icon el-icon-circle-check icon-primary" @click="editEnvImageRegistry('update')">{{$t(`global.save`)}}</i>
               </div>
             </div>
           </el-col>
@@ -301,7 +301,7 @@
             服务总数
             <span class="service-number">{{ envTotal }}</span> 个
           </span>
-          <el-button icon="el-icon-refresh" type="text" @click="refreshServiceList">刷新</el-button>
+          <el-button icon="el-icon-refresh" type="text" @click="refreshServiceList">{{$t(`global.refresh`)}}</el-button>
         </div>
         <div class="env-service-list-content">
           <ChartList
@@ -329,7 +329,7 @@
           />
         </div>
         <el-table v-if="pmServiceList.length > 0" class="pm-service-container" :data="pmServiceList">
-          <el-table-column label="服务名" width="250px">
+          <el-table-column :label="$t(`global.serviceName`)" width="250px">
             <template slot-scope="scope">
               <router-link :to="setPmRoute(scope)">
                 <span class="service-name">
@@ -349,7 +349,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column align="left" label="状态" width="130px">
+          <el-table-column align="left" :label="$t(`global.status`)" width="130px">
             <template slot="header">
               状态
               <el-tooltip effect="dark" placement="top">
@@ -401,7 +401,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="center" label="操作" width="150px">
+          <el-table-column align="center" :label="$t(`global.operation`)" width="150px">
             <template slot-scope="scope">
               <span class="operation">
                 <el-tooltip
@@ -493,7 +493,7 @@
         </el-form>
       </div>
       <div slot="footer">
-        <el-button @click="envDeleteInfo.deleteDialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="envDeleteInfo.deleteDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="danger" @click="identifyDeleteEnv()" size="small">确 定</el-button>
       </div>
     </el-dialog>

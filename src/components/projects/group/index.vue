@@ -8,10 +8,10 @@
       <el-table-column label="描述信息" prop="description" />
       <el-table-column label="更新时间" prop="updated_at" />
       <el-table-column label="最后修改" prop="updated_by" />
-      <el-table-column label="操作" width="150px">
+      <el-table-column :label="$t(`global.operation`)" width="150px">
         <template slot-scope="{ row }">
-          <el-button size="mini" type="primary" @click="varGroup('edit', row)" plain>编辑</el-button>
-          <el-button size="mini" type="danger" @click="varGroup('delete', row)" plain>删除</el-button>
+          <el-button size="mini" type="primary" @click="varGroup('edit', row)" plain>{{$t(`global.edit`)}}</el-button>
+          <el-button size="mini" type="danger" @click="varGroup('delete', row)" plain>{{$t(`global.delete`)}}</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -20,7 +20,7 @@
           {{ $utils.convertTimestamp(scope.row.updateTime)}}/ {{scope.row.updateBy}}
         </template>
       </el-table-column>
-      <el-table-column width="120px" label="操作">
+      <el-table-column width="120px" :label="$t(`global.operation`)">
         <template slot-scope="scope">
           <el-button
             type="primary"

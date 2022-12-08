@@ -51,7 +51,7 @@
         :options="curItem.patch_strategy==='json' ? editorJsonOptions:editorOptions"
       ></codemirror>
       <div slot="footer">
-        <el-button @click="isShowDetail = false" size="small">确定</el-button>
+        <el-button @click="isShowDetail = false" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
   </div>

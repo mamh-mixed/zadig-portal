@@ -44,7 +44,7 @@
             <el-table-column width="150px" label="更新信息（时间/操作人）">
               <template slot-scope="scope">{{$utils.convertTimestamp(scope.row.updateTime)}}</template>
             </el-table-column>
-            <el-table-column width="120px" label="操作">
+            <el-table-column width="120px" :label="$t(`global.operation`)">
               <template slot-scope="scope">
                 <span v-if="pipeStatus.status !== 'success'">准备中，请稍后...</span>
                 <el-button v-else type="primary" size="mini" round @click="runCurrentTask(scope.row)" plain>点击运行</el-button>

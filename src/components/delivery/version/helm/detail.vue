@@ -77,7 +77,7 @@
               <el-table-column prop="chartName" label="Chart 名称"></el-table-column>
               <el-table-column prop="chartRepoName" label="Chart 仓库"></el-table-column>
               <el-table-column prop="chartVersion" label="版本库"></el-table-column>
-              <el-table-column label="操作">
+              <el-table-column :label="$t(`global.operation`)">
                 <template slot-scope="{row}">
                   <!-- <el-button type="text">预览</el-button> -->
                   <a :download="`${row.chartName}-${row.chartVersion}`" :href="downloadChartUrl(row)">

@@ -143,7 +143,7 @@
                       <VariableEditor :disabled="!editEnvIndex[scope.$index]" :varKey="scope.row.key" :value.sync="scope.row.value" />
                     </template>
                   </el-table-column>
-                  <el-table-column v-hasPermi="{projectName: projectName, action: 'edit_service'}" label="操作" width="150">
+                  <el-table-column v-hasPermi="{projectName: projectName, action: 'edit_service'}" :label="$t(`global.operation`)" width="150">
                     <template slot-scope="scope">
                       <span class="operate">
                         <el-button
@@ -151,13 +151,13 @@
                           type="text"
                           @click="editRenderKey(scope.$index,scope.row.state)"
                           class="edit"
-                        >编辑</el-button>
+                        >{{$t(`global.edit`)}}</el-button>
                         <el-button
                           v-if="editEnvIndex[scope.$index]"
                           type="text"
                           @click="saveRenderKey(scope.$index,scope.row.state)"
                           class="edit"
-                        >保存</el-button>
+                        >{{$t(`global.save`)}}</el-button>
                         <el-button
                           v-if="scope.row.state === 'unused'"
                           type="text"
@@ -205,7 +205,7 @@
                       <template>
                         <span style="display: inline-block; margin-bottom: 15px;">
                           <el-button @click="addRenderKey()" type="text">确认</el-button>
-                          <el-button @click="addKeyInputVisable=false" type="text">取消</el-button>
+                          <el-button @click="addKeyInputVisable=false" type="text">{{$t(`global.cancel`)}}</el-button>
                         </span>
                       </template>
                     </el-table-column>

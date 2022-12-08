@@ -40,7 +40,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item v-hasPermi="{projectName: projectName, operator: 'or', actions: ['delete_scan'],isBtn: true}" @click.native="removeCodeScanner(scannerInfo)">
-            <span>删除</span>
+            <span>{{$t(`global.delete`)}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

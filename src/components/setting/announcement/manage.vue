@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading"
-       element-loading-text="加载中..."
+       :element-loading-text="$t(`global.loading`)"
        element-loading-spinner="iconfont iconfont-loading icongonggao"
        class="setting-anno-container">
     <!--announcement-create-dialog-->
@@ -51,11 +51,11 @@
       <div slot="footer"
            class="dialog-footer">
         <el-button size="small"
-                   @click="dialogAnnouncementCreateFormVisible = false">取 消</el-button>
+                   @click="dialogAnnouncementCreateFormVisible = false">{{$t(`global.cancel`)}}</el-button>
         <el-button :plain="true"
                    type="success"
                    size="small"
-                   @click="announcementOperation('add')">保存</el-button>
+                   @click="announcementOperation('add')">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--announcement-create-dialog-->
@@ -109,11 +109,11 @@
       <div slot="footer"
            class="dialog-footer">
         <el-button size="small"
-                   @click="dialogAnnouncementEditFormVisible = false">取 消</el-button>
+                   @click="dialogAnnouncementEditFormVisible = false">{{$t(`global.cancel`)}}</el-button>
         <el-button size="small"
                    :plain="true"
                    type="success"
-                   @click="announcementOperation('update')">保存</el-button>
+                   @click="announcementOperation('update')">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <div class="section">
@@ -167,13 +167,13 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="操作">
+            <el-table-column :label="$t(`global.operation`)">
               <template slot-scope="scope">
                 <el-button @click="announcementOperation('edit',scope.row)"
-                           size="mini" type="primary" plain>编辑</el-button>
+                           size="mini" type="primary" plain>{{$t(`global.edit`)}}</el-button>
                 <el-button @click="announcementOperation('delete',scope.row)"
                            size="mini"
-                           type="danger" plain>删除</el-button>
+                           type="danger" plain>{{$t(`global.delete`)}}</el-button>
               </template>
             </el-table-column>
           </el-table>

@@ -10,7 +10,7 @@
                  type="primary"
                  :href="`https://docs.koderover.com/zadig/settings/jenkins/`"
                  :underline="false"
-                 target="_blank">帮助文档</el-link> 。
+                 target="_blank">{{$t(`global.helpDoc`)}}</el-link> 。
       </template>
     </el-alert>
     <div class="sync-container">
@@ -19,7 +19,7 @@
         type="primary"
         plain
         @click="handleJenkinsaAdd"
-        >添加</el-button
+        >{{$t(`global.add`)}}</el-button
       >
     </div>
     <div class="jeknins-container">

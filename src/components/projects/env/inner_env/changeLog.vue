@@ -34,7 +34,7 @@
               <template slot-scope="{ row }">{{$utils.convertTimestamp(row.created_at,'yyyy-mm-dd-ss')}}</template>
             </el-table-column>
             <el-table-column label="用户名" prop="username"></el-table-column>
-            <el-table-column label="操作" prop="method"></el-table-column>
+            <el-table-column :label="$t(`global.operation`)" prop="method"></el-table-column>
             <el-table-column label="功能" prop="function"></el-table-column>
             <el-table-column label="详情" prop="name"></el-table-column>
             <el-table-column width="120px" label="状态码">

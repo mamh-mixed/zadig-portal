@@ -24,7 +24,7 @@
           <span>{{payload.task_revoker}}</span>
         </el-col>
         <el-col :span="1" v-if="payload.status==='waiting'||payload.status==='running'">
-          <el-button size="small" @click="cancel">取消</el-button>
+          <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
         </el-col>
       </el-row>
     </header>

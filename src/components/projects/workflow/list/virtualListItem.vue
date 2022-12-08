@@ -63,7 +63,7 @@
             v-hasPermi="{projectName: workflow.projectName, action: 'delete_workflow',resource:{type:'workflow',name:workflow.name},isBtn:true}"
             @click.native="deleteCustomWorkflow(workflow)"
           >
-            <span>删除</span>
+            <span>{{$t(`global.delete`)}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -106,13 +106,13 @@
             v-hasPermi="{projectName: workflow.projectName, action: 'create_workflow',resource:{type:'workflow',name:workflow.name},isBtn:true}"
             @click.native="copyProductWorkflow(workflow)"
           >
-            <span>复制</span>
+            <span>{{$t(`global.copy`)}}</span>
           </el-dropdown-item>
           <el-dropdown-item
             v-hasPermi="{projectName: workflow.projectName, action: 'delete_workflow',resource:{type:'workflow',name:workflow.name},isBtn:true}"
             @click.native="deleteProductWorkflow(workflow)"
           >
-            <span>删除</span>
+            <span>{{$t(`global.delete`)}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -129,8 +129,8 @@
           </el-form-item>
         </el-form>
         <span slot="footer">
-          <el-button type="primary" size="small" @click="submitForm('copyForm')">确定</el-button>
-          <el-button size="small" @click="resetForm('copyForm')">取消</el-button>
+          <el-button type="primary" size="small" @click="submitForm('copyForm')">{{$t(`global.confirm`)}}</el-button>
+          <el-button size="small" @click="resetForm('copyForm')">{{$t(`global.cancel`)}}</el-button>
         </span>
       </el-dialog>
     </template>

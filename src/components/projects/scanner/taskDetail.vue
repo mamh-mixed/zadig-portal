@@ -5,7 +5,7 @@
         <div class="basic-left">
           <div class="primary-title not-first-child">基本信息</div>
           <el-form class="secondary-form" label-width="100px" label-position="left">
-            <el-form-item label="状态">
+            <el-form-item :label="$t(`global.status`)">
               <el-tag
                 size="small"
                 effect="dark"
@@ -16,7 +16,7 @@
             <el-form-item label="创建者">{{ taskDetail.creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
             <el-form-item label="持续时间">{{ taskDetail.interval }}</el-form-item>
-            <el-form-item v-if="showOperation()" label="操作">
+            <el-form-item v-if="showOperation()" :label="$t(`global.operation`)">
               <!-- <el-button
                 v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"
                 @click="rerun"
@@ -51,7 +51,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="名称" width="200px">
+          <el-table-column :label="$t(`global.name`)" width="200px">
             <template>
               <span>{{scannerName}}</span>
             </template>
@@ -63,7 +63,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="状态">
+          <el-table-column :label="$t(`global.status`)">
             <template slot-scope="scope">
               <span :class="colorTranslation(scope.row.status, 'pipeline', 'task')">{{ myTranslate(scope.row.status) }}</span>
               <span style="margin-left: 10px;">{{ makePrettyElapsedTime(scope.row) }}</span>

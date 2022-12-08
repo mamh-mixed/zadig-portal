@@ -23,7 +23,7 @@
         </ul>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" type="primary" @click="dialogVisible = false">确定</el-button>
+        <el-button size="small" type="primary" @click="dialogVisible = false">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
   </div>

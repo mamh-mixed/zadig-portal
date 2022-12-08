@@ -54,7 +54,7 @@ exports.default = {
     companyInfo: 'KodeRover Technology Co., Ltd.'
   },
   sidebarMenu: {
-    delivery: 'Delivery',
+    productDelivery: 'Product Delivery',
     status: 'Status',
     projects: 'Projects',
     forum: 'Forum',
@@ -82,12 +82,12 @@ exports.default = {
     announcement: 'Announcement',
     auditLog: 'Audit Log',
     enterprise: 'Enterprise',
-    enterpriseInfo: 'Info',
+    enterpriseInfo: 'Enterprise Info',
     license: 'License',
     releaseCenter: 'Release',
     releaseWorkflows: 'Workflows',
     environmentGroups: 'Environments',
-    customerDelivery: 'Delivery',
+    customerDelivery: 'Customer Delivery',
     deliveryBoard: 'Board',
     deliveryVersion: 'Version',
     deliveryCustomers: 'Customers'
@@ -100,7 +100,7 @@ exports.default = {
     users: 'Users',
     sysSetting: 'System Setting',
     enterprise: 'Enterprise',
-    account: 'Account',
+    profile: 'Profile',
     signOut: 'Sign Out'
   },
   profile: {

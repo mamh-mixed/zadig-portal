@@ -35,7 +35,7 @@
             <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true, disabled:disabledSave}" type="primary"
                        size="small"
                        :disabled="disabledSave"
-                       @click="updateFile">保存</el-button>
+                       @click="updateFile">{{$t(`global.save`)}}</el-button>
             <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true}" type="default"
                        size="small"
                        @click="multiUpdate">应用到服务</el-button>

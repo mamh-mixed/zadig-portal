@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading"
-       element-loading-text="加载中..."
+       :element-loading-text="$t(`global.loading`)"
        element-loading-spinner="iconfont iconfont-loading iconjingxiang"
        class="setting-img-container">
     <!--imgs-create-dialog-->
@@ -29,11 +29,11 @@
       <div slot="footer"
            class="dialog-footer">
         <el-button size="small"
-                   @click="dialogImgCreateFormVisible = false">取 消</el-button>
+                   @click="dialogImgCreateFormVisible = false">{{$t(`global.cancel`)}}</el-button>
         <el-button :plain="true"
                    type="success"
                    size="small"
-                   @click="addImg">保存</el-button>
+                   @click="addImg">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--imgs-create-dialog-->
@@ -63,11 +63,11 @@
       <div slot="footer"
            class="dialog-footer">
         <el-button size="small"
-                   @click="dialogImgEditFormVisible = false">取 消</el-button>
+                   @click="dialogImgEditFormVisible = false">{{$t(`global.cancel`)}}</el-button>
         <el-button size="small"
                    :plain="true"
                    @click="updateImg"
-                   type="success">保存</el-button>
+                   type="success">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--imgs-edit-dialog-->
@@ -80,7 +80,7 @@
                      type="primary"
                      href="https://docs.koderover.com/zadig/settings/custom-image/"
                      :underline="false"
-                     target="_blank">帮助文档</el-link>
+                     target="_blank">{{$t(`global.helpDoc`)}}</el-link>
           </span><br>
         </template>
       </el-alert>
@@ -88,7 +88,7 @@
         <el-button :plain="true"
                    @click="dialogImgCreateFormVisible=true"
                    size="small"
-                   type="success">添加</el-button>
+                   type="success">{{$t(`global.add`)}}</el-button>
       </div>
       <div class="img-list">
         <template>
@@ -104,14 +104,14 @@
                 <span>{{scope.row.value}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column :label="$t(`global.operation`)">
               <template slot-scope="scope">
                 <el-button @click="editImg(scope.row)"
                            type="primary"
-                           size="mini" plain>编辑</el-button>
+                           size="mini" plain>{{$t(`global.edit`)}}</el-button>
                 <el-button size="mini"
                            @click="deleteImg(scope.row)"
-                           type="danger" plain>删除</el-button>
+                           type="danger" plain>{{$t(`global.delete`)}}</el-button>
               </template>
             </el-table-column>
           </el-table>

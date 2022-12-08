@@ -53,7 +53,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="状态">
+            <el-table-column :label="$t(`global.status`)">
               <template slot-scope="scope">
                 <span class="health-check"
                       :class="statusColorMap[scope.row.status]">{{statusTranslation[scope.row.status]}}</span>

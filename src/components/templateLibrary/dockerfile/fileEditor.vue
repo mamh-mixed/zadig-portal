@@ -33,7 +33,7 @@
             <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template',isBtn:true, disabled: disabledSave }" type="primary"
                        size="small"
                        :disabled="disabledSave"
-                       @click="updateFile">保存</el-button>
+                       @click="updateFile">{{$t(`global.save`)}}</el-button>
           </div>
         </div>
     </div>

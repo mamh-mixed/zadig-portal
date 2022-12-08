@@ -14,7 +14,7 @@
         </el-table-column>
         <el-table-column width="300">
           <template slot-scope="{ row }">
-            <el-button @click="jumpEnvConfig('edit', row)" size="mini" icon="el-icon-edit">编辑</el-button>
+            <el-button @click="jumpEnvConfig('edit', row)" size="mini" icon="el-icon-edit">{{$t(`global.edit`)}}</el-button>
             <el-button @click="jumpEnvConfig('history', row)" size="mini" icon="el-icon-notebook-2">历史版本</el-button>
           </template>
         </el-table-column>
