@@ -559,7 +559,7 @@
       </el-collapse>
       <el-button
         @click="runTask"
-        :disabled="hasPlutus && isShowCheckErrorTip"
+        :disabled="hasPlutus && notReady"
         :loading="startTaskLoading"
         type="primary"
         size="small"
@@ -626,6 +626,7 @@ export default {
       dockerList: [],
       startTaskLoading: false,
       activeName: ['env', '00'],
+      notReady: false,
       payload: {
         workflow_name: '',
         stages: [
@@ -872,12 +873,13 @@ export default {
           this.isShowCheckErrorTip = false
         })
         .catch(error => {
-          if (error) {
+          if (error.response && error.response.data.code === 6940) {
             this.isShowCheckErrorTip = true
             this.mailInfo.originMail = error.response.data.description.split(
               'email: '
             )[1]
           }
+          this.notReady = true
         })
     },
     updateUser () {
