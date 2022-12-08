@@ -186,7 +186,18 @@ export default {
     },
     operate (row = {}, type) {
       this.dialogVisible = true
-      this.approvalInfo = cloneDeep(row)
+      if (type === 'edit') {
+        this.approvalInfo = cloneDeep(row)
+        this.validate()
+      } else {
+        this.approvalInfo = {
+          type: 'lark',
+          name: '',
+          app_id: '',
+          app_secret: '',
+          encrypt_key: ''
+        }
+      }
       this.operateType = type
     },
     copyCommandSuccess (event) {
