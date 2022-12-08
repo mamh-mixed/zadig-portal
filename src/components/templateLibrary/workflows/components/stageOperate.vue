@@ -91,8 +91,13 @@
       append-to-body
     >
       <span>当前位置：</span>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item v-for="(item,index) in breadMenu" :key="item.id" @click.native="handleBreadMenuClick(item,index)">{{item.label}}</el-breadcrumb-item>
+      <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8 mg-b8">
+        <el-breadcrumb-item
+          v-for="(item,index) in breadMenu"
+          :key="item.id"
+          @click.native="handleBreadMenuClick(item,index)"
+          style="cursor: pointer;"
+        >{{item.label}}</el-breadcrumb-item>
       </el-breadcrumb>
       <el-transfer
         v-loading="loading"
@@ -246,6 +251,8 @@ export default {
     },
     handleBreadMenuClick (item, index) {
       this.departmentId = item.id
+      if (index === this.breadMenu.length - 1) return
+
       if (index > 0) {
         this.breadMenu = this.breadMenu.slice(0, index)
       } else {
