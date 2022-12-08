@@ -2,12 +2,12 @@
   <div
     v-loading="loading"
     class="artifacts-container"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconvery-delitracking"
   >
     <div class="operation">
       <el-select style="width: 160px; margin-right: 16px;" size="medium" v-model="filterKey" @change="changeKey" placeholder="请选择">
-        <el-option label="服务名称" width="180px" value="name"></el-option>
+        <el-option :label="$t(`global.serviceName`)" width="180px" value="name"></el-option>
         <el-option label="交付物类型" width="80px" value="type"></el-option>
         <el-option label="镜像名称" value="image_tag"></el-option>
         <el-option label="代码仓库" value="repo_name"></el-option>
@@ -57,7 +57,7 @@
       ></el-input>
     </div>
     <el-table :data="filteredArtifacts" v-show="artifacts.length > 0" style="width: 100%;">
-      <el-table-column label="名称">
+      <el-table-column :label="$t(`global.name`)">
         <template slot-scope="scope">
           <el-tooltip :content="scope.row.image" placement="top" effect="dark">
             <router-link class="artifact-link" :to="`/v1/delivery/artifacts/detail/${scope.row.id}?name=${scope.row.name}`">

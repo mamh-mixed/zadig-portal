@@ -34,8 +34,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" native-type="submit" size="small" @click="addUserOperation" class="start-create">确定</el-button>
-        <el-button plain native-type="submit" size="small" @click="dialogAddUserVisible = false">取消</el-button>
+        <el-button type="primary" native-type="submit" size="small" @click="addUserOperation" class="start-create">{{$t(`global.confirm`)}}</el-button>
+        <el-button plain native-type="submit" size="small" @click="dialogAddUserVisible = false">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of add user dialog-->
@@ -74,7 +74,7 @@
     </div>
     <div
       v-loading="loading"
-      element-loading-text="加载中..."
+      :element-loading-text="$t(`global.loading`)"
       element-loading-spinner="iconfont iconfont-loading icongeren"
       class="users-container"
     >
@@ -123,10 +123,10 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="280">
+        <el-table-column :label="$t(`global.operation`)" width="280">
           <template slot-scope="scope">
-            <el-button @click="editUserInfo(scope.row)" type="primary" size="mini" plain>编辑</el-button>
-            <el-button @click="deleteUser(scope.row)" type="danger" size="mini" plain>删除</el-button>
+            <el-button @click="editUserInfo(scope.row)" type="primary" size="mini" plain>{{$t(`global.edit`)}}</el-button>
+            <el-button @click="deleteUser(scope.row)" type="danger" size="mini" plain>{{$t(`global.delete`)}}</el-button>
           </template>
         </el-table-column>
       </el-table>

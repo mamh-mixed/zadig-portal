@@ -89,7 +89,7 @@
                 @input="handleInputChange"
                 placeholder="请输入 Release 名称"
               ></el-input>
-              <el-button size="mini" @click="renamingHelmRelease" :disabled="!isProjectAdmin" type="primary" plain>保存</el-button>
+              <el-button size="mini" @click="renamingHelmRelease" :disabled="!isProjectAdmin" type="primary" plain>{{$t(`global.save`)}}</el-button>
             </div>
           </div>
         </div>

@@ -128,7 +128,7 @@
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogImportFromRepoVisible=false" plain>取消</el-button>
+        <el-button size="small" @click="dialogImportFromRepoVisible=false" plain>{{$t(`global.cancel`)}}</el-button>
         <el-button
           size="small"
           type="primary"

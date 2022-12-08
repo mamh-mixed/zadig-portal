@@ -30,7 +30,7 @@
         <span v-if="parseErr" class="error-msg">{{parseErr}}</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="showMultiImport = false">取 消</el-button>
+        <el-button size="small" @click="showMultiImport = false">{{$t(`global.cancel`)}}</el-button>
         <el-button size="small" type="primary" @click="parseMultiImport">确 定</el-button>
       </span>
     </el-dialog>

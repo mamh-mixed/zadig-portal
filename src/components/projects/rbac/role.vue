@@ -16,10 +16,10 @@
           <span>{{scope.row.isPublic ? '公共角色': '私有角色'}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column :label="$t(`global.operation`)">
         <template slot-scope="scope">
-          <el-button @click="editrole(scope.row)" v-if="scope.row.name !== 'admin' || !scope.row.isPublic"  size="mini" type="primary" plain>编辑</el-button>
-          <el-button @click="deleteRole(scope.row)"  v-if="scope.row.name !== 'admin' || !scope.row.isPublic"  size="mini" type="danger" plain>删除</el-button>
+          <el-button @click="editrole(scope.row)" v-if="scope.row.name !== 'admin' || !scope.row.isPublic"  size="mini" type="primary" plain>{{$t(`global.edit`)}}</el-button>
+          <el-button @click="deleteRole(scope.row)"  v-if="scope.row.name !== 'admin' || !scope.row.isPublic"  size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
         </template>
       </el-table-column>
     </el-table>

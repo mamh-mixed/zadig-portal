@@ -3,7 +3,7 @@
     <div
       v-loading="workflowListLoading"
       class="pipeline-loading"
-      element-loading-text="加载中..."
+      :element-loading-text="$t(`global.loading`)"
       element-loading-spinner="iconfont iconfont-loading icongongzuoliucheng"
     >
       <ul class="workflow-ul">
@@ -96,7 +96,7 @@
         <div class="type-desc" v-if="hasPlutus">可自由编排发布流程，具备蓝绿、金丝雀、灰度发布等能力</div>
       </div>
       <div slot="footer">
-        <el-button size="small" @click="showSelectWorkflowType = false">取 消</el-button>
+        <el-button size="small" @click="showSelectWorkflowType = false">{{$t(`global.cancel`)}}</el-button>
         <el-button size="small" type="primary" @click="createWorkflow">确 定</el-button>
       </div>
     </el-dialog>
@@ -138,8 +138,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" size="small" @click="editView('workflowViewForm')">确定</el-button>
-        <el-button size="small" @click="cancelEditView('workflowViewForm')">取消</el-button>
+        <el-button type="primary" size="small" @click="editView('workflowViewForm')">{{$t(`global.confirm`)}}</el-button>
+        <el-button size="small" @click="cancelEditView('workflowViewForm')">{{$t(`global.cancel`)}}</el-button>
       </span>
     </el-dialog>
     <el-dialog title="选择模板" :visible.sync="showWorkflowTemplateDialog" :close-on-click-modal="false" class="model-dialog" width="60%">

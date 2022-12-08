@@ -1,7 +1,7 @@
 
 <template>
   <el-table :data="currentResource" style="width: 100%;">
-    <el-table-column prop="service_name" label="服务名称"></el-table-column>
+    <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
     <el-table-column>
       <span slot="header">
         资源检测
@@ -16,7 +16,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="操作" width="200px">
+    <el-table-column :label="$t(`global.operation`)" width="200px">
       <template slot-scope="{ row }">
         <el-radio-group v-model="row.deploy_strategy">
           <el-radio label="import" :disabled="!row.deployed">仅导入服务</el-radio>

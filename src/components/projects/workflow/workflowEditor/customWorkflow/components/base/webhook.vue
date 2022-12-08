@@ -1,6 +1,6 @@
 <template>
   <div class="webhook">
-    <el-button type="primary" size="mini" icon="el-icon-plus" plain @click="triggerTypeDialogVisible = true">添加</el-button>
+    <el-button type="primary" size="mini" icon="el-icon-plus" plain @click="triggerTypeDialogVisible = true">{{$t(`global.add`)}}</el-button>
     <div>
       <el-row :gutter="20" class="webhook-row" v-for="(item,index) in webhooks" :key="index">
         <el-col :span="2">
@@ -125,7 +125,7 @@
       append-to-body
     >
       <el-form ref="webhookForm" :model="currentWebhook" label-position="left" label-width="90px" :rules="webhookRules">
-        <el-form-item label="名称" prop="name">
+        <el-form-item :label="$t(`global.name`)" prop="name">
           <el-input
             size="small"
             autofocus
@@ -254,7 +254,7 @@
         />
       </div>
       <div slot="footer">
-        <el-button @click="webhookDialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="webhookDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="saveWebhook" size="small">确 定</el-button>
       </div>
     </el-dialog>
@@ -335,7 +335,7 @@
         <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
       </div>
       <div slot="footer">
-        <el-button @click="timerDialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="timerDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="saveTimer" size="small">确 定</el-button>
       </div>
     </el-dialog>
@@ -370,7 +370,7 @@
         </div>
       </div>
       <div slot="footer">
-        <el-button @click="triggerTypeDialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="triggerTypeDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <!-- <el-button type="primary" @click="triggerTypeDialogVisible = false" size="small">确 定</el-button> -->
       </div>
     </el-dialog>

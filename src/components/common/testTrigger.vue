@@ -119,7 +119,7 @@
         <el-button size="mini"
                    round
                    type="primary"
-                   @click="webhookAddMode?addWebhook():saveWebhook()">确定</el-button>
+                   @click="webhookAddMode?addWebhook():saveWebhook()">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of edit webhook dialog -->
@@ -166,7 +166,7 @@
                 <span v-else-if="scope.row.main_repo.source==='gerrit'"> N/A </span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column :label="$t(`global.operation`)" width="150">
               <template slot-scope="scope">
                 <el-button @click.native.prevent="editWebhook(scope.$index)"
                            type="primary"

@@ -28,8 +28,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" native-type="submit" size="small" @click="handleUserInfoUpdate()" class="start-create">确定</el-button>
-      <el-button plain native-type="submit" size="small" @click="dialogEditRoleVisible = false">取消</el-button>
+      <el-button type="primary" native-type="submit" size="small" @click="handleUserInfoUpdate()" class="start-create">{{$t(`global.confirm`)}}</el-button>
+      <el-button plain native-type="submit" size="small" @click="dialogEditRoleVisible = false">{{$t(`global.cancel`)}}</el-button>
     </div>
   </el-dialog>
 </template>

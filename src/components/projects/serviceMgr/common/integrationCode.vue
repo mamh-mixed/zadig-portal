@@ -22,7 +22,7 @@
             :href="`https://docs.koderover.com/zadig/settings/codehost/gitlab/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </span>
       </slot>
     </el-alert>
@@ -46,7 +46,7 @@
             :href="`https://docs.koderover.com/zadig/settings/codehost/github/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </span>
       </slot>
     </el-alert>
@@ -60,7 +60,7 @@
             href="https://docs.koderover.com/zadig/settings/codehost/gerrit/"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </span>
       </slot>
     </el-alert>
@@ -85,7 +85,7 @@
             :href="`https://docs.koderover.com/zadig/settings/codehost/gitee/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </span>
       </slot>
     </el-alert>
@@ -110,7 +110,7 @@
             :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </span>
       </slot>
     </el-alert>
@@ -126,7 +126,7 @@
             :href="`https://docs.koderover.com/zadig/settings/codehost/others/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </span>
       </slot>
     </el-alert>
@@ -226,7 +226,7 @@
         class="start-create"
         @click="createCodeConfig"
       >{{(codeAdd.type==='gerrit'||codeAdd.type==='other')?'确定':'前往授权'}}</el-button>
-      <el-button plain native-type="submit" size="small" @click="cancel">取消</el-button>
+      <el-button plain native-type="submit" size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
     </div>
   </div>
 </template>

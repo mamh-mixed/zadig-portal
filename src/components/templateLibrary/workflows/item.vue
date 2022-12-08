@@ -24,7 +24,7 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="deleteModel(modelInfo)">
-              <span>删除</span>
+              <span>{{$t(`global.delete`)}}</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

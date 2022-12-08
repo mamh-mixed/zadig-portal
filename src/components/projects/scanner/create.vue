@@ -10,7 +10,7 @@
         label-position="left"
         inline-message
       >
-        <el-form-item label="名称" prop="name">
+        <el-form-item :label="$t(`global.name`)" prop="name">
           <el-input v-model="scannerConfig.name" placeholder="请输入代码扫描名称" autofocus size="small" :disabled="isEdit" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="描述信息">
@@ -54,7 +54,7 @@
             ></el-option>
           </el-select>
           <span>
-            <el-button v-if="scannerConfig.installs.length >= 1" @click="deleteApp(appIndex)" type="danger" size="mini" plain>删除</el-button>
+            <el-button v-if="scannerConfig.installs.length >= 1" @click="deleteApp(appIndex)" type="danger" size="mini" plain>{{$t(`global.delete`)}}</el-button>
             <el-button v-if="appIndex===scannerConfig.installs.length-1" @click="addApp(appIndex)" type="primary" size="mini" plain>新增</el-button>
           </span>
         </el-form-item>
@@ -141,7 +141,7 @@
 
     <footer class="create-footer">
       <router-link :to="`/v1/projects/detail/${projectName}/scanner`">
-        <el-button style="margin-right: 15px;" type="primary" :disabled="saveLoading" plain>取消</el-button>
+        <el-button style="margin-right: 15px;" type="primary" :disabled="saveLoading" plain>{{$t(`global.cancel`)}}</el-button>
       </router-link>
       <el-button
         v-hasPermi="{projectName: projectName, action: isEdit?'edit_scan':'create_scan',isBtn:true}"

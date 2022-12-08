@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconjiqun"
     class="setting-cluster-container"
   >
@@ -28,7 +28,7 @@
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button :plain="true" size="small" type="primary" @click="dialogClusterAccessVisible=false">确定</el-button>
+        <el-button :plain="true" size="small" type="primary" @click="dialogClusterAccessVisible=false">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <!--Cluster-access-dialog-->
@@ -72,7 +72,7 @@
             <el-option value="kubeconfig" label="直接连接"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="名称" prop="name">
+        <el-form-item :label="$t(`global.name`)" prop="name">
           <el-input size="small" v-model="cluster.name" placeholder="请输入集群名称"></el-input>
         </el-form-item>
         <el-form-item label="集群提供商" prop="provider">
@@ -403,8 +403,8 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogClusterFormVisible = false">取 消</el-button>
-        <el-button :plain="true" size="small" type="success" @click="clusterOperation(isEdit ? 'update' : 'add')">保存</el-button>
+        <el-button size="small" @click="dialogClusterFormVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" size="small" type="success" @click="clusterOperation(isEdit ? 'update' : 'add')">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--Cluster-dialog-->
@@ -419,7 +419,7 @@
             :href="`https://docs.koderover.com/zadig/pages/cluster_manage/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
       <div class="sync-container">
@@ -428,7 +428,7 @@
       <div class="cluster-list">
         <template>
           <el-table :data="allCluster" style="width: 100%;" :row-class-name="tableRowClassName">
-            <el-table-column label="名称">
+            <el-table-column :label="$t(`global.name`)">
               <template slot-scope="scope">
                 <i v-if="scope.row.local" class="iconfont iconvery-k8s"></i>
                 <i v-else :class="getProviderMap(scope.row.provider,'icon')"></i>
@@ -436,7 +436,7 @@
                 <span v-else>{{scope.row.name}}</span>
               </template>
             </el-table-column>
-            <el-table-column width="120" label="状态">
+            <el-table-column width="120" :label="$t(`global.status`)">
               <template slot-scope="scope">
                 <el-tag size="small" effect="dark" :type="statusIndicator[scope.row.status]">{{myTranslate(scope.row.status)}}</el-tag>
               </template>
@@ -454,13 +454,13 @@
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column label="创建人">
+            <el-table-column :label="$t(`global.creator`)">
               <template slot-scope="scope">
                 <span>{{scope.row.createdBy}}</span>
               </template>
             </el-table-column>
 
-            <el-table-column width="310" label="操作">
+            <el-table-column width="310" :label="$t(`global.operation`)">
               <template slot-scope="scope">
                 <span v-show="!scope.row.local && scope.row.type !== 'kubeconfig'">
                   <el-button
@@ -471,8 +471,8 @@
                   <el-button v-if="scope.row.status==='normal'" @click="clusterOperation('disconnect',scope.row)" size="mini">断开</el-button>
                   <el-button v-if="scope.row.status==='disconnected'" @click="clusterOperation('recover',scope.row)" size="mini">恢复</el-button>
                 </span>
-                <el-button @click="clusterOperation('edit',scope.row)" type="primary" size="mini" plain>编辑</el-button>
-                <el-button v-show="!scope.row.local" @click="clusterOperation('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
+                <el-button @click="clusterOperation('edit',scope.row)" type="primary" size="mini" plain>{{$t(`global.edit`)}}</el-button>
+                <el-button v-show="!scope.row.local" @click="clusterOperation('delete',scope.row)" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
                 <el-tooltip effect="dark" content="更新 Zadig 系统管理集群的相关组件" placement="top">
                   <el-button v-if="!scope.row.local" :disabled="scope.row.type === 'agent' && scope.row.status !== 'normal'" @click="updateAgent(scope.row)" size="mini" type="primary" plain>更新组件</el-button>
                 </el-tooltip>

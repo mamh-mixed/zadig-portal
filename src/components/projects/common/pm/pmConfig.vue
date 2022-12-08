@@ -26,7 +26,7 @@
       <template v-slot:serviceName>
         <el-form-item
           prop="service_name"
-          label="服务名称"
+          :label="$t(`global.serviceName`)"
           :rules="{
             type: 'string',
             required: true,
@@ -254,7 +254,7 @@
         size="small"
         type="primary"
         @click="savePmService"
-      >保存</el-button>
+      >{{$t(`global.save`)}}</el-button>
     </div>
   </div>
 </template>

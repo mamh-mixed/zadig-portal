@@ -19,7 +19,7 @@
     <el-dialog title="环境配置 - 从代码库导入" :visible.sync="showGitImportDialog" append-to-body>
       <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" :fileType="'k8sYaml'" showAutoSync />
       <div slot="footer">
-        <el-button @click="showGitImportDialog = false" size="small">取 消</el-button>
+        <el-button @click="showGitImportDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="importConfigYaml" size="small" :loading="loadValueYamls">导 入</el-button>
       </div>
     </el-dialog>

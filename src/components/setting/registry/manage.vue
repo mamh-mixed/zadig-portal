@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading icondocker"
     class="setting-registry-container"
   >
@@ -91,8 +91,8 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogRegistryFormVisible = false">取 消</el-button>
-        <el-button :plain="true" type="success" size="small" @click="mode === 'create' ? registryAction('add'): registryAction('update')">保存</el-button>
+        <el-button size="small" @click="dialogRegistryFormVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" type="success" size="small" @click="mode === 'create' ? registryAction('add'): registryAction('update')">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--registry-create-dialog-->
@@ -106,7 +106,7 @@
             :href="`https://docs.koderover.com/zadig/settings/image-registry/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
       <div class="sync-container">
@@ -140,10 +140,10 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="操作" width="180px">
+            <el-table-column :label="$t(`global.operation`)" width="180px">
               <template slot-scope="scope">
-                <el-button @click="registryAction('edit',scope.row)" size="mini" type="primary" plain>编辑</el-button>
-                <el-button @click="registryAction('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
+                <el-button @click="registryAction('edit',scope.row)" size="mini" type="primary" plain>{{$t(`global.edit`)}}</el-button>
+                <el-button @click="registryAction('delete',scope.row)" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
               </template>
             </el-table-column>
           </el-table>

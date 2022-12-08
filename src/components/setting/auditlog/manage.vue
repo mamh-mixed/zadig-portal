@@ -71,7 +71,7 @@
               </template>
             </el-table-column>
             <el-table-column width="100px"
-                             label="操作">
+                             :label="$t(`global.operation`)">
               <template slot-scope="scope">
                 {{scope.row.method}}
               </template>

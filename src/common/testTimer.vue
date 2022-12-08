@@ -110,7 +110,7 @@
            class="dialog-footer">
         <el-button size="small"
                    @click="cancelSchedule()"
-                   round>取 消</el-button>
+                   round>{{$t(`global.cancel`)}}</el-button>
         <el-button size="small"
                    type="primary"
                    @click="addSchedule"
@@ -138,16 +138,16 @@
               {{ row.cron }}
             </span>
           </el-table-column>
-          <el-table-column label="操作"
+          <el-table-column :label="$t(`global.operation`)"
                            #default="{ $index }">
             <el-button @click="editSchedule($index)"
                        size="mini"
                        type="primary"
-                       plain>编辑</el-button>
+                       plain>{{$t(`global.edit`)}}</el-button>
             <el-button @click="deleteSchedule($index)"
                        size="mini"
                        type="danger"
-                       plain>删除</el-button>
+                       plain>{{$t(`global.delete`)}}</el-button>
           </el-table-column>
         </el-table>
       </div>

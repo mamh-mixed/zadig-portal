@@ -12,17 +12,17 @@
     </div>
     <div
       v-loading="loading"
-      element-loading-text="加载中..."
+      :element-loading-text="$t(`global.loading`)"
       element-loading-spinner="iconfont iconfont-loading icongeren"
       class="roles-container"
     >
       <el-table :data="roles">
         <el-table-column prop="name" label="角色名称"></el-table-column>
         <el-table-column prop="desc" label="描述信息"></el-table-column>
-        <el-table-column label="操作" width="280">
+        <el-table-column :label="$t(`global.operation`)" width="280">
           <template slot-scope="scope">
-            <el-button :disabled="scope.row.name === 'admin'" @click="roleOperate('edit',scope.row)" type="primary" size="mini" plain>编辑</el-button>
-            <el-button :disabled="scope.row.name === 'admin'" @click="deleteRole(scope.row)" type="danger" size="mini" plain>删除</el-button>
+            <el-button :disabled="scope.row.name === 'admin'" @click="roleOperate('edit',scope.row)" type="primary" size="mini" plain>{{$t(`global.edit`)}}</el-button>
+            <el-button :disabled="scope.row.name === 'admin'" @click="deleteRole(scope.row)" type="danger" size="mini" plain>{{$t(`global.delete`)}}</el-button>
           </template>
         </el-table-column>
       </el-table>

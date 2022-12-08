@@ -113,7 +113,7 @@
           </div>
         </div>
         <div class="footer" v-if="!isCreate">
-          <el-button v-if="currentCode && currentCode.name === 'values.yaml' && currentCode.type==='file' && (currentCode.source==='chartTemplate'||currentCode.source==='customEdit') && !currentCode.autoSync" size="small" type="primary" :disabled="!contentChanged" @click="commit">保存</el-button>
+          <el-button v-if="currentCode && currentCode.name === 'values.yaml' && currentCode.type==='file' && (currentCode.source==='chartTemplate'||currentCode.source==='customEdit') && !currentCode.autoSync" size="small" type="primary" :disabled="!contentChanged" @click="commit">{{$t(`global.save`)}}</el-button>
           <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" size="small" type="primary" :disabled="!updateEnv.length || !envNameList.length" @click="update()">加入环境</el-button>
         </div>
       </div>

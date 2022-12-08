@@ -70,7 +70,7 @@
       </div>
       <el-form label-width="35%" class="ops">
         <el-form-item>
-          <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">取消</el-button>
+          <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">{{$t(`global.cancel`)}}</el-button>
           <el-button @click="deployPmEnv" :loading="startDeployLoading" type="primary" size="medium">立即创建</el-button>
         </el-form-item>
       </el-form>

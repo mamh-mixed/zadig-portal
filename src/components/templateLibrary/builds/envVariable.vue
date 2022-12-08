@@ -76,7 +76,7 @@
         <el-col :span="8" v-if="!isJenkins">
           <el-form-item style="margin-right: 0;">
             <div class="app-operation">
-              <el-button v-if="preEnvs.envs.length >= 1" @click="deleteBuildEnv(build_env_index)" type="danger" size="small" plain>删除</el-button>
+              <el-button v-if="preEnvs.envs.length >= 1" @click="deleteBuildEnv(build_env_index)" type="danger" size="small" plain>{{$t(`global.delete`)}}</el-button>
               <el-button v-if="build_env_index===preEnvs.envs.length-1" @click="addBuildEnv()" type="primary" size="small" plain>新增</el-button>
             </div>
           </el-form-item>
@@ -93,7 +93,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="dialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="saveVariable" size="small">确 定</el-button>
       </div>
     </el-dialog>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconvery-build"
     class="buildConfig-container"
   >
@@ -10,7 +10,7 @@
         <el-input v-model.lazy="searchBuildConfig" placeholder="搜索构建" class="search-test" autofocus prefix-icon="el-icon-search"></el-input>
       </div>
       <el-table :data="filteredBuildConfigs">
-        <el-table-column label="名称" prop="name" min-width="180"></el-table-column>
+        <el-table-column :label="$t(`global.name`)" prop="name" min-width="180"></el-table-column>
         <el-table-column prop="services" label="服务组件" min-width="180">
           <template slot-scope="scope">
             <div class="service-container">
@@ -28,16 +28,16 @@
           <template slot-scope="scope">{{ $utils.convertTimestamp(scope.row.update_time) }}</template>
         </el-table-column>
         <el-table-column label="最后修改" prop="update_by" width="180"></el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column :label="$t(`global.operation`)" width="180">
           <template slot-scope="scope">
             <router-link
               v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_build'})"
               :to="`/v1/projects/detail/${scope.row.productName}/builds/detail/${scope.row.name}`"
             >
-              <el-button type="primary" size="mini" plain>编辑</el-button>
+              <el-button type="primary" size="mini" plain>{{$t(`global.edit`)}}</el-button>
             </router-link>
             <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
-              <el-button type="primary" class="permission-disabled" size="mini" plain>编辑</el-button>
+              <el-button type="primary" class="permission-disabled" size="mini" plain>{{$t(`global.edit`)}}</el-button>
             </el-tooltip>
             <el-button
               v-if="checkPermissionSyncMixin({projectName: projectName, action: 'delete_build'})"
@@ -45,9 +45,9 @@
               type="danger"
               size="mini"
               plain
-            >删除</el-button>
+            >{{$t(`global.delete`)}}</el-button>
             <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
-              <el-button type="primary" class="permission-disabled" size="mini" plain>删除</el-button>
+              <el-button type="primary" class="permission-disabled" size="mini" plain>{{$t(`global.delete`)}}</el-button>
             </el-tooltip>
           </template>
         </el-table-column>

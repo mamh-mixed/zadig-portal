@@ -24,7 +24,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitlab/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -45,7 +45,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/github/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -58,7 +58,7 @@
                        type="primary"
                        href="https://docs.koderover.com/zadig/settings/codehost/gerrit/"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -80,7 +80,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitee/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -102,7 +102,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -117,7 +117,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/others/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -276,7 +276,7 @@
         <el-button plain
                    native-type="submit"
                    size="small"
-                   @click="dialogCodeEditFormVisible = false">取消</el-button>
+                   @click="dialogCodeEditFormVisible = false">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of edit code dialog-->
@@ -305,7 +305,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitlab/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -326,7 +326,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/github/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -339,7 +339,7 @@
                        type="primary"
                        href="https://docs.koderover.com/zadig/settings/codehost/gerrit/"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -361,7 +361,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitee/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -383,7 +383,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -398,7 +398,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/others/`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link>
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link>
             </span>
           </slot>
         </el-alert>
@@ -552,7 +552,7 @@
         <el-button plain
                    native-type="submit"
                    size="small"
-                   @click="dialogCodeAddFormVisible = false">取消</el-button>
+                   @click="dialogCodeAddFormVisible = false">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of add code dialog-->
@@ -567,7 +567,7 @@
                        type="primary"
                        :href="`https://docs.koderover.com/zadig/settings/codehost/overview`"
                        :underline="false"
-                       target="_blank">帮助文档</el-link> 。
+                       target="_blank">{{$t(`global.helpDoc`)}}</el-link> 。
             </template>
           </el-alert>
         </template>
@@ -575,7 +575,7 @@
           <el-button type="primary"
                      size="small"
                      @click="handleCodeAdd"
-                     plain>添加</el-button>
+                     plain>{{$t(`global.add`)}}</el-button>
         </div>
         <el-table :data="code"
                   style="width: 100%;">
@@ -608,17 +608,17 @@
                        v-model="scope.row.enable_proxy"
                        @change="updateRepoProxySettings(scope.row)"></el-switch>
           </el-table-column>
-          <el-table-column label="操作"
+          <el-table-column :label="$t(`global.operation`)"
                            width="160">
             <template slot-scope="scope">
               <el-button type="primary"
                          size="mini"
                          plain
-                         @click="handleCodeEdit(scope.row)">编辑</el-button>
+                         @click="handleCodeEdit(scope.row)">{{$t(`global.edit`)}}</el-button>
               <el-button type="danger"
                          size="mini"
                          @click="handleCodeDelete(scope.row)"
-                         plain>删除</el-button>
+                         plain>{{$t(`global.delete`)}}</el-button>
             </template>
           </el-table-column>
         </el-table>

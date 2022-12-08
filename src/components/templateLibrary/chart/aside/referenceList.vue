@@ -4,7 +4,7 @@
     <section>
       <el-table :data="chartReference" style="width: 100%;">
         <el-table-column prop="project_name" label="项目"></el-table-column>
-        <el-table-column prop="service_name" label="服务名称">
+        <el-table-column prop="service_name" :label="$t(`global.serviceName`)">
           <template slot-scope="scope">
             <router-link
               v-if="scope.row.service_name"

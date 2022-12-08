@@ -118,7 +118,7 @@
             v-hasPermi="{projectName: testInfo.product_name, action: 'delete_test',isBtn:true}"
             @click.native="removeTest(testInfo)"
           >
-            <span>删除</span>
+            <span>{{$t(`global.delete`)}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -152,7 +152,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item v-hasPermi="{type: 'system', action: 'delete_test',isBtn:true}" @click.native="removeTest(testInfo)">
-            <span>删除</span>
+            <span>{{$t(`global.delete`)}}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

@@ -20,7 +20,7 @@
           <el-option :label="service" :value="service" v-for="service in lastServiceNames" :key="service"></el-option>
         </el-select>
         <el-button type="text" size="small" @click="newAddSelectedServicesName = lastServiceNames">全选</el-button>
-        <el-button type="primary" size="mini" plain @click="addServiceNames">添加</el-button>
+        <el-button type="primary" size="mini" plain @click="addServiceNames">{{$t(`global.add`)}}</el-button>
       </el-form-item>
     </el-form>
 

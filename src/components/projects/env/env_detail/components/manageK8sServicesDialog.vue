@@ -42,7 +42,7 @@
       </template>
     </div>
     <div slot="footer">
-      <el-button @click="closeDialog" size="small" :disabled="loading">取 消</el-button>
+      <el-button @click="closeDialog" size="small" :disabled="loading">{{$t(`global.cancel`)}}</el-button>
       <el-button type="primary" size="small" @click="updateEnvironment" :loading="loading">确 定</el-button>
     </div>
   </el-dialog>

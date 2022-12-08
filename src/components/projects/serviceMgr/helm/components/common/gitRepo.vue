@@ -66,7 +66,7 @@
       </el-form-item>
       <template>
         <el-form-item
-          label="名称"
+          :label="$t(`global.name`)"
           prop="repoName"
           :rules="{
                 required: true,

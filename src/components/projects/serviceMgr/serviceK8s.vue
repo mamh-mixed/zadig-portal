@@ -71,10 +71,10 @@
         <span slot="footer"
               class="dialog-footer">
           <el-button size="small"
-                     @click="joinToEnvDialogVisible = false">取消</el-button>
+                     @click="joinToEnvDialogVisible = false">{{$t(`global.cancel`)}}</el-button>
           <el-button size="small"
                      type="primary"
-                     @click="joinToEnv">确定</el-button>
+                     @click="joinToEnv">{{$t(`global.confirm`)}}</el-button>
 
         </span>
       </el-dialog>

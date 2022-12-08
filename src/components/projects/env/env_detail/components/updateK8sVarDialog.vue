@@ -58,7 +58,7 @@
         >更新</el-button
       >
       <el-button size="small" @click="updateK8sEnvVarDialogVisible = false"
-        >取 消</el-button
+        >{{$t(`global.cancel`)}}</el-button
       >
     </span>
   </el-dialog>

@@ -126,7 +126,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer">
-        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button @click="dialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="saveVariable" size="small">确 定</el-button>
       </div>
     </el-dialog>

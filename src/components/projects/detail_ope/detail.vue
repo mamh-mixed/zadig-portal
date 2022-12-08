@@ -2,7 +2,7 @@
   <div
     class="projects-detail-container"
     v-loading="detailLoading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconxiangmuloading"
   >
     <div class="project-header"></div>
@@ -13,7 +13,7 @@
           环境信息
         </h4>
         <el-table :data="envList" stripe style="width: 100%;">
-          <el-table-column label="名称">
+          <el-table-column :label="$t(`global.name`)">
             <template slot-scope="{ row }">
               <router-link :to="`/v1/projects/detail/${row.projectName}/envs/detail?envName=${row.name}`">
                 <span class="env-name">{{`${row.name}`}}</span>
@@ -25,7 +25,7 @@
               <span>{{ row.clusterName.startsWith('local-') ? '本地' : row.clusterName }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="状态">
+          <el-table-column :label="$t(`global.status`)">
             <template slot-scope="{ row }">
               <span v-if="row.status" :class="[$translate.calcEnvStatusColor(row.status)]">{{getProdStatus(row.status, row.updatable)}}</span>
               <span v-else>
@@ -53,7 +53,7 @@
           工作流信息
         </h4>
         <el-table :data="workflows" stripe style="width: 100%;">
-          <el-table-column label="名称">
+          <el-table-column :label="$t(`global.name`)">
             <template slot-scope="{ row }">
               <el-tag v-if="row.workflow_type === 'common_workflow'" size="mini" class="mg-r8">自定义</el-tag>
               <el-tag v-else-if="row.workflow_type === 'release'" size="mini" class="mg-r8">发布</el-tag>
@@ -69,7 +69,7 @@
               <CusTags :values="row.enabledStages" />
             </template>
           </el-table-column>
-          <el-table-column label="状态">
+          <el-table-column :label="$t(`global.status`)">
             <template slot-scope="{ row }">
               <span
                 v-if="row.recentTask"

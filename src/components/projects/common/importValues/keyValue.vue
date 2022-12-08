@@ -41,7 +41,7 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120px">
+        <el-table-column :label="$t(`global.operation`)" width="120px">
           <template slot-scope="{ $index }">
             <span class="operate" @click="keyValues.splice($index, 1)">
               <i class="el-icon-close"></i>
@@ -53,7 +53,7 @@
         </el-table-column>
       </el-table>
     </el-form>
-    <el-button type="text" @click="addKeyValue" icon="el-icon-circle-plus-outline" class="gray-color">添加</el-button>
+    <el-button type="text" @click="addKeyValue" icon="el-icon-circle-plus-outline" class="gray-color">{{$t(`global.add`)}}</el-button>
   </div>
 </template>
 

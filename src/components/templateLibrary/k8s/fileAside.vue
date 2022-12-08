@@ -20,7 +20,7 @@
             <section class="aside-section">
               <el-table :data="referenceList" stripe style="width: 100%;">
                 <el-table-column prop="project_name" label="项目"></el-table-column>
-                <el-table-column prop="value" label="服务名称">
+                <el-table-column prop="value" :label="$t(`global.serviceName`)">
                   <template slot-scope="scope">
                     <router-link
                       v-if="scope.row.service_name"
@@ -79,7 +79,7 @@
               </div>
               <div class="operation" v-else>
                 <el-button type="primary" size="small" @click="validateVariables" plain :disabled="variableYamlIsEmpty">校验</el-button>
-                <el-button type="primary" size="small" @click="saveKubernetesTemplateVariable" :disabled="variableYamlIsEmpty || variableNotChanged">保存</el-button>
+                <el-button type="primary" size="small" @click="saveKubernetesTemplateVariable" :disabled="variableYamlIsEmpty || variableNotChanged">{{$t(`global.save`)}}</el-button>
               </div>
             </section>
           </div>

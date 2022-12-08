@@ -51,7 +51,7 @@
       </el-table-column>
       <el-table-column v-if="showServiceNames"
                        min-width="180"
-                       label="服务名称">
+                       :label="$t(`global.serviceName`)">
         <template slot-scope="{ row }">
           <template v-if="row.service_modules && row.service_modules.length > 0">
             <div v-for="(item,index) in row.service_modules" :key="index" class="common-column hover-color">
@@ -143,7 +143,7 @@
       </el-table-column>
       <el-table-column v-if="showOperation"
                        width="90"
-                       label="操作"
+                       :label="$t(`global.operation`)"
                        align="center">
         <template slot-scope="scope">
             <el-button v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:workflowName,type:'workflow'},isBtn:true}"

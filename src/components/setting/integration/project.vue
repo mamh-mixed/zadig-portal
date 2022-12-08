@@ -44,11 +44,11 @@
                    native-type="submit"
                    size="small"
                    @click="updateJiraConfig()"
-                   class="start-create">确定</el-button>
+                   class="start-create">{{$t(`global.confirm`)}}</el-button>
         <el-button plain
                    native-type="submit"
                    size="small"
-                   @click="handleJiraCancel()">取消</el-button>
+                   @click="handleJiraCancel()">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of edit jira dialog-->
@@ -95,11 +95,11 @@
                    native-type="submit"
                    size="small"
                    @click="createJiraConfig()"
-                   class="start-create">确定</el-button>
+                   class="start-create">{{$t(`global.confirm`)}}</el-button>
         <el-button plain
                    native-type="submit"
                    size="small"
-                   @click="handleJiraCancel()">取消</el-button>
+                   @click="handleJiraCancel()">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of edit jira dialog-->
@@ -113,7 +113,7 @@
                      type="primary"
                      :href="`https://docs.koderover.com/zadig/settings/jira/`"
                      :underline="false"
-                     target="_blank">帮助文档</el-link> 。
+                     target="_blank">{{$t(`global.helpDoc`)}}</el-link> 。
           </template>
         </el-alert>
       </template>
@@ -122,7 +122,7 @@
                    size="small"
                    type="primary"
                    plain
-                   @click="handleJiraAdd">添加</el-button>
+                   @click="handleJiraAdd">{{$t(`global.add`)}}</el-button>
       </div>
       <el-table :data="jira"
                 style="width: 100%;">
@@ -141,17 +141,17 @@
             **********
           </template>
         </el-table-column>
-        <el-table-column label="操作"
+        <el-table-column :label="$t(`global.operation`)"
                          width="160">
           <template slot-scope="scope">
             <el-button type="primary"
                        size="mini"
                        plain
-                       @click="handleJiraEdit(scope.row)">编辑</el-button>
+                       @click="handleJiraEdit(scope.row)">{{$t(`global.edit`)}}</el-button>
             <el-button type="danger"
                        size="mini"
                        @click="handleJiraDelete"
-                       plain>删除</el-button>
+                       plain>{{$t(`global.delete`)}}</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -9,7 +9,7 @@
           <span>{{ $utils.convertTimestamp(row.update_time) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column :label="$t(`global.operation`)">
         <template slot-scope="{ $index }">
           <el-button type="primary" size="small" plain @click="viewPolicy($index)">查看</el-button>
         </template>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconfenzucopy"
     class="setting-profile-container"
   >
@@ -20,7 +20,7 @@
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelUpdateUserInfo" plain>取 消</el-button>
+        <el-button size="small" @click="cancelUpdateUserInfo" plain>{{$t(`global.cancel`)}}</el-button>
         <el-button size="small" type="primary" @click="updateUserInfo" plains>确 定</el-button>
       </span>
     </el-dialog>
@@ -36,7 +36,7 @@
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="cancelUpdateMail" plain>取 消</el-button>
+        <el-button size="small" @click="cancelUpdateMail" plain>{{$t(`global.cancel`)}}</el-button>
         <el-button size="small" type="primary" @click="updateMail">确 定</el-button>
       </span>
     </el-dialog>
@@ -105,7 +105,7 @@
                         slot="append"
                         size="mini"
                         icon="el-icon-document-copy"
-                      >复制</el-button>
+                      >{{$t(`global.copy`)}}</el-button>
                     </el-input>
                   </td>
                 </tr>

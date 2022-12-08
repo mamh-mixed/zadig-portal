@@ -7,7 +7,7 @@
           <div>
             <div :class="{'op-row': true, expanded: obj.expanded}">
               <el-button @click="toggleYAML(obj)" type="text" icon="el-icon-caret-bottom">{{ obj.expanded ? '收起' : '展开' }}</el-button>
-              <el-button @click="copyYAML(obj, i)" type="primary" plain size="small" class="at-right">复制</el-button>
+              <el-button @click="copyYAML(obj, i)" type="primary" plain size="small" class="at-right">{{$t(`global.copy`)}}</el-button>
             </div>
             <Editor
               v-show="obj.expanded"
@@ -127,7 +127,7 @@
             <div class="text item">
               <div class="section-head">Jira 问题关联</div>
               <el-table :data="jiraIssues" style="width: 100%;">
-                <el-table-column label="服务名">
+                <el-table-column :label="$t(`global.serviceName`)">
                   <template slot-scope="scope">{{scope.row.service_name}}</template>
                 </el-table-column>
 
@@ -179,7 +179,7 @@
             <div class="text item">
               <div class="section-head">包信息</div>
               <el-table :data="packages" style="width: 100%;">
-                <el-table-column label="服务名">
+                <el-table-column :label="$t(`global.serviceName`)">
                   <template slot-scope="scope">{{scope.row.serviceName}}</template>
                 </el-table-column>
                 <el-table-column label="包文件名">
@@ -195,7 +195,7 @@
                 <el-table-column label="启动顺序">
                   <template slot-scope="scope">{{scope.$index}}</template>
                 </el-table-column>
-                <el-table-column label="服务名">
+                <el-table-column :label="$t(`global.serviceName`)">
                   <template slot-scope="scope">{{scope.row.join(' , ')}}</template>
                 </el-table-column>
               </el-table>

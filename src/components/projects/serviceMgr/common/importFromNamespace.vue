@@ -32,7 +32,7 @@
         </el-form-item>
 
         <el-table :data="importNamespace.services" style="width: 100%;">
-          <el-table-column width="200px" label="服务名称">
+          <el-table-column width="200px" :label="$t(`global.serviceName`)">
             <template slot-scope="{ row, $index }">
               <el-form-item
                 label-width="0"
@@ -99,7 +99,7 @@
         <el-button type="text" icon="el-icon-plus" @click="operateService('add')">添加服务</el-button>
       </el-form>
       <div class="dialog-footer">
-        <el-button plain native-type="submit" @click="closeDialog()" size="small" :disabled="importLoading">取消</el-button>
+        <el-button plain native-type="submit" @click="closeDialog()" size="small" :disabled="importLoading">{{$t(`global.cancel`)}}</el-button>
         <el-button
           type="primary"
           native-type="submit"

@@ -62,7 +62,7 @@
       </el-form>
     </div>
     <div slot="footer">
-      <el-button @click="deleteDialogVisible = false" size="small">取 消</el-button>
+      <el-button @click="deleteDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
       <el-button type="danger" @click="identifyDeleteProject" size="small">确 定</el-button>
     </div>
   </el-dialog>
