@@ -72,7 +72,7 @@
           <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0" size="small"></el-input>
         </el-form-item>
         <el-form-item label="审核人" v-if="form.approval.type==='lark'">
-          <el-button type="primary" plain @click="addApprovalUser" size="mini" :disabled="appList.length === 0">添加</el-button>
+          <el-button type="primary" plain @click="addApprovalUser" size="mini" :disabled="!form.approval.approval_id || appList.length === 0">添加</el-button>
           <el-tooltip effect="dark" :content="approvalUsers" placement="top">
             <span>{{ $utils.tailCut(approvalUsers,10) }}</span>
           </el-tooltip>
