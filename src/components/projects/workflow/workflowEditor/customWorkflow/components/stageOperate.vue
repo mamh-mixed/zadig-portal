@@ -28,7 +28,7 @@
         <el-form-item label="审批方式" prop="approval.type">
           <el-radio-group v-model="form.approval.type" @change="handleTypeChange">
             <el-radio label="native">zadig</el-radio>
-            <!-- <el-radio label="lark">飞书</el-radio> -->
+            <el-radio label="lark" v-if="hasPlutus">飞书</el-radio>
             <el-radio disabled>钉钉</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -129,6 +129,7 @@
 <script>
 import { getUsersAPI, getApprovalListAPI, getDepartmentAPI } from '@api'
 import { cloneDeep } from 'lodash'
+import { mapState } from 'vuex'
 
 export default {
   name: 'StageOperate',
@@ -186,7 +187,10 @@ export default {
   computed: {
     approvalUsers () {
       return this.users.map(item => item.name).toString()
-    }
+    },
+    ...mapState({
+      hasPlutus: state => state.checkPlutus.hasPlutus
+    })
   },
   created () {
     this.getUserList()
