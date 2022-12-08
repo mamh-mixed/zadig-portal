@@ -116,8 +116,8 @@ export default {
     },
     cleanCache () {
       this.$confirm('停止的容器、所有未被容器使用的网络、无用的镜像和构建缓存镜像将被删除，确认清理？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         cleanCacheAPI().then(response => {

@@ -67,8 +67,8 @@ export default {
     async deleteRole (row) {
       const projectName = this.projectName
       this.$confirm('此角色的成员权限也会被删除，请谨慎操作', '确认删除此角色?', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(async () => {
         let res = null

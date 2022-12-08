@@ -783,8 +783,8 @@ export default {
     },
     restartService (scaleName, type) {
       this.$confirm('确定重启实例吗?', '重启', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         const projectName = this.projectName
@@ -831,8 +831,8 @@ export default {
     },
     restartPod (pod) {
       this.$confirm('确定重启吗?', '重启', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         const ownerQuery = this.envName ? `&envName=${this.envName}` : ''

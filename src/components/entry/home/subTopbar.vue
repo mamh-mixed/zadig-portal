@@ -200,8 +200,8 @@ export default {
       </div>
       `
       this.$confirm(content, '确认切换项目类型？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         dangerouslyUseHTMLString: true
       })
         .then(() => {

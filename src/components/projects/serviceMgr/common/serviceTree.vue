@@ -588,8 +588,8 @@ export default {
         deleteText = `确定要移除 ${data.service_name} 这个共享服务吗？`
       }
       this.$confirm(`${deleteText}`, `${title}`, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         const projectName = this.projectName
@@ -1088,8 +1088,8 @@ export default {
           deleteText = `确定要删除 ${data.service_name} 这个服务吗？`
         }
         this.$confirm(`${deleteText}`, `${title}`, {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(() => {
           deleteServiceTemplateAPI(

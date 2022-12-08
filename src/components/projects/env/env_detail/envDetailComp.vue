@@ -1127,8 +1127,8 @@ export default {
           : ''
       }</p>`
       this.$confirm(content, '更新', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         dangerouslyUseHTMLString: true,
         type: 'warning'
       }).then(() => {
@@ -1162,8 +1162,8 @@ export default {
         `您的更新操作将覆盖环境中${message.name}服务变更，确认继续?`,
         '提示',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }
       ).then(() => {
@@ -1216,8 +1216,8 @@ export default {
         '请输入环境名称以确认',
         `确定要取消托管 ${project_name} 项目的 ${env_name} 环境?`,
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           confirmButtonClass: 'el-button el-button--danger',
           inputValidator: input => {
             if (input === env_name) {
@@ -1273,7 +1273,7 @@ export default {
         }请先修改协作模式！`,
         isDelete ? '删除环境' : '取消托管',
         {
-          confirmButtonText: '确定',
+          confirmButtonText: this.$t(`global.confirm`),
           type: 'warning'
         }
       )
@@ -1335,8 +1335,8 @@ export default {
     },
     restartService (projectName, serviceName, envName) {
       this.$confirm('确定重启服务吗?', '重启', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       })
         .then(() => {

@@ -176,8 +176,8 @@ export default {
     },
     async handleDelete (row) {
       this.$confirm('确定要删除这个成员吗？', '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         if (row.uid !== '*') {

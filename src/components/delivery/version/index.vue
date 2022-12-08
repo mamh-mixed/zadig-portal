@@ -162,8 +162,8 @@ export default {
       const projectName = version.productName
       const versionId = version.id
       this.$confirm(`确定删除 ${version.version} 这个版本？`, '删除版本', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       })
         .then(() => {

@@ -431,8 +431,8 @@ export default {
                 `修改「开启 SSL 校验」或 「TLS 证书内容（公钥）」会对正在运行的工作流任务产生影响，确认修改？`,
                 '确认',
                 {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
+                  confirmButtonText: this.$t(`global.confirm`),
+                  cancelButtonText: this.$t(`global.cancel`),
                   type: 'warning'
                 }
               ).then(() => {
@@ -466,8 +466,8 @@ export default {
                 `修改「开启 SSL 校验」或 「TLS 证书内容（公钥）」会对正在运行的工作流任务产生影响，确认修改？`,
                 '确认',
                 {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
+                  confirmButtonText: this.$t(`global.confirm`),
+                  cancelButtonText: this.$t(`global.cancel`),
                   type: 'warning'
                 }
               ).then(() => {
@@ -487,8 +487,8 @@ export default {
       } else if (action === 'delete') {
         const id = registry.id
         this.$confirm(`确定要删除 ${registry.reg_addr} ?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(({ value }) => {
           deleteRegistryAPI(id).then(res => {

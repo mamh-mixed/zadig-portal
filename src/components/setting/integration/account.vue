@@ -955,8 +955,8 @@ export default {
     },
     handleUserAccountDelete (row) {
       this.$confirm(`确定要删除 ${row.name} 这个账号系统吗？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteConnectorAPI(row.id).then(res => {
@@ -1205,8 +1205,8 @@ export default {
                     <p style='color: red' v-if="row.is_default">请确保配置的账号系统可用，否则系统将无法登录。</p>`
         const cancelInfo = ``
         this.$confirm(row.is_default ? cancelInfo : confirmInfo, `确定${row.is_default ? '取消' : '设置'}默认账号系统?`, {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(res => {

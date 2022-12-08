@@ -193,8 +193,8 @@ export default {
       } else if (operate === 'delete') {
         const id = current_host.id
         this.$confirm(`确定要删除 ${current_host.name} ?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(({ value }) => {
           if (this.type === 'project') {

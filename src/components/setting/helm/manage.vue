@@ -189,8 +189,8 @@ export default {
       } else if (operate === 'delete') {
         const id = current_repo.id
         this.$confirm(`确定要删除 ${current_repo.repo_name} 仓库?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(({ value }) => {
           deleteHelmAPI(id).then(res => {

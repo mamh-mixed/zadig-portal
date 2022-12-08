@@ -779,8 +779,8 @@ export default {
     },
     handleCodeDelete (row) {
       this.$confirm(`确定要删除这个代码源吗？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteCodeSourceAPI(row.id).then((res) => {

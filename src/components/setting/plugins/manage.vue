@@ -359,8 +359,8 @@ export default {
     },
     del () {
       this.$confirm(`是否删除该插件源`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         delPlugin(this.source.id).then(res => {

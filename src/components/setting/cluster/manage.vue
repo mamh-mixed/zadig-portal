@@ -897,8 +897,8 @@ export default {
         this.dialogClusterAccessVisible = true
       } else if (operate === 'disconnect') {
         this.$confirm(`确定要断开 ${currentCluster.name} 的连接?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(({ value }) => {
           this.disconnectCluster(currentCluster.id)
@@ -945,8 +945,8 @@ export default {
       } else if (operate === 'delete') {
         const id = currentCluster.id
         this.$confirm(`确定要删除 ${currentCluster.name} ?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(({ value }) => {
           deleteClusterAPI(id).then(res => {
@@ -1066,8 +1066,8 @@ export default {
     },
     updateAgent (row) {
       this.$confirm('确定更新组件吗?', '更新', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         upgradeHubAgentAPI(row.id).then(res => {

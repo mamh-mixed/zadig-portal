@@ -451,15 +451,15 @@ export default {
           )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
           '删除工作流',
           {
-            confirmButtonText: '确定',
+            confirmButtonText: this.$t(`global.confirm`),
             type: 'warning'
           }
         )
         return
       }
       this.$prompt('输入工作流名称确认', `删除工作流 ${name}`, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         confirmButtonClass: 'el-button el-button--danger',
         inputValidator: workflowName => {
           if (workflowName === name) {
@@ -487,15 +487,15 @@ export default {
           )} 中被定义为基准工作流，如需删除请先修改协作模式！`,
           '删除工作流',
           {
-            confirmButtonText: '确定',
+            confirmButtonText: this.$t(`global.confirm`),
             type: 'warning'
           }
         )
         return
       }
       this.$prompt('输入工作流名称确认', `删除工作流 ${name}`, {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         confirmButtonClass: 'el-button--danger',
         inputValidator: workflowName => {
           if (workflowName === name) {
@@ -550,8 +550,8 @@ export default {
       const oldName = workflow.name
       const projectName = workflow.projectName
       this.$prompt('新工作流名称', '复制工作流', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         inputValidator: newName => {
           const pipeNames = []
           this.workflowsList.forEach(element => {
@@ -666,8 +666,8 @@ export default {
     },
     removeWorkflowView () {
       this.$confirm(`确定要删除 ${this.view} 这个视图?`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(res => {
         removeWorkflowViewAPI(this.projectName, this.view).then(res => {
