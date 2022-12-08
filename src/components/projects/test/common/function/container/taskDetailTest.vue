@@ -30,7 +30,7 @@
               <a
                 href="#testv2-log"
                 :class="$translate.calcTaskStatusColor(testingv2.status,'pipeline','task')"
-              >{{testingv2.status?$translate.translateTaskStatus(testingv2.status):"未运行"}}</a>
+              >{{testingv2.status?$t(`workflowTaskStatus.${testingv2.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
             </div>
           </el-col>
           <el-col v-if="testingv2.status!=='running' && testingv2.status!=='prepare'" :span="6">

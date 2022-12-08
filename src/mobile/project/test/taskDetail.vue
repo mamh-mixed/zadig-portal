@@ -19,7 +19,7 @@
           <div class="mobile-block">
             <h2 class="mobile-block-title">状态</h2>
             <div class="mobile-block-desc">
-              <van-tag size="small" :type="$utils.mobileVantTagType(taskDetail.status)">{{ myTranslate(taskDetail.status) }}</van-tag>
+              <van-tag size="small" :type="$utils.mobileVantTagType(taskDetail.status)">{{ taskDetail.status?$t(`workflowTaskStatus.${taskDetail.status}`):$t(`workflowTaskStatus.notRunning`) }}</van-tag>
             </div>
           </div>
         </van-col>
@@ -66,7 +66,7 @@
               <van-col span="12">
                 <span
                   :class="colorTranslation(item.testingv2SubTask.status, 'pipeline', 'task')"
-                >{{ myTranslate(item.testingv2SubTask.status) }}</span>
+                >{{ item.testingv2SubTask.status?$t(`workflowTaskStatus.${item.testingv2SubTask.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
                 {{ makePrettyElapsedTime(item.testingv2SubTask) }}
                 <el-tooltip v-if="calcElapsedTimeNum(item.testingv2SubTask)<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
                   <i class="el-icon-warning" style="color: red;"></i>
@@ -108,7 +108,7 @@ import {
   ActionSheet
 } from 'vant'
 import TaskDetailTest from '../workflow/product/common/taskDetailTest.vue'
-import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
+import { colorTranslate } from '@utils/wordTranslate.js'
 import {
   workflowTaskDetailAPI,
   workflowTaskDetailSSEAPI,
@@ -187,9 +187,6 @@ export default {
         })
       }
       this.showAction = false
-    },
-    myTranslate (word) {
-      return wordTranslate(word, 'pipeline', 'task')
     },
     colorTranslation (word, category, subitem) {
       return colorTranslate(word, category, subitem)

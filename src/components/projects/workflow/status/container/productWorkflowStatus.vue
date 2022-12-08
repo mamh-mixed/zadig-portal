@@ -7,7 +7,7 @@
         <div class="progress-header-view">
           <div class="status-view">
             <div class="status running">
-              {{ wordTranslation(task.status,'pipeline','task') }}
+              {{ $t(`workflowTaskStatus.${task.status}`) }}
             </div>
           </div>
           <div class="info-view">
@@ -401,7 +401,6 @@
 </template>
 <script>
 import { cancelWorkflowAPI } from '@api'
-import { wordTranslate } from '@utils/wordTranslate'
 export default {
   data () {
     return {
@@ -470,9 +469,6 @@ export default {
             break
         }
       }
-    },
-    wordTranslation (word, category, subitem = '') {
-      return wordTranslate(word, category, subitem)
     },
     showStage (stages, stageName) {
       let flag = false

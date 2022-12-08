@@ -21,7 +21,7 @@
             size="mini"
             :type="$utils.taskElTagType(scope.row.status)"
             close-transition
-          >{{ wordTranslation(scope.row.status,'pipeline','task') }}</el-tag>
+          >{{ $t(`workflowTaskStatus.${scope.row.status}`) }}</el-tag>
         </template>
       </el-table-column>
     </el-table>
@@ -30,7 +30,6 @@
 
 <script>
 import { getLatestBuildsAPI } from '@api'
-import { wordTranslate } from '@utils/wordTranslate'
 export default {
   data () {
     return {
@@ -52,9 +51,6 @@ export default {
         this.tableData = res
         this.loading = false
       })
-    },
-    wordTranslation (word, category, subitem) {
-      return wordTranslate(word, category, subitem)
     }
   },
   watch: {

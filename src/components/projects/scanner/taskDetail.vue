@@ -11,7 +11,7 @@
                 effect="dark"
                 :type="$utils.taskElTagType(taskDetail.status)"
                 close-transition
-              >{{ myTranslate(taskDetail.status) }}</el-tag>
+              >{{ taskDetail.status?$t(`workflowTaskStatus.${taskDetail.status}`):$t(`workflowTaskStatus.notRunning`) }}</el-tag>
             </el-form-item>
             <el-form-item label="创建者">{{ taskDetail.creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
@@ -65,7 +65,7 @@
 
           <el-table-column :label="$t(`global.status`)">
             <template slot-scope="scope">
-              <span :class="colorTranslation(scope.row.status, 'pipeline', 'task')">{{ myTranslate(scope.row.status) }}</span>
+              <span :class="colorTranslation(scope.row.status, 'pipeline', 'task')">{{ scope.row.status?$t(`workflowTaskStatus.${scope.row.status}`):$t(`workflowTaskStatus.notRunning`) }}</span>
               <span style="margin-left: 10px;">{{ makePrettyElapsedTime(scope.row) }}</span>
             </template>
           </el-table-column>
@@ -92,7 +92,7 @@ import {
   restartScannerTaskAPI,
   cancelScannerTaskAPI
 } from '@api'
-import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
+import { colorTranslate } from '@utils/wordTranslate.js'
 import bus from '@utils/eventBus'
 import TaskDetailScanner from './common/taskDetailScanner.vue'
 export default {
@@ -191,9 +191,6 @@ export default {
     },
     repoID (repo) {
       return `${repo.source}/${repo.repo_owner}/${repo.repo_name}`
-    },
-    myTranslate (word) {
-      return wordTranslate(word, 'pipeline', 'task')
     },
     colorTranslation (word, category, subitem) {
       return colorTranslate(word, category, subitem)

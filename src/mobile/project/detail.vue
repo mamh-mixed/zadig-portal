@@ -46,7 +46,7 @@
           <span
             v-if="workflow.recentTask"
             :class="[`status-${$utils.taskElTagType(workflow.recentTask.status)}`]"
-          >{{ wordTranslation(workflow.recentTask.status,'pipeline','task')}}</span>
+          >{{ $t(`workflowTaskStatus.${workflow.recentTask.status}`) }}</span>
           <span v-else>N/A</span>
         </template>
       </van-cell>
@@ -113,7 +113,6 @@ import {
   testsAPI
 } from '@api'
 import { translateEnvStatus } from '@utils/wordTranslate'
-import { wordTranslate } from '@utils/wordTranslate.js'
 import moment from 'moment'
 export default {
   components: {
@@ -174,9 +173,6 @@ export default {
           return element
         })
       })
-    },
-    wordTranslation (word, category, subitem) {
-      return wordTranslate(word, category, subitem)
     },
     getEnvStatus (status, updateble) {
       return translateEnvStatus(status, updateble)

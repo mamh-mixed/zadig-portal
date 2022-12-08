@@ -16,7 +16,7 @@
       <el-col
         :span="6"
         :class="colorTranslation(extensionStage.status, 'pipeline', 'task')"
-      >{{ extensionStage.status ? myTranslate(extensionStage.status) : "未运行" }}</el-col>
+      >{{ extensionStage.status?$t(`workflowTaskStatus.${extensionStage.status}`):$t(`workflowTaskStatus.notRunning`) }}</el-col>
       <el-col v-if="extensionStage.status!=='running'" :span="6">
         <i class="iconfont iconshijian"></i> 持续时间
       </el-col>
@@ -73,7 +73,7 @@
   </div>
 </template>
 <script>
-import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
+import { colorTranslate } from '@utils/wordTranslate.js'
 import VueJsonPretty from 'vue-json-pretty'
 import isJSON from 'validator/lib/isJSON'
 export default {
@@ -86,9 +86,6 @@ export default {
   methods: {
     colorTranslation (word, category, subitem) {
       return colorTranslate(word, category, subitem)
-    },
-    myTranslate (word) {
-      return wordTranslate(word, 'pipeline', 'task')
     },
     checkJSON (str) {
       return isJSON(str)

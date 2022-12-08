@@ -26,7 +26,7 @@
               <a
                 href="#scanner-task-log"
                 :class="$translate.calcTaskStatusColor(task.status,'pipeline','task')"
-              >{{task.status?$translate.translateTaskStatus(task.status):"未运行"}}</a>
+              >{{task.status?$t(`workflowTaskStatus.${task.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
             </div>
           </el-col>
           <el-col v-if="task.status!=='running' && task.status!=='prepare'" :span="6">

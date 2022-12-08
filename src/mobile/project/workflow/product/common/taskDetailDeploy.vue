@@ -13,7 +13,7 @@
             <div
               class="item-desc"
               :class="$translate.calcTaskStatusColor(deploy.status)"
-            >{{deploy.status?$translate.translateTaskStatus(deploy.status):"未运行"}}</div>
+            >{{deploy.status?$t(`workflowTaskStatus.${deploy.status}`):$t(`workflowTaskStatus.notRunning`)}}</div>
           </van-col>
           <van-col v-if="deploy.status!=='running'" :span="6">
             <div class="item-title">持续时间</div>

@@ -25,7 +25,7 @@
             <div
               class="item-desc"
               :class="$translate.calcTaskStatusColor(deploy.status)"
-            >{{deploy.status?$translate.translateTaskStatus(deploy.status):"未运行"}}</div>
+            >{{deploy.status?$t(`workflowTaskStatus.${deploy.status}`):$t(`workflowTaskStatus.notRunning`)}}</div>
           </el-col>
           <el-col :span="6">
             <div class="item-title">

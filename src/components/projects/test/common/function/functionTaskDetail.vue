@@ -26,7 +26,7 @@
                     effect="dark"
                     :type="$utils.taskElTagType(taskDetail.status)"
                     close-transition>
-              {{ myTranslate(taskDetail.status) }}
+              {{ taskDetail.status?$t(`workflowTaskStatus.${taskDetail.status}`):$t(`workflowTaskStatus.notRunning`) }}
             </el-tag>
           </el-form-item>
           <el-form-item label="创建者">
@@ -88,7 +88,7 @@
         <el-table-column label="运行状态">
           <template slot-scope="scope">
             <span :class="colorTranslation(scope.row.testingv2SubTask.status, 'pipeline', 'task')">
-              {{ myTranslate(scope.row.testingv2SubTask.status) }}
+              {{ scope.row.testingv2SubTask.status?$t(`workflowTaskStatus.${scope.row.testingv2SubTask.status}`):$t(`workflowTaskStatus.notRunning`) }}
             </span>
             {{ makePrettyElapsedTime(scope.row.testingv2SubTask) }}
           </template>
@@ -120,7 +120,7 @@
 
 <script>
 import { workflowTaskDetailAPI, workflowTaskDetailSSEAPI, restartTestTaskAPI, cancelTestTaskAPI } from '@api'
-import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
+import { colorTranslate } from '@utils/wordTranslate.js'
 import ArtifactDownload from '@/components/common/artifactDownload.vue'
 import TaskDetailTest from './container/taskDetailTest.vue'
 export default {
@@ -244,9 +244,6 @@ export default {
     },
     repoID (repo) {
       return `${repo.source}/${repo.repo_owner}/${repo.repo_name}`
-    },
-    myTranslate (word) {
-      return wordTranslate(word, 'pipeline', 'task')
     },
     colorTranslation (word, category, subitem) {
       return colorTranslate(word, category, subitem)

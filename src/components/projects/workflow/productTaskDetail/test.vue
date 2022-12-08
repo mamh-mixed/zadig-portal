@@ -34,7 +34,7 @@
             <div class="grid-content item-desc">
               <a href="#testv2-log"
                  :class="$translate.calcTaskStatusColor(testingv2.status,'pipeline','task')">
-                {{testingv2.status?$translate.translateTaskStatus(testingv2.status):"未运行"}}
+                {{testingv2.status?$t(`workflowTaskStatus.${testingv2.status}`):$t(`workflowTaskStatus.notRunning`)}}
               </a>
             </div>
           </el-col>

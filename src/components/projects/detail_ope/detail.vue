@@ -74,7 +74,7 @@
               <span
                 v-if="row.recentTask"
                 :class="[`status-${$utils.taskElTagType(row.recentTask.status)}`]"
-              >{{ wordTranslation(row.recentTask.status,'pipeline','task')}}</span>
+              >{{ $t(`workflowTaskStatus.${row.recentTask.status}`)}}</span>
               <span v-else>-</span>
             </template>
           </el-table-column>

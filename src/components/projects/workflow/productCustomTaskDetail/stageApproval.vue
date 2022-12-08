@@ -17,7 +17,7 @@
         <span>{{$utils.convertTimestamp(approvalInfo.end_time)}}</span>
         <span
           :class="[`status-${$utils.taskElTagType(approvalInfo.approval.reject_or_approve)}`]"
-        >{{ wordTranslation(approvalInfo.approval.reject_or_approve,'pipeline','task') }}</span>
+        >{{ wordTranslation(approvalInfo.approval.reject_or_approve,'approval','status') }}</span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">

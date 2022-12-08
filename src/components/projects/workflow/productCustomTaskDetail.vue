@@ -315,9 +315,6 @@ export default {
     buildOverallStatus () {
       return this.$utils.calcOverallBuildStatus(this.buildStage)
     },
-    buildOverallStatusZh () {
-      return this.myTranslate(this.buildOverallStatus)
-    },
     buildOverallColor () {
       return this.colorTranslation(this.buildOverallStatus, 'pipeline', 'task')
     },

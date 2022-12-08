@@ -18,7 +18,7 @@
                        label="运行状态">
         <template slot-scope="scope">
           <span :class="[`status-${$utils.taskElTagType(scope.row.status)}`]">
-            &nbsp;{{ wordTranslation(scope.row.status,'pipeline','task') }}
+            &nbsp;{{ $t(`workflowTaskStatus.${scope.row.status}`) }}
           </span>
         </template>
       </el-table-column>
@@ -170,7 +170,6 @@
 
 <script>
 import RepoJump from '@/components/projects/workflow/common/repoJump.vue'
-import { wordTranslate } from '@utils/wordTranslate.js'
 import { workflowTaskDetailAPI, getCustomCloneDetailAPI } from '@api'
 import moment from 'moment'
 export default {
@@ -182,9 +181,6 @@ export default {
   methods: {
     convertTimestamp (value) {
       return moment.unix(value).format('MM-DD HH:mm')
-    },
-    wordTranslation (word, category, subitem) {
-      return wordTranslate(word, category, subitem)
     },
     taskDuration (task_id, started) {
       const refresh = () => {

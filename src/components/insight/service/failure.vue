@@ -40,9 +40,6 @@ export default {
         this.serviceData = res
         this.loading = false
       })
-    },
-    wordTranslation (word, category, subitem) {
-      return wordTranslate(word, category, subitem)
     }
   },
   watch: {
