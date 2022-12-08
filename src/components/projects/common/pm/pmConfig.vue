@@ -446,8 +446,8 @@ export default {
         '确认跳出后就不再进入 onboarding 流程。',
         '确认跳出产品交付向导？',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }
       )

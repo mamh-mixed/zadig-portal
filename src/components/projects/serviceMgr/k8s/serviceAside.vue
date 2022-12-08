@@ -459,8 +459,8 @@ export default {
     deleteRenderKey (index, state) {
       if (state === 'present') {
         this.$confirm('该 Key 被产品引用，确定删除', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         })
           .then(() => {

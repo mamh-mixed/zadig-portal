@@ -31,7 +31,7 @@
             <div
               class="grid-content item-desc"
               :class="$translate.calcTaskStatusColor(distributeDeploy.release_imageSubTask.distribute_info[0].distribute_status)"
-            >{{distributeDeploy.release_imageSubTask.distribute_info[0].distribute_status?$translate.translateTaskStatus(distributeDeploy.release_imageSubTask.distribute_info[0].distribute_status):"未运行"}}</div>
+            >{{distributeDeploy.release_imageSubTask.distribute_info[0].distribute_status?$t(`workflowTaskStatus.${distributeDeploy.release_imageSubTask.distribute_info[0].distribute_status}`):$t(`workflowTaskStatus.notRunning`)}}</div>
           </el-col>
           <el-col
             v-if=" distributeDeploy.release_imageSubTask.distribute_info[0].distribute_status && distributeDeploy.release_imageSubTask.distribute_info[0].distribute_status !=='running'"
@@ -99,7 +99,7 @@
               <div
                 class="grid-content item-desc"
                 :class="$translate.calcTaskStatusColor(deploy.deploy_status)"
-              >{{deploy.deploy_status?$translate.translateTaskStatus(deploy.deploy_status):"未运行"}}</div>
+              >{{deploy.deploy_status?$t(`workflowTaskStatus.${deploy.deploy_status}`):$t(`workflowTaskStatus.notRunning`)}}</div>
             </el-col>
             <el-col :span="6">
               <div class="grid-content item-title">
@@ -162,7 +162,7 @@
             <div
               class="grid-content item-desc"
               :class="$translate.calcTaskStatusColor(distributeDeploy.distribute2kodoSubTask.status)"
-            >{{distributeDeploy.distribute2kodoSubTask.status?$translate.translateTaskStatus(distributeDeploy.distribute2kodoSubTask.status):"未运行"}}</div>
+            >{{distributeDeploy.distribute2kodoSubTask.status?$t(`workflowTaskStatus.${distributeDeploy.distribute2kodoSubTask.status}`):$t(`workflowTaskStatus.notRunning`)}}</div>
           </el-col>
           <!-- <el-col :span="6">
             <div class="grid-content item-title">

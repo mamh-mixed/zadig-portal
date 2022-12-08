@@ -54,8 +54,8 @@ export default {
     varGroup (tag, row) {
       if (tag === 'delete') {
         this.$confirm(`确定要删除 ${row.name} ?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(() => {
           deleteVariablesGroupAPI(this.projectName, row.id).then(res => {

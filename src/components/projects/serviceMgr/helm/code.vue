@@ -311,8 +311,8 @@ export default {
     async deleteServer (currentData) {
       const deleteText = `确定要删除 ${currentData.service_name} 这个服务吗？`
       this.$confirm(`${deleteText}`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         this.page.expandFileList = []

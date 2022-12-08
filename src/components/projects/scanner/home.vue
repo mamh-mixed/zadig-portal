@@ -65,8 +65,8 @@ export default {
     },
     removeCodeScanner ({ name, id }) {
       this.$confirm(`确定要删除 ${name} 这个配置吗？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteCodeScannerAPI(id, this.projectName).then(() => {

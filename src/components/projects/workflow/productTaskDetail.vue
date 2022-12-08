@@ -14,7 +14,7 @@
                 effect="dark"
                 :type="$utils.taskElTagType(taskDetail.status)"
                 close-transition
-              >{{ myTranslate(taskDetail.status) }}</el-tag>
+              >{{ taskDetail.status?$t(`workflowTaskStatus.${taskDetail.status}`):$t(`workflowTaskStatus.notRunning`) }}</el-tag>
             </el-form-item>
             <el-form-item label="创建者">{{ taskDetail.task_creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
@@ -196,7 +196,7 @@
                         <i class="iconfont iconhelmrepo"></i>
                         {{task.service_name}}
                       </span>
-                      {{':'+ myTranslate(task.status)}}
+                      {{task.status?$t(`workflowTaskStatus.${task.status}`):$t(`workflowTaskStatus.notRunning`)}}
                     </span>
                     {{ makePrettyElapsedTime(task) }}
                     <el-tooltip v-if="calcElapsedTimeNum(task)<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
@@ -321,7 +321,7 @@
             <template slot-scope="scope">
               <span
                 :class="colorTranslation(scope.row.testingv2SubTask.status, 'pipeline', 'task')"
-              >{{ myTranslate(scope.row.testingv2SubTask.status) }}</span>
+              >{{ scope.row.testingv2SubTask.status?$t(`workflowTaskStatus.${scope.row.testingv2SubTask.status}`):$t(`workflowTaskStatus.notRunning`) }}</span>
               {{ makePrettyElapsedTime(scope.row.testingv2SubTask) }}
               <el-tooltip v-if="calcElapsedTimeNum(scope.row.testingv2SubTask)<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
                 <i class="el-icon-warning" style="color: red;"></i>
@@ -381,17 +381,17 @@
           <el-table-column label="分发" min-width="250px">
             <template slot-scope="scope">
               <template  v-if="scope.row.release_imageSubTask">
-                <span :class="colorTranslation(scope.row.release_imageSubTask.distribute_info[0].distribute_status, 'pipeline', 'task')">{{'镜像：' + myTranslate(scope.row.release_imageSubTask.distribute_info[0].distribute_status) }}</span>
+                <span :class="colorTranslation(scope.row.release_imageSubTask.distribute_info[0].distribute_status, 'pipeline', 'task')">{{'镜像：' + (scope.row.release_imageSubTask.distribute_info[0].distribute_status?$t(`workflowTaskStatus.${scope.row.release_imageSubTask.distribute_info[0].distribute_status}`):$t(`workflowTaskStatus.notRunning`)) }}</span>
               </template>
               <template v-if="scope.row.distribute2kodoSubTask">
-                <span :class="colorTranslation(scope.row.distribute2kodoSubTask.status, 'pipeline', 'task')">{{ '对象存储：' + myTranslate(scope.row.distribute2kodoSubTask.status) }}</span>
+                <span :class="colorTranslation(scope.row.distribute2kodoSubTask.status, 'pipeline', 'task')">{{ '对象存储：' + (scope.row.distribute2kodoSubTask.status?$t(`workflowTaskStatus.${scope.row.distribute2kodoSubTask.status}`):$t(`workflowTaskStatus.notRunning`)) }}</span>
               </template>
             </template>
           </el-table-column>
 
           <el-table-column label="部署" min-width="250px">
             <template slot-scope="scope">
-              <span v-if="scope.row.release_imageSubTask && checkDistributeDeploy(scope.row.release_imageSubTask.distribute_info)" :class="colorTranslation(scope.row.release_imageSubTask.distribute_info[0].deploy_status, 'pipeline', 'task')">{{ myTranslate(scope.row.release_imageSubTask.distribute_info[0].deploy_status) }}</span>
+              <span v-if="scope.row.release_imageSubTask && checkDistributeDeploy(scope.row.release_imageSubTask.distribute_info)" :class="colorTranslation(scope.row.release_imageSubTask.distribute_info[0].deploy_status, 'pipeline', 'task')">{{ scope.row.release_imageSubTask.distribute_info[0].deploy_status?$t(`workflowTaskStatus.${scope.row.release_imageSubTask.distribute_info[0].deploy_status}`):$t(`workflowTaskStatus.notRunning`) }}</span>
               <span v-else>N/A</span>
             </template>
           </el-table-column>
@@ -410,7 +410,7 @@ import {
   restartWorkflowAPI,
   cancelWorkflowAPI
 } from '@api'
-import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
+import { colorTranslate } from '@utils/wordTranslate.js'
 import DeployIcons from '@/components/common/deployIcons'
 import ArtifactDownload from '@/components/common/artifactDownload.vue'
 import TaskDetailBuild from './productTaskDetail/build.vue'
@@ -533,9 +533,7 @@ export default {
     artifactDeployArray () {
       const arr = this.$utils.mapToArray(this.artifactDeployMap, '_target')
       for (const target of arr) {
-        target.buildOverallStatusZh = this.myTranslate(
-          target.deploySubTask.status
-        )
+        target.buildOverallStatusZh = target.deploySubTask.status ? this.$t(`workflowTaskStatus.${target.deploySubTask.status}`) : this.$t(`workflowTaskStatus.notRunning`)
         target.buildOverallColor = this.colorTranslation(
           target.deploySubTask.status,
           'pipeline',
@@ -553,9 +551,7 @@ export default {
     artifact_deployArray () {
       const arr = this.$utils.mapToArray(this.artifact_deployMap, '_target')
       for (const target of arr) {
-        target.buildOverallStatusZh = this.myTranslate(
-          target.artifact_deploySubTask.status
-        )
+        target.buildOverallStatusZh = target.artifact_deploySubTask.status ? this.$t(`workflowTaskStatus.${target.artifact_deploySubTask.status}`) : this.$t(`workflowTaskStatus.notRunning`)
         target.buildOverallColor = this.colorTranslation(
           target.artifact_deploySubTask.status,
           'pipeline',
@@ -583,9 +579,7 @@ export default {
           target.buildv2SubTask,
           target.docker_buildSubTask
         )
-        target.buildOverallStatusZh = this.myTranslate(
-          target.buildOverallStatus
-        )
+        target.buildOverallStatusZh = target.buildOverallStatus ? this.$t(`workflowTaskStatus.${target.buildOverallStatus}`) : this.$t(`workflowTaskStatus.notRunning`)
         target.buildOverallColor = this.colorTranslation(
           target.buildOverallStatus,
           'pipeline',
@@ -871,10 +865,6 @@ export default {
     },
     repoID (repo) {
       return `${repo.source}/${repo.repo_owner}/${repo.repo_name}`
-    },
-
-    myTranslate (word) {
-      return wordTranslate(word, 'pipeline', 'task')
     },
     colorTranslation (word, category, subitem) {
       return colorTranslate(word, category, subitem)

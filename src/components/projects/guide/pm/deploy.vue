@@ -127,8 +127,8 @@ export default {
   methods: {
     viewEnvStatus () {
       this.$confirm('跳出后进入项目将不再进入向导流程', '确认跳出项目初始化向导？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         this.exitLoading = true

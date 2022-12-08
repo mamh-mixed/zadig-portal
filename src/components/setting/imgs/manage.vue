@@ -155,8 +155,8 @@ export default {
     },
     deleteImg (data) {
       this.$confirm(`确定要删除 ${data.label} 这个镜像吗？`, '删除镜像确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteImgAPI(data.id).then(

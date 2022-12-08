@@ -374,8 +374,8 @@ export default {
         return item.name
       })
       this.$confirm(`您的更新操作将覆盖环境中 ${key} 的 ${value} 服务变更，确认继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         const force = true

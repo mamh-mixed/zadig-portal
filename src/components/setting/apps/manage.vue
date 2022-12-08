@@ -334,8 +334,8 @@ export default {
     },
     deleteApp (data) {
       this.$confirm(`软件包删除可能会影响正在使用的工作流，确定删除 ${data.name} 的 ${data.version} 版本吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteAppAPI(data).then(response => {

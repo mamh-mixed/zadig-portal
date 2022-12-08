@@ -80,8 +80,8 @@ export default {
           ? `该配置在 ${obj.pipelines} 存在引用，确定要删除 ${obj.name} 吗？`
           : `确定要删除 ${obj.name} 吗？`
       this.$confirm(str, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteBuildConfigAPI(obj.name, obj.version, projectName).then(() => {

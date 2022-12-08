@@ -66,8 +66,8 @@ export default {
     },
     deleteChart (data) {
       this.$confirm(`确定要删除 ${data.name} 这个模板吗？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       })
         .then(() => {

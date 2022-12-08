@@ -349,8 +349,8 @@ export default {
         `确定要删除 ${this.envName} 环境中 ${objectName} 配置?`,
         '删除',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }
       ).then(async () => {

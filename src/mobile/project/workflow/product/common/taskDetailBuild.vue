@@ -11,7 +11,7 @@
           </van-col>
           <van-col :span="6">
             <div class>
-              <span :class="buildOverallColor">{{buildv2.status?buildOverallStatusZh:"未运行"}}</span>
+              <span :class="buildOverallColor">{{buildv2.status?$t(`workflowTaskStatus.${buildv2.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
             </div>
           </van-col>
           <van-col v-if="buildv2.status!=='running'" :span="6">
@@ -119,7 +119,7 @@ export default {
       return this.$utils.calcOverallBuildStatus(this.buildv2, this.docker_build)
     },
     buildOverallStatusZh () {
-      return this.$translate.translateTaskStatus(this.buildOverallStatus)
+      return this.$t(`workflowTaskStatus.${this.buildOverallStatus}`)
     },
     buildOverallColor () {
       return this.$translate.calcTaskStatusColor(this.buildOverallStatus)

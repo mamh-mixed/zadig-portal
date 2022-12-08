@@ -214,8 +214,8 @@ export default {
         const title = '确认'
         deleteText = `确定要删除 ${data.name} 这个模板吗？`
         this.$confirm(`${deleteText}`, `${title}`, {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(() => {
           deleteKubernetesTemplateAPI(data.id).then(() => {

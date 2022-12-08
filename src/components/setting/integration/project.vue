@@ -239,8 +239,8 @@ export default {
     },
     handleJiraDelete () {
       this.$confirm(`确定要删除这个 Jira 配置吗？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteJiraAPI().then((res) => {

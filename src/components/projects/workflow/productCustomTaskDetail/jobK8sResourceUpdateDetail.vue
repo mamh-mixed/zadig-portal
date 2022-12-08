@@ -8,7 +8,7 @@
         </el-tooltip>
       </el-col>
       <el-col :span="2">
-        <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?buildOverallStatusZh:"未运行"}}</a>
+        <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?$t(`workflowTaskStatus.${jobInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
       </el-col>
       <el-col :span="2">
         <span>{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
@@ -94,7 +94,7 @@ export default {
       return this.$utils.calcOverallBuildStatus(this.jobInfo, {})
     },
     buildOverallStatusZh () {
-      return this.$translate.translateTaskStatus(this.buildOverallStatus)
+      return this.$t(`workflowTaskStatus.${this.buildOverallStatus}`)
     },
     buildOverallColor () {
       return this.$translate.calcTaskStatusColor(this.buildOverallStatus)

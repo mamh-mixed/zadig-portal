@@ -327,8 +327,8 @@ export default {
     },
     handleMailDelete () {
       this.$confirm('确定要删除这个邮件配置吗？', '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         Promise.all([deleteEmailHostAPI(), deleteEmailServiceAPI()]).then(

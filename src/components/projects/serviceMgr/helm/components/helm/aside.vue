@@ -190,8 +190,8 @@ export default {
         this.isGuide ? '确认修改 Helm Release 名称？' : '修改后服务会在已部署的环境中重建，请确认?',
         '修改 Helm Release 名称',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }
       )

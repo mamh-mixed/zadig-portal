@@ -62,8 +62,8 @@ export default {
     deleteModel (modelInfo) {
       const { template_name, id } = modelInfo
       this.$confirm(`确定要删除 ${template_name} 模板?`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteWorkflowTemplateAPI(id).then(res => {

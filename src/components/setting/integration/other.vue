@@ -131,8 +131,8 @@ export default {
     },
     handleExternalDelete (id) {
       this.$confirm(`确定要删除这个外部系统配置吗？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteExternalSystemAPI(id).then(res => {

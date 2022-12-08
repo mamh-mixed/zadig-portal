@@ -184,8 +184,8 @@ export default {
       if (this.source === 'zadig') {
         const templateNames = this.$refs.zadigBuildForm.templates.map(temp => temp.name)
         this.$prompt('保存为系统全局构建模板，其中的代码信息将会被去除，构建信息将会作为构建模板内容保存，请确认！', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           inputValidator: input => {
             if (!input) {
               return '请输入构建模板名称'

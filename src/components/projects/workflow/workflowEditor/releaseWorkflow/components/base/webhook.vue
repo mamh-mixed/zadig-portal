@@ -1089,7 +1089,7 @@ export default {
       if (!isEqual(newConfig, oldConfig)) {
         this.$confirm('保存当前工作流配置后才可配置触发器?', '确认', {
           confirmButtonText: '保存',
-          cancelButtonText: '取消',
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         })
           .then(() => {
@@ -1116,7 +1116,7 @@ export default {
           if (!this.isEdit) {
             this.$confirm('保存当前工作流配置后才可配置触发器?', '确认', {
               confirmButtonText: '保存',
-              cancelButtonText: '取消',
+              cancelButtonText: this.$t(`global.cancel`),
               type: 'warning'
             })
               .then(() => {

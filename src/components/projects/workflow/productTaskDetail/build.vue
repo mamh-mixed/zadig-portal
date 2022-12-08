@@ -33,7 +33,7 @@
           <el-col :span="6">
             <div class="grid-content item-desc">
               <a :class="buildOverallColor"
-                 href="#buildv2-log">{{buildv2.status?buildOverallStatusZh:"未运行"}}</a>
+                 href="#buildv2-log">{{buildv2.status?$t(`workflowTaskStatus.${buildv2.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
             </div>
           </el-col>
           <el-col v-if="buildv2.status!=='running'"
@@ -182,7 +182,7 @@ export default {
       return this.$utils.calcOverallBuildStatus(this.buildv2, this.docker_build)
     },
     buildOverallStatusZh () {
-      return this.$translate.translateTaskStatus(this.buildOverallStatus)
+      return this.$t(`workflowTaskStatus.${this.buildOverallStatus}`)
     },
     buildOverallColor () {
       return this.$translate.calcTaskStatusColor(this.buildOverallStatus)

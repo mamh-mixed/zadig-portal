@@ -148,8 +148,8 @@ export default {
     multiUpdate () {
       const fileId = this.fileContent.id
       this.$confirm(`确认后，所有开启「自动同步」的服务配置会应用最新的模板。`, '确定应用到服务？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       })
         .then(() => {

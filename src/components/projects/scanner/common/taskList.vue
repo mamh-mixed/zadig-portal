@@ -13,7 +13,7 @@
         <template slot-scope="scope">
           <span
             :class="[`status-${$utils.taskElTagType(scope.row.status)}`]"
-          >&nbsp;{{ wordTranslation(scope.row.status,'pipeline','task') }}</span>
+          >&nbsp;{{ $t(`workflowTaskStatus.${scope.row.status}`) }}</span>
         </template>
       </el-table-column>
       <el-table-column min-width="120" label="持续时间">
@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import { wordTranslate } from '@utils/wordTranslate.js'
 import { unix } from 'moment'
 export default {
   data () {
@@ -59,9 +58,6 @@ export default {
     }
   },
   methods: {
-    wordTranslation (word, category, subitem) {
-      return wordTranslate(word, category, subitem)
-    },
     taskDuration (taskId, started) {
       const refresh = () => {
         const duration = Math.floor(Date.now() / 1000) - started

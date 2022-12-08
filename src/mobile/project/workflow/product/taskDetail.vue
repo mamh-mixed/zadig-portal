@@ -25,7 +25,7 @@
             <div class="mobile-block-desc">
               <van-tag size="small"
                        :type="$utils.mobileVantTagType(taskDetail.status)">
-                {{ myTranslate(taskDetail.status) }}</van-tag>
+                {{ taskDetail.status?$t(`workflowTaskStatus.${taskDetail.status}`):$t(`workflowTaskStatus.notRunning`) }}</van-tag>
             </div>
           </div>
         </van-col>
@@ -91,7 +91,7 @@
                   <span v-for="(task,index) in item.deploySubTasks"
                         :key="index">
                     <span :class="colorTranslation(task.status, 'pipeline', 'task')">
-                      {{myTranslate(task.status) }}
+                    {{task.status?$t(`workflowTaskStatus.${task.status}`):$t(`workflowTaskStatus.notRunning`) }}
                     </span>
                     {{ makePrettyElapsedTime(task) }}
                   </span>
@@ -127,7 +127,7 @@
              <van-col span="12">
               <span
                 :class="colorTranslation(item.testingv2SubTask.status, 'pipeline', 'task')"
-              >{{ myTranslate(item.testingv2SubTask.status) }}</span>
+              >{{ item.testingv2SubTask.status?$t(`workflowTaskStatus.${item.testingv2SubTask.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
               {{ makePrettyElapsedTime(item.testingv2SubTask) }}
               <el-tooltip v-if="calcElapsedTimeNum(item.testingv2SubTask)<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
                 <i class="el-icon-warning" style="color: red;"></i>
@@ -152,7 +152,7 @@ import { Col, Collapse, CollapseItem, Row, NavBar, Tag, Panel, Loading, Button, 
 import TaskDetailBuild from './common/taskDetailBuild.vue'
 import TaskDetailDeploy from './common/taskDetailDeploy.vue'
 import TaskDetailTest from './common/taskDetailTest.vue'
-import { wordTranslate, colorTranslate } from '@utils/wordTranslate.js'
+import { colorTranslate } from '@utils/wordTranslate.js'
 import {
   workflowTaskDetailAPI, workflowTaskDetailSSEAPI, restartWorkflowAPI, cancelWorkflowAPI
 } from '@api'
@@ -223,9 +223,6 @@ export default {
         })
       }
       this.showAction = false
-    },
-    myTranslate (word) {
-      return wordTranslate(word, 'pipeline', 'task')
     },
     colorTranslation (word, category, subitem) {
       return colorTranslate(word, category, subitem)
@@ -332,7 +329,7 @@ export default {
         target.buildOverallStatus = this.$utils.calcOverallBuildStatus(
           target.buildv2SubTask, target.docker_buildSubTask
         )
-        target.buildOverallStatusZh = this.myTranslate(target.buildOverallStatus)
+        target.buildOverallStatusZh = target.buildOverallStatus ? this.$t(`workflowTaskStatus.${target.buildOverallStatus}`) : this.$t(`workflowTaskStatus.notRunning`)
         target.buildOverallColor = this.colorTranslation(target.buildOverallStatus, 'pipeline', 'task')
         target.buildOverallTimeZh = this.$utils.timeFormat(
           this.calcElapsedTimeNum(target.buildv2SubTask) + this.calcElapsedTimeNum(target.docker_buildSubTask)

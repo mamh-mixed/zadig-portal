@@ -1,22 +1,5 @@
 export function wordTranslate (word, category, subitem = '') {
   const wordComparisonTable = {
-    pipeline: {
-      task: {
-        '': '未运行',
-        created: '排队中',
-        waiting: '排队中',
-        running: '正在运行',
-        failed: '失败',
-        passed: '成功',
-        timeout: '超时',
-        cancelled: '取消',
-        blocked: '阻塞',
-        queued: '队列中',
-        skipped: '跳过',
-        prepare: '准备环境',
-        reject: '拒绝'
-      }
-    },
     approval: {
       status: {
         '': '待审核',
@@ -61,10 +44,6 @@ export function wordTranslate (word, category, subitem = '') {
   } else if (subitem !== '') {
     return wordComparisonTable[category][subitem][word]
   }
-}
-
-export function translateTaskStatus (status) {
-  return wordTranslate(status, 'pipeline', 'task')
 }
 
 export function colorTranslate (word, category, subitem = '') {
@@ -168,7 +147,6 @@ export function translateSubTaskType (type) {
 
 export default {
   wordTranslate,
-  translateTaskStatus,
   colorTranslate,
   calcTaskStatusColor,
   calcEnvStatusColor,

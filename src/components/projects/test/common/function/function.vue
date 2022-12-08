@@ -143,8 +143,8 @@ export default {
     },
     removeTest (obj) {
       this.$confirm(`确定要删除 ${obj.name} 吗？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         deleteTestAPI(obj.name, obj.product_name).then(() => {
@@ -165,8 +165,8 @@ export default {
     },
     deleteConnection (testName, workflow) {
       this.$confirm(`确定要取消和工作流 ${workflow.display_name} 的关联`, '取消关联', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       })
         .then(() => {
