@@ -6,7 +6,7 @@
           <el-popover placement="bottom" width="300" trigger="hover" popper-class="project-list-popover" @show="searchProject=''">
             <div class="project-list-container">
               <div class="search-container">
-                <el-input placeholder="搜索" v-model.trim="searchProject" size="small" />
+                <el-input :placeholder="$t(`topbarMenu.search`)" v-model.trim="searchProject" size="small" />
               </div>
               <div class="list-container">
                 <div
@@ -72,13 +72,13 @@
                   <li class="profile-list__item profile-list__item-nested">
                     <div class="title">
                       <i class="iconfont iconzhanghu"></i>
-                      <span class="profile-list__text">用户名</span>
+                      <span class="profile-list__text">{{$t(`topbarMenu.username`)}}</span>
                     </div>
                     <ul class="content profile-list">
                       <li class="profile-list__item active">
                         <span>{{userName}}</span>
-                        <el-tag v-if="role.includes('admin')" size="mini" type="primary" effect="plain">管理员</el-tag>
-                        <el-tag v-else size="mini" type="primary" effect="plain">普通用户</el-tag>
+                        <el-tag v-if="role.includes('admin')" size="mini" type="primary" effect="plain">{{$t(`topbarMenu.admin`)}}</el-tag>
+                        <el-tag v-else size="mini" type="primary" effect="plain">{{$t(`topbarMenu.user`)}}</el-tag>
                       </li>
                     </ul>
                   </li>
@@ -87,19 +87,19 @@
                   <router-link to="/v1/system/users">
                     <li class="profile-list__item">
                       <i class="iconfont icongeren"></i>
-                      <span class="profile-list__text">用户管理</span>
+                      <span class="profile-list__text">{{$t(`topbarMenu.users`)}}</span>
                     </li>
                   </router-link>
                   <router-link to="/v1/system">
                     <li class="profile-list__item">
                       <i class="iconfont iconicon_jichengguanli"></i>
-                      <span class="profile-list__text">系统设置</span>
+                      <span class="profile-list__text">{{$t(`topbarMenu.sysSetting`)}}</span>
                     </li>
                   </router-link>
                   <router-link v-if="hasPlutus" to="/v1/enterprise/">
                     <li class="profile-list__item">
                       <i class="iconfont iconcompany-info"></i>
-                      <span class="profile-list__text">企业管理</span>
+                      <span class="profile-list__text">{{$t(`topbarMenu.enterprise`)}}</span>
                     </li>
                   </router-link>
                 </ul>
@@ -107,12 +107,12 @@
                   <router-link to="/v1/profile/info">
                     <li class="profile-list__item">
                       <i class="iconfont iconfenzucopy"></i>
-                      <span class="profile-list__text">账号设置</span>
+                      <span class="profile-list__text">{{$t(`topbarMenu.account`)}}</span>
                     </li>
                   </router-link>
                   <li class="profile-list__item profile-list__with-icon">
                     <i class="iconfont icondengchu"></i>
-                    <span @click="logOut" class="profile-list__text logout">登出账号</span>
+                    <span @click="logOut" class="profile-list__text logout">{{$t(`topbarMenu.signOut`)}}</span>
                   </li>
                 </ul>
               </div>
