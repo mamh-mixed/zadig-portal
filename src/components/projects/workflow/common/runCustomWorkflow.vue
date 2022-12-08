@@ -875,7 +875,7 @@ export default {
           if (error.response && error.response.data.code === 6940) {
             this.isShowCheckErrorTip = true
             this.mailInfo.originMail = error.response.data.description.split(
-              'email:'
+              'email: '
             )[1]
           }
         })
@@ -887,6 +887,7 @@ export default {
           updateUserAPI(userInfo.uid, this.mailInfo).then(res => {
             this.checkWorkflowApproval(this.workflowName)
             this.dialogMailEditFormVisible = false
+            this.mailInfo.mail = ''
           })
         }
       })

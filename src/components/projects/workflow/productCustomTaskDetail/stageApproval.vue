@@ -9,7 +9,7 @@
         <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
       </el-col>
       <el-col :span="6" class="text" v-if="!isDisabled">
-        <span class="red">{{approvalInfo.approval.timeout}} 分钟</span>
+        <span class="red">{{timeout}} 分钟</span>
         <span>后审核超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>
@@ -118,6 +118,15 @@ export default {
       } else {
         return true
       }
+    },
+    timeout () {
+      let time = ''
+      if (this.approvalInfo.approval.type === 'lark') {
+        time = this.approvalInfo.approval.lark_approval.timeout
+      } else {
+        time = this.approvalInfo.approval.native_approval.timeout
+      }
+      return time
     }
   },
   methods: {

@@ -28,7 +28,7 @@
         <el-form-item label="审批方式" prop="approval.type">
           <el-radio-group v-model="form.approval.type" @change="handleTypeChange">
             <el-radio label="native">zadig</el-radio>
-            <el-radio label="lark">飞书</el-radio>
+            <!-- <el-radio label="lark">飞书</el-radio> -->
             <el-radio disabled>钉钉</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -72,7 +72,7 @@
           <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0" size="small"></el-input>
         </el-form-item>
         <el-form-item label="审核人" v-if="form.approval.type==='lark'">
-          <el-button type="primary" plain @click="addApprovalUser" size="mini">添加</el-button>
+          <el-button type="primary" plain @click="addApprovalUser" size="mini" :disabled="appList.length === 0">添加</el-button>
           <span>{{approvalUsers}}</span>
         </el-form-item>
         <el-form-item label="描述">
