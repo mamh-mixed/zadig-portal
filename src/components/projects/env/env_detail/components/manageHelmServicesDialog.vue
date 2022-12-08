@@ -50,7 +50,7 @@
         :disabled="!updateServices.service_names.length"
         @click="updateEnvironment"
         :loading="loading"
-      >确 定</el-button>
+      >{{$t(`global.confirm`)}}</el-button>
     </div>
   </el-dialog>
 </template>

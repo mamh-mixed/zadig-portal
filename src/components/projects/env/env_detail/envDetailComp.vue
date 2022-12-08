@@ -494,7 +494,7 @@
       </div>
       <div slot="footer">
         <el-button @click="envDeleteInfo.deleteDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="danger" @click="identifyDeleteEnv()" size="small">确 定</el-button>
+        <el-button type="danger" @click="identifyDeleteEnv()" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
   </div>

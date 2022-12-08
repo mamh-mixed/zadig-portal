@@ -97,7 +97,7 @@
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowVarDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="saveCurSetting('var',curItem)" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveCurSetting('var',curItem)" size="small">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="`${curItem.name} 分支配置`" :visible.sync="isShowBranchDialog" :append-to-body="true" width="40%">
@@ -124,7 +124,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowBranchDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="`${curItem.name} 共享存储配置`" :visible.sync="isShowPvDialog" :append-to-body="true" width="40%">
@@ -160,7 +160,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowPvDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="saveCurSetting('pv',curItem)" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveCurSetting('pv',curItem)" size="small">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
   </div>

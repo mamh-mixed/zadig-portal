@@ -75,7 +75,7 @@
       </div>
       <div slot="footer">
         <el-button size="small" @click="dialogBeforeClose()">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" size="small" @click="updateChart()">确 定</el-button>
+        <el-button type="primary" size="small" @click="updateChart()">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
 

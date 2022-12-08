@@ -26,7 +26,7 @@
       <ImportConfig :importRepoInfo="repoConfig" />
       <div slot="footer">
         <el-button size="small" @click="handleConfig(false)">{{$t(`global.cancel`)}}</el-button>
-        <el-button size="small" type="primary" @click="handleConfig(true)">确 定</el-button>
+        <el-button size="small" type="primary" @click="handleConfig(true)">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
   </div>

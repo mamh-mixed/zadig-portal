@@ -6,7 +6,7 @@
         <p v-else>暂无请求 Payload 信息</p>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" size="small" @click="payloadDialogVisible = false">确 定</el-button>
+        <el-button type="primary" size="small" @click="payloadDialogVisible = false">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <div class="section">

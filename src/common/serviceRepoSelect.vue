@@ -31,7 +31,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="showMultiImport = false">{{$t(`global.cancel`)}}</el-button>
-        <el-button size="small" type="primary" @click="parseMultiImport">确 定</el-button>
+        <el-button size="small" type="primary" @click="parseMultiImport">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <template v-if="targets.length > 0">

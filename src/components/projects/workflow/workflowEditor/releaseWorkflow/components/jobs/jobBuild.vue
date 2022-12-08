@@ -101,7 +101,7 @@
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowVarDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="saveCurSetting('var',curItem)" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveCurSetting('var',curItem)" size="small">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -133,7 +133,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowBranchDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveCurSetting('branch',curItem)" size="small">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -174,7 +174,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowPvDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="saveCurSetting('pv',curItem)" size="small">确 定</el-button>
+        <el-button type="primary" @click="saveCurSetting('pv',curItem)" size="small">{{$t(`global.confirm`)}}</el-button>
         <el-tooltip class="item" effect="dark" content="应用到所有使用相同构建的服务组件" placement="top">
           <el-button type="primary" @click="apply(curItem)" size="small">确认并应用其他组件</el-button>
         </el-tooltip>

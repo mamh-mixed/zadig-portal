@@ -251,7 +251,7 @@
       />
       <div slot="footer">
         <el-button @click="isShowStageOperateDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
+        <el-button type="primary" @click="operateStage('',stage)" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
   </div>

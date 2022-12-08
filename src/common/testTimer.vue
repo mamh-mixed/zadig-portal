@@ -114,7 +114,7 @@
         <el-button size="small"
                    type="primary"
                    @click="addSchedule"
-                   round>确 定</el-button>
+                   round>{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <div v-show="schedules.enabled"
