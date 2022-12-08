@@ -60,6 +60,7 @@
         </div>
       </div>
       <div class="topbar-container-end">
+        <LangSwitcher class="function-icon" />
         <ShortCutLink class="function-icon" />
         <DocLink class="function-icon" />
         <Notification class="function-icon" />
@@ -255,6 +256,12 @@ export default {
   font-size: 20px;
   cursor: pointer;
 
+  /deep/ .language-switcher {
+    .iconfont {
+      font-size: 20px;
+    }
+  }
+
   &:hover {
     color: @themeColor;
   }
@@ -337,8 +344,6 @@ export default {
   border-bottom: 1px solid #ebedef;
 
   .topbar-content {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
     align-items: center;
     justify-content: space-between;
