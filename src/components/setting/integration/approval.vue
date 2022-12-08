@@ -65,7 +65,7 @@
       <template>
         <el-alert type="info" :closable="false">
           <template>
-            支持集成 Microsoft Active Directory、OpenLDAP、GitHub 以及 OAuth 集成等外部账号系统，详情可参考
+            支持集成飞书审批流，提供在IM内部进行审批的能力，详情可参考
             <el-link
               style="font-size: 14px; vertical-align: baseline;"
               type="primary"

@@ -884,7 +884,12 @@ export default {
       const userInfo = store.get('userInfo')
       this.$refs.mailForm.validate().then(valid => {
         if (valid) {
-          updateUserAPI(userInfo.uid, this.mailInfo).then(res => {
+          const params = {
+            name: userInfo.name,
+            email: this.mailInfo.mail,
+            phone: userInfo.phone
+          }
+          updateUserAPI(userInfo.uid, params).then(res => {
             this.checkWorkflowApproval(this.workflowName)
             this.dialogMailEditFormVisible = false
             this.mailInfo.mail = ''
