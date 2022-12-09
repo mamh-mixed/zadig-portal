@@ -97,49 +97,45 @@
       :show-close="false"
       title="选择审批人"
       custom-class="approval-dialog"
-      append-to-body
+      :append-to-body="true"
     >
-      <span>当前位置：</span>
-      <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8">
-        <el-breadcrumb-item
-          v-for="(item,index) in breadMenu"
-          :key="item.id"
-          @click.native="handleBreadMenuClick(item,index)"
-          style="cursor: pointer;"
-        >{{item.label}}</el-breadcrumb-item>
-      </el-breadcrumb>
-      <div class="mg-t8 mg-b8">
-        <span>已选审批人：</span>
-        <el-tooltip effect="dark" :content="approvalUsers" placement="top">
-          <span>{{ $utils.tailCut(approvalUsers,30) }}</span>
-        </el-tooltip>
-      </div>
-      <el-transfer
-        v-loading="loading"
-        element-loading-text="加载中..."
-        element-loading-spinner="iconfont iconfont-loading iconvery-build"
-        style=" display: inline-block; text-align: left;"
-        v-model="form.approval.approve_users"
-        filterable
-        :left-default-checked="[]"
-        :right-default-checked="[]"
-        :titles="['选择审批人', '当前组织已选审批人']"
-        :format="{
-        noChecked: '${total}',
-        hasChecked: '${checked}/${total}'
-      }"
-        :data="departmentList"
-      >
-        <div slot-scope="{ option }" @click="handleClick(option)">
-          <span v-if="option.avatar">
-            <img :src="option.avatar" alt="avatar" style=" width: 16px; height: 16px; border-radius: 50%;" />
-            <span>{{ option.name }}</span>
-          </span>
-          <span v-else style="position: relative; left: -24px; z-index: 2222; background: #fff;">1{{ option.name }}</span>
+      <div class="transfer mg-b24">
+        <div class="left">
+          <el-input placeholder="搜索" v-model="keyword" filterable size="small" style="  width: 80%;" @input="searchUser"></el-input>
+          <div>
+            <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8 breadcrumb">
+              <el-breadcrumb-item
+                v-for="(item,index) in breadMenu"
+                :key="item.id"
+                @click.native="handleBreadMenuClick(item,index)"
+                style="cursor: pointer;"
+              >{{item.name}}</el-breadcrumb-item>
+            </el-breadcrumb>
+          </div>
+          <div class="dep" v-for="(item,index) in departmentInfo.sub_department_list" :key="index" @click="handleClick(item)">{{item.name}}</div>
+          <div class="user" v-for="(item,index) in departmentInfo.user_list" :key="index">
+            <img :src="item.avatar" alt="avatar" class="user-avatar" />
+            <el-checkbox v-model="item.checked" @change="setUser($event,item,index)">{{ item.name }}</el-checkbox>
+          </div>
         </div>
-      </el-transfer>
+        <div class="right">
+          <div class="mg-b16">
+            已选：
+            {{form.approval.approve_users.length}}人
+          </div>
+          <div v-for="(item,index) in form.approval.approve_users" :key="index">
+            <div class="user">
+              <div>
+                <img :src="item.avatar" alt="avatar" class="user-avatar" />
+                <span>{{ item.name }}</span>
+              </div>
+              <span class="el-icon-close" @click="delApprovalUser(item,index)"></span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div slot="footer">
-        <el-button @click="isShowLarkTransferDialog = false" size="small">取 消</el-button>
+        <el-button @click="cancelApproval" size="small">取 消</el-button>
         <el-button type="primary" size="small" @click="saveApprovalUser">确 定</el-button>
       </div>
     </el-dialog>
@@ -166,11 +162,10 @@ export default {
         ]
       },
       appList: [],
-      departmentList: [],
+      departmentInfo: {},
       departmentId: 'root',
       userList: [],
-      users: [],
-      breadMenu: [{ label: 'root', id: 'root' }],
+      breadMenu: [{ name: 'root', id: 'root' }],
       isShowLarkTransferDialog: false,
       form: {
         name: '',
@@ -186,6 +181,9 @@ export default {
         },
         jobs: []
       },
+      originInfo: {},
+      keyword: '',
+      originUserList: [],
       loading: false
     }
   },
@@ -205,21 +203,7 @@ export default {
   },
   computed: {
     approvalUsers () {
-      const users = []
-      if (
-        this.form.approval.type === 'lark' &&
-        this.form.approval.approve_users &&
-        this.form.approval.approve_users.length > 0
-      ) {
-        this.form.approval.approve_users.forEach(item => {
-          if (item.name || item.user_name) {
-            users.push(item.name || item.user_name)
-          } else {
-            const name = item.split(',')[1] || ''
-            users.push(name)
-          }
-        })
-      }
+      const users = this.form.approval.approve_users.map(item => item.name)
       return users.toString()
     }
   },
@@ -248,6 +232,20 @@ export default {
         this.loading = false
       })
     },
+    setUser (val, item, index) {
+      if (val) {
+        this.form.approval.approve_users.push(item)
+      } else {
+        this.form.approval.approve_users = this.form.approval.approve_users.filter(
+          user => user.id !== item.id
+        )
+      }
+    },
+    searchUser (val) {
+      this.departmentInfo.user_list = this.originUserList.filter(
+        item => item.name.indexOf(val) > -1
+      )
+    },
     getAppList () {
       getApprovalListAPI().then(res => {
         this.appList = res
@@ -255,13 +253,23 @@ export default {
     },
     getDepartmentInfo () {
       this.loading = true
+      this.keyword = ''
       getDepartmentAPI(this.form.approval.approval_id, this.departmentId).then(
         res => {
-          this.departmentList = res.sub_department_list.concat(res.user_list)
-          this.departmentList.forEach(item => {
-            item.label = item.name
-            item.key = item.id + ',' + item.name // 不能绑定对象 这里拼接成id+name
+          res.user_list.forEach(item => {
+            if (this.form.approval.approve_users.length > 0) {
+              const ids = this.form.approval.approve_users.map(item => item.id)
+              if (ids.indexOf(item.id) > -1) {
+                item.checked = true
+              } else {
+                item.checked = false
+              }
+            } else {
+              item.checked = false
+            }
           })
+          this.originUserList = res.user_list
+          this.departmentInfo = res
           this.loading = false
         }
       )
@@ -271,20 +279,21 @@ export default {
       this.form.approval.approve_users = []
       this.getDepartmentInfo()
     },
+    delApprovalUser (item, index) {
+      this.form.approval.approve_users.splice(index, 1)
+      this.getDepartmentInfo()
+    },
     handleClick (item) {
-      if (!item.avatar) {
-        this.departmentId = item.id
-        this.breadMenu.push(item)
-        this.getDepartmentInfo()
-      }
+      this.departmentId = item.id
+      this.breadMenu.push(item)
+      this.getDepartmentInfo()
     },
     handleBreadMenuClick (item, index) {
       this.departmentId = item.id
-      if (index === this.breadMenu.length - 1) return
       if (index > 0) {
-        this.breadMenu = this.breadMenu.slice(0, index)
+        this.breadMenu = this.breadMenu.slice(0, index + 1)
       } else {
-        this.breadMenu = [{ label: 'root', id: 'root' }]
+        this.breadMenu = [{ name: 'root', id: 'root' }]
       }
       this.getDepartmentInfo()
     },
@@ -293,6 +302,10 @@ export default {
     },
     saveApprovalUser () {
       this.isShowLarkTransferDialog = false
+    },
+    cancelApproval () {
+      this.isShowLarkTransferDialog = false
+      this.form = this.originInfo
     },
     validateName (rule, value, callback) {
       const stageNames = rule.workflowInfo.stages.map(stage => stage.name)
@@ -332,6 +345,7 @@ export default {
         if (val) {
           if (this.type === 'edit') {
             this.form = cloneDeep(val)
+            this.originInfo = cloneDeep(val)
           }
         }
       },
@@ -346,28 +360,62 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
-.stage-operate {
-  .approval-dialog {
-    .avatar {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
+<style lang="less">
+.approval-dialog {
+  .avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+
+  .transfer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+
+    .user {
+      margin: 8px 0;
+      cursor: pointer;
+
+      &-avatar {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+        vertical-align: -3px;
+        border-radius: 50%;
+      }
     }
-  }
-}
 
-/deep/.el-transfer {
-  .el-transfer-panel {
-    min-width: 260px;
-  }
-}
+    .left {
+      width: 50%;
+      padding: 16px 0;
+      border-right: 1px solid #ddd;
 
-/deep/.el-transfer__buttons {
-  padding: 30px;
+      .breadcrumb {
+        width: 80%;
+        margin: 16px 0;
+        padding: 4px;
+        background: #eee;
+        cursor: pointer;
+      }
 
-  .el-button {
-    padding: 8px;
+      .dep {
+        margin: 8px 0;
+        cursor: pointer;
+      }
+    }
+
+    .right {
+      width: 50%;
+      padding: 16px;
+
+      .user {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
   }
 }
 </style>
