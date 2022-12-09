@@ -93,6 +93,7 @@
       width="50%"
       :close-on-click-modal="false"
       :show-close="false"
+      title="选择审批人"
       custom-class="approval-dialog"
       append-to-body
     >
@@ -121,7 +122,6 @@
         :left-default-checked="[]"
         :right-default-checked="[]"
         :titles="['选择审批人', '当前组织已选审批人']"
-        :button-texts="['删除','添加']"
         :format="{
         noChecked: '${total}',
         hasChecked: '${checked}/${total}'
@@ -205,14 +205,16 @@ export default {
     approvalUsers () {
       const users = []
       if (
-        this.form.approval.type === 'lark' && this.form.approval.approve_users &&
+        this.form.approval.type === 'lark' &&
+        this.form.approval.approve_users &&
         this.form.approval.approve_users.length > 0
       ) {
         this.form.approval.approve_users.forEach(item => {
-          if (item.name) {
-            users.push(item.name)
+          if (item.name || item.user_name) {
+            users.push(item.name || item.user_name)
           } else {
-            users.push(item.split(',')[1])
+            const name = item.split(',')[1] || ''
+            users.push(name)
           }
         })
       }
