@@ -46,7 +46,7 @@
         </el-table-column>
         <el-table-column prop="comment" label="评论信息"></el-table-column>
       </el-table>
-      <el-row class="mg-t24">
+      <el-row class="mg-t24" v-if="approvalInfo.approval.type === 'native'">
         <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审核</el-button>
       </el-row>
     </main>
