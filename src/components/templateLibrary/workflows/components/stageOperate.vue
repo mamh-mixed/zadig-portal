@@ -92,7 +92,7 @@
     </el-form>
     <el-dialog
       :visible.sync="isShowLarkTransferDialog"
-      width="50%"
+      width="40%"
       :close-on-click-modal="false"
       :show-close="false"
       title="选择审批人"
@@ -103,7 +103,7 @@
         <div class="left">
           <el-input placeholder="搜索" v-model="keyword" filterable size="small" style="  width: 90%;" @input="searchUser"></el-input>
           <div>
-            <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8 breadcrumb">
+            <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8 breadcrumb" v-if="breadMenu.length > 1">
               <el-breadcrumb-item
                 v-for="(item,index) in breadMenu"
                 :key="item.id"
@@ -168,7 +168,7 @@ export default {
       departmentInfo: {},
       departmentId: 'root',
       userList: [],
-      breadMenu: [{ name: 'root', id: 'root' }],
+      breadMenu: [{ name: '联系人', id: 'root' }],
       isShowLarkTransferDialog: false,
       form: {
         name: '',
@@ -302,7 +302,7 @@ export default {
       if (index > 0) {
         this.breadMenu = this.breadMenu.slice(0, index + 1)
       } else {
-        this.breadMenu = [{ name: 'root', id: 'root' }]
+        this.breadMenu = [{ name: '联系人', id: 'root' }]
       }
       this.getDepartmentInfo()
     },
