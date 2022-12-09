@@ -121,7 +121,7 @@
         <div class="right">
           <div class="mg-b16">
             已选：
-            {{form.approval.approve_users.length}}人
+            {{form.approval.approve_users && form.approval.approve_users.length || 0}}人
           </div>
           <div v-for="(item,index) in form.approval.approve_users" :key="index">
             <div class="user">
@@ -204,7 +204,10 @@ export default {
   },
   computed: {
     approvalUsers () {
-      const users = this.form.approval.approve_users.map(item => item.name)
+      let users = []
+      if (this.form.approval.approve_users && this.form.approval.approve_users.length > 0) {
+        users = this.form.approval.approve_users.map(item => item.name)
+      }
       return users.toString()
     },
     ...mapState({
