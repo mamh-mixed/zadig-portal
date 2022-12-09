@@ -145,10 +145,11 @@ exports.default = {
     notificationSettingSavedSuccessfully: 'Notification setting saved successfully'
   },
   project: {
-    loading: 'Loading...',
+    searchProject: 'Search Project',
     newProject: 'New project',
     templates: 'Templates',
     buildTemplate: 'Build',
+    workflowTemplate: 'Workflow',
     editProject: 'Edit',
     deleteProject: 'Delete',
     privateProject: 'Private project',
@@ -208,7 +209,17 @@ exports.default = {
     update: 'Update',
     projectDetail: 'Detail',
     createProject: 'Create Project',
-    editProjectInfo: 'Edit Project'
+    editProjectInfo: 'Edit Project',
+    deleteProjectComp: {
+      inputProjectNameToDelete: 'Please input project name {projectName} to confirm',
+      deleteExternalProjectTip: 'The following resources under this project will be unhosted,',
+      deleteProjectTip: 'The following resources under this project will be deleted at the same time,',
+      deleteProjectCaution: 'please proceed with caution !!',
+      deleteK8sNamespace: 'Delete the K8s namespace and services',
+      projectNameDontMatch: 'Project not match',
+      noResource: 'None',
+      successfullyDeleted: 'Projects have been successfully deleted'
+    }
   },
   workflowTaskStatus: {
     notRunning: 'Not running',
