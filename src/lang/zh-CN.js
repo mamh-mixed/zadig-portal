@@ -145,10 +145,11 @@ exports.default = {
     notificationSettingSavedSuccessfully: '通知设置保存成功'
   },
   project: {
-    loading: '加载中...',
+    searchProject: '搜索项目',
     newProject: '新建项目',
     templates: '模板库',
     buildTemplate: '构建',
+    workflowTemplate: '工作流',
     editProject: '修改',
     deleteProject: '删除',
     privateProject: '私有项目',
@@ -208,7 +209,17 @@ exports.default = {
     update: '更新信息',
     projectDetail: '配置',
     createProject: '新建项目',
-    editProjectInfo: '修改项目信息'
+    editProjectInfo: '修改项目信息',
+    deleteProjectComp: {
+      inputProjectNameToDelete: '请输入项目名 {projectName} 确认删除',
+      deleteExternalProjectTip: '该项目下的以下资源会被取消托管，',
+      deleteProjectTip: '该项目下的以下资源会同时被删除，',
+      deleteProjectCaution: '请谨慎操作！！',
+      deleteK8sNamespace: '同时删除环境对应的 K8s 命名空间和服务',
+      projectNameDontMatch: '项目名称不相符',
+      noResource: '无',
+      successfullyDeleted: '项目删除成功'
+    }
   },
   workflowTaskStatus: {
     notRunning: '未运行',
