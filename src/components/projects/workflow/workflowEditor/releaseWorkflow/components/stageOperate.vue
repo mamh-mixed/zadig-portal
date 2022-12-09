@@ -80,7 +80,9 @@
             :disabled="!form.approval.approval_id || appList.length === 0"
           >添加</el-button>
           <el-tooltip effect="dark" :content="approvalUsers" placement="top">
-            <span>{{ $utils.tailCut(approvalUsers,10) }}</span>
+            <div>
+              <span>{{ $utils.tailCut(approvalUsers,30) }}</span>
+            </div>
           </el-tooltip>
         </el-form-item>
         <el-form-item label="描述">
@@ -362,10 +364,10 @@ export default {
 }
 
 /deep/.el-transfer__buttons {
-  padding: 36px;
+  padding: 30px;
 
-  /deep/ .el-button {
-    padding: 4px;
+  .el-button {
+    padding: 8px;
   }
 }
 </style>

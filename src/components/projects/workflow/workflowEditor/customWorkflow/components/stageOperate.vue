@@ -79,7 +79,11 @@
             size="mini"
             :disabled="!form.approval.approval_id || appList.length === 0"
           >添加</el-button>
-          <span>{{approvalUsers}}</span>
+          <el-tooltip effect="dark" :content="approvalUsers" placement="top">
+            <div>
+              <span>{{ $utils.tailCut(approvalUsers,30) }}</span>
+            </div>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行" size="small"></el-input>
@@ -354,6 +358,20 @@ export default {
       height: 20px;
       border-radius: 50%;
     }
+  }
+}
+
+/deep/.el-transfer {
+  .el-transfer-panel {
+    min-width: 260px;
+  }
+}
+
+/deep/.el-transfer__buttons {
+  padding: 30px;
+
+  .el-button {
+    padding: 8px;
   }
 }
 </style>
