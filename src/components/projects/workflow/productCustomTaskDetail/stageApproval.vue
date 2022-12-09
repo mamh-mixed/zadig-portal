@@ -2,7 +2,7 @@
   <div class="stage-approval-detail">
     <header class="mg-b8">
       <el-col :span="2" class>
-        <span class="type">人工审核</span>
+        <span class="type">{{approvalInfo.approval.type==='lark'?'飞书审批':'人工审批'}}</span>
       </el-col>
       <el-col :span="6" class="text">
         <span>开始时间：</span>
@@ -26,8 +26,12 @@
       </el-col>
     </header>
     <main>
-      <el-table :data="approvalInfo.approval.approve_users" size="small" class="mg-t24">
-        <el-table-column prop="user_name" label="审核人"></el-table-column>
+      <el-table
+        :data="approvalInfo.approval.type === 'lark' ? approvalInfo.approval.lark_approval.approve_users: approvalInfo.approval.native_approval.approve_users"
+        size="small"
+        class="mg-t24"
+      >
+        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" label="审核人"></el-table-column>
         <el-table-column prop="reject_or_approve" label="审核结果">
           <template slot-scope="scope">
             <span
