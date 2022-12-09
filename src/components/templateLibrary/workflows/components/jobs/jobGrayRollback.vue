@@ -90,7 +90,6 @@ export default {
       if (namespace) {
         getDeploymentListAPI(cluster_id, namespace).then(res => {
           this.deploymentList = res
-          console.log(res)
         })
       }
     },

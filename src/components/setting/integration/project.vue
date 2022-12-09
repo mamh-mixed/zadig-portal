@@ -221,7 +221,6 @@ export default {
     getJiraConfig () {
       const key = this.$utils.rsaEncrypt()
       getJiraAPI(key).then((res) => {
-        console.log(res)
         if (res) {
           res.access_token = this.$utils.aesDecrypt(res.access_token)
           this.$set(this.jira, [0], res)
