@@ -140,6 +140,7 @@
 </template>
 <script>
 import DeleteProject from './components/deleteProject.vue'
+import bus from '@utils/eventBus'
 import { mapGetters, mapState } from 'vuex'
 import { isMobile } from 'mobile-device-detect'
 import store from 'storejs'
@@ -195,6 +196,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('getProjectList')
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.projects`), url: '' }] })
     // Compatible with non-system login
     this.redirectByDevice()
   },
