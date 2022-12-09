@@ -101,7 +101,7 @@
     >
       <div class="transfer mg-b24">
         <div class="left">
-          <el-input placeholder="搜索" v-model="keyword" filterable size="small" style="  width: 80%;" @input="searchUser"></el-input>
+          <el-input placeholder="搜索" v-model="keyword" filterable size="small" style="  width: 90%;" @input="searchUser"></el-input>
           <div>
             <el-breadcrumb separator-class="el-icon-arrow-right" class="mg-t8 breadcrumb">
               <el-breadcrumb-item
@@ -112,7 +112,10 @@
               >{{item.name}}</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
-          <div class="dep" v-for="(item,index) in departmentInfo.sub_department_list" :key="index" @click="handleClick(item)">{{item.name}}</div>
+          <div class="dep" v-for="(item,index) in departmentInfo.sub_department_list" :key="index" @click="handleClick(item)">
+            <span>{{item.name}}</span>
+            <span class="el-icon-arrow-right"></span>
+          </div>
           <div class="user" v-for="(item,index) in departmentInfo.user_list" :key="index">
             <img :src="item.avatar" alt="avatar" class="user-avatar" />
             <el-checkbox v-model="item.checked" @change="setUser($event,item,index)">{{ item.name }}</el-checkbox>
@@ -383,7 +386,7 @@ export default {
     border-radius: 4px;
 
     .user {
-      margin: 8px 0;
+      margin: 12px 0;
       cursor: pointer;
 
       &:hover {
@@ -405,7 +408,7 @@ export default {
       border-right: 1px solid #ddd;
 
       .breadcrumb {
-        width: 80%;
+        width: 90%;
         margin: 16px 0;
         padding: 4px 0;
         font-weight: 700;
@@ -414,7 +417,10 @@ export default {
       }
 
       .dep {
-        margin: 8px 0;
+        display: flex;
+        justify-content: space-between;
+        width: 90%;
+        margin: 12px 0;
         cursor: pointer;
 
         &:hover {
@@ -424,8 +430,8 @@ export default {
     }
 
     .right {
-      width: 50%;
-      padding: 16px;
+      width: 48%;
+      padding: 16px 0;
 
       .user {
         display: flex;
