@@ -282,7 +282,7 @@ export default {
     },
     addApprovalUser () {
       this.isShowLarkTransferDialog = true
-      this.form.approval.approve_users = []
+      // this.form.approval.approve_users = []
       this.getDepartmentInfo()
     },
     delApprovalUser (item, index) {
@@ -385,6 +385,10 @@ export default {
       margin: 8px 0;
       cursor: pointer;
 
+      &:hover {
+        font-weight: 600;
+      }
+
       &-avatar {
         width: 16px;
         height: 16px;
@@ -402,14 +406,19 @@ export default {
       .breadcrumb {
         width: 80%;
         margin: 16px 0;
-        padding: 4px;
-        background: #eee;
+        padding: 4px 0;
+        font-weight: 700;
+        border-bottom: 1px solid #ddd;
         cursor: pointer;
       }
 
       .dep {
         margin: 8px 0;
         cursor: pointer;
+
+        &:hover {
+          font-weight: 600;
+        }
       }
     }
 
