@@ -130,7 +130,6 @@ body {
   height: 100%;
   overflow: hidden;
   overflow-y: auto;
-  background-color: #fff;
 
   .main-home-container {
     width: 100vw;

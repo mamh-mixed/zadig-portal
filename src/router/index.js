@@ -803,18 +803,22 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import(/* webpackChunkName: "User Setting" */ '@/components/profile/home.vue'),
-        meta: {
-          requiresAuth: true,
-          title: '账号设置'
-        }
+        redirect: 'info'
       },
       {
         path: 'info',
-        component: () => import(/* webpackChunkName: "User Setting" */ '@/components/profile/manage.vue'),
+        component: () => import(/* webpackChunkName: "User Setting" */ '@/components/profile/info.vue'),
         meta: {
           requiresAuth: true,
-          title: '账号设置'
+          title: '账号信息'
+        }
+      },
+      {
+        path: 'preference',
+        component: () => import(/* webpackChunkName: "User Setting" */ '@/components/profile/preference.vue'),
+        meta: {
+          requiresAuth: true,
+          title: '偏好设置'
         }
       }
     ]

@@ -38,7 +38,12 @@ export default {
       this.ws = new WebSocket(hostname + url)
 
       this.$nextTick(() => {
-        this.term = new Terminal({ fontSize: '12', fontFamily: 'Monaco,Consolas,monospace', scrollback: 9999999 })
+        this.term = new Terminal({
+          fontSize: '12',
+          fontFamily: 'Monaco,Consolas,monospace',
+          scrollback: 9999999,
+          theme: this.$store.state.theme.xtermTheme
+        })
         const fitAddon = new FitAddon()
         this.term.loadAddon(fitAddon)
         this.term.open(document.getElementById(this.id))

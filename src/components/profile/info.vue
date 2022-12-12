@@ -321,7 +321,7 @@ export default {
   },
   created () {
     bus.$emit('set-topbar-title', {
-      breadcrumb: [{ title: '账号设置', url: '' }]
+      breadcrumb: [{ title: '账号信息', url: '' }]
     })
     this.getSubscribe()
     this.getCurrentUserInfo()

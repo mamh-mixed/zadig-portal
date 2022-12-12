@@ -32,6 +32,9 @@ import customWorkflow from './modules/customWorkflow'
 // Plutus
 import checkPlutus from './modules/checkPlutus'
 
+// Preference
+import theme from './modules/theme'
+
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -48,7 +51,8 @@ export default new Vuex.Store({
     k8sService,
     externalLink,
     customWorkflow,
-    checkPlutus
+    checkPlutus,
+    theme
   },
   strict: debug
 })
