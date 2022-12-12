@@ -286,7 +286,6 @@ export default {
     },
     addApprovalUser () {
       this.isShowLarkTransferDialog = true
-      // this.form.approval.approve_users = []
       this.getDepartmentInfo()
     },
     delApprovalUser (item, index) {

@@ -907,7 +907,6 @@ export default {
       // const key = this.$utils.rsaEncrypt()
       getCustomWorkfloweTaskPresetAPI(workflowName, this.projectName).then(
         res => {
-          console.log(res)
           res.stages.forEach(stage => {
             stage.jobs.forEach(job => {
               this.$set(job, 'checked', true)
