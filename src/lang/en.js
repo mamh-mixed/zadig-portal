@@ -216,7 +216,7 @@ exports.default = {
       deleteProjectTip: 'The following resources under this project will be deleted at the same time,',
       deleteProjectCaution: 'please proceed with caution !!',
       deleteK8sNamespace: 'Delete the K8s namespace and services',
-      projectNameDontMatch: 'Project not match',
+      projectNameDontMatch: 'Project name does not match',
       noResource: 'None',
       successfullyDeleted: 'Projects have been successfully deleted'
     }
@@ -292,9 +292,9 @@ exports.default = {
         goToAuthorization: 'Go to authorize',
         proxyIsEnabled: 'Proxy is enabled',
         proxyIsDisabled: 'Proxy is disbaled',
-        noProxy: '未配置代理，请先前往「系统配置」->「代理配置」配置代理！',
+        noProxy: 'No proxy configured, please go to "System Setting"-> "Setting" -> "Proxy Configuration" to configure proxy first!',
         proxyEnableFailed: 'Proxy configuration change faile:',
-        getProxyConfigurationFailed: 'Failed to get proxy configuration:',
+        getProxyConfigurationFailed: 'Fåailed to get proxy configuration:',
         confirmDeleteProvider: 'Are you sure to remove this provider?',
         deleteProviderSuccess: 'Provider has been removed',
         addProviderSuccess: 'Provider has been added',
