@@ -33,14 +33,14 @@
           </el-radio-group>
           <el-tooltip effect="dark" placement="top">
             <div slot="content">
-              企业版功能，详情参考(
+              企业版功能，详情参考
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
                 type="primary"
                 :href="`https://docs.koderover.com/zadig/project/common-workflow/#人工审批`"
                 :underline="false"
                 target="_blank"
-              >[文档]</el-link>)
+              >[文档](https://docs.koderover.com/zadig/project/common-workflow/#人工审批)</el-link>
             </div>
             <i class="el-icon-warning operation error" v-if="!hasPlutus"></i>
           </el-tooltip>
