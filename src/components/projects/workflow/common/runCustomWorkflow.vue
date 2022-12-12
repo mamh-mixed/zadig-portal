@@ -875,9 +875,8 @@ export default {
         .catch(error => {
           if (error.response && error.response.data.code === 6940) {
             this.isShowCheckErrorTip = true
-            this.mailInfo.originMail = error.response.data.description.split(
-              'email: '
-            )[1]
+            const pattern = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/
+            this.mailInfo.originMail = error.response.data.description.match(pattern)[0]
           }
           this.notReady = true
         })
