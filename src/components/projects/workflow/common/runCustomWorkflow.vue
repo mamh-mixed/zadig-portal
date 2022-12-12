@@ -1,7 +1,7 @@
 <template>
   <div class="custom-workflow">
     <div class="error" v-if="isShowCheckErrorTip">
-      审批发起人邮箱未找到，请正确配置您的企业邮箱
+      审批发起人手机号码未找到，请正确配置您的手机号码
       <el-button type="text" plain size="mini" @click="updateEmail">点击修改</el-button>
     </div>
     <el-form label-position="left" label-width="140px" size="small">
@@ -567,29 +567,28 @@
       >{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
     </el-form>
     <el-dialog
-      title="修改邮箱"
+      title="修改手机号码"
       :close-on-click-modal="false"
       :append-to-body="true"
       custom-class="edit-form-dialog"
       :visible.sync="dialogMailEditFormVisible"
     >
-      <el-form :model="mailInfo" @submit.native.prevent ref="mailForm">
-        <el-form-item label="原邮箱" label-width="100px" prop="name">
-          <el-input :value="mailInfo.originMail" placeholder="主机" size="small"></el-input>
+      <el-form :model="userInfo" @submit.native.prevent ref="mailForm">
+        <el-form-item label="原手机号码" label-width="100px" prop="originPhone">
+          <el-input :value="userInfo.originPhone" placeholder="原手机号码" size="small"></el-input>
         </el-form-item>
         <el-form-item
-          label="新邮箱"
+          label="新手机号码"
           label-width="100px"
-          prop="mail"
+          prop="phone"
           size="small"
           :rules="{
             required: true,
-            type: 'email',
-            message: '请输入正确的邮箱地址',
+            validator: validatePhone,
             trigger: ['blur', 'change']
           }"
         >
-          <el-input v-model="mailInfo.mail"></el-input>
+          <el-input v-model="userInfo.phone"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -618,9 +617,26 @@ import {
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
 
+const validatePhone = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请填写手机号'))
+  } else {
+    if (
+      !/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(
+        value
+      )
+    ) {
+      callback(new Error('请输入正确的手机号码'))
+    } else {
+      callback()
+    }
+  }
+}
+
 export default {
   data () {
     return {
+      validatePhone,
       registry_id: '',
       currentProjectEnvs: [],
       dockerList: [],
@@ -641,9 +657,9 @@ export default {
       fromJobInfo: {},
       dialogMailEditFormVisible: false,
       isShowCheckErrorTip: false,
-      mailInfo: {
-        originMail: '',
-        mail: ''
+      userInfo: {
+        originPhone: '',
+        phone: ''
       }
     }
   },
@@ -871,12 +887,15 @@ export default {
       checkWorkflowApprovalAPI(this.workflowName)
         .then(res => {
           this.isShowCheckErrorTip = false
+          this.notReady = false
         })
         .catch(error => {
           if (error.response && error.response.data.code === 6940) {
             this.isShowCheckErrorTip = true
-            const pattern = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/
-            this.mailInfo.originMail = error.response.data.description.match(pattern)[0]
+            const pattern = /(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}/
+            this.userInfo.originPhone = error.response.data.description.match(
+              pattern
+            )[0]
           }
           this.notReady = true
         })
@@ -887,13 +906,12 @@ export default {
         if (valid) {
           const params = {
             name: userInfo.name,
-            email: this.mailInfo.mail,
-            phone: userInfo.phone
+            phone: this.userInfo.phone
           }
           updateUserAPI(userInfo.uid, params).then(res => {
             this.checkWorkflowApproval(this.workflowName)
             this.dialogMailEditFormVisible = false
-            this.mailInfo.mail = ''
+            this.userInfo.phone = ''
           })
         }
       })
@@ -1351,7 +1369,7 @@ export default {
     position: absolute;
     top: -10%;
     left: 50%;
-    padding: 0 16px;
+    padding: 4px 8px;
     background: #fde2e2;
     transform: translateX(-50%);
   }
