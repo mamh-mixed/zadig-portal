@@ -40,7 +40,7 @@
                 :href="`https://docs.koderover.com/zadig/project/common-workflow/#人工审批`"
                 :underline="false"
                 target="_blank"
-              >[文档](https://docs.koderover.com/zadig/project/common-workflow/#人工审批)</el-link>
+              >[文档]</el-link>
             </div>
             <i class="el-icon-warning operation error" v-if="!hasPlutus"></i>
           </el-tooltip>
