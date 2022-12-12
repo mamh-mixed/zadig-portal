@@ -216,7 +216,7 @@ exports.default = {
       deleteProjectTip: 'The following resources under this project will be deleted at the same time,',
       deleteProjectCaution: 'please proceed with caution !!',
       deleteK8sNamespace: 'Delete the K8s namespace and services',
-      projectNameDontMatch: 'Project not match',
+      projectNameDontMatch: 'Project name does not match',
       noResource: 'None',
       successfullyDeleted: 'Projects have been successfully deleted'
     }
