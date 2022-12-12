@@ -4,7 +4,7 @@
        element-loading-spinner="iconfont iconfont-loading iconjingxiang"
        class="setting-img-container">
     <!--imgs-create-dialog-->
-    <el-dialog title='添加镜像'
+    <el-dialog :title="$t('sysSetting.images.addImage')"
                width="40%"
                :close-on-click-modal="false"
                custom-class="create-img-dialog"
@@ -14,15 +14,15 @@
                :model="createImg"
                label-position="left"
                label-width="125px">
-        <el-form-item label="标签"
+        <el-form-item :label="$t('sysSetting.images.label')"
                       prop="label">
           <el-input size="small"
                     v-model="createImg.label"></el-input>
         </el-form-item>
-        <el-form-item label="镜像名称"
+        <el-form-item :label="$t('sysSetting.images.imageName')"
                       prop="value">
           <el-input size="small"
-                    placeholder="仓库地址/命名空间/镜像名:标签"
+                    :placeholder="$t('sysSetting.images.imageNamePlaceholder')"
                     v-model.trim="createImg.value"></el-input>
         </el-form-item>
       </el-form>
@@ -39,7 +39,7 @@
     <!--imgs-create-dialog-->
 
     <!--imgs-edit-dialog-->
-    <el-dialog title='修改镜像'
+    <el-dialog :title="$t('sysSetting.images.editImage')"
                custom-class="create-img-dialog"
                :close-on-click-modal="false"
                :visible.sync="dialogImgEditFormVisible">
@@ -48,13 +48,13 @@
                :model="swapImg"
                label-position="left"
                label-width="125px">
-        <el-form-item label="标签"
+        <el-form-item :label="$t('sysSetting.images.label')"
                       prop="label">
           <el-input size="small"
                     disabled
                     v-model="swapImg.label"></el-input>
         </el-form-item>
-        <el-form-item label="镜像名称"
+        <el-form-item :label="$t('sysSetting.images.imageName')"
                       prop="value">
           <el-input size="small"
                     v-model.trim="swapImg.value"></el-input>
@@ -75,7 +75,7 @@
       <el-alert type="info"
                 :closable="false">
         <template slot>
-          <span>项目的构建、测试和代码扫描可以使用自定义镜像作为基础环境镜像，自定义镜像中需要添加一些必要软件包，详情可参考
+          <span>{{$t('sysSetting.images.referToDoc')}}
             <el-link style="vertical-align: baseline;"
                      type="primary"
                      href="https://docs.koderover.com/zadig/settings/custom-image/"
@@ -94,12 +94,12 @@
         <template>
           <el-table :data="imgs"
                     style="width: 100%;">
-            <el-table-column label="标签">
+            <el-table-column :label="$t('sysSetting.images.label')">
               <template slot-scope="scope">
                 <span>{{scope.row.label}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="镜像名称">
+            <el-table-column :label="$t('sysSetting.images.imageName')">
               <template slot-scope="scope">
                 <span>{{scope.row.value}}</span>
               </template>
@@ -141,10 +141,14 @@ export default {
         value: '',
         image_from: 'custom'
       },
-      imgs: [],
-      rules: {
-        label: [{ required: true, message: '请填写镜像标签', trigger: 'blur' }],
-        value: [{ required: true, message: '请填写镜像名称', trigger: 'blur' }]
+      imgs: []
+    }
+  },
+  computed: {
+    rules () {
+      return {
+        label: [{ required: true, message: this.$t('sysSetting.images.inputLabel'), trigger: 'blur' }],
+        value: [{ required: true, message: this.$t('sysSetting.images.inputImageName'), trigger: 'blur' }]
       }
     }
   },
@@ -154,7 +158,7 @@ export default {
       this.swapImg = this.$utils.cloneObj(data)
     },
     deleteImg (data) {
-      this.$confirm(`确定要删除 ${data.label} 这个镜像吗？`, '删除镜像确认', {
+      this.$confirm(this.$t('sysSetting.images.deleteTip', { label: data.label }), this.$t('sysSetting.images.confirm'), {
         confirmButtonText: this.$t(`global.confirm`),
         cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
@@ -163,7 +167,7 @@ export default {
           res => {
             this.getImgList()
             this.$message({
-              message: '删除镜像成功',
+              message: this.$t('sysSetting.images.imageHasBeenDeleted'),
               type: 'success'
             })
           }
@@ -180,7 +184,7 @@ export default {
               this.$refs.createImg.resetFields()
               this.getImgList()
               this.$message({
-                message: '新增镜像成功',
+                message: this.$t('sysSetting.images.addImageSuccess'),
                 type: 'success'
               })
             }
@@ -201,7 +205,7 @@ export default {
               this.$refs.updateImg.resetFields()
               this.getImgList()
               this.$message({
-                message: '更新镜像成功',
+                message: this.$t('sysSetting.images.updateImageSuccess'),
                 type: 'success'
               })
             }
@@ -221,15 +225,9 @@ export default {
       )
     }
   },
-  computed: {
-
-  },
   created () {
-    bus.$emit(`set-topbar-title`, { title: '自定义镜像管理', breadcrumb: [] })
-
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.images`), url: '' }] })
     this.getImgList()
-  },
-  components: {
   }
 }
 </script>

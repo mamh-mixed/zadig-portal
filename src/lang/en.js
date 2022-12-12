@@ -341,7 +341,21 @@ exports.default = {
       changeProxyFailed: 'Failed to change proxy configuration:{error}',
       getProxyConfigurationFailed: 'Failed to get proxy configuration{error}'
     },
-    images: {},
+    images: {
+      addImage: 'Add image',
+      label: 'Label',
+      imageName: 'Name',
+      imageNamePlaceholder: 'repository address/namespace/name:label',
+      editImage: 'Edit image',
+      referToDoc: 'The project build, test and code scan can use a custom image as the base environment image, the custom image needs to add some necessary packages, for details, please refer to',
+      inputLabel: 'Please input image label',
+      inputImageName: 'Please input image name',
+      deleteTip: 'Are you sure to delete the image {label}?',
+      confirm: 'Confirm',
+      imageHasBeenDeleted: 'Image has been deleted',
+      addImageSuccess: 'Add image successfully',
+      updateImageSuccess: 'Update image successfully'
+    },
     plugins: {},
     registry: {},
     storage: {},

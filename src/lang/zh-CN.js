@@ -341,7 +341,21 @@ exports.default = {
       changeProxyFailed: '修改配置失败：{error}',
       getProxyConfigurationFailed: '获取代理配置失败：{error}'
     },
-    images: {},
+    images: {
+      addImage: '添加镜像',
+      label: '标签',
+      imageName: '镜像名称',
+      imageNamePlaceholder: '仓库地址/命名空间/镜像名:标签',
+      editImage: '修改镜像',
+      referToDoc: '项目的构建、测试和代码扫描可以使用自定义镜像作为基础环境镜像，自定义镜像中需要添加一些必要软件包，详情可参考',
+      inputLabel: '请输入镜像标签',
+      inputImageName: '请输入镜像名称',
+      deleteTip: '确定要删除 {label} 这个镜像吗？',
+      confirm: '删除镜像确认',
+      imageHasBeenDeleted: '镜像已删除',
+      addImageSuccess: '添加镜像成功',
+      updateImageSuccess: '更新镜像成功'
+    },
     plugins: {},
     registry: {},
     storage: {},
