@@ -294,7 +294,7 @@ exports.default = {
         proxyIsDisabled: 'Proxy is disbaled',
         noProxy: 'No proxy configured, please go to "System Setting"-> "Setting" -> "Proxy Configuration" to configure proxy first!',
         proxyEnableFailed: 'Proxy configuration change faile:',
-        getProxyConfigurationFailed: 'Fåailed to get proxy configuration:',
+        getProxyConfigurationFailed: 'Failed to get proxy configuration:',
         confirmDeleteProvider: 'Are you sure to remove this provider?',
         deleteProviderSuccess: 'Provider has been removed',
         addProviderSuccess: 'Provider has been added',
@@ -318,6 +318,20 @@ exports.default = {
     settings: {},
     users: {},
     announcement: {},
-    auditLog: {}
+    auditLog: {
+      APIPayloadDialogTitle: 'API Payload: {time}',
+      noPayload: 'No payload',
+      selectType: 'Please select type',
+      username: 'Username',
+      project: 'Project',
+      function: 'Function',
+      statusCode: 'Status Code',
+      inputKeyword: 'Please input keyword to search',
+      search: 'Search',
+      time: 'Time',
+      detail: 'Detail',
+      APIPayload: 'API Payload',
+      searchCompleted: 'Search completed'
+    }
   }
 }
