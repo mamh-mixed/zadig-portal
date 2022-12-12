@@ -16,7 +16,7 @@
         <el-switch v-model="form.parallel" size="small"></el-switch>
       </el-form-item>
       <el-form-item label="前置步骤"></el-form-item>
-      <el-form-item label="人工审核" prop="approval.enabled" v-if="form.approval">
+      <el-form-item label="人工审批" prop="approval.enabled" v-if="form.approval">
         <el-switch v-model="form.approval.enabled" size="small"></el-switch>
       </el-form-item>
       <div v-if="form.approval.enabled">
@@ -27,9 +27,9 @@
         </el-form-item>
         <el-form-item label="审批方式" prop="approval.type">
           <el-radio-group v-model="form.approval.type" @change="handleTypeChange">
-            <el-radio label="native">zadig</el-radio>
+            <el-radio label="native">Zadig</el-radio>
             <el-radio label="lark">飞书</el-radio>
-            <el-radio disabled>钉钉</el-radio>
+            <!-- <el-radio disabled>钉钉</el-radio> -->
           </el-radio-group>
         </el-form-item>
         <el-form-item label="审批应用" v-if="form.approval.type==='lark'">
@@ -78,7 +78,7 @@
             @click="addApprovalUser"
             size="mini"
             :disabled="!form.approval.approval_id || appList.length === 0"
-          >添加</el-button>
+          >编辑</el-button>
           <el-tooltip effect="dark" :content="approvalUsers" placement="top">
             <div>
               <span>{{ $utils.tailCut(approvalUsers,30) }}</span>
@@ -94,7 +94,6 @@
       :visible.sync="isShowLarkTransferDialog"
       width="40%"
       :close-on-click-modal="false"
-      :show-close="false"
       title="选择审批人"
       custom-class="approval-dialog"
       :append-to-body="true"
