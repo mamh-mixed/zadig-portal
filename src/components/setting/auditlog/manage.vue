@@ -208,9 +208,6 @@ export default {
       this.getAuditLog('init', this.logPageSize, this.currentPageList)
     }
   },
-  computed: {
-
-  },
   components: {
     VueJsonPretty
   },
