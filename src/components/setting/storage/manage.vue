@@ -47,6 +47,13 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item v-if="storage.provider === 5"
+                      label="区域"
+                      prop="region">
+          <el-input size="small"
+                    v-model.trim="storage.region"
+                    placeholder="请输入区域"></el-input>
+        </el-form-item>
         <el-form-item label="接入点地址"
                       prop="endpoint">
           <el-input size="small"
@@ -148,6 +155,13 @@
               <i class="iconfont iconqita"></i> <span>其他</span>
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item v-if="swapStorage.provider === 5"
+                      label="区域"
+                      prop="region">
+          <el-input size="small"
+                    v-model.trim="swapStorage.region"
+                    placeholder="请输入区域"></el-input>
         </el-form-item>
         <el-form-item label="接入点地址"
                       prop="endpoint">
@@ -304,6 +318,7 @@ export default {
       allStorage: [],
       storage: {
         provider: null,
+        region: '',
         ak: '',
         sk: '',
         endpoint: '',
@@ -314,6 +329,7 @@ export default {
       },
       swapStorage: {
         provider: null,
+        region: '',
         ak: '',
         sk: '',
         endpoint: '',
@@ -354,6 +370,7 @@ export default {
       loading: true,
       rules: {
         provider: [{ required: true, message: '请选择提供商', trigger: 'blur' }],
+        region: [{ required: true, message: '请输入区域', trigger: 'blur' }],
         ak: [{ required: true, message: '请输入 Access Key', trigger: 'blur' }],
         sk: [{ required: true, message: '请输入 Secret Key', trigger: 'blur' }],
         endpoint: [{
