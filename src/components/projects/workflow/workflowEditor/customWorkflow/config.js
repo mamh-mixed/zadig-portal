@@ -255,7 +255,7 @@ const notifyType = [
   },
   {
     label: 'waitforapprove',
-    desc: '等待人工审核'
+    desc: '等待人工审批'
   }
 ]
 const notifyPlatform = [

@@ -39,7 +39,7 @@
           <div class="line"></div>
           <div class="stages" v-for="(stage,curStageIndex) in payload.stages" :key="stage.label">
             <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,curStageIndex)">
-              <el-button type="primary" size="small">{{$t(`workflow.manualReview`)}}</el-button>
+              <el-button type="primary" size="small">{{stage.approval.type==='lark'?'飞书审批':'人工审批'}}</el-button>
               <div class="line"></div>
             </div>
             <div class="stage">

@@ -40,6 +40,22 @@
         <el-button size="small" type="primary" @click="updateMail">{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="修改手机号码" class="modifiled-pwd" :visible.sync="modifiedPhoneDialogVisible" center>
+      <div class="modifiled-pwd-container">
+        <el-form label-position="left" label-width="100px" :rules="phoneRules" ref="phoneForm" :model="phone">
+          <el-form-item label="原手机号码" prop="oldPhone">
+            <span v-if="currentEditUserInfo">{{currentEditUserInfo.phone}}</span>
+          </el-form-item>
+          <el-form-item label="新手机号码" prop="newPhone">
+            <el-input size="small" v-model="phone.newPhone"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelUpdatePhone" plain>取 消</el-button>
+        <el-button size="small" type="primary" @click="updatePhone" plains>确 定</el-button>
+      </span>
+    </el-dialog>
     <div v-if="currentEditUserInfo" class="section">
       <div class="Box">
         <div class="row">
@@ -91,6 +107,15 @@
                     <el-button class="edit-password" @click="modifiedMail" type="text">{{$t(`profile.clickToChange`)}}</el-button>
                   </td>
                 </tr>
+                <tr v-if="currentEditUserInfo.identity_type ==='system'">
+                  <td>
+                    <span>修改手机号码</span>
+                  </td>
+                  <td>
+                    <span>{{currentEditUserInfo.phone}}</span>
+                    <el-button class="edit-password" @click="modifiedPhone" type="text">点击修改</el-button>
+                  </td>
+                </tr>
                 <tr>
                   <td>
                     <span>API Token</span>
@@ -138,6 +163,7 @@ import {
   getCurrentUserInfoAPI,
   updateCurrentUserInfoAPI,
   updateCurrentUserMailAPI,
+  updateUserAPI,
   getSubscribeAPI,
   saveSubscribeAPI
 } from '@api'
@@ -146,6 +172,41 @@ import { mapState } from 'vuex'
 
 export default {
   data () {
+    const validateNewPass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入新密码'))
+      } else {
+        if (this.pwd.confirmPassword !== '') {
+          this.$refs.passwordForm.validateField('confirmPassword')
+        }
+        callback()
+      }
+    }
+    const validateConfirmPass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入新密码'))
+      } else if (value !== this.pwd.newPassword) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+    const validatePhone = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请填写手机号'))
+      } else {
+        if (
+          !/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(
+            value
+          )
+        ) {
+          callback(new Error('请输入正确的手机号码'))
+        } else {
+          callback()
+        }
+      }
+    }
+
     return {
       currentEditUserInfo: null,
       pwd: {
@@ -156,10 +217,26 @@ export default {
       mail: {
         newMail: ''
       },
+      phone: {
+        oldPhone: '',
+        newPhone: ''
+      },
       loading: false,
       modifiedPwdDialogVisible: false,
       modifiedMailDialogVisible: false,
-      workflowNoti: {}
+      modifiedPhoneDialogVisible: false,
+      workflowNoti: {},
+      phoneRules: {
+        newPhone: [
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          {
+            type: 'tel',
+            message: '请输入正确的手机号码',
+            trigger: ['blur', 'change'],
+            validator: validatePhone
+          }
+        ]
+      }
     }
   },
   methods: {
@@ -190,6 +267,9 @@ export default {
     },
     modifiedMail () {
       this.modifiedMailDialogVisible = true
+    },
+    modifiedPhone () {
+      this.modifiedPhoneDialogVisible = true
     },
     updateUserInfo () {
       this.$refs.passwordForm.validate(valid => {
@@ -238,6 +318,30 @@ export default {
         }
       })
     },
+    updatePhone () {
+      this.$refs.phoneForm.validate(valid => {
+        if (valid) {
+          const id = this.currentEditUserInfo.uid
+          const params = {
+            name: this.currentEditUserInfo.name,
+            phone: this.phone.newPhone
+          }
+          updateUserAPI(id, params).then(res => {
+            this.$message({
+              message: '手机号码修改成功',
+              type: 'success'
+            })
+            this.modifiedPhoneDialogVisible = false
+            this.getCurrentUserInfo()
+            this.phone = {
+              newPhone: ''
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
     cancelUpdateUserInfo () {
       this.$refs.passwordForm.resetFields()
       this.modifiedPwdDialogVisible = false
@@ -245,6 +349,10 @@ export default {
     cancelUpdateMail () {
       this.$refs.mailForm.resetFields()
       this.modifiedMailDialogVisible = false
+    },
+    cancelUpdatePhone () {
+      this.$refs.phoneForm.resetFields()
+      this.modifiedPhoneDialogVisible = false
     },
     getSubscribe () {
       getSubscribeAPI().then(res => {
