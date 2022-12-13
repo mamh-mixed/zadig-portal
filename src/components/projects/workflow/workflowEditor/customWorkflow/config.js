@@ -60,49 +60,49 @@ const jobTypeList = [
   //   tip: '自定义'
   // },
   {
-    label: '构建',
+    label: 'build',
     name: 'zadig-build',
     type: 'zadig-build',
     is_offical: true,
     description: '可直接引用「项目」-「构建」模块中的配置'
   },
   {
-    label: '部署',
+    label: 'deploy',
     name: 'zadig-deploy',
     type: 'zadig-deploy',
     is_offical: true,
     description: '可更新容器形态的服务镜像'
   },
   {
-    label: '通用任务',
+    label: 'freestyle',
     name: 'freestyle',
     type: 'freestyle',
     is_offical: true,
     description: '支持拉取代码、执行 Shell 脚本、文件存储等功能'
   },
   {
-    label: 'Kubernetes 部署',
+    label: 'customDeploy',
     name: 'custom-deploy',
     type: 'custom-deploy',
     is_offical: true,
     description: '可更新 Kubernetes 中容器镜像'
   },
   {
-    label: '测试',
+    label: 'test',
     name: 'zadig-test',
     type: 'zadig-test',
     is_offical: true,
     description: '可直接引用「项目」-「测试」模块中的测试配置'
   },
   {
-    label: '代码扫描',
+    label: 'scan',
     name: 'zadig-scanning',
     type: 'zadig-scanning',
     is_offical: true,
     description: '可直接引用「项目」-「代码扫描」模块中的配置。'
   },
   {
-    label: '镜像分发',
+    label: 'distribute',
     name: 'zadig-distribute-image',
     type: 'zadig-distribute-image',
     is_offical: true,

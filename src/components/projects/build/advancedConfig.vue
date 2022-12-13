@@ -9,7 +9,7 @@
       inline-message
     >
       <div class="item-title">策略配置</div>
-      <el-form-item label="超时时间">
+      <el-form-item :label="$t(`workflow.timeout`)">
         <el-input-number v-if="(typeof buildConfig.timeout) !== 'undefined'" size="mini" :min="1" v-model="buildConfig.timeout"></el-input-number>
         <el-input-number
           v-else-if="(typeof currentResource.timeout) !== 'undefined'"

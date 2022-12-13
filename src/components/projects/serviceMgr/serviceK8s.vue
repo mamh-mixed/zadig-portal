@@ -47,12 +47,12 @@
             <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
               <CheckResource v-if="hasPlutus && !env.hasDeployed" :checkResource="env.checkResource" :serviceNames="env.serviceNames" />
               <el-table v-if="env.vars.length" :data="env.vars" style="width: 100%;">
-                <el-table-column label="键">
+                <el-table-column :label="$t(`workflow.key`)">
                   <template slot-scope="scope">
                     <span>{{ scope.row.key }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="值">
+                <el-table-column :label="$t(`workflow.value`)">
                   <template slot-scope="scope">
                     <el-input
                       size="small"

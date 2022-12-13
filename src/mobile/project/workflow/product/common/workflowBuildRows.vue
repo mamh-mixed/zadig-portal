@@ -99,7 +99,7 @@
     </div>
 
     <el-table :data="jenkinsBuild" v-if="jenkinsBuild.length > 0" empty-text="无" class="service-deploy-table">
-      <el-table-column prop="name" label="服务" width="100px">
+      <el-table-column prop="name" :label="$t(`project.services`)" width="100px">
         <div slot-scope="scope">{{$utils.showServiceName(scope.row.name)}}</div>
       </el-table-column>
       <el-table-column label="Jenkins Job Name">

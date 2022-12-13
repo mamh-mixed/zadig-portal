@@ -9,7 +9,7 @@
       inline-message
     >
       <div class="item-title">策略配置</div>
-      <el-form-item label="超时时间">
+      <el-form-item :label="$t(`workflow.timeout`)">
         <el-input-number size="mini" :min="1" v-model="buildConfig.timeout"></el-input-number>
         <span>分钟</span>
       </el-form-item>

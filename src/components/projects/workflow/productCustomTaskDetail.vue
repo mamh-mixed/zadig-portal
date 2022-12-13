@@ -29,8 +29,8 @@
       </el-row>
     </header>
     <div class="tab">
-      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">工作流</span>
-      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">变量</span>
+      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">{{$t(`global.workflow`)}}</span>
+      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">{{$t(`workflow.var`)}}</span>
     </div>
     <Multipane v-if="activeName==='workflow'" layout="horizontal" style="height: 100%;">
       <main>
@@ -39,7 +39,7 @@
           <div class="line"></div>
           <div class="stages" v-for="(stage,curStageIndex) in payload.stages" :key="stage.label">
             <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,curStageIndex)">
-              <el-button type="primary" size="small">人工审核</el-button>
+              <el-button type="primary" size="small">{{$t(`workflow.manualReview`)}}</el-button>
               <div class="line"></div>
             </div>
             <div class="stage">
@@ -226,8 +226,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="键" prop="name"></el-table-column>
-        <el-table-column label="值"></el-table-column>
+        <el-table-column :label="$t(`workflow.key`)" prop="name"></el-table-column>
+        <el-table-column :label="$t(`workflow.value`)"></el-table-column>
       </el-table>
     </div>
   </div>

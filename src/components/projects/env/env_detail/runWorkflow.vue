@@ -66,7 +66,7 @@
             :disabled="pickedTargets.length === 0"
             type="primary"
             size="small"
-          >{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
+          >{{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}</el-button>
           <span style="color: #ff1949;" v-if="pickedTargets.length === 0">该服务尚未配置构建，无法启动任务</span>
         </div>
       </div>

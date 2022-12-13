@@ -1,8 +1,8 @@
 <template>
   <div class="variable-list">
     <el-table :data="variables" style="width: 90%; max-width: 1000px;">
-      <el-table-column label="键" prop="key" width="270px"></el-table-column>
-      <el-table-column label="值">
+      <el-table-column :label="$t(`workflow.key`)" prop="key" width="270px"></el-table-column>
+      <el-table-column :label="$t(`workflow.value`)">
         <template slot-scope="{ row }">
           <VariableEditor style="margin-right: 10px;" :varKey="row.key" :value.sync="row.value" :diabled="rollbackMode" />
         </template>

@@ -4,10 +4,10 @@
       <el-collapse v-model="activeName">
         <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">
-            <el-table-column label="键">
+            <el-table-column :label="$t(`workflow.key`)">
               <template slot-scope="scope">{{scope.row.name}}</template>
             </el-table-column>
-            <el-table-column label="值">
+            <el-table-column :label="$t(`workflow.value`)">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
                   <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
@@ -68,7 +68,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="镜像仓库" prop="docker_registry_id">
+              <el-form-item :label="$t(`workflow.dockerRegistry`)" prop="docker_registry_id">
                 <el-select v-model="job.spec.docker_registry_id" filterable placeholder="请选择镜像" size="small" style="width: 220px;">
                   <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                 </el-select>
@@ -78,7 +78,7 @@
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
-              <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('<+fixed>')||job.spec.env.includes('{{'))">
+              <el-form-item prop="productName" :label="$t(`project.environments`)" v-if="!(job.spec.env.includes('<+fixed>')||job.spec.env.includes('{{'))">
                 <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
@@ -220,8 +220,8 @@
                 <div v-for="(item,index) in job.pickedTargets" :key="index">
                   <span>{{item.resource_name}}</span>
                   <el-table :data="item.params">
-                    <el-table-column label="键" prop="name"></el-table-column>
-                    <el-table-column label="值">
+                    <el-table-column :label="$t(`workflow.key`)" prop="name"></el-table-column>
+                    <el-table-column :label="$t(`workflow.value`)">
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
                           <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
@@ -250,7 +250,7 @@
               </el-form-item>
             </div>
             <div v-if="job.type === 'k8s-gray-release'">
-              <el-form-item label="灰度百分比">{{job.spec.gray_scale}}</el-form-item>
+              <el-form-item :label="$t(`workflow.grayPercentage`)">{{job.spec.gray_scale}}</el-form-item>
               <el-form-item label="选择容器" v-if="!job.spec.from_job">
                 <el-select
                   v-model="job.pickedTargets"
@@ -413,7 +413,7 @@
                   </el-select>
                 </el-form-item>
                 <el-table :data="job.pickedTargets">
-                  <el-table-column label="服务" min-width="15%">
+                  <el-table-column :label="$t(`project.services`)" min-width="15%">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
                   <el-table-column label="原始镜像版本" min-width="25%">
@@ -444,7 +444,7 @@
               </div>
               <div v-else>
                 <el-table :data="fromJobInfo.pickedTargets">
-                  <el-table-column label="服务" min-width="20%">
+                  <el-table-column :label="$t(`project.services`)" min-width="20%">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
                   <el-table-column label="原始镜像版本" min-width="20%">
@@ -540,7 +540,7 @@
               <template v-if="job.pickedTargets.length > 0">
                 <span style="color: #606266;">回滚版本信息</span>
                 <el-table :data="job.pickedTargets">
-                  <el-table-column label="容器名称" prop="value">
+                  <el-table-column :label="$t(`workflow.containerName`)" prop="value">
                     <template slot-scope="scope">
                       <span>{{`${scope.row.workload_name}/${scope.row.container_name}`}}</span>
                     </template>
@@ -553,7 +553,7 @@
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
+      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}</el-button>
     </el-form>
   </div>
 </template>

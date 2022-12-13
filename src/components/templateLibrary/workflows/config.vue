@@ -14,7 +14,7 @@
             </el-form-item>
             <el-form-item prop="description">
               <el-tooltip effect="dark" :content="payload.description" placement="top" :disabled="!payload.description">
-                <el-input v-model="payload.description" placeholder="描述信息" size="small" :disabled="!editDesc" class="name-input"></el-input>
+                <el-input v-model="payload.description" :placeholder="this.$t(`workflow.desc`)" size="small" :disabled="!editDesc" class="name-input"></el-input>
               </el-tooltip>
               <span @click="editDesc = editDesc ? false : true" class="mg-r8">
                 <i :class="[editDesc ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>

@@ -95,14 +95,14 @@
       v-if="type==='plugin'?job.isShowPlugin:job.isShowCommon"
       :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"
     >
-      <el-table-column label="键" :prop="type === 'plugin'?'name':'key'">
+      <el-table-column :label="$t(`workflow.key`)" :prop="type === 'plugin'?'name':'key'">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" :content="scope.row.description" placement="top-start">
             <span>{{type === 'plugin'?scope.row.name:scope.row.key}}</span>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="值">
+      <el-table-column :label="$t(`workflow.value`)">
         <template slot-scope="scope">
           <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
             <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>

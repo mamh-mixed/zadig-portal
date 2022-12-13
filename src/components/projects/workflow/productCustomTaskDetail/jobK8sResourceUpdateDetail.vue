@@ -21,7 +21,7 @@
     </header>
     <main>
       <div class="error-wrapper mg-t8 mg-b8">
-        <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+        <el-alert v-if="jobInfo.error" :title="$t(`workflow.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
       </div>
       <div class="mg-b16 text-weight">更新内容</div>
       <div v-for="(item,index) in jobInfo.spec.patch_items" :key="index" style="width: 60%;" class="mg-t16 mg-b48">
@@ -30,11 +30,11 @@
           <span @click="showDetail(item)" style="color: #c0c4cc; cursor: pointer;">详情</span>
         </div>
         <div class="error-wrapper mg-t8 mg-b8">
-          <el-alert v-if="item.error" title="错误信息" :description="item.error" type="error" close-text="知道了"></el-alert>
+          <el-alert v-if="item.error" :title="$t(`workflow.errorMsg`)" :description="item.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
         </div>
         <el-table :data="item.params">
-          <el-table-column label="键" prop="name"></el-table-column>
-          <el-table-column label="值" prop="value"></el-table-column>
+          <el-table-column :label="$t(`workflow.key`)" prop="name"></el-table-column>
+          <el-table-column :label="$t(`workflow.value`)" prop="value"></el-table-column>
         </el-table>
       </div>
     </main>

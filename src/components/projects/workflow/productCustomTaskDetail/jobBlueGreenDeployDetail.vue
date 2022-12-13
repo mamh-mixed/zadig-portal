@@ -21,17 +21,17 @@
     </header>
     <main>
       <div class="error-wrapper">
-        <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+        <el-alert v-if="jobInfo.error" :title="$t(`workflow.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
       </div>
       <el-row class="item" :gutter="0" :key="index">
         <el-col :span="4">
-          <div class="item-title">K8s service 名称</div>
+          <div class="item-title">{{$t(`workflow.k8sServiceName`)}}</div>
         </el-col>
         <el-col :span="8">
           <span class="item-desc">{{jobInfo.spec.k8s_service_name}}</span>
         </el-col>
         <el-col :span="4">
-          <div class="item-title">容器名称</div>
+          <div class="item-title">{{$t(`workflow.containerName`)}}</div>
         </el-col>
         <el-col :span="8">
           <span class="item-desc">{{jobInfo.spec.container_name}}</span>
@@ -39,13 +39,13 @@
       </el-row>
       <el-row class="item">
         <el-col :span="4">
-          <div class="item-title">集群</div>
+          <div class="item-title">{{$t(`workflow.cluster`)}}</div>
         </el-col>
         <el-col :span="8">
           <div class="item-desc">{{jobInfo.spec.cluster_name}}</div>
         </el-col>
         <el-col :span="4">
-          <div class="item-title">命名空间</div>
+          <div class="item-title">{{$t(`workflow.namespace`)}}</div>
         </el-col>
         <el-col :span="8">
           <div class="item-desc">{{jobInfo.spec.namespace.toString()}}</div>
@@ -53,7 +53,7 @@
       </el-row>
       <el-row class="item">
         <el-col :span="4">
-          <div class="item-title">镜像名称</div>
+          <div class="item-title">{{$t(`workflow.imageName`)}}</div>
         </el-col>
         <el-col :span="8">
           <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">
@@ -63,7 +63,7 @@
       </el-row>
       <el-table :data="jobInfo.spec.events" size="small" class="mg-t24">
         <el-table-column label="时间" prop="time"></el-table-column>
-        <el-table-column label="类型" prop="event_type"></el-table-column>
+        <el-table-column :label="$t(`workflow.type`)" prop="event_type"></el-table-column>
         <el-table-column label="信息" prop="message"></el-table-column>
       </el-table>
     </main>

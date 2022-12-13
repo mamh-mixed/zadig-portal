@@ -15,7 +15,7 @@
       </el-table-column>
       <el-table-column min-width="100"
                        prop="status"
-                       label="运行状态">
+                       :label="$t(`workflow.runStatus`)">
         <template slot-scope="scope">
           <span :class="[`status-${$utils.taskElTagType(scope.row.status)}`]">
             &nbsp;{{ $t(`workflowTaskStatus.${scope.row.status}`) }}
@@ -23,7 +23,7 @@
         </template>
       </el-table-column>
        <el-table-column min-width="120"
-                       label="持续时间">
+                        :label="$t(`workflow.duration`)">
         <template slot-scope="scope">
           <el-icon name="time"></el-icon>
           <span v-if="scope.row.status!=='running'"
@@ -43,7 +43,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="执行人" min-width="120">
+      <el-table-column :label="$t(`workflow.executor`)" min-width="120">
         <template slot-scope="{ row }">
           <div class="common-column">{{ row.task_creator }}</div>
           <div class="common-column column-gray">{{ convertTimestamp(row.create_time) }}</div>
@@ -63,7 +63,7 @@
           <div v-else class="common-column">N/A</div>
         </template>
       </el-table-column>
-      <el-table-column min-width="280" label="代码信息" v-if="showServiceNames && workflowType === 'buildv2'">
+      <el-table-column min-width="280" :label="$t(`workflow.codeInfo`)" v-if="showServiceNames && workflowType === 'buildv2'">
         <template slot-scope="{ row }">
           <div v-for="(item,index) in row.service_modules" :key="index" class="common-column repo-list">
             <div v-if="item.code_info.length > 0" effect="light"  :open-delay="250" placement="right">
@@ -96,7 +96,7 @@
       </el-table-column>
       <el-table-column v-if="showEnv"
                        min-width="100"
-                       label="环境">
+                       :label="$t(`project.environments`)">
         <template slot-scope="scope">
           <span v-if="scope.row.namespace">
             {{ scope.row.namespace}}
@@ -152,7 +152,7 @@
                        icon="el-icon-copy-document"
                        size="mini"
                        class="common-font">
-              克隆
+              {{$t(`workflow.clone`)}}
             </el-button>
         </template>
       </el-table-column>

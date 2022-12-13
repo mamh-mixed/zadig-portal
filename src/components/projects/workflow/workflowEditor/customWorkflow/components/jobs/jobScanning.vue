@@ -1,13 +1,17 @@
 <template>
   <div class="job-scanning">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="90px" size="small">
-      <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="100px" size="small">
+      <el-form-item
+        :label="$t(`workflow.jobName`)"
+        prop="name"
+        :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}"
+      >
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <div class="mg-b24 title">选择扫描</div>
+      <div class="mg-b24 title">{{$t(`workflow.chooseScan`)}}</div>
       <el-row :gutter="24" class="mg-b16">
-        <el-col :span="6">扫描名称</el-col>
-        <el-col :span="6">扫描配置</el-col>
+        <el-col :span="6">{{$t(`workflow.scanName`)}}</el-col>
+        <el-col :span="6">{{$t(`workflow.scanConfig`)}}</el-col>
         <el-col :span="6"></el-col>
       </el-row>
       <div v-for="(item,index) in job.spec.scannings" :key="index">
@@ -25,10 +29,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-tooltip class="item" effect="dark" content="分支配置" placement="top">
+            <el-tooltip class="item" effect="dark" :content="$t(`workflow.branchConfig`)" placement="top">
               <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="共享存储配置" placement="top">
+            <el-tooltip class="item" effect="dark" :content="$t(`workflow.storageConfig`)" placement="top">
               <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item,index)"></span>
             </el-tooltip>
           </el-col>
@@ -68,7 +72,13 @@
         <el-select v-model="curItem.curRepo" value-key="repo_name" filterable size="small" placeholder="请选择代码库">
           <el-option v-for="repo of curItem.originRepos" :key="repo.repo_name" :label="repo.repo_name" :value="repo"></el-option>
         </el-select>
-        <el-button @click="addRepo" :disabled="curItem.originRepos && curItem.originRepos.length === 0" type="primary" size="mini" plain>{{$t(`global.add`)}}</el-button>
+        <el-button
+          @click="addRepo"
+          :disabled="curItem.originRepos && curItem.originRepos.length === 0"
+          type="primary"
+          size="mini"
+          plain
+        >{{$t(`global.add`)}}</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowBranchDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
@@ -253,7 +263,12 @@ export default {
             share_storages: []
           })
         }
-        this.getClusterStatus(this.jobType.scanning, this.projectName, item.name, '')
+        this.getClusterStatus(
+          this.jobType.scanning,
+          this.projectName,
+          item.name,
+          ''
+        )
         this.isShowPvDialog = true
       }
       const res = this.originScannings.find(

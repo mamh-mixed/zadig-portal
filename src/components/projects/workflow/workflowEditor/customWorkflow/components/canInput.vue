@@ -8,7 +8,7 @@
       <i class="icon el-icon-edit" @click="handleInput(true)" v-show="!isCanInput" v-if="from==='ui'&&!disabled"></i>
     </span>
     <span v-else class="input">
-      <el-form-item prop="display_name" :rules="{required: true,message:'请输入工作流名称', trigger: ['blur', 'change']}">
+      <el-form-item prop="display_name" :rules="{required: true,message:this.$t(`workflow.inputWorkflowName`), trigger: ['blur', 'change']}">
         <el-input
           v-model="inputValue"
           type="text"

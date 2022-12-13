@@ -3,7 +3,7 @@
     <div class="secondary-title" style="margin-bottom: 10px;">指定需要覆盖的键值对</div>
     <el-form ref="form" :model="keyValueForm" label-position="left">
       <el-table :data="keyValues">
-        <el-table-column label="键">
+        <el-table-column :label="$t(`workflow.key`)">
           <template slot-scope="{ $index }">
             <el-form-item
               :prop="`keyValues[${$index}].key`"
@@ -29,7 +29,7 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column label="值">
+        <el-table-column :label="$t(`workflow.value`)">
           <template slot-scope="{ $index }">
             <el-form-item
               :prop="`keyValues[${$index}].value`"

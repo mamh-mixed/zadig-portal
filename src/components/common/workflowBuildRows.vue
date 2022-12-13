@@ -4,7 +4,7 @@
               empty-text="无"
               class="service-deploy-table">
       <el-table-column prop="name"
-                       label="服务"
+                       :label="$t(`project.services`)"
                        width="100px"
                        ></el-table-column>
 
@@ -172,7 +172,7 @@
               empty-text="无"
               class="service-deploy-table">
       <el-table-column prop="name"
-                       label="服务"
+                       :label="$t(`project.services`)"
                        width="100px"
                        >
         <div slot-scope="scope">

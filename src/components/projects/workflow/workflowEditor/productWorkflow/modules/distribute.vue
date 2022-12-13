@@ -34,7 +34,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="distributeStageDetail.methods.includes('image')" label="镜像仓库" class="repo-form">
+        <el-form-item v-if="distributeStageDetail.methods.includes('image')" :label="$t(`workflow.dockerRegistry`)" class="repo-form">
           <el-row v-for="(release,index) in distributeStageDetail.releases" :key="index" :gutter="0" class="row">
             <el-col :span="8">
               <div>

@@ -195,7 +195,7 @@
                   <el-table-column property="service_name"
                                    label="服务列表"></el-table-column>
                   <el-table-column property="namespace"
-                                   label="环境"></el-table-column>
+                                   :label="$t(`project.environments`)"></el-table-column>
                   <el-table-column property="image"
                                    label="镜像"></el-table-column>
                 </el-table>
@@ -330,7 +330,7 @@
                           trigger="click">
                 <el-table :data="distributeSubtaskInfo(task.stages).releaseImages">
                   <el-table-column property="image_repo"
-                                   label="镜像仓库"></el-table-column>
+                                   :label="$t(`workflow.dockerRegistry`)"></el-table-column>
                   <el-table-column property="image_test"
                                    label="镜像名称"></el-table-column>
                 </el-table>

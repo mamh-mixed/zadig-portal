@@ -3,7 +3,7 @@
            label-width="90px"
            label-position="left">
     <el-form-item prop="productName"
-                  label="环境">
+                  :label="$t(`project.environments`)">
       <el-select :value="runner.product_tmpl_name && runner.namespace ? `${runner.product_tmpl_name} / ${runner.namespace}` : ''"
                  @change="getPresetInfo"
                  size="medium"
@@ -55,7 +55,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="服务">
+      <el-form-item :label="$t(`project.services`)">
         <el-select v-model="pickedBuildTargetNames"
                    filterable
                    multiple
@@ -157,7 +157,7 @@
                  :loading="startTaskLoading"
                  type="primary"
                  size="small">
-        {{ startTaskLoading?'启动中':'启动任务' }}
+        {{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}
       </el-button>
     </div>
   </el-form>

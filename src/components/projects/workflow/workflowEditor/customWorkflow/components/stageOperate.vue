@@ -20,7 +20,7 @@
         <el-switch v-model="form.approval.enabled" size="small"></el-switch>
       </el-form-item>
       <div v-if="form.approval.enabled">
-        <el-form-item label="超时时间" prop="approval.timeout">
+        <el-form-item :label="$t(`workflow.timeout`)" prop="approval.timeout">
           <el-input v-model.number="form.approval.timeout" size="small" type="number" :min="0">
             <span slot="suffix">分钟</span>
           </el-input>

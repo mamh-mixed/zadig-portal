@@ -2,7 +2,7 @@
   <div class="job-build-detail">
     <header class="mg-b8">
       <el-col :span="6">
-        <span class="type">构建</span>
+        <span class="type">{{$t(`workflow.jobType.build`)}}</span>
         <span>{{jobInfo.name}}</span>
       </el-col>
       <el-col :span="2">
@@ -20,17 +20,17 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+          <el-alert v-if="jobInfo.error" :title="$t(`workflow.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
         </div>
         <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="item-title">代码库({{build.source}})</div>
+            <div class="item-title">{{$t(`workflow.codeLibrary`)}}({{build.source}})</div>
           </el-col>
           <el-col :span="8">
             <div class="item-desc">{{build.repo_name}}</div>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">代码信息</div>
+            <div class="item-title">{{$t(`workflow.codeInfo`)}}</div>
           </el-col>
           <el-col :span="8">
             <RepoJump :build="build" />
@@ -38,14 +38,14 @@
         </el-row>
         <el-row :gutter="0" class="item">
           <el-col :span="4">
-            <div class="item-title">服务名称</div>
+            <div class="item-title">{{$t(`workflow.serviceName`)}}</div>
           </el-col>
           <el-col :span="8">
             <span class="item-desc">{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
           </el-col>
           <el-col :span="4">
             <div class="item-title">
-              镜像名称
+              {{$t(`workflow.imageName`)}}
             </div>
           </el-col>
           <el-col :span="8">

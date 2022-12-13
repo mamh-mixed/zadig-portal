@@ -2,7 +2,7 @@
   <div class="job-scanning-detail">
     <header class="mg-b8">
       <el-col :span="6">
-        <span class="type">代码扫描</span>
+        <span class="type">{{$t(`workflow.jobType.scan`)}}</span>
         <span>{{jobInfo.name}}</span>
       </el-col>
       <el-col :span="2">
@@ -20,17 +20,17 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+          <el-alert v-if="jobInfo.error" :title="$t(`workflow.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
         </div>
         <el-row :gutter="0" class="item">
           <el-col :span="4">
-            <div class="item-title">扫描名称</div>
+            <div class="item-title">{{$t(`workflow.scanName`)}}</div>
           </el-col>
           <el-col :span="8">
             <div class="item-desc">{{jobInfo.spec.scanning_name}}</div>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">链接</div>
+            <div class="item-title">{{$t(`workflow.link`)}}</div>
           </el-col>
           <el-col :span="8">
             <el-link
@@ -39,18 +39,18 @@
               target="_blank"
               :disabled="!jobInfo.spec.link_url"
               :href="jobInfo.spec.link_url"
-            >查看</el-link>
+            >{{$t(`workflow.view`)}}</el-link>
           </el-col>
         </el-row>
         <el-row class="item" :gutter="0" v-for="(item,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="item-title">代码库({{item.source}})</div>
+            <div class="item-title">{{$t(`workflow.codeLibrary`)}}({{item.source}})</div>
           </el-col>
           <el-col :span="8">
             <div class="item-desc">{{item.repo_name}}</div>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">代码信息</div>
+            <div class="item-title">{{$t(`workflow.codeInfo`)}}</div>
           </el-col>
           <el-col :span="8">
             <RepoJump :build="item" />

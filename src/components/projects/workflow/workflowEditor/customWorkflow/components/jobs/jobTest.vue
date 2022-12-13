@@ -1,7 +1,11 @@
 <template>
   <div class="job-test">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="90px" size="small">
-      <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="100px" size="small">
+      <el-form-item
+        :label="$t(`workflow.jobName`)"
+        prop="name"
+        :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}"
+      >
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
       <div class="mg-b24 title">选择测试</div>
@@ -20,13 +24,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-tooltip class="item" effect="dark" content="变量配置" placement="top">
+            <el-tooltip class="item" effect="dark" :content="$t(`workflow.varConfig`)" placement="top">
               <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="分支配置" placement="top">
+            <el-tooltip class="item" effect="dark" :content="$t(`workflow.branchConfig`)" placement="top">
               <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="共享存储配置" placement="top">
+            <el-tooltip class="item" effect="dark" :content="$t(`workflow.storageConfig`)" placement="top">
               <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item,index)"></span>
             </el-tooltip>
           </el-col>
@@ -48,11 +52,11 @@
     </el-form>
     <el-dialog :title="`${curItem.name} 变量配置`" :visible.sync="isShowVarDialog" :append-to-body="true" width="40%">
       <el-table :data="curItem.key_vals" size="small">
-        <el-table-column prop="key" label="键"></el-table-column>
-        <el-table-column label="类型">
+        <el-table-column prop="key" :label="$t(`workflow.key`)"></el-table-column>
+        <el-table-column :label="$t(`workflow.type`)">
           <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
         </el-table-column>
-        <el-table-column label="值" width="260">
+        <el-table-column :label="$t(`workflow.value`)" width="260">
           <template slot-scope="scope">
             <el-select
               size="small"
@@ -120,7 +124,13 @@
         <el-select v-model="curItem.curRepo" value-key="repo_name" filterable size="small" placeholder="请选择代码库">
           <el-option v-for="repo of curItem.originRepos" :key="repo.repo_name" :label="repo.repo_name" :value="repo"></el-option>
         </el-select>
-        <el-button @click="addRepo" :disabled="curItem.originRepos && curItem.originRepos.length === 0" type="primary" size="mini" plain>{{$t(`global.add`)}}</el-button>
+        <el-button
+          @click="addRepo"
+          :disabled="curItem.originRepos && curItem.originRepos.length === 0"
+          type="primary"
+          size="mini"
+          plain
+        >{{$t(`global.add`)}}</el-button>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="isShowBranchDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>

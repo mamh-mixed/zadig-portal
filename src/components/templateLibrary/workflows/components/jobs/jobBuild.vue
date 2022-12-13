@@ -1,18 +1,18 @@
 <template>
   <div class="job-build">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="90px" size="small">
-      <el-form-item label="任务名称" prop="name">
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-width="100px" size="small">
+      <el-form-item :label="$t(`workflow.jobName`)" prop="name">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item label="镜像仓库" prop="spec.docker_registry_id">
+      <el-form-item :label="$t(`workflow.dockerRegistry`)" prop="spec.docker_registry_id">
         <el-select v-model="job.spec.docker_registry_id" filterable placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-row :gutter="24" class="mg-b16">
-        <el-col :span="6" class="title">服务组件</el-col>
-        <el-col :span="6" class="title">构建名称</el-col>
-        <el-col :span="6" class="title">构建配置</el-col>
+        <el-col :span="6" class="title">{{$t(`workflow.serviceComponent`)}}</el-col>
+        <el-col :span="6" class="title">{{$t(`workflow.buildName`)}}</el-col>
+        <el-col :span="6" class="title">{{$t(`workflow.buildConfig`)}}</el-col>
       </el-row>
       <div v-for="(item,index) in serviceAndBuilds" :key="index">
         <el-form :model="item" :ref="`ruleForm${index}`" label-position="left" size="small">
@@ -28,13 +28,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-tooltip class="item" effect="dark" content="变量配置" placement="top">
+              <el-tooltip class="item" effect="dark" :content="$t(`workflow.varConfig`)" placement="top">
                 <span class="iconfont iconbianliang1" @click="handleVarBranchChange('var',item,index)"></span>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="分支配置" placement="top">
+              <el-tooltip class="item" effect="dark" :content="$t(`workflow.branchConfig`)"  placement="top">
                 <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
               </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="共享存储配置" placement="top">
+              <el-tooltip class="item" effect="dark" :content="$t(`workflow.storageConfig`)" placement="top">
                 <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item,index)"></span>
               </el-tooltip>
             </el-col>
@@ -52,11 +52,11 @@
       width="40%"
     >
       <el-table :data="curItem.key_vals" size="small">
-        <el-table-column prop="key" label="键"></el-table-column>
-        <el-table-column label="类型">
+        <el-table-column prop="key" :label="$t(`workflow.key`)"></el-table-column>
+        <el-table-column :label="$t(`workflow.type`)">
           <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
         </el-table-column>
-        <el-table-column label="值" width="260">
+        <el-table-column :label="$t(`workflow.value`)" width="260">
           <template slot-scope="scope">
             <el-select
               size="small"
