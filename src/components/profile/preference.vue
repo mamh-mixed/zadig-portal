@@ -1,13 +1,13 @@
 <template>
   <div class="preference-container">
     <el-form ref="form" :model="config" :rules="rules" label-width="120px" label-position="left" class="primary-form">
-      <el-form-item label="界面颜色主题">
+      <!-- <el-form-item label="界面颜色主题">
         <el-select v-model="config.theme" placeholder>
           <el-option v-for="item in themeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="日志颜色">
-        <div class="xterm">
+        <div class="xterm-out">
           <Xterm ref="xterm" />
         </div>
         <div class="xterm-ope">
@@ -114,7 +114,7 @@ export default {
   padding: 30px 30px;
   overflow: auto;
 
-  .xterm {
+  .xterm-out {
     width: 700px;
     margin: 10px 0;
   }
