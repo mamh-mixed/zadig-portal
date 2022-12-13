@@ -4,9 +4,19 @@
       <header>
         <div class="name">
           <el-form ref="form" :model="payload" inline>
-            <el-form-item prop="display_name" :rules="{required: true,message:this.$t(`workflow.inputWorkflowName`), trigger: ['blur', 'change']}" class="mg-r16">
+            <el-form-item
+              prop="display_name"
+              :rules="{required: true,message:this.$t(`workflow.inputWorkflowName`), trigger: ['blur', 'change']}"
+              class="mg-r16"
+            >
               <el-tooltip effect="dark" :content="payload.display_name" placement="top" :disabled="!payload.display_name">
-                <el-input v-model="payload.display_name" :placeholder="this.$t(`workflow.inputWorkflowName`)" size="small" :disabled="!editDisplayName" class="name-input"></el-input>
+                <el-input
+                  v-model="payload.display_name"
+                  :placeholder="this.$t(`workflow.inputWorkflowName`)"
+                  size="small"
+                  :disabled="!editDisplayName"
+                  class="name-input"
+                ></el-input>
               </el-tooltip>
               <span @click="editDisplayName = editDisplayName ? false : true" class="mg-r8">
                 <i :class="[editDisplayName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
@@ -14,7 +24,13 @@
             </el-form-item>
             <el-form-item prop="name" :rules="{required: true,validator:validateWorkflowName, trigger: ['blur', 'change']}" class="mg-r16">
               <el-tooltip effect="dark" :content="payload.name" placement="top" :disabled="!payload.name">
-                <el-input v-model="payload.name" :placeholder="this.$t(`workflow.inputWorkflowID`)" size="small" :disabled="!editName" class="name-input"></el-input>
+                <el-input
+                  v-model="payload.name"
+                  :placeholder="this.$t(`workflow.inputWorkflowID`)"
+                  size="small"
+                  :disabled="!editName"
+                  class="name-input"
+                ></el-input>
               </el-tooltip>
               <span @click="editName = editName ? false : true" class="mg-r8">
                 <i :class="[editName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
@@ -22,7 +38,13 @@
             </el-form-item>
             <el-form-item prop="description">
               <el-tooltip effect="dark" :content="payload.description" placement="top" :disabled="!payload.description">
-                <el-input v-model="payload.description" :placeholder="this.$t(`workflow.desc`)" size="small" :disabled="!editDesc" class="name-input"></el-input>
+                <el-input
+                  v-model="payload.description"
+                  :placeholder="this.$t(`workflow.desc`)"
+                  size="small"
+                  :disabled="!editDesc"
+                  class="name-input"
+                ></el-input>
               </el-tooltip>
               <span @click="editDesc = editDesc ? false : true" class="mg-r8">
                 <i :class="[editDesc ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
@@ -75,7 +97,7 @@
               </div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ {{$t(`workflow.stage`)}}</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -487,7 +509,9 @@ export default {
     curJobType () {
       if (this.job) {
         const curType = jobTypeList.find(item => item.type === this.job.type)
-        return curType ? curType.label : this.job.spec.plugin.name
+        return curType
+          ? this.$t(`workflow.jobType.${curType.label}`)
+          : this.job.spec.plugin.name
       } else {
         return ''
       }

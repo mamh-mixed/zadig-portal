@@ -329,15 +329,15 @@ exports.default = {
       scan: '扫描',
       distribute: '镜像分发',
       customDeploy: 'Kubernetes 部署',
-      canaryDeploy: 'k8s-canary-deploy',
-      canaryConfirm: 'k8s-canary-release',
-      blueGreenDeploy: 'k8s-blue-green-deploy',
-      blueGreenConfirm: 'k8s-blue-green-release',
-      k8sResourcePatch: 'k8s-resource-patch',
-      k8sGrayRollback: 'k8s-gray-rollback',
-      grayDeploy: 'k8s-gray-release',
-      istioRelease: 'istio-release',
-      istioRollback: 'istio-rollback'
+      canaryDeploy: '金丝雀发布',
+      canaryConfirm: '金丝雀部署',
+      blueGreenDeploy: '部署蓝绿环境',
+      blueGreenConfirm: '蓝绿发布',
+      k8sResourcePatch: '更新 K8s YAML 任务',
+      k8sGrayRollback: '灰度回滚',
+      grayDeploy: '灰度发布',
+      istioRelease: 'Istio 发布',
+      istioRollback: 'Istio 回滚'
     },
     errorMsg: '错误信息',
     ok: '知道了',
@@ -380,8 +380,11 @@ exports.default = {
     scanConfig: '扫描配置',
     chooseScan: '选择扫描',
     grayPercentage: '灰度百分比',
-    grayTaskType: '灰度任务类型'
-
+    grayTaskType: '灰度任务类型',
+    resourceName: '资源名称',
+    updateContent: '更新内容',
+    job: '任务',
+    stage: '阶段'
   },
   sysSetting: {
     integration: {

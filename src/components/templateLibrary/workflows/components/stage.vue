@@ -23,7 +23,7 @@
     >
       <JobOperate @change="setJob" ref="jobOperate" />
     </el-drawer>
-    <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ 任务</el-button>
+    <el-button @click="addJob" v-if="isShowJobAddBtn" size="small" class="add">+ {{$t(`workflow.job`)}}</el-button>
   </div>
 </template>
 

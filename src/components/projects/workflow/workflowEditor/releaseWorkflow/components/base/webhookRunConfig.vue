@@ -180,7 +180,7 @@
               </div>
             </div>
             <div v-if="job.type === 'k8s-resource-patch'">
-              <el-form-item label="资源名称">
+              <el-form-item :label="$t(`workflow.resourceName`)">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -200,7 +200,7 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="更新内容">
+              <el-form-item :label="$t(`workflow.updateContent`)">
                 <div v-for="(item,index) in job.pickedTargets" :key="index">
                   <span>{{item.resource_name}}</span>
                   <el-table :data="item.params">

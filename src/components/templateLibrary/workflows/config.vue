@@ -66,7 +66,7 @@
               </div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ {{$t(`workflow.stage`)}}</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -398,7 +398,7 @@ export default {
     curJobType () {
       if (this.job) {
         const curType = jobTypeList.find(item => item.type === this.job.type)
-        return curType ? curType.label : this.job.spec.plugin.name
+        return curType ? this.$t(`workflow.jobType.${curType.label}`) : this.job.spec.plugin.name
       } else {
         return ''
       }

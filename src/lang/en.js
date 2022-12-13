@@ -333,11 +333,11 @@ exports.default = {
       canaryConfirm: 'Canary Release',
       blueGreenDeploy: 'blue-green Deploy',
       blueGreenConfirm: 'blue-green Release',
-      k8sResourcePatch: 'k8s-resource-patch',
-      k8sGrayRollback: 'k8s-gray-rollback',
-      grayDeploy: 'k8s-gray-release',
-      istioRelease: 'istio-release',
-      istioRollback: 'istio-rollback'
+      k8sResourcePatch: 'Kubernetes Resource Patch',
+      k8sGrayRollback: 'Gray Rollback',
+      grayDeploy: 'Gray Release',
+      istioRelease: 'Istio Release',
+      istioRollback: 'Istio Rollback'
     },
     errorMsg: 'Error Message',
     ok: 'ok',
@@ -380,7 +380,11 @@ exports.default = {
     scanConfig: 'Scan Config',
     chooseScan: 'Choose Scan',
     grayPercentage: 'Gray Percentage',
-    grayTaskType: 'Gray Task Type'
+    grayTaskType: 'Gray Task Type',
+    resourceName: 'Resource Name',
+    updateContent: 'Update Content',
+    job: 'Job',
+    stage: 'Stage'
   },
   sysSetting: {
     integration: {

@@ -1,6 +1,6 @@
 <template>
   <div class="job-k8s-deploy">
-    <el-form label-width="120px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
+    <el-form label-width="130px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
       <el-form-item :label="$t(`workflow.jobName`)" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
@@ -14,7 +14,7 @@
           <el-option v-for="item in namespaceList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="资源名称" prop="spec.patch_items" :rules="{required: true, message: '资源名称不能为空', trigger: ['blur','change']}">
+      <el-form-item :label="$t(`workflow.resourceName`)" prop="spec.patch_items" :rules="{required: true, message: '资源名称不能为空', trigger: ['blur','change']}">
         <el-select
           placeholder="请选择"
           size="small"
@@ -29,7 +29,7 @@
           <el-option v-for="(item,index) in resourceList" :key="index" :label="`${item.resource_kind}/${item.resource_name}`" :value="item"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="更新内容" prop="spec.patch_content" style="min-height: 150px;">
+      <el-form-item :label="$t(`workflow.updateContent`)" prop="spec.patch_content" style="min-height: 150px;">
         <el-collapse v-model="activeName" v-if="job.spec.patch_items.length > 0">
           <div v-for="(item,index) in job.spec.patch_items" :key="index">
             <el-collapse-item :name="item.resource_name" class="mg-l8">
@@ -71,11 +71,11 @@
                   </div>
                 </div>
                 <div class="content-env">
-                  <div>变量</div>
+                  <div>{{$t(`workflow.var`)}}</div>
                   <el-row class="th">
-                    <el-col :span="6" class="th-title">键</el-col>
-                    <el-col :span="8" class="th-title">类型</el-col>
-                    <el-col :span="6" class="th-title">值</el-col>
+                    <el-col :span="6" class="th-title">{{$t(`workflow.key`)}}</el-col>
+                    <el-col :span="8" class="th-title">{{$t(`workflow.type`)}}</el-col>
+                    <el-col :span="6" class="th-title">{{$t(`workflow.value`)}}</el-col>
                   </el-row>
                   <el-row v-for="(app,index) in item.params" :key="index" :gutter="2">
                     <el-col :span="6">
