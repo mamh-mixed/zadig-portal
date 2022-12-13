@@ -394,7 +394,7 @@ exports.default = {
     type: 'Type',
     message: 'Message',
     ui: 'UI',
-    desc: 'description',
+    desc: 'Description',
     jobName: 'Job Name',
     serviceComponent: 'Service Component',
     buildName: 'Build Name',
@@ -424,7 +424,39 @@ exports.default = {
     approvalApplication: 'Approval Application',
     selectApprover: 'Select Approver',
     addStage: 'Add Stage',
-    editStage: 'Edit Stage'
+    editStage: 'Edit Stage',
+    webhookType: 'Webhook Type',
+    notifyEvents: 'Notify Events',
+    webhookAddr: 'Webhook Addr',
+    specifyMembersTip1: '@Designated members (enter the mobile phone number of the designated notification recipient, use ; to split, if it is empty, all members will be notified)',
+    specifyMembersTip2: '@Specify members (enter the user_id of the specified notification receiver and use; to split)',
+    notifyType: {
+      passed: 'passed',
+      failed: 'failed',
+      timeout: 'timeout',
+      cancelled: 'cancelled',
+      changed: 'changed',
+      reject: 'reject',
+      waitforapprove: 'waitforapprove'
+    },
+    addNotify: 'Add Notify',
+    editNotify: 'Edit Notify',
+    runPolicy: 'Run Policy',
+    shareDirectory: 'Share Directory',
+    inputShareDirectory: 'Please input share directory',
+    addTrigger: 'Add Trigger',
+    editTrigger: 'Edit Trigger',
+    targetBranch: 'Target Branch',
+    triggerStrategy: 'Trigger Strategy',
+    fileDirectory: 'File Directory',
+    workflowExecutionVariables: 'Workflow Execution Variables',
+    triggerEvents: 'Trigger Events',
+    baseType: {
+      var: 'Variables',
+      trigger: 'Trigger',
+      notify: 'Notify',
+      high: 'High Settings'
+    }
   },
   sysSetting: {
     integration: {

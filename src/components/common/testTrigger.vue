@@ -12,7 +12,7 @@
                label-position="left"
                label-width="90px"
                :rules="rules">
-        <el-form-item label="代码库" prop="repo" :rules="[
+        <el-form-item :label="$t(`workflow.codeLibrary`)" prop="repo" :rules="[
           { trigger: ['blur', 'change'], validator: validateRepo }
         ]">
           <el-select v-model="webhookSwap.repo"
@@ -30,7 +30,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="目标分支" prop="repo.branch"
+        <el-form-item :label="$t(`workflow.targetBranch`)" prop="repo.branch"
           v-if="checkGitRepo && canSwitchBranch"
           :rules="[
           { required: true, message: webhookSwap.repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
@@ -58,7 +58,7 @@
           </div>
         </el-form-item>
         <el-form-item v-if="webhookSwap.repo.source==='gerrit'"
-                      label="触发事件"
+                      :label="$t(`workflow.triggerEvents`)"
                       prop="events">
           <el-checkbox-group v-model="webhookSwap.events">
             <el-checkbox style="display: block;"
@@ -79,7 +79,7 @@
 
         </el-form-item>
         <el-form-item v-else-if="webhookSwap.repo.source!=='gerrit'"
-                      label="触发事件"
+                      :label="$t(`workflow.triggerEvents`)"
                       prop="events">
           <el-checkbox-group v-model="webhookSwap.events">
             <el-checkbox v-for="tri in triggerMethods.git" :key="tri.value" :label="tri.value">{{ tri.label }}</el-checkbox>
@@ -97,7 +97,7 @@
           <el-checkbox v-model="webhookSwap.auto_cancel"></el-checkbox>
         </el-form-item>
         <el-form-item v-if="webhookSwap.repo.source!=='gerrit'"
-                      label="文件目录"
+                      :label="$t(`workflow.fileDirectory`)"
                       prop="match_folders">
           <el-input :autosize="{ minRows: 4, maxRows: 10}"
                     type="textarea"
@@ -135,12 +135,12 @@
                 <span>{{ scope.row.main_repo.repo_owner }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="代码库">
+            <el-table-column :label="$t(`workflow.codeLibrary`)">
               <template slot-scope="scope">
                 <span>{{ scope.row.main_repo.repo_name }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="目标分支">
+            <el-table-column :label="$t(`workflow.targetBranch`)">
               <template slot-scope="scope">
                 <span>{{ scope.row.main_repo.branch }}</span>
               </template>
@@ -159,7 +159,7 @@
                   </div>
               </template>
             </el-table-column>
-            <el-table-column label="文件目录">
+            <el-table-column :label="$t(`workflow.fileDirectory`)">
               <template slot-scope="scope">
                 <span
                       v-if="scope.row.main_repo.source!=='gerrit'">{{ scope.row.main_repo.match_folders.join() }}</span>

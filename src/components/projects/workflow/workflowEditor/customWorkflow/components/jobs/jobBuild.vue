@@ -104,7 +104,7 @@
       width="40%"
     >
       <el-table :data="curItem.repos" size="small">
-        <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
+        <el-table-column prop="repo_name" :label="$t(`workflow.codeLibrary`)" width="200px"></el-table-column>
         <el-table-column prop="branch" label="默认分支">
           <template slot-scope="scope">
             <el-select size="small" v-model="scope.row.branch" filterable>

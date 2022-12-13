@@ -20,7 +20,7 @@
               <span class="desc">{{item.name}}</span>
             </div>
             <div class="cate">
-              <span class="title">代码库：</span>
+              <span class="title">{{$t(`workflow.codeLibrary`)}}</span>
               <span class="desc">{{item.main_repo.repo_name + '/' + item.main_repo.branch}}</span>
             </div>
           </div>
@@ -28,11 +28,11 @@
         <el-col :span="9">
           <div class="content">
             <div class="cate">
-              <span class="title">目标分支：</span>
+              <span class="title">{{$t(`workflow.targetBranch`)}}</span>
               <span class="desc">{{item.main_repo.branch}}</span>
             </div>
             <div class="cate">
-              <span class="title">触发事件：</span>
+              <span class="title">{{$t(`workflow.triggerEvents`)}}</span>
               <span class="desc">
                 <div v-if="item.main_repo.events.length">
                   <span v-for="(event,index) in item.main_repo.events" :key="index">
@@ -124,7 +124,7 @@
       :close-on-click-modal="false"
       append-to-body
     >
-      <el-form ref="webhookForm" :model="currentWebhook" label-position="left" label-width="90px" :rules="webhookRules">
+      <el-form ref="webhookForm" :model="currentWebhook" label-position="left" label-width="120px" :rules="webhookRules">
         <el-form-item :label="$t(`global.name`)" prop="name">
           <el-input
             size="small"
@@ -138,7 +138,7 @@
         <el-form-item :label="$t(`workflow.desc`)" prop="description">
           <el-input size="small" type="textarea" v-model="currentWebhook.description" placeholder="请输入描述"></el-input>
         </el-form-item>
-        <el-form-item label="代码库" prop="repo">
+        <el-form-item :label="$t(`workflow.codeLibrary`)" prop="repo">
           <el-select
             style="width: 100%;"
             v-model="currentWebhook.repo"
@@ -154,7 +154,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="目标分支"
+          :label="$t(`workflow.targetBranch`)"
           prop="main_repo.branch"
           v-if="checkGitRepo"
           :rules="[
@@ -197,7 +197,7 @@
             <span style="display: inline-block; padding-right: 10px;" v-for="branch in matchedBranchNames" :key="branch">{{ branch }}</span>
           </div>
         </el-form-item>
-        <el-form-item v-if="currentWebhook.repo.source==='gerrit'" label="触发事件" prop="main_repo.events">
+        <el-form-item v-if="currentWebhook.repo.source==='gerrit'" :label="$t(`workflow.triggerEvents`)" prop="main_repo.events">
           <el-checkbox-group v-model="currentWebhook.main_repo.events">
             <el-checkbox style="display: block;" label="change-merged">Change merged</el-checkbox>
             <el-checkbox style="display: block;" label="patchset-created">
@@ -209,12 +209,12 @@
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item v-else-if="currentWebhook.repo.source!=='gerrit'" label="触发事件" prop="main_repo.events">
+        <el-form-item v-else-if="currentWebhook.repo.source!=='gerrit'" :label="$t(`workflow.triggerEvents`)" prop="main_repo.events">
           <el-checkbox-group v-model="currentWebhook.main_repo.events">
             <el-checkbox v-for="tri in triggerMethods.git" :key="tri.value" :label="tri.value">{{ tri.label }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="触发策略" prop="auto_cancel">
+        <el-form-item :label="$t(`workflow.triggerStrategy`)" prop="auto_cancel">
           <el-checkbox v-model="currentWebhook.auto_cancel">
             <span>自动取消</span>
             <el-tooltip effect="dark" content="如果您希望只构建最新的提交，则使用这个选项会自动取消队列中的任务" placement="top">
@@ -229,7 +229,7 @@
           </el-checkbox>
         </el-form-item>
         <template v-if="currentWebhook.main_repo.source!=='gerrit'">
-          <el-form-item label="文件目录" prop="main_repo.match_folders">
+          <el-form-item :label="$t(`workflow.fileDirectory`)" prop="main_repo.match_folders">
             <el-input
               :autosize="{ minRows: 4, maxRows: 10}"
               type="textarea"
@@ -245,7 +245,7 @@
         </template>
       </el-form>
       <div>
-        <span>工作流执行变量</span>
+        <span>{{$t(`workflow.workflowExecutionVariables`)}}</span>
         <WebhookRunConfig
           :workflowName="workflowName"
           :projectName="projectName"
@@ -342,7 +342,7 @@
 
     <el-dialog
       :visible.sync="triggerTypeDialogVisible"
-      title="添加触发器"
+      :title="$t(`workflow.addTrigger`)"
       width="400px"
       :close-on-click-modal="false"
       custom-class="trigger-types-dialog"

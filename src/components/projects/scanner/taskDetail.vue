@@ -57,7 +57,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="代码库">
+          <el-table-column :label="$t(`workflow.codeLibrary`)">
             <template slot-scope="scope">
               <span v-if="scope.row.repo_info && scope.row.repo_info.length > 0">{{scope.row.repo_info[0].repo_name}}</span>
             </template>

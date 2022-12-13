@@ -424,7 +424,39 @@ exports.default = {
     approvalApplication: '审批应用',
     selectApprover: '选择审批人',
     addStage: '新建阶段',
-    editStage: '编辑阶段'
+    editStage: '编辑阶段',
+    webhookType: 'Webhook 类型',
+    notifyEvents: '通知事件',
+    webhookAddr: 'Webhook 地址',
+    specifyMembersTip1: '@指定成员（输入指定通知接收人的手机号码，使用 ; 分割，为空则全员通知）',
+    specifyMembersTip2: '@指定成员（输入指定通知接收人的 user_id，使用 ; 分割）',
+    notifyType: {
+      passed: '任务成功',
+      failed: '任务失败',
+      timeout: '任务超时',
+      cancelled: '任务取消',
+      changed: '状态变更',
+      reject: '任务拒绝',
+      waitforapprove: '等待人工审批'
+    },
+    addNotify: '新建通知',
+    editNotify: '编辑通知',
+    runPolicy: '运行策略',
+    shareDirectory: '共享目录',
+    inputShareDirectory: '请输入共享目录',
+    addTrigger: '添加触发器',
+    editTrigger: '编辑触发器',
+    targetBranch: '目标分支',
+    triggerStrategy: '触发策略',
+    fileDirectory: '文件目录',
+    workflowExecutionVariables: '工作流执行变量',
+    triggerEvents: '触发事件',
+    baseType: {
+      var: '变量',
+      trigger: '触发器',
+      notify: '通知',
+      high: '高级配置'
+    }
   },
   sysSetting: {
     integration: {

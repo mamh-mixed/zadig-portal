@@ -27,7 +27,7 @@
         <el-form-item :label="$t(`workflow.desc`)">
           <el-input size="small" type="textarea" v-model="webhookSwap.description" placeholder="请输入描述"></el-input>
         </el-form-item>
-        <el-form-item label="代码库" prop="repo" :rules="[
+        <el-form-item :label="$t(`workflow.codeLibrary`)" prop="repo" :rules="[
           { trigger: ['blur', 'change'], validator: validateRepo }
         ]">
           <el-select
@@ -47,7 +47,7 @@
         <div v-if="!webhookSwap.is_yaml">
           <el-form-item
             v-if="checkGitRepo"
-            label="目标分支"
+            :label="$t(`workflow.targetBranch`)"
             prop="repo.branch"
             :rules="[
             { required: true, message: webhookSwap.repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
@@ -136,7 +136,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item v-if="webhookSwap.repo.source==='gerrit'" label="触发事件" prop="events">
+          <el-form-item v-if="webhookSwap.repo.source==='gerrit'" :label="$t(`workflow.triggerEvents`)" prop="events">
             <el-checkbox-group v-model="webhookSwap.events">
               <el-checkbox style="display: block;" label="change-merged">Change merged</el-checkbox>
               <el-checkbox style="display: block;" label="patchset-created">
@@ -148,12 +148,12 @@
               </el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item v-else-if="webhookSwap.repo.source!=='gerrit'" label="触发事件" prop="events">
+          <el-form-item v-else-if="webhookSwap.repo.source!=='gerrit'" :label="$t(`workflow.triggerEvents`)" prop="events">
             <el-checkbox-group v-model="webhookSwap.events">
               <el-checkbox v-for="tri in triggerMethods.git" :key="tri.value" :label="tri.value">{{ tri.label }}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-          <el-form-item label="触发策略">
+          <el-form-item :label="$t(`workflow.triggerStrategy`)">
             <el-checkbox v-model="webhookSwap.auto_cancel">
               <span>自动取消</span>
               <el-tooltip effect="dark" content="如果您希望只构建最新的提交，则使用这个选项会自动取消队列中的任务" placement="top">
@@ -167,7 +167,7 @@
               </el-tooltip>
             </el-checkbox>
           </el-form-item>
-          <el-form-item v-if="webhookSwap.repo.source!=='gerrit'" label="文件目录" prop="match_folders">
+          <el-form-item v-if="webhookSwap.repo.source!=='gerrit'" :label="$t(`workflow.fileDirectory`)" prop="match_folders">
             <el-input
               :autosize="{ minRows: 4, maxRows: 10}"
               type="textarea"
@@ -264,7 +264,7 @@
                   <span>{{ row.main_repo.repo_owner }}/{{ row.main_repo.repo_name }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="目标分支">
+              <el-table-column :label="$t(`workflow.targetBranch`)">
                 <template slot-scope="{ row }">
                   <span>{{ row.main_repo.branch || 'N/A' }}</span>
                 </template>
@@ -289,7 +289,7 @@
                   <span v-else>{{ 'N/A' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="文件目录">
+              <el-table-column :label="$t(`workflow.fileDirectory`)">
                 <template slot-scope="{ row }">
                   <span
                     v-if="row.main_repo.source!=='gerrit'"

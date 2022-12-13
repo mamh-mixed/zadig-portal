@@ -83,7 +83,7 @@
                           trigger="click">
                 <el-table :data="buildSubtaskInfo(task.stages).utRepos">
                   <el-table-column property="name"
-                                   label="代码库"></el-table-column>
+                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
                   <el-table-column label="覆盖率">
                     <template slot-scope="scope">
                       <i class="el-icon-data-analysis"></i>
@@ -118,7 +118,7 @@
                           trigger="click">
                 <el-table :data="buildSubtaskInfo(task.stages).buildRepos">
                   <el-table-column property="repo_name"
-                                   label="代码库"></el-table-column>
+                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
                   <el-table-column property="branch"
                                    label="分支"></el-table-column>
                   <el-table-column label="PR">
@@ -238,7 +238,7 @@
                           trigger="click">
                 <el-table :data="testSubtaskInfo(task).integration_test.builds">
                   <el-table-column property="repo_name"
-                                   label="代码库"></el-table-column>
+                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
                   <el-table-column property="branch"
                                    label="分支"></el-table-column>
                   <el-table-column label="PR">
@@ -276,7 +276,7 @@
                           trigger="click">
                 <el-table :data="testSubtaskInfo(task).performance_test.builds">
                   <el-table-column property="repo_name"
-                                   label="代码库"></el-table-column>
+                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
                   <el-table-column property="branch"
                                    label="分支"></el-table-column>
                   <el-table-column label="PR">

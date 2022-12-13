@@ -111,11 +111,11 @@ const jobTypeList = [
 ]
 const configList = [
   {
-    label: '变量',
+    label: 'var',
     value: 'env'
   },
   {
-    label: '触发器',
+    label: 'trigger',
     value: 'webhook',
     drawerSize: '70%',
     drawerConfirmText: '保存',
@@ -123,11 +123,11 @@ const configList = [
     drawerHideButton: true
   },
   {
-    label: '通知',
+    label: 'notify',
     value: 'notify'
   },
   {
-    label: '高级配置',
+    label: 'high',
     value: 'high'
   }
 ]
@@ -231,31 +231,31 @@ const globalConstEnvs = [
 const notifyType = [
   {
     label: 'passed',
-    desc: '任务成功'
+    desc: 'passed'
   },
   {
     label: 'failed',
-    desc: '任务失败'
+    desc: 'failed'
   },
   {
     label: 'timeout',
-    desc: '任务超时'
+    desc: 'timeout'
   },
   {
     label: 'cancelled',
-    desc: '任务取消'
+    desc: 'cancelled'
   },
   {
     label: 'changed',
-    desc: '状态变更'
+    desc: 'changed'
   },
   {
     label: 'reject',
-    desc: '任务拒绝'
+    desc: 'reject'
   },
   {
     label: 'waitforapprove',
-    desc: '等待人工审批'
+    desc: 'waitforapprove'
   }
 ]
 const notifyPlatform = [

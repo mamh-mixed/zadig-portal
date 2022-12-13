@@ -61,7 +61,7 @@
                       v-model="workflowInfo.description"></el-input>
           </el-form-item>
         </el-form>
-        <div class="policy-title">运行策略</div>
+        <div class="policy-title">{{$t(`workflow.runPolicy`)}}</div>
         <el-form :model="workflowInfo"
                  :rules="rules"
                  ref="workflowInfoPolicy"
@@ -69,7 +69,7 @@
                  label-width="120px">
           <el-form-item prop="is_parallel" class="label-icon">
             <template slot="label">
-              <span>并发运行 </span>
+              <span>{{$t(`workflow.concurrentExecution`)}} </span>
               <el-tooltip effect="dark"
                           content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率"
                           placement="top">

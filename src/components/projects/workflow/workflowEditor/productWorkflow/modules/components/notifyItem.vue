@@ -5,7 +5,7 @@
       <el-form :model="notify" :rules="notifyRules" label-position="top" ref="notify">
         <el-form-item prop="webhook_type">
           <span slot="label">
-            <span>Webhook 类型：</span>
+            <span>{{$t(`workflow.webhookType`)}}：</span>
           </span>
           <el-select v-model="notify.webhook_type" @change="clearForm" style="width: 350px;" size="small" placeholder="请选择类型">
             <el-option label="钉钉" value="dingding"></el-option>
@@ -16,7 +16,8 @@
         <el-form-item v-if="notify.webhook_type==='feishu'" prop="feishu_webhook">
           <span slot="label">
             <span>
-              Webhook 地址：
+                      {{$t(`workflow.webhookAddr`)}}：
+
               <el-tooltip class="item" effect="dark" content="点击查看飞书 webhook 配置文档" placement="top">
                 <a class="help-link" href="https://docs.koderover.com/zadig/project/workflow/#飞书" target="_blank">
                   <i class="el-icon-question"></i>
@@ -29,7 +30,8 @@
         <el-form-item v-if="notify.webhook_type==='wechat'" prop="weChat_webHook">
           <span slot="label">
             <span>
-              Webhook 地址：
+                      {{$t(`workflow.webhookAddr`)}}：
+
               <el-tooltip class="item" effect="dark" content="点击查看企业微信 webhook 配置文档" placement="top">
                 <a class="help-link" href="https://docs.koderover.com/zadig/project/workflow/#企业微信" target="_blank">
                   <i class="el-icon-question"></i>
@@ -42,7 +44,8 @@
         <el-form-item v-if="notify.webhook_type==='dingding'" prop="dingding_webhook">
           <span slot="label">
             <span>
-              Webhook 地址：
+                      {{$t(`workflow.webhookAddr`)}}：
+
               <el-tooltip class="item" effect="dark" content="点击查看钉钉 webhook 配置文档" placement="top">
                 <a class="help-link" href="https://docs.koderover.com/zadig/project/workflow/#钉钉" target="_blank">
                   <i class="el-icon-question"></i>
@@ -54,7 +57,7 @@
         </el-form-item>
         <el-form-item v-if="hasPlutus&&notify.webhook_type==='dingding'" prop="at_mobiles">
           <span slot="label">
-            <span>@指定成员（输入指定通知接收人的手机号码，使用 ; 分割，为空则全员通知）：</span>
+            <span>    {{$t(`workflow.specifyMembersTip1`)}}：</span>
           </span>
           <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的手机号码，使用用 ; 分割" v-model="mobileStr"></el-input>
         </el-form-item>
@@ -66,11 +69,11 @@
         </el-form-item>
         <el-form-item v-if="hasPlutus&&notify.webhook_type==='feishu'" prop="lark_user_ids">
           <span slot="label">
-            <span>@指定成员（输入指定通知接收人的用户 ID，使用 ; 分割，为空则全员通知）：</span>
+            <span> {{$t(`workflow.specifyMembersTip1`)}}：</span>
           </span>
           <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的用户 ID，使用 ; 分割，为空则全员通知" v-model="feishuMobileStr"></el-input>
         </el-form-item>
-        <el-form-item prop="notify_type" label="通知事件：">
+        <el-form-item prop="notify_type" :label="$t(`workflow.notifyEvents`)">
           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
           <el-checkbox-group @change="handleCheckedValueChange" v-model="notify.notify_type">
             <el-checkbox v-for="type in notifyType" :key="type.label" :label="type.label">{{type.desc}}</el-checkbox>

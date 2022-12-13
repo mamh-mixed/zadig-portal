@@ -2,7 +2,7 @@
   <div class="run-code-scanner-container">
     <el-dialog :title="`代码扫描 ${scannerInfo.name}`" :visible="dialogVisible" @close="cancelTask" custom-class="scanner-dialog" width="60%">
       <el-table :data="scannerInfoDetail.repos" v-loading="loading">
-        <el-table-column prop="repo_name" label="代码库" width="180"></el-table-column>
+        <el-table-column prop="repo_name" :label="$t(`workflow.codeLibrary`)" width="180"></el-table-column>
         <el-table-column>
           <template slot-scope="{ row }" v-if="row.repo_name">
             <el-row>

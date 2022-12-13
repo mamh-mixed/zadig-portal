@@ -26,7 +26,7 @@
         </el-col>
       </el-row>
     </div>
-    <el-dialog :title="operateType==='add'?'新建通知':'编辑通知'" :visible.sync="isShowDialog" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="operateType==='add'? $t(`workflow.addNotify`):$t(`workflow.editNotify`)" :visible.sync="isShowDialog" append-to-body :close-on-click-modal="false">
       <NotifyOperate ref="notifyOperate" :notify="notify" />
       <div slot="footer">
         <el-button @click="isShowDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>

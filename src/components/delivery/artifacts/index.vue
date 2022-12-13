@@ -72,7 +72,7 @@
           <span>{{scope.row.type}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="代码库" width="380px">
+      <el-table-column :label="$t(`workflow.codeLibrary`)" width="380px">
         <template slot-scope="scope">
           <ul v-if="scope.row.commits &&  scope.row.commits.length >0" class="repo">
             <el-popover

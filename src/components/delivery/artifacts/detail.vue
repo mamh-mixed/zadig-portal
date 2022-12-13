@@ -47,7 +47,7 @@
                 <h3 class="item-title">代码信息</h3>
                 <div v-for="(cm,index) in artifact.commits" :key="index" class="item-detail">
                   <div>
-                    <span class="key">代码库：</span>
+                    <span class="key">{{$t(`workflow.codeLibrary`)}}</span>
                     <span class="value">
                       <a
                         class="link"

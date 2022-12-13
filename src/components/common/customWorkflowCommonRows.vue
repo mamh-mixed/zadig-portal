@@ -1,7 +1,7 @@
 <template>
   <div class="workflow-build-rows">
     <el-table :data="repoList" v-if="type!=='plugin'&&repoList.length>0">
-      <el-table-column label="代码库">
+      <el-table-column :label="$t(`workflow.codeLibrary`)">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.spec.repos" class="build-row" :key="build.code_host_id">
             <template>
