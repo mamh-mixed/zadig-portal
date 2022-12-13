@@ -52,16 +52,26 @@ export default {
     }
   },
   mounted () {
-    const term = new Terminal({ fontSize: '12', rows: '30', padding: '15', fontFamily: 'Monaco,Consolas,monospace,Microsoft YaHei,Arial', disableStdin: true, scrollback: 9999999, cursorStyle: null })
+    const term = new Terminal({
+      fontSize: '12',
+      rows: '30',
+      padding: '15',
+      fontFamily: 'Monaco,Consolas,monospace,Microsoft YaHei,Arial',
+      disableStdin: true,
+      scrollback: 9999999,
+      cursorStyle: null,
+      theme: this.$store.state.theme.xtermTheme
+    })
     const fitAddon = new FitAddon()
     term.loadAddon(fitAddon)
-    term.open(document.getElementById(
-      'term-container'
-    ))
+    term.open(document.getElementById('term-container'))
     fitAddon.fit()
     this.term = term
 
-    if (this.pipelineStatus && (this.pipelineStatus !== 'pending' || this.pipelineStatus !== 'running')) {
+    if (
+      this.pipelineStatus &&
+      (this.pipelineStatus !== 'pending' || this.pipelineStatus !== 'running')
+    ) {
       this.logs.forEach(element => {
         element && this.term.write(element + '\r')
       })

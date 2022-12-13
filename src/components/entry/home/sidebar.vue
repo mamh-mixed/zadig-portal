@@ -87,6 +87,22 @@ export default {
       backTitle: '',
       backUrl: '/v1/status',
       enterpriseInfo: null,
+      accountSetting: [
+        {
+          items: [
+            {
+              name: '账号信息',
+              icon: 'iconfont iconfenzucopy',
+              url: 'profile/info'
+            },
+            {
+              name: '偏好设置',
+              icon: 'iconfont iconxitong-system',
+              url: 'profile/preference'
+            }
+          ]
+        }
+      ],
       enterpriseMenu: [
         {
           items: [
@@ -301,6 +317,9 @@ export default {
       } else if (path.includes('/v1/enterprise')) {
         this.backTitle = '企业管理'
         return true
+      } else if (path.includes('/v1/profile')) {
+        this.backTitle = '账号设置'
+        return true
       } else {
         return false
       }
@@ -353,6 +372,8 @@ export default {
         return this.enterpriseMenu
       } else if (path.includes('/v1/system')) {
         return this.systemMenu
+      } else if (path.includes('/v1/profile')) {
+        return this.accountSetting
       }
       /** plutus menu */
       if (this.isAdmin && this.hasPlutus) {
