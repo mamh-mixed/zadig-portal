@@ -1550,6 +1550,15 @@ export function updateServiceImageAPI (payload, type, projectName, envName, envT
   return http.post(`/api/aslan/environment/image/${type}/${envName}?projectName=${projectName}&envType=${envType}`, payload)
 }
 
+// preference setting
+export function getPreferenceSettingAPI (uid) {
+  return http.get(`/api/v1/users/${uid}/setting`)
+}
+
+export function savePreferenceSettingAPI (uid, payload) {
+  return http.put(`/api/v1/users/${uid}/setting`, payload)
+}
+
 // Notification
 export function getNotificationAPI () {
   return http.get('/api/aslan/system/notification')

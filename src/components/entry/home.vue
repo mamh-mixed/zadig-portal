@@ -106,6 +106,7 @@ export default {
   },
   created () {
     this.$store.dispatch('GETUSERINFO')
+    this.$store.dispatch('getPreferenceSetting')
     this.$store.dispatch('getProjectList')
     this.$store.dispatch('getGlobalPermission')
     this.getAnnouncements()

@@ -17,14 +17,29 @@ const mutations = {
 }
 
 const actions = {
-  getPreferenceSetting ({ commit }, payload) {
-    return getPreferenceSettingAPI().then(res => {
-      commit(types.SET_PREFERENCE_SETTING, res)
+  getPreferenceSetting ({ commit, rootState }, payload) {
+    const uid = (payload && payload.uid) || rootState.login.userinfo.uid
+    return getPreferenceSettingAPI(uid).then(res => {
+      const data = {
+        xtermTheme: {
+          foreground: res.log_font_color || '#ffffff',
+          background: res.log_bg_color || '#000000'
+        },
+        theme: res.theme || 'light'
+      }
+      commit(types.SET_PREFERENCE_SETTING, data)
+      return data
     })
   },
-  savePreferenceSetting ({ commit }, payload) {
-    return savePreferenceSettingAPI(payload).then(res => {
-      commit(types.SET_PREFERENCE_SETTING, payload)
+  savePreferenceSetting ({ commit, rootState }, data) {
+    const uid = rootState.login.userinfo.uid
+    const payload = {
+      theme: data.theme,
+      log_bg_color: data.xtermTheme.background,
+      log_font_color: data.xtermTheme.foreground
+    }
+    return savePreferenceSettingAPI(uid, payload).then(res => {
+      commit(types.SET_PREFERENCE_SETTING, data)
     })
   }
 }

@@ -11,13 +11,13 @@
           <Xterm ref="xterm" />
         </div>
         <div class="xterm-ope">
-          <el-form-item label="背景颜色" prop="log.background" required :show-message="false">
-            <el-color-picker v-model="config.log.background"></el-color-picker>
-            <el-input v-model="config.log.background" @input="config.log.background=$event.replace(/^([#0-9a-f]{7})(.*)$/, '$1')"></el-input>
+          <el-form-item label="背景颜色" prop="xtermTheme.background" required :show-message="false">
+            <el-color-picker v-model="config.xtermTheme.background"></el-color-picker>
+            <el-input v-model="config.xtermTheme.background" @input="config.xtermTheme.background=$event.replace(/^([#0-9a-f]{7})(.*)$/, '$1')"></el-input>
           </el-form-item>
-          <el-form-item label="字体颜色" prop="log.foreground" required :show-message="false">
-            <el-color-picker v-model="config.log.foreground"></el-color-picker>
-            <el-input v-model="config.log.foreground" @input="config.log.foreground=$event.replace(/^([#0-9a-f]{7})(.*)$/, '$1')"></el-input>
+          <el-form-item label="字体颜色" prop="xtermTheme.foreground" required :show-message="false">
+            <el-color-picker v-model="config.xtermTheme.foreground"></el-color-picker>
+            <el-input v-model="config.xtermTheme.foreground" @input="config.xtermTheme.foreground=$event.replace(/^([#0-9a-f]{7})(.*)$/, '$1')"></el-input>
           </el-form-item>
         </div>
       </el-form-item>
@@ -30,7 +30,7 @@
 
 <script>
 import Xterm from './common/xterm.vue'
-import { debounce } from 'lodash'
+import { debounce, cloneDeep } from 'lodash'
 export default {
   data () {
     this.themeOptions = [
@@ -46,7 +46,7 @@ export default {
     return {
       config: {
         theme: 'light',
-        log: {
+        xtermTheme: {
           background: '#000000',
           foreground: '#ffffff'
         }
@@ -56,12 +56,14 @@ export default {
   methods: {
     saveTheme () {
       this.$refs.form.validate().then(() => {
-
+        this.$store.dispatch('savePreferenceSetting', this.config).then(() => {
+          this.$message.success(`修改成功！`)
+        })
       })
     }
   },
   watch: {
-    'config.log': {
+    'config.xtermTheme': {
       handler: debounce(function (val) {
         const fLen = val.foreground.length
         const bLen = val.background.length
@@ -77,6 +79,11 @@ export default {
   },
   components: {
     Xterm
+  },
+  mounted () {
+    this.$store.dispatch('getPreferenceSetting').then(res => {
+      this.config = cloneDeep(res)
+    })
   }
 }
 </script>

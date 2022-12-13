@@ -30,6 +30,7 @@ const actions = {
       message: '登录成功，欢迎 ' + res.name,
       type: 'success'
     })
+    context.dispatch('getPreferenceSetting', { uid: res.uid })
     return Promise.resolve(true)
   },
   async LOGIN (context, args) {
@@ -39,6 +40,7 @@ const actions = {
       context.dispatch('GETUSERROLE').then((role) => {
         context.dispatch('checkPlutusStatus', { isAdmin: role && role.includes('admin') })
       })
+      context.dispatch('getPreferenceSetting', { uid: userInfo.uid })
     }
     return Promise.resolve(userInfo)
   },
