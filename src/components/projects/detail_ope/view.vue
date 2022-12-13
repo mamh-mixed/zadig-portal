@@ -35,6 +35,6 @@ export default {
   display: flex;
   flex-direction: column;
   height: calc(~'100% - 40px');
-  background-color: @globalBackgroundColor;
+  background-color: var(--color-gray-bg);
 }
 </style>

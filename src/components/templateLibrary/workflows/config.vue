@@ -197,7 +197,7 @@
               :workflowInfo="payload"
               :ref="jobType.grayDeploy"
             />
-             <JobImageDistribute
+            <JobImageDistribute
               v-if="job.type === jobType.distribute"
               :job="job"
               :globalEnv="globalEnv"
@@ -316,7 +316,9 @@ export default {
           approve_users: [],
           timeout: null,
           needed_approvers: null,
-          description: ''
+          description: '',
+          type: 'native',
+          approval_id: ''
         },
         jobs: []
       },
@@ -499,6 +501,23 @@ export default {
         })
       }
       this.payload.stages.forEach(stage => {
+        if (stage.approval.type === 'native') {
+          const params = {
+            approve_users: stage.approval.approve_users,
+            needed_approvers: stage.approval.needed_approvers,
+            timeout: stage.approval.timeout
+          }
+          stage.approval.native_approval = params
+        } else {
+          const params = {
+            approve_users: stage.approval.approve_users,
+            approval_id: stage.approval.approval_id,
+            timeout: stage.approval.timeout
+          }
+          stage.approval.lark_approval = params
+        }
+        delete stage.approval.approve_users
+        delete stage.approval.timeout
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
@@ -561,7 +580,9 @@ export default {
         editWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('保存成功')
-            this.$router.push(`/v1/template/workflows?type=${this.workflowType}`)
+            this.$router.push(
+              `/v1/template/workflows?type=${this.workflowType}`
+            )
           })
           .catch(() => {
             this.payload = this.notComputedPayload
@@ -570,7 +591,9 @@ export default {
         addWorkflowTemplateAPI(yamlParams)
           .then(res => {
             this.$message.success('新建成功')
-            this.$router.push(`/v1/template/workflows?type=${this.workflowType}`)
+            this.$router.push(
+              `/v1/template/workflows?type=${this.workflowType}`
+            )
           })
           .catch(() => {
             this.payload = this.notComputedPayload
@@ -593,6 +616,19 @@ export default {
           }
         })
         this.payload.stages.forEach(stage => {
+          if (stage.approval.type === 'lark') {
+            stage.approval.approval_id =
+              stage.approval.lark_approval.approval_id
+            stage.approval.timeout = stage.approval.lark_approval.timeout
+            stage.approval.approve_users =
+              stage.approval.lark_approval.approve_users
+          } else {
+            stage.approval.approve_users =
+              stage.approval.native_approval.approve_users
+            stage.approval.needed_approvers =
+              stage.approval.native_approval.needed_approvers
+            stage.approval.timeout = stage.approval.native_approval.timeout
+          }
           stage.jobs.forEach(job => {
             if (job.type === 'zadig-build') {
               if (job.spec && job.spec.service_and_builds) {
@@ -783,8 +819,7 @@ export default {
       )
       if (this.job && [this.jobType.freestyle].includes(this.job.type)) {
         this.$nextTick(() => {
-          this.$refs[this.job.type] &&
-            this.$refs[this.job.type].initOpe()
+          this.$refs[this.job.type] && this.$refs[this.job.type].initOpe()
         })
       }
     },
@@ -803,7 +838,11 @@ export default {
     handleDrawerChange () {
       if (this.curDrawer === 'high') {
         this.$refs.settings.validate().then(() => {
-          this.$set(this.payload, 'share_storages', this.$refs.settings.getData())
+          this.$set(
+            this.payload,
+            'share_storages',
+            this.$refs.settings.getData()
+          )
           this.isShowDrawer = false
         })
       }

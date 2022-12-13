@@ -60,11 +60,14 @@ export default {
       }
     }
     this.redirectByDevice()
+    const themeColor = this.$store.state.theme.theme
+    document.documentElement.setAttribute('class', `${themeColor}-theme`)
   }
 }
 </script>
 
 <style lang="less">
+@import '~@assets/theme/index.less';
 @import url('~@assets/css/common/color.less');
 @import url('~@assets/css/common/icon.less');
 @import url('~@assets/css/common/font.less');
@@ -83,6 +86,7 @@ body {
   height: 100%;
   overflow: hidden;
   overflow-y: auto;
+  color: var(--color-global-fg);
   font-family:
     'Overpass',
     'Noto Sans SC',
@@ -97,7 +101,7 @@ body {
     'Hiragino Sans GB',
     'Microsoft Yahei',
     sans-serif;
-  background-color: #fff;
+  background-color: var(--color-global-bg);
 
   .el-card {
     background: #fff;

@@ -95,17 +95,22 @@ export default {
           this.term.write(this.baseLog[i] + '\r')
         }
       }
-    }
-    , 500)
+    }, 500)
   },
-  computed: {
-
-  },
+  computed: {},
   destroyed () {
     this.term.clear()
   },
   mounted () {
-    const term = new Terminal({ fontSize: '12', padding: '15', fontFamily: 'Monaco,Consolas,monospace,Microsoft YaHei,Arial', disableStdin: true, scrollback: 9999999, cursorStyle: null })
+    const term = new Terminal({
+      fontSize: '12',
+      padding: '15',
+      fontFamily: 'Monaco,Consolas,monospace,Microsoft YaHei,Arial',
+      disableStdin: true,
+      scrollback: 9999999,
+      cursorStyle: null,
+      theme: this.$store.state.theme.xtermTheme
+    })
     const fitAddon = new FitAddon()
     const searchAddon = new SearchAddon()
     term.loadAddon(searchAddon)
@@ -113,7 +118,8 @@ export default {
     term.open(document.getElementById(this.id))
     fitAddon.fit()
     window.onresize = () => {
-      document.getElementById(this.id).style.height = window.innerHeight - 90 + 'px'
+      document.getElementById(this.id).style.height =
+        window.innerHeight - 90 + 'px'
       fitAddon.fit()
     }
     this.term = term

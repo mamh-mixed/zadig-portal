@@ -24,8 +24,8 @@
         <el-button size="small" type="primary" @click="updateUserInfo" plains>{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
-    <el-dialog :title="$t(`profile.changeMail`)" class="modifiled-pwd" :visible.sync="modifiedMailDialogVisible" center>
-      <div class="modifiled-pwd-container">
+    <el-dialog :title="$t(`profile.changeMail`)" class="modifiled-mail" :visible.sync="modifiedMailDialogVisible" center>
+      <div class="modifiled-mail-container">
         <el-form label-position="top" label-width="120px" :rules="mailRules" ref="mailForm" :model="mail">
           <el-form-item :label="$t(`profile.oldMail`)">
             <span v-if="currentEditUserInfo">{{currentEditUserInfo.email}}</span>
@@ -38,6 +38,22 @@
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancelUpdateMail" plain>{{$t(`global.cancel`)}}</el-button>
         <el-button size="small" type="primary" @click="updateMail">{{$t(`global.confirm`)}}</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog :title="$t(`profile.changePhone`)" class="modifiled-phone" :visible.sync="modifiedPhoneDialogVisible" center>
+      <div class="modifiled-phone-container">
+        <el-form label-position="top" label-width="100px" :rules="phoneRules" ref="phoneForm" :model="phone">
+          <el-form-item :label="$t(`profile.oldPhone`)" prop="oldPhone">
+            <span v-if="currentEditUserInfo">{{currentEditUserInfo.phone}}</span>
+          </el-form-item>
+          <el-form-item :label="$t(`profile.newPhone`)" prop="newPhone">
+            <el-input size="small" v-model="phone.newPhone"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="cancelUpdatePhone" plain>{{$t(`global.cancel`)}}</el-button>
+        <el-button size="small" type="primary" @click="updatePhone" plains>{{$t(`global.confirm`)}}</el-button>
       </span>
     </el-dialog>
     <div v-if="currentEditUserInfo" class="section">
@@ -91,6 +107,15 @@
                     <el-button class="edit-password" @click="modifiedMail" type="text">{{$t(`profile.clickToChange`)}}</el-button>
                   </td>
                 </tr>
+                <tr v-if="currentEditUserInfo.identity_type ==='system'">
+                  <td>
+                    <span>{{$t(`profile.updatePhone`)}}</span>
+                  </td>
+                  <td>
+                    <span>{{currentEditUserInfo.phone}}</span>
+                    <el-button class="edit-password" @click="modifiedPhone" type="text">{{$t(`profile.clickToChange`)}}</el-button>
+                  </td>
+                </tr>
                 <tr>
                   <td>
                     <span>API Token</span>
@@ -138,6 +163,7 @@ import {
   getCurrentUserInfoAPI,
   updateCurrentUserInfoAPI,
   updateCurrentUserMailAPI,
+  updateUserAPI,
   getSubscribeAPI,
   saveSubscribeAPI
 } from '@api'
@@ -156,9 +182,14 @@ export default {
       mail: {
         newMail: ''
       },
+      phone: {
+        oldPhone: '',
+        newPhone: ''
+      },
       loading: false,
       modifiedPwdDialogVisible: false,
       modifiedMailDialogVisible: false,
+      modifiedPhoneDialogVisible: false,
       workflowNoti: {}
     }
   },
@@ -190,6 +221,9 @@ export default {
     },
     modifiedMail () {
       this.modifiedMailDialogVisible = true
+    },
+    modifiedPhone () {
+      this.modifiedPhoneDialogVisible = true
     },
     updateUserInfo () {
       this.$refs.passwordForm.validate(valid => {
@@ -224,13 +258,37 @@ export default {
           payload.email = this.mail.newMail
           updateCurrentUserMailAPI(id, payload).then(res => {
             this.$message({
-              message: '邮箱修改成功',
+              message: this.$t(`profile.mailChangedSuccessfully`),
               type: 'success'
             })
             this.getCurrentUserInfo()
             this.cancelUpdateMail()
             this.mail = {
               newMail: ''
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    updatePhone () {
+      this.$refs.phoneForm.validate(valid => {
+        if (valid) {
+          const id = this.currentEditUserInfo.uid
+          const params = {
+            name: this.currentEditUserInfo.name,
+            phone: this.phone.newPhone
+          }
+          updateUserAPI(id, params).then(res => {
+            this.$message({
+              message: this.$t(`profile.phoneChangedSuccessfully`),
+              type: 'success'
+            })
+            this.modifiedPhoneDialogVisible = false
+            this.getCurrentUserInfo()
+            this.phone = {
+              newPhone: ''
             }
           })
         } else {
@@ -245,6 +303,10 @@ export default {
     cancelUpdateMail () {
       this.$refs.mailForm.resetFields()
       this.modifiedMailDialogVisible = false
+    },
+    cancelUpdatePhone () {
+      this.$refs.phoneForm.resetFields()
+      this.modifiedPhoneDialogVisible = false
     },
     getSubscribe () {
       getSubscribeAPI().then(res => {
@@ -332,6 +394,34 @@ export default {
           }
         ]
       }
+    },
+    phoneRules () {
+      const validatePhone = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t(`profile.inputPhone`)))
+        } else {
+          if (
+            !/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/.test(
+              value
+            )
+          ) {
+            callback(new Error(this.$t(`profile.pleaseCheckPhone`)))
+          } else {
+            callback()
+          }
+        }
+      }
+      return {
+        newPhone: [
+          { required: true, message: this.$t(`profile.inputPhone`), trigger: 'blur' },
+          {
+            type: 'tel',
+            message: this.$t(`profile.pleaseCheckPhone`),
+            trigger: ['blur', 'change'],
+            validator: validatePhone
+          }
+        ]
+      }
     }
   },
   created () {
@@ -350,6 +440,20 @@ export default {
 <style lang="less">
 .modifiled-pwd {
   .modifiled-pwd-container {
+    width: 300px;
+    margin: 0 auto;
+  }
+}
+
+.modifiled-mail {
+  .modifiled-mail-container {
+    width: 300px;
+    margin: 0 auto;
+  }
+}
+
+.modifiled-phone {
+  .modifiled-phone-container {
     width: 300px;
     margin: 0 auto;
   }
