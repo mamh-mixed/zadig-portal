@@ -1053,6 +1053,30 @@ export function deleteExternalSystemAPI (id) {
   return http.delete(`/api/aslan/system/external/${id}`)
 }
 
+// Approval
+export function getApprovalListAPI () {
+  return http.get(`/api/aslan/system/im_app`)
+}
+
+export function createApprovalAPI (payload) {
+  return http.post(`/api/aslan/system/im_app`, payload)
+}
+
+export function updateApprovalAPI (id, payload) {
+  return http.put(`/api/aslan/system/im_app/${id}`, payload)
+}
+
+export function deleteApprovalAPI (id) {
+  return http.delete(`/api/aslan/system/im_app/${id}`)
+}
+
+export function checkApprovalConfigAPI (payload) {
+  return http.post('/api/aslan/system/im_app/validate', payload)
+}
+export function getDepartmentAPI (id, department_id) {
+  return http.get(`/api/aslan/system/lark/${id}/department/${department_id}`)
+}
+
 // Mail
 export function getEmailHostAPI (key) {
   return http.get(`/api/v1/emails/internal/host?encryptedKey=${key}`)
@@ -2164,6 +2188,10 @@ export function deleteCustomWorkflowAPI (workflow_name, projectName) {
 
 export function getCustomWorkfloweTaskPresetAPI (workflow_name, projectName, key = '') {
   return http.get(`/api/aslan/workflow/v4/preset/${workflow_name}?projectName=${projectName}&encryptedKey=${key}`)
+}
+
+export function checkWorkflowApprovalAPI (workflowName) {
+  return http.post(`/api/aslan/workflow/v4/check/lark/${workflowName}`)
 }
 
 export function runCustomWorkflowTaskAPI (payload, projectName) {
