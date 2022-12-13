@@ -2,14 +2,14 @@
   <div class="stage-approval-detail">
     <header class="mg-b8">
       <el-col :span="2" class>
-        <span class="type">人工审核</span>
+        <span class="type">{{approvalInfo.approval.type==='lark'?'飞书审批':'人工审批'}}</span>
       </el-col>
       <el-col :span="6" class="text">
         <span>开始时间：</span>
         <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
       </el-col>
       <el-col :span="6" class="text" v-if="!isDisabled">
-        <span class="red">{{approvalInfo.approval.timeout}} 分钟</span>
+        <span class="red">{{timeout}} 分钟</span>
         <span>后审核超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>
@@ -26,8 +26,12 @@
       </el-col>
     </header>
     <main>
-      <el-table :data="approvalInfo.approval.approve_users" size="small" class="mg-t24">
-        <el-table-column prop="user_name" label="审核人"></el-table-column>
+      <el-table
+        :data="approvalInfo.approval.type === 'lark' ? approvalInfo.approval.lark_approval.approve_users: approvalInfo.approval.native_approval.approve_users"
+        size="small"
+        class="mg-t24"
+      >
+        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" label="审核人"></el-table-column>
         <el-table-column prop="reject_or_approve" label="审核结果">
           <template slot-scope="scope">
             <span
@@ -42,7 +46,7 @@
         </el-table-column>
         <el-table-column prop="comment" label="评论信息"></el-table-column>
       </el-table>
-      <el-row class="mg-t24">
+      <el-row class="mg-t24" v-if="approvalInfo.approval.type === 'native'">
         <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审核</el-button>
       </el-row>
     </main>
@@ -97,9 +101,16 @@ export default {
       userInfo: state => state.login.userinfo
     }),
     isDisabled () {
-      const curUser = this.approvalInfo.approval.approve_users.find(
-        item => item.user_id === this.userInfo.uid
-      )
+      let curUser = ''
+      if (this.approvalInfo.approval.type === 'lark') {
+        curUser = this.approvalInfo.approval.lark_approval.approve_users.find(
+          item => item.id === this.userInfo.uid
+        )
+      } else {
+        curUser = this.approvalInfo.approval.native_approval.approve_users.find(
+          item => item.user_id === this.userInfo.uid
+        )
+      }
       if (!curUser) {
         return true
       }
@@ -111,6 +122,15 @@ export default {
       } else {
         return true
       }
+    },
+    timeout () {
+      let time = ''
+      if (this.approvalInfo.approval.type === 'lark') {
+        time = this.approvalInfo.approval.lark_approval.timeout
+      } else {
+        time = this.approvalInfo.approval.native_approval.timeout
+      }
+      return time
     }
   },
   methods: {
