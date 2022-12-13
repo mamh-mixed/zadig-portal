@@ -1,6 +1,6 @@
 <template>
   <div class="preference-container">
-    <el-form ref="form" :model="config" label-width="120px" label-position="left" class="primary-form">
+    <el-form ref="form" :model="config" :rules="rules" label-width="120px" label-position="left" class="primary-form">
       <el-form-item label="界面颜色主题">
         <el-select v-model="config.theme" placeholder>
           <el-option v-for="item in themeOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
@@ -11,13 +11,13 @@
           <Xterm ref="xterm" />
         </div>
         <div class="xterm-ope">
-          <el-form-item label="背景颜色" prop="xtermTheme.background" required :show-message="false">
+          <el-form-item label="背景颜色" prop="xtermTheme.background" :show-message="false">
             <el-color-picker v-model="config.xtermTheme.background"></el-color-picker>
-            <el-input v-model="config.xtermTheme.background" @input="config.xtermTheme.background=$event.replace(/^([#0-9a-f]{7})(.*)$/, '$1')"></el-input>
+            <el-input v-model="config.xtermTheme.background"></el-input>
           </el-form-item>
-          <el-form-item label="字体颜色" prop="xtermTheme.foreground" required :show-message="false">
+          <el-form-item label="字体颜色" prop="xtermTheme.foreground" :show-message="false">
             <el-color-picker v-model="config.xtermTheme.foreground"></el-color-picker>
-            <el-input v-model="config.xtermTheme.foreground" @input="config.xtermTheme.foreground=$event.replace(/^([#0-9a-f]{7})(.*)$/, '$1')"></el-input>
+            <el-input v-model="config.xtermTheme.foreground"></el-input>
           </el-form-item>
         </div>
       </el-form-item>
@@ -31,6 +31,17 @@
 <script>
 import Xterm from './common/xterm.vue'
 import { debounce, cloneDeep } from 'lodash'
+
+const validColor = (rule, value, callback) => {
+  if (!value) {
+    callback(new Error('不能为空'))
+  } else if (!/^#[0-9a-fA-F]{6}$/.test(value)) {
+    callback(new Error('颜色格式有误'))
+  } else {
+    callback()
+  }
+}
+
 export default {
   data () {
     this.themeOptions = [
@@ -50,6 +61,14 @@ export default {
           background: '#000000',
           foreground: '#ffffff'
         }
+      },
+      rules: {
+        'xtermTheme.background': [
+          { required: true, validator: validColor, trigger: ['blur', 'change'] }
+        ],
+        'xtermTheme.foreground': [
+          { required: true, validator: validColor, trigger: ['blur', 'change'] }
+        ]
       }
     }
   },
