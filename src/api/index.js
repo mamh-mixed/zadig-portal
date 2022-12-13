@@ -1055,23 +1055,23 @@ export function deleteExternalSystemAPI (id) {
 
 // Approval
 export function getApprovalListAPI () {
-  return http.get(`/api/aslan/system/approval`)
+  return http.get(`/api/aslan/system/im_app`)
 }
 
 export function createApprovalAPI (payload) {
-  return http.post(`/api/aslan/system/approval`, payload)
+  return http.post(`/api/aslan/system/im_app`, payload)
 }
 
 export function updateApprovalAPI (id, payload) {
-  return http.put(`/api/aslan/system/approval/${id}`, payload)
+  return http.put(`/api/aslan/system/im_app/${id}`, payload)
 }
 
 export function deleteApprovalAPI (id) {
-  return http.delete(`/api/aslan/system/approval/${id}`)
+  return http.delete(`/api/aslan/system/im_app/${id}`)
 }
 
 export function checkApprovalConfigAPI (payload) {
-  return http.post('/api/aslan/system/approval/validate', payload)
+  return http.post('/api/aslan/system/im_app/validate', payload)
 }
 export function getDepartmentAPI (id, department_id) {
   return http.get(`/api/aslan/system/lark/${id}/department/${department_id}`)
