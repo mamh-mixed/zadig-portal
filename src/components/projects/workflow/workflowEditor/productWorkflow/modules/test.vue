@@ -14,7 +14,7 @@
           <el-table-column prop="product_name"
                            label="项目名称"></el-table-column>
           <el-table-column prop="desc"
-                           label="描述"></el-table-column>
+                           :label="$t(`workflow.desc`)"></el-table-column>
           <el-table-column label="变量">
             <template slot-scope="{ row }">
               <el-popover placement="left"

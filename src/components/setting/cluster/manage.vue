@@ -83,7 +83,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="描述" prop="description">
+        <el-form-item :label="$t(`workflow.desc`)" prop="description">
           <el-input size="small" v-model="cluster.description" placeholder="请输入描述"></el-input>
         </el-form-item>
         <el-form-item label="KubeConfig" prop="config" v-if="cluster.type === 'kubeconfig'" :show-message="false">
@@ -285,7 +285,7 @@
                 :underline="false"
                 target="_blank"
               >帮助</el-link>
-              <el-button size="mini" type="primary" plain v-if="!cluster.share_storage.nfs_properties.provision_type" @click="addShareStorage" class="mg-l8">+ 添加</el-button>
+              <el-button size="mini" type="primary" plain v-if="!cluster.share_storage.nfs_properties.provision_type" @click="addShareStorage" class="mg-l8">+ {{$t(`global.add`)}}</el-button>
             </h4>
             <div v-if="isShowShareStorage || cluster.share_storage.nfs_properties.provision_type" style="position: relative; padding: 10px; border: 1px solid #ddd;">
               <el-button
@@ -441,7 +441,7 @@
                 <el-tag size="small" effect="dark" :type="statusIndicator[scope.row.status]">{{myTranslate(scope.row.status)}}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="描述">
+            <el-table-column :label="$t(`workflow.desc`)">
               <template slot-scope="scope">
                 <span>{{scope.row.description}}</span>
               </template>

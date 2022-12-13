@@ -132,14 +132,14 @@ const jobTypeList = [
     description: '可将镜像 Retag 后推送到镜像仓库'
   },
   {
-    label: 'Istio 发布',
+    label: 'istioRelease',
     name: 'istio-release',
     type: 'istio-release',
     is_offical: true,
     description: '基于 Istio 执行发布过程'
   },
   {
-    label: 'Istio 发布回滚',
+    label: 'istioRollback',
     name: 'istio-rollback',
     type: 'istio-rollback',
     is_offical: true,

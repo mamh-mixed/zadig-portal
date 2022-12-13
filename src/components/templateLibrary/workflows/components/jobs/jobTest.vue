@@ -44,7 +44,7 @@
         </el-option>
         <el-option v-for="(test,index) in testList" :key="index" :value="test.name" :label="test.name">{{test.name}}</el-option>
       </el-select>
-      <el-button type="success" size="mini" plain :disabled="Object.keys(test).length === 0" @click="addTest()">+ 添加</el-button>
+      <el-button type="success" size="mini" plain :disabled="Object.keys(test).length === 0" @click="addTest()">+ {{$t(`global.add`)}}</el-button>
     </el-form>
     <el-dialog :title="`${curItem.name} 变量配置`" :visible.sync="isShowVarDialog" :append-to-body="true" width="40%">
       <el-table :data="curItem.key_vals" size="small">

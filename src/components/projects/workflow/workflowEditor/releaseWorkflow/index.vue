@@ -151,7 +151,7 @@
                 plain
                 :disabled="Object.keys(service).length === 0"
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
-              >+ 添加</el-button>
+              >+ {{$t(`global.add`)}}</el-button>
             </div>
             <JobPlugin
               v-if="job.type === jobType.plugin"
@@ -322,7 +322,7 @@
         <Notify :config="payload" :isEdit="isEdit" ref="notify" />
       </div>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
+    <el-dialog :title="stageOperateType === 'add' ? $t(`workflow.addStage`): $t(`workflow.editStage`)" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate
         ref="stageOperate"
         :stageInfo="stage"

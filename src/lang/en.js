@@ -384,7 +384,18 @@ exports.default = {
     resourceName: 'Resource Name',
     updateContent: 'Update Content',
     job: 'Job',
-    stage: 'Stage'
+    stage: 'Stage',
+    stageName: 'Stage Name',
+    concurrentExecution: 'Concurrent Execution',
+    preStep: 'pre Step',
+    manualApproval: 'Manual Approval',
+    approvalWay: 'Approval Way',
+    reviewer: 'Reviewer',
+    revieweNumber: 'Number of people to be reviewed',
+    approvalApplication: 'Approval Application',
+    selectApprover: 'Select Approver',
+    addStage: 'Add Stage',
+    editStage: 'Edit Stage'
   },
   sysSetting: {
     integration: {

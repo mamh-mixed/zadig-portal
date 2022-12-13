@@ -12,7 +12,7 @@
             target="_blank"
           >帮助</el-link>
         </el-col>
-        <el-button type="primary" plain size="small" v-if="plugins.length===0&&!isShowOperateForm" @click="isShowOperateForm=true">+ 添加</el-button>
+        <el-button type="primary" plain size="small" v-if="plugins.length===0&&!isShowOperateForm" @click="isShowOperateForm=true">+ {{$t(`global.add`)}}</el-button>
         <div v-else>
           <el-col :span="3">
             <el-form-item prop="codehost_id" :rules="{required: true, message: '代码源不能为空', trigger: ['blur', 'change']}">

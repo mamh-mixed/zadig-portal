@@ -303,7 +303,7 @@
                 <el-select v-if="env.type==='choice'" v-model="env.value" placeholder="默认值" size="small">
                   <el-option v-for="option in env.choice_option" :key="option" :label="option" :value="option"></el-option>
                 </el-select>
-                <el-input v-else placeholder="值" v-model="env.value" size="small"></el-input>
+                <el-input v-else :placeholder="$t(`workflow.value`)" v-model="env.value" size="small"></el-input>
               </el-col>
               <el-col :span="mini ? 6 : 4" v-show="env.type!=='choice'" style="line-height: 32px;">
                 <el-checkbox v-model="env.is_credential">

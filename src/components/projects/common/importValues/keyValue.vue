@@ -18,7 +18,7 @@
                 filterable
                 allow-create
                 clearable
-                placeholder="键"
+                :placeholder="$t(`workflow.key`)"
                 size="small"
                 @change="selectKey($event, $index)"
                 @visible-change="firstEstimatedValues"
@@ -37,7 +37,7 @@
                   required: true, message: '请输入 value 值', trigger: 'blur'
               }"
             >
-              <el-input v-model="keyValueForm.keyValues[$index].value" placeholder="值" size="small"></el-input>
+              <el-input v-model="keyValueForm.keyValues[$index].value" :placeholder="$t(`workflow.value`)" size="small"></el-input>
             </el-form-item>
           </template>
         </el-table-column>

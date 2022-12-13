@@ -31,7 +31,7 @@
         size="small"
         class="mg-t24"
       >
-        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" label="审核人"></el-table-column>
+        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" :label="$t(`workflow.reviewer`)"></el-table-column>
         <el-table-column prop="reject_or_approve" label="审核结果">
           <template slot-scope="scope">
             <span

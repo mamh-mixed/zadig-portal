@@ -46,7 +46,7 @@
               </h4>
               <el-table :data="systemVariables" stripe style="width: 100%;">
                 <el-table-column prop="key" label="Key"></el-table-column>
-                <el-table-column prop="description" label="描述">
+                <el-table-column prop="description" :label="$t(`workflow.desc`)">
                   <template slot-scope="scope">
                     <span v-if="scope.row.description">{{scope.row.description}}</span>
                     <span v-else>空</span>

@@ -384,7 +384,18 @@ exports.default = {
     resourceName: '资源名称',
     updateContent: '更新内容',
     job: '任务',
-    stage: '阶段'
+    stage: '阶段',
+    stageName: '阶段名称',
+    concurrentExecution: '并发执行',
+    preStep: '前置步骤',
+    manualApproval: '人工审批',
+    approvalWay: '审批方式',
+    reviewer: '审核人',
+    revieweNumber: '需要审核人数',
+    approvalApplication: '审批应用',
+    selectApprover: '选择审批人',
+    addStage: '新建阶段',
+    editStage: '编辑阶段'
   },
   sysSetting: {
     integration: {
