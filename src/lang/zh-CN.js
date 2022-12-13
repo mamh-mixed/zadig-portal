@@ -174,6 +174,39 @@ exports.default = {
     passwordChangedSuccessfully: '密码修改成功',
     notificationSettingSavedSuccessfully: '通知设置保存成功'
   },
+  status: {
+    noRunningTask: '暂无正在运行的任务',
+    productWorkflow: '产品工作流',
+    workflow: '工作流',
+    codeScanner: '代码扫描',
+    viewTaskDetail: '查看任务流程',
+    hideTaskDetail: '收起任务流程',
+    deleteTask: '删除任务',
+    build: '构建',
+    unitTest: '单元测试',
+    repoName: '代码库',
+    coverage: '覆盖率',
+    branch: '分支',
+    buildInfo: '构建信息',
+    scriptBuilding: '脚本构建',
+    imgInfo: '镜像信息',
+    imgBuilding: '构建镜像',
+    deploy: '部署',
+    updateEnv: '环境更新',
+    service: '服务',
+    env: '环境',
+    image: '镜像',
+    test: '测试',
+    testReport: '测试报告',
+    distribute: '分发',
+    distributeImage: '镜像分发',
+    imageRepo: '镜像仓库',
+    imageName: '镜像名称',
+    queued: '队列中',
+    success: '成功',
+    cancelQueuedTaskSuccess: '队列任务取消成功',
+    cancelRunningTaskSuccess: '运行任务取消成功'
+  },
   project: {
     searchProject: '搜索项目',
     newProject: '新建项目',
@@ -265,6 +298,16 @@ exports.default = {
     skipped: '跳过',
     prepare: '准备环境',
     reject: '拒绝'
+  },
+  productWorkflowStage: {
+    buildv2: '构建',
+    build: '构建部署',
+    deploy: '部署',
+    artifact: '交付物部署',
+    test: '测试',
+    testingv2: '测试',
+    release_image: '分发',
+    distribute: '分发部署'
   },
   sysSetting: {
     integration: {

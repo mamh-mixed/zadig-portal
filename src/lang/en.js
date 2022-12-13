@@ -174,6 +174,39 @@ exports.default = {
     passwordChangedSuccessfully: 'Password changed successfully',
     notificationSettingSavedSuccessfully: 'Notification setting saved successfully'
   },
+  status: {
+    noRunningTask: 'No running tasks ',
+    productWorkflow: 'Product Workflow',
+    workflow: 'Workflow',
+    codeScanner: 'Code Scanner',
+    viewTaskDetail: 'View task detail',
+    hideTaskDetail: 'Hide task detail',
+    deleteTask: 'Delete task',
+    build: 'Build',
+    unitTest: 'Unit Test',
+    repoName: 'Repo Name',
+    coverage: 'Coverage',
+    branch: 'Branch',
+    buildInfo: 'Build Info',
+    scriptBuilding: 'Runing Script',
+    imgInfo: 'Image Info',
+    imgBuilding: 'Build Image',
+    deploy: 'Deploy',
+    updateEnv: 'Update Environment',
+    service: 'Service',
+    env: 'Environment',
+    image: 'Image',
+    test: 'Test',
+    testReport: 'Test Report',
+    distribute: 'Distribute',
+    distributeImage: 'Distribute Image',
+    imageRepo: 'Image Repo',
+    imageName: 'Image Name',
+    queued: 'Queued',
+    success: 'Success',
+    cancelQueuedTaskSuccess: 'Queued task cancellation success',
+    cancelRunningTaskSuccess: 'Running task cancellation success'
+  },
   project: {
     searchProject: 'Search Project',
     newProject: 'New project',
@@ -265,6 +298,16 @@ exports.default = {
     skipped: 'Skipped',
     prepare: 'Preparing',
     reject: 'Rejected'
+  },
+  productWorkflowStage: {
+    buildv2: 'Build',
+    build: 'Build Deploy',
+    deploy: 'Deploy',
+    artifact: 'Artifact Deploy',
+    test: 'Test',
+    testingv2: 'Test',
+    release_image: 'Distribute',
+    distribute: 'Distribute Deploy'
   },
   sysSetting: {
     integration: {

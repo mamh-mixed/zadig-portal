@@ -6,7 +6,7 @@
       <div class="progress-header-view">
         <div class="status-view">
           <div class="status running">
-            正在运行
+            {{ $t(`workflowTaskStatus.${task.status}`) }}
           </div>
         </div>
         <div class="info-view">
@@ -25,7 +25,7 @@
             <el-tag v-if="showStage(task.stages,'testingv2')"
                     size=small
                     class="stage"
-                    type="primary">测试</el-tag>
+                    type="primary">{{ $t(`productWorkflowStage.testingv2`) }}</el-tag>
           </span>
           <section class="basic-info">
             <p class="author"><i class="el-icon-user"></i> {{task.task_creator}}</p>
@@ -38,7 +38,7 @@
                 class="icon el-icon-data-board view-detail"></span>
           <el-tooltip class="item"
                       effect="dark"
-                      content="删除任务"
+                      :content="$t('status.deleteTask')"
                       placement="top">
             <span @click="testOperate('running','cancel',task.product_name,task.test_args.test_name+'-job',task.task_id)"
                   class="icon el-icon-delete delete"></span>
@@ -74,8 +74,8 @@ export default {
           case 'cancel':
             cancelTestTaskAPI(project_name, test_name, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '运行任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelRunningTaskSuccess'),
                 type: 'success',
                 offset: 50
               })
@@ -93,8 +93,8 @@ export default {
           case 'cancel':
             cancelTestTaskAPI(project_name, test_name, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '队列任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelQueuedTaskSuccess'),
                 type: 'success',
                 offset: 50
               })
