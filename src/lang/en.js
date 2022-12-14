@@ -45,7 +45,12 @@ exports.default = {
     errorMsg: 'Error Message',
     ok: 'ok',
     startTime: 'Start Time',
-    endTime: 'End Time'
+    endTime: 'End Time',
+    execute: 'Execute',
+    confirmation: 'Confirm'
+  },
+  permission: {
+    lackPermission: 'Unauthorized'
   },
   login: {
     username: 'Username',
@@ -842,5 +847,131 @@ exports.default = {
       APIPayload: 'API Payload',
       searchCompleted: 'Search completed'
     }
+  },
+  testing: {
+    title: 'Test',
+    noTestsErrorMessage: 'There are no test cases, please create one.',
+    searchTests: 'search tests',
+    caseCount: 'Case count',
+    executionCount: 'Execution count',
+    averageExecutionTime: 'Average duration',
+    successRate: 'Success rate',
+    creationSuccess: 'Task created.',
+    restartSuccess: 'Task restarted.',
+    cancellationSuccess: 'Task cancelled.',
+    deletionConfirmation: 'Are you sure you want to delete {name}?',
+    deletionSuccess: 'Test case deleted.',
+    triggers: {
+      workflowTriggers: 'workflow trigger',
+      selectWorkflowTriggers: 'Create workflow triggers',
+      selectWorkflowTriggersII: 'Please select workflow triggers, you can type in to search for workflows',
+      creationSuccess: 'Workflow trigger created.',
+      deletion: 'Delete workflow triggers',
+      deletionSuccess: 'Workflow trigger deleted.',
+      deletionCancellation: 'Deletion cancelled.',
+      deletionConfirmation: 'Are you sure you want to delete trigger from workflow {name} ?'
+    },
+    details: {
+      name: 'Test name',
+      description: 'Description',
+      parameters: 'Parameters',
+      scripts: 'Script',
+      report: {
+        configuration: 'Test Report Configuration',
+        JunitReportDirectory: 'Junit Report Directory',
+        HTMLReportFileDirectory: 'HTML Report Filepath',
+        HTMLReportFileTooltip: 'HTML report file link will be sent with the IM message notification.'
+      },
+      advancedSettings: {
+        title: 'Advanced Settings',
+        exportReport: {
+          title: 'Report Export',
+          filePath: 'File Path',
+          filePathExplanation: 'Choose directories to be downloaded in the test task detail page. It is commonly used for the export of the test log files.'
+        },
+        hooksAndNotification: {
+          title: 'Hooks and Notifications',
+          webhookTitle: 'Webhooks',
+          timerTitle: 'Timers',
+          notificationTitle: 'Notifications'
+        }
+      }
+    },
+    taskDetails: {
+      exportArtifact: 'Artifact Export',
+      basicInformation: {
+        title: 'Basic Information',
+        creator: 'Creator',
+        canceller: 'Canceller',
+        duration: 'Duration',
+        retry: 'retry',
+        cancel: 'cancel'
+      },
+      taskInfo: {
+        head: 'Test Tasks',
+        title: '自动化测试',
+        emptyTask: 'empty',
+        executionStatus: 'Status',
+        report: 'Test Reports',
+        view: 'View',
+        exportedFile: 'Exported files',
+        download: 'Download',
+        status: 'Status',
+        errorMessage: 'Error message',
+        acknowledged: 'Acknowledged'
+      },
+      report: {
+        overview: 'Test Report Overview',
+        caseDetails: 'Case Details'
+      },
+      cases: {
+        description: 'Description',
+        result: 'Test Result',
+        executionTime: 'Duration(s)'
+      },
+      logs: {
+        fetchErrorMessage: 'Failed to fetch test logs.'
+      }
+    },
+    validation: {
+      testNameInsertionPrompt: 'Type in the test name.',
+      testNameVaidationError: 'Name should only contain lowercase alphanumeric characters, - or _',
+      testDescriptionInsertionPrompt: 'Type in the description',
+      testReportDirectoryInsertionPrompt: 'Type in the directory for test report',
+      testReportFileInsertionPrompt: 'Type in the filepath for the test report'
+    },
+    summary: {
+      latest: 'Latest Test Report',
+      caseCount: 'Total test cases',
+      successCount: 'Success cases',
+      failCount: 'Failed cases',
+      errorCount: 'Error cases',
+      unstartCount: 'Unstart cases',
+      timeConsumption: 'Duration',
+      checkCases: 'View',
+      caseDetails: 'Case Details'
+    },
+    history: {
+      title: 'History'
+    },
+    status: {
+      success: 'success',
+      fail: 'fail',
+      unstart: 'unstart',
+      error: 'error'
+    },
+    display: {
+      failReason: 'Fail Reason:',
+      failMessage: 'Fail Message:',
+      failDetail: 'Fail Detail:',
+      standardOut: 'Standard Output:',
+      errorMessage: 'Error message:',
+      errorDetail: 'Error detail:',
+      errorType: 'Error type:'
+    }
+  },
+  repository: {
+    repository: 'Repository',
+    info: 'Repository Info'
   }
 }

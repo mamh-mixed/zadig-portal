@@ -141,19 +141,19 @@ export default {
     testResultLabels () {
       return [
         {
-          text: '失败',
+          text: this.$t(`testing.status.fail`),
           value: 'failure'
         },
         {
-          text: '成功',
+          text: this.$t(`testing.status.success`),
           value: 'succeeded'
         },
         {
-          text: '错误',
+          text: this.$t(`testing.status.error`),
           value: 'error'
         },
         {
-          text: '未执行',
+          text: this.$t(`testing.status.unstart`),
           value: 'skipped'
         }
       ]
