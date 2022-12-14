@@ -85,9 +85,9 @@
 </template>
 <script>
 import bus from '@utils/eventBus'
-import Build from './constainer/build'
-import Deploy from './constainer/deploy'
-import Test from './constainer/test'
+import Build from './components/build'
+import Deploy from './components/deploy'
+import Test from './components/test'
 import ICountUp from 'vue-countup-v2'
 import { getStatisticsOverviewAPI } from '@api'
 export default {
