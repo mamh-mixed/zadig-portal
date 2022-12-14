@@ -48,11 +48,11 @@
     </el-form>
     <el-dialog :title="`${curItem.name} 变量配置`" :visible.sync="isShowVarDialog" :append-to-body="true" width="40%">
       <el-table :data="curItem.key_vals" size="small">
-        <el-table-column prop="key" :label="$t(`workflow.key`)"></el-table-column>
-        <el-table-column :label="$t(`workflow.type`)">
+        <el-table-column prop="key" :label="$t(`global.key`)"></el-table-column>
+        <el-table-column :label="$t(`global.type`)">
           <template slot-scope="scope">{{scope.row.type === 'string' ? '字符串' : '枚举'}}</template>
         </el-table-column>
-        <el-table-column :label="$t(`workflow.value`)" width="260">
+        <el-table-column :label="$t(`global.value`)" width="260">
           <template slot-scope="scope">
             <el-select
               size="small"

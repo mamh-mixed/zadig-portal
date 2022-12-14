@@ -30,7 +30,7 @@
     </header>
     <div class="tab">
       <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">{{$t(`global.workflow`)}}</span>
-      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">{{$t(`workflow.var`)}}</span>
+      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">{{$t(`global.var`)}}</span>
     </div>
     <Multipane v-if="activeName==='workflow'" layout="horizontal" style="height: 100%;">
       <main>
@@ -226,8 +226,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="$t(`workflow.key`)" prop="name"></el-table-column>
-        <el-table-column :label="$t(`workflow.value`)"></el-table-column>
+        <el-table-column :label="$t(`global.key`)" prop="name"></el-table-column>
+        <el-table-column :label="$t(`global.value`)"></el-table-column>
       </el-table>
     </div>
   </div>

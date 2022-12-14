@@ -8,10 +8,10 @@
       <el-collapse v-model="activeName">
         <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">
-            <el-table-column :label="$t(`workflow.key`)">
+            <el-table-column :label="$t(`global.key`)">
               <template slot-scope="scope">{{scope.row.name}}</template>
             </el-table-column>
-            <el-table-column :label="$t(`workflow.value`)">
+            <el-table-column :label="$t(`global.value`)">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
                   <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
@@ -224,8 +224,8 @@
                 <div v-for="(item,index) in job.pickedTargets" :key="index">
                   <span>{{item.resource_name}}</span>
                   <el-table :data="item.params">
-                    <el-table-column :label="$t(`workflow.key`)" prop="name"></el-table-column>
-                    <el-table-column :label="$t(`workflow.value`)">
+                    <el-table-column :label="$t(`global.key`)" prop="name"></el-table-column>
+                    <el-table-column :label="$t(`global.value`)">
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
                           <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>

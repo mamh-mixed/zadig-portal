@@ -33,8 +33,8 @@
           <el-alert v-if="item.error" :title="$t(`workflow.errorMsg`)" :description="item.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
         </div>
         <el-table :data="item.params">
-          <el-table-column :label="$t(`workflow.key`)" prop="name"></el-table-column>
-          <el-table-column :label="$t(`workflow.value`)" prop="value"></el-table-column>
+          <el-table-column :label="$t(`global.key`)" prop="name"></el-table-column>
+          <el-table-column :label="$t(`global.value`)" prop="value"></el-table-column>
         </el-table>
       </div>
     </main>

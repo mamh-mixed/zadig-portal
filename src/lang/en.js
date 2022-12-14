@@ -18,6 +18,7 @@ exports.default = {
     helpDoc: 'help',
     desc: 'Description',
     type: 'Type',
+    var: 'Variables',
     name: 'Name',
     tips: 'Tips',
     status: 'Status',
@@ -33,7 +34,11 @@ exports.default = {
     whetherToDisplay: 'Whether To Display',
     addConfig: 'Add Config',
     pleaseInput: 'Please Input',
-    pleaseSelect: 'Please Select'
+    pleaseSelect: 'Please Select',
+    timeout: 'Timeout',
+    all: 'All',
+    key: 'Key',
+    value: 'Value'
   },
   login: {
     username: 'Username',
@@ -234,7 +239,9 @@ exports.default = {
     queued: 'Queued',
     success: 'Success',
     cancelQueuedTaskSuccess: 'Queued task cancellation success',
-    cancelRunningTaskSuccess: 'Running task cancellation success'
+    cancelRunningTaskSuccess: 'Running task cancellation success',
+    buildStatus: 'Build Status',
+    deployStatus: 'Deploy Status'
   },
   project: {
     searchProject: 'Search Project',
@@ -370,7 +377,6 @@ exports.default = {
     descendingByName: 'Descending by name',
     ascendingByCreationTime: 'Ascending by creation time',
     descendingByCreationTime: 'Descending by creation time',
-    all: 'All',
     addView: 'Add View',
     editView: 'Edit View',
     delView: 'Delete View',
@@ -439,10 +445,7 @@ exports.default = {
     testResults: 'Test Results',
     clone: 'Clone',
     startTask: 'Start Task',
-    var: 'Variables',
     manualReview: 'Manual Review',
-    key: 'Key',
-    value: 'Value',
     workflowVars: 'Workflow Variables',
     cancelSuccess: 'Cancel Success',
     jobType: {
@@ -468,7 +471,6 @@ exports.default = {
     errorMsg: 'Error Message',
     ok: 'ok',
     codeLibrary: 'Code Library',
-    serviceName: 'Service Name',
     imageName: 'Image Name',
     deploymentEnv: 'Deployment Environment',
     deploymentService: 'Deployment Service',
@@ -489,7 +491,6 @@ exports.default = {
     cluster: 'Cluster',
     namespace: 'Namespace',
     time: 'Time',
-    type: 'Type',
     message: 'Message',
     ui: 'UI',
     desc: 'Description',
@@ -502,7 +503,6 @@ exports.default = {
     storageConfig: 'Storage Config',
     dockerRegistry: 'Docker Registry',
     sensitiveInformation: 'Sensitive Information',
-    timeout: 'Timeout',
     containerStatusDetection: 'Container Status Detection',
     scanConfig: 'Scan Config',
     chooseScan: 'Choose Scan',

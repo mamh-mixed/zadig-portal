@@ -38,7 +38,7 @@
         </el-row>
         <el-row :gutter="0" class="item">
           <el-col :span="4">
-            <div class="item-title">{{$t(`workflow.serviceName`)}}</div>
+            <div class="item-title">{{$t(`global.serviceName`)}}</div>
           </el-col>
           <el-col :span="8">
             <span class="item-desc">{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>

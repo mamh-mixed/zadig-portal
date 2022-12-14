@@ -9,7 +9,7 @@
       inline-message
     >
       <div class="item-title">策略配置</div>
-      <el-form-item :label="$t(`workflow.timeout`)">
+      <el-form-item :label="$t(`global.timeout`)">
         <el-input-number size="mini" :min="1" v-model="buildConfig.timeout"></el-input-number>
         <span>分钟</span>
       </el-form-item>
@@ -103,7 +103,7 @@
           <i class="pointer el-icon-question"></i>
         </el-tooltip>
       </div>
-      <el-form-item :label="$t(`workflow.var`)" label-width="120px"  v-if="!hiddenVars">
+      <el-form-item :label="$t(`global.var`)" label-width="120px"  v-if="!hiddenVars">
         <el-form-item
           v-for="(item,index) in buildConfig.outputs"
           :key="index"

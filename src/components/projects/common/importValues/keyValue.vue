@@ -3,7 +3,7 @@
     <div class="secondary-title" style="margin-bottom: 10px;">指定需要覆盖的键值对</div>
     <el-form ref="form" :model="keyValueForm" label-position="left">
       <el-table :data="keyValues">
-        <el-table-column :label="$t(`workflow.key`)">
+        <el-table-column :label="$t(`global.key`)">
           <template slot-scope="{ $index }">
             <el-form-item
               :prop="`keyValues[${$index}].key`"
@@ -18,7 +18,7 @@
                 filterable
                 allow-create
                 clearable
-                :placeholder="$t(`workflow.key`)"
+                :placeholder="$t(`global.key`)"
                 size="small"
                 @change="selectKey($event, $index)"
                 @visible-change="firstEstimatedValues"
@@ -29,7 +29,7 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column :label="$t(`workflow.value`)">
+        <el-table-column :label="$t(`global.value`)">
           <template slot-scope="{ $index }">
             <el-form-item
               :prop="`keyValues[${$index}].value`"
@@ -37,7 +37,7 @@
                   required: true, message: '请输入 value 值', trigger: 'blur'
               }"
             >
-              <el-input v-model="keyValueForm.keyValues[$index].value" :placeholder="$t(`workflow.value`)" size="small"></el-input>
+              <el-input v-model="keyValueForm.keyValues[$index].value" :placeholder="$t(`global.value`)" size="small"></el-input>
             </el-form-item>
           </template>
         </el-table-column>

@@ -18,6 +18,7 @@ exports.default = {
     helpDoc: '帮助文档',
     desc: '描述',
     type: '类型',
+    var: '变量',
     status: '状态',
     name: '名称',
     tips: '提示',
@@ -33,7 +34,11 @@ exports.default = {
     whetherToDisplay: '是否显示',
     addConfig: '添加配置',
     pleaseInput: '请输入',
-    pleaseSelect: '请选择'
+    pleaseSelect: '请选择',
+    timeout: '超时时间',
+    all: '所有',
+    key: '键',
+    value: '值'
   },
   login: {
     username: '用户名',
@@ -234,7 +239,9 @@ exports.default = {
     queued: '队列中',
     success: '成功',
     cancelQueuedTaskSuccess: '队列任务取消成功',
-    cancelRunningTaskSuccess: '运行任务取消成功'
+    cancelRunningTaskSuccess: '运行任务取消成功',
+    buildStatus: '构建状态',
+    deployStatus: '部署状态'
   },
   project: {
     searchProject: '搜索项目',
@@ -370,7 +377,6 @@ exports.default = {
     descendingByName: '按名称降序',
     ascendingByCreationTime: '按创建时间升序',
     descendingByCreationTime: '按创建时间降序',
-    all: '所有',
     addView: '新建视图',
     editView: '编辑视图',
     delView: '删除视图',
@@ -439,10 +445,7 @@ exports.default = {
     testResults: '测试结果',
     clone: '克隆',
     startTask: '启动任务',
-    var: '变量',
     manualReview: '人工审核',
-    key: '键',
-    value: '值',
     workflowVars: '工作流变量',
     cancelSuccess: '取消成功',
     jobType: {
@@ -468,7 +471,6 @@ exports.default = {
     errorMsg: '错误信息',
     ok: '知道了',
     codeLibrary: '代码库',
-    serviceName: '服务名称',
     imageName: '镜像名称',
     deploymentEnv: '部署环境',
     deploymentService: '部署服务',
@@ -489,7 +491,6 @@ exports.default = {
     cluster: '集群',
     namespace: '命名空间',
     time: '时间',
-    type: '类型',
     message: '信息',
     ui: '界面化',
     desc: '描述信息',
@@ -502,7 +503,6 @@ exports.default = {
     storageConfig: '共享存储配置',
     dockerRegistry: '镜像仓库',
     sensitiveInformation: '敏感信息',
-    timeout: '超时时间',
     containerStatusDetection: '容器状态检测',
     scanConfig: '扫描配置',
     chooseScan: '选择扫描',
@@ -571,7 +571,6 @@ exports.default = {
     inputWechatWebhook: '请填写企业微信 Webhook',
     inputDingDingWebhook: '请填写钉钉 Webhook',
     inputFeishuWebhook: '请填写飞书 Webhook'
-
   },
   webhookType: {
     dingding: '钉钉',

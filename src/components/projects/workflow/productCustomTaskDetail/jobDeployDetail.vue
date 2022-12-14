@@ -38,7 +38,7 @@
       </div>
       <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
         <el-col :span="4">
-          <div class="item-title">{{$t(`workflow.serviceName`)}}</div>
+          <div class="item-title">{{$t(`global.serviceName`)}}</div>
         </el-col>
         <el-col :span="8">
           <span class="item-desc">{{build.service_name}}({{build.service_module}})</span>

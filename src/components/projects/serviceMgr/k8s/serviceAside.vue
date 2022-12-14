@@ -110,7 +110,7 @@
                 </el-tooltip>
               </h4>
               <el-table :data="sysEnvs" stripe style="width: 100%;">
-                <el-table-column prop="key" :label="$t(`workflow.var`)"></el-table-column>
+                <el-table-column prop="key" :label="$t(`global.var`)"></el-table-column>
                 <el-table-column prop="value" label="当前值">
                   <template slot-scope="scope">
                     <span v-if="scope.row.value">{{scope.row.value}}</span>

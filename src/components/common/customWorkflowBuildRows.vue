@@ -4,10 +4,10 @@
       <el-table-column type="expand" width="50px" v-if="type!=='zadig-scanning'">
         <template slot-scope="props">
           <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
-            <el-table-column :label="$t(`workflow.key`)">
+            <el-table-column :label="$t(`global.key`)">
               <template slot-scope="scope">{{scope.row.key}}</template>
             </el-table-column>
-            <el-table-column :label="$t(`workflow.value`)">
+            <el-table-column :label="$t(`global.value`)">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" :style="{ width: elSelectWidth}">
                   <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>

@@ -52,7 +52,7 @@
           调用接口：{{`${origin}/api/callback`}}
         </div>
       </el-form-item>
-      <el-form-item :label="$t(`workflow.timeout`)" v-show="extensionStage.is_callback">
+      <el-form-item :label="$t(`global.timeout`)" v-show="extensionStage.is_callback">
         <el-input-number v-model="extensionStage.timeout" :min="1" :max="100" size="small"></el-input-number>分钟
       </el-form-item>
     </el-form>

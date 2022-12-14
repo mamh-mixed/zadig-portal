@@ -22,7 +22,7 @@
                ref="proxyForm"
                validateField="function(xx)">
         <el-form-item prop="type"
-                      :label="$t(`workflow.type`)">
+                      :label="$t(`global.type`)">
           <el-select v-model="proxyInfo.type"
                      size="small"
                      @change="changeProxy">

@@ -65,7 +65,7 @@
       </el-row>
       <el-table :data="jobInfo.spec.events" size="small" class="mg-t24">
         <el-table-column :label="$t(`workflow.time`)" prop="time"></el-table-column>
-        <el-table-column :label="$t(`workflow.type`)" prop="event_type"></el-table-column>
+        <el-table-column :label="$t(`global.type`)" prop="event_type"></el-table-column>
         <el-table-column :label="$t(`workflow.message`)" prop="message"></el-table-column>
       </el-table>
     </main>

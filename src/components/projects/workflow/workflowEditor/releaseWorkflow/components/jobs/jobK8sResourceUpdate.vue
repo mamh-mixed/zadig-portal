@@ -71,11 +71,11 @@
                   </div>
                 </div>
                 <div class="content-env">
-                  <div>{{$t(`workflow.var`)}}</div>
+                  <div>{{$t(`global.var`)}}</div>
                   <el-row class="th">
-                    <el-col :span="6" class="th-title">{{$t(`workflow.key`)}}</el-col>
-                    <el-col :span="8" class="th-title">{{$t(`workflow.type`)}}</el-col>
-                    <el-col :span="6" class="th-title">{{$t(`workflow.value`)}}</el-col>
+                    <el-col :span="6" class="th-title">{{$t(`global.key`)}}</el-col>
+                    <el-col :span="8" class="th-title">{{$t(`global.type`)}}</el-col>
+                    <el-col :span="6" class="th-title">{{$t(`global.value`)}}</el-col>
                   </el-row>
                   <el-row v-for="(app,index) in item.params" :key="index" :gutter="2">
                     <el-col :span="6">
@@ -87,7 +87,7 @@
                       <el-form-item>
                         <el-select
                           v-model="app.type"
-                          :placeholder="$t(`workflow.type`)"
+                          :placeholder="$t(`global.type`)"
                           size="small"
                           :class="{'partial-width': app.type === 'choice'}"
                           style="display: inline-block; width: 80%; margin-right: 6px;"
@@ -105,7 +105,7 @@
                         <el-select v-if="app.type==='choice'" v-model="app.value" placeholder="默认值" size="small" style="max-width: 176px;">
                           <el-option v-for="option in app.choice_option" :key="option" :label="option" :value="option"></el-option>
                         </el-select>
-                        <el-input v-if="app.type==='string'" :disabled="app.auto_generate" :placeholder="$t(`workflow.value`)" v-model="app.value" size="small"></el-input>
+                        <el-input v-if="app.type==='string'" :disabled="app.auto_generate" :placeholder="$t(`global.value`)" v-model="app.value" size="small"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-row>

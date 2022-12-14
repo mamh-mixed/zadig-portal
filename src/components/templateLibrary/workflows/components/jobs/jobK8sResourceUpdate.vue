@@ -87,7 +87,7 @@
                       <el-form-item>
                         <el-select
                           v-model="app.type"
-                          :placeholder="$t(`workflow.type`)"
+                          :placeholder="$t(`global.type`)"
                           size="small"
                           :class="{'partial-width': app.type === 'choice'}"
                           style="display: inline-block; width: 80%; margin-right: 6px;"
@@ -105,7 +105,7 @@
                         <el-select v-if="app.type==='choice'" v-model="app.value" placeholder="默认值" size="small" style="max-width: 176px;">
                           <el-option v-for="option in app.choice_option" :key="option" :label="option" :value="option"></el-option>
                         </el-select>
-                        <el-input v-if="app.type==='string'" :disabled="app.auto_generate" :placeholder="$t(`workflow.value`)" v-model="app.value" size="small"></el-input>
+                        <el-input v-if="app.type==='string'" :disabled="app.auto_generate" :placeholder="$t(`global.value`)" v-model="app.value" size="small"></el-input>
                       </el-form-item>
                     </el-col>
                   </el-row>

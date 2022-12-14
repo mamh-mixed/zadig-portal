@@ -63,7 +63,7 @@
       <el-form-item :label="$t(`workflow.grayPercentage`)" prop="spec.gray_scale">
         <el-input-number size="mini" :min="1" v-model="job.spec.gray_scale"></el-input-number>
       </el-form-item>
-      <el-form-item :label="$t(`workflow.timeout`)" prop="spec.deploy_timeout">
+      <el-form-item :label="$t(`global.timeout`)" prop="spec.deploy_timeout">
         <el-input-number size="mini" :min="1" v-model="job.spec.deploy_timeout"></el-input-number>
         <span>分钟</span>
       </el-form-item>

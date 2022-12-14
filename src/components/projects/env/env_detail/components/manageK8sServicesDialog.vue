@@ -31,8 +31,8 @@
             />
           </div>
           <el-table :data="currentVars" style="width: 100%;">
-            <el-table-column prop="key" :label="$t(`workflow.key`)"></el-table-column>
-            <el-table-column :label="$t(`workflow.value`)">
+            <el-table-column prop="key" :label="$t(`global.key`)"></el-table-column>
+            <el-table-column :label="$t(`global.value`)">
               <template slot-scope="{ row }">
                 <VariableEditor :varKey="row.key" :value.sync="row.value" />
               </template>

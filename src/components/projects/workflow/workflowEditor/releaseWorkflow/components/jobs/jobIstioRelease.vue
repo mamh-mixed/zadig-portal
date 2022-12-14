@@ -52,7 +52,7 @@
           <el-option v-for="(item,index) in namespaceList" :key="index" :label="item" :value="item"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item :label="$t(`workflow.timeout`)" prop="spec.timeout">
+      <el-form-item :label="$t(`global.timeout`)" prop="spec.timeout">
         <el-input-number style="width: 220px;" size="mini" :min="1" v-model="job.spec.timeout"></el-input-number>
         <span>分钟</span>
       </el-form-item>

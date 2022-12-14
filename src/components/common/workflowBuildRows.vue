@@ -122,7 +122,7 @@
         </template>
       </el-table-column>
       <el-table-column width="100px"
-                       :label="$t(`workflow.var`)">
+                       :label="$t(`global.var`)">
         <template slot-scope="scope">
           <el-popover placement="left"
                       width="450"
@@ -213,7 +213,7 @@
         </template>
       </el-table-column>
       <el-table-column width="100px"
-                       :label="$t(`workflow.var`)">
+                       :label="$t(`global.var`)">
         <template slot-scope="scope">
           <el-popover placement="left"
                       width="450"

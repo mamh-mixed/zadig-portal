@@ -69,7 +69,7 @@
       </el-row>
       <el-table :data="jobInfo.spec.event" size="small" class="mg-t24">
         <el-table-column label="时间" prop="time"></el-table-column>
-        <el-table-column :label="$t(`workflow.type`)" prop="event_type"></el-table-column>
+        <el-table-column :label="$t(`global.type`)" prop="event_type"></el-table-column>
         <el-table-column label="信息" prop="message"></el-table-column>
       </el-table>
     </main>

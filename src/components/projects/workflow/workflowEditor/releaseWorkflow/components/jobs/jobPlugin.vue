@@ -5,23 +5,23 @@
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
       <section class="common-parcel-block">
-        <span class="title">{{$t(`workflow.var`)}}</span>
+        <span class="title">{{$t(`global.var`)}}</span>
 
         <el-table :data="job.spec.plugin.inputs" class="mg-t8">
-          <el-table-column :label="$t(`workflow.key`)">
+          <el-table-column :label="$t(`global.key`)">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" :content="scope.row.description" placement="top-start">
                 <span>{{scope.row.name}}</span>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column :label="$t(`workflow.type`)">
+          <el-table-column :label="$t(`global.type`)">
             <template slot-scope="scope">
               <span>{{scope.row.type === 'string' ? '字符串':scope.row.type==='text'?'多行文本':'枚举'}}</span>
               <i v-show="scope.row.type  === 'choice'" class="el-icon-edit edit-icon" @click="updateParams(scope.row)"></i>
             </template>
           </el-table-column>
-          <el-table-column :label="$t(`workflow.value`)">
+          <el-table-column :label="$t(`global.value`)">
             <template slot-scope="scope">
               <el-select
                 v-model="scope.row.value"

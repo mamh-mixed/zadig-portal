@@ -36,7 +36,7 @@
           <el-switch v-model="job.spec.skip_check_run_status" :active-value="false" :inactive-value="true" active-color="#0066ff"></el-switch>
         </el-form-item>
       </el-form-item>
-      <el-form-item :label="$t(`workflow.timeout`)">
+      <el-form-item :label="$t(`global.timeout`)">
         <el-input-number size="mini" :min="1" v-model="job.spec.timeout"></el-input-number>
         <span>分钟</span>
       </el-form-item>

@@ -2,9 +2,9 @@
   <div class="global-env">
     <el-form ref="buildEnvRef" :inline="true" :model="preEnvs" class="variable-form" label-position="top" label-width="80px">
       <el-row :gutter="2" class="th">
-        <el-col :span="6" class="th-title">{{$t(`workflow.type`)}}</el-col>
-        <el-col :span="6" class="th-title">{{$t(`workflow.key`)}}</el-col>
-        <el-col :span="6" class="th-title">{{$t(`workflow.value`)}}</el-col>
+        <el-col :span="6" class="th-title">{{$t(`global.type`)}}</el-col>
+        <el-col :span="6" class="th-title">{{$t(`global.key`)}}</el-col>
+        <el-col :span="6" class="th-title">{{$t(`global.value`)}}</el-col>
       </el-row>
       <el-button
         v-if="preEnvs.params && preEnvs.params.length===0"
@@ -19,7 +19,7 @@
           <el-form-item class="display-flex">
             <el-select
               v-model="preEnvs.params[build_env_index].type"
-              :placeholder="$t(`workflow.type`)"
+              :placeholder="$t(`global.type`)"
               size="small"
               :class="{'partial-width': preEnvs.params[build_env_index].type === 'choice'}"
               style="margin-right: 6px;"
@@ -41,7 +41,7 @@
             :prop="'params.' + build_env_index + '.name'"
             :rules="{required: true, message: '键 不能为空', trigger: ['blur','change']}"
           >
-            <el-input :placeholder="$t(`workflow.key`)" v-model="preEnvs.params[build_env_index].name" size="small" @input="updateKeyParams(build_env_index)"></el-input>
+            <el-input :placeholder="$t(`global.key`)" v-model="preEnvs.params[build_env_index].name" size="small" @input="updateKeyParams(build_env_index)"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -61,7 +61,7 @@
             <el-input
               v-if="preEnvs.params[build_env_index].type==='string'"
               :disabled="preEnvs.params[build_env_index].auto_generate"
-              :placeholder="$t(`workflow.value`)"
+              :placeholder="$t(`global.value`)"
               @input="updateKeyParams(build_env_index)"
               v-model="preEnvs.params[build_env_index].value"
               size="small"
@@ -70,7 +70,7 @@
               v-if="preEnvs.params[build_env_index].type==='text'"
               type="textarea"
               :disabled="preEnvs.params[build_env_index].auto_generate"
-              :placeholder="$t(`workflow.value`)"
+              :placeholder="$t(`global.value`)"
               @input="updateKeyParams(build_env_index)"
               v-model="preEnvs.params[build_env_index].value"
               size="small"

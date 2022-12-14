@@ -28,7 +28,7 @@
                   </el-dropdown>
                   <div class="view-container">
                     <el-radio-group v-model="view" size="small">
-                      <el-radio-button label>{{$t(`workflow.all`)}}</el-radio-button>
+                      <el-radio-button label>{{$t(`global.all`)}}</el-radio-button>
                       <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
                     </el-radio-group>
                     <div v-if="isProjectAdmin" class="view-operation">

@@ -14,7 +14,7 @@
           <el-form-item class="display-flex">
             <el-select
               v-model="preEnvs.envs[build_env_index].type"
-              :placeholder="$t(`workflow.type`)"
+              :placeholder="$t(`global.type`)"
               size="small"
               :class="{'partial-width': preEnvs.envs[build_env_index].type !== 'string'}"
               style="margin-right: 6px;"
@@ -32,7 +32,7 @@
         </el-col>
         <el-col :span="4">
           <el-form-item :prop="'envs.' + build_env_index + '.key'" :rules="{required: true, message: '键 不能为空', trigger: 'blur'}">
-            <el-input :placeholder="$t(`workflow.key`)" v-model="preEnvs.envs[build_env_index].key" size="small" :disabled="preEnvs.envs[build_env_index].disabledKey"></el-input>
+            <el-input :placeholder="$t(`global.key`)" v-model="preEnvs.envs[build_env_index].key" size="small" :disabled="preEnvs.envs[build_env_index].disabledKey"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="4">
@@ -48,7 +48,7 @@
             <el-input
               v-if="preEnvs.envs[build_env_index].type==='string' && preEnvs.envs[build_env_index].command !== 'other'"
               :disabled="isJenkins&&preEnvs.envs[build_env_index].auto_generate"
-              :placeholder="$t(`workflow.value`)"
+              :placeholder="$t(`global.value`)"
               v-model="preEnvs.envs[build_env_index].value"
               size="small"
             ></el-input>
