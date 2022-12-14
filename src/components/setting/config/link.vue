@@ -27,7 +27,7 @@
           <template slot-scope="{row}">
             <el-button v-if="!row.edit" size="mini" type="primary" @click="row.edit = true" plain>{{$t(`global.edit`)}}</el-button>
             <el-button v-if="!row.edit" size="mini" type="danger"  @click="deleteExternalLink(row)" plain>{{$t(`global.delete`)}}</el-button>
-            <el-button v-if="row.edit"  size="mini" type="primary" @click="updateExternalLink(row)" plain>确认</el-button>
+            <el-button v-if="row.edit"  size="mini" type="primary" @click="updateExternalLink(row)" plain>{{$t('global.confirm')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
