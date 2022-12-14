@@ -41,7 +41,9 @@ exports.default = {
     value: 'Value',
     fileDirectory: 'File Directory',
     testName: 'Test Name',
-    codeLibrary: 'Code Library'
+    codeLibrary: 'Code Library',
+    errorMsg: 'Error Message',
+    ok: 'ok'
   },
   login: {
     username: 'Username',
@@ -471,8 +473,6 @@ exports.default = {
       istioRelease: 'Istio Release',
       istioRollback: 'Istio Rollback'
     },
-    errorMsg: 'Error Message',
-    ok: 'ok',
     imageName: 'Image Name',
     deploymentEnv: 'Deployment Environment',
     deploymentService: 'Deployment Service',

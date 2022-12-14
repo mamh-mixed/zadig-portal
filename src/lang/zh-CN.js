@@ -41,7 +41,9 @@ exports.default = {
     value: '值',
     fileDirectory: '文件目录',
     testName: '测试名称',
-    codeLibrary: '代码库'
+    codeLibrary: '代码库',
+    errorMsg: '错误信息',
+    ok: '知道了'
   },
   login: {
     username: '用户名',
@@ -471,8 +473,6 @@ exports.default = {
       istioRelease: 'Istio 发布',
       istioRollback: 'Istio 回滚'
     },
-    errorMsg: '错误信息',
-    ok: '知道了',
     imageName: '镜像名称',
     deploymentEnv: '部署环境',
     deploymentService: '部署服务',

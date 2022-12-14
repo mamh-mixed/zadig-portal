@@ -20,17 +20,17 @@
            class="deploy-item">
         <div class="error-wrapper">
           <el-alert v-if="deploy.error"
-                    title="错误信息"
+                    :title="$t(`global.errorMsg`)"
                     :description="deploy.error"
                     type="error"
-                    close-text="知道了">
+                    :close-text="$t(`global.ok`)">
 
           </el-alert>
         </div>
         <el-row :gutter="0">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconzhuangtai"></i> 部署状态
+              <i class="iconfont iconzhuangtai"></i> {{$t(`status.deployStatus`)}}
             </div>
           </el-col>
           <el-col :span="6">

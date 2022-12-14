@@ -5,10 +5,10 @@
              :body-style="{ padding: '0px', margin: '15px 0 0 0' }">
       <div class="error-wrapper">
         <el-alert v-if="testingv2.error"
-                  title="错误信息"
+                  :title="$t(`global.errorMsg`)"
                   :description="testingv2.error"
                   type="error"
-                  close-text="知道了">
+                  :close-text="$t(`global.ok`)">
         </el-alert>
       </div>
       <div slot="header"

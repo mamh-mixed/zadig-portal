@@ -20,7 +20,7 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="jobInfo.error" :title="$t(`workflow.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
+          <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
         </div>
         <el-row :gutter="0" class="item">
           <el-col :span="4">

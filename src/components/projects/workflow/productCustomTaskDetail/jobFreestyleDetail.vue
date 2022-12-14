@@ -20,7 +20,7 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="commonInfo.error" :title="$t(`workflow.errorMsg`)" :description="commonInfo.error" type="error" :close-text="$t(`workflow.ok`)"></el-alert>
+          <el-alert v-if="commonInfo.error" :title="$t(`global.errorMsg`)" :description="commonInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
         </div>
         <el-row class="item" :gutter="0" v-for="(build,index) in commonInfo.spec.repos" :key="index">
           <el-col :span="4">

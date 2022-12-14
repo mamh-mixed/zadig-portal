@@ -3,10 +3,10 @@
     <div class="primary-title not-first-child">扩展</div>
     <el-alert
       v-if="extensionStage.error"
-      title="错误信息"
+      :title="$t(`global.errorMsg`)"
       :description="extensionStage.error"
       type="error"
-      close-text="知道了"
+      :close-text="$t(`global.ok`)"
       style="margin: 8px 0;"
     ></el-alert>
     <el-row :gutter="0" class="extension-content">

@@ -2,7 +2,7 @@
   <div class="task-detail-scanner">
     <el-card v-if="!$utils.isEmpty(task)" class="box-card task-process" :body-style="{ padding: '0px', margin: '15px 0 0 0' }">
       <div class="error-wrapper">
-        <el-alert v-if="task.error" title="错误信息" :description="task.error" type="error" close-text="知道了"></el-alert>
+        <el-alert v-if="task.error" :title="$t(`global.errorMsg`)" :description="task.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
       </div>
       <div slot="header" class="clearfix subtask-header">
         <span>代码扫描</span>

@@ -7,7 +7,7 @@
         </div>
         <van-row :gutter="0">
           <van-col :span="6">
-            <div class="item-title">部署状态</div>
+            <div class="item-title">{{$t(`status.deployStatus`)}}</div>
           </van-col>
           <van-col :span="6">
             <div
