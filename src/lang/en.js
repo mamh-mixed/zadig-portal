@@ -851,18 +851,18 @@ exports.default = {
   testing: {
     title: 'Test',
     noTestsErrorMessage: 'There are no test cases, please create one.',
-    searchTests: 'search tests',
-    caseCount: 'Case count',
-    executionCount: 'Execution count',
-    averageExecutionTime: 'Average duration',
-    successRate: 'Success rate',
+    searchTests: 'Search tests',
+    caseCount: 'Case Count',
+    executionCount: 'Execution Count',
+    averageExecutionTime: 'Average Duration',
+    successRate: 'Success Fate',
     creationSuccess: 'Task created.',
     restartSuccess: 'Task restarted.',
     cancellationSuccess: 'Task cancelled.',
     deletionConfirmation: 'Are you sure you want to delete {name}?',
     deletionSuccess: 'Test case deleted.',
     triggers: {
-      workflowTriggers: 'workflow trigger',
+      workflowTriggers: 'Workflow Triggers',
       selectWorkflowTriggers: 'Create workflow triggers',
       selectWorkflowTriggersII: 'Please select workflow triggers, you can type in to search for workflows',
       creationSuccess: 'Workflow trigger created.',
@@ -904,12 +904,12 @@ exports.default = {
         creator: 'Creator',
         canceller: 'Canceller',
         duration: 'Duration',
-        retry: 'retry',
-        cancel: 'cancel'
+        retry: 'Retry',
+        cancel: 'Cancel'
       },
       taskInfo: {
         head: 'Test Tasks',
-        emptyTask: 'empty',
+        emptyTask: 'Empty',
         executionStatus: 'Status',
         report: 'Test Reports',
         view: 'View',
@@ -954,10 +954,10 @@ exports.default = {
       title: 'History'
     },
     status: {
-      success: 'success',
-      fail: 'fail',
-      unstart: 'unstart',
-      error: 'error'
+      success: 'Success',
+      fail: 'Fail',
+      unstart: 'Unstart',
+      error: 'Error'
     },
     display: {
       failReason: 'Fail Reason:',
