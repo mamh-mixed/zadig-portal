@@ -23,7 +23,7 @@
             </el-checkbox-group>
           </div>
           <div class="bottom">
-            <el-button type="primary" plain @click="submit" size="mini" style="width: 100%;">确认</el-button>
+            <el-button type="primary" plain @click="submit" size="mini" style="width: 100%;">{{$t('global.confirm')}}</el-button>
           </div>
         </div>
       </div>

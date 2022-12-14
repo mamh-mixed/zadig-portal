@@ -204,7 +204,7 @@
                     <el-table-column width="150">
                       <template>
                         <span style="display: inline-block; margin-bottom: 15px;">
-                          <el-button @click="addRenderKey()" type="text">确认</el-button>
+                          <el-button @click="addRenderKey()" type="text">{{$t('global.confirm')}}</el-button>
                           <el-button @click="addKeyInputVisable=false" type="text">{{$t(`global.cancel`)}}</el-button>
                         </span>
                       </template>

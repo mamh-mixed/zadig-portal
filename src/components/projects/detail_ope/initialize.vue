@@ -22,7 +22,7 @@
         </div>
       </article>
       <footer>
-        <el-button type="primary" size="small" icon="confirm-icon iconfont iconvery-confirm" @click="createEnvAndWorkflow" round>确认</el-button>
+        <el-button type="primary" size="small" icon="confirm-icon iconfont iconvery-confirm" @click="createEnvAndWorkflow" round>{{$t('global.confirm')}}</el-button>
       </footer>
     </section>
     <InitEnvDialog
