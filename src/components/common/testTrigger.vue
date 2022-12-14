@@ -2,7 +2,7 @@
   <div class="test-trigger">
     <!-- start of edit webhook dialog -->
     <el-dialog width="40%"
-               :title="webhookEditMode?'{{$t(`workflow.editTrigger`)}}':'{{$t(`workflow.addTrigger`)}}'"
+               :title="webhookEditMode?$t(`workflow.editTrigger`):$t(`workflow.addTrigger`)"
                :visible.sync="showWebhookDialog"
                :close-on-click-modal="false"
                custom-class="add-trigger-dialog"

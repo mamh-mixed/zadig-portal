@@ -2,7 +2,7 @@
   <div class="test-advanced-config-container">
     <el-form class="secondary-form" :model="testConfig" ref="advancedRef" label-width="120px" label-position="left">
       <div class="primary-title">
-        测试结果导出
+        {{$t(`testing.details.advancedSettings.exportReport.title`)}}
         <el-button
           v-if="testConfig.artifact_paths.length===0"
           @click="add"
@@ -14,15 +14,15 @@
       </div>
       <el-form-item class="label-icon" v-if="isShowTestReport || testConfig.artifact_paths.length>0">
         <template slot="label">
-          <span>文件导出路径</span>
+          <span>{{$t(`testing.details.advancedSettings.exportReport.filePath`)}}</span>
           <el-tooltip effect="dark" placement="top">
-            <div slot="content">设置一个或者多个文件目录，测试完成后可以在工作流任务详情页面进行下载，通常用于测试日志等文件的导出</div>
+            <div slot="content">{{$t(`testing.details.advancedSettings.exportReport.filePathExplanation`)}}</div>
             <i class="el-icon-question"></i>
           </el-tooltip>
         </template>
         <template>
           <div v-for="(path,index) in testConfig.artifact_paths" :key="index">
-            <el-input size="small" v-model="testConfig.artifact_paths[index]" placeholder="文件导出路径" class="export-input">
+            <el-input size="small" v-model="testConfig.artifact_paths[index]" :placeholder="$t(`testing.details.advancedSettings.exportReport.filePath`)" class="export-input">
               <template slot="prepend">$WORKSPACE/</template>
             </el-input>
             <el-button
@@ -53,10 +53,10 @@
         :isCreate="!isEdit"
         @validateFailed="$emit('validateFailed')" />
 
-      <div class="primary-title not-first-child">触发器与通知</div>
+      <div class="primary-title not-first-child">{{$t(`testing.details.advancedSettings.hooksAndNotification.title`)}}</div>
       <div class="trigger">
         <el-form-item>
-          <template slot="label">代码变更触发</template>
+          <template slot="label">{{$t(`testing.details.advancedSettings.hooksAndNotification.webhookTitle`)}}</template>
           <el-button @click="addTrigger" type="primary" size="small" plain>{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <TestTrigger
@@ -69,7 +69,7 @@
       </div>
       <div class="timer">
         <el-form-item>
-          <template slot="label">定时器触发</template>
+          <template slot="label">{{$t(`testing.details.advancedSettings.hooksAndNotification.timerTitle`)}}</template>
           <el-button @click="addTimer" type="primary" size="small" plain>{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <TestTimer
@@ -84,7 +84,7 @@
 
       <div class="notify">
         <el-form-item>
-          <template slot="label">通知配置</template>
+          <template slot="label">{{$t(`testing.details.advancedSettings.hooksAndNotification.notificationTitle`)}}</template>
           <el-button @click="addNotify" type="primary" size="small" plain >{{$t(`global.add`)}}</el-button>
         </el-form-item>
         <Notify
