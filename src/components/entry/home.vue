@@ -106,6 +106,7 @@ export default {
   },
   created () {
     this.$store.dispatch('GETUSERINFO')
+    this.$store.dispatch('getPreferenceSetting')
     this.$store.dispatch('getProjectList')
     this.$store.dispatch('getGlobalPermission')
     this.getAnnouncements()
@@ -130,7 +131,6 @@ body {
   height: 100%;
   overflow: hidden;
   overflow-y: auto;
-  background-color: #fff;
 
   .main-home-container {
     width: 100vw;
