@@ -180,19 +180,19 @@ export default {
         this.testCases.forEach(testCase => {
           const blocks = []
           if (testCase.failure && typeof testCase.failure === 'string') {
-            blocks.push(`${this.$t(`testing.display.failReason`)}:\n${testCase.failure}`)
+            blocks.push(`${this.$t(`testing.display.failReason`)}\n${testCase.failure}`)
           }
           if (testCase.failure && typeof testCase.failure === 'object') {
-            blocks.push(`${this.$t(`testing.display.failReason`)}:\n${testCase.failure.message}`)
-            blocks.push(`${this.$t(`testing.display.failMessage`)}:\n${testCase.failure.text}`)
+            blocks.push(`${this.$t(`testing.display.failMessage`)}\n${testCase.failure.message}`)
+            blocks.push(`${this.$t(`testing.display.failDetail`)}\n${testCase.failure.text}`)
           }
           if (testCase.system_out) {
-            blocks.push(`${this.$t(`testing.display.standardOut`)}:\n${testCase.system_out}`)
+            blocks.push(`${this.$t(`testing.display.standardOut`)}\n${testCase.system_out}`)
           }
           if (testCase.error) {
-            blocks.push(`${this.$t(`testing.display.errorMessage`)}:\n${testCase.error.message}`)
-            blocks.push(`${this.$t(`testing.display.errorDetail`)}:\n${testCase.error.text}`)
-            blocks.push(`${this.$t(`testing.display.errorType`)}:\n${testCase.error.type}`)
+            blocks.push(`${this.$t(`testing.display.errorMessage`)}\n${testCase.error.message}`)
+            blocks.push(`${this.$t(`testing.display.errorDetail`)}\n${testCase.error.text}`)
+            blocks.push(`${this.$t(`testing.display.errorType`)}\n${testCase.error.type}`)
           }
           testCase.mergedOutput = blocks.join('\n')
         })

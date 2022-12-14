@@ -54,54 +54,7 @@ export default {
             }
             return '-'
           }
-        },
-        series: [
-          {
-            name: '测试结果',
-            type: 'pie',
-            radius: ['40%', '50%'],
-            center: ['20%', '35%'],
-            avoidLabelOverlap: false,
-            stillShowZeroSum: false,
-            label: {
-              normal: {
-                show: true,
-                position: 'center',
-                color: '#ccc',
-                textStyle: {
-                  fontSize: '30',
-                  fontWeight: 'bold'
-                },
-                formatter: (name) => {
-                  const data = this.option.series[0].data
-                  if (name && data.length && data[0]) {
-                    let total = 0
-                    for (let i = 0, l = data.length; i < l; i++) {
-                      total += data[i].value
-                    }
-                    return `${total}`
-                  }
-                  return '-'
-                }
-              },
-              emphasis: {
-                show: false,
-                textStyle: {
-                  fontSize: '30',
-                  fontWeight: 'bold'
-                }
-              }
-            },
-            labelLine: {
-              normal: {
-                show: false
-              }
-            },
-            data: [
-
-            ]
-          }
-        ]
+        }
       }
     }
   },
@@ -109,7 +62,55 @@ export default {
 
   },
   computed: {
+    series () {
+      return [
+        {
+          name: this.$t(`testing.taskDetails.cases.result`),
+          type: 'pie',
+          radius: ['40%', '50%'],
+          center: ['20%', '35%'],
+          avoidLabelOverlap: false,
+          stillShowZeroSum: false,
+          label: {
+            normal: {
+              show: true,
+              position: 'center',
+              color: '#ccc',
+              textStyle: {
+                fontSize: '30',
+                fontWeight: 'bold'
+              },
+              formatter: (name) => {
+                const data = this.option.series[0].data
+                if (name && data.length && data[0]) {
+                  let total = 0
+                  for (let i = 0, l = data.length; i < l; i++) {
+                    total += data[i].value
+                  }
+                  return `${total}`
+                }
+                return '-'
+              }
+            },
+            emphasis: {
+              show: false,
+              textStyle: {
+                fontSize: '30',
+                fontWeight: 'bold'
+              }
+            }
+          },
+          labelLine: {
+            normal: {
+              show: false
+            }
+          },
+          data: [
 
+          ]
+        }
+      ]
+    }
   },
   components: {
     'v-chart': ECharts
@@ -150,10 +151,10 @@ export default {
     total: {
       handler (val, old_val) {
         this.option.series[0].data = [
-          { name: '成功', value: this.success },
-          { name: '失败', value: this.failure },
-          { name: '错误', value: this.error },
-          { name: '未执行', value: this.skip }
+          { name: this.$t(`testing.status.success`), value: this.success },
+          { name: this.$t(`testing.status.fail`), value: this.failure },
+          { name: this.$t(`testing.status.error`), value: this.error },
+          { name: this.$t(`testing.status.unstart`), value: this.skip }
         ]
       }
     }

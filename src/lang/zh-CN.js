@@ -849,6 +849,7 @@ exports.default = {
     }
   },
   testing: {
+    title: '测试',
     noTestsErrorMessage: '暂无可展示的测试用例，请手动新建测试',
     searchTests: '搜索测试',
     caseCount: '用例数量',
@@ -856,6 +857,8 @@ exports.default = {
     averageExecutionTime: '平均执行时间',
     successRate: '成功率',
     creationSuccess: '任务启动成功',
+    restartSuccess: '任务已重新启动',
+    cancellationSuccess: '任务取消成功',
     deletionConfirmation: '确定要删除 {name} 吗？',
     deletionSuccess: '删除成功',
     triggers: {
@@ -880,7 +883,54 @@ exports.default = {
         HTMLReportFileTooltip: 'HTML 测试报告文件将包含在工作流发送的 IM 通知内容中'
       },
       advancedSettings: {
-        title: '高级配置'
+        title: '高级配置',
+        exportReport: {
+          title: '测试结果导出',
+          filePath: '文件导出路径',
+          filePathExplanation: '设置一个或者多个文件目录，测试完成后可以在工作流任务详情页面进行下载，通常用于测试日志等文件的导出'
+        },
+        hooksAndNotification: {
+          title: '触发器与通知',
+          webhookTitle: '代码变更触发',
+          timerTitle: '定时器触发',
+          notificationTitle: '通知配置'
+        }
+      }
+    },
+    taskDetails: {
+      exportArtifact: 'Artifact 文件导出',
+      basicInformation: {
+        title: '基本信息',
+        creator: '创建者',
+        canceller: '取消者',
+        duration: '持续时间',
+        retry: '失败重试',
+        cancel: '取消任务'
+      },
+      taskInfo: {
+        head: '测试任务',
+        title: '自动化测试',
+        emptyTask: '无',
+        executionStatus: '运行状态',
+        report: '测试报告',
+        view: '查看',
+        exportedFile: '文件导出',
+        download: '下载',
+        status: '任务状态',
+        errorMessage: '错误信息',
+        acknowledged: '知道了'
+      },
+      report: {
+        overview: '测试报告概览',
+        caseDetails: '详细用例'
+      },
+      cases: {
+        description: '测试用例描述',
+        result: '测试结果',
+        executionTime: '运行时间(s)'
+      },
+      logs: {
+        fetchErrorMessage: 'test日志获取失败'
       }
     },
     validation: {
@@ -919,5 +969,9 @@ exports.default = {
       errorDetail: '错误详情:',
       errorType: '错误类型:'
     }
+  },
+  repository: {
+    repository: '代码库',
+    info: '代码信息'
   }
 }
