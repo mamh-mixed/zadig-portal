@@ -39,7 +39,7 @@
         </span>
         <span class="ns-desc" v-show="nsIsExisted">Zadig 中定义的服务将覆盖所选命名空间中的同名服务，请谨慎操作！</span>
       </el-form-item>
-      <el-form-item :label="$t(`workflow.dockerRegistry`)">
+      <el-form-item :label="$t(`status.imageRepo`)">
         <el-select
           class="select"
           filterable

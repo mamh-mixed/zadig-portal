@@ -17,7 +17,7 @@
       </el-form-item>
       <el-form-item
         v-if="job.spec.first"
-        :label="$t(`workflow.dockerRegistry`)"
+        :label="$t(`status.imageRepo`)"
         prop="spec.registry_id"
         :rules="{required: true, message: '镜像仓库不能为空', trigger: ['blur','change']}"
       >

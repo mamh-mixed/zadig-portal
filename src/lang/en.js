@@ -502,7 +502,6 @@ exports.default = {
     varConfig: 'Var Config',
     branchConfig: 'Branch Config',
     storageConfig: 'Storage Config',
-    dockerRegistry: 'Docker Registry',
     sensitiveInformation: 'Sensitive Information',
     containerStatusDetection: 'Container Status Detection',
     scanConfig: 'Scan Config',

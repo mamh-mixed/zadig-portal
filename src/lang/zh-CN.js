@@ -502,7 +502,6 @@ exports.default = {
     varConfig: '变量配置',
     branchConfig: '分支配置',
     storageConfig: '共享存储配置',
-    dockerRegistry: '镜像仓库',
     sensitiveInformation: '敏感信息',
     containerStatusDetection: '容器状态检测',
     scanConfig: '扫描配置',

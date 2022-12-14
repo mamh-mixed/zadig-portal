@@ -17,7 +17,7 @@
       </el-form-item>
       <el-form-item
         v-if="job.spec.first"
-        :label="$t(`workflow.dockerRegistry`)"
+        :label="$t(`status.imageRepo`)"
         prop="spec.docker_registry_id"
       >
         <el-select v-model="job.spec.docker_registry_id" filterable placeholder="请选择" size="small" style="width: 220px;">

@@ -16,7 +16,7 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item :label="$t(`workflow.dockerRegistry`)">
+    <el-form-item :label="$t(`status.imageRepo`)">
       <el-select v-model="pickedRegistry" filterable clearable @change="changeRegistry" size="medium" class="full-width">
         <el-option v-for="(reg,index) of allRegistry" :key="index" :label="reg.namespace ? `${reg.reg_addr}/${reg.namespace}` : reg.reg_addr" :value="reg.id"></el-option>
       </el-select>

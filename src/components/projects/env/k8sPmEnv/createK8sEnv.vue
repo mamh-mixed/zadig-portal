@@ -84,7 +84,7 @@
           </span>
           <span class="ns-desc" v-show="nsIsExisted">Zadig 中定义的服务将覆盖所选命名空间中的同名服务，请谨慎操作！</span>
         </el-form-item>
-        <el-form-item :label="$t(`workflow.dockerRegistry`)" class="secondary-label">
+        <el-form-item :label="$t(`status.imageRepo`)" class="secondary-label">
           <el-select class="select" filterable v-model.trim="projectConfig.registry_id" placeholder="请选择镜像仓库" size="small" @change="getImages">
             <el-option
               v-for="registry in imageRegistry"
