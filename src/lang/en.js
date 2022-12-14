@@ -336,6 +336,7 @@ exports.default = {
       configsTab: 'Config Management',
       jenkinsTab: 'Jenkins',
       sonarTab: 'Sonar',
+      approvalSystemTab: 'Approval System',
       otherSystemTab: 'Other System',
       gitProviders: {
         notIntegrated: 'The git provider has not yet been integrated, please integrate the git provider first and then continue.',

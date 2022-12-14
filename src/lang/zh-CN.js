@@ -336,6 +336,7 @@ exports.default = {
       configsTab: '配置管理',
       jenkinsTab: 'Jenkins 集成',
       sonarTab: 'Sonar 集成',
+      approvalSystemTab: '审批系统',
       otherSystemTab: '其他系统',
       gitProviders: {
         notIntegrated: '检测到代码源尚未集成请先集成代码源后再进行相关操作',
