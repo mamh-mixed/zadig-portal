@@ -21,18 +21,18 @@
     </header>
     <main>
       <div class="error-wrapper">
-        <el-alert v-if="jobInfo.error" title="错误信息" :description="jobInfo.error" type="error" close-text="知道了"></el-alert>
+        <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
       </div>
       <section>
         <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.distribute_target" :key="index">
           <el-col :span="4">
-            <div class="item-title">服务名称</div>
+            <div class="item-title">{{$t(`global.serviceName`)}}</div>
           </el-col>
           <el-col :span="8">
             <span class="item-desc">{{build.service_name}}({{build.service_module}})</span>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">镜像信息</div>
+            <div class="item-title">{{$t(`status.imgInfo`)}}</div>
           </el-col>
           <el-col :span="6">
             <el-tooltip effect="dark" :content="build.target_image" placement="top">

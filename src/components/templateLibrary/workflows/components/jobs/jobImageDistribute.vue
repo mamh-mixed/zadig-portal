@@ -1,7 +1,7 @@
 <template>
   <div class="job-deploy">
     <el-form label-width="120px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24">
-      <el-form-item label="任务名称" prop="name">
+      <el-form-item :label="$t(`workflow.jobName`)" prop="name">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
       <el-form-item label="服务组件">
@@ -91,7 +91,7 @@ export default {
     return {
       validateJobName,
       validObj: new ValidateSubmit(),
-      formLabelWidth: '90px',
+      formLabelWidth: '120px',
       dockerList: [],
       originServiceAndBuilds: [],
       advanced_setting_modified: false

@@ -17,7 +17,7 @@
             </el-form-item>
           </slot>
           <slot v-if="!useTemplate" name="serviceName">
-            <el-form-item label="服务选择">
+            <el-form-item :label="$t(`workflow.selectService`)">
               <el-select v-model="buildConfig.targets" multiple size="small" value-key="key" filterable>
                 <el-option
                   v-for="(service,index) in serviceTargets"

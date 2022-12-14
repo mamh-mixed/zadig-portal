@@ -30,11 +30,11 @@
       <div class="right">
         <CusTags :values="stages" class="item" />
         <span class="item">
-          <span class="item left">修改人</span>
+          <span class="item left">{{$t(`workflow.updateBy`)}}</span>
           {{ workflow.update_by }}
         </span>
         <span class="item">
-          <span class="item left">最后修改时间</span>
+          <span class="item left">{{$t(`workflow.lastModify`)}}</span>
           {{ $utils.convertTimestamp(workflow.update_time) }}
         </span>
       </div>
@@ -43,7 +43,7 @@
     <el-card class="box-card full" :body-style="{ padding: '0px', margin: '15px 0 30px 0' }">
       <div slot="header" class="block-title">
         <span>
-          <i class="iconfont iconhistory title-icon"></i>历史任务
+          <i class="iconfont iconhistory title-icon"></i>{{$t(`workflow.historyTask`)}}
         </span>
         <FilterStatus
           ref="filterStatusRef"

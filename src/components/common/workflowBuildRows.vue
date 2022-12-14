@@ -4,11 +4,11 @@
               empty-text="无"
               class="service-deploy-table">
       <el-table-column prop="name"
-                       label="服务"
+                       :label="$t(`project.services`)"
                        width="100px"
                        ></el-table-column>
 
-      <el-table-column label="代码库"  >
+      <el-table-column :label="$t(`global.codeLibrary`)"  >
         <template slot-scope="scope"  v-if="scope.row.build" >
           <el-row v-for="build of scope.row.build.repos"
                   class="build-row"
@@ -122,7 +122,7 @@
         </template>
       </el-table-column>
       <el-table-column width="100px"
-                       label="变量">
+                       :label="$t(`global.var`)">
         <template slot-scope="scope">
           <el-popover placement="left"
                       width="450"
@@ -172,7 +172,7 @@
               empty-text="无"
               class="service-deploy-table">
       <el-table-column prop="name"
-                       label="服务"
+                       :label="$t(`project.services`)"
                        width="100px"
                        >
         <div slot-scope="scope">
@@ -213,7 +213,7 @@
         </template>
       </el-table-column>
       <el-table-column width="100px"
-                       label="变量">
+                       :label="$t(`global.var`)">
         <template slot-scope="scope">
           <el-popover placement="left"
                       width="450"

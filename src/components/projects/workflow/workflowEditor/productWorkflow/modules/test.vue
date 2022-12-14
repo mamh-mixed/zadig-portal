@@ -10,9 +10,9 @@
       <template v-if="testEnabled">
         <el-table :data="testConfigs">
           <el-table-column prop="name"
-                           label="测试名称"></el-table-column>
+                           :label="$t(`global.testName`)"></el-table-column>
           <el-table-column prop="product_name"
-                           label="项目名称"></el-table-column>
+                           :label="$t(`workflow.projectName`)"></el-table-column>
           <el-table-column prop="desc"
                            :label="$t('global.desc')"></el-table-column>
           <el-table-column label="变量">
@@ -68,7 +68,7 @@
           <el-button @click="addTestConfig"
                      type="default"
                      size="small"
-                     icon="el-icon-plus">添加测试</el-button>
+                     icon="el-icon-plus">{{$t(`workflow.addTest`)}}</el-button>
         </div>
 
       </template>

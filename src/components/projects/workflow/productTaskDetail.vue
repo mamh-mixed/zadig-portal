@@ -18,8 +18,8 @@
             </el-form-item>
             <el-form-item label="创建者">{{ taskDetail.task_creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
-            <el-form-item label="环境">{{ workflow.namespace }}</el-form-item>
-            <el-form-item label="持续时间">
+            <el-form-item :label="$t(`project.environments`)">{{ workflow.namespace }}</el-form-item>
+            <el-form-item :label="$t(`workflow.duration`)">
               {{ taskDetail.interval }}
               <el-tooltip v-if="taskDetail.intervalSec<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
                 <i class="el-icon-warning" style="color: red;"></i>
@@ -57,7 +57,7 @@
           <div class="primary-title not-first-child">构建信息</div>
           <div class="build-summary" v-if="buildSummary.length > 0">
             <el-table :data="buildSummary" style="width: 90%;" class="blank-background-header">
-              <el-table-column label="服务" min-width="160">
+              <el-table-column :label="$t(`project.services`)" min-width="160">
                 <template slot-scope="scope">{{scope.row.service_name}}</template>
               </el-table-column>
               <el-table-column label="代码" min-width="160">
@@ -94,7 +94,7 @@
                   <span v-else>暂无 Issue</span>
                 </template>
               </el-table-column>
-              <el-table-column label="变量" width="100">
+              <el-table-column :label="$t(`global.var`)" width="100">
                 <template slot-scope="{ row }">
                   <el-popover placement="left" width="400" trigger="hover">
                     <el-table :data="row.envs" class="blank-background-header">
@@ -162,7 +162,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="_target" label="服务" min-width="200px">
+          <el-table-column prop="_target" :label="$t(`project.services`)" min-width="200px">
             <template slot-scope="scope">
               <span>{{$utils.showServiceName(scope.row._target,scope.row.buildv2SubTask.service)}}</span>
             </template>
@@ -233,7 +233,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="_target" label="服务" min-width="200px">
+          <el-table-column prop="_target" :label="$t(`project.services`)" min-width="200px">
             <template slot-scope="scope">
               <span>{{$utils.showServiceName(scope.row._target,scope.row.deploySubTask.service_name)}}</span>
             </template>
@@ -269,7 +269,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="_target" label="服务" min-width="200px">
+          <el-table-column prop="_target" :label="$t(`project.services`)" min-width="200px">
             <template slot-scope="scope">
               <span>{{$utils.showServiceName(scope.row._target)}}</span>
             </template>
@@ -289,7 +289,6 @@
       </template>
       <div v-if="testArray.length > 0" class="primary-title not-first-child">产品测试</div>
       <template v-if="testArray.length > 0">
-        <span class="secondary-title">自动化测试</span>
         <el-table
           :data="testArray"
           row-key="_target"
@@ -372,7 +371,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column prop="_target" label="服务" min-width="200px">
+          <el-table-column prop="_target" :label="$t(`project.services`)" min-width="200px">
             <template slot-scope="scope">
               <span>{{$utils.showServiceName(scope.row._target)}}</span>
             </template>

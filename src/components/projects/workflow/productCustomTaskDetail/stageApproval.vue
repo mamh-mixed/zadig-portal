@@ -2,10 +2,10 @@
   <div class="stage-approval-detail">
     <header class="mg-b8">
       <el-col :span="2" class>
-        <span class="type">{{approvalInfo.approval.type==='lark'?'飞书审批':'人工审批'}}</span>
+        <span class="type">{{approvalInfo.approval.type==='lark'?$t(`approvalType.feishu`):$t(`approvalType.manualApproval`)}}</span>
       </el-col>
       <el-col :span="6" class="text">
-        <span>开始时间：</span>
+        <span>{{$t(`global.startTime`)}}：</span>
         <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
       </el-col>
       <el-col :span="6" class="text" v-if="!isDisabled">
@@ -13,7 +13,7 @@
         <span>后审核超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>
-        <span>完成时间：</span>
+        <span>{{$t(`global.endTime`)}}：</span>
         <span>{{$utils.convertTimestamp(approvalInfo.end_time)}}</span>
         <span
           :class="[`status-${$utils.taskElTagType(approvalInfo.approval.reject_or_approve)}`]"
@@ -31,7 +31,7 @@
         size="small"
         class="mg-t24"
       >
-        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" label="审核人"></el-table-column>
+        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" :label="$t(`workflow.reviewer`)"></el-table-column>
         <el-table-column prop="reject_or_approve" label="审核结果">
           <template slot-scope="scope">
             <span

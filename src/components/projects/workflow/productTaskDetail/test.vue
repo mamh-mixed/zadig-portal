@@ -5,10 +5,10 @@
              :body-style="{ padding: '0px', margin: '15px 0 0 0' }">
       <div class="error-wrapper">
         <el-alert v-if="testingv2.error"
-                  title="错误信息"
+                  :title="$t(`global.errorMsg`)"
                   :description="testingv2.error"
                   type="error"
-                  close-text="知道了">
+                  :close-text="$t(`global.ok`)">
         </el-alert>
       </div>
       <div slot="header"
@@ -41,7 +41,7 @@
           <el-col v-if="testingv2.status!=='running'"
                   :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconshijian"></i> 持续时间
+              <i class="iconfont iconshijian"></i> {{$t(`workflow.duration`)}}
             </div>
           </el-col>
           <el-col v-if="testingv2.status!=='running'"
@@ -55,7 +55,7 @@
                 :key="index">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont icondaima"></i> 代码库({{build.source}})
+              <i class="iconfont icondaima"></i> {{$t(`status.repoName`)}}({{build.source}})
             </div>
           </el-col>
           <el-col :span="6">
@@ -64,7 +64,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconinfo"></i> 代码信息
+              <i class="iconfont iconinfo"></i> {{$t(`workflow.codeInfo`)}}
             </div>
           </el-col>
           <el-col :span="6">

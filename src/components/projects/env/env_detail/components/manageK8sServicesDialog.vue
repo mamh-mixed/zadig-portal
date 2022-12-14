@@ -4,7 +4,7 @@
     <div class="manage-services-container">
       <el-form ref="serviceFormRef" class="primary-form" :model="updateServices" label-width="100px" label-position="left">
         <el-form-item
-          label="服务选择"
+          :label="$t(`workflow.selectService`)"
           props="service_names"
           :rules="{ required: true, type: 'array', message: '请选择服务名称', trigger: ['blur', 'change']}"
         >
@@ -31,8 +31,8 @@
             />
           </div>
           <el-table :data="currentVars" style="width: 100%;">
-            <el-table-column prop="key" label="键"></el-table-column>
-            <el-table-column label="值">
+            <el-table-column prop="key" :label="$t(`global.key`)"></el-table-column>
+            <el-table-column :label="$t(`global.value`)">
               <template slot-scope="{ row }">
                 <VariableEditor :varKey="row.key" :value.sync="row.value" />
               </template>

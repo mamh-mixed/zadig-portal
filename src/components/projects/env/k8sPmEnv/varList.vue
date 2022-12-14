@@ -1,8 +1,8 @@
 <template>
   <div class="variable-list">
     <el-table :data="variables" style="width: 90%; max-width: 1000px;">
-      <el-table-column label="键" prop="key" width="270px"></el-table-column>
-      <el-table-column label="值">
+      <el-table-column :label="$t(`global.key`)" prop="key" width="270px"></el-table-column>
+      <el-table-column :label="$t(`global.value`)">
         <template slot-scope="{ row }">
           <VariableEditor style="margin-right: 10px;" :varKey="row.key" :value.sync="row.value" :diabled="rollbackMode" />
         </template>

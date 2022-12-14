@@ -47,7 +47,7 @@
         </van-col>
         <van-col span="12">
           <div class="mobile-block">
-            <h2 class="mobile-block-title">持续时间</h2>
+            <h2 class="mobile-block-title">{{$t(`workflow.duration`)}}</h2>
             <div class="mobile-block-desc"> {{ taskDetail.interval }}</div>
           </div>
         </van-col>
@@ -115,7 +115,6 @@
     </template>
     <template v-if="testArray.length > 0">
       <div class="mobile-block">
-        <h2 class="mobile-block-title">自动化测试</h2>
       </div>
       <van-collapse v-model="testActive">
         <van-collapse-item v-for="(item,index) in testArray"

@@ -99,13 +99,13 @@
     </div>
 
     <el-table :data="jenkinsBuild" v-if="jenkinsBuild.length > 0" empty-text="无" class="service-deploy-table">
-      <el-table-column prop="name" label="服务" width="100px">
+      <el-table-column prop="name" :label="$t(`project.services`)" width="100px">
         <div slot-scope="scope">{{$utils.showServiceName(scope.row.name)}}</div>
       </el-table-column>
       <el-table-column label="Jenkins Job Name">
         <div slot-scope="scope">{{scope.row.jenkins_build_args.job_name}}</div>
       </el-table-column>
-      <el-table-column width="100px" label="变量">
+      <el-table-column width="100px" :label="$t(`global.var`)">
         <template slot-scope="scope">
           <el-popover placement="left" width="450" trigger="click">
             <!-- jenkins构建 -->

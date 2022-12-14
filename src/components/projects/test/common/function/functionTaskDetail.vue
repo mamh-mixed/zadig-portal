@@ -36,7 +36,7 @@
                         label="取消者">
             {{ taskDetail.task_revoker }}
           </el-form-item>
-          <el-form-item label="持续时间">
+          <el-form-item :label="$t(`workflow.duration`)">
             {{ taskDetail.interval }}
           </el-form-item>
           <el-form-item v-if="showOperation()"
@@ -59,7 +59,6 @@
       测试任务
     </div>
     <template v-if="testArray.length > 0">
-      <span class="section-title">自动化测试</span>
       <el-table :data="testArray"
                 row-key="_target"
                 :expand-row-keys="expandedTests"

@@ -14,7 +14,7 @@
             </el-form-item>
             <el-form-item prop="description">
               <el-tooltip effect="dark" :content="payload.description" placement="top" :disabled="!payload.description">
-                <el-input v-model="payload.description" placeholder="描述信息" size="small" :disabled="!editDesc" class="name-input"></el-input>
+                <el-input v-model="payload.description" :placeholder="$t(`workflow.desc`)" size="small" :disabled="!editDesc" class="name-input"></el-input>
               </el-tooltip>
               <span @click="editDesc = editDesc ? false : true" class="mg-r8">
                 <i :class="[editDesc ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
@@ -66,7 +66,7 @@
               </div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ {{$t(`workflow.stage`)}}</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -121,7 +121,7 @@
                 plain
                 :disabled="Object.keys(service).length === 0"
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
-              >+ 添加</el-button>
+              >+ {{$t(`global.add`)}}</el-button>
             </div>
             <JobPlugin
               v-if="job.type === jobType.plugin"
@@ -213,7 +213,7 @@
       </section>
     </div>
     <div class="right">
-      <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
+      <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{$t(`workflow.baseType.${item.label}`)}}</div>
     </div>
     <el-drawer
       :visible.sync="isShowDrawer"
@@ -227,11 +227,11 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || '取消'}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || $t(`global.cancel`)}}</el-button>
         </div>
         <div v-else>
-          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:$t(`global.confirm`)}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText?drawerCancelText:$t(`global.cancel`)}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
@@ -241,7 +241,7 @@
         <Env :preEnvs="payload" ref="env" />
       </div>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
+    <el-dialog :title="stageOperateType === 'add' ? $t(`workflow.addStage`): $t(`workflow.editStage`)" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate
         ref="stageOperate"
         :stageInfo="stage"
@@ -400,7 +400,7 @@ export default {
     curJobType () {
       if (this.job) {
         const curType = jobTypeList.find(item => item.type === this.job.type)
-        return curType ? curType.label : this.job.spec.plugin.name
+        return curType ? this.$t(`workflow.jobType.${curType.label}`) : this.job.spec.plugin.name
       } else {
         return ''
       }

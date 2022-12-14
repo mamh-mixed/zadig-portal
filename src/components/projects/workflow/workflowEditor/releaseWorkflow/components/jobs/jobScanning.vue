@@ -1,13 +1,13 @@
 <template>
   <div class="job-scanning">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="90px" size="small">
-      <el-form-item label="任务名称" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
+    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="100px" size="small">
+      <el-form-item :label="$t(`workflow.jobName`)" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <div class="mg-b24 title">选择扫描</div>
+      <div class="mg-b24 title">{{$t(`workflow.chooseScan`)}}</div>
       <el-row :gutter="24" class="mg-b16">
-        <el-col :span="6">扫描名称</el-col>
-        <el-col :span="6">扫描配置</el-col>
+        <el-col :span="6">{{$t(`workflow.scanName`)}}</el-col>
+        <el-col :span="6">{{$t(`workflow.scanConfig`)}}</el-col>
         <el-col :span="6"></el-col>
       </el-row>
       <div v-for="(item,index) in job.spec.scannings" :key="index">
@@ -25,12 +25,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-tooltip class="item" effect="dark" content="分支配置" placement="top">
-              <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="共享存储配置" placement="top">
-              <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item,index)"></span>
-            </el-tooltip>
+           <el-tooltip class="item" effect="dark" :content="$t(`workflow.branchConfig`)"  placement="top">
+                <span class="iconfont iconfenzhi" @click="handleVarBranchChange('branch',item,index)"></span>
+              </el-tooltip>
+              <el-tooltip class="item" effect="dark" :content="$t(`workflow.storageConfig`)" placement="top">
+                <span class="iconfont iconcunchufuwu" @click="handleVarBranchChange('pv',item,index)"></span>
+              </el-tooltip>
           </el-col>
           <el-col :span="4">
             <el-button type="danger" size="mini" plain @click="delScanning(index)">{{$t(`global.delete`)}}</el-button>
@@ -46,11 +46,11 @@
         </el-option>
         <el-option v-for="(scanning,index) in scanningList" :key="index" :value="scanning.name" :label="scanning.name">{{scanning.name}}</el-option>
       </el-select>
-      <el-button type="success" size="mini" plain :disabled="Object.keys(scanning).length === 0" @click="addScanning()">+ 添加</el-button>
+      <el-button type="success" size="mini" plain :disabled="Object.keys(scanning).length === 0" @click="addScanning()">+ {{$t(`global.add`)}}</el-button>
     </el-form>
     <el-dialog :title="`${curItem.name} 分支配置`" :visible.sync="isShowBranchDialog" :append-to-body="true" width="40%">
       <el-table :data="curItem.repos" size="small">
-        <el-table-column prop="repo_name" label="代码库" width="200px"></el-table-column>
+        <el-table-column prop="repo_name" :label="$t(`global.codeLibrary`)" width="200px"></el-table-column>
         <el-table-column prop="branch" label="默认分支">
           <template slot-scope="scope">
             <el-select size="small" v-model="scope.row.branch" filterable>

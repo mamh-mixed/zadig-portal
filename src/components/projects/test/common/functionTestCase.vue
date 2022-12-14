@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column prop="scope.row"
                        label-class-name="filter-header"
-                       label="测试结果"
+                       :label="$t(`workflow.testResults`)"
                        width="100"
                        align="left">
         <template slot-scope="scope">

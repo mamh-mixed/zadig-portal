@@ -1,7 +1,7 @@
 <template>
   <div class="workflow-build-rows">
     <el-table :data="repoList" v-if="type!=='plugin'&&repoList.length>0">
-      <el-table-column label="代码库">
+      <el-table-column :label="$t(`global.codeLibrary`)">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.spec.repos" class="build-row" :key="build.code_host_id">
             <template>
@@ -95,14 +95,14 @@
       v-if="type==='plugin'?job.isShowPlugin:job.isShowCommon"
       :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"
     >
-      <el-table-column label="键" :prop="type === 'plugin'?'name':'key'">
+      <el-table-column :label="$t(`global.key`)" :prop="type === 'plugin'?'name':'key'">
         <template slot-scope="scope">
           <el-tooltip class="item" effect="dark" :content="scope.row.description" placement="top-start">
             <span>{{type === 'plugin'?scope.row.name:scope.row.key}}</span>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column label="值">
+      <el-table-column :label="$t(`global.value`)">
         <template slot-scope="scope">
           <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
             <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>

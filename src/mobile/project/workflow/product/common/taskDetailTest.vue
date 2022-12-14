@@ -21,7 +21,7 @@
             </div>
           </van-col>
           <van-col v-if="testingv2.status!=='running'" :span="6">
-            <div class="item-title">持续时间</div>
+            <div class="item-title">{{$t(`workflow.duration`)}}</div>
           </van-col>
           <van-col v-if="testingv2.status!=='running'" :span="6">
             <span class>
@@ -32,7 +32,7 @@
         </van-row>
         <van-row v-if="testingv2.job_ctx.builds">
           <div>
-            <span>代码信息</span>
+            <span>{{$t(`workflow.codeInfo`)}}</span>
           </div>
         </van-row>
         <van-row :gutter="0" v-for="(build,index) in testingv2.job_ctx.builds" :key="index">

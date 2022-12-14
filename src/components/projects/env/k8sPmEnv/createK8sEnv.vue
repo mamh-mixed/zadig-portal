@@ -84,7 +84,7 @@
           </span>
           <span class="ns-desc" v-show="nsIsExisted">Zadig 中定义的服务将覆盖所选命名空间中的同名服务，请谨慎操作！</span>
         </el-form-item>
-        <el-form-item label="镜像仓库" class="secondary-label">
+        <el-form-item :label="$t(`status.imageRepo`)" class="secondary-label">
           <el-select class="select" filterable v-model.trim="projectConfig.registry_id" placeholder="请选择镜像仓库" size="small" @change="getImages">
             <el-option
               v-for="registry in imageRegistry"
@@ -94,7 +94,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="服务选择" v-if="projectConfig.source==='system'||projectConfig.source==='copy'" prop="selectedService">
+        <el-form-item :label="$t(`workflow.selectService`)" v-if="projectConfig.source==='system'||projectConfig.source==='copy'" prop="selectedService">
           <div class="select-service">
             <el-select v-model="projectConfig.selectedService" size="small" placeholder="选择服务" filterable clearable multiple collapse-tags>
               <el-option

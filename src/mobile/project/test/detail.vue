@@ -69,7 +69,7 @@
         </van-col>
       </van-row>
     </div>
-    <van-divider content-position="left">历史任务</van-divider>
+    <van-divider content-position="left">{{$t(`workflow.historyTask`)}}</van-divider>
     <div>
       <van-cell
         v-for="task in testTasks"

@@ -39,7 +39,7 @@
         </span>
         <span class="ns-desc" v-show="nsIsExisted">Zadig 中定义的服务将覆盖所选命名空间中的同名服务，请谨慎操作！</span>
       </el-form-item>
-      <el-form-item label="镜像仓库">
+      <el-form-item :label="$t(`status.imageRepo`)">
         <el-select
           class="select"
           filterable
@@ -56,7 +56,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="服务选择" prop="selectedService">
+      <el-form-item :label="$t(`workflow.selectService`)" prop="selectedService">
         <div class="select-service">
           <el-select v-model="projectConfig.selectedService" size="small" placeholder="选择服务" filterable clearable multiple collapse-tags>
             <el-option

@@ -1,7 +1,7 @@
 <template>
   <section class="pipeline-build-container job-freestyle">
     <el-form ref="ruleForm" label-width="120px" :model="job" class="mg-t24 mg-b24" size="small" label-position="left">
-      <el-form-item label="任务名称" prop="name" >
+      <el-form-item :label="$t(`workflow.jobName`)" prop="name" >
         <el-input v-model="job.name" size="small" style="width: 400px;"></el-input>
       </el-form-item>
       <section class="common-parcel-block">

@@ -6,7 +6,7 @@
           <el-col :span="8">
             <div class="function-area">
               <div class="item-container">
-                <h3 v-if="artifact.type==='image'" class="item-title">镜像信息</h3>
+                <h3 v-if="artifact.type==='image'" class="item-title">{{$t(`status.imgInfo`)}}</h3>
                 <h3 v-if="artifact.type==='file'" class="item-title">文件信息</h3>
                 <div class="item-detail">
                   <div>
@@ -44,10 +44,10 @@
                 </div>
               </div>
               <div v-if="artifact.commits && artifact.commits.length > 0" class="item-container">
-                <h3 class="item-title">代码信息</h3>
+                <h3 class="item-title">{{$t(`workflow.codeInfo`)}}</h3>
                 <div v-for="(cm,index) in artifact.commits" :key="index" class="item-detail">
                   <div>
-                    <span class="key">代码库：</span>
+                    <span class="key">{{$t(`global.codeLibrary`)}}</span>
                     <span class="value">
                       <a
                         class="link"

@@ -1,7 +1,7 @@
 <template>
   <div class="block-list">
     <el-table v-loading="loading" :data="mapWorkflows" style="width: 100%;">
-      <el-table-column label="工作流名称">
+      <el-table-column :label="$t(`global.workflowName`)">
         <template slot-scope="scope">
           <span style="margin-left: 10px;">{{ scope.row.name }}</span>
         </template>
