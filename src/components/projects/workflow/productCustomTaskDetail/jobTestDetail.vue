@@ -30,7 +30,7 @@
             <div class="item-desc">{{jobInfo.spec.project_name}}</div>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">{{$t(`workflow.testName`)}}</div>
+            <div class="item-title">{{$t(`global.testName`)}}</div>
           </el-col>
           <el-col :span="8">
             <div class="item-desc">{{jobInfo.spec.test_name}}</div>

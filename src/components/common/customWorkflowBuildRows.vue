@@ -26,7 +26,7 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="name" :label="$t(`workflow.testName`)" width="100px" v-if="type=='zadig-test'"></el-table-column>
+      <el-table-column prop="name" :label="$t(`global.testName`)" width="100px" v-if="type=='zadig-test'"></el-table-column>
       <el-table-column prop="name" label="扫描名称" width="100px" v-if="type=='zadig-scanning'"></el-table-column>
       <el-table-column
         prop="service_module"

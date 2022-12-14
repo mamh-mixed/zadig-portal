@@ -39,7 +39,8 @@ exports.default = {
     all: '所有',
     key: '键',
     value: '值',
-    fileDirectory: '文件目录'
+    fileDirectory: '文件目录',
+    testName: '测试名称'
   },
   login: {
     username: '用户名',
@@ -483,7 +484,6 @@ exports.default = {
     link: '链接',
     view: '查看',
     projectName: '项目名称',
-    testName: '测试名称',
     fileExport: '文件导出',
     testReport: '测试报告',
     download: '下载',

@@ -39,7 +39,8 @@ exports.default = {
     all: 'All',
     key: 'Key',
     value: 'Value',
-    fileDirectory: 'File Directory'
+    fileDirectory: 'File Directory',
+    testName: 'Test Name'
   },
   login: {
     username: 'Username',

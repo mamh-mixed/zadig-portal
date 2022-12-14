@@ -10,7 +10,7 @@
       <template v-if="testEnabled">
         <el-table :data="testConfigs">
           <el-table-column prop="name"
-                           :label="$t(`workflow.testName`)"></el-table-column>
+                           :label="$t(`global.testName`)"></el-table-column>
           <el-table-column prop="product_name"
                            :label="$t(`workflow.projectName`)"></el-table-column>
           <el-table-column prop="desc"

@@ -4,7 +4,7 @@
       <el-form class="primary-form" :model="test" ref="testFormRef" label-width="120px" label-position="left">
         <el-form-item
           prop="name"
-          :label="$t(`workflow.testName`)"
+          :label="$t(`global.testName`)"
           :rules=" {
             type: 'string',
             required: true,
