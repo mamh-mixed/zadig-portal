@@ -46,7 +46,7 @@ export default {
       tableColumns: [
         {
           prop: 'server_address',
-          label: '服务地址'
+          label: '访问地址'
         },
         {
           label: '操作',

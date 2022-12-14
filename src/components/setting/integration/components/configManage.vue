@@ -10,10 +10,10 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="服务地址" prop="server_address">
+      <el-form-item label="访问地址" prop="server_address">
         <el-input
           v-model="opeForm.server_address"
-          :placeholder="`${opeForm.type.replace(/^\S/, s => s.toUpperCase())} 服务地址`"
+          :placeholder="`${opeForm.type.replace(/^\S/, s => s.toUpperCase())} 访问地址`"
           @change="validate('checkConnection')"
         ></el-input>
       </el-form-item>
@@ -89,12 +89,12 @@ export default {
         server_address: [
           {
             required: true,
-            message: '服务地址不能为空',
+            message: '访问地址不能为空',
             trigger: ['blur', 'change']
           },
           {
             pattern: /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/,
-            message: '请输入正确的服务地址',
+            message: '请输入正确的访问地址',
             trigger: ['blur', 'change']
           }
         ],

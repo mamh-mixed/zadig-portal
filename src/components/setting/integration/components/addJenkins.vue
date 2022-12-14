@@ -21,11 +21,11 @@
       label-position="left"
       label-width="100px"
     >
-      <el-form-item label="服务地址" prop="url">
+      <el-form-item label="访问地址" prop="url">
         <el-input
           v-model.trim="addForm.url"
           @change="validate(checkPassword)"
-          placeholder="Jenkins 服务地址"
+          placeholder="Jenkins 访问地址"
         ></el-input>
       </el-form-item>
       <el-form-item label="用户名" prop="username">
@@ -73,10 +73,10 @@ export default {
       },
       formRules: {
         url: [
-          { required: true, message: '服务地址不能为空', trigger: 'blur' },
+          { required: true, message: '访问地址不能为空', trigger: 'blur' },
           {
             pattern: /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?/,
-            message: '请输入正确的服务地址',
+            message: '请输入正确的访问地址',
             trigger: 'blur'
           }
         ],
