@@ -83,7 +83,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="描述" prop="description">
+        <el-form-item :label="$t('global.desc')" prop="description">
           <el-input size="small" v-model="cluster.description" placeholder="请输入描述"></el-input>
         </el-form-item>
         <el-form-item label="KubeConfig" prop="config" v-if="cluster.type === 'kubeconfig'" :show-message="false">
@@ -441,7 +441,7 @@
                 <el-tag size="small" effect="dark" :type="statusIndicator[scope.row.status]">{{myTranslate(scope.row.status)}}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="描述">
+            <el-table-column :label="$t('global.desc')">
               <template slot-scope="scope">
                 <span>{{scope.row.description}}</span>
               </template>
