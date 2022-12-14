@@ -878,9 +878,9 @@ exports.default = {
       scripts: '测试脚本',
       report: {
         configuration: '测试报告配置',
-        JunitReportDirectory: 'Junit 报告所在目录',
-        HTMLReportFileDirectory: 'HTML 报告文件地址',
-        HTMLReportFileTooltip: 'HTML 测试报告文件将包含在工作流发送的 IM 通知内容中'
+        junitReportDirectory: 'Junit 报告所在目录',
+        htmlReportFileDirectory: 'HTML 报告文件地址',
+        htmlReportFileTooltip: 'HTML 测试报告文件将包含在工作流发送的 IM 通知内容中'
       },
       advancedSettings: {
         title: '高级配置',

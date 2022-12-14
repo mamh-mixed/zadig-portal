@@ -30,17 +30,17 @@
       <section>
         <div class="primary-title not-first-child">{{$t(`testing.details.report.configuration`)}}</div>
         <el-form class="secondary-form" :model="test" label-width="150px" label-position="left">
-          <el-form-item :label="$t(`testing.details.report.JunitReportDirectory`)">
+          <el-form-item :label="$t(`testing.details.report.junitReportDirectory`)">
             <el-input size="small" v-model="test.test_result_path" style="width: 100%;" :placeholder="$t(`testing.validation.testReportDirectoryInsertionPrompt`)">
               <template slot="prepend">$WORKSPACE/</template>
             </el-input>
           </el-form-item>
           <el-form-item class="label-icon">
             <template slot="label">
-              <span>{{$t(`testing.details.report.HTMLReportFileDirectory`)}}</span>
+              <span>{{$t(`testing.details.report.htmlReportFileDirectory`)}}</span>
               <el-tooltip effect="dark" placement="top">
                 <div slot="content">
-                  {{$t(`testing.details.report.HTMLReportFileTooltip`)}}
+                  {{$t(`testing.details.report.htmlReportFileTooltip`)}}
                   <br />
                 </div>
                 <i class="el-icon-question"></i>

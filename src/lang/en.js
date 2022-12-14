@@ -878,9 +878,9 @@ exports.default = {
       scripts: 'Script',
       report: {
         configuration: 'Test Report Configuration',
-        JunitReportDirectory: 'Junit Report Directory',
-        HTMLReportFileDirectory: 'HTML Report Filepath',
-        HTMLReportFileTooltip: 'HTML report file link will be sent with the IM message notification.'
+        junitReportDirectory: 'Junit Report Directory',
+        htmlReportFileDirectory: 'HTML Report Filepath',
+        htmlReportFileTooltip: 'HTML report file link will be sent with the IM message notification.'
       },
       advancedSettings: {
         title: 'Advanced Settings',
