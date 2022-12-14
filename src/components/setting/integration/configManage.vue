@@ -17,7 +17,7 @@
         <el-button type="primary" size="small" @click="handleConfig('add')" plain>添加</el-button>
       </div>
       <el-table :data="configList" style="width: 100%;">
-        <el-table-column label="服务地址">
+        <el-table-column label="访问地址">
           <template slot-scope="{ row }">
             <i :class="['iconfont config-icon', row.type === 'apollo' ? 'iconapollo' : 'iconnacos']"></i>
             <span>{{ row.server_address }}</span>
