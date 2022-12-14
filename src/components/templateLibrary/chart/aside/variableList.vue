@@ -10,7 +10,7 @@
         </h4>
         <el-table :data="systemVariables" style="width: 100%;">
           <el-table-column prop="key" label="Key"></el-table-column>
-          <el-table-column prop="description" :label="$t(`workflow.desc`)"></el-table-column>
+          <el-table-column prop="description" :label="$t('global.desc')"></el-table-column>
         </el-table>
       </article>
       <article>

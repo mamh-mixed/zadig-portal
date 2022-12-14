@@ -14,8 +14,8 @@
           <el-table-column prop="product_name"
                            :label="$t(`workflow.projectName`)"></el-table-column>
           <el-table-column prop="desc"
-                           :label="$t(`workflow.desc`)"></el-table-column>
-          <el-table-column :label="$t(`workflow.var`)">
+                           :label="$t('global.desc')"></el-table-column>
+          <el-table-column label="变量">
             <template slot-scope="{ row }">
               <el-popover placement="left"
                           width="450"

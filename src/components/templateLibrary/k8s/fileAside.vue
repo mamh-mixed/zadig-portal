@@ -4,29 +4,29 @@
       <div class="aside-bar">
         <div class="tabs__wrap tabs__wrap_vertical">
           <div class="tabs__item" :class="{'selected': $route.query.rightbar === 'var'}" @click="changeRoute('var')">
-            <span class="step-name">变量列表</span>
+            <span class="step-name">{{$t('templates.k8sYaml.variablesList')}}</span>
           </div>
           <div class="tabs__item" :class="{'selected': $route.query.rightbar === 'reference'}" @click="changeRoute('reference')">
-            <span class="step-name">引用列表</span>
+            <span class="step-name">{{$t('templates.k8sYaml.referenceList')}}</span>
           </div>
         </div>
       </div>
       <div class="aside__content">
         <div v-if="$route.query.rightbar === 'reference'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">引用列表</div>
+            <div class="service-aside-box__title">{{$t('templates.k8sYaml.referenceList')}}</div>
           </header>
           <div class="service-aside-box__content">
             <section class="aside-section">
               <el-table :data="referenceList" stripe style="width: 100%;">
-                <el-table-column prop="project_name" label="项目"></el-table-column>
+                <el-table-column prop="project_name" :label="$t('templates.k8sYaml.projectName')"></el-table-column>
                 <el-table-column prop="value" :label="$t(`global.serviceName`)">
                   <template slot-scope="scope">
                     <router-link
                       v-if="scope.row.service_name"
                       :to="`/v1/projects/detail/${scope.row.project_name}/services?service_name=${scope.row.service_name}&rightbar=var`"
                     >{{scope.row.service_name}}</router-link>
-                    <span v-else>空</span>
+                    <span v-else>{{$t('templates.k8sYaml.noneVariable')}}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -35,21 +35,21 @@
         </div>
         <div v-if="$route.query.rightbar === 'var'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">变量列表</div>
+            <div class="service-aside-box__title">{{$t('templates.k8sYaml.variablesList')}}</div>
           </header>
           <div class="service-aside-box__content">
             <section class="aside-section">
               <h4>
                 <span>
                   <i class="iconfont iconfuwu"></i>
-                </span> 系统内置变量
+                </span> {{$t('templates.k8sYaml.systemVariables')}}
               </h4>
               <el-table :data="systemVariables" stripe style="width: 100%;">
                 <el-table-column prop="key" label="Key"></el-table-column>
-                <el-table-column prop="description" :label="$t(`workflow.desc`)">
+                <el-table-column prop="description" :label="$t('global.desc')">
                   <template slot-scope="scope">
                     <span v-if="scope.row.description">{{scope.row.description}}</span>
-                    <span v-else>空</span>
+                    <span v-else>{{$t('templates.k8sYaml.noneVariable')}}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -58,8 +58,8 @@
               <h4>
                 <span>
                   <i class="iconfont icontanhao"></i>
-                </span> 自定义变量
-                <el-tooltip effect="dark" :content="'自定义变量通过'+' {{'+'.key}} ' +' 声明'" placement="top">
+                </span> {{$t('templates.k8sYaml.customVariables')}}
+                <el-tooltip effect="dark" :content="$t('templates.k8sYaml.customVariablesTooltip')" placement="top">
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
@@ -75,10 +75,10 @@
                 />
               </div>
               <div v-if="notSaved" class="alert-container">
-                <el-alert title="请先保存模板" type="info" :closable="false"></el-alert>
+                <el-alert :title="$t('templates.k8sYaml.saveTemplateFirst')" type="info" :closable="false"></el-alert>
               </div>
               <div class="operation" v-else>
-                <el-button type="primary" size="small" @click="validateVariables" plain :disabled="variableYamlIsEmpty">校验</el-button>
+                <el-button type="primary" size="small" @click="validateVariables" plain :disabled="variableYamlIsEmpty">{{$t(`global.validate`)}}</el-button>
                 <el-button type="primary" size="small" @click="saveKubernetesTemplateVariable" :disabled="variableYamlIsEmpty || variableNotChanged">{{$t(`global.save`)}}</el-button>
               </div>
             </section>
@@ -136,7 +136,7 @@ export default {
       validateKubernetesTemplateVariableAPI(payload)
         .then(res => {
           if (res) {
-            this.$message.success('校验成功')
+            this.$message.success(this.$t('templates.k8sYaml.validationSuccess'))
           }
         })
         .catch(err => {
@@ -151,7 +151,7 @@ export default {
       saveKubernetesTemplateVariableAPI(id, payload)
         .then(res => {
           if (res) {
-            this.$message.success('变量保存成功')
+            this.$message.success(this.$t('templates.k8sYaml.successfullySaved'))
             this.$emit('updateTemplate', this.fileContent)
           }
         })
@@ -388,6 +388,7 @@ export default {
           .step-name {
             font-weight: 500;
             font-size: 14px;
+            writing-mode: vertical-rl;
           }
         }
       }
