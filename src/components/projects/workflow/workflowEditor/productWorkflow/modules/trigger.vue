@@ -24,7 +24,7 @@
         <el-form-item :label="$t(`global.name`)" prop="name" class="bottom-22">
           <el-input size="small" autofocus ref="webhookNamedRef" v-model="webhookSwap.name" placeholder="请输入名称"></el-input>
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('global.desc')">
           <el-input size="small" type="textarea" v-model="webhookSwap.description" placeholder="请输入描述"></el-input>
         </el-form-item>
         <el-form-item label="代码库" prop="repo" :rules="[
@@ -254,7 +254,7 @@
                   <span>{{ row.main_repo.name?row.main_repo.name:'' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="描述">
+              <el-table-column :label="$t('global.desc')">
                 <template slot-scope="{ row }">
                   <span>{{ row.main_repo.description?row.main_repo.description:'N/A' }}</span>
                 </template>

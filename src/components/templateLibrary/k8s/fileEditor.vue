@@ -36,9 +36,10 @@
                        size="small"
                        :disabled="disabledSave"
                        @click="updateFile">{{$t(`global.save`)}}</el-button>
-            <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true}" type="default"
+            <el-button v-hasPermi="{type: 'system', action: fileStatus === 'added'?'edit_template':'create_template', isBtn:true}"
                        size="small"
-                       @click="multiUpdate">应用到服务</el-button>
+                       @click="multiUpdate"
+                       plain>{{$t('templates.k8sYaml.applyToServices')}}</el-button>
           </div>
         </div>
     </div>
@@ -116,7 +117,7 @@ export default {
           this.$emit('onUpdateFile', { name: fileName, status: 'added', payload })
           this.$message({
             type: 'success',
-            message: `模板 ${fileName} 更新成功`
+            message: this.$t('templates.k8sYaml.successfullyUpdated', { fileName: fileName })
           })
         }
       } else if (status === 'named') {
@@ -128,7 +129,7 @@ export default {
           this.$emit('onUpdateFile', { name: fileName, status: 'added', payload })
           this.$message({
             type: 'success',
-            message: `模板 ${fileName} 创建成功`
+            message: this.$t('templates.k8sYaml.successfullyCreated', { fileName: fileName })
           })
         }
       }
@@ -147,7 +148,7 @@ export default {
     },
     multiUpdate () {
       const fileId = this.fileContent.id
-      this.$confirm(`确认后，所有开启「自动同步」的服务配置会应用最新的模板。`, '确定应用到服务？', {
+      this.$confirm(this.$t('templates.k8sYaml.applyToServicesTooltip'), this.$t('templates.k8sYaml.confirmToApply'), {
         confirmButtonText: this.$t(`global.confirm`),
         cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
@@ -156,7 +157,7 @@ export default {
           updateMulKubernetesTemplateAPI(fileId).then(res => {
             this.$message({
               type: 'success',
-              message: `应用到服务成功`
+              message: this.$t('templates.k8sYaml.applyToServicesSuccessfully')
             })
           })
         })

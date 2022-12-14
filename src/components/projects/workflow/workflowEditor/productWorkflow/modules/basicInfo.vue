@@ -55,7 +55,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="描述">
+          <el-form-item :label="$t('global.desc')">
             <el-input type="input"
                       style="width: 100%;"
                       v-model="workflowInfo.description"></el-input>

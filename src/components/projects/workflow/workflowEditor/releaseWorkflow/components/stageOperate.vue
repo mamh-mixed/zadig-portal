@@ -85,7 +85,7 @@
             </div>
           </el-tooltip>
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t('global.desc')">
           <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行" size="small"></el-input>
         </el-form-item>
       </div>

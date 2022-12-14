@@ -135,7 +135,7 @@
             placeholder="请输入名称"
           ></el-input>
         </el-form-item>
-        <el-form-item label="描述" prop="description">
+        <el-form-item :label="$t('global.desc')" prop="description">
           <el-input size="small" type="textarea" v-model="currentWebhook.description" placeholder="请输入描述"></el-input>
         </el-form-item>
         <el-form-item label="代码库" prop="repo">
