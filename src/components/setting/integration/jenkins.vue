@@ -45,7 +45,7 @@ export default {
       tableColumns: [
         {
           prop: 'url',
-          label: '服务地址'
+          label: '访问地址'
         },
         {
           prop: 'username',
