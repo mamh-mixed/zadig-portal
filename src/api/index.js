@@ -1054,8 +1054,8 @@ export function deleteExternalSystemAPI (id) {
 }
 
 // Approval
-export function getApprovalListAPI () {
-  return http.get(`/api/aslan/system/im_app`)
+export function getApprovalListAPI (projectName) {
+  return http.get(`/api/aslan/system/im_app?projectName=${projectName}`)
 }
 
 export function createApprovalAPI (payload) {
@@ -1073,8 +1073,8 @@ export function deleteApprovalAPI (id) {
 export function checkApprovalConfigAPI (payload) {
   return http.post('/api/aslan/system/im_app/validate', payload)
 }
-export function getDepartmentAPI (id, department_id) {
-  return http.get(`/api/aslan/system/lark/${id}/department/${department_id}`)
+export function getDepartmentAPI (id, department_id, projectName) {
+  return http.get(`/api/aslan/system/lark/${id}/department/${department_id}?projectName=${projectName}`)
 }
 
 // Mail

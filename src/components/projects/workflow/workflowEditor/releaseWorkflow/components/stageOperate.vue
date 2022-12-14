@@ -201,6 +201,10 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    projectName: {
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -255,14 +259,14 @@ export default {
       )
     },
     getAppList () {
-      getApprovalListAPI().then(res => {
+      getApprovalListAPI(this.projectName).then(res => {
         this.appList = res
       })
     },
     getDepartmentInfo () {
       this.loading = true
       this.keyword = ''
-      getDepartmentAPI(this.form.approval.approval_id, this.departmentId).then(
+      getDepartmentAPI(this.form.approval.approval_id, this.departmentId, this.projectName).then(
         res => {
           res.user_list.forEach(item => {
             if (this.form.approval.approve_users.length > 0) {
