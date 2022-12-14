@@ -12,7 +12,7 @@
                label-position="left"
                label-width="90px"
                :rules="rules">
-        <el-form-item :label="$t(`workflow.codeLibrary`)" prop="repo" :rules="[
+        <el-form-item :label="$t(`global.codeLibrary`)" prop="repo" :rules="[
           { trigger: ['blur', 'change'], validator: validateRepo }
         ]">
           <el-select v-model="webhookSwap.repo"
@@ -135,7 +135,7 @@
                 <span>{{ scope.row.main_repo.repo_owner }}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t(`workflow.codeLibrary`)">
+            <el-table-column :label="$t(`global.codeLibrary`)">
               <template slot-scope="scope">
                 <span>{{ scope.row.main_repo.repo_name }}</span>
               </template>

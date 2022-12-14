@@ -59,7 +59,6 @@
       测试任务
     </div>
     <template v-if="testArray.length > 0">
-      <span class="section-title">自动化测试</span>
       <el-table :data="testArray"
                 row-key="_target"
                 :expand-row-keys="expandedTests"

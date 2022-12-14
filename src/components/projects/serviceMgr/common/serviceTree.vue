@@ -70,7 +70,7 @@
             </el-select>
           </el-form-item>
           <template>
-            <el-form-item :label="$t(`workflow.codeLibrary`)" prop="repoName" :rules="{required: true, message: '名称不能为空', trigger: 'change'}">
+            <el-form-item :label="$t(`global.codeLibrary`)" prop="repoName" :rules="{required: true, message: '名称不能为空', trigger: 'change'}">
               <el-select
                 @change="getBranchInfoById(source.codehostId,source.repoOwner,source.repoName,source)"
                 @clear="clearRepoName"

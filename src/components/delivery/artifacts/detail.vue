@@ -47,7 +47,7 @@
                 <h3 class="item-title">{{$t(`workflow.codeInfo`)}}</h3>
                 <div v-for="(cm,index) in artifact.commits" :key="index" class="item-detail">
                   <div>
-                    <span class="key">{{$t(`workflow.codeLibrary`)}}</span>
+                    <span class="key">{{$t(`global.codeLibrary`)}}</span>
                     <span class="value">
                       <a
                         class="link"

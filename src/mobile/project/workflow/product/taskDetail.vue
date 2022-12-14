@@ -115,7 +115,6 @@
     </template>
     <template v-if="testArray.length > 0">
       <div class="mobile-block">
-        <h2 class="mobile-block-title">自动化测试</h2>
       </div>
       <van-collapse v-model="testActive">
         <van-collapse-item v-for="(item,index) in testArray"

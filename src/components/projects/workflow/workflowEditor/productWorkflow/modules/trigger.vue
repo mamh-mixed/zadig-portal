@@ -27,7 +27,7 @@
         <el-form-item :label="$t('global.desc')">
           <el-input size="small" type="textarea" v-model="webhookSwap.description" placeholder="请输入描述"></el-input>
         </el-form-item>
-        <el-form-item :label="$t(`workflow.codeLibrary`)" prop="repo" :rules="[
+        <el-form-item :label="$t(`global.codeLibrary`)" prop="repo" :rules="[
           { trigger: ['blur', 'change'], validator: validateRepo }
         ]">
           <el-select

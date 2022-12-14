@@ -34,7 +34,7 @@
         width="100px"
         v-if="type!=='zadig-test'&&type!=='zadig-scanning'"
       ></el-table-column>
-      <el-table-column :label="$t(`workflow.codeLibrary`)">
+      <el-table-column :label="$t(`global.codeLibrary`)">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.repos" class="build-row" :key="build.code_host_id">
             <template>

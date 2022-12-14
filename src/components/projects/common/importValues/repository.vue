@@ -44,7 +44,7 @@
           <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="repo" :label="$t(`workflow.codeLibrary`)" :show-message="false">
+      <el-form-item prop="repo" :label="$t(`global.codeLibrary`)" :show-message="false">
         <el-input v-if="codehostSource === 'other'" v-model.trim="source.repo" size="small" placeholder="请输入代码库" clearable></el-input>
         <el-select
           v-else

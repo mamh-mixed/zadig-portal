@@ -38,7 +38,7 @@
         </el-row>
         <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="item-title">{{$t(`workflow.codeLibrary`)}}({{build.source}})</div>
+            <div class="item-title">{{$t(`global.codeLibrary`)}}({{build.source}})</div>
           </el-col>
           <el-col :span="8">
             <div class="item-desc">{{build.repo_name}}</div>

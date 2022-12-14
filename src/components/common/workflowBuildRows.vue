@@ -8,7 +8,7 @@
                        width="100px"
                        ></el-table-column>
 
-      <el-table-column :label="$t(`workflow.codeLibrary`)"  >
+      <el-table-column :label="$t(`global.codeLibrary`)"  >
         <template slot-scope="scope"  v-if="scope.row.build" >
           <el-row v-for="build of scope.row.build.repos"
                   class="build-row"

@@ -40,7 +40,8 @@ exports.default = {
     key: 'Key',
     value: 'Value',
     fileDirectory: 'File Directory',
-    testName: 'Test Name'
+    testName: 'Test Name',
+    codeLibrary: 'Code Library'
   },
   login: {
     username: 'Username',
@@ -472,7 +473,6 @@ exports.default = {
     },
     errorMsg: 'Error Message',
     ok: 'ok',
-    codeLibrary: 'Code Library',
     imageName: 'Image Name',
     deploymentEnv: 'Deployment Environment',
     deploymentService: 'Deployment Service',
@@ -484,7 +484,6 @@ exports.default = {
     link: 'Link',
     view: 'View',
     projectName: 'Project Name',
-    testName: 'Test Name',
     fileExport: 'File Export',
     testReport: 'Test Report',
     download: 'Download',

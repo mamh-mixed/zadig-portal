@@ -40,7 +40,8 @@ exports.default = {
     key: '键',
     value: '值',
     fileDirectory: '文件目录',
-    testName: '测试名称'
+    testName: '测试名称',
+    codeLibrary: '代码库'
   },
   login: {
     username: '用户名',
@@ -472,7 +473,6 @@ exports.default = {
     },
     errorMsg: '错误信息',
     ok: '知道了',
-    codeLibrary: '代码库',
     imageName: '镜像名称',
     deploymentEnv: '部署环境',
     deploymentService: '部署服务',

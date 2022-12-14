@@ -20,7 +20,7 @@
               <span class="desc">{{item.name}}</span>
             </div>
             <div class="cate">
-              <span class="title">{{$t(`workflow.codeLibrary`)}}</span>
+              <span class="title">{{$t(`global.codeLibrary`)}}</span>
               <span class="desc">{{item.main_repo.repo_name + '/' + item.main_repo.branch}}</span>
             </div>
           </div>
@@ -138,7 +138,7 @@
         <el-form-item :label="$t('global.desc')" prop="description">
           <el-input size="small" type="textarea" v-model="currentWebhook.description" placeholder="请输入描述"></el-input>
         </el-form-item>
-        <el-form-item :label="$t(`workflow.codeLibrary`)" prop="repo">
+        <el-form-item :label="$t(`global.codeLibrary`)" prop="repo">
           <el-select
             style="width: 100%;"
             v-model="currentWebhook.repo"

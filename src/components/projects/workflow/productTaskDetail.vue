@@ -289,7 +289,6 @@
       </template>
       <div v-if="testArray.length > 0" class="primary-title not-first-child">产品测试</div>
       <template v-if="testArray.length > 0">
-        <span class="secondary-title">自动化测试</span>
         <el-table
           :data="testArray"
           row-key="_target"
