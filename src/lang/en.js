@@ -855,7 +855,7 @@ exports.default = {
     caseCount: 'Case Count',
     executionCount: 'Execution Count',
     averageExecutionTime: 'Average Duration',
-    successRate: 'Success Fate',
+    successRate: 'Success Rate',
     creationSuccess: 'Task created.',
     restartSuccess: 'Task restarted.',
     cancellationSuccess: 'Task cancelled.',
