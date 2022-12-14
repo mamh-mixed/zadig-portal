@@ -43,7 +43,9 @@ exports.default = {
     testName: 'Test Name',
     codeLibrary: 'Code Library',
     errorMsg: 'Error Message',
-    ok: 'ok'
+    ok: 'ok',
+    startTime: 'Start Time',
+    endTime: 'End Time'
   },
   login: {
     username: 'Username',
@@ -569,12 +571,19 @@ exports.default = {
     selectNotifyType: 'Please Select Notify Type',
     inputWechatWebhook: 'Please Input Wechat Webhook',
     inputDingDingWebhook: 'Please Input DingDing Webhook',
-    inputFeishuWebhook: 'Please Input Feishu Webhook'
+    inputFeishuWebhook: 'Please Input Feishu Webhook',
+    auditResults: '审核结果',
+    auditTime: '审核时间',
+    comments: '评论信息'
   },
   webhookType: {
     dingding: 'DingDing',
     wechat: 'Wechat',
     feishu: 'Feishu'
+  },
+  approvalType: {
+    feishu: 'Feishu Approval',
+    manualApproval: 'Manual Approval'
   },
   triggerWay: {
     timingCycle: 'Timing Cycle',

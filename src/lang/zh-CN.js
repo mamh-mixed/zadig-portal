@@ -43,7 +43,9 @@ exports.default = {
     testName: '测试名称',
     codeLibrary: '代码库',
     errorMsg: '错误信息',
-    ok: '知道了'
+    ok: '知道了',
+    startTime: '开始时间',
+    endTime: '结束时间'
   },
   login: {
     username: '用户名',
@@ -569,12 +571,19 @@ exports.default = {
     selectNotifyType: '请选择通知类型',
     inputWechatWebhook: '请填写企业微信 Webhook',
     inputDingDingWebhook: '请填写钉钉 Webhook',
-    inputFeishuWebhook: '请填写飞书 Webhook'
+    inputFeishuWebhook: '请填写飞书 Webhook',
+    auditResults: '审核结果',
+    auditTime: '审核时间',
+    comments: '评论信息'
   },
   webhookType: {
     dingding: '钉钉',
     wechat: '企业微信',
     feishu: '飞书'
+  },
+  approvalType: {
+    feishu: '飞书审批',
+    manualApproval: '人工审批'
   },
   triggerWay: {
     timingCycle: '定时循环',

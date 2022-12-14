@@ -26,7 +26,7 @@
               <el-tooltip effect="dark" :content="payload.name" placement="top" :disabled="!payload.name">
                 <el-input
                   v-model="payload.name"
-                  :placeholder="this.$t(`workflow.inputWorkflowID`)"
+                  :placeholder="$t(`workflow.inputWorkflowID`)"
                   size="small"
                   :disabled="!editName"
                   class="name-input"
@@ -40,7 +40,7 @@
               <el-tooltip effect="dark" :content="payload.description" placement="top" :disabled="!payload.description">
                 <el-input
                   v-model="payload.description"
-                  :placeholder="this.$t(`workflow.desc`)"
+                  :placeholder="$t(`workflow.desc`)"
                   size="small"
                   :disabled="!editDesc"
                   class="name-input"
