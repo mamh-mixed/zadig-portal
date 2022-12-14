@@ -38,7 +38,8 @@ exports.default = {
     timeout: '超时时间',
     all: '所有',
     key: '键',
-    value: '值'
+    value: '值',
+    fileDirectory: '文件目录'
   },
   login: {
     username: '用户名',
@@ -546,7 +547,6 @@ exports.default = {
     editTrigger: '编辑触发器',
     targetBranch: '目标分支',
     triggerStrategy: '触发策略',
-    fileDirectory: '文件目录',
     workflowExecutionVariables: '工作流执行变量',
     triggerEvents: '触发事件',
     baseType: {

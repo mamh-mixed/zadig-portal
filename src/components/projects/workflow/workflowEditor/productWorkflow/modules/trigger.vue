@@ -167,7 +167,7 @@
               </el-tooltip>
             </el-checkbox>
           </el-form-item>
-          <el-form-item v-if="webhookSwap.repo.source!=='gerrit'" :label="$t(`workflow.fileDirectory`)" prop="match_folders">
+          <el-form-item v-if="webhookSwap.repo.source!=='gerrit'" :label="$t(`global.fileDirectory`)" prop="match_folders">
             <el-input
               :autosize="{ minRows: 4, maxRows: 10}"
               type="textarea"
@@ -289,7 +289,7 @@
                   <span v-else>{{ 'N/A' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column :label="$t(`workflow.fileDirectory`)">
+              <el-table-column :label="$t(`global.fileDirectory`)">
                 <template slot-scope="{ row }">
                   <span
                     v-if="row.main_repo.source!=='gerrit'"

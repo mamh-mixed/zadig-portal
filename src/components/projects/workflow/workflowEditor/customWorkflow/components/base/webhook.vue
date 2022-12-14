@@ -229,7 +229,7 @@
           </el-checkbox>
         </el-form-item>
         <template v-if="currentWebhook.main_repo.source!=='gerrit'">
-          <el-form-item :label="$t(`workflow.fileDirectory`)" prop="main_repo.match_folders">
+          <el-form-item :label="$t(`global.fileDirectory`)" prop="main_repo.match_folders">
             <el-input
               :autosize="{ minRows: 4, maxRows: 10}"
               type="textarea"

@@ -38,7 +38,8 @@ exports.default = {
     timeout: 'Timeout',
     all: 'All',
     key: 'Key',
-    value: 'Value'
+    value: 'Value',
+    fileDirectory: 'File Directory'
   },
   login: {
     username: 'Username',
@@ -546,7 +547,6 @@ exports.default = {
     editTrigger: 'Edit Trigger',
     targetBranch: 'Target Branch',
     triggerStrategy: 'Trigger Strategy',
-    fileDirectory: 'File Directory',
     workflowExecutionVariables: 'Workflow Execution Variables',
     triggerEvents: 'Trigger Events',
     baseType: {
