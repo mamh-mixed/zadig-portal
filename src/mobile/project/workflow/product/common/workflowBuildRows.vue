@@ -105,7 +105,7 @@
       <el-table-column label="Jenkins Job Name">
         <div slot-scope="scope">{{scope.row.jenkins_build_args.job_name}}</div>
       </el-table-column>
-      <el-table-column width="100px" label="变量">
+      <el-table-column width="100px" :label="$t(`workflow.var`)">
         <template slot-scope="scope">
           <el-popover placement="left" width="450" trigger="click">
             <!-- jenkins构建 -->

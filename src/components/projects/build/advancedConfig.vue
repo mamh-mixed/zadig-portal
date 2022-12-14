@@ -118,7 +118,7 @@
           <i class="pointer el-icon-question"></i>
         </el-tooltip>
       </div>
-      <el-form-item label="变量" label-width="120px"  v-if="!hiddenVars">
+      <el-form-item :label="$t(`workflow.var`)" label-width="120px"  v-if="!hiddenVars">
         <el-form-item
           v-for="(item,index) in buildConfig.outputs"
           :key="index"

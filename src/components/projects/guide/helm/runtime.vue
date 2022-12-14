@@ -80,7 +80,7 @@
                   ></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="服务选择" prop="selectedService">
+              <el-form-item :label="$t(`workflow.selectService`)" prop="selectedService">
                 <div class="select-service">
                   <el-select
                     v-model="currentInfo.selectedService"

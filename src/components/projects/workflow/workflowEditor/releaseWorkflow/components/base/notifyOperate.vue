@@ -5,10 +5,10 @@
         <span slot="label">
           <span>{{$t(`workflow.webhookType`)}}：</span>
         </span>
-        <el-select v-model="notify.webhook_type" @change="clearForm" style="width: 350px;" size="small" placeholder="请选择类型">
-          <el-option label="钉钉" value="dingding"></el-option>
-          <el-option label="企业微信" value="wechat"></el-option>
-          <el-option label="飞书" value="feishu"></el-option>
+        <el-select v-model="notify.webhook_type" @change="clearForm" style="width: 350px;" size="small" :placeholder="$t(`global.pleaseSelect`)">
+          <el-option :label="$t(`webhookType.dingding`)" value="dingding"></el-option>
+          <el-option :label="$t(`webhookType.wechat`)" value="wechat"></el-option>
+          <el-option :label="$t(`webhookType.feishu`)" value="feishu"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item v-if="notify.webhook_type==='feishu'" prop="feishu_webhook">
@@ -54,7 +54,7 @@
         <span slot="label">
           <span>{{$t(`workflow.specifyMembersTip1`)}}：</span>
         </span>
-        <el-input style="width: 350px;" type="textarea" :rows="3" placeholder="输入指定通知接收人的手机号码，使用用 ; 分割" v-model="mobileStr"></el-input>
+        <el-input style="width: 350px;" type="textarea" :rows="3" :placeholder="$t(`workflow.specifyMembersTip1`)" v-model="mobileStr"></el-input>
       </el-form-item>
       <el-form-item v-if="notify.webhook_type==='wechat'" prop="wechat_user_ids">
         <span slot="label">
@@ -95,7 +95,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: '选择通知类型',
+            message: this.$t(`workflow.selectNotifyType`),
             trigger: 'blur'
           }
         ],
@@ -103,7 +103,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: '请填写企业微信 Webhook',
+            message: this.$t(`workflow.inputWechatWebhook`),
             trigger: 'blur'
           }
         ],
@@ -112,7 +112,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: '请填写钉钉 Webhook',
+            message: this.$t(`workflow.inputDingDingWebhook`),
             trigger: 'blur'
           }
         ],
@@ -120,7 +120,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: '请填写飞书 Webhook',
+            message: this.$t(`workflow.inputFeishuWebhook`),
             trigger: 'blur'
           }
         ],
@@ -128,7 +128,7 @@ export default {
           {
             type: 'array',
             required: true,
-            message: '请选择通知类型',
+            message: this.$t(`workflow.selectNotifyType`),
             trigger: 'blur'
           }
         ]

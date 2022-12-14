@@ -3,7 +3,7 @@
     <!-- start of edit webhook dialog -->
     <el-dialog
       width="40%"
-      :title="webhookEditMode?'修改触发器配置':'添加触发器'"
+      :title="webhookEditMode? $t(`workflow.editTrigger`): $t(`workflow.addTrigger`)"
       :visible.sync="showWebhookDialog"
       :close-on-click-modal="false"
       @close="closeWebhookDialog"
@@ -50,10 +50,10 @@
             :label="$t(`workflow.targetBranch`)"
             prop="repo.branch"
             :rules="[
-            { required: true, message: webhookSwap.repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
+            { required: true, message: webhookSwap.repo.is_regular ? $t(`workflow.inputRegExpressionConfiguration`):$t(`workflow.selectTargetBranch`), trigger: ['blur', 'change'] }
           ]"
           >
-            <el-input style="width: 100%;" v-if="webhookSwap.repo.is_regular"  v-model="webhookSwap.repo.branch" placeholder="请输入正则表达式配置" size="small"></el-input>
+            <el-input style="width: 100%;" v-if="webhookSwap.repo.is_regular"  v-model="webhookSwap.repo.branch" :placeholder="$t(`workflow.inputRegExpressionConfiguration`)" size="small"></el-input>
             <el-select
               v-else
               style="width: 100%;"
@@ -71,13 +71,13 @@
                 :value="branch.name"
               ></el-option>
             </el-select>
-            <el-switch v-if="webhookSwap.repo.source!=='gerrit'" v-model="webhookSwap.repo.is_regular" active-text="正则表达式配置" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
+            <el-switch v-if="webhookSwap.repo.source!=='gerrit'" v-model="webhookSwap.repo.is_regular" :active-text="$t(`workflow.regularExpressionConfiguration`)" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
             <div v-show="webhookSwap.repo.is_regular">
               <span v-show="matchedBranchNames">当前正则匹配到的分支：{{matchedBranchNames && matchedBranchNames.length === 0 ? '无': ''}}</span>
               <span style="display: inline-block; padding-right: 10px;" v-for="branch in matchedBranchNames" :key="branch">{{ branch }}</span>
             </div>
           </el-form-item>
-          <el-form-item label="部署环境" prop="namespace">
+          <el-form-item :label="$t(`workflow.deploymentEnv`)" prop="namespace">
             <el-select
               style="width: 100%;"
               v-model="webhookSwap.namespace"
@@ -126,7 +126,7 @@
               <el-option label="每次保留" value="never"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="部署服务" prop="targets">
+          <el-form-item :label="$t(`workflow.deploymentService`)" prop="targets">
             <el-select style="width: 100%;" v-model="webhookSwap.targets" multiple filterable value-key="key" size="small" placeholder="请选择">
               <el-option
                 v-for="(target,index) in webhookTargets"
@@ -198,11 +198,11 @@
     <el-card class="box-card">
       <div class="content dashed-container">
         <div>
-          <span class="title">定时器</span>
+          <span class="title">{{$t(`workflow.timer`)}}</span>
           <el-switch v-model="schedules.enabled"></el-switch>
         </div>
         <div class="trigger dashed-container">
-          <el-button v-if="schedules.enabled" @click="addTimerBtn" type="text">添加配置</el-button>
+          <el-button v-if="schedules.enabled" @click="addTimerBtn" type="text">{{$t(`global.addConfig`)}}</el-button>
           <div class="add-border" v-if="schedules.enabled">
             <TestTimer
               ref="timer"
@@ -216,7 +216,7 @@
               <!-- 添加参数 确定是产品工作流 -->
               <template v-slot:content="{ orgsObject, indexWork }">
                 <div class="underline"></div>
-                <div class="pipeline-header">工作流参数</div>
+                <div class="pipeline-header">{{$t(`workflow.workflowParams`)}}</div>
                 <workflow-args
                   :key="indexWork*(testInfos.length+1)"
                   :workflowName="workflowToRun.name"
@@ -247,7 +247,7 @@
         </div>
         <div class="trigger-container">
           <div v-if="webhook.enabled" class="trigger-list">
-            <el-button @click="addWebhookBtn" type="text">添加配置</el-button>
+            <el-button @click="addWebhookBtn" type="text">{{$t(`global.addConfig`)}}</el-button>
             <el-table class="add-border" :data="webhook.items" style="width: 100%;">
               <el-table-column :label="$t(`global.name`)">
                 <template slot-scope="{ row }">
@@ -269,12 +269,12 @@
                   <span>{{ row.main_repo.branch || 'N/A' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="部署环境">
+              <el-table-column :label="$t(`workflow.deploymentEnv`)">
                 <template slot-scope="{ row }">
                   <span>{{ row.workflow_args.namespace || 'N/A' }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="触发方式" width="130px">
+              <el-table-column :label="$t(`workflow.triggerWay`)" width="130px">
                 <template slot-scope="{ row }">
                   <div v-if="row.main_repo.events.length">
                     <div v-for="event in row.main_repo.events" :key="event">

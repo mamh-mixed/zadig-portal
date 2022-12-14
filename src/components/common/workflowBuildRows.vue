@@ -122,7 +122,7 @@
         </template>
       </el-table-column>
       <el-table-column width="100px"
-                       label="变量">
+                       :label="$t(`workflow.var`)">
         <template slot-scope="scope">
           <el-popover placement="left"
                       width="450"
@@ -213,7 +213,7 @@
         </template>
       </el-table-column>
       <el-table-column width="100px"
-                       label="变量">
+                       :label="$t(`workflow.var`)">
         <template slot-scope="scope">
           <el-popover placement="left"
                       width="450"

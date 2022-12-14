@@ -84,10 +84,10 @@
         <el-col :span="6">
           <div class="content">
             <div class="cate">
-              <span class="title">触发方式：</span>
-              <span v-if="item.job_type === 'timing'" class="desc">定时循环</span>
-              <span v-else-if="item.job_type === 'gap'" class="desc">间隔循环</span>
-              <span v-else-if="item.job_type === 'crontab'" class="desc">Cron 表达式</span>
+              <span class="title">{{$t(`workflow.triggerWay`)}}</span>
+              <span v-if="item.job_type === 'timing'" class="desc">{{$t(`triggerWay.timingCycle`)}}</span>
+              <span v-else-if="item.job_type === 'gap'" class="desc">{{$t(`triggerWay.gapCycle`)}}</span>
+              <span v-else-if="item.job_type === 'crontab'" class="desc">{{$t(`triggerWay.cronExpression`)}}</span>
             </div>
           </div>
         </el-col>
@@ -119,7 +119,7 @@
 
     <el-dialog
       :visible.sync="webhookDialogVisible"
-      :title="webhookEditMode?'编辑触发器':'添加触发器'"
+      :title="webhookEditMode?$t(`workflow.editTrigger`):$t(`workflow.addTrigger`)"
       width="700px"
       :close-on-click-modal="false"
       append-to-body
@@ -158,14 +158,14 @@
           prop="main_repo.branch"
           v-if="checkGitRepo"
           :rules="[
-          { required: true, message: currentWebhook.main_repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
+          { required: true, message: currentWebhook.main_repo.is_regular ? $t(`workflow.inputRegExpressionConfiguration`):$t(`workflow.selectTargetBranch`), trigger: ['blur', 'change'] }
         ]"
         >
           <el-input
             style="width: 100%;"
             v-if="currentWebhook.main_repo.is_regular"
             v-model="currentWebhook.main_repo.branch"
-            placeholder="请输入正则表达式配置"
+            :placeholder="$t(`workflow.inputRegExpressionConfiguration`)"
             size="small"
           ></el-input>
 
@@ -189,7 +189,7 @@
           <el-switch
             v-if="currentWebhook.repo.source!=='gerrit'"
             v-model="currentWebhook.main_repo.is_regular"
-            active-text="正则表达式配置"
+            :active-text="$t(`workflow.regularExpressionConfiguration`)"
             @change="currentWebhook.main_repo.branch = '';matchedBranchNames=null;"
           ></el-switch>
           <div v-show="currentWebhook.main_repo.is_regular">
@@ -260,21 +260,21 @@
     </el-dialog>
 
     <el-dialog
-      :title="timerEditMode?'修改定时器配置':'添加定时器'"
+      :title="timerEditMode?$t(`workflow.editTimer`):$t(`workflow.addTimer`)"
       :visible.sync="timerDialogVisible"
       width="700px"
       :close-on-click-modal="false"
       append-to-body
     >
       <el-form :model="currentTimer" ref="timerForm" :rules="timerRules" label-width="100px" label-position="left">
-        <el-form-item label="触发方式" prop="job_type">
+        <el-form-item :label="$t(`workflow.triggerWay`)" prop="job_type">
           <el-radio-group v-model="currentTimer.job_type" @change="changeTimerType">
-            <el-radio label="timing">定时循环</el-radio>
-            <el-radio label="gap">间隔循环</el-radio>
-            <el-radio label="crontab">Cron 表达式</el-radio>
+            <el-radio label="timing">{{$t(`triggerWay.timingCycle`)}}</el-radio>
+            <el-radio label="gap">{{$t(`triggerWay.gapCycle`)}}</el-radio>
+            <el-radio label="crontab">{{$t(`triggerWay.cronExpression`)}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="时间配置">
+        <el-form-item :label="$t(`workflow.timeConfig`)">
           <div v-if="currentTimer.job_type === 'timing'" class="inline-show">
             <!--定时-->
             <el-form-item prop="frequency">
@@ -331,7 +331,7 @@
         </el-table>
       </div>
       <div style="margin: 10px 0;">
-        <span style="display: inline-block; margin-bottom: 10px;">工作流执行变量</span>
+        <span style="display: inline-block; margin-bottom: 10px;">{{$t(`workflow.workflowExecutionVariables`)}}</span>
         <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
       </div>
       <div slot="footer">
@@ -364,7 +364,7 @@
             <span class="iconfont iconvery-time"></span>
           </div>
           <div class="detail">
-            <h4 class="trigger-title">定时器</h4>
+            <h4 class="trigger-title">{{$t(`workflow.timer`)}}</h4>
             <span class="trigger-desc">定时触发</span>
           </div>
         </div>

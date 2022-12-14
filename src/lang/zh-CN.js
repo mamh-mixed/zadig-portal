@@ -25,7 +25,14 @@ exports.default = {
     inputDesc: '请输入描述信息',
     loading: '加载中...',
     project: '项目',
-    workflow: '工作流'
+    workflow: '工作流',
+    workflowName: '工作流名称',
+    workflowID: '工作流标识',
+    number: '序号',
+    whetherToDisplay: '是否显示',
+    addConfig: '添加配置',
+    pleaseInput: '请输入',
+    pleaseSelect: '请选择'
   },
   login: {
     username: '用户名',
@@ -426,10 +433,11 @@ exports.default = {
     serviceName: '服务名称',
     imageName: '镜像名称',
     deploymentEnv: '部署环境',
-    serviceStatusCheck: ':label="$t(`workflow.serviceStatusCheck`)"',
-    notOpenServiceStatusCheck: '未开启:label="$t(`workflow.serviceStatusCheck`)"',
-    serviceStatusCheckPassed: ':label="$t(`workflow.serviceStatusCheck`)"通过',
-    serviceStatusCheckFailed: ':label="$t(`workflow.serviceStatusCheck`)"未通过',
+    deploymentService: '部署服务',
+    serviceStatusCheck: '服务状态检测',
+    notOpenServiceStatusCheck: '未开启服务状态检测',
+    serviceStatusCheckPassed: '服务状态检测通过',
+    serviceStatusCheckFailed: '服务状态检测未通过',
     scanName: '扫描名称',
     link: '链接',
     view: '查看',
@@ -508,7 +516,49 @@ exports.default = {
       trigger: '触发器',
       notify: '通知',
       high: '高级配置'
-    }
+    },
+    selectService: '选择服务',
+    distributionWay: '分发方式',
+    triggerWay: '触发方式',
+    timeConfig: '时间配置',
+    workflowParams: '工作流参数',
+    addTimer: '添加定时器',
+    editTimer: '修改定时器',
+    cronExpressionAnalysis: 'Cron 表达式解析',
+    addTest: '添加测试',
+    regularExpressionConfiguration: '正则表达式配置',
+    inputRegExpressionConfiguration: '请输入正则表达式配置',
+    selectTargetBranch: '请选择目标分支',
+    selectNotifyType: '请选择通知类型',
+    inputWechatWebhook: '请填写企业微信 Webhook',
+    inputDingDingWebhook: '请填写钉钉 Webhook',
+    inputFeishuWebhook: '请填写飞书 Webhook'
+
+  },
+  webhookType: {
+    dingding: '钉钉',
+    wechat: '企业微信',
+    feishu: '飞书'
+  },
+  triggerWay: {
+    timingCycle: '定时循环',
+    gapCycle: '间隔循环',
+    cronExpression: 'Cron 表达式'
+  },
+  productWorkflowSideBar: {
+    base: '基本信息',
+    build: '构建部署',
+    artifact: '交付物部署',
+    test: '测试',
+    distribute: '分发部署',
+    expand: '扩展',
+    trigger: '触发器',
+    notify: '通知'
+  },
+  resetPolicy: {
+    taskCompleted: '任务执行完成',
+    deployFailed: '部署结果失败',
+    testFailed: '测试结果失败'
   },
   productWorkflowStage: {
     buildv2: '构建',

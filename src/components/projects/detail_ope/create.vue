@@ -11,7 +11,7 @@
         class="demo-projectForm"
         inline-message
       >
-        <el-form-item label="项目名称" prop="project_name">
+        <el-form-item :label="$t(`workflow.projectName`)" prop="project_name">
           <el-input @keyup.native="()=>projectForm.project_name=projectForm.project_name.trim()" v-model="projectForm.project_name"></el-input>
         </el-form-item>
         <el-form-item label="项目主键" prop="product_name" class="label-icon">

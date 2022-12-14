@@ -2,7 +2,7 @@
   <div class="test-trigger">
     <!-- start of edit webhook dialog -->
     <el-dialog width="40%"
-               :title="webhookEditMode?'修改触发器配置':'添加触发器'"
+               :title="webhookEditMode?'{{$t(`workflow.editTrigger`)}}':'{{$t(`workflow.addTrigger`)}}'"
                :visible.sync="showWebhookDialog"
                :close-on-click-modal="false"
                custom-class="add-trigger-dialog"
@@ -33,9 +33,9 @@
         <el-form-item :label="$t(`workflow.targetBranch`)" prop="repo.branch"
           v-if="checkGitRepo && canSwitchBranch"
           :rules="[
-          { required: true, message: webhookSwap.repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
+          { required: true, message: webhookSwap.repo.is_regular ? $t(`workflow.inputRegExpressionConfiguration`):$t(`workflow.selectTargetBranch`), trigger: ['blur', 'change'] }
         ]">
-          <el-input style="width: 100%;" v-if="webhookSwap.repo.is_regular"  v-model="webhookSwap.repo.branch" placeholder="请输入正则表达式配置" size="small"></el-input>
+          <el-input style="width: 100%;" v-if="webhookSwap.repo.is_regular"  v-model="webhookSwap.repo.branch" :placeholder="$t(`workflow.inputRegExpressionConfiguration`)" size="small"></el-input>
           <el-select v-else
                      style="width: 100%;"
                      v-model="webhookSwap.repo.branch"
@@ -51,7 +51,7 @@
             </el-option>
           </el-select>
           <el-switch  v-if="webhookSwap.repo.source!=='gerrit'"
-            v-model="webhookSwap.repo.is_regular" active-text="正则表达式配置" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
+            v-model="webhookSwap.repo.is_regular" :active-text="$t(`workflow.regularExpressionConfiguration`)" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
           <div v-show="webhookSwap.repo.is_regular">
             <span v-show="matchedBranchNames">当前正则匹配到的分支：{{matchedBranchNames && matchedBranchNames.length === 0 ? '无': ''}}</span>
             <span style="display: inline-block; padding-right: 10px;" v-for="branch in matchedBranchNames" :key="branch">{{ branch }}</span>
@@ -145,7 +145,7 @@
                 <span>{{ scope.row.main_repo.branch }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="触发方式">
+            <el-table-column :label="$t(`workflow.triggerWay`)">
               <template slot-scope="scope">
                   <div v-if="scope.row.main_repo.events.length">
                     <div v-for="event in scope.row.main_repo.events" :key="event">

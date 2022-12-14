@@ -53,7 +53,7 @@
         <el-row :gutter="0">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconshengji"></i> 分发方式
+              <i class="iconfont iconshengji"></i> {{$t(`workflow.distributionWay`)}}
             </div>
           </el-col>
           <el-col :span="6">
@@ -103,7 +103,7 @@
             </el-col>
             <el-col :span="6">
               <div class="grid-content item-title">
-                <i class="iconfont iconvery-environ"></i> 部署环境
+                <i class="iconfont iconvery-environ"></i> {{$t(`workflow.deploymentEnv`)}}
               </div>
             </el-col>
             <el-col :span="6">
@@ -178,7 +178,7 @@
         <el-row :gutter="0">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconshengji"></i> 分发方式
+              <i class="iconfont iconshengji"></i> {{$t(`workflow.distributionWay`)}}
             </div>
           </el-col>
           <el-col :span="6">

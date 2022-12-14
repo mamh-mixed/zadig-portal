@@ -25,7 +25,14 @@ exports.default = {
     inputDesc: 'Please input description',
     loading: 'Loading...',
     project: 'Project',
-    workflow: 'Workflow'
+    workflow: 'Workflow',
+    workflowName: 'workflowName',
+    workflowID: 'workflowID',
+    number: 'Number',
+    whetherToDisplay: 'Whether To Display',
+    addConfig: 'Add Config',
+    pleaseInput: 'Please Input',
+    pleaseSelect: 'Please Select'
   },
   login: {
     username: 'Username',
@@ -394,11 +401,11 @@ exports.default = {
     testResults: 'Test Results',
     clone: 'Clone',
     startTask: 'Start Task',
-    var: 'Var',
+    var: 'Variables',
     manualReview: 'Manual Review',
     key: 'Key',
     value: 'Value',
-    workflowVars: 'Workflow Var',
+    workflowVars: 'Workflow Variables',
     cancelSuccess: 'Cancel Success',
     jobType: {
       build: 'Build',
@@ -426,6 +433,7 @@ exports.default = {
     serviceName: 'Service Name',
     imageName: 'Image Name',
     deploymentEnv: 'Deployment Environment',
+    deploymentService: 'Deployment Service',
     serviceStatusCheck: 'Service Status Check',
     notOpenServiceStatusCheck: 'Service status detection is not enabled',
     serviceStatusCheckPassed: 'Service status check passed',
@@ -508,7 +516,48 @@ exports.default = {
       trigger: 'Trigger',
       notify: 'Notify',
       high: 'High Settings'
-    }
+    },
+    selectService: 'Select Service',
+    distributionWay: 'Distribution Way',
+    triggerWay: 'Trigger Way',
+    timeConfig: 'Time Config',
+    workflowParams: 'Workflow Params',
+    addTimer: 'Add Timer',
+    editTimer: 'Edit Timer',
+    cronExpressionAnalysis: 'Cron Expression Analysis',
+    addTest: 'Add Test',
+    regularExpressionConfiguration: 'Regular Expression Configuration',
+    inputRegExpressionConfiguration: 'Please input regular expression configuration',
+    selectTargetBranch: 'Please select target branch',
+    selectNotifyType: 'Please Select Notify Type',
+    inputWechatWebhook: 'Please Input Wechat Webhook',
+    inputDingDingWebhook: 'Please Input DingDing Webhook',
+    inputFeishuWebhook: 'Please Input Feishu Webhook'
+  },
+  webhookType: {
+    dingding: 'DingDing',
+    wechat: 'Wechat',
+    feishu: 'Feishu'
+  },
+  triggerWay: {
+    timingCycle: 'Timing Cycle',
+    gapCycle: 'Gap Cycle',
+    cronExpression: 'Cron Expression'
+  },
+  productWorkflowSideBar: {
+    base: 'Base Info',
+    build: 'Build Deploy',
+    artifact: 'Artifact',
+    test: 'Test',
+    distribute: 'Distribute',
+    expand: 'Expand',
+    trigger: 'Trigger',
+    notify: 'Notify'
+  },
+  resetPolicy: {
+    taskCompleted: 'Task Completed',
+    deployFailed: 'Deploy Failed',
+    testFailed: 'Test Failed'
   },
   productWorkflowStage: {
     buildv2: 'Build',

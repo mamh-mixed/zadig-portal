@@ -10,19 +10,19 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item prop="display_name"
-                            label="工作流名称">
+                            :label="$t(`global.workflowName`)">
                 <el-input v-model="workflowInfo.display_name"
                           style="width: 80%;"
-                          placeholder="请输入工作流名称"></el-input>
+                          :placeholder="$t(`workflow.inputWorkflowName`)"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item prop="name"
-                            label="工作流标识">
+                            :label="$t(`global.workflowID`)">
                 <el-input v-model="workflowInfo.name"
                           :disabled="editMode"
                           style="width: 80%;"
-                          placeholder="请输入工作流标识"></el-input>
+                          :placeholder="$t(`workflow.inputWorkflowID`)"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -91,7 +91,7 @@
           </el-form-item>
           <el-form-item prop="reset_image_policy" label="设置回退策略" v-if="workflowInfo.reset_image">
             <el-radio-group v-model="workflowInfo.reset_image_policy">
-              <el-radio v-for="policy in resetPolicy" :key="policy.label" :label="policy.label">{{ policy.text }}</el-radio>
+              <el-radio v-for="policy in resetPolicy" :key="policy.label" :label="policy.label">{{ $t(`resetPolicy.${policy.text}`) }}</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
@@ -110,13 +110,13 @@ export default {
     return {
       resetPolicy: [{
         label: 'taskCompleted',
-        text: '任务执行完成'
+        text: 'taskCompleted'
       }, {
         label: 'deployFailed',
-        text: '部署结果失败'
+        text: 'deployFailed'
       }, {
         label: 'testFailed',
-        text: '测试结果失败'
+        text: 'testFailed'
       }],
       projects: [],
       projectList: [],
@@ -127,7 +127,7 @@ export default {
             type: 'string',
             required: true,
             trigger: ['blur', 'change'],
-            message: '请输入工作流名称'
+            message: this.$t(`workflow.inputWorkflowName`)
           }
         ],
         name: [

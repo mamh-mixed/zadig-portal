@@ -2,7 +2,7 @@
   <el-dialog title="构建设置" :visible.sync="isShowBuildOperateDialog" width="50%" center @close="handleClose">
     <template>
       <div class="build-configs">
-        <h4>代码信息</h4>
+        <h4>{{$t(`workflow.codeInfo`)}}</h4>
         <el-table :data="value.branch_filter">
           <el-table-column prop="repo_name" :label="$t(`workflow.codeLibrary`)" width="150px"></el-table-column>
           <el-table-column prop="filter_regexp" label="分支/标签可选范围">

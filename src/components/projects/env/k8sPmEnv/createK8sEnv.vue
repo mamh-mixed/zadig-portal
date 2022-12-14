@@ -94,7 +94,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="服务选择" v-if="projectConfig.source==='system'||projectConfig.source==='copy'" prop="selectedService">
+        <el-form-item :label="$t(`workflow.selectService`)" v-if="projectConfig.source==='system'||projectConfig.source==='copy'" prop="selectedService">
           <div class="select-service">
             <el-select v-model="projectConfig.selectedService" size="small" placeholder="选择服务" filterable clearable multiple collapse-tags>
               <el-option

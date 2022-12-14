@@ -41,7 +41,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconvery-environ"></i> 部署环境
+              <i class="iconfont iconvery-environ"></i> {{$t(`workflow.deploymentEnv`)}}
             </div>
           </el-col>
           <el-col :span="6">

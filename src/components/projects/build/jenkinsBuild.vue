@@ -22,7 +22,7 @@
       >
         <el-input v-model="jenkinsBuild.name" placeholder="构建名称" autofocus size="small" :disabled="!isCreate" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="服务选择">
+      <el-form-item :label="$t(`workflow.selectService`)">
         <el-select v-model="jenkinsBuild.targets" multiple size="small" value-key="key" filterable>
           <el-option
             v-for="(service,index) in serviceTargets"

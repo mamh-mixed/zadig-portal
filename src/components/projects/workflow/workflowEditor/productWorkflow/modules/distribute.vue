@@ -2,7 +2,7 @@
   <div class="workflow-distribute">
     <el-card class="box-card">
       <el-form ref="distributeForm" :model="distributeStageDetail" label-position="left" label-width="100px">
-        <el-form-item label="服务选择" prop="serviceTargets">
+        <el-form-item :label="$t(`workflow.selectService`)" prop="serviceTargets">
           <el-select
             @change="changeServiceSelect"
             v-model="distributeStageDetail.serviceTargets"
@@ -18,7 +18,7 @@
             <el-option v-for="service in allTargets" :key="service.key" :label="service.key" :value="service"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分发方式">
+        <el-form-item :label="$t(`workflow.distributionWay`)">
           <el-select v-model="distributeStageDetail.methods" @change="changeReleaseMethod"  @remove-tag="removeReleaseMethod" multiple size="small">
             <el-option label="镜像分发" value="image"></el-option>
             <el-option label="对象存储分发" value="object"></el-option>
