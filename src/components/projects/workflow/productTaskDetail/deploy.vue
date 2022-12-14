@@ -55,7 +55,7 @@
         <el-row :gutter="0">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconvery-service"></i> 服务名称
+              <i class="iconfont iconvery-service"></i> {{$t(`global.serviceName`)}}
             </div>
           </el-col>
           <el-col :span="6">
@@ -71,7 +71,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconSliceCopy"></i> 镜像信息
+              <i class="iconfont iconSliceCopy"></i> {{$t(`status.imgInfo`)}}
             </div>
           </el-col>
           <el-col :span="6">

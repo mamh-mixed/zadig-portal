@@ -32,7 +32,7 @@
             <span class="item-desc">{{build.service_name}}({{build.service_module}})</span>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">镜像信息</div>
+            <div class="item-title">{{$t(`status.imgInfo`)}}</div>
           </el-col>
           <el-col :span="6">
             <el-tooltip effect="dark" :content="build.target_image" placement="top">

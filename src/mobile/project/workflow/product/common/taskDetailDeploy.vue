@@ -16,7 +16,7 @@
             >{{deploy.status?$t(`workflowTaskStatus.${deploy.status}`):$t(`workflowTaskStatus.notRunning`)}}</div>
           </van-col>
           <van-col v-if="deploy.status!=='running'" :span="6">
-            <div class="item-title">持续时间</div>
+            <div class="item-title">{{$t(`workflow.duration`)}}</div>
           </van-col>
           <van-col v-if="deploy.status!=='running'" :span="6">
             <span class>{{$utils.timeFormat(deploy.end_time - deploy.start_time)}}</span>
@@ -24,7 +24,7 @@
         </van-row>
         <van-row :gutter="0">
           <van-col :span="6">
-            <div class="item-title">镜像信息</div>
+            <div class="item-title">{{$t(`status.imgInfo`)}}</div>
           </van-col>
           <van-col :span="18">
             <el-tooltip effect="dark" :content="deploy.image" placement="top">

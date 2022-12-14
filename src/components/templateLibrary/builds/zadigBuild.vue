@@ -15,7 +15,7 @@
         </el-form>
       </div>
       <div class="section">
-        <div class="primary-title">代码信息</div>
+        <div class="primary-title">{{$t(`workflow.codeInfo`)}}</div>
         <span class="tips">
           <i class="el-icon-info"></i>
           使用模板新建时配置</span>

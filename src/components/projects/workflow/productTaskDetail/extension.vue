@@ -18,7 +18,7 @@
         :class="colorTranslation(extensionStage.status, 'pipeline', 'task')"
       >{{ extensionStage.status?$t(`workflowTaskStatus.${extensionStage.status}`):$t(`workflowTaskStatus.notRunning`) }}</el-col>
       <el-col v-if="extensionStage.status!=='running'" :span="6">
-        <i class="iconfont iconshijian"></i> 持续时间
+        <i class="iconfont iconshijian"></i> {{$t(`workflow.duration`)}}
       </el-col>
       <el-col v-if="extensionStage.status!=='running'" :span="6">{{ extensionStage.duration }}</el-col>
     </el-row>

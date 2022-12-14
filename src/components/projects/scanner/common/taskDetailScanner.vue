@@ -31,7 +31,7 @@
           </el-col>
           <el-col v-if="task.status!=='running' && task.status!=='prepare'" :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconshijian"></i> 持续时间
+              <i class="iconfont iconshijian"></i> {{$t(`workflow.duration`)}}
             </div>
           </el-col>
           <el-col v-if="task.status!=='running' && task.status!=='prepare'" :span="6">
@@ -53,7 +53,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconinfo"></i> 代码信息
+              <i class="iconfont iconinfo"></i> {{$t(`workflow.codeInfo`)}}
             </div>
           </el-col>
           <el-col :span="6">

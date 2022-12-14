@@ -24,18 +24,18 @@
       </el-tooltip>
       <div class="right">
         <span class="item">
-          <span class="item left">修改人</span>
+          <span class="item left">{{$t(`workflow.updateBy`)}}</span>
           {{ scannerInfo.editor || '*' }}
         </span>
         <span class="item">
-          <span class="item left">最后修改时间</span>
+          <span class="item left">{{$t(`workflow.lastModify`)}}</span>
           {{ $utils.convertTimestamp(scannerInfo.updated_at) }}
         </span>
       </div>
     </el-card>
 
     <el-card class="box-card" :body-style="{ padding: '0px', margin: '15px 0 30px 0' }">
-      <div slot="header" class="block-title">历史任务</div>
+      <div slot="header" class="block-title">{{$t(`workflow.historyTask`)}}</div>
       <TaskList
         :taskList="scannerTasks"
         :total="total"

@@ -2,7 +2,7 @@
   <div class="task-detail-artifact-deploy">
     <el-card v-if="deploy" class="box-card task-process" :body-style="{ margin: '15px 0 0 0' }">
       <div slot="header" class="clearfix subtask-header">
-        <span>交付物部署</span>
+        <span>{{$t(`productWorkflowStage.artifact`)}}</span>
         <div v-if="deploy.status==='running'" class="loader">
           <div class="ball-scale-multiple">
             <div></div>
@@ -52,7 +52,7 @@
           </el-col>
           <el-col :span="6">
             <div class="item-title">
-              <i class="iconfont iconvery-service"></i> 服务名称
+              <i class="iconfont iconvery-service"></i> {{$t(`global.serviceName`)}}
             </div>
           </el-col>
           <el-col :span="6">
@@ -63,7 +63,7 @@
           </el-col>
           <el-col :span="6" v-if="!deploy.artifact_info">
             <div class="item-title">
-              <i class="iconfont iconSliceCopy"></i> 镜像信息
+              <i class="iconfont iconSliceCopy"></i> {{$t(`status.imgInfo`)}}
             </div>
           </el-col>
           <el-col :span="6" v-if="!deploy.artifact_info">

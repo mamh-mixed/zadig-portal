@@ -15,7 +15,7 @@
             </el-form-item>
             <el-form-item label="创建者">{{ taskDetail.creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
-            <el-form-item label="持续时间">{{ taskDetail.interval }}</el-form-item>
+            <el-form-item :label="$t(`workflow.duration`)">{{ taskDetail.interval }}</el-form-item>
             <el-form-item v-if="showOperation()" :label="$t(`global.operation`)">
               <!-- <el-button
                 v-if="taskDetail.status==='failed' || taskDetail.status==='cancelled' || taskDetail.status==='timeout'"

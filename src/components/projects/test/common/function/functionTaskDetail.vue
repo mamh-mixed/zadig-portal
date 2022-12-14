@@ -36,7 +36,7 @@
                         label="取消者">
             {{ taskDetail.task_revoker }}
           </el-form-item>
-          <el-form-item label="持续时间">
+          <el-form-item :label="$t(`workflow.duration`)">
             {{ taskDetail.interval }}
           </el-form-item>
           <el-form-item v-if="showOperation()"

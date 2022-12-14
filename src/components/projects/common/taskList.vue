@@ -104,7 +104,7 @@
         </template>
       </el-table-column>
       <el-table-column v-if="showTestReport"
-                       label="测试结果"
+                       :label="$t(`workflow.testResults`)"
                        min-width="100">
         <template slot-scope="scope">
           <template v-if="scope.row.test_reports">

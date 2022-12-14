@@ -16,7 +16,7 @@
           >&nbsp;{{ $t(`workflowTaskStatus.${scope.row.status}`) }}</span>
         </template>
       </el-table-column>
-      <el-table-column min-width="120" label="持续时间">
+      <el-table-column min-width="120" :label="$t(`workflow.duration`)">
         <template slot-scope="scope">
           <el-icon name="time"></el-icon>
           <span v-if="scope.row.status!=='running'" style="margin-left: 5px;">{{ $utils.timeFormatEn(scope.row.run_time) }}</span>

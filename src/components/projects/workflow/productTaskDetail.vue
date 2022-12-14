@@ -19,7 +19,7 @@
             <el-form-item label="创建者">{{ taskDetail.task_creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
             <el-form-item :label="$t(`project.environments`)">{{ workflow.namespace }}</el-form-item>
-            <el-form-item label="持续时间">
+            <el-form-item :label="$t(`workflow.duration`)">
               {{ taskDetail.interval }}
               <el-tooltip v-if="taskDetail.intervalSec<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
                 <i class="el-icon-warning" style="color: red;"></i>
