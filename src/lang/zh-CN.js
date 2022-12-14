@@ -909,7 +909,6 @@ exports.default = {
       },
       taskInfo: {
         head: '测试任务',
-        title: '自动化测试',
         emptyTask: '无',
         executionStatus: '运行状态',
         report: '测试报告',
