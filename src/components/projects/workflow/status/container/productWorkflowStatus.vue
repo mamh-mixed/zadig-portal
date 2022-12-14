@@ -1,246 +1,178 @@
 <template>
   <div class="product-workflow-status-container">
-    <div v-for="task in productWorkflowTasks.running"
-         :key="task.task_id"
-         class="task-container">
+    <div v-for="task in productWorkflowTasks.running" :key="task.task_id" class="task-container">
       <div class="progress-header">
         <div class="progress-header-view">
           <div class="status-view">
-            <div class="status running">
-              {{ $t(`workflowTaskStatus.${task.status}`) }}
-            </div>
+            <div class="status running">{{ $t(`workflowTaskStatus.${task.status}`) }}</div>
           </div>
           <div class="info-view">
             <span class="spec">
               <span>
-                <label>产品工作流 {{`#${task.task_id}`}}</label>
-                <br>
+                <label>{{$t('status.productWorkflow')}} {{`#${task.task_id}`}}</label>
+                <br />
                 <router-link
-                             :to="`/v1/projects/detail/${task.product_name}/pipelines/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${task.pipeline_display_name}`">
-                  <span class="workflow-name"><i
-                       class="el-icon-link"></i>{{`${task.pipeline_display_name}`}}</span>
+                  :to="`/v1/projects/detail/${task.product_name}/pipelines/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${task.pipeline_display_name}`"
+                >
+                  <span class="workflow-name">
+                    <i class="el-icon-link"></i>
+                    {{`${task.pipeline_display_name}`}}
+                  </span>
                 </router-link>
               </span>
             </span>
             <span class="stages-tag">
-              <CusTags :values="getStages(task.stages)" class="item"/>
+              <CusTags :values="getStages(task.stages)" class="item" />
             </span>
             <section class="basic-info">
-              <p class="author"><i class="el-icon-user"></i> {{task.task_creator}}</p>
-              <p class="time"><i class="el-icon-time"></i>
-                {{$utils.convertTimestamp(task.create_time)}} </p>
+              <p class="author">
+                <i class="el-icon-user"></i>
+                {{task.task_creator}}
+              </p>
+              <p class="time">
+                <i class="el-icon-time"></i>
+                {{$utils.convertTimestamp(task.create_time)}}
+              </p>
             </section>
           </div>
           <div class="operation-view">
-            <el-tooltip v-if="!taskDetailExpand[task.task_id]"
-                        class="item"
-                        effect="dark"
-                        content="查看任务流程"
-                        placement="top">
-              <span @click="showTaskDetail(task.task_id)"
-                    class="icon el-icon-data-board view-detail"></span>
+            <el-tooltip
+              v-if="!taskDetailExpand[task.task_id]"
+              class="item"
+              effect="dark"
+              :content="$t('status.viewTaskDetail')"
+              placement="top"
+            >
+              <span @click="showTaskDetail(task.task_id)" class="icon el-icon-data-board view-detail"></span>
             </el-tooltip>
-            <el-tooltip v-if="taskDetailExpand[task.task_id]"
-                        class="item"
-                        effect="dark"
-                        content="收起任务流程"
-                        placement="top">
-              <span @click="closeTaskDetail(task.task_id)"
-                    class="icon el-icon-arrow-up view-detail"></span>
+            <el-tooltip
+              v-if="taskDetailExpand[task.task_id]"
+              class="item"
+              effect="dark"
+              :content="$t('status.hideTaskDetail')"
+              placement="top"
+            >
+              <span @click="closeTaskDetail(task.task_id)" class="icon el-icon-arrow-up view-detail"></span>
             </el-tooltip>
-            <el-tooltip class="item"
-                        effect="dark"
-                        content="删除任务"
-                        placement="top">
-              <span @click="taskOperate('running','cancel',task.task_id,task.pipeline_name)"
-                    class="icon el-icon-delete delete"></span>
+            <el-tooltip class="item" effect="dark" :content="$t('status.deleteTask')" placement="top">
+              <span @click="taskOperate('running','cancel',task.task_id,task.pipeline_name)" class="icon el-icon-delete delete"></span>
             </el-tooltip>
-
           </div>
         </div>
       </div>
-      <div v-if="taskDetailExpand[task.task_id]"
-           class="stages">
-        <div v-if="showStage(task.stages,'buildv2')"
-             class="stage"
-             style="min-width: 250px;">
+      <div v-if="taskDetailExpand[task.task_id]" class="stages">
+        <div v-if="showStage(task.stages,'buildv2')" class="stage" style="min-width: 250px;">
           <div class="line first"></div>
           <div class="stage-header stage-header-empty-status">
-            <div class="stage-header-col stage-header-title ">
-              <h3 class="stage-title">
-                构建
-              </h3>
+            <div class="stage-header-col stage-header-title">
+              <h3 class="stage-title">{{$t('status.build')}}</h3>
               <i class="icon el-icon-right"></i>
             </div>
           </div>
           <ul class="list-unstyled steps cf-steps-list">
-            <li v-if="buildSubtaskInfo(task.stages).utRepos.length > 0"
-                class="cf-steps-list-item">
-              <el-popover ref="ut"
-                          placement="right"
-                          title="单元测试"
-                          width="400"
-                          trigger="click">
+            <li v-if="buildSubtaskInfo(task.stages).utRepos.length > 0" class="cf-steps-list-item">
+              <el-popover ref="ut" placement="right" :title="$t('status.unitTest')" width="400" trigger="click">
                 <el-table :data="buildSubtaskInfo(task.stages).utRepos">
-                  <el-table-column property="name"
-                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
-                  <el-table-column label="覆盖率">
+                  <el-table-column property="name" :label="$t('status.repoName')"></el-table-column>
+                  <el-table-column :label="$t('status.coverage')">
                     <template slot-scope="scope">
                       <i class="el-icon-data-analysis"></i>
-                      <span v-if="scope.row.no_stmt !== 0">{{
-                          (((scope.row.no_stmt-scope.row.no_missed_stmt)/scope.row.no_stmt)*100).toFixed(2)+"%"
-                          }}</span>
+                      <span v-if="scope.row.no_stmt !== 0">
+                        {{
+                        (((scope.row.no_stmt-scope.row.no_missed_stmt)/scope.row.no_stmt)*100).toFixed(2)+"%"
+                        }}
+                      </span>
                       <span v-else>-</span>
                     </template>
                   </el-table-column>
                 </el-table>
-                <div slot="reference"
-                     class="step step-status"
-                     :class="buildSubtaskInfo(task.stages).status">
+                <div slot="reference" class="step step-status" :class="buildSubtaskInfo(task.stages).status">
                   <div class="step-data">
                     <i class="el-icon-cloudy"></i>
-                    <span class="step-description">
-                      单元测试
-                    </span>
-
+                    <span class="step-description">{{$t('status.unitTest')}}</span>
                     <span class="step-type"></span>
                   </div>
-
                 </div>
               </el-popover>
-
             </li>
             <li class="cf-steps-list-item">
-              <el-popover ref="script"
-                          placement="right"
-                          title="构建信息"
-                          width="400"
-                          trigger="click">
+              <el-popover ref="script" placement="right" :title="$t('status.buildInfo')" width="400" trigger="click">
                 <el-table :data="buildSubtaskInfo(task.stages).buildRepos">
-                  <el-table-column property="repo_name"
-                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
-                  <el-table-column property="branch"
-                                   label="分支"></el-table-column>
+                  <el-table-column property="repo_name" :label="$t('status.repoName')"></el-table-column>
+                  <el-table-column property="branch" :label="$t('status.branch')"></el-table-column>
                   <el-table-column label="PR">
                     <template slot-scope="scope">
                       <span>{{scope.row.pr?scope.row.pr:'-'}}</span>
                     </template>
                   </el-table-column>
                 </el-table>
-                <div slot="reference"
-                     class="step step-status"
-                     :class="buildSubtaskInfo(task.stages).status">
+                <div slot="reference" class="step step-status" :class="buildSubtaskInfo(task.stages).status">
                   <div class="step-data">
                     <i class="el-icon-cloudy"></i>
-                    <span class="step-description">
-                      脚本构建
-                    </span>
-
+                    <span class="step-description">{{$t('status.scriptBuilding')}}</span>
                     <span class="step-type"></span>
                   </div>
-
                 </div>
               </el-popover>
-
             </li>
             <li class="cf-steps-list-item">
-              <el-popover ref="build_image"
-                          placement="right"
-                          title="镜像信息"
-                          width="650"
-                          trigger="click">
+              <el-popover ref="build_image" placement="right" :title="$t('status.imgInfo')" width="650" trigger="click">
                 <el-table :data="buildSubtaskInfo(task.stages).buildImage">
-                  <el-table-column property="image_name"
-                                   label="Image Name"></el-table-column>
-                  <el-table-column property="registry_repo"
-                                   label="Registry"></el-table-column>
+                  <el-table-column property="image_name" label="Image Name"></el-table-column>
+                  <el-table-column property="registry_repo" label="Registry"></el-table-column>
                 </el-table>
-                <div slot="reference"
-                     class="step step-status"
-                     :class="buildSubtaskInfo(task.stages).dockerBuildStatus">
+                <div slot="reference" class="step step-status" :class="buildSubtaskInfo(task.stages).dockerBuildStatus">
                   <div class="step-data">
                     <i class="el-icon-cloudy"></i>
-                    <span class="step-description">
-                      构建镜像
-                    </span>
-
+                    <span class="step-description">{{$t('status.imgBuilding')}}</span>
                     <span class="step-type"></span>
                   </div>
-
                 </div>
               </el-popover>
             </li>
           </ul>
         </div>
-        <div v-if="showStage(task.stages,'deploy')"
-             class="stage"
-             style="min-width: 250px;">
+        <div v-if="showStage(task.stages,'deploy')" class="stage" style="min-width: 250px;">
           <div class="line"></div>
           <div class="stage-header stage-header-empty-status">
-            <div class="stage-header-col stage-header-title ">
-              <h3 class="stage-title">
-                部署
-              </h3>
+            <div class="stage-header-col stage-header-title">
+              <h3 class="stage-title">{{$t('status.deploy')}}</h3>
               <i class="icon el-icon-right"></i>
             </div>
           </div>
           <ul class="list-unstyled steps cf-steps-list">
             <li class="cf-steps-list-item">
-              <el-popover ref="deploy_env"
-                          placement="right"
-                          title="环境更新"
-                          width="550"
-                          trigger="click">
+              <el-popover ref="deploy_env" placement="right" :title="$t('status.updateEnv')" width="550" trigger="click">
                 <el-table :data="deploySubtaskInfo(task.stages).serviceLists">
-                  <el-table-column property="service_name"
-                                   label="服务列表"></el-table-column>
-                  <el-table-column property="namespace"
-                                   :label="$t(`project.environments`)"></el-table-column>
-                  <el-table-column property="image"
-                                   label="镜像"></el-table-column>
+                  <el-table-column property="service_name" :label="$t('status.service')"></el-table-column>
+                  <el-table-column property="namespace" :label="$t('status.env')"></el-table-column>
+                  <el-table-column property="image" :label="$t('status.image')"></el-table-column>
                 </el-table>
-                <div slot="reference"
-                     class="step step-status"
-                     :class="deploySubtaskInfo(task.stages).status">
+                <div slot="reference" class="step step-status" :class="deploySubtaskInfo(task.stages).status">
                   <div class="step-data">
                     <i class="el-icon-cloudy"></i>
-                    <span class="step-description">
-                      环境更新
-                    </span>
-
+                    <span class="step-description">{{$t('status.updateEnv')}}</span>
                     <span class="step-type"></span>
                   </div>
-
                 </div>
               </el-popover>
-
             </li>
           </ul>
         </div>
-        <div v-if="showStage(task.stages,'testingv2')"
-             class="stage"
-             style="min-width: 250px;">
+        <div v-if="showStage(task.stages,'testingv2')" class="stage" style="min-width: 250px;">
           <div class="line"></div>
           <div class="stage-header stage-header-empty-status">
-            <div class="stage-header-col stage-header-title ">
-              <h3 class="stage-title">
-                测试
-              </h3>
+            <div class="stage-header-col stage-header-title">
+              <h3 class="stage-title">{{$t('status.test')}}</h3>
               <i class="icon el-icon-right"></i>
             </div>
           </div>
           <ul class="list-unstyled steps cf-steps-list">
             <li class="cf-steps-list-item">
-              <el-popover ref="function_test"
-                          placement="right"
-                          title="测试-代码信息"
-                          width="400"
-                          trigger="click">
+              <el-popover ref="function_test" placement="right" :title="$t('status.repoName')" width="400" trigger="click">
                 <el-table :data="testSubtaskInfo(task).integration_test.builds">
-                  <el-table-column property="repo_name"
-                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
-                  <el-table-column property="branch"
-                                   label="分支"></el-table-column>
+                  <el-table-column property="repo_name" :label="$t('status.repoName')"></el-table-column>
+                  <el-table-column property="branch" :label="$t('status.branch')"></el-table-column>
                   <el-table-column label="PR">
                     <template slot-scope="scope">
                       <span>{{scope.row.pr?scope.row.pr:'-'}}</span>
@@ -248,151 +180,89 @@
                   </el-table-column>
                 </el-table>
                 <div style="margin-top: 10px; margin-right: 15px; text-align: right;">
-                  <el-link v-if="testSubtaskInfo(task).integration_test.report_ready"
-                           :href="testSubtaskInfo(task).integration_test.report_url"
-                           type="primary">测试报告</el-link>
+                  <el-link
+                    v-if="testSubtaskInfo(task).integration_test.report_ready"
+                    :href="testSubtaskInfo(task).integration_test.report_url"
+                    type="primary"
+                  >{{$t('status.testReport')}}</el-link>
                 </div>
-                <div slot="reference"
-                     class="step step-status"
-                     :class="testSubtaskInfo(task).integration_test.status">
+                <div slot="reference" class="step step-status" :class="testSubtaskInfo(task).integration_test.status">
                   <div class="step-data">
                     <i class="el-icon-cloudy"></i>
-                    <span class="step-description">
-                      测试
-                    </span>
-
+                    <span class="step-description">{{$t('status.test')}}</span>
                     <span class="step-type"></span>
                   </div>
-
                 </div>
               </el-popover>
-
-            </li>
-            <li class="cf-steps-list-item">
-              <el-popover ref="performance_test"
-                          placement="right"
-                          title="性能测试-代码信息"
-                          width="400"
-                          trigger="click">
-                <el-table :data="testSubtaskInfo(task).performance_test.builds">
-                  <el-table-column property="repo_name"
-                                   :label="$t(`workflow.codeLibrary`)"></el-table-column>
-                  <el-table-column property="branch"
-                                   label="分支"></el-table-column>
-                  <el-table-column label="PR">
-                    <template slot-scope="scope">
-                      <span>{{scope.row.pr?scope.row.pr:'-'}}</span>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <div style="margin-top: 10px; margin-right: 15px; text-align: right;">
-                  <el-link v-if="testSubtaskInfo(task).performance_test.report_ready"
-                           :href="testSubtaskInfo(task).performance_test.report_url"
-                           type="primary">测试报告</el-link>
-                </div>
-
-                <div slot="reference"
-                     class="step step-status"
-                     :class="testSubtaskInfo(task).performance_test.status">
-                  <div class="step-data">
-                    <i class="el-icon-cloudy"></i>
-                    <span class="step-description">
-                      性能测试
-                    </span>
-
-                    <span class="step-type"></span>
-                  </div>
-
-                </div>
-              </el-popover>
-
             </li>
           </ul>
         </div>
-        <div v-if="showStage(task.stages,'release_image')"
-             class="stage"
-             style="min-width: 250px;">
+        <div v-if="showStage(task.stages,'release_image')" class="stage" style="min-width: 250px;">
           <div class="line"></div>
           <div class="stage-header stage-header-empty-status">
-            <div class="stage-header-col stage-header-title ">
-              <h3 class="stage-title">
-                分发
-              </h3>
+            <div class="stage-header-col stage-header-title">
+              <h3 class="stage-title">{{$t('status.distribute')}}</h3>
               <i class="icon el-icon-right"></i>
             </div>
           </div>
           <ul class="list-unstyled steps cf-steps-list">
             <li class="cf-steps-list-item">
-              <el-popover ref="release_image"
-                          placement="right"
-                          title="镜像分发"
-                          width="550"
-                          trigger="click">
+              <el-popover ref="release_image" placement="right" :title="$t('status.distributeImage')" width="550" trigger="click">
                 <el-table :data="distributeSubtaskInfo(task.stages).releaseImages">
-                  <el-table-column property="image_repo"
-                                   :label="$t(`workflow.dockerRegistry`)"></el-table-column>
-                  <el-table-column property="image_test"
-                                   label="镜像名称"></el-table-column>
+                  <el-table-column property="image_repo" :label="$t('status.imageRepo')"></el-table-column>
+                  <el-table-column property="image_test" :label="$t('status.imageName')"></el-table-column>
                 </el-table>
-                <div slot="reference"
-                     class="step step-status"
-                     :class="distributeSubtaskInfo(task.stages).status">
+                <div slot="reference" class="step step-status" :class="distributeSubtaskInfo(task.stages).status">
                   <div class="step-data">
                     <i class="el-icon-cloudy"></i>
-                    <span class="step-description">
-                      镜像分发
-                    </span>
-
+                    <span class="step-description">{{$t('status.distributeImage')}}</span>
                     <span class="step-type"></span>
                   </div>
-
                 </div>
               </el-popover>
-
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <div v-for="task in productWorkflowTasks.pending"
-         :key="task.task_id"
-         class="progress-header">
+    <div v-for="task in productWorkflowTasks.pending" :key="task.task_id" class="progress-header">
       <div class="progress-header-view">
         <div class="status-view">
-          <div class="status pending">
-            队列中
-          </div>
+          <div class="status pending">{{$t('status.queued')}}</div>
         </div>
         <div class="info-view">
           <span class="spec">
             <span>
-              <label>工作流 {{`#${task.task_id}`}}</label>
-              <br>
+              <label>{{$t('status.productWorkflow')}} {{`#${task.task_id}`}}</label>
+              <br />
               <router-link
-                           :to="`/v1/projects/detail/${task.product_name}/pipelines/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${task.pipeline_display_name}`">
-                <span class="workflow-name"><i
-                     class="el-icon-link"></i>{{`${task.pipeline_display_name}`}}</span>
+                :to="`/v1/projects/detail/${task.product_name}/pipelines/multi/${task.pipeline_name}/${task.task_id}?status=${task.status}&display_name=${task.pipeline_display_name}`"
+              >
+                <span class="workflow-name">
+                  <i class="el-icon-link"></i>
+                  {{`${task.pipeline_display_name}`}}
+                </span>
               </router-link>
             </span>
           </span>
           <span class="stages-tag">
-              <CusTags :values="getStages(task.stages)" class="item"/>
+            <CusTags :values="getStages(task.stages)" class="item" />
           </span>
           <section class="basic-info">
-            <p class="author"><i class="el-icon-user"></i> {{task.task_creator}}</p>
-            <p class="time"><i class="el-icon-time"></i>
-              {{$utils.convertTimestamp(task.create_time)}} </p>
+            <p class="author">
+              <i class="el-icon-user"></i>
+              {{task.task_creator}}
+            </p>
+            <p class="time">
+              <i class="el-icon-time"></i>
+              {{$utils.convertTimestamp(task.create_time)}}
+            </p>
           </section>
         </div>
         <div class="operation-view">
-          <span style="visibility: hidden;"
-                class="icon el-icon-data-board view-detail"></span>
-          <el-tooltip class="item"
-                      effect="dark"
-                      content="删除任务"
-                      placement="top">
-            <span @click="taskOperate('queue','cancel',task.task_id,task.pipeline_name)"
-                  class="icon el-icon-delete delete"></span>
+          <span style="visibility: hidden;" class="icon el-icon-data-board view-detail"></span>
+          <el-tooltip class="item" effect="dark" :content="$t('status.deleteTask')" placement="top">
+            <span @click="taskOperate('queue','cancel',task.task_id,task.pipeline_name)" class="icon el-icon-delete delete"></span>
           </el-tooltip>
         </div>
       </div>
@@ -435,8 +305,8 @@ export default {
           case 'cancel':
             cancelWorkflowAPI(this.projectName, pipeline_name, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '运行任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelRunningTaskSuccess'),
                 type: 'success',
                 offset: 50
               })
@@ -454,8 +324,8 @@ export default {
           case 'cancel':
             cancelWorkflowAPI(this.projectName, pipeline_name, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '队列任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelQueuedTaskSuccess'),
                 type: 'success',
                 offset: 50
               })
@@ -485,19 +355,19 @@ export default {
       }
       const stageNames = []
       if (stages.find(item => item.type === 'buildv2')) {
-        stageNames.push('构建')
+        stageNames.push(this.$t('productWorkflowStage.buildv2'))
       }
       if (stages.find(item => item.type === 'deploy')) {
-        stageNames.push('部署')
+        stageNames.push(this.$t('productWorkflowStage.deploy'))
       }
       if (stages.find(item => item.type === 'artifact')) {
-        stageNames.push('交付物部署')
+        stageNames.push(this.$t('productWorkflowStage.artifact'))
       }
       if (stages.find(item => item.type === 'testingv2')) {
-        stageNames.push('测试')
+        stageNames.push(this.$t('productWorkflowStage.testingv2'))
       }
       if (stages.find(item => item.type === 'release_image')) {
-        stageNames.push('分发')
+        stageNames.push(this.$t('productWorkflowStage.release_image'))
       }
       return stageNames
     },
@@ -520,14 +390,19 @@ export default {
         if (stage.type === 'buildv2') {
           meta.status = stage.status
           for (const sub_task in stage.sub_tasks) {
-            const static_check_element = stage.sub_tasks[sub_task].static_check_status.repos
+            const static_check_element =
+              stage.sub_tasks[sub_task].static_check_status.repos
             const ut_element = stage.sub_tasks[sub_task].ut_status.repos
             const build_repos_element = stage.sub_tasks[sub_task].job_ctx.builds
-            const build_image_element = stage.sub_tasks[sub_task].docker_build_status
-            meta.dockerBuildStatus = stage.sub_tasks[sub_task].docker_build_status.status
+            const build_image_element =
+              stage.sub_tasks[sub_task].docker_build_status
+            meta.dockerBuildStatus =
+              stage.sub_tasks[sub_task].docker_build_status.status
             meta.buildImage.push(build_image_element)
             if (static_check_element) {
-              meta.staticCheckRepos = meta.staticCheckRepos.concat(static_check_element)
+              meta.staticCheckRepos = meta.staticCheckRepos.concat(
+                static_check_element
+              )
             } else {
               meta.staticCheckRepos = []
             }
@@ -564,33 +439,61 @@ export default {
       const taskId = task.task_id
       const meta = {
         status: '',
-        integration_test: { status: '', builds: [], report_url: '', report_ready: false },
-        performance_test: { status: '', builds: [], report_url: '', report_ready: false }
+        integration_test: {
+          status: '',
+          builds: [],
+          report_url: '',
+          report_ready: false
+        },
+        performance_test: {
+          status: '',
+          builds: [],
+          report_url: '',
+          report_ready: false
+        }
       }
       task.stages.forEach(stage => {
         if (stage.type === 'testingv2') {
           meta.status = stage.status
           for (const key in stage.sub_tasks) {
-            if (Object.prototype.hasOwnProperty.call(stage.sub_tasks, key) && stage.sub_tasks[key].job_ctx.test_type === 'function') {
-              const testJobName = workflowName + '-' + taskId + '-' + stage.sub_tasks[key].test_name
+            if (
+              Object.prototype.hasOwnProperty.call(stage.sub_tasks, key) &&
+              stage.sub_tasks[key].job_ctx.test_type === 'function'
+            ) {
+              const testJobName =
+                workflowName +
+                '-' +
+                taskId +
+                '-' +
+                stage.sub_tasks[key].test_name
               const testModuleName = stage.sub_tasks[key].test_module_name
               meta.integration_test.test_name = stage.sub_tasks[key].test_name
               meta.integration_test.status = stage.sub_tasks[key].status
               meta.integration_test.builds = stage.sub_tasks[key].job_ctx.builds
-              meta.integration_test.report_ready = stage.sub_tasks[key].report_ready
-              meta.integration_test.report_url = (`/v1/projects/detail/${templateName}/pipelines/multi/testcase/${workflowName}/${taskId}/test/${testModuleName}/${testJobName}/case?is_workflow=1&service_name=${testModuleName}&test_type=function`)
+              meta.integration_test.report_ready =
+                stage.sub_tasks[key].report_ready
+              meta.integration_test.report_url = `/v1/projects/detail/${templateName}/pipelines/multi/testcase/${workflowName}/${taskId}/test/${testModuleName}/${testJobName}/case?is_workflow=1&service_name=${testModuleName}&test_type=function`
             }
           }
 
           for (const key in stage.sub_tasks) {
-            if (Object.prototype.hasOwnProperty.call(stage.sub_tasks, key) && stage.sub_tasks[key].job_ctx.test_type === 'performance') {
-              const testJobName = workflowName + '-' + taskId + '-' + stage.sub_tasks[key].test_name
+            if (
+              Object.prototype.hasOwnProperty.call(stage.sub_tasks, key) &&
+              stage.sub_tasks[key].job_ctx.test_type === 'performance'
+            ) {
+              const testJobName =
+                workflowName +
+                '-' +
+                taskId +
+                '-' +
+                stage.sub_tasks[key].test_name
               const testModuleName = stage.sub_tasks[key].test_module_name
               meta.performance_test.test_name = stage.sub_tasks[key].test_name
               meta.performance_test.builds = stage.sub_tasks[key].job_ctx.builds
               meta.performance_test.status = stage.sub_tasks[key].status
-              meta.performance_test.report_ready = stage.sub_tasks[key].report_ready
-              meta.performance_test.report_url = (`/v1/projects/detail/${templateName}/pipelines/multi/testcase/${workflowName}/${taskId}/test/${testModuleName}/${testJobName}/case?is_workflow=1&service_name=${testModuleName}&test_type=performance`)
+              meta.performance_test.report_ready =
+                stage.sub_tasks[key].report_ready
+              meta.performance_test.report_url = `/v1/projects/detail/${templateName}/pipelines/multi/testcase/${workflowName}/${taskId}/test/${testModuleName}/${testJobName}/case?is_workflow=1&service_name=${testModuleName}&test_type=performance`
             }
           }
         }
@@ -810,7 +713,7 @@ export default {
         height: 7px;
         background-color: #ccc;
         border-radius: 5px;
-        content: " ";
+        content: ' ';
       }
 
       .line {
@@ -922,7 +825,7 @@ export default {
           margin-top: 4px;
           background-color: #ccc;
           border-radius: 50%;
-          content: " ";
+          content: ' ';
         }
 
         .running::before {

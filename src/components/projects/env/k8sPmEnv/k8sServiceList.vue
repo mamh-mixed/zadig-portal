@@ -299,7 +299,7 @@ export default {
       box-sizing: border-box;
       margin-top: 14px;
       padding: 15px 12px;
-      background: #fff;
+      background: var(--color-global-bg);
       border: 1px solid #d2d7dc;
       border-radius: 6px;
 

@@ -70,8 +70,8 @@
         :disabled="checkIstioResult===''|| checkIstioResult==='failed'"
         @click="enableShareEnv"
         type="primary"
-      >确认</el-button>
-      <el-button v-else-if="mode === 'disable'" @click="disableShareEnv" size="small" type="primary">确认</el-button>
+      >{{$t('global.confirm')}}</el-button>
+      <el-button v-else-if="mode === 'disable'" @click="disableShareEnv" size="small" type="primary">{{$t('global.confirm')}}</el-button>
     </span>
   </el-dialog>
 </template>

@@ -9,10 +9,10 @@
           <div class="info-view">
             <span class="spec">
               <span>
-                <label>工作流 {{`#${task.task_id}`}}</label>
+                <label>{{$t('status.workflow')}} {{`#${task.task_id}`}}</label>
                 <br />
                 <router-link
-                  :to="`${task.project_name}`==='DEPLOY_CENTER' ? `/v1/release/workflow/${task.workflow_name}/${task.task_id}?status=${task.status}&display_name=${task.workflow_display_name}`: `/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}&display_name=${task.workflow_display_name}`"
+                  :to="`/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}&display_name=${task.workflow_display_name}`"
                 >
                   <span class="workflow-name">
                     <i class="el-icon-link"></i>
@@ -63,12 +63,12 @@
     <div v-for="task in customWorkflowTasks.pending" :key="task.task_id" class="progress-header">
       <div class="progress-header-view">
         <div class="status-view">
-          <div class="status pending">队列中</div>
+          <div class="status pending">{{$t('status.queued')}}</div>
         </div>
         <div class="info-view">
           <span class="spec">
             <span>
-              <label>工作流 {{`#${task.task_id}`}}</label>
+              <label>{{$t('status.workflow')}} {{`#${task.task_id}`}}</label>
               <br />
               <router-link
                 :to="`/v1/projects/detail/${task.project_name}/pipelines/custom/${task.workflow_name}/${task.task_id}?status=${task.status}&display_name=${task.workflow_display_name}`"
@@ -127,8 +127,8 @@ export default {
           case 'cancel':
             cancelWorkflowAPI(this.projectName, pipeline_name, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '运行任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelRunningTaskSuccess'),
                 type: 'success',
                 offset: 50
               })
@@ -146,8 +146,8 @@ export default {
           case 'cancel':
             cancelWorkflowAPI(this.projectName, pipeline_name, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '队列任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelQueuedTaskSuccess'),
                 type: 'success',
                 offset: 50
               })

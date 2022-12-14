@@ -67,14 +67,23 @@ export default {
     }
   },
   mounted () {
-    const term = new Terminal({ fontSize: this.fontSize, rows: '30', padding: '15', fontFamily: 'Monaco,Consolas,monospace,Microsoft YaHei,Arial', disableStdin: true, scrollback: 9999999, cursorStyle: null })
+    const term = new Terminal({
+      fontSize: this.fontSize,
+      rows: '30',
+      padding: '15',
+      fontFamily: 'Monaco,Consolas,monospace,Microsoft YaHei,Arial',
+      disableStdin: true,
+      scrollback: 9999999,
+      cursorStyle: null,
+      theme: this.$store.state.theme.xtermTheme
+    })
     const fitAddon = new FitAddon()
     term.loadAddon(fitAddon)
     term.open(document.getElementById(this.id))
     fitAddon.fit()
     this.term = term
-    const list = document.querySelectorAll('.xterm-viewport');
-    [].forEach.call(list, (item) => {
+    const list = document.querySelectorAll('.xterm-viewport')
+    ;[].forEach.call(list, item => {
       item.addEventListener('scroll', () => {
         this.scroll(item)
       })

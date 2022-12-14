@@ -118,7 +118,8 @@ export default {
       fontFamily: 'Monaco,Consolas,monospace,Microsoft YaHei,Arial',
       disableStdin: true,
       scrollback: 9999999,
-      cursorStyle: null
+      cursorStyle: null,
+      theme: this.$store.state.theme.xtermTheme
     })
     const fitAddon = new FitAddon()
     const searchAddon = new SearchAddon()

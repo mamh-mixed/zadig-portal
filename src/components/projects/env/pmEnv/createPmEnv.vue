@@ -307,7 +307,7 @@ export default {
       .service-content {
         box-sizing: border-box;
         padding: 15px 12px;
-        background: #fff;
+        background: var(--color-global-bg);
         border: 1px solid #d2d7dc;
         border-radius: 6px;
 

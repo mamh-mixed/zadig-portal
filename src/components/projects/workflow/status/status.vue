@@ -2,7 +2,7 @@
   <div class="status-detail-wrapper">
     <section v-if="task.running === 0 && task.pending === 0 && task.customRunning === 0 && task.customPending === 0" class="no-running">
       <img src="@assets/icons/illustration/runStatus.svg" alt />
-      <p>暂无正在运行的任务</p>
+      <p>{{$t('status.noRunningTask')}}</p>
     </section>
     <section v-else class="running-time">
       <ProductWorkflowStatus :productWorkflowTasks="productWorkflowTasks" :expandId="productExpandId" />
