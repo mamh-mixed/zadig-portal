@@ -1,16 +1,10 @@
 <template>
   <div class="function-test-detail-container" v-loading="configDataLoading">
     <section class="common-parcel-block">
-      <el-form class="primary-form" :model="test" ref="testFormRef" label-width="120px" label-position="left">
+      <el-form class="primary-form" :model="test"  :rules="testRules" ref="testFormRef" label-width="120px" label-position="left">
         <el-form-item
-          prop="name"
-          :label="$t(`testing.details.name`)"
-          :rules=" {
-            type: 'string',
-            required: true,
-            validator: validateTestName,
-            trigger: 'change'
-          }"
+            prop="name"
+            :label="$t(`testing.details.name`)"
         >
           <el-input :disabled="isEdit" size="small" v-model="test.name" :placeholder="$t(`testing.validation.testNameInsertionPrompt`)"></el-input>
         </el-form-item>
@@ -68,13 +62,13 @@
         </el-button>
       </div>
       <AdvancedConfig
-        class="common-parcel-block test-advanced-config"
-        v-show="test.advanced_setting_modified"
-        ref="advancedConfigRef"
-        :testConfig="test"
-        :allCodeHosts="allCodeHosts"
-        :validObj="validObj"
-        @validateFailed="test.advanced_setting_modified = true"
+          class="common-parcel-block test-advanced-config"
+          v-show="test.advanced_setting_modified"
+          ref="advancedConfigRef"
+          :testConfig="test"
+          :allCodeHosts="allCodeHosts"
+          :validObj="validObj"
+          @validateFailed="test.advanced_setting_modified = true"
       />
     </section>
 
@@ -102,17 +96,7 @@ import {
   updateTestAPI,
   singleTestAPI
 } from '@api'
-const validateTestName = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error(this.$t(`testing.validation.testNameInsertionPrompt`)))
-  } else {
-    if (!/^[a-zA-Z0-9-_]+$/.test(value)) {
-      callback(new Error(this.$t(`testing.validation.testNameVaidationError`)))
-    } else {
-      callback()
-    }
-  }
-}
+
 export default {
   data () {
     return {
@@ -161,7 +145,6 @@ export default {
         },
         test_type: 'function'
       },
-      validateTestName,
       validObj: new ValidateSubmit(),
       configDataLoading: false
     }
@@ -181,6 +164,27 @@ export default {
         origin: 'test',
         title: this.$t(`subTopbarMenu.tests`),
         vars: []
+      }
+    },
+    testRules () {
+      const validateTestName = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t(`testing.validation.testNameInsertionPrompt`)))
+        } else {
+          if (!/^[a-zA-Z0-9-_]+$/.test(value)) {
+            callback(new Error(this.$t(`testing.validation.testNameVaidationError`)))
+          } else {
+            callback()
+          }
+        }
+      }
+      return {
+        name: {
+          type: 'string',
+          required: true,
+          validator: validateTestName,
+          trigger: 'change'
+        }
       }
     }
   },
