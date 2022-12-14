@@ -960,13 +960,13 @@ exports.default = {
       error: '错误'
     },
     display: {
-      failReason: '失败原因:',
-      failMessage: '失败信息:',
-      failDetail: '失败详情:',
-      standardOut: '标准输出:',
-      errorMessage: '错误信息:',
-      errorDetail: '错误详情:',
-      errorType: '错误类型:'
+      failReason: '失败原因：',
+      failMessage: '失败信息：',
+      failDetail: '失败详情：',
+      standardOut: '标准输出：',
+      errorMessage: '错误信息：',
+      errorDetail: '错误详情：',
+      errorType: '错误类型：'
     }
   },
   repository: {
