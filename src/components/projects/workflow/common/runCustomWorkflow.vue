@@ -605,7 +605,7 @@ import {
   getCustomWorkfloweTaskPresetAPI,
   getRegistryWhenBuildAPI,
   getAssociatedBuildsAPI,
-  updateUserAPI,
+  updateCurrentUserMailAPI,
   checkWorkflowApprovalAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
@@ -901,7 +901,7 @@ export default {
             name: userInfo.name,
             phone: this.userInfo.phone
           }
-          updateUserAPI(userInfo.uid, params).then(res => {
+          updateCurrentUserMailAPI(userInfo.uid, params).then(res => {
             this.checkWorkflowApproval(this.workflowName)
             this.dialogMailEditFormVisible = false
             this.userInfo.phone = ''
