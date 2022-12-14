@@ -929,7 +929,7 @@ exports.default = {
         executionTime: '运行时间(s)'
       },
       logs: {
-        fetchErrorMessage: 'test日志获取失败'
+        fetchErrorMessage: '测试日志获取失败'
       }
     },
     validation: {
