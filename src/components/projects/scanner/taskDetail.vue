@@ -13,7 +13,7 @@
                 close-transition
               >{{ taskDetail.status?$t(`workflowTaskStatus.${taskDetail.status}`):$t(`workflowTaskStatus.notRunning`) }}</el-tag>
             </el-form-item>
-            <el-form-item label="创建者">{{ taskDetail.creator }}</el-form-item>
+            <el-form-item :label="$t(`global.creator`)">{{ taskDetail.creator }}</el-form-item>
             <el-form-item v-if="taskDetail.task_revoker" label="取消者">{{ taskDetail.task_revoker }}</el-form-item>
             <el-form-item :label="$t(`workflow.duration`)">{{ taskDetail.interval }}</el-form-item>
             <el-form-item v-if="showOperation()" :label="$t(`global.operation`)">

@@ -33,8 +33,8 @@ exports.default = {
     number: 'Number',
     whetherToDisplay: 'Whether To Display',
     addConfig: 'Add Config',
-    pleaseInput: 'Please Input',
-    pleaseSelect: 'Please Select',
+    pleaseInput: 'Please input',
+    pleaseSelect: 'Please select',
     timeout: 'Timeout',
     all: 'All',
     key: 'Key',
@@ -48,7 +48,12 @@ exports.default = {
     startTime: 'Start Time',
     endTime: 'End Time',
     execute: 'Execute',
-    confirmation: 'Confirm'
+    confirmation: 'Confirm',
+    inputName: 'Please input',
+    inputKey: 'Please input key',
+    inputValue: 'Please input value',
+    code: 'Code',
+    host: 'Host'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -455,7 +460,7 @@ exports.default = {
     env: 'Environment',
     testResults: 'Test Results',
     clone: 'Clone',
-    startTask: 'Start Task',
+    startTask: 'Run',
     manualReview: 'Manual Review',
     workflowVars: 'Workflow Variables',
     cancelSuccess: 'Cancel Success',
@@ -588,7 +593,22 @@ exports.default = {
     setFallbackPolicy: 'Set Fallback Policy',
     saveAsTemplate: 'Save As Template',
     templateName: 'Template Name',
-    inputTemplateName: 'Please input template name'
+    inputTemplateName: 'Please input template name',
+    pleaseSaveTrigger: 'Triggers can only be configured after saving the current workflow configuration',
+    selectTriggerType: 'Select Trigger Type',
+    gitTrigger: 'Git Trigger',
+    codeChangeTrigger: 'Code Change Trigger',
+    timedTrigger: 'Timed Trigger',
+    baseInfo: 'Base Info',
+    buildInfo: 'Build Info',
+    deliveryList: 'Delivery List',
+    versionInfo: 'Version Info',
+    versionName: 'Version Name',
+    versionDesc: 'Version Description',
+    versionTag: 'Version Tag',
+    productTest: 'Product Test',
+    selectContainer: 'Select Container',
+    noNeedToEnterVariables: 'No Need To Enter Variables'
   },
   webhookType: {
     dingding: 'DingDing',

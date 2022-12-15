@@ -29,7 +29,7 @@ const tabList = [
     name: 'ui'
   },
   {
-    label: 'YAML',
+    label: 'yaml',
     name: 'yaml'
   }
 ]

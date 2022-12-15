@@ -4,7 +4,7 @@
       <el-form-item :label="$t(`workflow.jobName`)" prop="name">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item label="服务组件">
+      <el-form-item :label="$t(`workflow.serviceComponent`)">
         <el-form-item prop="spec.targets" v-if="job.spec.source === 'runtime'" class="form-item">
           <el-select size="small" key="2" v-model="job.spec.targets" filterable clearable value-key="value" multiple style="width: 220px;">
             <el-option

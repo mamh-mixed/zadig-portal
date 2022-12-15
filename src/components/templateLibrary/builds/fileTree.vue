@@ -227,7 +227,7 @@ export default {
     askSaveYamlConfig (switchNode = false) {
       return this.$confirm('构建配置未保存，是否保存？', '提示', {
         distinguishCancelAndClose: true,
-        confirmButtonText: '保存',
+        confirmButtonText: this.$t(`global.save`),
         cancelButtonText: '放弃',
         type: 'warning'
       }).then(() => {

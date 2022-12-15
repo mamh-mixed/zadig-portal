@@ -5,7 +5,7 @@
              :body-style="{ margin: '15px 0 0 0' }">
       <div slot="header"
            class="clearfix subtask-header">
-        <span>容器部署</span>
+        <span>{{$t(`status.deploy`)}}</span>
         <div v-if="deploys[0].status==='running'"
              class="loader">
           <div class="ball-scale-multiple">

@@ -27,7 +27,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" :label="$t(`global.testName`)" width="100px" v-if="type=='zadig-test'"></el-table-column>
-      <el-table-column prop="name" label="扫描名称" width="100px" v-if="type=='zadig-scanning'"></el-table-column>
+      <el-table-column prop="name" :label="$t(`workflow.scanName`)" width="100px" v-if="type=='zadig-scanning'"></el-table-column>
       <el-table-column
         prop="service_module"
         :label="$t(`project.services`)"
@@ -47,7 +47,7 @@
               </el-col>
               <div v-if="build.showTip">
                 <el-col :span="7">
-                  <span style="color: #909399; font-size: 12px; line-height: 33px;">使用变更的代码执行</span>
+                  <span style="color: #909399; font-size: 12px; line-height: 33px;">{{$t(`workflow.executeWithChangedCode`)}}</span>
                 </el-col>
               </div>
               <div v-else>

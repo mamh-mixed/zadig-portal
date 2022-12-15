@@ -4,7 +4,7 @@
       <el-form-item :label="$t(`workflow.jobName`)" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item label="服务组件" :required="job.spec.source && job.spec.source!=='runtime'">
+      <el-form-item :label="$t(`workflow.serviceComponent`)" :required="job.spec.source && job.spec.source!=='runtime'">
         <el-form-item prop="spec.targets" v-if="job.spec.source === 'runtime'" class="form-item">
           <el-select size="small" key="2" v-model="job.spec.targets" filterable clearable value-key="value" multiple style="width: 220px;">
             <el-option

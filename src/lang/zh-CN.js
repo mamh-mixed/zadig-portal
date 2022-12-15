@@ -48,7 +48,12 @@ exports.default = {
     startTime: '开始时间',
     endTime: '结束时间',
     execute: '执行',
-    confirmation: '确认'
+    confirmation: '确认',
+    inputName: '请输入名称',
+    inputKey: '键 不能为空',
+    inputValue: '值 不能为空',
+    code: '代码',
+    host: '主机'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -588,7 +593,24 @@ exports.default = {
     setFallbackPolicy: '设置回退策略',
     saveAsTemplate: '保存为模版',
     templateName: '模板名称',
-    inputTemplateName: '请输入模板名称'
+    inputTemplateName: '请输入模板名称',
+    pleaseSaveTrigger: '保存当前工作流配置后才可配置触发器',
+    selectTriggerType: '选择触发器类型',
+    gitTrigger: 'Git 触发器',
+    codeChangeTrigger: '代码变更触发',
+    timedTrigger: '定时触发',
+    baseInfo: '基本信息',
+    buildInfo: '构建信息',
+    deliveryList: '交付清单',
+    versionInfo: '版本信息',
+    versionName: '版本名称',
+    versionDesc: '版本描述',
+    versionTag: '版本标签',
+    productTest: '产品测试',
+    selectContainer: '选择容器',
+    noNeedToEnterVariables: '无需输入变量',
+    executeWithChangedCode: '使用变更的代码执行'
+
   },
   webhookType: {
     dingding: '钉钉',
