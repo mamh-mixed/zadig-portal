@@ -79,7 +79,7 @@
     </el-form>
     <EnvConfig class="common-parcel-block" ref="envConfigRef" :envName="currentEnv" />
     <div v-if="variables.length" class="common-parcel-block box-card-service">
-      <VarYaml :variables="variables"  :title="'全局变量'" showTriggerBtn />
+      <VarYaml :variables="variables" />
     </div>
     <K8sServiceList ref="k8sServiceListRef" :selectedContainerMap="selectedContainerMap" :registryId="projectConfig.registry_id" />
   </div>

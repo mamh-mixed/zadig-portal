@@ -116,20 +116,18 @@
         </el-form-item>
       </el-form>
       <EnvConfig class="common-parcel-block" ref="envConfigRef" />
-      <div
-        v-if="(variables.length && !$utils.isEmpty(containerMap) && (projectConfig.source==='system')||projectConfig.source==='copy')"
-        class="common-parcel-block box-card-service"
-      >
-        <VarYaml :variables="variables" :title="'全局变量'" showTriggerBtn />
-      </div>
-      <K8sServiceList
-        v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
-        ref="k8sServiceListRef"
-        :showFilter="showFilter"
-        :cantOperate="rollbackMode"
-        :selectedContainerMap="selectedContainerMap"
-        :registryId="projectConfig.registry_id"
-      />
+      <template  v-if="projectConfig.source==='system' || projectConfig.source==='copy'">
+        <VarYaml ref="varYamlRef" class="common-parcel-block box-card-service" :variables="variables" />
+        <K8sServiceList
+          v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
+          ref="k8sServiceListRef"
+          :showFilter="showFilter"
+          :cantOperate="rollbackMode"
+          :selectedContainerMap="selectedContainerMap"
+          :registryId="projectConfig.registry_id"
+        />
+      </template>
+
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">{{$t(`global.cancel`)}}</el-button>
@@ -164,7 +162,8 @@ import {
   envRevisionsAPI,
   getClusterListAPI,
   createEnvAPI,
-  getRegistryWhenBuildAPI
+  getRegistryWhenBuildAPI,
+  getEnvDefaultVariableAPI
 } from '@api'
 import bus from '@utils/eventBus'
 import { uniq, cloneDeep, intersection, flattenDeep, debounce } from 'lodash'
@@ -418,6 +417,10 @@ export default {
       const projectName = this.projectName
       const envInfo = await getEnvInfoAPI(projectName, envName)
       const envRevision = await envRevisionsAPI(projectName, envName)
+      // start ---
+      const res = await getEnvDefaultVariableAPI(projectName, envName) // default_variable 复制的环境的全局变量
+      this.$refs.varYamlRef.showYaml = !!res.default_variable
+      // end   ---
       const vars = envInfo.vars
       const availableServices = flattenDeep(envInfo.services)
       const serviceImages = envRevision[0].services.filter(item => {

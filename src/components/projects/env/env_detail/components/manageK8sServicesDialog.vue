@@ -14,31 +14,25 @@
           <el-button type="primary" size="mini" plain @click="updateServices.service_names = currentAllInfo.services">全选</el-button>
         </el-form-item>
       </el-form>
-      <template v-if="hasPlutus && opeType === 'add'">
-        <div class="header">服务名称</div>
-        <CheckResource :checkResource="checkResource" :currentResourceCheck="currentResourceCheck" @checkRes="svcResources = $event" />
-      </template>
       <template v-if="opeType !== 'delete'">
-        <div v-show="opeType === 'update' || currentVars.length">
-          <div class="header">变量配置</div>
-          <div class="var-title">
-            所选服务有使用环境变量，请确认对应变量值
-            <VariablePreviewEditor
-              :services="previewServices"
-              :projectName="productInfo.product_name"
-              :envName="productInfo.env_name"
-              :variables="currentVars"
-            />
-          </div>
-          <el-table :data="currentVars" style="width: 100%;">
-            <el-table-column prop="key" :label="$t(`global.key`)"></el-table-column>
-            <el-table-column :label="$t(`global.value`)">
-              <template slot-scope="{ row }">
-                <VariableEditor :varKey="row.key" :value.sync="row.value" />
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+        <div class="header">服务列表</div>
+        <CheckResource
+          v-if="opeType==='add'"
+          :checkResource="checkResource"
+          :currentResourceCheck="currentResourceCheck"
+          @checkRes="svcResources = $event"
+        />
+        <el-table v-else-if="opeType==='update'" :data="currentResourceCheck" style="width: 100%;">
+          <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
+          <el-table-column type="expand" width="100px" label="变量配置">
+            <template slot-scope="{ row }">
+              <div class="primary-title">变量配置</div>
+              <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'200px'">
+                <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.default_variable" />
+              </Resize>
+            </template>
+          </el-table-column>
+        </el-table>
       </template>
     </div>
     <div slot="footer">
@@ -49,6 +43,8 @@
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import CheckResource from '@/components/projects/serviceMgr/common/checkResource.vue'
 import {
   autoUpgradeEnvAPI,
@@ -301,7 +297,9 @@ export default {
     }
   },
   components: {
-    CheckResource
+    CheckResource,
+    Resize,
+    CodeMirror
   }
 }
 </script>
@@ -342,6 +340,10 @@ export default {
       .el-radio__label {
         padding-left: 4px;
       }
+    }
+
+    .primary-title {
+      margin-bottom: 14px;
     }
   }
 }

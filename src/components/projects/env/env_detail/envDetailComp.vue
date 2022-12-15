@@ -127,7 +127,7 @@
                   @click="envSource==='helm' ? openUpdateHelmVar() : openUpdateK8sVar()"
                   size="mini"
                   plain
-                >{{ envSource==='helm' ? '更新全局变量' : '更新环境变量' }}</el-button>
+                >更新全局变量</el-button>
               </el-tooltip>
               <template v-if="productInfo.share_env_enable && productInfo.share_env_is_base">
                 <router-link

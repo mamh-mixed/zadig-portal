@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="`设置 ${currentEnv} 环境变量`" :visible.sync="dialogVisible" width="850px">
     <div>
-      <VarYaml :variables="variables" :title="'全局变量'" v-if="deployType === 'k8s'" class="var-list-container" showTriggerBtn />
+      <VarYaml :variables="variables" v-if="deployType === 'k8s'" class="var-list-container" />
       <HelmEnvTemplate
         v-else-if="deployType === 'helm'"
         class="chart-value"
@@ -32,7 +32,7 @@ export default {
   },
   data () {
     return {
-      variables: [],
+      variables: [], // all update : default_variable
       chartNames: [],
       currentEnvObj: undefined
     }

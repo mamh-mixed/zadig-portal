@@ -81,6 +81,12 @@
               </el-form-item>
             </template>
           </div>
+          <div v-if="service.default_variable" class="var-config">
+            <div class="primary-title var-title">变量配置</div>
+            <Resize @sizeChange="$refs[`codemirror-${serviceName}`].refresh()" :height="'200px'">
+              <CodeMirror :ref="`codemirror-${serviceName}`" v-model="service.default_variable" />
+            </Resize>
+          </div>
         </div>
       </el-form>
     </div>
@@ -88,6 +94,8 @@
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import virtualListItem from '../../common/imageItem'
 import virtualScrollList from 'vue-virtual-scroll-list'
 import { imagesAPI, checkK8sSvcResourceAPI } from '@api'
@@ -211,7 +219,9 @@ export default {
     }
   },
   components: {
-    virtualScrollList
+    virtualScrollList,
+    Resize,
+    CodeMirror
   }
 }
 </script>
@@ -309,6 +319,14 @@ export default {
         .el-select {
           width: 100%;
         }
+      }
+    }
+
+    .var-config {
+      margin-top: 14px;
+
+      .var-title {
+        margin-bottom: 5px;
       }
     }
   }

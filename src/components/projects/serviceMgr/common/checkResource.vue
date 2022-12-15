@@ -2,7 +2,7 @@
 <template>
   <el-table :data="currentResource" style="width: 100%;" :default-expand-all="expandAll">
     <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
-    <el-table-column>
+    <el-table-column v-if="hasPlutus">
       <span slot="header">
         资源检测
         <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
@@ -16,7 +16,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column :label="$t(`global.operation`)" width="200px">
+    <el-table-column :label="$t(`global.operation`)" width="200px" v-if="hasPlutus">
       <template slot-scope="{ row }">
         <el-radio-group v-model="row.deploy_strategy">
           <el-radio label="import" :disabled="!row.deployed">仅导入服务</el-radio>

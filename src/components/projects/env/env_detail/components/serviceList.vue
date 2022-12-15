@@ -44,9 +44,6 @@
                   </el-tooltip>
                 </span>
               </el-popover>
-              <el-tooltip  effect="dark" content="更新服务" placement="top">
-                <i v-hasPermi="{projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'},isBtn:true}" @click="updateService(scope.row)" class="iconfont icongengxin operation"></i>
-              </el-tooltip>
             </template>
           </template>
         </template>
@@ -122,12 +119,10 @@
             <el-tooltip
               v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})"
               effect="dark"
-              content="查看服务配置"
+              content="更新服务"
               placement="top"
             >
-              <router-link :to="setServiceConfigRoute(scope)">
-                <i class="iconfont iconfuwupeizhi"></i>
-              </router-link>
+              <i @click="updateService(scope.row)" class="iconfont icongengxin"></i>
             </el-tooltip>
             <el-tooltip
               v-else
@@ -135,16 +130,36 @@
               content="无权限操作"
               placement="top"
             >
-              <span><i class="iconfont iconfuwupeizhi permission-disabled"></i></span>
+              <span><i class="iconfont icongengxin permission-disabled"></i></span>
             </el-tooltip>
           </span>
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog :title="`更新服务 - ${updateServiceInfo.serviceName}`" :visible.sync="updateServiceInfo.dialogVisible" width="60%" class="update-service">
+      <div>
+        <div class="primary-title">变量配置</div>
+        <Resize v-show="updateServiceInfo.default_variable" @sizeChange="$refs.codemirror.refresh()" :height="'300px'">
+          <CodeMirror ref="codemirror" v-model="updateServiceInfo.default_variable" />
+        </Resize>
+        <div v-show="!updateServiceInfo.default_variable" style="color: #aaa;">
+          无服务变量
+        </div>
+        <div style="margin-top: 14px;">
+          <el-checkbox v-if="serviceStatus[updateServiceInfo.serviceName] && serviceStatus[updateServiceInfo.serviceName]['tpl_updatable']" v-model="updateServiceInfo.checked">同时更新服务配置</el-checkbox>
+        </div>
+      </div>
+      <div slot="footer" >
+        <el-button @click="updateServiceInfo.dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="updateServiceInfo.dialogVisible = false" size="small">更新</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import { serviceTemplateAfterRenderAPI } from '@api'
 
 const jsdiff = require('diff')
@@ -155,7 +170,6 @@ export default {
     setRoute: Function,
     serviceStatus: Object,
     envSource: String,
-    updateService: Function,
     isPmService: Boolean,
     isProd: Boolean,
     upgradeServiceByWorkflow: Function,
@@ -172,6 +186,12 @@ export default {
         Error: 'danger',
         Unstable: 'warning',
         Unstart: 'info'
+      },
+      updateServiceInfo: {
+        dialogVisible: false,
+        serviceName: '',
+        default_variable: '',
+        checked: true
       }
     }
   },
@@ -209,7 +229,34 @@ export default {
       } else {
         return name
       }
+    },
+    updateService (service) {
+      console.log('更新服务', service)
+      this.updateServiceInfo.dialogVisible = true
+      this.updateServiceInfo.serviceName = service.service_name
     }
+  },
+  components: {
+    Resize,
+    CodeMirror
   }
 }
 </script>
+
+<style lang="less">
+.update-service {
+  .el-dialog__header {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e4e4e4;
+  }
+
+  .el-dialog__body {
+    padding: 30px 40px;
+
+    .primary-title {
+      margin-bottom: 14px;
+    }
+  }
+}
+</style>

@@ -1,9 +1,8 @@
 <template>
   <div class="variable-list">
     <div class="primary-title" style="margin-bottom: 0;">
-      <span>{{ title }}</span>
+      <span>全局变量</span>
       <i
-        v-if="showTriggerBtn"
         style="margin-left: 10px; cursor: pointer;"
         :class="[showYaml ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"
         @click="showYaml = !showYaml"
@@ -11,7 +10,7 @@
     </div>
     <div class="content" v-show="showYaml">
       <Resize class="desc mirror" @sizeChange="$refs.codemirror.refresh()">
-        <CodeMirror ref="codemirror" v-model="curYaml" showBorder />
+        <CodeMirror ref="codemirror" v-model="curYaml" />
       </Resize>
     </div>
   </div>
@@ -22,23 +21,14 @@ import Resize from '@/components/common/resize'
 import CodeMirror from '@/components/projects/common/codemirror.vue'
 export default {
   props: {
-    variables: Array,
     value: {
       default: '',
       type: String
-    },
-    title: {
-      default: '',
-      type: String
-    },
-    showTriggerBtn: {
-      default: false,
-      type: Boolean
     }
   },
   data () {
     return {
-      showYaml: true
+      showYaml: false
     }
   },
   computed: {
