@@ -44,13 +44,13 @@
         </el-row>
         <el-row class="item" :gutter="0" v-for="(item,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="item-title">{{$t(`global.codeLibrary`)}}({{item.source}})</div>
+            <div class="item-title">{{$t(`global.repository`)}}({{item.source}})</div>
           </el-col>
           <el-col :span="8">
             <div class="item-desc">{{item.repo_name}}</div>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">{{$t(`workflow.codeInfo`)}}</div>
+            <div class="item-title">{{$t(`global.gitMessage`)}}</div>
           </el-col>
           <el-col :span="8">
             <RepoJump :build="item" />

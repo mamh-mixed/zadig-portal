@@ -54,7 +54,7 @@
                   :key="index">
             <el-col :span="6">
               <div class="grid-content item-title">
-                <i class="iconfont icondaima"></i> {{$t(`status.repoName`)}}({{build.source}})
+                <i class="iconfont icondaima"></i> {{$t(`global.repository`)}}({{build.source}})
               </div>
             </el-col>
             <el-col :span="6">
@@ -63,7 +63,7 @@
             </el-col>
             <el-col :span="6">
               <div class="grid-content item-title">
-                <i class="iconfont iconinfo"></i> {{$t(`workflow.codeInfo`)}}
+                <i class="iconfont iconinfo"></i> {{$t(`global.gitMessage`)}}
               </div>
             </el-col>
             <el-col :span="6">

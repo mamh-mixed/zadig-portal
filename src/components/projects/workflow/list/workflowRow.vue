@@ -13,9 +13,9 @@
           <span v-else class="el-icon-warning"></span>
         </div>
         <div class="tag-container">
-          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.custom`)}}</el-tag>
-          <el-tag v-else-if="workflowInfo.workflow_type === 'release'" class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.release`)}}</el-tag>
-          <el-tag v-else class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.product`)}}</el-tag>
+          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.customWorkflowTag`)}}</el-tag>
+          <el-tag v-else-if="workflowInfo.workflow_type === 'release'" class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.releaseWorkflowTag`)}}</el-tag>
+          <el-tag v-else class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.productWorkflowTag`)}}</el-tag>
         </div>
 
         <div class="stages-container">

@@ -73,7 +73,7 @@
             <li v-if="buildSubtaskInfo(task.stages).utRepos.length > 0" class="cf-steps-list-item">
               <el-popover ref="ut" placement="right" :title="$t('status.unitTest')" width="400" trigger="click">
                 <el-table :data="buildSubtaskInfo(task.stages).utRepos">
-                  <el-table-column property="name" :label="$t('status.repoName')"></el-table-column>
+                  <el-table-column property="name" :label="$t('global.repository')"></el-table-column>
                   <el-table-column :label="$t('status.coverage')">
                     <template slot-scope="scope">
                       <i class="el-icon-data-analysis"></i>
@@ -98,7 +98,7 @@
             <li class="cf-steps-list-item">
               <el-popover ref="script" placement="right" :title="$t('status.buildInfo')" width="400" trigger="click">
                 <el-table :data="buildSubtaskInfo(task.stages).buildRepos">
-                  <el-table-column property="repo_name" :label="$t('status.repoName')"></el-table-column>
+                  <el-table-column property="repo_name" :label="$t('global.repository')"></el-table-column>
                   <el-table-column property="branch" :label="$t('status.branch')"></el-table-column>
                   <el-table-column label="PR">
                     <template slot-scope="scope">
@@ -169,9 +169,9 @@
           </div>
           <ul class="list-unstyled steps cf-steps-list">
             <li class="cf-steps-list-item">
-              <el-popover ref="function_test" placement="right" :title="$t('status.repoName')" width="400" trigger="click">
+              <el-popover ref="function_test" placement="right" :title="$t('global.repository')" width="400" trigger="click">
                 <el-table :data="testSubtaskInfo(task).integration_test.builds">
-                  <el-table-column property="repo_name" :label="$t('status.repoName')"></el-table-column>
+                  <el-table-column property="repo_name" :label="$t('global.repository')"></el-table-column>
                   <el-table-column property="branch" :label="$t('status.branch')"></el-table-column>
                   <el-table-column label="PR">
                     <template slot-scope="scope">
