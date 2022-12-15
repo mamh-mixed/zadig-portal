@@ -53,7 +53,10 @@ exports.default = {
     inputKey: 'Please input key',
     inputValue: 'Please input value',
     code: 'Code',
-    host: 'Host'
+    host: 'Host',
+    string: 'String',
+    enumerate: 'Enumerate',
+    multilineText: 'Multiline Text'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -617,7 +620,23 @@ exports.default = {
     notUseDockerCache: "Don't use Docker cache",
     notUseDockerCacheTip: 'It only takes effect for the build configured with image construction steps',
     quickSelectService: 'Quick Select Service',
-    quickSelectServiceTip: 'Indirectly select the required service by specifying the build configuration'
+    quickSelectServiceTip: 'Indirectly select the required service by specifying the build configuration',
+    selectTest: 'Select Test',
+    testConfig: 'Test Config',
+    selectShareDirectory: 'Select Share Directory',
+    enableSharedStorage: 'Enable Shared Storage',
+    enableSharedStorageTip: 'The cluster has no shared storage resources, please go to "System Settings" - "Cluster Management" to configure',
+    runtimeInput: 'Runtime Input',
+    fixedvalue: 'Fixed Value',
+    globalVariableOrotherTaskOutput: 'Global Variable Or Other Task Output',
+    workflowTemplate: 'Workflow Template',
+    atLeastOneStage: 'Please fill in at least one stage',
+    inputStageJob: 'Please fill in the task in ${name}',
+    saveJobconfigFirst: 'Please save the task configuration first',
+    atLeastOneJob: 'Please create at least one task',
+    saveLastJobconfigFirst: 'Please save the previous task configuration first',
+    confirmDelStage: 'Confirm delete "{name}" stage ?',
+    duplicateJobName: 'Duplicate Job Name'
   },
   webhookType: {
     dingding: 'DingDing',

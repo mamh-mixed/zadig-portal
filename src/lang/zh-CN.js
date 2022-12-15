@@ -53,7 +53,10 @@ exports.default = {
     inputKey: '键 不能为空',
     inputValue: '值 不能为空',
     code: '代码',
-    host: '主机'
+    host: '主机',
+    string: '字符串',
+    enumerate: '枚举',
+    multilineText: '多行文本'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -617,7 +620,23 @@ exports.default = {
     notUseDockerCache: '不使用 Docker 缓存',
     notUseDockerCacheTip: '只对配置了镜像构建步骤的构建生效',
     quickSelectService: '快捷选服务',
-    quickSelectServiceTip: '通过指定构建配置间接选择出需要的服务'
+    quickSelectServiceTip: '通过指定构建配置间接选择出需要的服务',
+    selectTest: '选择测试',
+    testConfig: '测试配置',
+    selectShareDirectory: '选择共享目录',
+    enableSharedStorage: '开启共享存储',
+    enableSharedStorageTip: '集群无共享存储资源，请前往「系统设置」-「集群管理」配置',
+    runtimeInput: '运行时输入',
+    fixedvalue: '固定值',
+    globalVariableOrotherTaskOutput: '全局变量/其他任务输出',
+    workflowTemplate: '工作流模版',
+    atLeastOneStage: '请至少填写一个阶段',
+    inputStageJob: '请填写 {name} 中的任务',
+    saveJobconfigFirst: '请先保存任务配置',
+    atLeastOneJob: '请至少创建一个任务',
+    saveLastJobconfigFirst: '请先保存上一个任务配置',
+    confirmDelStage: '确定删除阶段 {name}',
+    duplicateJobName: 'Job 名称重复'
   },
   webhookType: {
     dingding: '钉钉',

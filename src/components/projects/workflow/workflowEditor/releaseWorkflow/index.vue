@@ -624,17 +624,17 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.payload.stages.length === 0) {
-            this.$message.error(' 请至少填写一个阶段')
+            this.$message.error(this.$t(`workflow.atLeastOneStage`))
             return
           }
           this.payload.stages.forEach(item => {
             if (item.jobs.length === 0) {
-              this.$message.error(`请填写 ${item.name} 中的任务`)
+              this.$message.error(this.$t(`workflow.inputStageJob`, { name: item.name }))
               throw Error()
             }
           })
           if (this.isShowFooter) {
-            this.$message.error('请先保存任务配置')
+            this.$message.error(this.$t(`workflow.saveJobconfigFirst`))
             return
           }
           this.saveWorkflow()
@@ -911,11 +911,11 @@ export default {
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {
-        this.$message.error('请至少创建一个任务')
+        this.$message.error(this.$t(`workflow.atLeastOneJob`))
         return
       }
       if (this.isShowFooter) {
-        this.$message.error('请先保存上一个任务配置')
+        this.$message.error(this.$t(`workflow.saveLastJobconfigFirst`))
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -988,7 +988,7 @@ export default {
         if (valid) {
           const curJob = this.$refs[this.job.type].getData()
           if (!this.isEditJob && allJobList.includes(curJob.name)) {
-            this.$message.error(' Job 名称重复')
+            this.$message.error(this.$t(`workflow.duplicateJobName`))
             return false
           }
           this.$set(

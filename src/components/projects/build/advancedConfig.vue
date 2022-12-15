@@ -145,16 +145,16 @@
       </el-form-item>
       <div class="item-title" v-if="isShowShareStorage">共享存储</div>
       <el-form-item
-        label="开启共享存储"
+        :label="$t(`workflow.enableSharedStorage`)"
         v-if="isShowShareStorage"
       >
         <el-switch v-model="currentResource.share_storage_info.enabled"  :disabled="!isCanOpenShareStorage" @change="handleSwitchChange($event,currentResource)" active-color="#0066ff"></el-switch>
-        <el-tooltip v-if="!isCanOpenShareStorage" content="集群无共享存储资源，请前往「系统设置」-「集群管理」配置" placement="top">
+        <el-tooltip v-if="!isCanOpenShareStorage" :content="$t(`workflow.enableSharedStorageTip`)" placement="top">
           <i class="el-icon-warning" style="color: red; vertical-align: -2px;"></i>
         </el-tooltip>
       </el-form-item>
       <el-form-item
-        label="选择共享目录"
+        :label="$t(`workflow.selectShareDirectory`)"
         v-if="isShowShareStorage&&isCanOpenShareStorage&&currentResource.share_storage_info.enabled"
       >
         <el-select v-model="currentResource.share_storage_info.share_storages" size="small" value-key="name" filterable multiple>
