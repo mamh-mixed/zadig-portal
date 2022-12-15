@@ -79,11 +79,7 @@
     </el-form>
     <EnvConfig class="common-parcel-block" ref="envConfigRef" :envName="currentEnv" />
     <div v-if="variables.length" class="common-parcel-block box-card-service">
-      <div class="primary-title">
-        变量列表
-        <VariablePreviewEditor :services="previewServices" :projectName="projectConfig.product_name" :variables="variables" />
-      </div>
-      <VarList :variables="variables" />
+      <VarYaml :variables="variables"  :title="'全局变量'" showTriggerBtn />
     </div>
     <K8sServiceList ref="k8sServiceListRef" :selectedContainerMap="selectedContainerMap" :registryId="projectConfig.registry_id" />
   </div>
@@ -92,7 +88,7 @@
 <script>
 import EnvConfig from '../../env/env_detail/common/envConfig.vue'
 import K8sServiceList from '../../env/k8sPmEnv/k8sServiceList.vue'
-import VarList from '../../env/k8sPmEnv/varList.vue'
+import VarYaml from '../../env/k8sPmEnv/varYaml.vue'
 import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,
@@ -415,7 +411,7 @@ export default {
     this.initProjectInfo()
   },
   components: {
-    VarList,
+    VarYaml,
     EnvConfig,
     K8sServiceList
   }

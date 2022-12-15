@@ -120,11 +120,7 @@
         v-if="(variables.length && !$utils.isEmpty(containerMap) && (projectConfig.source==='system')||projectConfig.source==='copy')"
         class="common-parcel-block box-card-service"
       >
-        <div class="primary-title">
-          变量列表
-          <VariablePreviewEditor :services="previewServices" :projectName="projectConfig.product_name" :variables="variables" />
-        </div>
-        <VarList :variables="variables" :rollbackMode="rollbackMode" />
+        <VarYaml :variables="variables" :title="'全局变量'" showTriggerBtn />
       </div>
       <K8sServiceList
         v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
@@ -158,7 +154,7 @@
 <script>
 import EnvConfig from '../env_detail/common/envConfig.vue'
 import K8sServiceList from './k8sServiceList.vue'
-import VarList from './varList.vue'
+import VarYaml from './varYaml.vue'
 import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,
@@ -741,7 +737,7 @@ export default {
     })
   },
   components: {
-    VarList,
+    VarYaml,
     EnvConfig,
     K8sServiceList
   }

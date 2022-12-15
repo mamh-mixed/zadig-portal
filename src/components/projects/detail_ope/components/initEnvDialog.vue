@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="`设置 ${currentEnv} 环境变量`" :visible.sync="dialogVisible" width="850px">
     <div>
-      <VarList :variables="variables" v-if="deployType === 'k8s'" class="var-list-container"></VarList>
+      <VarYaml :variables="variables" :title="'全局变量'" v-if="deployType === 'k8s'" class="var-list-container" showTriggerBtn />
       <HelmEnvTemplate
         v-else-if="deployType === 'helm'"
         class="chart-value"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import VarList from '@/components/projects/env/k8sPmEnv/varList.vue'
+import VarYaml from '@/components/projects/env/k8sPmEnv/varYaml.vue'
 import HelmEnvTemplate from '@/components/projects/env/env_detail/components/updateHelmEnvTemp.vue'
 import { cloneDeep } from 'lodash'
 
@@ -109,7 +109,7 @@ export default {
     }
   },
   components: {
-    VarList,
+    VarYaml,
     HelmEnvTemplate
   }
 }
