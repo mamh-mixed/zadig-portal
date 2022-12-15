@@ -63,7 +63,7 @@
           <div v-else class="common-column">N/A</div>
         </template>
       </el-table-column>
-      <el-table-column min-width="280" :label="$t(`workflow.codeInfo`)" v-if="showServiceNames && workflowType === 'buildv2'">
+      <el-table-column min-width="280" :label="$t(`global.gitMessage`)" v-if="showServiceNames && workflowType === 'buildv2'">
         <template slot-scope="{ row }">
           <div v-for="(item,index) in row.service_modules" :key="index" class="common-column repo-list">
             <div v-if="item.code_info.length > 0" effect="light"  :open-delay="250" placement="right">

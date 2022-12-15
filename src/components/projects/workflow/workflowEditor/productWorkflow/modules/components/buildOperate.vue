@@ -2,9 +2,9 @@
   <el-dialog title="构建设置" :visible.sync="isShowBuildOperateDialog" width="50%" center @close="handleClose">
     <template>
       <div class="build-configs">
-        <h4>{{$t(`workflow.codeInfo`)}}</h4>
+        <h4>{{$t(`global.gitMessage`)}}</h4>
         <el-table :data="value.branch_filter">
-          <el-table-column prop="repo_name" :label="$t(`global.codeLibrary`)" width="150px"></el-table-column>
+          <el-table-column prop="repo_name" :label="$t(`global.repository`)" width="150px"></el-table-column>
           <el-table-column prop="filter_regexp" label="分支/标签可选范围">
             <template slot-scope="scope">
               <el-input

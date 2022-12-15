@@ -41,7 +41,8 @@ exports.default = {
     value: 'Value',
     fileDirectory: 'File Directory',
     testName: 'Test Name',
-    codeLibrary: 'Code Library',
+    repository: 'Repository',
+    gitMessage: 'Git Message',
     errorMsg: 'Error Message',
     ok: 'ok',
     startTime: 'Start Time',
@@ -230,12 +231,11 @@ exports.default = {
     deleteTask: 'Delete task',
     build: 'Build',
     unitTest: 'Unit Test',
-    repoName: 'Repo Name',
     coverage: 'Coverage',
     branch: 'Branch',
     buildInfo: 'Build Info',
     scriptBuilding: 'Runing Script',
-    imgInfo: 'Image Info',
+    imgInfo: 'Image',
     imgBuilding: 'Build Image',
     deploy: 'Deploy',
     updateEnv: 'Update Environment',
@@ -252,8 +252,8 @@ exports.default = {
     success: 'Success',
     cancelQueuedTaskSuccess: 'Queued task cancellation success',
     cancelRunningTaskSuccess: 'Running task cancellation success',
-    buildStatus: 'Build Status',
-    deployStatus: 'Deploy Status'
+    buildStatus: 'Status',
+    deployStatus: 'Status'
   },
   project: {
     searchProject: 'Search Project',
@@ -435,9 +435,9 @@ exports.default = {
     timerOpenSuccess: 'Timer Open Success',
     timerCloseSuccess: 'Timer Close Success',
     inputWorkflowID: 'Please Input Workflow ID',
-    custom: 'custom',
-    release: 'release',
-    product: 'product',
+    customWorkflowTag: 'Custom',
+    releaseWorkflowTag: 'Release',
+    productWorkflowTag: 'Product',
     recentSuccess: 'Recent Success',
     recentFail: 'Recent Fail',
     averageExecutionTime: 'Average Execution Time',
@@ -452,7 +452,6 @@ exports.default = {
     runStatus: 'Run Status',
     duration: 'Duration',
     executor: 'Executor',
-    codeInfo: 'Code Info',
     env: 'Environment',
     testResults: 'Test Results',
     clone: 'Clone',
@@ -968,9 +967,5 @@ exports.default = {
       errorDetail: 'Error detail:',
       errorType: 'Error type:'
     }
-  },
-  repository: {
-    repository: 'Repository',
-    info: 'Repository Info'
   }
 }

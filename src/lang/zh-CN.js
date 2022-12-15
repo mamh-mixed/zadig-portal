@@ -41,7 +41,8 @@ exports.default = {
     value: '值',
     fileDirectory: '文件目录',
     testName: '测试名称',
-    codeLibrary: '代码库',
+    repository: '代码库',
+    gitMessage: '代码信息',
     errorMsg: '错误信息',
     ok: '知道了',
     startTime: '开始时间',
@@ -230,7 +231,6 @@ exports.default = {
     deleteTask: '删除任务',
     build: '构建',
     unitTest: '单元测试',
-    repoName: '代码库',
     coverage: '覆盖率',
     branch: '分支',
     buildInfo: '构建信息',
@@ -435,9 +435,9 @@ exports.default = {
     timerOpenSuccess: '定时器开启成功',
     timerCloseSuccess: '定时器关闭成功',
     inputWorkflowID: '请输入工作流标识',
-    custom: '自定义',
-    release: '发布',
-    product: '产品',
+    customWorkflowTag: '自定义',
+    releaseWorkflowTag: '发布',
+    productWorkflowTag: '产品',
     recentSuccess: '最近成功',
     recentFail: '最近失败',
     averageExecutionTime: '平均执行时间',
@@ -452,7 +452,6 @@ exports.default = {
     runStatus: '运行状态',
     duration: '持续时间',
     executor: '执行人',
-    codeInfo: '代码信息',
     env: '环境',
     testResults: '测试结果',
     clone: '克隆',
@@ -968,9 +967,5 @@ exports.default = {
       errorDetail: '错误详情：',
       errorType: '错误类型：'
     }
-  },
-  repository: {
-    repository: '代码库',
-    info: '代码信息'
   }
 }
