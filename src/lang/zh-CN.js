@@ -609,8 +609,15 @@ exports.default = {
     productTest: '产品测试',
     selectContainer: '选择容器',
     noNeedToEnterVariables: '无需输入变量',
-    executeWithChangedCode: '使用变更的代码执行'
-
+    executeWithChangedCode: '使用变更的代码执行',
+    fillInfoAndClickSave: '填写相关信息，然后点击保存',
+    advancedSetting: '高级设置',
+    notUseWorkspaceCaching: '不使用工作空间缓存',
+    notUseWorkspaceCachingTip: '可能会增加任务时长。如果构建中不使用工作空间缓存，该设置会被忽略',
+    notUseDockerCache: '不使用 Docker 缓存',
+    notUseDockerCacheTip: '只对配置了镜像构建步骤的构建生效',
+    quickSelectService: '快捷选服务',
+    quickSelectServiceTip: '通过指定构建配置间接选择出需要的服务'
   },
   webhookType: {
     dingding: '钉钉',

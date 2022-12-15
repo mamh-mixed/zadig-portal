@@ -215,7 +215,7 @@ export default {
       } else {
         stages = this.workflow.enabledStages
           ? this.workflow.enabledStages.map(stage => {
-            return this.wordTranslation(stage, 'workflowStage')
+            return this.$t(`productWorkflowSideBar.${stage}`)
           })
           : []
       }

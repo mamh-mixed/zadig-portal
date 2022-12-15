@@ -247,22 +247,22 @@ export default {
       const isEmpty = this.$utils.isEmpty
       const stages = []
       if (!isEmpty(workflow.build_stage) && workflow.build_stage.enabled) {
-        stages.push('构建部署')
+        stages.push(this.$t(`productWorkflowSideBar.build`))
       }
       if (
         !isEmpty(workflow.artifact_stage) &&
         workflow.artifact_stage.enabled
       ) {
-        stages.push('交付物部署')
+        stages.push(this.$t(`productWorkflowSideBar.artifact`))
       }
       if (!isEmpty(workflow.test_stage) && workflow.test_stage.enabled) {
-        stages.push('测试')
+        stages.push(this.$t(`productWorkflowSideBar.test`))
       }
       if (
         !isEmpty(workflow.distribute_stage) &&
         workflow.distribute_stage.enabled
       ) {
-        stages.push('分发部署')
+        stages.push(this.$t(`productWorkflowSideBar.distribute`))
       }
       this.stages = stages
     }

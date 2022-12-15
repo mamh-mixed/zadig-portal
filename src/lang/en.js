@@ -608,7 +608,16 @@ exports.default = {
     versionTag: 'Version Tag',
     productTest: 'Product Test',
     selectContainer: 'Select Container',
-    noNeedToEnterVariables: 'No Need To Enter Variables'
+    noNeedToEnterVariables: 'No Need To Enter Variables',
+    executeWithChangedCode: 'Execute With Changed Code',
+    fillInfoAndClickSave: 'Fill in the relevant information and click Save',
+    advancedSetting: 'Advanced Setting',
+    notUseWorkspaceCaching: "Don't use workspace caching",
+    notUseWorkspaceCachingTip: 'It may increase the task duration. This setting is ignored if the workspace cache is not used in the build',
+    notUseDockerCache: "Don't use Docker cache",
+    notUseDockerCacheTip: 'It only takes effect for the build configured with image construction steps',
+    quickSelectService: 'Quick Select Service',
+    quickSelectServiceTip: 'Indirectly select the required service by specifying the build configuration'
   },
   webhookType: {
     dingding: 'DingDing',
