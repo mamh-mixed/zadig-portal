@@ -8,7 +8,7 @@
         @click="runTask"
         class="left"
       >
-        <span class="iconfont iconzhixing">&nbsp;执行</span>
+        <span class="iconfont iconzhixing">&nbsp;{{$t(`global.execute`)}}</span>
       </el-button>
       <router-link
         v-if="checkPermissionSyncMixin({projectName: projectName, action: 'edit_scan'})"
@@ -17,7 +17,7 @@
       >
         <span class="iconfont icondeploy edit-setting"></span>
       </router-link>
-      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+      <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
         <span class="middle">
           <span class="permission-disabled iconfont icondeploy edit-setting"></span>
         </span>
@@ -130,14 +130,14 @@ export default {
     bus.$emit('set-topbar-title', {
       title: '',
       breadcrumb: [
-        { title: '项目', url: '/v1/projects' },
+        { title: this.$t(`global.project`), url: '/v1/projects' },
         {
           title: projectName,
           isProjectName: true,
           url: `/v1/projects/detail/${projectName}/detail`
         },
         {
-          title: '代码扫描',
+          title: this.$t(`scanning.title`),
           url: `/v1/projects/detail/${projectName}/scanner`
         },
         { title: this.scannerName, url: '' }

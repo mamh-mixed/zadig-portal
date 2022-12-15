@@ -22,7 +22,7 @@
                 </div>
               </el-col>
               <el-col :span="7" >
-                <el-input v-if="build.source==='other'" v-model="build.branchOrTag.name" placeholder="请输入分支或标签" size="small"></el-input>
+                <el-input v-if="build.source==='other'" v-model="build.branchOrTag.name" :placeholder="$t(`repository.prompt.inputBranchOrTag`)" size="small"></el-input>
                 <el-select
                   v-else
                   v-model="build.branchOrTag"
@@ -33,12 +33,12 @@
                   clearable
                   size="small"
                   value-key="id"
-                  placeholder="请选择分支或标签"
+                  :placeholder="$t(`repository.prompt.chooseBranchOrTag`)"
                   @change="changeBranchOrTag(build)"
                 >
                   <el-option-group v-for="group in build.branchAndTagList" :key="group.label" :label="group.label">
                     <el-option v-for="(item, index) in group.options" :key="index" :label="item.name" :value="item">
-                      <span v-if="item.id.startsWith('addTag')||item.id.startsWith('addBranch')">{{`使用 "${item.name}"`}}</span>
+                      <span v-if="item.id.startsWith('addTag')||item.id.startsWith('addBranch')">{{`${$t('repository.prompt.usePRorTagTemplate')}"${item.name}"`}}</span>
                       <span v-else>{{item.name}}</span>
                     </el-option>
                   </el-option-group>
@@ -50,7 +50,7 @@
                             v-model="build.prs"
                             multiple
                             size="small"
-                            placeholder="请选择 PR"
+                            :placeholder="$t(`repository.prompt.choosePR`)"
                             filterable
                             clearable
                             :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'">
@@ -60,10 +60,10 @@
                               placement="left"
                               popper-class="gray-popper">
 
-                    <div slot="content">{{`创建人: ${$utils.tailCut(item.authorUsername,10)}`}}
-                      <br />{{`时间: ${$utils.convertTimestamp(item.createdAt)}`}}
-                      <br />{{`源分支: ${item.sourceBranch}`}}
-                      <br />{{`目标分支: ${item.targetBranch}`}}
+                    <div slot="content">{{`${$t('repository.info.creatorTemplate')}${$utils.tailCut(item.authorUsername,10)}`}}
+                      <br />{{`${$t('repository.info.creationTimeTemplate')}${$utils.convertTimestamp(item.createdAt)}`}}
+                      <br />{{`${$t('repository.info.sourceBranchTemplate')}${item.sourceBranch}`}}
+                      <br />{{`${$t('repository.info.targetBranchTemplate')}${item.targetBranch}`}}
                     </div>
                     <el-option :label="`#${item[build.prNumberPropName]} ${item.title}`"
                                 :value="item[build.prNumberPropName]">
@@ -71,13 +71,13 @@
                   </el-tooltip>
                 </el-select>
                 <el-tooltip v-else
-                            content="PR 不存在，支持手动输入 PR 号，多个 PR 用 , 分隔"
+                            :content="$t(`repository.prompt.prDoesNotExist`)"
                             placement="top"
                             popper-class="gray-popper">
                   <el-input v-model="build.prs"
                             class="short-input"
                             size="small"
-                            placeholder="请填写 PR 号"
+                            :placeholder="$t(`repository.prompt.inputPR`)"
                             :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"></el-input>
                 </el-tooltip>
               </el-col>

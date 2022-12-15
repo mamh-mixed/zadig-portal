@@ -4,6 +4,8 @@ exports.__esModule = true
 exports.default = {
   global: {
     add: 'Add',
+    create: 'Create',
+    update: 'Update',
     copy: 'Copy',
     edit: 'Edit',
     delete: 'Delete',
@@ -42,13 +44,14 @@ exports.default = {
     fileDirectory: 'File Directory',
     testName: 'Test Name',
     repository: 'Repository',
-    gitMessage: 'Git Message',
+    gitMessage: 'Repository Info',
     errorMsg: 'Error Message',
     ok: 'ok',
     startTime: 'Start Time',
     endTime: 'End Time',
-    execute: 'Execute',
-    confirmation: 'Confirm'
+    execute: 'Run',
+    confirmation: 'Confirm',
+    emptyText: 'Empty'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -151,7 +154,7 @@ exports.default = {
     services: 'Services',
     builds: 'Builds',
     tests: 'Tests',
-    codeScanner: 'Code Scanner',
+    codeScanner: 'Code Scanning',
     versions: 'Versions',
     createWorkflow: 'Create Workflow',
     createEnvironment: 'Create Env',
@@ -330,7 +333,6 @@ exports.default = {
       deleteProjectCaution: 'Please proceed with caution !!',
       deleteK8sNamespace: 'Delete the K8s namespace and services',
       projectNameDontMatch: 'Project name does not match',
-      noResource: 'None',
       successfullyDeleted: 'Projects have been successfully deleted'
     }
   },
@@ -448,7 +450,7 @@ exports.default = {
     releaseWorkflowsDonotSupportCollections: 'Release workflows do not currently support collections!',
     updateBy: 'Update By',
     lastModify: 'Last Modify',
-    historyTask: 'History Task',
+    historyTask: 'Task History',
     runStatus: 'Run Status',
     duration: 'Duration',
     executor: 'Executor',
@@ -908,7 +910,6 @@ exports.default = {
       },
       taskInfo: {
         head: 'Test Tasks',
-        emptyTask: 'Empty',
         executionStatus: 'Status',
         report: 'Test Reports',
         view: 'View',
@@ -966,6 +967,83 @@ exports.default = {
       errorMessage: 'Error message:',
       errorDetail: 'Error detail:',
       errorType: 'Error type:'
+    }
+  },
+  scanning: {
+    title: 'Code Scanning',
+    titleWithScanName: 'Code Scanning {name}',
+    taskCreationSuccess: 'Scanning task Created',
+    executor: 'Executor',
+    canceller: 'Canceller',
+    cancelTask: 'Cancel',
+    timesRun: 'Times Run',
+    averageDuration: 'Average Duration',
+    taskStatus: 'Status',
+    resultLink: 'Link',
+    viewResultLink: 'View',
+    advancedSettings: {
+      title: 'Advanced Settings',
+      hooksAndNotification: {
+        title: 'Hooks and Notifications',
+        webhookTitle: 'Webhooks'
+      }
+    },
+    details: {
+      basicInformation: 'Basic Information',
+      description: 'Description',
+      scanner: 'Scanner',
+      scannerTypeOther: 'Other',
+      image: 'Basic Image',
+      packages: 'Packages',
+      sonarAddress: 'Sonar Host',
+      parameters: 'Sonar Parameter',
+      preScanScript: 'Pre-scan Script',
+      qualityGate: 'Quality Gate',
+      scanningScript: 'Scanning Script'
+    },
+    prompt: {
+      timeMismatch: 'Local time and server time mismatch, please sync time with the server.',
+      inputScanningName: 'Type in scanning name',
+      scanningNamingConvention: 'Name should only contain lowercase alphanumeric characters and -',
+      inputDescription: 'Type in scanning description',
+      chooseScanner: 'Select scanner',
+      chooseImage: 'Select scanning basic image',
+      imageCannotBeEmpty: 'Image cannot be empty',
+      createImage: 'Create custom basic image',
+      packageCannotBeEmpty: 'Package cannot be empty',
+      selectSonarAddress: 'Select sonar host',
+      sonarAddressCannotBeEmpty: 'Sonar host cannot be empty',
+      sonarParameterPopup: 'Sonar host and token will automatically be injected during the execution of the task.',
+      qualityGatePopup: 'Scanning task will fail if the scanning doesn\'t pass the quality gate',
+      editConfirmation: 'Update',
+      deleteConfirmation: 'Are you sure you want to delete scanning {scanningName}?',
+      createNow: 'Create',
+      created: 'Scanning {name} created!',
+      updated: 'Scanning {name} updated！',
+      deleted: 'Deleted',
+      canceled: 'Scanning task cancelled',
+      restarted: 'Scanning task restarted',
+      searchForScanning: 'Search for scanning',
+      noScanning: 'There are no scanning in this project, please create or update one.'
+    }
+  },
+  repository: {
+    prompt: {
+      chooseBranchOrTag: 'Choose branch or tag',
+      inputBranchOrTag: 'Input branch or tag',
+      chooseBranch: 'Choose branch',
+      getBranchErrorInputBranch: 'Failed to get branch info, please type in your branch',
+      inputBranch: 'Input branch',
+      choosePR: 'Choose pull request',
+      inputPR: 'Input Pull Request ID',
+      prDoesNotExist: 'Pull request doesn\'t exist. Type in the pull request ID. You can use comma to separate multiple requests',
+      usePRorTagTemplate: 'Use '
+    },
+    info: {
+      creatorTemplate: 'Creator: ',
+      creationTimeTemplate: 'Create Time: ',
+      sourceBranchTemplate: 'Source Branch: ',
+      targetBranchTemplate: 'Target Branch: '
     }
   }
 }
