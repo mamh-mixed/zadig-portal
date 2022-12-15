@@ -41,11 +41,17 @@ exports.default = {
     value: '值',
     fileDirectory: '文件目录',
     testName: '测试名称',
-    codeLibrary: '代码库',
+    repository: '代码库',
+    gitMessage: '代码信息',
     errorMsg: '错误信息',
     ok: '知道了',
     startTime: '开始时间',
-    endTime: '结束时间'
+    endTime: '结束时间',
+    execute: '执行',
+    confirmation: '确认'
+  },
+  permission: {
+    lackPermission: '无权限操作'
   },
   login: {
     username: '用户名',
@@ -225,7 +231,6 @@ exports.default = {
     deleteTask: '删除任务',
     build: '构建',
     unitTest: '单元测试',
-    repoName: '代码库',
     coverage: '覆盖率',
     branch: '分支',
     buildInfo: '构建信息',
@@ -430,9 +435,9 @@ exports.default = {
     timerOpenSuccess: '定时器开启成功',
     timerCloseSuccess: '定时器关闭成功',
     inputWorkflowID: '请输入工作流标识',
-    custom: '自定义',
-    release: '发布',
-    product: '产品',
+    customWorkflowTag: '自定义',
+    releaseWorkflowTag: '发布',
+    productWorkflowTag: '产品',
     recentSuccess: '最近成功',
     recentFail: '最近失败',
     averageExecutionTime: '平均执行时间',
@@ -447,7 +452,6 @@ exports.default = {
     runStatus: '运行状态',
     duration: '持续时间',
     executor: '执行人',
-    codeInfo: '代码信息',
     env: '环境',
     testResults: '测试结果',
     clone: '克隆',
@@ -851,6 +855,127 @@ exports.default = {
       detail: '详情',
       APIPayload: 'API 请求',
       searchCompleted: '查询完毕'
+    }
+  },
+  testing: {
+    title: '测试',
+    noTestsErrorMessage: '暂无可展示的测试用例，请手动新建测试',
+    searchTests: '搜索测试',
+    caseCount: '用例数量',
+    executionCount: '执行次数',
+    averageExecutionTime: '平均执行时间',
+    successRate: '成功率',
+    creationSuccess: '任务启动成功',
+    restartSuccess: '任务已重新启动',
+    cancellationSuccess: '任务取消成功',
+    deletionConfirmation: '确定要删除 {name} 吗？',
+    deletionSuccess: '删除成功',
+    triggers: {
+      workflowTriggers: '已关联的工作流',
+      selectWorkflowTriggers: '选择关联的工作流',
+      selectWorkflowTriggersII: '请选择要关联的工作流，支持搜索',
+      creationSuccess: '关联工作流成功',
+      deletion: '取消关联',
+      deletionSuccess: '移除关联成功',
+      deletionCancellation: '已取消删除',
+      deletionConfirmation: '确定要取消和工作流 {name} 的关联'
+    },
+    details: {
+      name: '测试名称',
+      description: '描述信息',
+      parameters: '测试变量',
+      scripts: '测试脚本',
+      report: {
+        configuration: '测试报告配置',
+        junitReportDirectory: 'Junit 报告所在目录',
+        htmlReportFileDirectory: 'HTML 报告文件地址',
+        htmlReportFileTooltip: 'HTML 测试报告文件将包含在工作流发送的 IM 通知内容中'
+      },
+      advancedSettings: {
+        title: '高级配置',
+        exportReport: {
+          title: '测试结果导出',
+          filePath: '文件导出路径',
+          filePathExplanation: '设置一个或者多个文件目录，测试完成后可以在工作流任务详情页面进行下载，通常用于测试日志等文件的导出'
+        },
+        hooksAndNotification: {
+          title: '触发器与通知',
+          webhookTitle: '代码变更触发',
+          timerTitle: '定时器触发',
+          notificationTitle: '通知配置'
+        }
+      }
+    },
+    taskDetails: {
+      exportArtifact: 'Artifact 文件导出',
+      basicInformation: {
+        title: '基本信息',
+        creator: '创建者',
+        canceller: '取消者',
+        duration: '持续时间',
+        retry: '失败重试',
+        cancel: '取消任务'
+      },
+      taskInfo: {
+        head: '测试任务',
+        emptyTask: '无',
+        executionStatus: '运行状态',
+        report: '测试报告',
+        view: '查看',
+        exportedFile: '文件导出',
+        download: '下载',
+        status: '任务状态',
+        errorMessage: '错误信息',
+        acknowledged: '知道了'
+      },
+      report: {
+        overview: '测试报告概览',
+        caseDetails: '详细用例'
+      },
+      cases: {
+        description: '测试用例描述',
+        result: '测试结果',
+        executionTime: '运行时间(s)'
+      },
+      logs: {
+        fetchErrorMessage: '测试日志获取失败'
+      }
+    },
+    validation: {
+      testNameInsertionPrompt: '请输入测试名称',
+      testNameVaidationError: '名称只支持字母和数字，特殊字符只支持中划线和下划线',
+      testDescriptionInsertionPrompt: '请输入描述信息',
+      testReportDirectoryInsertionPrompt: '请输入测试报告目录',
+      testReportFileInsertionPrompt: '请输入测试报告文件'
+    },
+    summary: {
+      latest: '最新一次测试报告',
+      caseCount: '总测试用例',
+      successCount: '成功用例',
+      failCount: '失败用例',
+      errorCount: '错误用例',
+      unstartCount: '未执行用例',
+      timeConsumption: '测试用时',
+      checkCases: '查看用例',
+      caseDetails: '详细用例（可滚动查看）'
+    },
+    history: {
+      title: '历史任务'
+    },
+    status: {
+      success: '成功',
+      fail: '失败',
+      unstart: '未执行',
+      error: '错误'
+    },
+    display: {
+      failReason: '失败原因：',
+      failMessage: '失败信息：',
+      failDetail: '失败详情：',
+      standardOut: '标准输出：',
+      errorMessage: '错误信息：',
+      errorDetail: '错误详情：',
+      errorType: '错误类型：'
     }
   }
 }

@@ -328,6 +328,7 @@
         :stageInfo="stage"
         :type="stageOperateType"
         :workflowInfo="payload"
+        :projectName="projectName"
         @submitEvent="operateStage('',stage)"
       />
       <div slot="footer">

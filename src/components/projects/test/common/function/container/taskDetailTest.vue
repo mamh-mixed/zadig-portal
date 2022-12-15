@@ -6,10 +6,10 @@
       :body-style="{ padding: '0px', margin: '15px 0 0 0' }"
     >
       <div class="error-wrapper">
-        <el-alert v-if="testingv2.error" :title="$t(`global.errorMsg`)" :description="testingv2.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
+        <el-alert v-if="testingv2.error" :title="$t(`testing.taskDetails.taskInfo.errorMessage`)" :description="testingv2.error" type="error" :close-text="$t(`testing.taskDetails.taskInfo.acknowledged`)"></el-alert>
       </div>
       <div slot="header" class="clearfix subtask-header">
-        <span>测试</span>
+        <span>{{$t(`testing.title`)}}</span>
         <div v-if="testingv2.status==='running'" class="loader">
           <div class="ball-scale-multiple">
             <div></div>
@@ -22,7 +22,7 @@
         <el-row :gutter="0">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconzhuangtai"></i> 任务状态
+              <i class="iconfont iconzhuangtai"></i> {{$t(`testing.taskDetails.taskInfo.status`)}}
             </div>
           </el-col>
           <el-col :span="6">
@@ -35,7 +35,7 @@
           </el-col>
           <el-col v-if="testingv2.status!=='running' && testingv2.status!=='prepare'" :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconshijian"></i> {{$t(`workflow.duration`)}}
+              <i class="iconfont iconshijian"></i> {{$t(`testing.taskDetails.basicInformation.duration`)}}
             </div>
           </el-col>
           <el-col v-if="testingv2.status!=='running' && testingv2.status!=='prepare'" :span="6">
@@ -49,7 +49,7 @@
           <el-col :span="6">
             <div class="grid-content item-title">
               <i class="iconfont icondaima"></i>
-              代码库({{build.source}})
+              {{$t(`global.repository`)}}({{build.source}})
             </div>
           </el-col>
           <el-col :span="6">
@@ -57,7 +57,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconinfo"></i> {{$t(`workflow.codeInfo`)}}
+              <i class="iconfont iconinfo"></i> {{$t(`global.gitMessage`)}}
             </div>
           </el-col>
           <el-col :span="6">
@@ -144,7 +144,7 @@ export default {
             sse.onError(e => {
               console.error('lost connection; giving up!', e)
               this.$message({
-                message: `test日志获取失败`,
+                message: this.$t(`testing.taskDetails.logs.fetchErrorMessage`),
                 type: 'error'
               })
               sse.close()

@@ -53,7 +53,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconinfo"></i> {{$t(`workflow.codeInfo`)}}
+              <i class="iconfont iconinfo"></i> {{$t(`global.gitMessage`)}}
             </div>
           </el-col>
           <el-col :span="6">

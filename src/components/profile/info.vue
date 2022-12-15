@@ -163,7 +163,6 @@ import {
   getCurrentUserInfoAPI,
   updateCurrentUserInfoAPI,
   updateCurrentUserMailAPI,
-  updateUserAPI,
   getSubscribeAPI,
   saveSubscribeAPI
 } from '@api'
@@ -280,7 +279,7 @@ export default {
             name: this.currentEditUserInfo.name,
             phone: this.phone.newPhone
           }
-          updateUserAPI(id, params).then(res => {
+          updateCurrentUserMailAPI(id, params).then(res => {
             this.$message({
               message: this.$t(`profile.phoneChangedSuccessfully`),
               type: 'success'

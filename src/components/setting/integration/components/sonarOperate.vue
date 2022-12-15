@@ -21,11 +21,11 @@
       label-position="left"
       label-width="100px"
     >
-      <el-form-item label="服务地址" prop="server_address">
+      <el-form-item label="访问地址" prop="server_address">
         <el-input
           v-model.trim="addForm.server_address"
           @change="validate(checkPassword)"
-          placeholder="Sonar 服务地址"
+          placeholder="Sonar 访问地址"
         ></el-input>
       </el-form-item>
       <el-form-item label="Token" prop="token">
