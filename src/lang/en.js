@@ -377,6 +377,13 @@ exports.default = {
     dockerfile: {},
     build: {}
   },
+  build: {
+    sharedStorage: 'Shared Storage',
+    policyConfiguration: 'Policy Configuration',
+    resourceConfiguration: 'Resource Configuration',
+    selectCluster: 'Select Cluster',
+    operatingSystemSpecifications: 'Operating System Specifications'
+  },
   workflowTaskStatus: {
     notRunning: 'Not running',
     created: 'Created',

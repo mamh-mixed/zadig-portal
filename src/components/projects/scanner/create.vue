@@ -124,7 +124,7 @@
           plain
           @click="scannerConfig.advanced_setting_modified = !scannerConfig.advanced_setting_modified"
         >
-          高级配置
+          {{$t(`project.createProjectComp.advancedConfigurations`)}}
           <i :class="[scannerConfig.advanced_setting_modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
         </el-button>
       </div>

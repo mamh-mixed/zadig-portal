@@ -81,7 +81,7 @@
         <section>
           <div style="margin-bottom: 8px;">
             <el-button type="primary" size="small" plain @click="advanced_setting_modified = !advanced_setting_modified">
-              高级配置
+              {{$t(`project.createProjectComp.advancedConfigurations`)}}
               <i :class="[advanced_setting_modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
             </el-button>
           </div>

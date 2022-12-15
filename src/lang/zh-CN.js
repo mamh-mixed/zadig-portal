@@ -309,7 +309,7 @@ exports.default = {
       hostsProjectFirstDesc: '基础设施使用主机',
       hostsProjectSecondDesc: '使用自定义脚本部署升级服务',
       compatibility: '支持的基础设施列表',
-      advancedConfigurations: '高级配置',
+      advancedConfigurations: '{{$t(`project.createProjectComp.advancedConfigurations`)}}',
       accessPermission: '访问权限',
       projectAdministrator: '项目管理员',
       private: '私有',
@@ -376,6 +376,13 @@ exports.default = {
     helmChart: {},
     dockerfile: {},
     build: {}
+  },
+  build: {
+    sharedStorage: '共享存储',
+    policyConfiguration: '策略配置',
+    resourceConfiguration: '资源配置',
+    selectCluster: '集群选择',
+    operatingSystemSpecifications: '操作系统规格'
   },
   workflowTaskStatus: {
     notRunning: '未运行',
@@ -568,7 +575,7 @@ exports.default = {
       var: '变量',
       trigger: '触发器',
       notify: '通知',
-      high: '高级配置'
+      high: '{{$t(`project.createProjectComp.advancedConfigurations`)}}'
     },
     selectService: '选择服务',
     distributionWay: '分发方式',
@@ -940,7 +947,7 @@ exports.default = {
         htmlReportFileTooltip: 'HTML 测试报告文件将包含在工作流发送的 IM 通知内容中'
       },
       advancedSettings: {
-        title: '高级配置',
+        title: '{{$t(`project.createProjectComp.advancedConfigurations`)}}',
         exportReport: {
           title: '测试结果导出',
           filePath: '文件导出路径',
