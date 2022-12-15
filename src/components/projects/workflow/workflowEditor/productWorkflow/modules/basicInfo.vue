@@ -28,9 +28,9 @@
             <el-col :span="8">
               <el-form-item prop="env_name">
                 <template slot="label">
-                  <span>指定环境</span>
+                  <span>{{$t(`workflow.specifyEnvironment`)}}</span>
                   <el-tooltip effect="dark"
-                              content="支持工作流默认部署到某个环境"
+                              :content="$t(`workflow.specifyEnvironmentTip`)"
                               placement="top">
                     <i class="pointer el-icon-question"></i>
                   </el-tooltip>
@@ -71,7 +71,7 @@
             <template slot="label">
               <span>{{$t(`workflow.concurrentExecution`)}} </span>
               <el-tooltip effect="dark"
-                          content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率"
+                          :content="$t(`workflow.concurrentExecutionTip`)"
                           placement="top">
                 <i class="pointer el-icon-question"></i>
               </el-tooltip>
@@ -80,16 +80,16 @@
           </el-form-item>
           <el-form-item prop="reset_image" class="label-icon" v-if="!isExternal">
             <template slot="label">
-              <span>镜像版本回退 </span>
+              <span>{{$t(`workflow.imageVersionRollback`)}} </span>
               <el-tooltip effect="dark"
-                          content="当任务运行状态和测试结果满足回退策略的设定，镜像版本将自动回退到上一个版本"
+                          :content="$t(`workflow.imageVersionRollbackTip`)"
                           placement="top">
                 <i class="pointer el-icon-question"></i>
               </el-tooltip>
             </template>
             <el-switch v-model="workflowInfo.reset_image" @change="workflowInfo.reset_image_policy = ''"></el-switch>
           </el-form-item>
-          <el-form-item prop="reset_image_policy" label="设置回退策略" v-if="workflowInfo.reset_image">
+          <el-form-item prop="reset_image_policy" :label="$t(`workflow.setFallbackPolicy`)" v-if="workflowInfo.reset_image">
             <el-radio-group v-model="workflowInfo.reset_image_policy">
               <el-radio v-for="policy in resetPolicy" :key="policy.label" :label="policy.label">{{ $t(`resetPolicy.${policy.text}`) }}</el-radio>
             </el-radio-group>

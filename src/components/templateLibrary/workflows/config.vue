@@ -29,7 +29,7 @@
             v-for="item in tabList"
             :key="item.name"
             @click="handleTabChange(item.name)"
-          >{{item.label}}</span>
+          >{{$t(`workflow.${item.label}`)}}</span>
         </div>
         <div>
           <el-button type="primary" size="small" @click="operateWorkflow">{{$t(`global.save`)}}</el-button>

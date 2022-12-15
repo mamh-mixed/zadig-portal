@@ -496,6 +496,7 @@ exports.default = {
     time: '时间',
     message: '信息',
     ui: '界面化',
+    yaml: 'YAML',
     desc: '描述信息',
     jobName: '任务名称',
     serviceComponent: '服务组件',
@@ -516,6 +517,7 @@ exports.default = {
     stage: '阶段',
     stageName: '阶段名称',
     concurrentExecution: '并发执行',
+    concurrentExecutionTip: '当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率',
     preStep: '前置步骤',
     manualApproval: '人工审批',
     approvalWay: '审批方式',
@@ -574,7 +576,15 @@ exports.default = {
     inputFeishuWebhook: '请填写飞书 Webhook',
     auditResults: '审核结果',
     auditTime: '审核时间',
-    comments: '评论信息'
+    comments: '评论信息',
+    specifyEnvironment: '指定环境',
+    specifyEnvironmentTip: '支持工作流默认部署到某个环境',
+    imageVersionRollback: '镜像版本回退',
+    imageVersionRollbackTip: '当任务运行状态和测试结果满足回退策略的设定，镜像版本将自动回退到上一个版本',
+    setFallbackPolicy: '设置回退策略',
+    saveAsTemplate: '保存为模版',
+    templateName: '模板名称',
+    inputTemplateName: '请输入模板名称'
   },
   webhookType: {
     dingding: '钉钉',

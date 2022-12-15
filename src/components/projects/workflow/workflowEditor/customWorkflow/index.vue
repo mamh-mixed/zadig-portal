@@ -37,10 +37,10 @@
             v-for="item in tabList"
             :key="item.name"
             @click="handleTabChange(item.name)"
-          >{{item.label}}</span>
+          >{{$t(`workflow.${item.label}`)}}</span>
         </div>
         <div>
-          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模板</el-button>
+          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">{{$t(`workflow.saveAsTemplate`)}}</el-button>
           <el-button type="primary" size="small" @click="operateWorkflow">{{$t(`global.save`)}}</el-button>
           <el-button size="small" @click="cancelWorkflow">{{$t(`global.cancel`)}}</el-button>
         </div>
@@ -252,10 +252,10 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="保存为模板" :visible.sync="isShowModelDialog" width="30%">
+    <el-dialog :title="$t(`workflow.saveAsTemplate`)" :visible.sync="isShowModelDialog" width="30%">
       <el-form inline ref="modelForm" :model="modelFormInfo" label-position="left">
-        <el-form-item label="模板名称" :rules="{required: true,message: '请填写模板名称', trigger: ['blur', 'change']}" prop="name">
-          <el-input placeholder="请输入模板名称" size="small" v-model="modelFormInfo.name"></el-input>
+        <el-form-item :label="$t(`workflow.templateName`)" :rules="{required: true,message: $t(`workflow.inputTemplateName`), trigger: ['blur', 'change']}" prop="name">
+          <el-input :placeholder="$t(`workflow.inputTemplateName`)" size="small" v-model="modelFormInfo.name"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -475,14 +475,14 @@ export default {
       bus.$emit('set-topbar-title', {
         title: '',
         breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
+          { title: this.$t(`global.project`), url: '/v1/projects' },
           {
             title: this.projectName,
             isProjectName: true,
             url: `/v1/projects/detail/${this.projectName}/detail`
           },
           {
-            title: '工作流',
+            title: this.$t(`global.workflow`),
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {

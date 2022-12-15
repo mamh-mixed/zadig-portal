@@ -119,7 +119,7 @@
 
     <el-dialog
       :visible.sync="webhookDialogVisible"
-      :title="webhookEditMode?'{{$t(`workflow.editTrigger`)}}':'{{$t(`workflow.addTrigger`)}}'"
+      :title="webhookEditMode?$t(`workflow.editTrigger`):$t(`workflow.addTrigger`)"
       width="700px"
       :close-on-click-modal="false"
       append-to-body

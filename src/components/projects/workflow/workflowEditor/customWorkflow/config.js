@@ -25,7 +25,7 @@ const validateWorkflowName = (rule, value, callback) => {
 }
 const tabList = [
   {
-    label: '界面化',
+    label: 'ui',
     name: 'ui'
   },
   {
