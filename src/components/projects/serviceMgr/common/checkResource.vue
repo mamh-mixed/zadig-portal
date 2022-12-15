@@ -1,6 +1,6 @@
 
 <template>
-  <el-table :data="currentResource" style="width: 100%;">
+  <el-table :data="currentResource" style="width: 100%;" :default-expand-all="expandAll">
     <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
     <el-table-column>
       <span slot="header">
@@ -24,10 +24,20 @@
         </el-radio-group>
       </template>
     </el-table-column>
+    <el-table-column type="expand" width="100px" label="变量配置">
+      <template slot-scope="{ row }">
+        <div class="primary-title">变量配置</div>
+        <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'200px'">
+          <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.default_variable" />
+        </Resize>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import { checkK8sSvcResourceAPI } from '@api'
 import { mapState } from 'vuex'
 import { debounce } from 'lodash'
@@ -35,7 +45,11 @@ export default {
   props: {
     checkResource: Object,
     currentResourceCheck: Array,
-    serviceNames: Array
+    serviceNames: Array,
+    expandAll: {
+      default: false,
+      type: Boolean
+    }
   },
   data () {
     return {
@@ -110,6 +124,10 @@ export default {
         this.$emit('checkRes', svcResources)
       }
     }, 300)
+  },
+  components: {
+    Resize,
+    CodeMirror
   }
 }
 </script>
@@ -125,5 +143,9 @@ export default {
 
 .fail {
   color: @danger;
+}
+
+.primary-title {
+  margin-bottom: 14px;
 }
 </style>
