@@ -32,7 +32,7 @@
         </van-row>
         <van-row v-if="testingv2.job_ctx.builds">
           <div>
-            <span>{{$t(`workflow.codeInfo`)}}</span>
+            <span>{{$t(`global.gitMessage`)}}</span>
           </div>
         </van-row>
         <van-row :gutter="0" v-for="(build,index) in testingv2.job_ctx.builds" :key="index">

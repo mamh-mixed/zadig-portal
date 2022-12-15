@@ -15,7 +15,7 @@
         </el-form>
       </div>
       <div class="section">
-        <div class="primary-title">{{$t(`workflow.codeInfo`)}}</div>
+        <div class="primary-title">{{$t(`global.gitMessage`)}}</div>
         <span class="tips">
           <i class="el-icon-info"></i>
           使用模板新建时配置</span>
