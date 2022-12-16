@@ -90,6 +90,10 @@ export default {
     return {
       notifyType: [
         {
+          label: 'created',
+          desc: '任务开始'
+        },
+        {
           label: 'passed',
           desc: '任务成功'
         },
