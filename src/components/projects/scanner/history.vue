@@ -130,14 +130,14 @@ export default {
     bus.$emit('set-topbar-title', {
       title: '',
       breadcrumb: [
-        { title: this.$t(`global.project`), url: '/v1/projects' },
+        { title: this.$t(`subTopbarMenu.projects`), url: '/v1/projects' },
         {
           title: projectName,
           isProjectName: true,
           url: `/v1/projects/detail/${projectName}/detail`
         },
         {
-          title: this.$t(`scanning.title`),
+          title: this.$t(`subTopbarMenu.scannings`),
           url: `/v1/projects/detail/${projectName}/scanner`
         },
         { title: this.scannerName, url: '' }
