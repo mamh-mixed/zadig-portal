@@ -90,7 +90,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="color: #666;" v-if="type==='plugin'?!job.isShowPlugin:!job.isShowCommon">无需输入变量</div>
+    <div style="color: #999;" v-if="type==='plugin'?!job.isShowPlugin:!job.isShowCommon">无需输入变量</div>
     <el-table
       v-if="type==='plugin'?job.isShowPlugin:job.isShowCommon"
       :data="type === 'plugin' ? job.spec.plugin.inputs.filter(item=>item.isShow) : job.spec.properties.envs.filter(item=>item.isShow)"

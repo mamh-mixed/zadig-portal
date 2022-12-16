@@ -45,7 +45,7 @@
             <el-option v-for="app in appList" :key="app.id" :value="app.id" :label="app.name"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="审核人" v-if="form.approval.type==='native'">
+        <el-form-item label="审批人" v-if="form.approval.type==='native'">
           <el-select
             size="small"
             v-model="form.approval.approve_users"
@@ -68,10 +68,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="需要审核人数" v-if="form.approval.type==='native'">
+        <el-form-item label="需要审批人数" v-if="form.approval.type==='native'">
           <el-input v-model.number="form.approval.needed_approvers" type="number" :min="0" size="small"></el-input>
         </el-form-item>
-        <el-form-item label="审核人" v-if="form.approval.type==='lark'">
+        <el-form-item label="审批人" v-if="form.approval.type==='lark'">
           <el-button
             type="primary"
             plain
@@ -86,7 +86,7 @@
           </el-tooltip>
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="form.approval.description" placeholder="审核通过后才可继续执行" size="small"></el-input>
+          <el-input v-model="form.approval.description" placeholder="审批通过后才可继续执行" size="small"></el-input>
         </el-form-item>
       </div>
     </el-form>
@@ -111,13 +111,15 @@
               >{{item.name}}</el-breadcrumb-item>
             </el-breadcrumb>
           </div>
-          <div class="dep" v-for="(item,index) in departmentInfo.sub_department_list" :key="index" @click="handleClick(item)">
-            <span>{{item.name}}</span>
-            <span class="el-icon-arrow-right"></span>
-          </div>
-          <div class="user" v-for="(item,index) in departmentInfo.user_list" :key="index">
-            <img :src="item.avatar" alt="avatar" class="user-avatar" />
-            <el-checkbox v-model="item.checked" @change="setUser($event,item,index)">{{ item.name }}</el-checkbox>
+          <div style="height: 90%; overflow: auto;">
+            <div class="dep" v-for="(item,index) in departmentInfo.sub_department_list" :key="index" @click="handleClick(item)">
+              <span>{{item.name}}</span>
+              <span class="el-icon-arrow-right"></span>
+            </div>
+            <div class="user" v-for="(item,index) in departmentInfo.user_list" :key="index">
+              <img :src="item.avatar" alt="avatar" class="user-avatar" />
+              <el-checkbox v-model="item.checked" @change="setUser($event,item,index)">{{ item.name }}</el-checkbox>
+            </div>
           </div>
         </div>
         <div class="right">
@@ -210,6 +212,7 @@ export default {
   computed: {
     approvalUsers () {
       let users = []
+      this.form.approval.approve_users = this.form.approval.approve_users || []
       if (
         this.form.approval.approve_users &&
         this.form.approval.approve_users.length > 0
@@ -245,6 +248,7 @@ export default {
       })
     },
     setUser (val, item, index) {
+      this.form.approval.approve_users = this.form.approval.approve_users || []
       if (val) {
         this.form.approval.approve_users.push(item)
       } else {
@@ -266,25 +270,30 @@ export default {
     getDepartmentInfo () {
       this.loading = true
       this.keyword = ''
-      getDepartmentAPI(this.form.approval.approval_id, this.departmentId, this.projectName).then(
-        res => {
-          res.user_list.forEach(item => {
-            if (this.form.approval.approve_users.length > 0) {
-              const ids = this.form.approval.approve_users.map(item => item.id)
-              if (ids.indexOf(item.id) > -1) {
-                item.checked = true
-              } else {
-                item.checked = false
-              }
+      getDepartmentAPI(
+        this.form.approval.approval_id,
+        this.departmentId,
+        this.projectName
+      ).then(res => {
+        res.user_list.forEach(item => {
+          if (
+            this.form.approval.approve_users &&
+            this.form.approval.approve_users.length > 0
+          ) {
+            const ids = this.form.approval.approve_users.map(item => item.id)
+            if (ids.indexOf(item.id) > -1) {
+              item.checked = true
             } else {
               item.checked = false
             }
-          })
-          this.originUserList = res.user_list
-          this.departmentInfo = res
-          this.loading = false
-        }
-      )
+          } else {
+            item.checked = false
+          }
+        })
+        this.originUserList = res.user_list
+        this.departmentInfo = res
+        this.loading = false
+      })
     },
     addApprovalUser () {
       this.isShowLarkTransferDialog = true
