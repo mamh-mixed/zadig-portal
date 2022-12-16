@@ -38,7 +38,7 @@
     <div v-if="buildDeployEnabled"
          v-loading="precreateLoading">
       <el-form-item v-if="quickSelectEnabled"
-                    :label="$t(`statusbuild.`)">
+                    :label="$t(`status.build.`)">
         <el-select v-model="pickedBuildTarget"
                    filterable
                    clearable
@@ -157,7 +157,7 @@
                  :loading="startTaskLoading"
                  type="primary"
                  size="small">
-        {{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}
+        {{ startTaskLoading?'启动中':$t(`workflow.run`) }}
       </el-button>
     </div>
   </el-form>

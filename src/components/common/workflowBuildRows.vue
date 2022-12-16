@@ -163,7 +163,7 @@
             </el-table>
             <el-button style="padding: 5px 0;"
                        slot="reference"
-                       type="text">{{$t(`sidebarMenu.setting`)}}</el-button>
+                       type="text">{{$t(`global.setting`)}}</el-button>
           </el-popover>
         </template>
       </el-table-column>
@@ -245,7 +245,7 @@
             </el-table>
             <el-button style="padding: 5px 0;"
                        slot="reference"
-                       type="text">{{$t(`sidebarMenu.setting`)}}</el-button>
+                       type="text">{{$t(`global.setting`)}}</el-button>
           </el-popover>
         </template>
       </el-table-column>

@@ -184,7 +184,7 @@
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}</el-button>
+      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':$t(`workflow.run`) }}</el-button>
     </el-form>
   </div>
 </template>

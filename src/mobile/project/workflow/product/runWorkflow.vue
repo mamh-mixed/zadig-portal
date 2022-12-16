@@ -128,7 +128,7 @@
         size="small"
         round
         block
-      >{{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}</van-button>
+      >{{ startTaskLoading?'启动中':$t(`workflow.run`) }}</van-button>
     </div>
   </el-form>
 </template>

@@ -60,7 +60,7 @@
               <el-table-column :label="$t(`project.services`)" min-width="160">
                 <template slot-scope="scope">{{scope.row.service_name}}</template>
               </el-table-column>
-              <el-table-column :label="$t(`global.code`)" min-width="160">
+              <el-table-column :label="$t(`global.gitMessage`)" min-width="160">
                 <template slot-scope="scope">
                   <div v-if="scope.row.builds.length > 0">
                     <el-row :gutter="0" v-for="(build,index) in scope.row.builds" :key="index">

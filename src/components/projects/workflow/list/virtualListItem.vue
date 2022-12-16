@@ -27,7 +27,7 @@
       >
         <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
       </el-button>
-      <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+      <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
         <el-button type="primary" class="button-exec permission-disabled">
           <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
         </el-button>
@@ -39,7 +39,7 @@
         >
           <span class="menu-item iconfont icondeploy"></span>
         </router-link>
-        <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+        <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
           <span class="permission-disabled menu-item iconfont icondeploy"></span>
         </el-tooltip>
       </template>
@@ -50,7 +50,7 @@
         >
           <span class="menu-item iconfont icondeploy"></span>
         </router-link>
-        <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+        <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
           <span class="permission-disabled menu-item iconfont icondeploy"></span>
         </el-tooltip>
       </template>
@@ -77,7 +77,7 @@
       >
         <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
       </el-button>
-      <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+      <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
         <el-button type="primary" class="button-exec permission-disabled">
           <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
         </el-button>
@@ -88,7 +88,7 @@
       >
         <span class="menu-item iconfont icondeploy"></span>
       </router-link>
-      <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+      <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
         <span class="permission-disabled menu-item iconfont icondeploy"></span>
       </el-tooltip>
       <el-dropdown @visible-change="(status) => fnShowTimer(status, index, workflow)">

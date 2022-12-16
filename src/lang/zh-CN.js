@@ -59,7 +59,8 @@ exports.default = {
     string: '字符串',
     enumerate: '枚举',
     multilineText: '多行文本',
-    emptyText: '无'
+    emptyText: '无',
+    setting: '设置'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -313,7 +314,7 @@ exports.default = {
       hostsProjectFirstDesc: '基础设施使用主机',
       hostsProjectSecondDesc: '使用自定义脚本部署升级服务',
       compatibility: '支持的基础设施列表',
-      advancedConfigurations: '{{$t(`project.createProjectComp.advancedConfigurations`)}}',
+      advancedConfigurations: '高级配置',
       accessPermission: '访问权限',
       projectAdministrator: '项目管理员',
       private: '私有',
@@ -474,7 +475,6 @@ exports.default = {
     env: '环境',
     testResults: '测试结果',
     clone: '克隆',
-    startTask: '启动任务',
     manualReview: '人工审核',
     workflowVars: '工作流变量',
     cancelSuccess: '取消成功',
@@ -579,7 +579,7 @@ exports.default = {
       var: '变量',
       trigger: '触发器',
       notify: '通知',
-      high: '{{$t(`project.createProjectComp.advancedConfigurations`)}}'
+      advancedSettings: '高级配置'
     },
     selectService: '选择服务',
     distributionWay: '分发方式',

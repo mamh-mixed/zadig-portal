@@ -59,7 +59,8 @@ exports.default = {
     string: 'String',
     enumerate: 'Enumerate',
     multilineText: 'Multiline Text',
-    emptyText: 'Empty'
+    emptyText: 'Empty',
+    setting: 'Setting'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -473,7 +474,6 @@ exports.default = {
     env: 'Environment',
     testResults: 'Test Results',
     clone: 'Clone',
-    startTask: 'Run',
     manualReview: 'Manual Review',
     workflowVars: 'Workflow Variables',
     cancelSuccess: 'Cancel Success',
@@ -578,7 +578,7 @@ exports.default = {
       var: 'Variables',
       trigger: 'Trigger',
       notify: 'Notify',
-      high: 'Advanced Settings'
+      advancedSettings: 'Advanced Settings'
     },
     selectService: 'Select Service',
     distributionWay: 'Distribution Way',
@@ -594,8 +594,8 @@ exports.default = {
     selectTargetBranch: 'Please select target branch',
     selectNotifyType: 'Please select Notify Type',
     inputWechatWebhook: 'Please input Wechat webhook',
-    inputDingDingWebhook: 'Please input DingDing webhook',
-    inputFeishuWebhook: 'Please input Feishu webhook',
+    inputDingTalkWebhook: 'Please input DingTalk webhook',
+    inputLarkWebhook: 'Please input Lark webhook',
     auditResults: 'Audit Results',
     auditTime: 'Audit Time',
     comments: 'Comments',
@@ -641,7 +641,7 @@ exports.default = {
     globalVariableOrotherTaskOutput: 'Global Variable Or Other Task Output',
     workflowTemplate: 'Workflow Template',
     atLeastOneStage: 'Please fill in at least one stage',
-    inputStageJob: 'Please fill in the task in ${name}',
+    inputStageJob: 'Please fill in the task in {name}',
     saveJobconfigFirst: 'Please save the task configuration first',
     atLeastOneJob: 'Please create at least one task',
     saveLastJobconfigFirst: 'Please save the previous task configuration first',

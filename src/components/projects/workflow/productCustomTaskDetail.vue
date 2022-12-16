@@ -9,7 +9,7 @@
             </el-tooltip>#
           </span>
           <span>{{taskId}}</span>
-          <span :class="$translate.calcTaskStatusColor(payload.status)">{{ $t(`workflowTaskStatus.${payload.status}`)}}</span>
+          <span :class="$translate.calcTaskStatusColor(payload.status)">{{ payload.status? $t(`workflowTaskStatus.${payload.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
         </el-col>
         <el-col :offset="4" :span="4">
           <i class="el-icon-video-play"></i>
@@ -258,7 +258,6 @@ import JobIstioReleaseDetail from './productCustomTaskDetail/jobIstioReleaseDeta
 import JobIstioReleaseRollbackDetail from './productCustomTaskDetail/jobIstioReleaseRollbackDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
-import { wordTranslate } from '@utils/wordTranslate.js'
 
 export default {
   data () {
@@ -458,9 +457,6 @@ export default {
     },
     showFooter (val) {
       this.isShowConsoleFooter = val
-    },
-    translateStatus (word) {
-      return wordTranslate(word, 'approval', 'status')
     },
     cancel () {
       deleteCustomWorkflowTaskAPI(
