@@ -335,7 +335,7 @@
                 </el-form-item>
               </div>
             </div>
-            <div style="color: #999;" v-if="job.type === 'k8s-canary-release'">无需输入变量</div>
+            <div class="font-gray" v-if="job.type === 'k8s-canary-release'">无需输入变量</div>
             <div v-if="job.type === 'k8s-blue-green-deploy'">
               <el-form-item label="K8s service 名称">
                 <el-select
@@ -374,7 +374,7 @@
                 </el-form-item>
               </div>
             </div>
-            <div style="color: #999;" v-if="job.type === 'k8s-blue-green-release'">无需输入变量</div>
+            <div class="font-gray" v-if="job.type === 'k8s-blue-green-release'">无需输入变量</div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job" />
             </div>
@@ -1364,6 +1364,10 @@ export default {
     padding: 4px 8px;
     background: #fde2e2;
     transform: translateX(-50%);
+  }
+
+  .font-gray {
+    color: @fontLightGray;
   }
 
   .flex {

@@ -9,7 +9,7 @@
       <el-alert type="info" :closable="false">
         <slot>
           <span class="tips">
-            - 具体配置详见帮助文档{{checkRes}}
+            - 具体配置详见帮助文档
             <el-link
               style="font-size: 14px; vertical-align: baseline;"
               type="primary"
