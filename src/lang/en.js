@@ -626,7 +626,7 @@ exports.default = {
   },
   environments: {
     k8s: {
-      noEnvironment: 'No service,please click',
+      environmentWithoutService: 'No service,please click',
       toCreateService: 'to create service',
       envName: 'Env Name',
       creationMethod: 'Method',

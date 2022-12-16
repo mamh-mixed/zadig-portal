@@ -4,10 +4,11 @@
       <img src="@assets/icons/illustration/environment.svg" alt />
       <div class="description">
         <p>
-          {{$t('environments.k8s.noEnvironment')}}
+          <span>{{$t('environments.k8s.environmentWithoutService')}}</span>
           <router-link :to="`/v1/projects/detail/${projectName}/services`">
             <el-button type="primary" size="mini" round plain>{{$t('project.services')}}</el-button>
-          </router-link>{{$t('environments.k8s.toCreateService')}}
+          </router-link>
+          <span>{{$t('environments.k8s.toCreateService')}}</span>
         </p>
       </div>
     </div>

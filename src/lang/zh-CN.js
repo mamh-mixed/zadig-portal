@@ -626,7 +626,7 @@ exports.default = {
   },
   environments: {
     k8s: {
-      noEnvironment: '该环境暂无服务，请点击',
+      environmentWithoutService: '该环境暂无服务，请点击',
       toCreateService: '新建服务',
       envName: '环境名称',
       creationMethod: '创建方式',
