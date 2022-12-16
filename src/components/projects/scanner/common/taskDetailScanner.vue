@@ -5,7 +5,7 @@
         <el-alert v-if="task.error" :title="$t(`global.errorMsg`)" :description="task.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
       </div>
       <div slot="header" class="clearfix subtask-header">
-        <span>代码扫描</span>
+        <span>{{$t(`scanning.title`)}}</span>
         <div v-if="task.status==='running'" class="loader">
           <div class="ball-scale-multiple">
             <div></div>
@@ -18,7 +18,7 @@
         <el-row :gutter="0">
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconzhuangtai"></i> 任务状态
+              <i class="iconfont iconzhuangtai"></i> {{$t(`scanning.taskStatus`)}}
             </div>
           </el-col>
           <el-col :span="6">
@@ -45,7 +45,7 @@
           <el-col :span="6">
             <div class="grid-content item-title">
               <i class="iconfont icondaima"></i>
-              代码库({{repo.source}})
+              {{`${$t('global.repository')}(${repo.source})`}}
             </div>
           </el-col>
           <el-col :span="6">

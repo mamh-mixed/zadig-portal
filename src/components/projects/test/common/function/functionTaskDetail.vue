@@ -64,7 +64,7 @@
                 :expand-row-keys="expandedTests"
                 @expand-change="updateTestExpanded"
                 row-class-name="my-table-row"
-                :empty-text="$t(`testing.taskDetails.taskInfo.emptyTask`)"
+                :empty-text="$t(`global.emptyText`)"
                 class="test-table">
         <el-table-column type="expand">
           <template slot-scope="scope">

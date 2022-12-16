@@ -4,6 +4,8 @@ exports.__esModule = true
 exports.default = {
   global: {
     add: '添加',
+    create: '新建',
+    update: '更新',
     copy: '复制',
     edit: '编辑',
     delete: '删除',
@@ -48,7 +50,8 @@ exports.default = {
     startTime: '开始时间',
     endTime: '结束时间',
     execute: '执行',
-    confirmation: '确认'
+    confirmation: '确认',
+    emptyText: '无'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -146,12 +149,13 @@ exports.default = {
     signOut: '登出'
   },
   subTopbarMenu: {
+    projects: '项目',
     workflows: '工作流',
     environments: '环境',
     services: '服务',
     builds: '构建',
     tests: '测试',
-    codeScanner: '代码扫描',
+    scannings: '代码扫描',
     versions: '版本管理',
     createWorkflow: '新建工作流',
     createEnvironment: '新建环境',
@@ -225,7 +229,7 @@ exports.default = {
     noRunningTask: '暂无正在运行的任务',
     productWorkflow: '产品工作流',
     workflow: '工作流',
-    codeScanner: '代码扫描',
+    codeScanning: '代码扫描',
     viewTaskDetail: '查看任务流程',
     hideTaskDetail: '收起任务流程',
     deleteTask: '删除任务',
@@ -269,7 +273,7 @@ exports.default = {
     tests: '测试',
     services: '服务',
     builds: '构建',
-    codeScanner: '代码扫描',
+    codeScanning: '代码扫描',
     versions: '版本管理',
     artifacts: '交付物',
     clusters: '集群',
@@ -908,7 +912,6 @@ exports.default = {
       },
       taskInfo: {
         head: '测试任务',
-        emptyTask: '无',
         executionStatus: '运行状态',
         report: '测试报告',
         view: '查看',
@@ -966,6 +969,83 @@ exports.default = {
       errorMessage: '错误信息：',
       errorDetail: '错误详情：',
       errorType: '错误类型：'
+    }
+  },
+  scanning: {
+    title: '代码扫描',
+    titleWithScanName: '代码扫描 {name}',
+    taskCreationSuccess: '任务创建成功',
+    executor: '执行人',
+    canceller: '取消者',
+    cancelTask: '取消任务',
+    timesRun: '执行次数',
+    averageDuration: '平均耗时',
+    taskStatus: '任务状态',
+    resultLink: '链接',
+    viewResultLink: '查看',
+    advancedSettings: {
+      title: '高级配置',
+      hooksAndNotification: {
+        title: '触发器与通知',
+        webhookTitle: '代码变更触发'
+      }
+    },
+    details: {
+      basicInformation: '基本信息',
+      description: '描述信息',
+      scanner: '扫描工具',
+      scannerTypeOther: '其他',
+      image: '扫描环境',
+      packages: '依赖的软件包',
+      sonarAddress: 'Sonar 地址',
+      parameters: '参数配置',
+      preScanScript: '前置脚本',
+      qualityGate: '质量门禁检查',
+      scanningScript: '扫描脚本'
+    },
+    prompt: {
+      timeMismatch: '本地系统时间和服务端可能存在不一致，请同步。',
+      inputScanningName: '请输入代码扫描名称',
+      scanningNamingConvention: '名称只支持小写字母和数字，特殊字符只支持中划线',
+      inputDescription: '请输入描述信息',
+      chooseScanner: '选择扫描工具',
+      chooseImage: '选择扫描环境',
+      imageCannotBeEmpty: '扫描环境不能为空',
+      createImage: '新建扫描环境',
+      packageCannotBeEmpty: '不能为空',
+      selectSonarAddress: '选择 Sonar 地址',
+      sonarAddressCannotBeEmpty: 'Sonar 地址不能为空',
+      sonarParameterPopup: 'Sonar 地址和 token 在执行时自动注入',
+      qualityGatePopup: '开启质量门禁检查后，如果门禁未通过，任务状态置为失败',
+      editConfirmation: '确认修改',
+      deleteConfirmation: '确定要删除 {scanningName} 这个代码扫描吗？',
+      createNow: '立即新建',
+      created: '新建 {name} 成功！',
+      updated: '更新 {name} 成功！',
+      deleted: '删除成功',
+      canceled: '任务取消成功',
+      restarted: '任务已重新启动',
+      searchForScanning: '搜索代码扫描',
+      noScanning: '暂无可展示的代码扫描，请手动新建代码扫描'
+    }
+  },
+  repository: {
+    prompt: {
+      chooseBranchOrTag: '请选择分支或标签',
+      inputBranchOrTag: '请输入分支或标签',
+      chooseBranch: '请选择分支',
+      getBranchErrorInputBranch: '请求分支失败，请手动输入分支',
+      inputBranch: '请填写分支',
+      choosePR: '请选择 PR',
+      inputPR: '请填写 PR 号',
+      prDoesNotExist: 'PR 不存在，支持手动输入 PR 号，多个 PR 用 , 分隔',
+      usePRorTagTemplate: '使用 '
+    },
+    info: {
+      creatorTemplate: '创建人：',
+      creationTimeTemplate: '时间：',
+      sourceBranchTemplate: '源分支：',
+      targetBranchTemplate: '目标分支：'
     }
   }
 }

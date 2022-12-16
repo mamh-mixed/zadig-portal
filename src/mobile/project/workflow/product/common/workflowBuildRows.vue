@@ -26,7 +26,7 @@
                     clearable
                     size="small"
                     value-key="id"
-                    :placeholder="scope.row.source==='other'?'请输入分支或标签':'请选择分支或标签'"
+                    :placeholder="scope.row.source==='other'? $t(`repository.prompt.inputBranchOrTag`) : $t(`repository.prompt.chooseBranchOrTag`) "
                     @change="changeBranchOrTag(scope.row)"
                   >
                     <el-option-group v-for="group in scope.row.branchAndTagList" :key="group.label" :label="group.label">
@@ -40,7 +40,7 @@
                     v-model="scope.row.prs"
                     multiple
                     size="small"
-                    placeholder="请选择 PR"
+                    :placeholder="$t(`repository.prompt.choosePR`)"
                     filterable
                     clearable
                     :disabled="scope.row.branchOrTag && scope.row.branchOrTag.type === 'tag'"
@@ -52,23 +52,23 @@
                       popper-class="gray-popper"
                     >
                       <div slot="content">
-                        {{`创建人: ${$utils.tailCut(item.authorUsername,10)}`}}
+                        {{`${$t('repository.info.creatorTemplate')}${$utils.tailCut(item.authorUsername,10)}`}}
                         <br />
-                        {{`时间: ${$utils.convertTimestamp(item.createdAt)}`}}
+                        {{`${$t('repository.info.creationTimeTemplate')}${$utils.convertTimestamp(item.createdAt)}`}}
                         <br />
-                        {{`源分支: ${item.sourceBranch}`}}
+                        {{`${$t('repository.info.sourceBranchTemplate')}${item.sourceBranch}`}}
                         <br />
-                        {{`目标分支: ${item.targetBranch}`}}
+                        {{`${$t('repository.info.targetBranchTemplate')}${item.targetBranch}`}}
                       </div>
                       <el-option :label="`#${item[scope.row.prNumberPropName]} ${$utils.tailCut(item.title,30)}`" :value="item[scope.row.prNumberPropName]"></el-option>
                     </el-tooltip>
                   </el-select>
-                  <el-tooltip v-else content="PR 不存在，支持手动输入 PR 号，多个 PR 用 , 分隔" placement="top" popper-class="gray-popper">
+                  <el-tooltip v-else :content="$t(`repository.prompt.prDoesNotExist`)" placement="top" popper-class="gray-popper">
                     <el-input
                       v-model="scope.row.prs"
                       class="short-input"
                       size="small"
-                      placeholder="请填写 PR 号"
+                      :placeholder="$t(`repository.prompt.inputPR`)"
                       :disabled="scope.row.branchOrTag && scope.row.branchOrTag.type === 'tag'"
                     ></el-input>
                   </el-tooltip>

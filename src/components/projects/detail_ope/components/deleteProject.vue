@@ -14,11 +14,11 @@
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.services')}}：</span>
-          <span>{{ services.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ services.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.environments')}}：</span>
-          <span>{{ envNames.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ envNames.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div style="margin: 12px 0 4px;">
           {{$t('project.deleteProjectComp.deleteProjectTip')}}
@@ -28,11 +28,11 @@
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.builds')}}：</span>
-          <span>{{ buildConfigs.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ buildConfigs.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.workflows')}}：</span>
-          <span>{{ workflows.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ workflows.join(', ') || $t('global.emptyText') }}</span>
         </div>
       </template>
       <template v-else>
@@ -44,19 +44,19 @@
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.services')}}：</span>
-          <span>{{ services.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ services.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.environments')}}：</span>
-          <span>{{ envNames.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ envNames.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.builds')}}：</span>
-          <span>{{ buildConfigs.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ buildConfigs.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.workflows')}}：</span>
-          <span>{{ workflows.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ workflows.join(', ') || $t('global.emptyText') }}</span>
         </div>
       </template>
       <div style="margin: 16px 0 6px;">
