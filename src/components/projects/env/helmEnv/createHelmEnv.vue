@@ -1,5 +1,5 @@
 <template>
-  <div class="create-product-detail-container" v-loading="loading" element-loading-text="正在加载中" element-loading-spinner="el-icon-loading">
+  <div class="create-product-detail-container" v-loading="loading" :element-loading-text="$t('global.loading')" element-loading-spinner="el-icon-loading">
     <div v-if="showEmptyServiceModal" class="no-resources">
       <div>
         <img src="@assets/icons/illustration/environment.svg" alt />
