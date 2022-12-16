@@ -4,11 +4,11 @@
       <img src="@assets/icons/illustration/environment.svg" alt />
       <div class="description">
         <p>
-          <span>{{$t('environments.k8s.environmentWithoutService')}}</span>
+          <span>{{$t('environments.commom.environmentWithoutService')}}</span>
           <router-link :to="`/v1/projects/detail/${projectName}/services`">
             <el-button type="primary" size="mini" round plain>{{$t('project.services')}}</el-button>
           </router-link>
-          <span>{{$t('environments.k8s.toCreateService')}}</span>
+          <span>{{$t('environments.common.toCreateService')}}</span>
         </p>
       </div>
     </div>
@@ -22,18 +22,18 @@
         :rules="rules"
         inline-message
       >
-        <el-form-item :label="$t('environments.k8s.envName')" prop="env_name">
+        <el-form-item :label="$t('environments.common.envName')" prop="env_name">
           <el-input @input="changeEnvName" v-model="projectConfig.env_name" size="small"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('environments.k8s.creationMethod')" prop="source" v-if="!createShare">
-          <el-select class="select" @change="changeCreateMethod" v-model="projectConfig.source" size="small" :placeholder="$t('environments.k8s.selectCreationMethod')">
-            <el-option :label="$t('environments.k8s.createNewEnv')" value="system"></el-option>
-            <el-option :label="$t('environments.k8s.copyEnv')" value="copy"></el-option>
+        <el-form-item :label="$t('environments.common.creationMethod')" prop="source" v-if="!createShare">
+          <el-select class="select" @change="changeCreateMethod" v-model="projectConfig.source" size="small" :placeholder="$t('environments.common.selectCreationMethod')">
+            <el-option :label="$t('environments.common.createNewEnv')" value="system"></el-option>
+            <el-option :label="$t('environments.common.copyEnv')" value="copy"></el-option>
             <el-option v-if="currentProductDeliveryVersions.length > 0"  :label="$t('environments.k8s.envRollback')" value="versionBack"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="projectConfig.source==='copy'" :label="$t('environments.k8s.copyFrom')" prop="base_env_name">
-          <el-select @change="changeSourceEnv" :placeholder="$t('environments.k8s.selectSourceEnv')" size="small" v-model="projectConfig.base_env_name" value-key="version">
+        <el-form-item v-if="projectConfig.source==='copy'" :label="$t('environments.common.copyFrom')" prop="base_env_name">
+          <el-select @change="changeSourceEnv" :placeholder="$t('environments.common.selectSourceEnv')" size="small" v-model="projectConfig.base_env_name" value-key="version">
             <el-option v-for="(item,index) in envNameList" :key="index" :label="item.name" :value="item.name"></el-option>
           </el-select>
         </el-form-item>
@@ -48,8 +48,8 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <div class="primary-title">{{$t('environments.k8s.selectResources')}}</div>
-        <el-form-item :label="$t('environments.k8s.k8sCluster')" prop="cluster_id" class="secondary-label">
+        <div class="primary-title">{{$t('environments.common.selectResources')}}</div>
+        <el-form-item :label="$t('environments.common.k8sCluster')" prop="cluster_id" class="secondary-label">
           <el-select
             class="select"
             filterable
@@ -57,13 +57,13 @@
             v-model="projectConfig.cluster_id"
             size="small"
             :disabled="createShare"
-            :placeholder="$t('environments.k8s.selectK8sCluster')"
+            :placeholder="$t('environments.common.selectK8sCluster')"
           >
             <el-option v-for="cluster in allCluster" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item
-          :label="$t('environments.k8s.k8sNamespace')"
+          :label="$t('environments.common.k8sNamespace')"
           v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
           prop="defaultNamespace"
           class="secondary-label"
@@ -72,7 +72,7 @@
             v-model="projectConfig.defaultNamespace"
             :disabled="editButtonDisabled"
             size="small"
-            :placeholder="$t('environments.k8s.selectK8sNamespace')"
+            :placeholder="$t('environments.common.selectK8sNamespace')"
             filterable
             allow-create
             clearable
@@ -83,10 +83,10 @@
           <span class="editButton" @click="editButtonDisabled = !editButtonDisabled">
             <i :class="[editButtonDisabled ? 'el-icon-edit-outline': 'el-icon-finished' ]"></i>
           </span>
-          <span class="ns-desc" v-show="nsIsExisted">{{$t('environments.k8s.namespaceAlreadyExistsTip')}}</span>
+          <span class="ns-desc" v-show="nsIsExisted">{{$t('environments.common.namespaceAlreadyExistsTip')}}</span>
         </el-form-item>
         <el-form-item :label="$t(`status.imageRepo`)" class="secondary-label">
-          <el-select class="select" filterable v-model.trim="projectConfig.registry_id" :placeholder="$t('environments.k8s.selectImageRepository')" size="small" @change="getImages">
+          <el-select class="select" filterable v-model.trim="projectConfig.registry_id" :placeholder="$t('environments.common.selectImageRepository')" size="small" @change="getImages">
             <el-option
               v-for="registry in imageRegistry"
               :key="registry.id"
@@ -95,12 +95,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('environments.k8s.services')" v-if="projectConfig.source==='system'||projectConfig.source==='copy'" prop="selectedService">
+        <el-form-item :label="$t('environments.common.services')" v-if="projectConfig.source==='system'||projectConfig.source==='copy'" prop="selectedService">
           <div class="select-service">
-            <el-select v-model="projectConfig.selectedService" size="small" :placeholder="$t('environments.k8s.selectServices')" filterable clearable multiple collapse-tags>
+            <el-select v-model="projectConfig.selectedService" size="small" :placeholder="$t('environments.common.selectServices')" filterable clearable multiple collapse-tags>
               <el-option
                 disabled
-                :label="$t('environments.k8s.checkAllServices')"
+                :label="$t('environments.common.checkAllServices')"
                 value="ALL"
                 :class="{selected: projectConfig.selectedService.length === serviceNames.length}"
                 style="color: #606266;"
@@ -108,11 +108,11 @@
                 <span
                   style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
                   @click="projectConfig.selectedService = serviceNames"
-                >{{$t('environments.k8s.checkAllServices')}}</span>
+                >{{$t('environments.common.checkAllServices')}}</span>
               </el-option>
               <el-option v-for="serviceName in serviceNames" :key="serviceName" :label="serviceName" :value="serviceName"></el-option>
             </el-select>
-            <el-button size="mini" plain @click="projectConfig.selectedService = []">{{$t('environments.k8s.clearServices')}}</el-button>
+            <el-button size="mini" plain @click="projectConfig.selectedService = []">{{$t('environments.common.clearServices')}}</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -138,12 +138,12 @@
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">{{$t(`global.cancel`)}}</el-button>
-          <el-button  v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}" @click="deployK8sEnv" :loading="startDeployLoading" type="primary" size="medium">{{$t('environments.k8s.createEnv')}}</el-button>
+          <el-button  v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}" @click="deployK8sEnv" :loading="startDeployLoading" type="primary" size="medium">{{$t('environments.common.createEnv')}}</el-button>
         </el-form-item>
       </el-form>
       <footer v-if="startDeployLoading" class="create-footer">
         <div class="description">
-          <el-tag type="primary">{{$t('environments.k8s.envIsCreating')}}</el-tag>
+          <el-tag type="primary">{{$t('environments.common.envIsCreating')}}</el-tag>
         </div>
         <div class="deploy-loading">
           <div class="spinner__item1"></div>
@@ -275,10 +275,10 @@ export default {
     rules () {
       const validateEnvName = (rule, value, callback) => {
         if (typeof value === 'undefined' || value === '') {
-          callback(new Error(this.$t('environments.k8s.inputEnvName')))
+          callback(new Error(this.$t('environments.common.inputEnvName')))
         } else {
           if (!/^[a-z0-9-]+$/.test(value)) {
-            callback(new Error(this.$t('environments.k8s.checkEnvName')))
+            callback(new Error(this.$t('environments.common.checkEnvName')))
           } else {
             callback()
           }
@@ -289,21 +289,21 @@ export default {
           { required: true, trigger: 'change', message: this.$t('environments.k8s.selectK8sCluster') }
         ],
         source: [
-          { required: true, trigger: 'change', message: this.$t('environments.k8s.selectCreationMethod') }
+          { required: true, trigger: 'change', message: this.$t('environments.common.selectCreationMethod') }
         ],
         defaultNamespace: [
-          { required: true, trigger: 'change', message: this.$t('environments.k8s.selectK8sNamespace') }
+          { required: true, trigger: 'change', message: this.$t('environments.common.selectK8sNamespace') }
         ],
         env_name: [
           { required: true, trigger: 'change', validator: validateEnvName }
         ],
         base_env_name: [
-          { required: true, trigger: 'change', message: this.$t('environments.k8s.selectSourceEnv') }
+          { required: true, trigger: 'change', message: this.$t('environments.common.selectSourceEnv') }
         ],
         selectedService: {
           type: 'array',
           required: true,
-          message: this.$t('environments.k8s.selectServices'),
+          message: this.$t('environments.common.selectServices'),
           trigger: 'change'
         }
       }
@@ -652,7 +652,7 @@ export default {
                 const envName = payload.env_name
                 this.startDeployLoading = false
                 this.$message({
-                  message: this.$t('environments.k8s.environmentHasBeenSuccessfullyCreated'),
+                  message: this.$t('environments.common.environmentHasBeenSuccessfullyCreated'),
                   type: 'success'
                 })
                 this.$router.push(
@@ -723,7 +723,7 @@ export default {
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         { title: this.$t('subTopbarMenu.environments'), url: '' },
-        { title: this.createShare ? this.$t('environments.k8s.subEnvCreation') : this.$t('environments.k8s.envCreation'), url: '' }
+        { title: this.createShare ? this.$t('environments.k8s.subEnvCreation') : this.$t('environments.common.envCreation'), url: '' }
       ]
     })
     this.getVersionList()

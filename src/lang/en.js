@@ -625,7 +625,7 @@ exports.default = {
     distribute: 'Distribute Deploy'
   },
   environments: {
-    k8s: {
+    common: {
       environmentWithoutService: 'No service,please click',
       toCreateService: 'to create service',
       envName: 'Env Name',
@@ -633,12 +633,8 @@ exports.default = {
       selectCreationMethod: 'Creation Method',
       createNewEnv: 'New',
       copyEnv: 'Copy',
-      envRollback: 'Rollback',
       copyFrom: 'Copy from',
       selectSourceEnv: 'Please select source env',
-      rollbackVersion: 'Version',
-      selectVersion: 'Please select version',
-      versionLabel: '版本号：{version} 创建时间：{time} 创建人：{createBy}',
       selectResources: 'Resources',
       k8sCluster: 'Cluster',
       selectK8sCluster: 'Please select k8s cluster',
@@ -649,16 +645,21 @@ exports.default = {
       services: 'Services',
       checkAllServices: 'Select all',
       clearServices: 'Clear',
-      variablesList: 'Variables List',
       createEnv: 'Create',
       envIsCreating: 'Environment is createing...',
       inputEnvName: 'Please input environment name',
       checkEnvName: 'Name should only contain lowercase alphanumeric characters and -',
-      selectNamespace: 'Please select namespace',
       selectServices: 'Please select services',
-      servicewithoutImage: 'Please select image for this service {serviceName}',
       environmentHasBeenSuccessfullyCreated: 'Environment has been successfully created',
-      envCreation: 'Create Environment',
+      envCreation: 'Create Environment'
+    },
+    k8s: {
+      envRollback: 'Rollback',
+      rollbackVersion: 'Version',
+      selectVersion: 'Please select version',
+      versionLabel: 'Version: {version} CreateAt: {time} Creator: {createBy}',
+      variablesList: 'Variables List',
+      servicewithoutImage: 'Please select image for this service {serviceName}',
       subEnvCreation: 'Create Sub-Environment',
       envConfigComp: {
         envConfiguration: 'Environment Configuration',

@@ -625,7 +625,7 @@ exports.default = {
     distribute: '分发部署'
   },
   environments: {
-    k8s: {
+    common: {
       environmentWithoutService: '该环境暂无服务，请点击',
       toCreateService: '新建服务',
       envName: '环境名称',
@@ -633,12 +633,8 @@ exports.default = {
       selectCreationMethod: '请选择创建方式',
       createNewEnv: '新建',
       copyEnv: '复制',
-      envRollback: '回溯',
       copyFrom: '复制来源',
       selectSourceEnv: '请选择目标环境',
-      rollbackVersion: '选择版本',
-      selectVersion: '请选择版本',
-      versionLabel: '版本号：{version} 创建时间：{time} 创建人：{createBy}',
       selectResources: '资源选择',
       k8sCluster: 'K8s 集群',
       selectK8sCluster: '请选择 K8s 集群',
@@ -649,16 +645,21 @@ exports.default = {
       services: '选择服务',
       checkAllServices: '全选',
       clearServices: '清空',
-      variablesList: '变量列表',
       createEnv: '立即创建',
       envIsCreating: '正在创建环境中....',
       inputEnvName: '填写环境名称',
       checkEnvName: '环境名称只支持小写字母和数字，特殊字符只支持中划线',
-      selectNamespace: '请选择命名空间',
       selectServices: '请选择服务',
-      servicewithoutImage: '{serviceName} 未选择镜像',
       environmentHasBeenSuccessfullyCreated: '创建环境成功',
-      envCreation: '创建环境',
+      envCreation: '创建环境'
+    },
+    k8s: {
+      envRollback: '回溯',
+      rollbackVersion: '选择版本',
+      selectVersion: '请选择版本',
+      versionLabel: '版本号：{version} 创建时间：{time} 创建人：{createBy}',
+      variablesList: '变量列表',
+      servicewithoutImage: '{serviceName} 未选择镜像',
       subEnvCreation: '创建子环境',
       envConfigComp: {
         envConfiguration: '环境配置',
