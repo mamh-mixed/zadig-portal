@@ -18,8 +18,8 @@
               target="_blank"
             >帮助文档</el-link>
           </span>
-          <span class="tips">{{`- 保存当前配置后，前往飞书开发平台，配置应用的「事件订阅」-「请求地址」为`}}</span>
-          <span class="tips code-line">
+          <span class="tips" v-if="checkRes === 'pass'">{{`- 保存当前配置后，前往飞书开发平台，配置应用的「事件订阅」-「请求地址」为`}}</span>
+          <span class="tips code-line" v-if="checkRes === 'pass'">
             {{`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`}}
             <span
               v-clipboard:copy="`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`"
