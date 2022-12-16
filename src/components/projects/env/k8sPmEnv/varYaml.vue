@@ -34,7 +34,7 @@ export default {
   computed: {
     curYaml: {
       get () {
-        return this.yaml
+        return this.value
       },
       set (val) {
         this.$emit('input', val)

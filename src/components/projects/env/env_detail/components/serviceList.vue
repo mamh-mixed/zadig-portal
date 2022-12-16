@@ -239,6 +239,7 @@ export default {
       const { product_name, env_name, service_name } = service
       this.usedServiceInfo.dialogVisible = true
       this.usedServiceInfo.service_name = service_name
+      // notice: If the interaction is complicated, it will be unified here in the future
       getServiceDefaultVariableAPI(product_name, env_name, [service_name]).then(res => {
         res.forEach(svc => {
           if (svc.service_name === service_name) {
