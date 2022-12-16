@@ -15,6 +15,7 @@ exports.default = {
     save: 'Save',
     refresh: 'Refresh',
     creator: 'Creator',
+    canceller: 'Canceller',
     operation: 'Operation',
     successfullySaved: 'Successfully saved',
     helpDoc: 'help',
@@ -447,6 +448,7 @@ exports.default = {
     updateSuccess: 'Update Success',
     delScuuess: 'Delete Success',
     run: 'Run',
+    starting: 'Starting',
     noAuth: 'Operation without permission',
     close: 'Close',
     open: 'Open',
@@ -646,7 +648,8 @@ exports.default = {
     atLeastOneJob: 'Please create at least one task',
     saveLastJobconfigFirst: 'Please save the previous task configuration first',
     confirmDelStage: 'Confirm delete "{name}" stage ?',
-    duplicateJobName: 'Duplicate Job Name'
+    duplicateJobName: 'Duplicate Job Name',
+    inputTargetImage: `Please fill in the target image version in {serviceName}`
   },
   webhookType: {
     dingding: 'DingDing',

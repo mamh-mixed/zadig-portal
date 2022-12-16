@@ -15,6 +15,7 @@ exports.default = {
     save: '保存',
     refresh: '刷新',
     creator: '创建人',
+    canceller: '取消者',
     operation: '操作',
     successfullySaved: '保存成功',
     helpDoc: '帮助文档',
@@ -448,6 +449,7 @@ exports.default = {
     updateSuccess: '编辑成功',
     delScuuess: '删除成功',
     run: '执行',
+    starting: '启动中',
     noAuth: '无权限操作',
     close: '关闭',
     open: '打开',
@@ -647,7 +649,8 @@ exports.default = {
     atLeastOneJob: '请至少创建一个任务',
     saveLastJobconfigFirst: '请先保存上一个任务配置',
     confirmDelStage: '确定删除阶段 {name}',
-    duplicateJobName: 'Job 名称重复'
+    duplicateJobName: 'Job 名称重复',
+    inputTargetImage: `请填写 {serviceName} 中的目标镜像版本`
   },
   webhookType: {
     dingding: '钉钉',

@@ -294,11 +294,11 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || $t(`global.cancel`)}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{$t(`global.cancel`)}}</el-button>
         </div>
         <div v-else>
-          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:$t(`global.confirm`)}}</el-button>
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText?drawerCancelText:$t(`global.cancel`)}}</el-button>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{$t(`global.confirm`)}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{$t(`global.cancel`)}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">

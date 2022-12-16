@@ -17,7 +17,7 @@
               >{{ taskDetail.status?$t(`workflowTaskStatus.${taskDetail.status}`):$t(`workflowTaskStatus.notRunning`) }}</el-tag>
             </el-form-item>
             <el-form-item :label="$t(`global.creator`)">{{ taskDetail.task_creator }}</el-form-item>
-            <el-form-item v-if="taskDetail.task_revoker" :label="$t(`testing.taskDetails.basicInformation.canceller`)">{{ taskDetail.task_revoker }}</el-form-item>
+            <el-form-item v-if="taskDetail.task_revoker" :label="$t(`global.canceller`)">{{ taskDetail.task_revoker }}</el-form-item>
             <el-form-item :label="$t(`project.environments`)">{{ workflow.namespace }}</el-form-item>
             <el-form-item :label="$t(`workflow.duration`)">
               {{ taskDetail.interval }}

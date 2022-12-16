@@ -162,7 +162,7 @@ const configList = [
     value: 'env'
   },
   {
-    label: 'high',
+    label: 'advancedSettings',
     value: 'high'
   }
 ]

@@ -867,7 +867,7 @@ export default {
                     item => {
                       if (item.update_tag && !item.target_tag) {
                         this.$message.error(
-                          `请填写 ${item.service_name} 中的目标镜像版本`
+                          this.$t(`workflow.inputTargetImage`, { serviceName: item.service_name })
                         )
                         throw Error()
                       }

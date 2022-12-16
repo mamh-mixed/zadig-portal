@@ -127,7 +127,7 @@ const configList = [
     value: 'notify'
   },
   {
-    label: 'high',
+    label: 'advancedSettings',
     value: 'high'
   }
 ]
