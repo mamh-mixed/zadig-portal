@@ -38,7 +38,7 @@
     <div v-if="buildDeployEnabled"
          v-loading="precreateLoading">
       <el-form-item v-if="quickSelectEnabled"
-                    :label="$t(`status.build.`)">
+                    :label="$t(`status.build`)">
         <el-select v-model="pickedBuildTarget"
                    filterable
                    clearable
