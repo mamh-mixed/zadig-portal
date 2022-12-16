@@ -10,7 +10,7 @@
       </el-col>
       <el-col :span="6" class="text" v-if="!isDisabled">
         <span class="red">{{timeout}} 分钟</span>
-        <span>后审核超时</span>
+        <span>后审批超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>
         <span>完成时间：</span>
@@ -31,15 +31,15 @@
         size="small"
         class="mg-t24"
       >
-        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" label="审核人"></el-table-column>
-        <el-table-column prop="reject_or_approve" label="审核结果">
+        <el-table-column :prop="approvalInfo.approval.type === 'lark' ? 'name':'user_name'" label="审批人"></el-table-column>
+        <el-table-column prop="reject_or_approve" label="审批结果">
           <template slot-scope="scope">
             <span
               :class="$translate.calcTaskStatusColor(scope.row.reject_or_approve,'approval','status')"
             >{{ wordTranslation(scope.row.reject_or_approve,'approval','status') }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="operation_time" label="审核时间">
+        <el-table-column prop="operation_time" label="审批时间">
           <template slot-scope="scope">
             <span>{{$utils.convertTimestamp(scope.row.operation_time)}}</span>
           </template>
@@ -47,7 +47,7 @@
         <el-table-column prop="comment" label="评论信息"></el-table-column>
       </el-table>
       <el-row class="mg-t24" v-if="approvalInfo.approval.type === 'native'">
-        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审核</el-button>
+        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审批</el-button>
       </el-row>
     </main>
     <el-dialog title="评论信息" :visible.sync="isShowCommentDialog">

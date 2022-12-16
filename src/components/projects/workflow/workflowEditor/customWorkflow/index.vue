@@ -700,12 +700,14 @@ export default {
       this.workflowCurJobLength = this.payload.stages[
         this.curStageIndex
       ].jobs.length
-      this.payload.params.forEach(item => {
-        if (item.value.includes('<+fixed>')) {
-          item.command = 'fixed'
-          item.value = item.value.replaceAll('<+fixed>', '')
-        }
-      })
+      if (this.payload.params.length > 0) {
+        this.payload.params.forEach(item => {
+          if (item.value && item.value.includes('<+fixed>')) {
+            item.command = 'fixed'
+            item.value = item.value.replaceAll('<+fixed>', '')
+          }
+        })
+      }
       this.payload.stages.forEach(stage => {
         if (stage.approval.type === 'lark') {
           stage.approval.approval_id = stage.approval.lark_approval.approval_id

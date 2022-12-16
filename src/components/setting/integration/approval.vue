@@ -6,6 +6,30 @@
       custom-class="form-dialog"
       :visible.sync="dialogVisible"
     >
+      <el-alert type="info" :closable="false">
+        <slot>
+          <span class="tips">
+            - 具体配置详见
+            <el-link
+              style="font-size: 14px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/zadig/settings/approval/`"
+              :underline="false"
+              target="_blank"
+            >帮助文档</el-link>
+          </span>
+          <span class="tips" v-if="checkRes === 'pass'">{{`- 保存当前配置后，前往飞书开发平台，配置应用的「事件订阅」-「请求地址」为`}}</span>
+          <span class="tips code-line" v-if="checkRes === 'pass'">
+            {{`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`}}
+            <span
+              v-clipboard:copy="`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`"
+              v-clipboard:success="copyCommandSuccess"
+              v-clipboard:error="copyCommandError"
+              class="el-icon-document-copy copy"
+            ></span>
+          </span>
+        </slot>
+      </el-alert>
       <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'&&errorMessage" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
       <el-form :model="approvalInfo" @submit.native.prevent :rules="rules" ref="approval" label-position="left" label-width="120px">
         <el-form-item label="IM" prop="type">
@@ -25,31 +49,15 @@
             v-model.trim="approvalInfo.app_secret"
             placeholder="App Secret"
             @blur="validate"
+            show-password
             type="text"
             :suffix-icon="showCheckIcon"
           ></el-input>
         </el-form-item>
         <el-form-item prop="encrypt_key" label="Encrypt Key">
-          <el-input v-model.trim="approvalInfo.encrypt_key" placeholder="Encrypt Key"></el-input>
+          <el-input v-model.trim="approvalInfo.encrypt_key" show-password placeholder="Encrypt Key"></el-input>
           <div class="tip">由飞书进行校验，请确保正确</div>
         </el-form-item>
-        <el-alert type="info" :closable="false" v-if="checkRes === 'pass'" style="background: #fff;">
-          <slot>
-            <span class="tips">
-              <i class="el-icon-warning"></i>
-              {{`请前往飞书开放平台，配置飞书应用的「事件订阅」-「请求地址配置」为`}}
-            </span>
-            <span class="tips code-line">
-              {{`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`}}
-              <span
-                v-clipboard:copy="`${$utils.getOrigin()}/api/aslan/system/lark/${approvalInfo.app_id}/webhook`"
-                v-clipboard:success="copyCommandSuccess"
-                v-clipboard:error="copyCommandError"
-                class="el-icon-document-copy copy"
-              ></span>
-            </span>
-          </slot>
-        </el-alert>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button
@@ -68,7 +76,7 @@
       <template>
         <el-alert type="info" :closable="false">
           <template>
-            支持集成飞书审批流，提供在IM内部进行审批的能力，详情可参考
+            支持集成飞书审批流，提供在 IM 内部进行审批的能力，详情可参考
             <el-link
               style="font-size: 14px; vertical-align: baseline;"
               type="primary"
@@ -89,8 +97,9 @@
           </template>
         </el-table-column>
         <el-table-column label="应用名称" prop="name"></el-table-column>
-        <el-table-column label="App ID" prop="app_id"></el-table-column>
-        <el-table-column label="App Secret" prop="app_secret"></el-table-column>
+        <el-table-column label="最后更新" prop="update_time">
+          <template slot-scope="scope">{{$utils.convertTimestamp(scope.row.update_time)}}</template>
+        </el-table-column>
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" plain @click="operate(scope.row,'edit')">编辑</el-button>
@@ -240,13 +249,17 @@ export default {
               this.dialogVisible = false
             })
           }
-          console.log(valid)
+          this.resetFields()
         }
       })
     },
     cancel () {
-      this.$refs.approval.resetFields()
+      this.resetFields()
       this.dialogVisible = false
+    },
+    resetFields () {
+      this.$refs.approval.resetFields()
+      this.checkRes = ''
     },
     deleteApproval (row) {
       this.$confirm(`确定要删除 ${row.name} 吗？`, '确认', {

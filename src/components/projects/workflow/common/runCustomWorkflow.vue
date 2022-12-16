@@ -335,7 +335,7 @@
                 </el-form-item>
               </div>
             </div>
-            <div style="color: #666;" v-if="job.type === 'k8s-canary-release'">无需输入变量</div>
+            <div class="font-gray" v-if="job.type === 'k8s-canary-release'">无需输入变量</div>
             <div v-if="job.type === 'k8s-blue-green-deploy'">
               <el-form-item label="K8s service 名称">
                 <el-select
@@ -374,7 +374,7 @@
                 </el-form-item>
               </div>
             </div>
-            <div style="color: #666;" v-if="job.type === 'k8s-blue-green-release'">无需输入变量</div>
+            <div class="font-gray" v-if="job.type === 'k8s-blue-green-release'">无需输入变量</div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job" />
             </div>
@@ -574,9 +574,6 @@
       :visible.sync="dialogMailEditFormVisible"
     >
       <el-form :model="userInfo" @submit.native.prevent ref="mailForm">
-        <el-form-item label="原手机号码" label-width="100px" prop="originPhone">
-          <el-input :value="userInfo.originPhone" placeholder="原手机号码" size="small"></el-input>
-        </el-form-item>
         <el-form-item
           label="新手机号码"
           label-width="100px"
@@ -658,7 +655,6 @@ export default {
       dialogMailEditFormVisible: false,
       isShowCheckErrorTip: false,
       userInfo: {
-        originPhone: '',
         phone: ''
       }
     }
@@ -892,10 +888,6 @@ export default {
         .catch(error => {
           if (error.response && error.response.data.code === 6940) {
             this.isShowCheckErrorTip = true
-            const pattern = /(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}/
-            this.userInfo.originPhone = error.response.data.description.match(
-              pattern
-            )[0]
           }
           this.notReady = true
         })
@@ -1372,6 +1364,10 @@ export default {
     padding: 4px 8px;
     background: #fde2e2;
     transform: translateX(-50%);
+  }
+
+  .font-gray {
+    color: @fontLightGray;
   }
 
   .flex {
