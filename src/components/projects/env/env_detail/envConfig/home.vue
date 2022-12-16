@@ -60,8 +60,8 @@ export default {
           showParams: {
             title:
               evt.actionType === 'add'
-                ? '添加环境配置'
-                : `${evt.actionType === 'view' ? '查看' : '编辑'} ${
+                ? this.$t('environments.k8s.envConfigComp.addEnvConfiguration')
+                : `${evt.actionType === 'view' ? this.$t('global.view') : this.$t('global.edit')} ${
                   evt.name
                 } 配置`,
 

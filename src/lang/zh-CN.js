@@ -51,7 +51,9 @@ exports.default = {
     endTime: '结束时间',
     execute: '执行',
     confirmation: '确认',
-    emptyText: '无'
+    emptyText: '无',
+    importFromRepository: '从代码库导入',
+    view: '查看'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -334,7 +336,6 @@ exports.default = {
       deleteProjectCaution: '请谨慎操作！！',
       deleteK8sNamespace: '同时删除环境对应的 K8s 命名空间和服务',
       projectNameDontMatch: '项目名称不相符',
-      noResource: '无',
       successfullyDeleted: '项目删除成功'
     }
   },
@@ -622,6 +623,76 @@ exports.default = {
     testingv2: '测试',
     release_image: '分发',
     distribute: '分发部署'
+  },
+  environments: {
+    k8s: {
+      noEnvironment: '该环境暂无服务，请点击',
+      toCreateService: '新建服务',
+      envName: '环境名称',
+      creationMethod: '创建方式',
+      selectCreationMethod: '请选择创建方式',
+      createNewEnv: '新建',
+      copyEnv: '复制',
+      envRollback: '回溯',
+      copyFrom: '复制来源',
+      selectSourceEnv: '请选择目标环境',
+      rollbackVersion: '选择版本',
+      selectVersion: '请选择版本',
+      versionLabel: '版本号：{version} 创建时间：{time} 创建人：{createBy}',
+      selectResources: '资源选择',
+      k8sCluster: 'K8s 集群',
+      selectK8sCluster: '请选择 K8s 集群',
+      k8sNamespace: 'K8s 命名空间',
+      selectK8sNamespace: '选择或自定义命名空间',
+      namespaceAlreadyExistsTip: 'Zadig 中定义的服务将覆盖所选命名空间中的同名服务，请谨慎操作！',
+      selectImageRepository: '请选择镜像仓库',
+      services: '选择服务',
+      checkAllServices: '全选',
+      clearServices: '清空',
+      variablesList: '变量列表',
+      createEnv: '立即创建',
+      envIsCreating: '正在创建环境中....',
+      inputEnvName: '填写环境名称',
+      checkEnvName: '环境名称只支持小写字母和数字，特殊字符只支持中划线',
+      selectNamespace: '请选择命名空间',
+      selectServices: '请选择服务',
+      servicewithoutImage: '{serviceName} 未选择镜像',
+      environmentHasBeenSuccessfullyCreated: '创建环境成功',
+      envCreation: '创建环境',
+      subEnvCreation: '创建子环境',
+      envConfigComp: {
+        envConfiguration: '环境配置',
+        addEnvConfiguration: '添加环境配置',
+        importEnvConfigurationFromRepository: '环境配置 - 从代码库导入',
+        addEnvConfigurationPlaceholder: '可直接粘贴 Ingress、ConfigMap、Secret、PVC 类型的 K8s YAML 文件',
+        configuration: '配置'
+      },
+      variableListComp: {
+        preview: '效果预览',
+        selectService: '选择服务',
+        selectServicePlaceholder: '请选择服务',
+        relatedServices: '关联服务'
+      },
+      serviceListComp: {
+        serviceList: '服务列表',
+        quickFilter: '快速过滤：',
+        quickFilterFirstTip: '智能选择会优先选择最新的容器镜像，如果在 Registry',
+        quickFilterSecondTip: '下不存在该容器镜像，则会选择模板中的默认镜像进行填充',
+        selectFilterMethod: '请选择',
+        selectLatestImage: '全容器-智能选择镜像',
+        selectDefaultImage: '全容器-全部默认镜像',
+        resourceDetection: '资源检测',
+        resourceDetectionTip: '检查服务中定义的资源在所选的 K8s 命名空间中是否存在',
+        onlyImport: '仅导入服务',
+        executeDeploy: '执行部署'
+      }
+    },
+    helm: {
+
+    },
+    pm: {
+
+    }
   },
   sysSetting: {
     integration: {
