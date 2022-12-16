@@ -42,7 +42,8 @@
               <h4>
                 <span>
                   <i class="iconfont iconfuwu"></i>
-                </span> {{$t('templates.k8sYaml.systemVariables')}}
+                </span>
+                {{$t('templates.k8sYaml.systemVariables')}}
               </h4>
               <el-table :data="systemVariables" stripe style="width: 100%;">
                 <el-table-column prop="key" label="Key"></el-table-column>
@@ -58,14 +59,30 @@
               <h4>
                 <span>
                   <i class="iconfont icontanhao"></i>
-                </span> {{$t('templates.k8sYaml.customVariables')}}
+                </span>
+                {{$t('templates.k8sYaml.customVariables')}}
                 <el-tooltip effect="dark" :content="$t('templates.k8sYaml.customVariablesTooltip')" placement="top">
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
                 </el-tooltip>
               </h4>
-              <div class="kv-container">
+              <div class="variable-operation-container">
+                <div class="tab-conatiner">
+                  <el-radio-group v-model="variableSwitcher" size="mini">
+                    <el-radio-button label="yamlEditor">
+                      <i class="iconfont iconchakanbianliang"></i>
+                    </el-radio-button>
+                    <el-radio-button label="list">
+                      <i class="iconfont iconshuru"></i>
+                    </el-radio-button>
+                  </el-radio-group>
+                </div>
+                <div class="parse-container">
+                  <el-button v-if="variableSwitcher === 'yamlEditor'" class="parse-btn" type="text">自动解析变量</el-button>
+                </div>
+              </div>
+              <div v-if="variableSwitcher === 'yamlEditor'" class="kv-container">
                 <VariablesEditor
                   style="width: 100%; height: 100%;"
                   ref="myCm"
@@ -74,12 +91,46 @@
                   @input="onCmCodeChange"
                 />
               </div>
+              <div v-else-if="variableSwitcher === 'list'" class="kv-container">
+                <el-table :data="fileContent.variable_kvs" style="width: 100%;">
+                  <el-table-column prop="key" label="键"></el-table-column>
+                  <el-table-column prop="value" label="值"></el-table-column>
+                  <el-table-column prop="show" label="服务变量中可见">
+                    <template slot="header">
+                      <span>服务变量中可见</span>
+                      <el-tooltip effect="dark" content="关闭后在「环境」-「服务变量」中不可配置" placement="top">
+                        <span class="icon-tooltip">
+                          <i class="el-icon-question"></i>
+                        </span>
+                      </el-tooltip>
+                      <span class="icon-view">
+                        <i class="el-icon-view"></i>
+                      </span>
+                    </template>
+                    <template slot-scope="scope">
+                      <i v-if="scope.row.show" @click="scope.row.show=!scope.row.show" class="el-icon-view"></i>
+                      <i v-else @click="scope.row.show=!scope.row.show" class="iconfont iconinvisible"></i>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
               <div v-if="notSaved" class="alert-container">
                 <el-alert :title="$t('templates.k8sYaml.saveTemplateFirst')" type="info" :closable="false"></el-alert>
               </div>
               <div class="operation" v-else>
-                <el-button type="primary" size="small" @click="validateVariables" plain :disabled="variableYamlIsEmpty">{{$t(`global.validate`)}}</el-button>
-                <el-button type="primary" size="small" @click="saveKubernetesTemplateVariable" :disabled="variableYamlIsEmpty || variableNotChanged">{{$t(`global.save`)}}</el-button>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="validateVariables"
+                  plain
+                  :disabled="variableYamlIsEmpty"
+                >{{$t(`global.validate`)}}</el-button>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="saveKubernetesTemplateVariable"
+                  :disabled="variableYamlIsEmpty || variableNotChanged"
+                >{{$t(`global.save`)}}</el-button>
               </div>
             </section>
           </div>
@@ -102,7 +153,8 @@ import 'codemirror/theme/neo.css'
 export default {
   data () {
     return {
-      referenceList: []
+      referenceList: [],
+      variableSwitcher: 'yamlEditor'
     }
   },
   methods: {
@@ -136,7 +188,9 @@ export default {
       validateKubernetesTemplateVariableAPI(payload)
         .then(res => {
           if (res) {
-            this.$message.success(this.$t('templates.k8sYaml.validationSuccess'))
+            this.$message.success(
+              this.$t('templates.k8sYaml.validationSuccess')
+            )
           }
         })
         .catch(err => {
@@ -145,13 +199,25 @@ export default {
     },
     saveKubernetesTemplateVariable () {
       const id = this.fileContent.id
+      if (this.fileContent.variable_kvs) {
+        const serviceVars = []
+        this.fileContent.variable_kvs.forEach(element => {
+          if (element.show) {
+            serviceVars.pus(element.key)
+          }
+        })
+        this.fileContent.service_vars = serviceVars
+      }
       const payload = {
-        variable_yaml: this.fileContent.variable_yaml
+        variable_yaml: this.fileContent.variable_yaml,
+        service_vars: this.fileContent.service_vars
       }
       saveKubernetesTemplateVariableAPI(id, payload)
         .then(res => {
           if (res) {
-            this.$message.success(this.$t('templates.k8sYaml.successfullySaved'))
+            this.$message.success(
+              this.$t('templates.k8sYaml.successfullySaved')
+            )
             this.$emit('updateTemplate', this.fileContent)
           }
         })
@@ -211,65 +277,12 @@ export default {
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .aside__wrap {
   position: relative;
   display: flex;
   flex: 1;
   height: 100%;
-
-  .kv-container {
-    height: 200px;
-    margin-top: 5px;
-
-    .vue-codemirror {
-      width: 100%;
-      height: 100%;
-
-      .CodeMirror {
-        height: 100%;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-    }
-  }
-
-  .alert-container {
-    margin-top: 10px;
-  }
-
-  .operation {
-    margin-top: 10px;
-  }
-
-  .service-aside-right--resizable {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 99;
-    width: 5px;
-    height: 100%;
-    border-left: 1px solid transparent;
-    transition: border-color ease-in-out 200ms;
-
-    .capture-area__component {
-      position: relative;
-      top: 50%;
-      left: -6px;
-      display: inline-block;
-      height: 38px;
-      transform: translateY(-50%);
-
-      .capture-area {
-        position: absolute;
-        width: 10px;
-        height: 38px;
-        background-color: #fff;
-        border: 1px solid #dbdbdb;
-        border-radius: 5px;
-      }
-    }
-  }
 
   .aside__inner {
     display: flex;
@@ -324,26 +337,64 @@ export default {
               font-weight: 300;
             }
 
-            .el-table td,
-            .el-table th {
+            /deep/ .el-table td,
+            /deep/ .el-table th {
               padding: 6px 0;
+            }
+
+            .variable-operation-container {
+              display: flex;
+              flex-direction: row;
+              align-content: center;
+              align-items: center;
+              justify-content: space-between;
+
+              .tab-conatiner {
+                display: flex;
+              }
+
+              .parse-container {
+                display: flex;
+
+                .parse-btn {
+                  padding: 0;
+                }
+              }
+            }
+
+            .kv-container {
+              height: 200px;
+              margin-top: 5px;
+
+              /deep/ .vue-codemirror {
+                width: 100%;
+                height: 100%;
+
+                .CodeMirror {
+                  height: 100%;
+                  border: 1px solid #ccc;
+                  border-radius: 4px;
+                }
+              }
+
+              .icon-view {
+                cursor: pointer;
+              }
+
+              .icon-tooltip {
+                cursor: pointer;
+              }
+            }
+
+            .alert-container {
+              margin-top: 10px;
+            }
+
+            .operation {
+              margin-top: 10px;
             }
           }
         }
-
-        .service-aside-help__content {
-          display: flex;
-          flex: 1;
-          flex-direction: column;
-          height: 100%;
-          padding: 0 20px 10px 20px;
-          overflow-y: auto;
-        }
-      }
-
-      .btn-container {
-        padding: 0 10px 10px 10px;
-        box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.05);
       }
     }
 

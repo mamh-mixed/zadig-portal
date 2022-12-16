@@ -343,6 +343,14 @@ export function serviceTemplateWithConfigAPI (name, projectName) {
   return http.get(`/api/aslan/service/services/${name}?projectName=${projectName}`)
 }
 
+export function saveServiceVariableAPI (name, projectName, payload) {
+  return http.put(`/api/aslan/service/services/${name}/variable?projectName=${projectName}`, payload)
+}
+
+export function parseK8sYamlVariableAPI (payload) {
+  return http.post(`/api/aslan/template/yaml/flatkvs`, payload)
+}
+
 export function serviceTemplateAPI (name, type, projectName) {
   return http.get(`/api/aslan/service/services/${name}/${type}?projectName=${projectName}`)
 }

@@ -124,9 +124,7 @@
                        :style="{ flexGrow: 1 }">
                   <ServiceAside :service="service"
                                 :services="services"
-                                :detectedEnvs="detectedEnvs"
-                                :detectedServices="detectedServices"
-                                :systemEnvs="systemEnvs"
+                                :serviceWithConfigs="serviceWithConfigs"
                                 :buildBaseUrl="isOnboarding?`/v1/projects/create/${projectName}/k8s/service`:`/v1/projects/detail/${projectName}/services`"
                                 @getServiceModules="getServiceModules"
                                 :changeEditorWidth="changeEditorWidth" />
@@ -184,8 +182,7 @@ export default {
       services: [],
       sharedServices: [],
       detectedEnvs: [],
-      detectedServices: [],
-      systemEnvs: [],
+      serviceWithConfigs: {},
       checkedEnvList: [],
       currentServiceYamlKinds: {},
       showNext: false,
@@ -246,9 +243,7 @@ export default {
       const serviceName = this.service.service_name
       const projectName = this.projectName
       serviceTemplateWithConfigAPI(serviceName, projectName).then(res => {
-        this.detectedEnvs = res.custom_variable ? res.custom_variable : []
-        this.detectedServices = res.service_module ? res.service_module : []
-        this.systemEnvs = res.system_variable ? res.system_variable : []
+        this.serviceWithConfigs = res
       })
     },
     showJoinToEnvDialog () {
@@ -278,9 +273,7 @@ export default {
         this.$refs.serviceTree.getServiceGroup()
         this.getSharedServices()
       }
-      this.detectedEnvs = res.custom_variable ? res.custom_variable : []
-      this.detectedServices = res.service_module ? res.service_module : []
-      this.systemEnvs = res.system_variable ? res.system_variable : []
+      this.serviceWithConfigs = res
     },
     updateYaml (switchNode) {
       this.$refs.serviceEditor.updateService().then(() => {

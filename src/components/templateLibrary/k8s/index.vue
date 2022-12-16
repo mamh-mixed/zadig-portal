@@ -101,6 +101,15 @@ export default {
           console.log(err)
         })
         if (res) {
+          if (res.variable_kvs && res.service_vars) {
+            res.variable_kvs.forEach(element => {
+              if (res.service_vars.includes(element.key)) {
+                element.show = true
+              } else {
+                element.show = false
+              }
+            })
+          }
           res.status = 'added'
           this.fileContent = res
           this.initFileContent = res.content
