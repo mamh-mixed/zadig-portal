@@ -9,7 +9,7 @@
           >{{ '#' +scope.row.scan_id }}</router-link>
         </template>
       </el-table-column>
-      <el-table-column min-width="100" prop="status" label="任务状态">
+      <el-table-column min-width="100" prop="status" :label="$t(`scanning.taskStatus`)">
         <template slot-scope="scope">
           <span
             :class="[`status-${$utils.taskElTagType(scope.row.status)}`]"
@@ -23,13 +23,13 @@
           <span v-else style="margin-left: 5px;">
             {{ taskDuration(scope.row.scan_id,scope.row.created_at) +
             $utils.timeFormatEn(durationSet[scope.row.scan_id]) }}
-            <el-tooltip v-if="durationSet[scope.row.task_id]<0" content="本地系统时间和服务端可能存在不一致，请同步。" placement="top">
+            <el-tooltip v-if="durationSet[scope.row.task_id]<0" :content="$t(`scanning.prompt.timeMismatch`)" placement="top">
               <i class="el-icon-warning" style="color: red;"></i>
             </el-tooltip>
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="执行人" min-width="120">
+      <el-table-column :label="$t(`scanning.executor`)" min-width="120">
         <template slot-scope="{ row }">
           <div class="common-column">{{ row.creator }}</div>
           <div class="common-column column-gray">{{ unix(row.created_at).format('MM-DD HH:mm') }}</div>
