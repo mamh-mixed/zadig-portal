@@ -1431,8 +1431,16 @@ export function updateServiceAPI (projectName, serviceName, serviceType, envName
   })
 }
 
-export function updateK8sEnvAPI (projectName, envName, payload, envType = '', force = '') {
+export function updatePmEnvAPI (projectName, envName, payload, envType = '', force = '') {
   return http.put(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}&force=${force}`, payload)
+}
+
+export function updateK8sEnvAPI (projectName, envName, payload, force = '') {
+  return http.put(`/api/aslan/environment/environments/${envName}/k8s/default-values?projectName=${projectName}&force=${force}`, payload)
+}
+
+export function getAffectedServicesAPI (projectName, envName, payload) {
+  return http.post(`/api/aslan/environment/environments/${envName}/affectedservices?projectName=${projectName}`, payload)
 }
 
 export function getServiceDeployableEnvsAPI (projectName, serviceName) {
@@ -1855,6 +1863,10 @@ export function getAllChartValuesYamlAPI (projectName, envName, serviceName = []
 
 export function getEnvDefaultVariableAPI (projectName, envName, ifPassFilter = true) {
   return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}&ifPassFilter=${ifPassFilter}`)
+}
+
+export function getServiceDefaultVariableAPI (projectName, envName, serviceName = []) {
+  return http.get(`/api/aslan/environment/rendersets/variables?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}`)
 }
 
 export function createHelmEnvAPI (projectName, payload, scene = '') {

@@ -1,8 +1,8 @@
 
 <template>
-  <el-table :data="currentResource" style="width: 100%;" :default-expand-all="expandAll">
+  <el-table :data="currentResource" style="width: 100%;">
     <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
-    <el-table-column v-if="hasPlutus">
+    <el-table-column>
       <span slot="header">
         资源检测
         <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
@@ -16,7 +16,7 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column :label="$t(`global.operation`)" width="200px" v-if="hasPlutus">
+    <el-table-column :label="$t(`global.operation`)" width="200px">
       <template slot-scope="{ row }">
         <el-radio-group v-model="row.deploy_strategy">
           <el-radio label="import" :disabled="!row.deployed">仅导入服务</el-radio>
@@ -24,11 +24,11 @@
         </el-radio-group>
       </template>
     </el-table-column>
-    <el-table-column type="expand" width="100px" label="变量配置">
+    <el-table-column type="expand" width="100px" label="变量配置" v-if="showExpand">
       <template slot-scope="{ row }">
         <div class="primary-title">变量配置</div>
         <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'200px'">
-          <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.default_variable" />
+          <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.variable_yaml" />
         </Resize>
       </template>
     </el-table-column>
@@ -46,7 +46,7 @@ export default {
     checkResource: Object,
     currentResourceCheck: Array,
     serviceNames: Array,
-    expandAll: {
+    showExpand: {
       default: false,
       type: Boolean
     }
@@ -88,12 +88,7 @@ export default {
           //  env_name,
           //  namespace,
           //  cluster_id,
-          //  services,
-          //  vars({
-          //   alias: va.alias,
-          //   key: va.key,
-          //   value: va.value
-          //  })
+          //  services: [{service_name, variable_yaml}]
           this.checkSvcResource(val)
         }
       },
@@ -103,6 +98,10 @@ export default {
   },
   methods: {
     checkSvcResource: debounce(async function (payload) {
+      const svcYaml = {}
+      payload.services.forEach(svc => {
+        svcYaml[svc.service_name] = svc.variable_yaml
+      })
       this.svcResources = {}
       const res = await checkK8sSvcResourceAPI(
         this.projectName,
@@ -117,7 +116,8 @@ export default {
           svcResources[resource.service_name] = {
             ...resource,
             deployed,
-            deploy_strategy: deployed ? 'import' : 'deploy'
+            deploy_strategy: deployed ? 'import' : 'deploy',
+            variable_yaml: svcYaml[resource.service_name]
           }
         })
         this.svcResources = svcResources

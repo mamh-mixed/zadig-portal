@@ -459,12 +459,13 @@
       </div>
     </div>
     <UpdateHelmVarDialog :fetchAllData="fetchAllData" ref="updateHelmVarDialog" :projectName="projectName" :envName="envName" />
-    <UpdateK8sVarDialog :fetchAllData="fetchAllData" :productInfo="productInfo" ref="updateK8sVarDialog" />
+    <UpdateK8sVarDialog :fetchAllData="fetchAllData" ref="updateK8sVarDialog" />
     <PmServiceLog ref="pmServiceLog" />
     <ManageK8sServicesDialog
       v-if="envSource === '' || envSource === 'spock'"
       :fetchAllData="fetchAllData"
       :productInfo="productInfo"
+      :allServiceNames="allServiceNames"
       ref="manageK8sServicesRef"
     />
     <ManageHelmServicesDialog
@@ -508,7 +509,7 @@ import {
   productServicesAPI,
   listProductAPI,
   updateServiceAPI,
-  updateK8sEnvAPI,
+  updatePmEnvAPI,
   restartPmServiceAPI,
   restartServiceOriginAPI,
   deleteProjectEnvAPI,
@@ -630,7 +631,8 @@ export default {
             trigger: 'change'
           }
         ]
-      }
+      },
+      allServiceNames: []
     }
   },
   computed: {
@@ -844,6 +846,7 @@ export default {
             this.isPmService = false
             this.isExternal = false
           }
+          this.allServiceNames = _.flatten(res.services)
         })
         .catch(err => {
           if (err === 'CANCEL') {
@@ -1137,7 +1140,7 @@ export default {
         const envType = this.isProd ? 'prod' : ''
         const payload = { vars: envInfo.vars }
         const force = false
-        updateK8sEnvAPI(projectName, envName, payload, envType, force)
+        updatePmEnvAPI(projectName, envName, payload, envType, force)
           .then(response => {
             this.fetchAllData()
             this.$message({
@@ -1172,7 +1175,7 @@ export default {
         const envType = this.isProd ? 'prod' : ''
         const payload = { vars: envInfo.vars }
         const force = true
-        updateK8sEnvAPI(projectName, envName, payload, envType, force).then(
+        updatePmEnvAPI(projectName, envName, payload, envType, force).then(
           response => {
             this.fetchAllData()
             this.$message({
@@ -1414,14 +1417,14 @@ export default {
     setPmServiceConfigRoute (scope) {
       return `/v1/projects/detail/${scope.row.product_name}/services?serviceName=${scope.row.service_name}`
     },
-    updateService (service) {
+    updateService (service, payload) {
       this.$message.info('开始更新服务')
       updateServiceAPI(
         this.projectName,
         service.service_name,
         service.type,
         this.envName,
-        this.serviceStatus[service.service_name].raw
+        payload || this.serviceStatus[service.service_name].raw
       ).then(res => {
         this.$message.success('更新成功请等待服务升级')
         this.fetchAllData()

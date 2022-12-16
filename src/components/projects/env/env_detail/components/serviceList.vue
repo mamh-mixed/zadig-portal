@@ -122,7 +122,7 @@
               content="更新服务"
               placement="top"
             >
-              <i @click="updateService(scope.row)" class="iconfont icongengxin"></i>
+              <i @click="updateServiceDialog(scope.row)" class="iconfont icongengxin"></i>
             </el-tooltip>
             <el-tooltip
               v-else
@@ -136,22 +136,22 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog :title="`更新服务 - ${updateServiceInfo.serviceName}`" :visible.sync="updateServiceInfo.dialogVisible" width="60%" class="update-service">
+    <el-dialog :title="`更新服务 - ${usedServiceInfo.service_name}`" :visible.sync="usedServiceInfo.dialogVisible" width="60%" class="update-service">
       <div>
         <div class="primary-title">变量配置</div>
-        <Resize v-show="updateServiceInfo.default_variable" @sizeChange="$refs.codemirror.refresh()" :height="'300px'">
-          <CodeMirror ref="codemirror" v-model="updateServiceInfo.default_variable" />
+        <Resize v-show="usedServiceInfo.variable_yaml" @sizeChange="$refs.codemirror.refresh()" :height="'300px'">
+          <CodeMirror ref="codemirror" v-model="usedServiceInfo.variable_yaml" />
         </Resize>
-        <div v-show="!updateServiceInfo.default_variable" style="color: #aaa;">
+        <div v-show="!usedServiceInfo.variable_yaml" style="color: #aaa;">
           无服务变量
         </div>
         <div style="margin-top: 14px;">
-          <el-checkbox v-if="serviceStatus[updateServiceInfo.serviceName] && serviceStatus[updateServiceInfo.serviceName]['tpl_updatable']" v-model="updateServiceInfo.checked">同时更新服务配置</el-checkbox>
+          <el-checkbox v-if="serviceStatus[usedServiceInfo.service_name] && serviceStatus[usedServiceInfo.service_name]['tpl_updatable']" v-model="usedServiceInfo.update_service_tmpl">同时更新服务配置</el-checkbox>
         </div>
       </div>
       <div slot="footer" >
-        <el-button @click="updateServiceInfo.dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="updateServiceInfo.dialogVisible = false" size="small">更新</el-button>
+        <el-button @click="usedServiceInfo.dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="sureUpdateService" size="small">更新</el-button>
       </div>
     </el-dialog>
   </div>
@@ -160,7 +160,8 @@
 <script>
 import Resize from '@/components/common/resize'
 import CodeMirror from '@/components/projects/common/codemirror.vue'
-import { serviceTemplateAfterRenderAPI } from '@api'
+import { serviceTemplateAfterRenderAPI, getServiceDefaultVariableAPI } from '@api'
+import { cloneDeep } from 'lodash'
 
 const jsdiff = require('diff')
 
@@ -174,9 +175,16 @@ export default {
     isProd: Boolean,
     upgradeServiceByWorkflow: Function,
     restartService: Function,
-    setServiceConfigRoute: Function
+    setServiceConfigRoute: Function,
+    updateService: Function
   },
   data () {
+    this.updateServiceInfo = {
+      dialogVisible: false,
+      service_name: '',
+      variable_yaml: '',
+      update_service_tmpl: false
+    }
     return {
       activeDiffTab: 'template',
       combineTemplate: [],
@@ -187,12 +195,7 @@ export default {
         Unstable: 'warning',
         Unstart: 'info'
       },
-      updateServiceInfo: {
-        dialogVisible: false,
-        serviceName: '',
-        default_variable: '',
-        checked: true
-      }
+      usedServiceInfo: cloneDeep(this.updateServiceInfo)
     }
   },
   computed: {
@@ -230,10 +233,31 @@ export default {
         return name
       }
     },
-    updateService (service) {
-      console.log('更新服务', service)
-      this.updateServiceInfo.dialogVisible = true
-      this.updateServiceInfo.serviceName = service.service_name
+    updateServiceDialog (service) {
+      this.usedServiceInfo = cloneDeep(this.updateServiceInfo)
+
+      const { product_name, env_name, service_name } = service
+      this.usedServiceInfo.dialogVisible = true
+      this.usedServiceInfo.service_name = service_name
+      getServiceDefaultVariableAPI(product_name, env_name, [service_name]).then(res => {
+        res.forEach(svc => {
+          if (svc.service_name === service_name) {
+            this.usedServiceInfo.variable_yaml = svc.variable_yaml
+            this.usedServiceInfo.update_service_tmpl = !!svc.variable_yaml
+          }
+        })
+      })
+    },
+    sureUpdateService () {
+      const { service_name, variable_yaml, update_service_tmpl } = this.usedServiceInfo
+      const payload = {
+        service_name,
+        type: 'k8s',
+        variable_yaml,
+        update_service_tmpl
+      }
+      this.updateService({ service_name, type: 'k8s' }, payload)
+      this.usedServiceInfo.dialogVisible = false
     }
   },
   components: {
