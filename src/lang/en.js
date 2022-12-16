@@ -21,9 +21,9 @@ exports.default = {
     desc: 'Description',
     type: 'Type',
     var: 'Variables',
+    status: 'Status',
     name: 'Name',
     tips: 'Tips',
-    status: 'Status',
     serviceName: 'Service Name',
     realTimeLog: 'Real Time Log',
     inputDesc: 'Please input description',
@@ -51,7 +51,9 @@ exports.default = {
     endTime: 'End Time',
     execute: 'Run',
     confirmation: 'Confirm',
-    emptyText: 'Empty'
+    emptyText: 'Empty',
+    importFromRepository: 'Import from repository',
+    view: 'View'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -621,6 +623,77 @@ exports.default = {
     testingv2: 'Test',
     release_image: 'Distribute',
     distribute: 'Distribute Deploy'
+  },
+  environments: {
+    common: {
+      environmentWithoutService: 'No service,please click',
+      toCreateService: 'to create service',
+      envName: 'Env Name',
+      creationMethod: 'Method',
+      selectCreationMethod: 'Creation Method',
+      createNewEnv: 'New',
+      copyEnv: 'Copy',
+      copyFrom: 'Copy from',
+      selectSourceEnv: 'Please select source env',
+      selectResources: 'Resources',
+      k8sCluster: 'Cluster',
+      selectK8sCluster: 'Please select k8s cluster',
+      k8sNamespace: 'Namespace',
+      selectK8sNamespace: 'Select or customize namespace',
+      namespaceAlreadyExistsTip: 'Services defined in Zadig will overwrite services of the same name in the selected namespace, please proceed with caution!',
+      selectImageRepository: 'Please select image repository',
+      services: 'Services',
+      checkAllServices: 'Select all',
+      clearServices: 'Clear',
+      createEnv: 'Create',
+      envIsCreating: 'Environment is createing...',
+      inputEnvName: 'Please input environment name',
+      checkEnvName: 'Name should only contain lowercase alphanumeric characters and -',
+      selectServices: 'Please select services',
+      environmentHasBeenSuccessfullyCreated: 'Environment has been successfully created',
+      envCreation: 'Create Environment'
+    },
+    k8s: {
+      envRollback: 'Rollback',
+      rollbackVersion: 'Version',
+      selectVersion: 'Please select version',
+      versionLabel: 'Version: {version} CreateAt: {time} Creator: {createBy}',
+      variablesList: 'Variables List',
+      servicewithoutImage: 'Please select image for this service {serviceName}',
+      subEnvCreation: 'Create Sub-Environment',
+      envConfigComp: {
+        envConfiguration: 'Environment Configuration',
+        addEnvConfiguration: 'Add environment configuration',
+        importEnvConfigurationFromRepository: 'Environment configuration - import from repository',
+        addEnvConfigurationPlaceholder: 'K8s yaml files of type Ingress, ConfigMap, Secret, PVC can be pasted directly',
+        configuration: 'Configuration'
+      },
+      variableListComp: {
+        preview: 'Preview',
+        selectService: 'Select Service',
+        selectServicePlaceholder: 'Please select service',
+        relatedServices: 'Services'
+      },
+      serviceListComp: {
+        serviceList: 'Service List',
+        quickFilter: 'Quick Filter:',
+        quickFilterFirstTip: 'Latest-Selection will choose the latest container image',
+        quickFilterSecondTip: 'If the container image does not exist under the registry, the default image in the template will be selected',
+        selectFilterMethod: 'Please select filter method',
+        selectLatestImage: 'Latest-Selection',
+        selectDefaultImage: 'Default-Selection',
+        resourceDetection: 'Resource detection',
+        resourceDetectionTip: 'Check if the resources defined in the service exist in the selected K8s namespace',
+        onlyImport: 'Only import service',
+        executeDeploy: 'Execute deploy'
+      }
+    },
+    helm: {
+
+    },
+    pm: {
+
+    }
   },
   sysSetting: {
     integration: {
