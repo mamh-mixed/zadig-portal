@@ -560,18 +560,18 @@
       <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?$t(`workflow.starting`):$t(`workflow.run`) }}</el-button>
     </el-form>
     <el-dialog
-      title="修改手机号码"
+      :title="$t(`profile.changePhone`)"
       :close-on-click-modal="false"
       :append-to-body="true"
       custom-class="edit-form-dialog"
       :visible.sync="dialogMailEditFormVisible"
     >
       <el-form :model="userInfo" @submit.native.prevent ref="mailForm">
-        <el-form-item label="原手机号码" label-width="100px" prop="originPhone">
-          <el-input :value="userInfo.originPhone" placeholder="原手机号码" size="small"></el-input>
+        <el-form-item :label="$t(`profile.oldPhone`)" label-width="100px" prop="originPhone">
+          <el-input :value="userInfo.originPhone" :placeholder="$t(`profile.oldPhone`)" size="small"></el-input>
         </el-form-item>
         <el-form-item
-          label="新手机号码"
+          :label="$t(`profile.newPhone`)"
           label-width="100px"
           prop="phone"
           size="small"
@@ -585,8 +585,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" native-type="submit" size="small" @click="updateUser" class="start-create">确定</el-button>
-        <el-button plain native-type="submit" size="small" @click="dialogMailEditFormVisible=false">取消</el-button>
+        <el-button type="primary" native-type="submit" size="small" @click="updateUser" class="start-create">{{$t(`global.confirm`)}}</el-button>
+        <el-button plain native-type="submit" size="small" @click="dialogMailEditFormVisible=false">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
   </div>
