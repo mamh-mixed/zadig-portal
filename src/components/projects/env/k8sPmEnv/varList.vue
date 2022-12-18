@@ -7,7 +7,7 @@
           <VariableEditor style="margin-right: 10px;" :varKey="row.key" :value.sync="row.value" :diabled="rollbackMode" />
         </template>
       </el-table-column>
-      <el-table-column label="关联服务">
+      <el-table-column :label="$t('environments.k8s.variableListComp.relatedServices')">
         <template slot-scope="{ row }">
           <span>{{ row.services?row.services.join(','):'-' }}</span>
         </template>

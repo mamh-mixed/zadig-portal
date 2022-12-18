@@ -1,5 +1,5 @@
 <template>
-  <div class="create-pm-env-container" v-loading="loading" element-loading-text="正在加载中" element-loading-spinner="el-icon-loading">
+  <div class="create-pm-env-container" v-loading="loading" :element-loading-text="$t('global.loading')" element-loading-spinner="el-icon-loading">
     <div v-if="$utils.isEmpty(this.pmServiceMap) && !loading" class="no-resources">
       <img src="@assets/icons/illustration/environment.svg" alt />
       <div class="description">
