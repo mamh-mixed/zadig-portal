@@ -449,7 +449,6 @@ exports.default = {
     delScuuess: 'Delete Success',
     run: 'Run',
     starting: 'Starting',
-    noAuth: 'Operation without permission',
     close: 'Close',
     open: 'Open',
     timer: 'Timer',

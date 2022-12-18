@@ -450,7 +450,6 @@ exports.default = {
     delScuuess: '删除成功',
     run: '执行',
     starting: '启动中',
-    noAuth: '无权限操作',
     close: '关闭',
     open: '打开',
     timer: '定时器',
@@ -597,8 +596,8 @@ exports.default = {
     selectTargetBranch: '请选择目标分支',
     selectNotifyType: '请选择通知类型',
     inputWechatWebhook: '请填写企业微信 Webhook',
-    inputDingDingWebhook: '请填写钉钉 Webhook',
-    inputFeishuWebhook: '请填写飞书 Webhook',
+    inputDingTalkWebhook: '请填写钉钉 Webhook',
+    inputLarkWebhook: '请填写飞书 Webhook',
     auditResults: '审核结果',
     auditTime: '审核时间',
     comments: '评论信息',
@@ -954,7 +953,7 @@ exports.default = {
         htmlReportFileTooltip: 'HTML 测试报告文件将包含在工作流发送的 IM 通知内容中'
       },
       advancedSettings: {
-        title: '{{$t(`project.createProjectComp.advancedConfigurations`)}}',
+        title: '高级配置',
         exportReport: {
           title: '测试结果导出',
           filePath: '文件导出路径',

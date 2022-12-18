@@ -157,7 +157,7 @@
                  :loading="startTaskLoading"
                  type="primary"
                  size="small">
-        {{ startTaskLoading?'启动中':$t(`workflow.run`) }}
+        {{ startTaskLoading?$t(`workflow.starting`):$t(`workflow.run`) }}
       </el-button>
     </div>
   </el-form>
