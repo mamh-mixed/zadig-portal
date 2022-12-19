@@ -67,7 +67,7 @@
       </div>
       <el-form ref="deleteForm" :model="projectDeleteInfo" :rules="deleteRules" label-width="80px">
         <el-form-item label-width="0" prop="project_name">
-          <el-input v-model="projectDeleteInfo.project_name" :placeholder="$t('project.inputProjectName')" size="small"></el-input>
+          <el-input v-model="projectDeleteInfo.project_name" :placeholder="$t('project.createProjectComp.inputProjectName')" size="small"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -114,7 +114,7 @@ export default {
             required: true,
             validator: (rule, value, callback) => {
               if (!value) {
-                callback(new Error(this.$t('project.inputProjectName')))
+                callback(new Error(this.$t('project.createProjectComp.inputProjectName')))
               } else if (value !== this.projectName) {
                 callback(new Error(this.$t('project.deleteProjectComp.projectNameDontMatch')))
               } else {

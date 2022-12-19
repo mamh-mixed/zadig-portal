@@ -113,14 +113,14 @@ export default {
     bus.$emit(`set-topbar-title`, {
       title: '',
       breadcrumb: [
-        { title: '项目', url: `/v1/projects` },
+        { title: this.$t('subTopbarMenu.projects'), url: `/v1/projects` },
         {
           title: projectName,
           isProjectName: true,
           url: `/v1/projects/detail/${projectName}/detail`
         },
         {
-          title: '版本管理',
+          title: this.$t('subTopbarMenu.versions'),
           url: `/v1/projects/detail/${projectName}/version`
         },
         { title: '创建版本', url: `` }

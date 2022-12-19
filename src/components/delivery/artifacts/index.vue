@@ -316,7 +316,7 @@ export default {
     bus.$emit(`set-topbar-title`, {
       title: '',
       breadcrumb: [
-        { title: '交付中心', url: `/v1/delivery` },
+        { title: this.$t('sidebarMenu.deliveryCenter'), url: `/v1/delivery` },
         { title: '交付物追踪', url: `` }
       ]
     })

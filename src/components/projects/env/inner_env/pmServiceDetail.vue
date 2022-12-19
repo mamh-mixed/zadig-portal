@@ -210,9 +210,9 @@ export default {
       {
         title: '',
         breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
+          { title: this.$t('subTopbarMenu.projects'), url: '/v1/projects' },
           { title: this.projectName, isProjectName: true, url: `/v1/projects/detail/${this.projectName}/detail` },
-          { title: '环境', url: `/v1/projects/detail/${this.projectName}/envs/detail` },
+          { title: this.$t('subTopbarMenu.environments'), url: `/v1/projects/detail/${this.projectName}/envs/detail` },
           { title: this.envName, url: `/v1/projects/detail/${this.projectName}/envs/detail?envName=${this.envName}` },
           { title: this.serviceName, url: `` }
         ]
