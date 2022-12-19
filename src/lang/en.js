@@ -503,7 +503,7 @@ exports.default = {
       istioRollback: 'Istio Rollback'
     },
     imageName: 'Image Name',
-    deploymentEnv: 'Deployment Environment',
+    deploymentEnv: 'Environment',
     deploymentService: 'Deployment Service',
     serviceStatusCheck: 'Service Status Check',
     notOpenServiceStatusCheck: 'Service status detection is not enabled',
