@@ -8,8 +8,7 @@
           </router-link>
         </template>
       </el-table-column>
-
-      <el-table-column prop="totalFailure" label="失败次数">
+      <el-table-column prop="totalFailure" :label="$t('dataStatistics.insight.numberOfFailures')">
         <template slot-scope="scope">
           <span>{{scope.row.totalFailure}}</span>
         </template>
