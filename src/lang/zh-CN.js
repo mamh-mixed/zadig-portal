@@ -19,6 +19,7 @@ exports.default = {
     operation: '操作',
     successfullySaved: '保存成功',
     helpDoc: '帮助文档',
+    help: '帮助',
     desc: '描述',
     type: '类型',
     var: '变量',
