@@ -86,7 +86,7 @@ export default {
   },
   created () {
     this.getRoles()
-    bus.$emit(`set-topbar-title`, { title: '', breadcrumb: [{ title: '项目', url: '/v1/projects' }, { title: this.projectName, isProjectName: true, url: `/v1/projects/detail/${this.projectName}/detail` }, { title: '权限管理', url: '' }, { title: '角色管理', url: '' }] })
+    bus.$emit(`set-topbar-title`, { title: '', breadcrumb: [{ title: this.$t('subTopbarMenu.projects'), url: '/v1/projects' }, { title: this.projectName, isProjectName: true, url: `/v1/projects/detail/${this.projectName}/detail` }, { title: '权限管理', url: '' }, { title: '角色管理', url: '' }] })
   }
 }
 </script>

@@ -285,13 +285,13 @@ export default {
       bus.$emit(`set-topbar-title`, {
         title: '',
         breadcrumb: [
-          { title: '项目', url: `/v1/projects` },
+          { title: this.$t('subTopbarMenu.projects'), url: `/v1/projects` },
           {
             title: this.projectName,
             isProjectName: true,
             url: `/v1/projects/detail/${this.projectName}/detail`
           },
-          { title: '版本管理', url: `` }
+          { title: this.$t('subTopbarMenu.versions'), url: `` }
         ]
       })
       this.getUserBinding(this.projectName)
@@ -299,8 +299,8 @@ export default {
       bus.$emit(`set-topbar-title`, {
         title: '',
         breadcrumb: [
-          { title: '交付中心', url: `/v1/delivery` },
-          { title: '版本管理', url: `` }
+          { title: this.$t('sidebarMenu.deliveryCenter'), url: `/v1/delivery` },
+          { title: this.$t('subTopbarMenu.versions'), url: `` }
         ]
       })
     }
