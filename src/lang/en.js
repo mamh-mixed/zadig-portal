@@ -689,10 +689,41 @@ exports.default = {
       }
     },
     helm: {
-
+      variableListComp: {
+        globalServiceVariables: 'Global Service Variables',
+        serviceVariables: 'Service Variables'
+      },
+      serviceListComp: {
+        searchService: 'Search service',
+        onlyImport: 'Only import service',
+        executeDeploy: 'Execute deploy',
+        previewValues: 'Preview the final values file',
+        resourceDetectionTip: 'Release name already exists in the namespace',
+        addValuesFile: 'Add values file'
+      },
+      keyValueComp: {
+        title: 'Specify the key-value to be overwritten',
+        inputKey: 'Please input key',
+        inputValue: 'Please input value'
+      }
     },
     pm: {
-
+      serviceList: 'Service List',
+      secondTitle: 'Single service or microservice(custom scripting/Docker deployment)',
+      smallTitle: '(Please link the host resources of the service, which can also be subsequently configured in the service)',
+      linkToHosts: 'Please link to hosting resources',
+      selectHosts: 'Please select the host you want to link to',
+      createHost: 'Create host',
+      projectResources: 'Project resources',
+      systemResources: 'System resources'
+    },
+    hosting: {
+      selectServices: 'Select Services',
+      inputServiceNameToSearch: 'Input service name to search',
+      serviceList: 'Service List',
+      selectedServices: 'Selected Services',
+      pleaseSelectServices: 'Please select services',
+      serviceNameLabelTooltip: 'Project:{projectName} Env:{envName}'
     }
   },
   sysSetting: {
