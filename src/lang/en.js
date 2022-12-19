@@ -50,7 +50,7 @@ exports.default = {
     ok: 'ok',
     startTime: 'Start Time',
     endTime: 'End Time',
-    execute: 'Execute',
+    execute: 'Run',
     confirmation: 'Confirm',
     inputName: 'Please input',
     inputKey: 'Please input key',
@@ -627,7 +627,7 @@ exports.default = {
     productTest: 'Product Test',
     selectContainer: 'Select Container',
     noNeedToEnterVariables: 'No Need To Enter Variables',
-    executeWithChangedCode: 'Execute With Changed Code',
+    executeWithChangedCode: 'Run With Changed Code',
     fillInfoAndClickSave: 'Fill in the relevant information and click Save',
     advancedSetting: 'Advanced Setting',
     notUseWorkspaceCaching: "Don't use workspace caching",
@@ -790,7 +790,7 @@ exports.default = {
         resourceDetection: 'Resource detection',
         resourceDetectionTip: 'Check if the resources defined in the service exist in the selected K8s namespace',
         onlyImport: 'Only import service',
-        executeDeploy: 'Execute deploy'
+        executeDeploy: 'Run deploy'
       }
     },
     helm: {
@@ -801,7 +801,7 @@ exports.default = {
       serviceListComp: {
         searchService: 'Search service',
         onlyImport: 'Only import service',
-        executeDeploy: 'Execute deploy',
+        executeDeploy: 'Run deploy',
         previewValues: 'Preview the final values file',
         resourceDetectionTip: 'Release name already exists in the namespace',
         addValuesFile: 'Add values file'
