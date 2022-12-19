@@ -15,7 +15,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              <el-tag size="mini" type="success" effect="dark" class="help-tag">帮助</el-tag>
+              <el-tag size="mini" type="success" effect="dark" class="help-tag">{{$t('global.help')}}</el-tag>
             </a>
           </span>
           <el-switch v-model="versionHook.enable" style="margin-left: 10px;" @change="saveHook" :disabled="!isProjectAdmin"></el-switch>

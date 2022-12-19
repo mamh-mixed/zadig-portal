@@ -10,7 +10,7 @@
             :href="`https://docs.koderover.com/zadig/settings/custom-task/`"
             :underline="false"
             target="_blank"
-          >帮助</el-link>
+          >{{$t('global.help')}}</el-link>
         </el-col>
         <el-button type="primary" plain size="small" v-if="plugins.length===0&&!isShowOperateForm" @click="isShowOperateForm=true">+ {{$t(`global.add`)}}</el-button>
         <div v-else>
