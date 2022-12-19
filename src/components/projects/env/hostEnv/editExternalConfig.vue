@@ -21,7 +21,7 @@
 </template>
 <script>
 import ServiceBuild from '@/components/projects/common/hosting/serviceBuild'
-import EditHostService from './editHosService.vue'
+import EditHostService from './editHostService.vue'
 import RunWorkflow from '@/components/projects/common/hosting/runWorkflow'
 
 export default {

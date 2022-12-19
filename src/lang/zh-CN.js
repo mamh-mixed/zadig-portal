@@ -689,10 +689,40 @@ exports.default = {
       }
     },
     helm: {
-
+      variableListComp: {
+        globalServiceVariables: '全局服务变量',
+        serviceVariables: '服务变量'
+      },
+      serviceListComp: {
+        searchService: '搜索服务',
+        onlyImport: '仅导入服务',
+        executeDeploy: '执行部署',
+        previewValues: '预览最终 values 文件',
+        resourceDetectionTip: 'release 名称在命名空间已存在',
+        addValuesFile: '添加 values 文件'
+      },
+      keyValueComp: {
+        title: '指定需要覆盖的键值对',
+        inputKey: '请输入 key 值',
+        inputValue: '请输入 value 值'
+      }
     },
     pm: {
-
+      serviceList: '服务列表',
+      secondTitle: '单服务或微服务(自定义脚本/Docker 部署)',
+      smallTitle: '(请关联服务的主机资源，后续也可以在服务中进行配置)',
+      linkToHosts: '请关联主机资源',
+      selectHosts: '请选择要关联的主机',
+      createHost: '创建主机',
+      projectResources: '项目资源',
+      systemResource: '系统资源'
+    },
+    hosting: {
+      selectServices: '选择服务',
+      inputServiceNameToSearch: '请输入服务名称',
+      serviceList: '服务列表',
+      selectedServices: '已选服务',
+      serviceNameLabelTooltip: '项目：{projectName}；环境：{envName}'
     }
   },
   sysSetting: {

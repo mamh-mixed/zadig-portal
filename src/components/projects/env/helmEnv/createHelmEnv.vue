@@ -79,7 +79,7 @@
               :value="registry.id"
             ></el-option>
           </el-select>
-          <div class="image-secret">imagePullSecret 名称：default-registry-secret</div>
+          <div class="image-secret">imagePullSecret:default-registry-secret</div>
         </el-form-item>
         <el-form-item :label="$t('environments.common.services')" prop="selectedService">
           <div class="select-service">
