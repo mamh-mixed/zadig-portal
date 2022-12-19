@@ -92,7 +92,7 @@
           </Resize>
         </el-form-item>
         <el-button type="text" @click="expandAdvanced = !expandAdvanced">
-          高级配置
+          {{$t(`project.createProjectComp.advancedConfigurations`)}}
           <i :class="{'el-icon-arrow-right': !expandAdvanced,'el-icon-arrow-down': expandAdvanced}"></i>
         </el-button>
         <template v-if="expandAdvanced">

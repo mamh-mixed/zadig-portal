@@ -87,7 +87,7 @@
           :loading="startTaskLoading"
           :disabled="scannerInfoDetail.repos.length === 0"
           type="primary"
-        >{{$t(`workflow.startTask`)}}</el-button>
+        >{{$t(`workflow.run`)}}</el-button>
       </div>
     </el-dialog>
   </div>

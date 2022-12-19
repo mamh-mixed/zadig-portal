@@ -46,7 +46,7 @@
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
-              <el-form-item label="服务组件">
+              <el-form-item :label="$t(`workflow.serviceComponent`)">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -96,7 +96,7 @@
                   </span>
                 </el-tooltip>
               </el-form-item>
-              <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`workflow.serviceComponent`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -142,7 +142,7 @@
               </div>
             </div>
             <div v-if="job.type === 'custom-deploy'">
-              <el-form-item label="选择容器" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`workflow.selectContainer`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -197,7 +197,7 @@
             </div>
             <div v-if="job.type==='zadig-distribute-image'">
               <div v-if="job.spec.source === 'runtime'">
-                <el-form-item label="服务组件">
+                <el-form-item :label="$t(`workflow.serviceComponent`)">
                   <el-select
                     v-model="job.pickedTargets"
                     filterable

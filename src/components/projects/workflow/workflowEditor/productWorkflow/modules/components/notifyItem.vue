@@ -137,7 +137,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: this.$t(`workflow.inputDingDingWebhook`),
+            message: this.$t(`workflow.inputDingTalkWebhook`),
             trigger: 'blur'
           }
         ],
@@ -145,7 +145,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: this.$t(`workflow.inputFeishuWebhook`),
+            message: this.$t(`workflow.inputLarkWebhook`),
             trigger: 'blur'
           }
         ],

@@ -98,7 +98,7 @@
       </el-table-column>
       <el-table-column   width="250px">
         <template slot="header">
-          部署
+          {{$t(`status.deploy`)}}
           <DeployIcons/>
         </template>
         <template slot-scope="scope">
@@ -163,7 +163,7 @@
             </el-table>
             <el-button style="padding: 5px 0;"
                        slot="reference"
-                       type="text">设置</el-button>
+                       type="text">{{$t(`global.setting`)}}</el-button>
           </el-popover>
         </template>
       </el-table-column>
@@ -189,7 +189,7 @@
 
       <el-table-column   width="250px">
         <template slot="header">
-          部署
+          {{$t(`status.deploy`)}}
           <deploy-icons></deploy-icons>
         </template>
         <template slot-scope="scope">
@@ -245,7 +245,7 @@
             </el-table>
             <el-button style="padding: 5px 0;"
                        slot="reference"
-                       type="text">设置</el-button>
+                       type="text">{{$t(`global.setting`)}}</el-button>
           </el-popover>
         </template>
       </el-table-column>

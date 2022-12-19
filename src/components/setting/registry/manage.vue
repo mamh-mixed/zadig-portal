@@ -65,7 +65,7 @@
           <el-input size="small" clearable type="passsword" show-password v-if="dialogRegistryFormVisible" v-model="registry.secret_key"></el-input>
         </el-form-item>
         <el-button type="text" @click="registry.advanced_setting.modified = !registry.advanced_setting.modified">
-          高级配置
+          {{$t(`project.createProjectComp.advancedConfigurations`)}}
           <i :class="[registry.advanced_setting.modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
         </el-button>
         <template v-if="registry.advanced_setting.modified">

@@ -25,11 +25,11 @@ const validateWorkflowName = (rule, value, callback) => {
 }
 const tabList = [
   {
-    label: '界面化',
+    label: 'ui',
     name: 'ui'
   },
   {
-    label: 'YAML',
+    label: 'yaml',
     name: 'yaml'
   }
 ]
@@ -127,7 +127,7 @@ const configList = [
     value: 'notify'
   },
   {
-    label: 'high',
+    label: 'advancedSettings',
     value: 'high'
   }
 ]

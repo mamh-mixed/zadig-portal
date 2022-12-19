@@ -90,7 +90,7 @@
       </div>
     </div>
     <el-dialog :visible.sync="taskDialogVisible"
-               title="运行 产品-工作流"
+               :title="$t(`workflow.runProductWorkflow`)"
                custom-class="run-workflow"
                width="60%"
                class="dialog">

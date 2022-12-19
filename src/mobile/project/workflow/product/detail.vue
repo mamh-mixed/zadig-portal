@@ -10,7 +10,7 @@
       <van-row>
         <van-col span="12">
           <div class="mobile-block">
-            <h2 class="mobile-block-title">创建者</h2>
+            <h2 class="mobile-block-title">{{$t(`global.creator`)}}</h2>
             <div class="mobile-block-desc">{{ workflow.update_by }}</div>
           </div>
         </van-col>

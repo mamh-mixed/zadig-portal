@@ -22,7 +22,7 @@
     </div>
       <el-form :model="webhookSwap" ref="triggerForm" label-position="left" label-width="125px" :rules="rules">
         <el-form-item :label="$t(`global.name`)" prop="name" class="bottom-22">
-          <el-input size="small" autofocus ref="webhookNamedRef" v-model="webhookSwap.name" placeholder="请输入名称"></el-input>
+          <el-input size="small" autofocus ref="webhookNamedRef" v-model="webhookSwap.name" :placeholder="$t(`global.inputName`)"></el-input>
         </el-form-item>
         <el-form-item :label="$t('global.desc')">
           <el-input size="small" type="textarea" v-model="webhookSwap.description" placeholder="请输入描述"></el-input>

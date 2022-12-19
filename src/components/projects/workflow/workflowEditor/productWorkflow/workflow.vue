@@ -56,7 +56,7 @@
         <el-col :span="12">
           <div class="grid-content bg-purple">
             <div class="description">
-              <el-tag type="primary">填写相关信息，然后点击保存</el-tag>
+              <el-tag type="primary">{{$t(`workflow.fillInfoAndClickSave`)}}</el-tag>
             </div>
           </div>
         </el-col>
