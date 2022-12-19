@@ -32,6 +32,7 @@ exports.default = {
     loading: '加载中...',
     project: '项目',
     workflow: '工作流',
+    build: '构建',
     workflowName: '工作流名称',
     workflowID: '工作流标识',
     number: '序号',
@@ -183,6 +184,7 @@ exports.default = {
     projects: '项目',
     workflows: '工作流',
     environments: '环境',
+    templates: '模板库',
     services: '服务',
     builds: '构建',
     tests: '测试',
@@ -484,7 +486,23 @@ exports.default = {
       applyToServicesSuccessfully: '已成功应用到服务'
     },
     helmChart: {},
-    dockerfile: {},
+    dockerfile: {
+      noTemplate: '暂无模板，点击',
+      createTemplate: '创建模板',
+      inputTemplateName: '请输入模板名称',
+      templateNameIsDuplicated: '模板名称与现有名称重复',
+      selectTemplateToEdit: '请在左侧选择需要编辑的模板',
+      searchTemplate: '搜索模板',
+      variablesList: '变量',
+      referenceList: '引用列表',
+      noneVariable: '空',
+      templateUpdated: '模板 {name} 更新成功',
+      templateCreated: '模板 {name} 创建成功',
+      templateDeleted: '删除成功',
+      deleteConfirmation: '确定要删除 {name} 这个模板吗？',
+      confirmToSaveTemplate: 'Dockerfile 模板未保存，是否保存？',
+      deleteChange: '放弃'
+    },
     build: {}
   },
   build: {
@@ -1632,6 +1650,42 @@ exports.default = {
       lastMonth: '最近 1 个月',
       lastThreeMonths: '最近 3 个月',
       lastYear: '最近 1 年'
+    }
+  },
+  build: {
+    advancedSettings: {
+      title: '高级配置',
+      strategy: '策略配置',
+      cache: '缓存配置',
+      workspace: '工作空间 $WORKSPACE',
+      customCacheDirectory: '自定义目录',
+      directory: '路径',
+      resourceConfig: '资源配置',
+      cluster: '集群选择',
+      selectClusterPrompt: '请选择集群名称',
+      resource: '操作系统规格',
+      selectResourcePrompt: '请选择操作系统',
+      resourceTypeHigh: '高 | CPU: 16 核 内存: 32 GB',
+      resourceTypeMedium: '中 | CPU: 8 核 内存: 16 GB',
+      resourceTypeLow: '低 | CPU: 4 核 内存: 8 GB',
+      resourceTypeMinimum: '最低 | CPU: 2 核 内存: 2 GB',
+      resourceTypeCustom: '自定义',
+      customizeCPUResource: '自定义 CPU',
+      customizeMemoryResource: '自定义内存',
+      customizeGPUResource: 'GPU 资源',
+      memoryLabel: '内存(Mi)',
+      customizeGPUTooltip: '输入 GPU 资源配置，比如 nvidia.com/gpu: 1',
+      useHostDockerDaemon: '使用宿主机 Docker daemon',
+      parameterPassing: '输出变量',
+      parameterPassingTooltipProductWorkflow: '将脚本中的环境变量定义为输出变量，供其他任务使用',
+      parameterPassingTooltipCustomWorkflow: '将脚本中的环境变量定义为输出变量，供「自定义工作流」中的其他任务使用',
+      typeInVariable: '请输入变量',
+      typeInCacheDirectory: '请输入绝对路径例如 $WORKSPACE/.m2',
+      typeInCustomCPUResource: '请输入自定义 CPU',
+      typeInCustomMemoryResource: '输入自定义内存',
+      typeInCustomGPUResource: '请输入 GPU 资源配置',
+      typeInCorrectNumber: '请输入正确数字',
+      paramaterNamingConvention: '变量名称仅支持英文字母、数字、下划线且首个字符不以数字开头'
     }
   }
 }
