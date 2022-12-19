@@ -63,7 +63,9 @@ exports.default = {
     emptyText: '无',
     setting: '设置',
     importFromRepository: '从代码库导入',
-    view: '查看'
+    view: '查看',
+    clear: '清空',
+    search: '搜索'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -718,7 +720,43 @@ exports.default = {
       checkEnvName: '环境名称只支持小写字母和数字，特殊字符只支持中划线',
       selectServices: '请选择服务',
       environmentHasBeenSuccessfullyCreated: '创建环境成功',
-      envCreation: '创建环境'
+      envCreation: '创建环境',
+      envStatus: '环境状态',
+      runWorkflowToUpgradeService: '通过工作流升级服务',
+      hostingEnv: '托管',
+      baseEnv: '基准环境',
+      subEnv: '子环境',
+      enableShareEnvNotReadyTip: '注意：自测模式正在开启，过程中服务会重启，短时间内会影响服务的正常访问，请耐心等待。',
+      disableShareEnvNotReadyTip: '注意：自测模式正在关闭，过程中服务会重启，短时间内会影响服务的正常访问，请耐心等待。',
+      envChangeLog: '变更记录',
+      localCluster: '本地集群',
+      envOperation: '基本操作',
+      updateTime: '更新时间',
+      updateEnvVariables: '更新环境变量',
+      updateGlobalVariables: '更新全局变量',
+      updateEnvVariablesTip: '更新环境中引用的变量',
+      creatingSubEnvironment: '创建子环境',
+      serviceManagement: '管理服务',
+      addService: '添加服务',
+      updateService: '更新服务',
+      deleteService: '删除服务',
+      updateEnv: '更新环境',
+      updateEnvTip: '根据最新环境配置更新，包括服务编排和服务配置的改动',
+      envConfig: '环境配置',
+      moreOperation: '更多',
+      enableShareEnv: '开启自测模式',
+      disableShareEnv: '关闭自测模式',
+      deleteEnv: '删除环境',
+      hostingConfig: '配置托管',
+      cancelHosting: '取消托管',
+      envEntrypoint: '环境入口',
+      getEnvInfoLoading: '正在获取环境信息',
+      ingressName: 'Ingress 名称',
+      ingressAddress: '地址',
+      getServiceInfoLoading: '正在获取服务信息',
+      searchService: '搜索服务',
+      serviceCounts: '服务总数',
+      serviceCountsUnit: '个'
     },
     k8s: {
       envRollback: '回溯',
@@ -772,6 +810,20 @@ exports.default = {
         title: '指定需要覆盖的键值对',
         inputKey: '请输入 key 值',
         inputValue: '请输入 value 值'
+      },
+      chartListComp: {
+        serviceDeployStrategyTip: '该服务尚未通过 Zadig 部署，可执行「更新服务」操作使用 Zadig 上管理的服务配置重新部署',
+        serviceConfigChangedTip: '服务配置有变更',
+        updateServiceDialogTitle: '更新服务 - {serviceName}',
+        updateServiceConfigurationCheck: '同时更新服务配置',
+        updateValuesDialogTitle: 'Values 文件 - {serviceName}',
+        chartName: 'Chart 名称',
+        chartDeployStatus: '部署状态',
+        deployStatusSuccess: '部署成功',
+        deployStatusFailed: '部署失败',
+        deployStatusPending: '部署中',
+        deployStatusNotDeployed: '尚未部署',
+        chartHasBeenUpdatedSuccessfully: '{serviceName} 更新成功！'
       }
     },
     pm: {
@@ -789,6 +841,7 @@ exports.default = {
       inputServiceNameToSearch: '请输入服务名称',
       serviceList: '服务列表',
       selectedServices: '已选服务',
+      pleaseSelectServices: '请选择服务',
       serviceNameLabelTooltip: '项目：{projectName}；环境：{envName}'
     }
   },

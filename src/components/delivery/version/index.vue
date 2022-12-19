@@ -96,7 +96,7 @@
             type="danger"
             plain
           >{{$t(`global.delete`)}}</el-button>
-          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
             <el-button class="permission-disabled" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
           </el-tooltip>
         </template>

@@ -50,7 +50,7 @@ exports.default = {
     ok: 'ok',
     startTime: 'Start Time',
     endTime: 'End Time',
-    execute: 'Execute',
+    execute: 'Run',
     confirmation: 'Confirm',
     inputName: 'Please input',
     inputKey: 'Please input key',
@@ -63,7 +63,9 @@ exports.default = {
     emptyText: 'Empty',
     setting: 'Setting',
     importFromRepository: 'Import from repository',
-    view: 'View'
+    view: 'View',
+    clear: 'Clear',
+    search: 'Search'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -471,7 +473,7 @@ exports.default = {
     updateBy: 'Update By',
     lastModify: 'Last Modify',
     historyTask: 'Task History',
-    runStatus: 'Run Status',
+    runStatus: 'Status',
     duration: 'Duration',
     executor: 'Executor',
     env: 'Environment',
@@ -625,7 +627,7 @@ exports.default = {
     productTest: 'Product Test',
     selectContainer: 'Select Container',
     noNeedToEnterVariables: 'No Need To Enter Variables',
-    executeWithChangedCode: 'Execute With Changed Code',
+    executeWithChangedCode: 'Run With Changed Code',
     fillInfoAndClickSave: 'Fill in the relevant information and click Save',
     advancedSetting: 'Advanced Setting',
     notUseWorkspaceCaching: "Don't use workspace caching",
@@ -718,7 +720,43 @@ exports.default = {
       checkEnvName: 'Name should only contain lowercase alphanumeric characters and -',
       selectServices: 'Please select services',
       environmentHasBeenSuccessfullyCreated: 'Environment has been successfully created',
-      envCreation: 'Create Environment'
+      envCreation: 'Create Environment',
+      envStatus: 'Status',
+      runWorkflowToUpgradeService: 'Upgrade services through workflow',
+      hostingEnv: 'Hosting',
+      baseEnv: 'Base',
+      subEnv: 'Sub-Env',
+      enableShareEnvNotReadyTip: 'Note: Share-env mode is starting, the service will restart during the process, which will affect the normal access of the service for a short time, please be patient.',
+      disableShareEnvNotReadyTip: 'Note: Share-env mode is being closed, the service will restart during the process, which will affect the normal access of the service for a short time, please be patient.',
+      envChangeLog: 'Changelog',
+      localCluster: 'Local',
+      envOperation: 'Operation',
+      updateTime: 'Update Time',
+      updateEnvVariables: 'Update env variables',
+      updateGlobalVariables: 'Update global variables',
+      updateEnvVariablesTip: 'Update the variables referenced in the environment',
+      creatingSubEnvironment: 'Create sub-env',
+      serviceManagement: 'Service',
+      addService: 'Add service',
+      updateService: 'Update service',
+      deleteService: 'Delete service',
+      updateEnv: 'Update env',
+      updateEnvTip: 'Updates based on the latest environment configuration, including service orchestration and service configuration changes',
+      envConfig: 'Configuration',
+      moreOperation: 'More',
+      enableShareEnv: 'Enable share env',
+      disableShareEnv: 'Disable share env',
+      deleteEnv: 'Delete',
+      hostingConfig: 'Config',
+      cancelHosting: 'Cancel hosting',
+      envEntrypoint: 'Entrypoint',
+      getEnvInfoLoading: 'Loading the environment',
+      ingressName: 'Ingress',
+      ingressAddress: 'Address',
+      getServiceInfoLoading: 'Loading the service list',
+      searchService: 'Search service',
+      serviceCounts: 'Service Counts:',
+      serviceCountsUnit: ''
     },
     k8s: {
       envRollback: 'Rollback',
@@ -752,7 +790,7 @@ exports.default = {
         resourceDetection: 'Resource detection',
         resourceDetectionTip: 'Check if the resources defined in the service exist in the selected K8s namespace',
         onlyImport: 'Only import service',
-        executeDeploy: 'Execute deploy'
+        executeDeploy: 'Run deploy'
       }
     },
     helm: {
@@ -763,7 +801,7 @@ exports.default = {
       serviceListComp: {
         searchService: 'Search service',
         onlyImport: 'Only import service',
-        executeDeploy: 'Execute deploy',
+        executeDeploy: 'Run deploy',
         previewValues: 'Preview the final values file',
         resourceDetectionTip: 'Release name already exists in the namespace',
         addValuesFile: 'Add values file'
@@ -772,6 +810,20 @@ exports.default = {
         title: 'Specify the key-value to be overwritten',
         inputKey: 'Please input key',
         inputValue: 'Please input value'
+      },
+      chartListComp: {
+        serviceDeployStrategyTip: 'The service has not been deployed via Zadig and can be redeployed using the service configuration managed on Zadig by performing the "Update Service" operation',
+        serviceConfigChangedTip: 'Update service configuration at the same time',
+        updateServiceDialogTitle: 'Update service - {serviceName}',
+        updateServiceConfigurationCheck: 'Update service configuration at the same time',
+        updateValuesDialogTitle: 'Values - {serviceName}',
+        chartName: 'Chart Name',
+        chartDeployStatus: 'Deploy Status',
+        deployStatusSuccess: 'Success',
+        deployStatusFailed: 'Failed',
+        deployStatusPending: 'Pendning',
+        deployStatusNotDeployed: 'Not deploy',
+        chartHasBeenUpdatedSuccessfully: '{serviceName} has been updated successfully'
       }
     },
     pm: {
