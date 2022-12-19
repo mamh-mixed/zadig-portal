@@ -104,7 +104,7 @@
             <el-tooltip
               v-else
               effect="dark"
-              content="无权限操作"
+              :content="$t('permission.lackPermission')"
               placement="top"
             >
               <i class="iconfont iconshengji permission-disabled"></i>
@@ -114,7 +114,7 @@
             <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})" effect="dark" content="重启服务" placement="top">
               <i @click="restartService(projectName,scope.row.service_name,$route.query.envName)" class="el-icon-refresh"></i>
             </el-tooltip>
-            <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
               <i class="el-icon-refresh permission-disabled"></i>
             </el-tooltip>
           </span>
@@ -132,7 +132,7 @@
             <el-tooltip
               v-else
               effect="dark"
-              content="无权限操作"
+              :content="$t('permission.lackPermission')"
               placement="top"
             >
               <span><i class="iconfont iconfuwupeizhi permission-disabled"></i></span>

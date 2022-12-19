@@ -277,7 +277,7 @@
                     size="mini"
                   >共享</el-tag>
                 </el-tooltip>
-                <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+                <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
                   <el-tag
                     v-if="data.type === 'k8s'"
                     type="info"

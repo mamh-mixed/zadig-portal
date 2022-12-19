@@ -107,7 +107,7 @@
               配置管理
             </el-button>
           </router-link>
-          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
             <el-button icon="iconfont iconshare1"
                        class="permission-disabled"
                        type="primary"
@@ -123,7 +123,7 @@
                      plain>
             Yaml 导出
           </el-button>
-          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
             <el-button icon="iconfont iconcloud icon-bold"
                        class="permission-disabled"
                        type="primary"
@@ -141,7 +141,7 @@
               服务管理
             </el-button>
           </router-link>
-          <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+          <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
             <el-button icon="iconfont iconlink1 icon-bold"
                        class="permission-disabled"
                        type="primary"

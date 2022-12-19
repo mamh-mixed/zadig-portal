@@ -26,7 +26,7 @@
           <el-table
             :data="results"
             v-loading="loading"
-            element-loading-text="拼命加载中"
+            :element-loading-text="$t('global.loading')"
             element-loading-spinner="el-icon-loading"
             style="width: 100%;"
           >

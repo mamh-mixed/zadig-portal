@@ -214,7 +214,7 @@
         >版本发布</el-button>
         <template v-else slot="label">
           <div>
-            <el-tooltip effect="dark" content="无权限操作" placement="top">
+            <el-tooltip effect="dark" :content="$t('permission.lackPermission')" placement="top">
               <el-button size="mini" type="text" icon="el-icon-upload2" class="permission-disable">版本发布</el-button>
             </el-tooltip>
           </div>

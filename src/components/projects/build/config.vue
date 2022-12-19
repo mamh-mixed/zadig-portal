@@ -36,7 +36,7 @@
             >
               <el-button type="primary" size="mini" plain>{{$t(`global.edit`)}}</el-button>
             </router-link>
-            <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
               <el-button type="primary" class="permission-disabled" size="mini" plain>{{$t(`global.edit`)}}</el-button>
             </el-tooltip>
             <el-button
@@ -46,7 +46,7 @@
               size="mini"
               plain
             >{{$t(`global.delete`)}}</el-button>
-            <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
               <el-button type="primary" class="permission-disabled" size="mini" plain>{{$t(`global.delete`)}}</el-button>
             </el-tooltip>
           </template>
