@@ -286,7 +286,7 @@ export default {
       }
       return {
         cluster_id: [
-          { required: true, trigger: 'change', message: this.$t('environments.k8s.selectK8sCluster') }
+          { required: true, trigger: 'change', message: this.$t('environments.common.selectK8sCluster') }
         ],
         source: [
           { required: true, trigger: 'change', message: this.$t('environments.common.selectCreationMethod') }

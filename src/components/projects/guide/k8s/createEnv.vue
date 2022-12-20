@@ -9,24 +9,24 @@
       :rules="rules"
       inline-message
     >
-      <el-form-item label="K8s 集群" prop="cluster_id">
+      <el-form-item :label="$t('environments.common.k8sCluster')"  prop="cluster_id">
         <el-select
           class="select"
           filterable
           @change="changeCluster"
           v-model="projectConfig.cluster_id"
           size="small"
-          placeholder="请选择 K8s 集群"
+          :placeholder="$t('environments.common.selectK8sCluster')"
         >
           <el-option v-for="cluster in allCluster" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="K8s 命名空间" prop="namespace">
+      <el-form-item :label="$t('environments.common.k8sNamespace')" prop="namespace">
         <el-select
           v-model="projectConfig.namespace"
           :disabled="editButtonDisabled"
           size="small"
-          placeholder="选择或自定义命名空间"
+          :placeholder="$t('environments.common.selectK8sNamespace')"
           filterable
           allow-create
           clearable
@@ -37,14 +37,14 @@
         <span class="editButton" @click="editButtonDisabled = !editButtonDisabled">
           <i :class="[editButtonDisabled ? 'el-icon-edit-outline': 'el-icon-finished' ]"></i>
         </span>
-        <span class="ns-desc" v-show="nsIsExisted">Zadig 中定义的服务将覆盖所选命名空间中的同名服务，请谨慎操作！</span>
+        <span class="ns-desc" v-show="nsIsExisted">{{$t('environments.common.namespaceAlreadyExistsTip')}}</span>
       </el-form-item>
       <el-form-item :label="$t(`status.imageRepo`)">
         <el-select
           class="select"
           filterable
           v-model.trim="projectConfig.registry_id"
-          placeholder="请选择镜像仓库"
+          :placeholder="$t('environments.common.selectImageRepository')"
           size="small"
           @change="getImages"
         >
@@ -58,10 +58,10 @@
       </el-form-item>
       <el-form-item :label="$t(`workflow.selectService`)" prop="selectedService">
         <div class="select-service">
-          <el-select v-model="projectConfig.selectedService" size="small" placeholder="选择服务" filterable clearable multiple collapse-tags>
+          <el-select v-model="projectConfig.selectedService" size="small" :placeholder="$t('environments.common.selectServices')" filterable clearable multiple collapse-tags>
             <el-option
               disabled
-              label="全选"
+              :label="$t('environments.common.checkAllServices')"
               value="ALL"
               :class="{selected: projectConfig.selectedService.length === serviceNames.length}"
               style="color: #606266;"
@@ -69,18 +69,18 @@
               <span
                 style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
                 @click="projectConfig.selectedService = serviceNames"
-              >全选</span>
+              >{{$t('environments.common.checkAllServices')}}</span>
             </el-option>
             <el-option v-for="serviceName in serviceNames" :key="serviceName" :label="serviceName" :value="serviceName"></el-option>
           </el-select>
-          <el-button size="mini" plain @click="projectConfig.selectedService = []">清空</el-button>
+          <el-button size="mini" plain @click="projectConfig.selectedService = []">{{$t('environments.common.clearServices')}}</el-button>
         </div>
       </el-form-item>
     </el-form>
     <EnvConfig class="common-parcel-block" ref="envConfigRef" :envName="currentEnv" />
     <div v-if="variables.length" class="common-parcel-block box-card-service">
       <div class="primary-title">
-        变量列表
+        {{$t('environments.k8s.variablesList')}}
         <VariablePreviewEditor :services="previewServices" :projectName="projectConfig.product_name" :variables="variables" />
       </div>
       <VarList :variables="variables" />
@@ -129,20 +129,6 @@ export default {
       hostingNamespace: {},
       allCluster: [],
       serviceNames: [],
-      rules: {
-        cluster_id: [
-          { required: true, trigger: 'change', message: '请选择 K8s 集群' }
-        ],
-        namespace: [
-          { required: true, trigger: 'change', message: '命名空间不能为空' }
-        ],
-        selectedService: {
-          type: 'array',
-          required: true,
-          message: '请选择服务',
-          trigger: 'change'
-        }
-      },
       imageRegistry: [],
       containerNames: [],
       defaultResource: {
@@ -201,6 +187,22 @@ export default {
         containerMap[service] = svcMap[service]
       })
       return containerMap
+    },
+    rules () {
+      return {
+        cluster_id: [
+          { required: true, trigger: 'change', message: this.$t('environments.common.selectK8sCluster') }
+        ],
+        namespace: [
+          { required: true, trigger: 'change', message: this.$t('environments.common.selectK8sNamespace') }
+        ],
+        selectedService: {
+          type: 'array',
+          required: true,
+          message: this.$t('environments.common.selectServices'),
+          trigger: 'change'
+        }
+      }
     }
   },
   methods: {
@@ -342,7 +344,7 @@ export default {
                 }
                 for (const con of ser.containers) {
                   if (!con.image) {
-                    this.$message.warning(`${con.name}未选择镜像`)
+                    this.$message.warning(this.$t('environments.k8s.servicewithoutImage', { serviceName: con.name }))
                     return
                   }
                 }
@@ -352,18 +354,15 @@ export default {
           }
           const curPayload = cloneDeep(projectConfig)
           curPayload.services = selectedServices
-
           curPayload.vars = curPayload.curVars.map(vars => {
             delete vars.allServices
             return vars
           })
           curPayload.source = 'spock'
           curPayload.env_configs = envConfigs[envInfo.initName] || []
-
           delete curPayload.selectedService
           delete curPayload.curVars
           delete curPayload.servicesMap
-
           payload.push(curPayload)
         })
 
