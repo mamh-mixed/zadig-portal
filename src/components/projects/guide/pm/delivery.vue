@@ -1,11 +1,11 @@
 <template>
   <div class="projects-delivery-container">
     <div class="guide-container">
-      <Step :activeStep="3" envDisabled/>
+      <Step :thirdStepTitle="$t('environments.common.envCreation')" :activeStep="3" envDisabled/>
       <div class="current-step-container">
         <div class="title-container">
-          <span class="first">第四步</span>
-          <span class="second">运行工作流触发服务的自动化交付</span>
+          <span class="first">{{$t('project.onboardingComp.fourthStep')}}</span>
+          <span class="second">{{$t('project.onboardingComp.fourthStepTip')}}</span>
         </div>
         <div class="block-list">
           <el-table v-loading="loading"
@@ -17,7 +17,7 @@
               </template>
             </el-table-column>
             <el-table-column width="200px"
-                             label="环境信息">
+                             :label="$t('project.onboardingComp.envName')">
               <template slot-scope="scope">
                 <a v-if="scope.row.env_name"
                    class="env-name"
@@ -38,34 +38,17 @@
               </template>
             </el-table-column>
             <el-table-column width="200px"
-                             label="包含步骤">
+                             :label="$t('project.onboardingComp.workflowStages')">
               <template slot-scope="scope">
                 <span>
-                  <span
-                        v-if="!$utils.isEmpty(scope.row.build_stage) && scope.row.build_stage.enabled">
-                    <el-tag size="small">构建部署</el-tag>
-                    <span v-if="scope.row.test_stage.enabled||(!$utils.isEmpty(scope.row.security_stage)&&scope.row.security_stage.enabled)||scope.row.distribute_stage.enabled"
-                          class="step-arrow"><i class="el-icon-right"></i></span>
+                  <span v-for="(stage,index) in scope.row.enabledStages" :key="index" class="stage-tag">
+                    <el-tag size="mini">{{wordTranslation(stage,'workflowStage')}}</el-tag>
                   </span>
-                  <span
-                        v-if="!$utils.isEmpty(scope.row.artifact_stage) && scope.row.artifact_stage.enabled">
-                    <el-tag size="small">交付物部署</el-tag>
-                    <span v-if="scope.row.test_stage.enabled||(!$utils.isEmpty(scope.row.security_stage)&&scope.row.security_stage.enabled)||scope.row.distribute_stage.enabled"
-                          class="step-arrow"><i class="el-icon-right"></i></span>
-                  </span>
-                  <span
-                        v-if="(!$utils.isEmpty(scope.row.test_stage) && scope.row.test_stage.enabled)||(!$utils.isEmpty(scope.row.security_stage)&&scope.row.security_stage.enabled)">
-                    <el-tag size="small">测试</el-tag>
-                    <span v-if="scope.row.distribute_stage.enabled"
-                          class="step-arrow"><i class="el-icon-right"></i></span>
-                  </span>
-                  <el-tag v-if="!$utils.isEmpty(scope.row.distribute_stage) &&  scope.row.distribute_stage.enabled"
-                          size="small">分发部署</el-tag>
                 </span>
               </template>
             </el-table-column>
             <el-table-column width="150px"
-                             label="更新信息（时间/操作人）">
+                             :label="$t('project.onboardingComp.updateTime')">
               <template slot-scope="scope">
                 {{$utils.convertTimestamp(scope.row.updateTime)}}
               </template>
@@ -77,7 +60,7 @@
                            size="mini"
                            round
                            @click="runCurrentTask(scope.row)"
-                           plain>点击运行</el-button>
+                           plain>{{$t('project.onboardingComp.clickToRun')}}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -102,7 +85,7 @@
         <router-link :to="`/v1/projects/detail/${projectName}/detail`">
           <el-button type="primary"
                   size="small"
-                  :disabled="loading">完成</el-button>
+                  :disabled="loading">{{$t('project.onboardingComp.finish')}}</el-button>
         </router-link>
 
       </div>

@@ -1,11 +1,11 @@
 <template>
   <div class="projects-delivery-container">
     <div class="guide-container">
-      <Step :activeStep="3"/>
+      <Step :thirdStepTitle="$t('environments.common.envCreation')" :activeStep="3"/>
       <div class="current-step-container">
         <div class="title-container">
-          <span class="first">第四步</span>
-          <span class="second">运行工作流触发服务的自动化交付</span>
+          <span class="first">{{$t('project.onboardingComp.fourthStep')}}</span>
+          <span class="second">{{$t('project.onboardingComp.fourthStepTip')}}</span>
         </div>
         <div class="block-list">
           <el-table v-loading="loading"
@@ -17,7 +17,7 @@
               </template>
             </el-table-column>
             <el-table-column width="120px"
-                             label="环境信息">
+                             :label="$t('project.onboardingComp.envName')">
               <template slot-scope="scope">
                 <a v-if="scope.row.env_name"
                    class="env-name"
@@ -39,7 +39,7 @@
               </template>
             </el-table-column>
             <el-table-column width="200px"
-                             label="包含步骤">
+                             :label="$t('project.onboardingComp.workflowStages')">
               <template slot-scope="scope">
                 <span>
                   <span v-for="(stage,index) in scope.row.enabledStages" :key="index" class="stage-tag">
@@ -49,7 +49,7 @@
               </template>
             </el-table-column>
             <el-table-column width="150px"
-                             label="更新信息">
+                             :label="$t('project.onboardingComp.updateTime')">
               <template slot-scope="scope">
                 {{$utils.convertTimestamp(scope.row.updateTime)}}
               </template>
@@ -61,7 +61,7 @@
                            size="mini"
                            round
                            @click="runCurrentTask(scope.row)"
-                           plain>点击运行</el-button>
+                           plain>{{$t('project.onboardingComp.clickToRun')}}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -85,7 +85,7 @@
         <router-link :to="`/v1/projects/detail/${projectName}/detail`">
           <el-button type="primary"
                   size="small"
-                  :disabled="loading">完成</el-button>
+                  :disabled="loading">{{$t('project.onboardingComp.finish')}}</el-button>
         </router-link>
       </div>
     </div>

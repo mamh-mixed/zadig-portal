@@ -6,7 +6,7 @@
           <span style="margin-left: 10px;">{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" label="包含步骤">
+      <el-table-column width="200px" :label="$t('project.onboardingComp.workflowStages')">
         <template slot-scope="scope">
           <span>
             <span v-for="(stage,index) in scope.row.enabledStages" :key="index" class="stage-tag">
@@ -15,7 +15,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column width="400px" label="更新信息（时间/操作人）">
+      <el-table-column width="400px" :label="$t('project.onboardingComp.updateTime')">
         <template slot-scope="scope">
           {{ $utils.convertTimestamp(scope.row.updateTime)}}/ {{scope.row.updateBy}}
         </template>
@@ -28,7 +28,7 @@
             round
             @click="runCurrentTask(scope.row)"
             plain
-            >点击运行</el-button
+            >{{$t('project.onboardingComp.clickToRun')}}</el-button
           >
         </template>
       </el-table-column>

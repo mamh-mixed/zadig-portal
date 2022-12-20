@@ -8,13 +8,13 @@
       <div class="controls__right">
         <el-button type="primary"
                   size="small"
-                  @click="nextStep">{{currentStep === 2 ? '完成' : '下一步'}}</el-button>
+                  @click="nextStep">{{currentStep === 2 ? $t('project.onboardingComp.finish') : $t('project.onboardingComp.nextStep')}}</el-button>
         <el-button type="primary" size="small"
                 v-if="currentStep === 0"
                 @click="exitOnboarding">
           <i v-if="exitLoading"
              class="el-icon-loading"></i>
-          <span>跳过向导</span>
+          <span>{{$t('project.onboardingComp.skipOnboarding')}}</span>
         </el-button>
       </div>
     </div>
