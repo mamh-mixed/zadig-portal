@@ -1865,8 +1865,8 @@ export function getEnvDefaultVariableAPI (projectName, envName, ifPassFilter = t
   return http.get(`/api/aslan/environment/rendersets/default-values?projectName=${projectName}&envName=${envName}&ifPassFilter=${ifPassFilter}`)
 }
 
-export function getServiceDefaultVariableAPI (projectName, envName, serviceName = []) {
-  return http.get(`/api/aslan/environment/rendersets/variables?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}`)
+export function getServiceDefaultVariableAPI (projectName, envName, serviceName = [], ifPassFilter = true) {
+  return http.get(`/api/aslan/environment/rendersets/variables?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}&ifPassFilter=${ifPassFilter}`)
 }
 
 export function createHelmEnvAPI (projectName, payload, scene = '') {

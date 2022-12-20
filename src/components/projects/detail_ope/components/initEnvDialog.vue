@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="`设置 ${currentEnv} 环境变量`" :visible.sync="dialogVisible" width="850px">
     <div>
-      <VarYaml :variables="variables" v-if="deployType === 'k8s'" class="var-list-container" />
+      <K8sEnvTemplate v-if="deployType === 'k8s'" :currentInfo="currentInfo" class="var-list-container" />
       <HelmEnvTemplate
         v-else-if="deployType === 'helm'"
         class="chart-value"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import VarYaml from '@/components/projects/env/k8sPmEnv/varYaml.vue'
+import K8sEnvTemplate from './k8sEnvTemplate.vue'
 import HelmEnvTemplate from '@/components/projects/env/env_detail/components/updateHelmEnvTemp.vue'
 import { cloneDeep } from 'lodash'
 
@@ -32,7 +32,6 @@ export default {
   },
   data () {
     return {
-      variables: [], // all update : default_variable
       chartNames: [],
       currentEnvObj: undefined
     }
@@ -57,14 +56,11 @@ export default {
   watch: {
     currentEnv: async function (nVal, oVal) {
       if (!nVal) {
-        this.variables = []
         this.chartNames = []
         this.currentEnvObj = undefined
         return
       }
-      if (this.deployType === 'k8s') {
-        this.variables = cloneDeep(this.currentInfo.vars)
-      } else {
+      if (this.deployType === 'helm') {
         // for service charts
         this.chartNames = cloneDeep(this.currentInfo.chartValues || []).map(chart => {
           return {
@@ -93,9 +89,7 @@ export default {
   },
   methods: {
     getEnvInfo () {
-      if (this.deployType === 'k8s') {
-        this.currentInfo.vars = cloneDeep(this.variables)
-      } else {
+      if (this.deployType === 'helm') {
         const {
           envInfo,
           chartInfo
@@ -109,7 +103,7 @@ export default {
     }
   },
   components: {
-    VarYaml,
+    K8sEnvTemplate,
     HelmEnvTemplate
   }
 }

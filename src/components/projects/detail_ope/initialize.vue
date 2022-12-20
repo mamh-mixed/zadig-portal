@@ -39,7 +39,7 @@
 <script>
 import InitEnvDialog from './components/initEnvDialog.vue'
 import bus from '@utils/eventBus'
-import { getNewCollaborationAPI, initializeCollaborationAPI, getEnvDefaultVariableAPI } from '@api'
+import { getNewCollaborationAPI, initializeCollaborationAPI } from '@api'
 import { uniqBy } from 'lodash'
 export default {
   data () {
@@ -141,10 +141,6 @@ export default {
           }
           if (product.deploy_type !== 'helm') {
             product.deploy_type = 'k8s'
-            if (product.collaboration_type === 'new') {
-              const res = await getEnvDefaultVariableAPI(this.projectName, product.name)
-              product.default_variable = res.default_variable // will update
-            }
           }
         })
         const fn = obj => {
