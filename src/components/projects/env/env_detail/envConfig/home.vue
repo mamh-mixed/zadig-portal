@@ -27,11 +27,9 @@ export default {
     return {
       currentConfig: '',
       allConfig: ['Ingress', 'ConfigMap', 'Secret', 'PVC'],
-
       dialogVisible: false,
       repoConfig: {},
       dialogBtnLoading: false,
-
       cmOption: {}
     }
   },
@@ -63,7 +61,7 @@ export default {
                 ? this.$t('environments.k8s.envConfigComp.addEnvConfiguration')
                 : `${evt.actionType === 'view' ? this.$t('global.view') : this.$t('global.edit')} ${
                   evt.name
-                } 配置`,
+                } ${this.$t('environments.config.configuration')}`,
 
             showImport: evt.showImport || false,
             checkAssociated:
@@ -132,7 +130,7 @@ export default {
       return this.$route.params.env_name
     },
     placeholder () {
-      return `可直接粘贴 ${this.currentConfig} 类型的 K8s YAML 文件`
+      return this.$t('environments.config.pastePlaceholder', { currentConfig: this.currentConfig })
     }
   },
   created () {
@@ -151,7 +149,7 @@ export default {
           title: this.envName,
           url: `/v1/projects/detail/${this.projectName}/envs/detail?envName=${this.envName}`
         },
-        { title: '配置', url: '' }
+        { title: this.$t('environments.config.configuration'), url: '' }
       ]
     })
   },

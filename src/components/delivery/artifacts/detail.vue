@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading" class="artifacts-container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="详情" name="summary">
+      <el-tab-pane :label="$t('global.detail')" name="summary">
         <el-row class="row-container" :gutter="20">
           <el-col :span="8">
             <div class="function-area">

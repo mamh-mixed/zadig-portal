@@ -72,7 +72,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="left" width="150px" label="服务入口">
+      <el-table-column align="left" width="150px" :label="$t('global.serviceEntrypoint')">
         <template slot-scope="scope">
           <template v-if="scope.row.ingress && scope.row.ingress.host_info && scope.row.ingress.host_info.length>0">
             <el-tooltip

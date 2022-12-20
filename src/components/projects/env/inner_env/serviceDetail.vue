@@ -260,7 +260,7 @@
                            size="mini">查看事件</el-button>
               </template>
             </el-table-column>
-            <el-table-column label="详情"
+            <el-table-column :label="$t('global.detail')"
                              props="pods"
                              type="expand"
                              width="80px">

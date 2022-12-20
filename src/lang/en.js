@@ -66,7 +66,9 @@ exports.default = {
     importFromRepository: 'Import from repository',
     view: 'View',
     clear: 'Clear',
-    search: 'Search'
+    search: 'Search',
+    serviceEntrypoint: 'Entrypoint',
+    detail: 'Detail'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -758,6 +760,30 @@ exports.default = {
       searchService: 'Search service',
       serviceCounts: 'Service Counts:',
       serviceCountsUnit: ''
+    },
+    config: {
+      configuration: 'Configuration',
+      address: 'Address',
+      linkedServices: 'Services',
+      volume: 'Volume',
+      capacity: 'Capacity',
+      accessModes: 'Access Modes',
+      addConfigurationSuccess: 'Configuration has been added successfully',
+      updateConfigurationSuccess: 'Configuration has been updated successfully',
+      deleteConfigurationSuccess: 'Configuration has been deleted successfully',
+      deleteConfigurationConfirm: 'Are you sure to delete {name} in environment {envName}?',
+      versionHistory: 'Version History',
+      compareTheSelectedVersions: 'Compare',
+      version: 'Version',
+      creationTime: 'Creation Time',
+      lastModified: 'Last Modified',
+      rollback: 'Rollback',
+      currentVersion: 'Current version',
+      versionIndex: 'Version {index}',
+      selectVersionLimitation: 'Please select two versions for comparison',
+      noVersionSelected: 'No version is selected',
+      diffTitle: 'Diff of {newVersion} and {oldVersion}',
+      pastePlaceholder: ' Please paste the K8s YAML file of type {currentConfig} directly'
     },
     changelog: {
       changelog: 'Changelog',
