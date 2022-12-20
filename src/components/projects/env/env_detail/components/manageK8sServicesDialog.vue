@@ -30,14 +30,17 @@
           @checkRes="svcResources = $event"
           showExpand
         />
-        <el-table v-else :data="currentResourceCheck" style="width: 100%;">
+        <el-table v-else :data="currentResourceCheck" style="width: 100%;" default-expand-all>
           <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
           <el-table-column type="expand" width="100px" label="变量配置">
             <template slot-scope="{ row }">
-              <div class="primary-title">变量配置</div>
-              <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'200px'">
-                <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.variable_yaml" />
-              </Resize>
+              <div v-if="row.canEditYaml">
+                <div class="primary-title">变量配置</div>
+                <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'200px'">
+                  <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.variable_yaml" />
+                </Resize>
+              </div >
+              <div v-else style="font-size: 12px; text-align: center;">无变量配置</div>
             </template>
           </el-table-column>
         </el-table>
@@ -232,7 +235,8 @@ export default {
         serviceVariables[svc] = {
           service_name: svc,
           deploy_strategy: '',
-          variable_yaml: ''
+          variable_yaml: '',
+          canEditYaml: false
         }
       })
       this.serviceVariables = serviceVariables
@@ -246,7 +250,8 @@ export default {
           serviceVariables[svc.service_name] = {
             service_name: svc.service_name,
             deploy_strategy: '',
-            variable_yaml: svc.variable_yaml
+            variable_yaml: svc.variable_yaml,
+            canEditYaml: !!svc.variable_yaml
           }
         })
         this.serviceVariables = serviceVariables

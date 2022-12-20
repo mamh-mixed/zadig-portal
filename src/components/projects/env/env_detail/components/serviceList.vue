@@ -139,10 +139,10 @@
     <el-dialog :title="`更新服务 - ${usedServiceInfo.service_name}`" :visible.sync="usedServiceInfo.dialogVisible" width="60%" class="update-service">
       <div>
         <div class="primary-title">变量配置</div>
-        <Resize v-show="usedServiceInfo.variable_yaml" @sizeChange="$refs.codemirror.refresh()" :height="'300px'">
+        <Resize v-show="usedServiceInfo.canEditYaml" @sizeChange="$refs.codemirror.refresh()" :height="'300px'">
           <CodeMirror ref="codemirror" v-model="usedServiceInfo.variable_yaml" />
         </Resize>
-        <div v-show="!usedServiceInfo.variable_yaml" style="color: #aaa;">
+        <div v-show="!usedServiceInfo.canEditYaml" style="color: #aaa;">
           无服务变量
         </div>
         <div style="margin-top: 14px;">
@@ -183,6 +183,7 @@ export default {
       dialogVisible: false,
       service_name: '',
       variable_yaml: '',
+      canEditYaml: false,
       update_service_tmpl: false
     }
     return {
@@ -244,6 +245,7 @@ export default {
         res.forEach(svc => {
           if (svc.service_name === service_name) {
             this.usedServiceInfo.variable_yaml = svc.variable_yaml
+            this.usedServiceInfo.canEditYaml = !!svc.variable_yaml
             this.usedServiceInfo.update_service_tmpl = !!svc.variable_yaml
           }
         })

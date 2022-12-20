@@ -9,11 +9,14 @@
     <el-table :data="currentInfo.variables || []" style="width: 100%;" default-expand-all>
       <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
       <el-table-column type="expand" width="100px" label="变量配置">
-        <template slot-scope="{ row }" v-if="row.canEditYaml">
-          <div class="primary-title">变量配置</div>
-          <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'150px'">
-            <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.variable_yaml" />
-          </Resize>
+        <template slot-scope="{ row }">
+          <div v-if="row.canEditYaml">
+            <div class="primary-title">变量配置</div>
+            <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'150px'">
+              <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.variable_yaml" />
+            </Resize>
+          </div>
+          <div v-else style="font-size: 12px; text-align: center;">无变量配置</div>
         </template>
       </el-table-column>
     </el-table>
