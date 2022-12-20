@@ -51,10 +51,6 @@ export default {
               prop: 'address',
               label: '地址'
             },
-            // {
-            //   prop: 'ports',
-            //   label: '端口'
-            // },
             {
               width: '210',
               render: this.operation
@@ -213,7 +209,7 @@ export default {
               this.operateConfig('view', scope.row, scope.$index)
             }}
           >
-            查看
+            { this.$t('global.view') }
           </el-button>
           <el-button
             type="text"
@@ -229,7 +225,7 @@ export default {
             }}
             disabled={scope.row.immutable}
           >
-            编辑
+            { this.$t('global.edit') }
           </el-button>
           <el-button
             type="text"
@@ -259,7 +255,7 @@ export default {
               this.deleteConfig(scope.row)
             }}
           >
-            删除
+            { this.$t('global.delete') }
           </el-button>
         </div>
       )

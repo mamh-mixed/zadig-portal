@@ -25,7 +25,7 @@
                    target="_blank">{{ `${scope.row.env_name}`}}</a>
               </template>
             </el-table-column>
-            <el-table-column label="服务入口">
+            <el-table-column :label="$t('global.serviceEntrypoint')">
               <template slot-scope="scope">
                 <div v-for="(ingress,ingress_index) in scope.row.ingress_infos"
                      :key="ingress_index">

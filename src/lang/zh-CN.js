@@ -66,7 +66,9 @@ exports.default = {
     importFromRepository: '从代码库导入',
     view: '查看',
     clear: '清空',
-    search: '搜索'
+    search: '搜索',
+    serviceEntrypoint: '服务入口',
+    detail: '详情'
   },
   permission: {
     lackPermission: '无权限操作'

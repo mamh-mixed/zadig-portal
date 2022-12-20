@@ -66,7 +66,9 @@ exports.default = {
     importFromRepository: 'Import from repository',
     view: 'View',
     clear: 'Clear',
-    search: 'Search'
+    search: 'Search',
+    serviceEntrypoint: 'Entrypoint',
+    detail: 'Detail'
   },
   permission: {
     lackPermission: 'Unauthorized'
