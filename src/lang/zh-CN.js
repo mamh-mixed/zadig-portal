@@ -759,6 +759,22 @@ exports.default = {
       serviceCounts: '服务总数',
       serviceCountsUnit: '个'
     },
+    changelog: {
+      changelog: '变更记录',
+      APIPayloadDialogTitle: 'API 请求： {time}',
+      noPayload: '暂无请求 Payload 信息',
+      selectType: '请选择查询类型',
+      username: '用户名',
+      project: '项目',
+      function: '功能',
+      statusCode: '状态码',
+      inputKeyword: '请输入关键字',
+      search: '查询',
+      time: '时间',
+      detail: '详情',
+      APIPayload: 'API 请求',
+      searchCompleted: '查询完毕'
+    },
     k8s: {
       envRollback: '回溯',
       rollbackVersion: '选择版本',
