@@ -759,6 +759,22 @@ exports.default = {
       serviceCounts: 'Service Counts:',
       serviceCountsUnit: ''
     },
+    changelog: {
+      changelog: 'Changelog',
+      APIPayloadDialogTitle: 'API Payload: {time}',
+      noPayload: 'No payload',
+      selectType: 'Please select type',
+      username: 'Username',
+      project: 'Project',
+      function: 'Function',
+      statusCode: 'Status Code',
+      inputKeyword: 'Please input keyword to search',
+      search: 'Search',
+      time: 'Time',
+      detail: 'Detail',
+      APIPayload: 'API Payload',
+      searchCompleted: 'Search completed'
+    },
     k8s: {
       envRollback: 'Rollback',
       rollbackVersion: 'Version',
