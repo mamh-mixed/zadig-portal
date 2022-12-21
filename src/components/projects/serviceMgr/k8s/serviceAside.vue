@@ -368,7 +368,7 @@ export default {
     },
     saveServiceVariable () {
       const projectName = this.projectName
-      const serviceName = this.service.name
+      const serviceName = this.service.service_name
       if (this.serviceConfigs.variable_kvs) {
         const serviceVars = []
         this.serviceConfigs.variable_kvs.forEach(element => {
@@ -382,7 +382,7 @@ export default {
         variable_yaml: this.serviceConfigs.variable_yaml,
         service_vars: this.serviceConfigs.service_vars
       }
-      saveServiceVariableAPI(projectName, serviceName, payload)
+      saveServiceVariableAPI(serviceName, projectName, payload)
         .then(res => {
           if (res) {
             this.$message.success('变量保存成功')
