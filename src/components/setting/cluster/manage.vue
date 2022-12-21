@@ -423,7 +423,7 @@
         </template>
       </el-alert>
       <div class="sync-container">
-        <el-button size="small" :plain="true" @click="clusterOperation('init')" type="success">新建</el-button>
+        <el-button size="small" :plain="true" @click="clusterOperation('init')" type="success">{{$t('global.add')}}</el-button>
       </div>
       <div class="cluster-list">
         <template>

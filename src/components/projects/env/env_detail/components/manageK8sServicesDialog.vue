@@ -109,9 +109,9 @@ export default {
     },
     opeDesc () {
       const typeEnum = {
-        add: '添加',
-        update: '更新',
-        delete: '删除'
+        add: this.$t('global.add'),
+        update: this.$t('global.update'),
+        delete: this.$t('global.delete')
       }
       return typeEnum[this.opeType] || ''
     },

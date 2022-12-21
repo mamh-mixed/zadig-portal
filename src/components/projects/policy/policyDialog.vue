@@ -98,9 +98,9 @@ export default {
   filters: {
     desc (val) {
       const info = {
-        added: '添加',
-        deleted: '删除',
-        updated: '更新'
+        added: this.$t('global.add'),
+        deleted: this.$t('global.delete'),
+        updated: this.$t('global.update')
       }
       return info[val]
     }

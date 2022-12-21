@@ -68,7 +68,16 @@ exports.default = {
     clear: 'Clear',
     search: 'Search',
     serviceEntrypoint: 'Entrypoint',
-    detail: 'Detail'
+    detail: 'Detail',
+    sync: 'Sync',
+    autoSync: 'Auto-sync',
+    import: 'Import',
+    reset: 'Reset',
+    apply: 'Apply',
+    skip: 'Skip',
+    preview: 'Preview',
+    back: 'Back',
+    remove: 'Remove'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -438,7 +447,6 @@ exports.default = {
       permissionManagement: 'Permission'
     }
   },
-
   templates: {
     k8sYaml: {
       noTemplate: 'No template,click to',
@@ -780,6 +788,70 @@ exports.default = {
     testingv2: 'Test',
     release_image: 'Distribute',
     distribute: 'Distribute Deploy'
+  },
+  services: {
+    common: {
+      servicesManagement: 'Services Management',
+      serviceOrchestration: 'Service Orchestration',
+      inputServiceName: 'Please input service name',
+      syncFromRepository: 'Sync from repository',
+      syncFromTemplate: 'Create from template',
+      searchService: 'Search service',
+      updateService: 'Update service',
+      createService: 'Create service',
+      startupSequence: 'Startup sequence',
+      detectedServiceModules: 'Detected Service Modules',
+      detectedServiceModulesTooltip: 'Name of service container that can be updated',
+      policySection: 'Policy',
+      helpSection: 'Help',
+      projectWithoutService: 'No service,please click',
+      toCreateService: 'to create service',
+      serviceModule: 'Service Module',
+      serviceImageName: 'Image Name',
+      serviceImageLabel: 'Label($IMAGE)',
+      buildInfoAndOperation: 'Build/Operation',
+      serviceBuild: 'Build',
+      addServiceBuild: 'Add',
+      addToEnv: 'Add to the environment'
+    },
+    k8s: {
+      selectFileToSync: 'Please select the file or file directory to be synchronized',
+      createServiceSyncFromRepo: 'Create service - Sync from repository',
+      serviceNameMismatch: "The current service name and the selected folder name don't match, please select again",
+      servicesIncluded: 'Services included:',
+      inputByManual: 'Input by manual',
+      serviceName: 'service name ',
+      originProject: 'project name ',
+      sharedService: 'Shared',
+      sharedServicesList: 'Shared Services List',
+      sharedServiceTooltip: 'Shared services can be used in other projects',
+      addSharedServiceSuccess: 'Shared service has been successfully added',
+      confirmToDeleteSharedService: 'Are you sure to remove this shared service {serviceName}?',
+      deleteSharedServiceSuccess: 'Shared service has been successfully removed',
+      setSharedServiceSuccess: 'The service is set up as a shared service',
+      unsetSharedServiceSuccess: 'The service has been set as a non-shared service',
+      confirmToDeleteService: 'Are you sure to delete this service {serviceName}?',
+      importServiceSuccess: 'Service has been successfully imported',
+      deleteServiceSuccess: 'Service has been successfully deleted',
+      serviceIsNotSaved: 'The service configuration is not saved,save it now？',
+      serviceNameIsDuplicated: 'Duplication of service names with existing names',
+      checkServiceName: 'Name should only contain lowercase alphanumeric characters and -',
+      importFromK8sNamespace: 'Import from K8s namespace',
+      variablesSection: 'Variables',
+      buildInVariables: 'System built-in variables',
+      buildInVariablesTooltip: 'Referenced by $Namespace$, $Product$, $Service$, $EnvName$ in the service yaml',
+      globalVariables: 'Global Variables',
+      globalVariablesTooltip: 'Global variables are referenced by {{.key}} and are available to all services in the project',
+      currentValue: 'Current Value'
+    },
+    pm: {},
+    helm: {
+      imagesSection: 'Images',
+      detectedServiceModulesTooltip: 'Images that can be updated in values.yaml',
+      updateMatchRules: 'Update match rules',
+      helmReleaseNameConfiguration: 'Helm Release Configuration',
+      helmReleaseName: 'Release Name'
+    }
   },
   environments: {
     common: {
@@ -1391,9 +1463,22 @@ exports.default = {
       choosePR: 'Choose pull request',
       inputPR: 'Input Pull Request ID',
       prDoesNotExist: 'Pull request doesn\'t exist. Type in the pull request ID. You can use comma to separate multiple requests',
-      usePRorTagTemplate: 'Use '
+      usePRorTagTemplate: 'Use ',
+      selectGitProvider: 'Please select provider',
+      selectRepo: 'Please select repository',
+      selectBranch: 'Please select branch',
+      selectOrgOrUsername: 'Please select org/user',
+      selectFileOrFolder: 'Please select file or folder',
+      inputAddress: 'Please input the URL, including the protocol'
     },
     info: {
+      repository: 'Repository',
+      provider: 'Provider',
+      orgOrUser: 'Org/user',
+      branch: 'Branch',
+      org: 'Organization',
+      enterprise: 'Enterprise',
+      fileOrFolder: 'File(Folder)',
       creatorTemplate: 'Creator: ',
       creationTimeTemplate: 'Create Time: ',
       sourceBranchTemplate: 'Source Branch: ',

@@ -141,7 +141,7 @@
             plain
           ></el-button>
         </el-form-item>
-        <el-button type="text" @click="addVars">+添加</el-button>
+        <el-button type="text" @click="addVars">+{{$t('global.add')}}</el-button>
       </el-form-item>
       <div class="item-title" v-if="isShowShareStorage">{{$t(`build.sharedStorage`)}}</div>
       <el-form-item

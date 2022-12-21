@@ -121,8 +121,6 @@ export default {
 .aside__wrap {
   position: relative;
   display: flex;
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
   flex: 1;
   height: 100%;
 
@@ -192,62 +190,26 @@ export default {
     width: 5px;
     height: 100%;
     border-left: 1px solid transparent;
-    -webkit-transition: border-color ease-in-out 200ms;
     transition: border-color ease-in-out 200ms;
-
-    .capture-area__component {
-      position: relative;
-      top: 50%;
-      left: -6px;
-      display: inline-block;
-      height: 38px;
-      -webkit-transform: translateY(-50%);
-      transform: translateY(-50%);
-
-      .capture-area {
-        position: absolute;
-        width: 10px;
-        height: 38px;
-        background-color: #fff;
-        border: 1px solid #dbdbdb;
-        border-radius: 5px;
-      }
-    }
   }
 
   .aside__inner {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex: 1;
     flex: 1;
-    -ms-flex-direction: row-reverse;
     flex-direction: row-reverse;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: reverse;
-    -webkit-box-flex: 1;
 
     .aside__content {
-      -ms-flex: 1;
       flex: 1;
       width: 200px;
       overflow-x: hidden;
       background-color: #fff;
-      -webkit-box-flex: 1;
 
       .service-aside--variables {
-        display: -webkit-box;
-        display: -ms-flexbox;
         display: flex;
-        -ms-flex-direction: column;
         flex-direction: column;
         flex-grow: 1;
         height: 100%;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
 
         .service-aside-box__header {
           display: flex;
@@ -257,11 +219,6 @@ export default {
           width: 100%;
           height: 35px;
           padding: 10px 7px 10px 20px;
-          -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
-          -ms-flex-negative: 0;
 
           .service-aside-box__title {
             margin-right: 20px;
@@ -278,8 +235,6 @@ export default {
           padding: 12px 16px;
           overflow-x: hidden;
           overflow-y: auto;
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
 
           h4 {
             margin: 0;
@@ -295,19 +250,12 @@ export default {
         }
 
         .service-aside-help__content {
-          display: -webkit-box;
-          display: -ms-flexbox;
           display: flex;
-          -ms-flex: 1;
           flex: 1;
-          -ms-flex-direction: column;
           flex-direction: column;
           height: 100%;
           padding: 0 20px 10px 20px;
           overflow-y: auto;
-          -webkit-box-flex: 1;
-          -webkit-box-orient: vertical;
-          -webkit-box-direction: normal;
         }
       }
 

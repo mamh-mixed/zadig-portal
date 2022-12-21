@@ -236,7 +236,7 @@
         <el-button :plain="true"
                    size="small"
                    @click="dialogStorageCreateFormVisible=true"
-                   type="success">新建</el-button>
+                   type="success">{{$t('global.add')}}</el-button>
       </div>
       <div class="storage-list">
         <template>

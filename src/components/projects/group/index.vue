@@ -1,7 +1,7 @@
 <template>
   <div class="var-group-container">
     <div class="btn-container">
-      <el-button plain size="small" type="primary" @click="varGroup('new')">新建</el-button>
+      <el-button plain size="small" type="primary" @click="varGroup('new')">{{$t('global.add')}}</el-button>
     </div>
     <el-table v-loading="loading" :data="groupList" class="group-container">
       <el-table-column label="变量组名称" prop="name" />

@@ -383,7 +383,7 @@
               :loading="syncAccountUserLoading"
               @click="syncAccountUser(scope.row)"
               plain
-            >同步</el-button>
+            >{{$t('global.sync')}}</el-button>
           </template>
         </el-table-column>
       </el-table>

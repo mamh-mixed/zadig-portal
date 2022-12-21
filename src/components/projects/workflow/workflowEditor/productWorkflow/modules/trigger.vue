@@ -305,7 +305,7 @@
               <el-table-column :label="$t(`global.operation`)">
                 <template slot-scope="{ $index }">
                   <el-button @click.native.prevent="editWebhook($index)" type="text" size="small">{{$t(`global.edit`)}}</el-button>
-                  <el-button @click.native.prevent="deleteWebhook($index)" type="text" size="small">移除</el-button>
+                  <el-button @click.native.prevent="deleteWebhook($index)" type="text" size="small">{{$t(`global.remove`)}}</el-button>
                 </template>
               </el-table-column>
             </el-table>

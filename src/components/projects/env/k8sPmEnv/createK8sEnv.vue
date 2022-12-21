@@ -4,7 +4,7 @@
       <img src="@assets/icons/illustration/environment.svg" alt />
       <div class="description">
         <p>
-          <span>{{$t('environments.commom.environmentWithoutService')}}</span>
+          <span>{{$t('environments.common.environmentWithoutService')}}</span>
           <router-link :to="`/v1/projects/detail/${projectName}/services`">
             <el-button type="primary" size="mini" round plain>{{$t('project.services')}}</el-button>
           </router-link>

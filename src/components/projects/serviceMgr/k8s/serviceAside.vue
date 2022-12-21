@@ -10,23 +10,23 @@
       <div class="aside-bar">
         <div class="tabs__wrap tabs__wrap_vertical">
           <div class="tabs__item" :class="{'selected': selected === 'var'}" @click="changeRoute('var')">
-            <span class="step-name">变量</span>
+            <span class="step-name">{{$t('services.k8s.variablesSection')}}</span>
           </div>
           <div class="tabs__item" :class="{'selected': selected === 'policy'}" @click="changeRoute('policy')">
-            <span class="step-name">策略</span>
+            <span class="step-name">{{$t('services.common.policySection')}}</span>
           </div>
           <div class="tabs__item" :class="{'selected': selected === 'help'}" @click="changeRoute('help')">
-            <span class="step-name">帮助</span>
+            <span class="step-name">{{$t('services.common.helpSection')}}</span>
           </div>
         </div>
       </div>
       <div class="aside__content">
         <div v-if="selected === 'build'" class="service-aside--variables">
           <div style="padding-left: 15px;">
-            <el-button @click="$router.back()" icon="el-icon-back" type="text">返回</el-button>
+            <el-button @click="$router.back()" icon="el-icon-back" type="text">{{$t('global.back')}}</el-button>
           </div>
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">构建</div>
+            <div class="service-aside-box__title">{{$t('services.common.serviceBuild')}}</div>
           </header>
           <div class="service-aside-box__content">
             <CommonBuild
@@ -45,16 +45,16 @@
         </div>
         <div v-if="selected === 'var'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">变量</div>
+            <div class="service-aside-box__title">{{$t('services.k8s.variablesSection')}}</div>
           </header>
           <div class="service-aside-box__content">
             <section class="aside-section">
               <h4>
                 <span>
                   <i class="iconfont iconfuwu"></i>
-                </span> 检测到的服务组件
+                </span> {{$t('services.common.detectedServiceModules')}}
                 <el-tooltip effect="dark" placement="top">
-                  <div slot="content">可被更新的服务容器名称</div>
+                  <div slot="content">{{$t('services.common.detectedServiceModulesTooltip')}}</div>
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
@@ -69,11 +69,11 @@
                 </el-alert>
               </div>
               <el-table :data="serviceModules" stripe style="width: 100%;">
-                <el-table-column prop="name" label="服务组件"></el-table-column>
-                <el-table-column prop="image_name" label="镜像名"></el-table-column>
+                <el-table-column prop="name" :label="$t('services.common.serviceModule')"></el-table-column>
+                <el-table-column prop="image_name" :label="$t('services.common.serviceImageName')"></el-table-column>
                 <el-table-column prop="image">
                   <template slot="header">
-                    <span>当前镜像版本($IMAGE)</span>
+                    <span>{{$t('services.common.serviceImageLabel')}}</span>
                     <el-tooltip effect="dark" placement="top">
                       <div slot="content">
                         工作流任务执行过程中，由构建任务生成 $IMAGE 镜像，部署任务使用生成的 $IMAGE 镜像更新服务。
@@ -86,14 +86,14 @@
                     </el-tooltip>
                   </template>
                 </el-table-column>
-                <el-table-column label="构建信息/操作">
+                <el-table-column :label="$t('services.common.buildInfoAndOperation')">
                   <template slot-scope="scope">
                     <div v-for="(buildName, index) in scope.row.build_names" :key="index">
                       <router-link :to="`${buildBaseUrl}?rightbar=build&service_name=${scope.row.name}&build_name=${buildName}`">
                         <span class="build-name">{{ buildName }}</span>
                       </router-link>
                     </div>
-                    <el-button size="small" v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" :disabled="projectName !== projectNameOfService" @click="addBuild(scope.row)" type="text">添加构建</el-button>
+                    <el-button size="small" v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" :disabled="projectName !== projectNameOfService" @click="addBuild(scope.row)" type="text">{{$t('services.common.addServiceBuild')}}</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -102,8 +102,8 @@
               <h4>
                 <span>
                   <i class="iconfont iconchakanbianliang"></i>
-                </span> 系统内置变量
-                <el-tooltip effect="dark" content="在服务配置中使用 $Namespace$，$Product$，$Service$，$EnvName$ 方式引用" placement="top">
+                </span> {{$t('services.k8s.buildInVariables')}}
+                <el-tooltip effect="dark" :content="$t('services.k8s.buildInVariablesTooltip')" placement="top">
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
@@ -111,10 +111,10 @@
               </h4>
               <el-table :data="sysEnvs" stripe style="width: 100%;">
                 <el-table-column prop="key" :label="$t(`global.var`)"></el-table-column>
-                <el-table-column prop="value" label="当前值">
+                <el-table-column prop="value" :label="$t('services.k8s.currentValue')">
                   <template slot-scope="scope">
                     <span v-if="scope.row.value">{{scope.row.value}}</span>
-                    <span v-else>空</span>
+                    <span v-else>{{$t('global.emptyText')}}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -123,8 +123,8 @@
               <h4>
                 <span>
                   <i class="iconfont iconchakanbianliang"></i>
-                </span> 全局变量
-                <el-tooltip effect="dark" :content="'全局变量通过'+' {{'+'.key}} ' +' 引用，项目中的所有服务均可使用'" placement="top">
+                </span> {{$t('services.k8s.globalVariables')}}
+                <el-tooltip effect="dark" :content="$t('services.k8s.globalVariablesTooltip')" placement="top">
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
@@ -163,7 +163,7 @@
                           type="text"
                           @click="deleteRenderKey(scope.$index,scope.row.state)"
                           class="delete"
-                        >移除</el-button>
+                        >{{$t(`global.remove`)}}</el-button>
                         <el-tooltip
                           v-if="scope.row.state === 'present'||scope.row.state === 'new'"
                           effect="dark"
@@ -213,7 +213,7 @@
                 </div>
                 <div v-hasPermi="{projectName: projectName, action: 'edit_service'}">
                   <el-button size="medium" class="add-kv-btn" @click="addKeyInputVisable=true" type="text">
-                    <i class="el-icon-circle-plus-outline"></i>添加
+                    <i class="el-icon-circle-plus-outline"></i>{{$t('global.add')}}
                   </el-button>
                 </div>
               </div>
@@ -222,7 +222,7 @@
         </div>
         <div v-if="selected === 'policy'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">策略</div>
+            <div class="service-aside-box__title">{{$t('services.common.policySection')}}</div>
           </header>
           <div class="service-aside-help__content">
             <Policy :service="serviceModules" />
@@ -230,7 +230,7 @@
         </div>
         <div v-if="selected === 'help'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">帮助</div>
+            <div class="service-aside-box__title">{{$t('services.common.helpSection')}}</div>
           </header>
           <div class="service-aside-help__content">
             <Help />
@@ -581,8 +581,6 @@ export default {
 .aside__wrap {
   position: relative;
   display: flex;
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
   flex: 1;
   height: 100%;
 
@@ -652,62 +650,26 @@ export default {
     width: 5px;
     height: 100%;
     border-left: 1px solid transparent;
-    -webkit-transition: border-color ease-in-out 200ms;
     transition: border-color ease-in-out 200ms;
-
-    .capture-area__component {
-      position: relative;
-      top: 50%;
-      left: -6px;
-      display: inline-block;
-      height: 38px;
-      -webkit-transform: translateY(-50%);
-      transform: translateY(-50%);
-
-      .capture-area {
-        position: absolute;
-        width: 10px;
-        height: 38px;
-        background-color: #fff;
-        border: 1px solid #dbdbdb;
-        border-radius: 5px;
-      }
-    }
   }
 
   .aside__inner {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex: 1;
     flex: 1;
-    -ms-flex-direction: row-reverse;
     flex-direction: row-reverse;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: reverse;
-    -webkit-box-flex: 1;
 
     .aside__content {
-      -ms-flex: 1;
       flex: 1;
       width: 200px;
       overflow-x: hidden;
       background-color: #fff;
-      -webkit-box-flex: 1;
 
       .service-aside--variables {
-        display: -webkit-box;
-        display: -ms-flexbox;
         display: flex;
-        -ms-flex-direction: column;
         flex-direction: column;
         flex-grow: 1;
         height: 100%;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
 
         .service-aside-box__header {
           display: flex;
@@ -717,11 +679,6 @@ export default {
           width: 100%;
           height: 35px;
           padding: 10px 7px 10px 20px;
-          -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
-          -ms-flex-negative: 0;
 
           .service-aside-box__title {
             margin-right: 20px;
@@ -737,8 +694,6 @@ export default {
           flex-grow: 1;
           overflow-x: hidden;
           overflow-y: auto;
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
 
           .aside-section {
             position: relative;
@@ -770,38 +725,26 @@ export default {
         }
 
         .service-aside-help__content {
-          display: -webkit-box;
-          display: -ms-flexbox;
           display: flex;
-          -ms-flex: 1;
           flex: 1;
-          -ms-flex-direction: column;
           flex-direction: column;
           height: 100%;
           padding: 0 20px 10px 20px;
           overflow-y: auto;
-          -webkit-box-flex: 1;
-          -webkit-box-orient: vertical;
-          -webkit-box-direction: normal;
         }
       }
     }
 
     .aside-bar {
       .tabs__wrap_vertical {
-        -ms-flex-direction: column;
         flex-direction: column;
         width: 47px;
         height: 100%;
         background-color: #f5f5f5;
         border: none;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
 
         .tabs__item {
           position: relative;
-          display: -webkit-box;
-          display: -ms-flexbox;
           display: flex;
           align-items: center;
           margin-bottom: -1px;
@@ -814,16 +757,12 @@ export default {
           border: none;
           border-top: 1px solid transparent;
           cursor: pointer;
-          -webkit-transition: background-color 150ms ease, color 150ms ease;
           transition: background-color 150ms ease, color 150ms ease;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
 
           &.selected {
             z-index: 1;
             background-color: #fff;
             border: none;
-            -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
             box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
           }
 
@@ -833,25 +772,21 @@ export default {
             background-color: #fff;
             border: none;
             border-top: 1px solid #f5f5f5;
-            -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
             box-shadow: 0 4px 4px rgba(0, 0, 0, 0.05);
           }
 
           .step-name {
             font-weight: 500;
             font-size: 14px;
+            writing-mode: vertical-rl;
           }
         }
       }
 
       .tabs__wrap {
-        display: -webkit-box;
-        display: -ms-flexbox;
         display: flex;
         justify-content: flex-start;
         height: 56px;
-        -webkit-box-pack: start;
-        -ms-flex-pack: start;
       }
     }
   }

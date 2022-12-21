@@ -376,7 +376,6 @@ export default {
           padding-bottom: 5px;
           list-style: none;
           background-color: #eb5848;
-          -webkit-transition: max-height 200ms ease-out;
           transition: max-height 200ms ease-out;
 
           .yaml-errors__errors-list-item {
@@ -388,8 +387,6 @@ export default {
             font-size: 14px;
             background-color: #eb5848;
             border-bottom: 1px solid #ff7666;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
 
             .yaml-errors__errors-list-item-counter {
               margin-right: 20px;
@@ -397,12 +394,10 @@ export default {
             }
 
             .yaml-errors__errors-list-item-text {
-              -ms-flex: 1;
               flex: 1;
               width: 300px;
               max-width: 100%;
               padding: 5px 0;
-              -webkit-box-flex: 1;
               line-height: 20px;
             }
 
