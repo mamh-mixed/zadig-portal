@@ -353,7 +353,7 @@ export default {
       })
     },
     checkSvcResource: debounce(function (payload = {}) {
-      this.checkSvcResource1(payload)
+      this.checkSvcResourceSimple(payload)
     }, 300),
     checkSvcResourceSimple ({
       env_name = this.projectConfig.env_name,
