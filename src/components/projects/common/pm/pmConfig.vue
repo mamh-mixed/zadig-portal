@@ -277,7 +277,7 @@ import ZadigBuild from '@/components/projects/build/zadigBuild.vue'
 
 const validateServiceName = (rule, value, callback) => {
   if (value === '') {
-    callback(new Error('请输入服务名称'))
+    callback(new Error(this.$t('services.common.inputServiceName')))
   } else {
     if (!/^[a-z0-9-]+$/.test(value)) {
       callback(new Error('名称只支持小写字母和数字，特殊字符只支持中划线'))

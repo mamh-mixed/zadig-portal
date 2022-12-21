@@ -41,8 +41,8 @@
         <div class="title">全局变量</div>
         <Codemirror v-model="globalYaml" class="mirror" />
         <div class="bottom">
-          <el-button type="primary" size="mini" plain @click="applyGlobalVars" :loading="useLoading">应用</el-button>
-          <el-button type="primary" size="mini" plain @click="resetAllVars" :disabled="useLoading">重置</el-button>
+          <el-button type="primary" size="mini" plain @click="applyGlobalVars" :loading="useLoading">{{$t('global.apply')}}</el-button>
+          <el-button type="primary" size="mini" plain @click="resetAllVars" :disabled="useLoading">{{$t('global.reset')}}</el-button>
         </div>
       </div>
     </Multipane>

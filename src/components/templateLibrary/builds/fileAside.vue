@@ -108,24 +108,6 @@ export default {
     height: 100%;
     border-left: 1px solid transparent;
     transition: border-color ease-in-out 200ms;
-
-    .capture-area__component {
-      position: relative;
-      top: 50%;
-      left: -6px;
-      display: inline-block;
-      height: 38px;
-      transform: translateY(-50%);
-
-      .capture-area {
-        position: absolute;
-        width: 10px;
-        height: 38px;
-        background-color: #fff;
-        border: 1px solid #dbdbdb;
-        border-radius: 5px;
-      }
-    }
   }
 
   .aside__inner {
@@ -186,7 +168,6 @@ export default {
 
         .service-aside-help__content {
           display: flex;
-          -ms-flex: 1;
           flex: 1;
           flex-direction: column;
           height: 100%;

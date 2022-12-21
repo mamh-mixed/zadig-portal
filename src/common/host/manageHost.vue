@@ -39,8 +39,8 @@
         </template>
       </el-alert>
       <div class="sync-container">
-        <el-button size="small" :plain="true" @click="hostOperation('add')" type="success">新建</el-button>
-        <el-button size="small" :plain="true" @click="hostOperation('import')" type="success">导入</el-button>
+        <el-button size="small" :plain="true" @click="hostOperation('add')" type="success">{{$t('global.add')}}</el-button>
+        <el-button size="small" :plain="true" @click="hostOperation('import')" type="success">{{$t('global.import')}}</el-button>
       </div>
       <div class="host-list">
         <template>

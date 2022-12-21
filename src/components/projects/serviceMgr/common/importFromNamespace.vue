@@ -40,7 +40,7 @@
                 :rules="{ required: true, type: 'string', message: '请输入服务名称', trigger: 'change'}"
                 :show-message="false"
               >
-                <el-input v-model="row.name" placeholder="输入服务名称" size="small" style="width: 85%;"></el-input>
+                <el-input v-model="row.name" :placeholder="$t('services.common.inputServiceName')" size="small" style="width: 85%;"></el-input>
                 <el-button type="text" icon="el-icon-minus" style="margin-left: 5px;" @click="operateService('delete', $index)"></el-button>
               </el-form-item>
             </template>
@@ -107,7 +107,7 @@
           class="start-create"
           :loading="importLoading"
           @click="loadServiceFromKubernetesNamespace"
-        >导入</el-button>
+        >{{$t('global.import')}}</el-button>
       </div>
     </el-dialog>
   </div>

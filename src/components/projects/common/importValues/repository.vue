@@ -102,9 +102,9 @@
           <i v-else-if="fileType === 'k8sYaml'" class="el-icon-plus"></i>
         </el-button>
       </el-form-item>
-      <el-form-item v-if="showAutoSync && codehostSource !== 'other'" prop="autoSync" label="自动同步" :show-message="false">
+      <el-form-item v-if="showAutoSync && codehostSource !== 'other'" prop="autoSync" :label="$t('global.autoSync')" :show-message="false">
         <span slot="label">
-          <span>自动同步</span>
+          <span>{{$t('global.autoSync')}}</span>
           <el-tooltip effect="dark" content="开启后，Zadig 会定时从代码库拉取配置文件并将其自动更新到环境中，目前只支持 GitHub/GitLab" placement="top">
             <i class="pointer el-icon-question"></i>
           </el-tooltip>

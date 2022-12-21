@@ -110,7 +110,7 @@
         </template>
       </el-alert>
       <div class="sync-container">
-        <el-button :plain="true" @click="addRegistryBtn" size="small" type="success">新建</el-button>
+        <el-button :plain="true" @click="addRegistryBtn" size="small" type="success">{{$t('global.add')}}</el-button>
       </div>
       <div class="registry-list">
         <template>

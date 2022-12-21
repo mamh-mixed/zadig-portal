@@ -118,7 +118,7 @@
           <el-col :span="6" class="mg-t4">
             <el-button type="primary" plain size="small" v-if="!isSaved" @click="submit('save')">{{$t(`global.save`)}}</el-button>
             <el-button type="primary" plain size="small" v-if="isSaved" @click="isSaved=false">{{$t(`global.edit`)}}</el-button>
-            <el-button type="success" plain size="small" :disabled="!isSaved" @click="submit('sync')">同步</el-button>
+            <el-button type="success" plain size="small" :disabled="!isSaved" @click="submit('sync')">{{$t('global.sync')}}</el-button>
             <el-button type="danger" plain size="small" v-if="plugins.length>0" @click="del">{{$t(`global.delete`)}}</el-button>
           </el-col>
         </div>
