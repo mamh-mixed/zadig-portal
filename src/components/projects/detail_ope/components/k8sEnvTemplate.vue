@@ -3,7 +3,7 @@
     <div class="global-variable">
       <span>全局变量</span>
       <Resize class="desc mirror" @sizeChange="$refs.codemirror.refresh()" :height="'200px'">
-        <CodeMirror ref="codemirror" v-model="currentInfo.default_variable" />
+        <CodeMirror ref="codemirror" v-model="currentInfo.default_values" />
       </Resize>
     </div>
     <el-table :data="currentInfo.variables || []" style="width: 100%;" default-expand-all>
@@ -39,12 +39,12 @@ export default {
       const envName = this.currentInfo.base_name
       const projectName = this.$route.params.project_name
       getEnvDefaultVariableAPI(projectName, envName).then(res => {
-        this.$set(this.currentInfo, 'default_variable', res.default_variable)
+        this.$set(this.currentInfo, 'default_values', res.default_variable)
       })
       getServiceDefaultVariableAPI(projectName, envName).then(res => {
         this.$set(
           this.currentInfo,
-          'variables',
+          'services',
           res.map(re => ({ ...re, canEditYaml: !!re.variable_yaml }))
         )
       })
@@ -53,7 +53,7 @@ export default {
   watch: {
     currentInfo: {
       handler (val) {
-        if (val && typeof val.default_variable === 'undefined') {
+        if (val && typeof val.default_values === 'undefined') {
           this.getEnvInfo()
         }
       },

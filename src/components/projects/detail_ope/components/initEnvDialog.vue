@@ -71,7 +71,7 @@ export default {
         })
         // for environment
         const valuesData = this.currentInfo.valuesData
-        const currentEnvObj = { yamlSource: 'customEdit', envValue: this.currentInfo.defaultValues, gitRepoConfig: null, variableSet: null }
+        const currentEnvObj = { yamlSource: 'customEdit', envValue: this.currentInfo.default_values, gitRepoConfig: null, variableSet: null }
         if (valuesData) {
           currentEnvObj.yamlSource = valuesData.yamlSource
           if (valuesData.yamlSource === 'repo') {
@@ -95,7 +95,7 @@ export default {
           chartInfo
         } = this.$refs.helmEnvTemplateRef.getAllInfo()
         const defaultEnv = envInfo.DEFAULT
-        this.currentInfo.defaultValues = defaultEnv.envValue || ''
+        this.currentInfo.default_values = defaultEnv.envValue || ''
         this.currentInfo.valuesData = defaultEnv.valuesData || null
         this.currentInfo.chartValues = chartInfo
       }
