@@ -348,6 +348,10 @@ export function saveServiceVariableAPI (name, projectName, payload) {
 }
 
 export function parseK8sYamlVariableAPI (payload) {
+  return http.post(`/api/aslan/template/yaml/extractVariable`, payload)
+}
+
+export function flatVariableToKvAPI (payload) {
   return http.post(`/api/aslan/template/yaml/flatkvs`, payload)
 }
 

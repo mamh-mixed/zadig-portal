@@ -138,7 +138,7 @@
               </h4>
               <div class="variable-operation-container">
                 <div class="tab-conatiner">
-                  <el-radio-group v-model="variableSwitcher" size="mini">
+                  <el-radio-group v-model="variableSwitcher" @input="changeVariableView" size="mini">
                     <el-radio-button label="yamlEditor">
                       <i class="iconfont iconchakanbianliang"></i>
                     </el-radio-button>
@@ -148,7 +148,7 @@
                   </el-radio-group>
                 </div>
                 <div class="parse-container">
-                  <el-button v-if="variableSwitcher === 'yamlEditor'" @click="parseK8sYamlVariable" class="parse-btn" type="text" :disabled="serviceConfigs.variable_yaml===''">自动解析变量</el-button>
+                  <el-button v-if="variableSwitcher === 'yamlEditor'" @click="parseK8sYamlVariable" class="parse-btn" type="text" >自动解析变量</el-button>
                 </div>
               </div>
               <div v-if="variableSwitcher === 'yamlEditor'" class="kv-container">
@@ -160,7 +160,7 @@
                   @input="onCmCodeChange"
                 />
               </div>
-              <div v-else-if="variableSwitcher === 'list'" class="kv-container">
+              <div v-else-if="variableSwitcher === 'list'" class="list-container">
                 <el-table :data="serviceConfigs.variable_kvs" style="width: 100%;">
                   <el-table-column label="Key">
                     <template slot-scope="scope">
@@ -180,13 +180,13 @@
                           <i class="el-icon-question"></i>
                         </span>
                       </el-tooltip>
-                      <span class="icon-view">
+                      <span  @click="enableAllVariablesView" class="icon-view">
                         <i class="el-icon-view"></i>
                       </span>
                     </template>
                     <template slot-scope="scope">
-                      <i v-if="scope.row.show" @click="scope.row.show=!scope.row.show" class="el-icon-view"></i>
-                      <i v-else @click="scope.row.show=!scope.row.show" class="iconfont iconinvisible"></i>
+                      <i v-if="scope.row.show" @click="disableVariableView(scope.row)" class="icon-view el-icon-view"></i>
+                      <i v-else @click="enableVariableView(scope.row)" class="icon-view iconfont iconinvisible"></i>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -203,7 +203,7 @@
                   type="primary"
                   size="small"
                   @click="saveServiceVariable"
-                  :disabled="variableYamlIsEmpty || variableNotChanged"
+                  :disabled="variableYamlIsEmpty"
                 >{{$t(`global.save`)}}</el-button>
               </div>
             </section>
@@ -237,7 +237,8 @@ import {
   getCodeProviderAPI,
   validateKubernetesTemplateVariableAPI,
   saveServiceVariableAPI,
-  parseK8sYamlVariableAPI
+  parseK8sYamlVariableAPI,
+  flatVariableToKvAPI
 } from '@api'
 import CommonBuild from '@/components/projects/build/commonBuild.vue'
 import Help from './container/help.vue'
@@ -373,7 +374,7 @@ export default {
         const serviceVars = []
         this.serviceConfigs.variable_kvs.forEach(element => {
           if (element.show) {
-            serviceVars.pus(element.key)
+            serviceVars.push(element.key)
           }
         })
         this.serviceConfigs.service_vars = serviceVars
@@ -394,17 +395,47 @@ export default {
     },
     parseK8sYamlVariable () {
       const payload = {
-        variable_yaml: this.serviceConfigs.variable_yaml
+        variable_yaml: this.serviceConfigs.service.yaml
       }
       parseK8sYamlVariableAPI(payload)
         .then(res => {
           if (res) {
-            this.serviceWithConfigs.variable_kvs = res
+            this.serviceConfigs.variable_yaml = res
           }
         })
         .catch(err => {
           this.$message.error(err.message)
         })
+    },
+    changeVariableView (val) {
+      if (val === 'list' && this.serviceConfigs.service_vars.length === 0) {
+        const payload = {
+          variable_yaml: this.serviceConfigs.variable_yaml
+        }
+        flatVariableToKvAPI(payload)
+          .then(res => {
+            if (res) {
+              res.forEach(element => {
+                element.show = true
+              })
+              this.serviceConfigs.variable_kvs = res
+            }
+          })
+          .catch(err => {
+            this.$message.error(err.message)
+          })
+      }
+    },
+    enableVariableView (row) {
+      this.$set(row, 'show', true)
+    },
+    disableVariableView (row) {
+      this.$set(row, 'show', false)
+    },
+    enableAllVariablesView () {
+      this.serviceConfigs.variable_kvs.forEach(element => {
+        this.$set(element, 'show', true)
+      })
     }
   },
   created () {
@@ -592,11 +623,13 @@ export default {
                 }
               }
 
-              .icon-view {
+              .icon-tooltip {
                 cursor: pointer;
               }
+            }
 
-              .icon-tooltip {
+            .list-container {
+              .icon-view {
                 cursor: pointer;
               }
             }
