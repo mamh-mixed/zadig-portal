@@ -150,7 +150,6 @@ import {
 import { debounce } from 'lodash'
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/yaml/yaml'
 import 'codemirror/theme/neo.css'
 export default {
   data () {
@@ -295,7 +294,7 @@ export default {
         tabSize: 5,
         readOnly: this.notSaved ? 'nocursor' : false,
         theme: 'neo',
-        mode: 'text/x-yaml',
+        mode: 'text/plain',
         lineNumbers: true,
         line: true,
         collapseIdentical: true

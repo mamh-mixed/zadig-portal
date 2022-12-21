@@ -247,7 +247,6 @@ import IntegrationCode from '../common/integrationCode.vue'
 import IntegrationRegistry from '@/components/projects/common/integrationRegistry.vue'
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/yaml/yaml'
 import 'codemirror/theme/neo.css'
 import qs from 'qs'
 import { debounce } from 'lodash'
@@ -500,7 +499,7 @@ export default {
         tabSize: 5,
         readOnly: this.notSaved ? 'nocursor' : false,
         theme: 'neo',
-        mode: 'text/x-yaml',
+        mode: 'text/plain',
         lineNumbers: true,
         line: true,
         collapseIdentical: true
