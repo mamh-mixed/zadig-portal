@@ -6,7 +6,7 @@
         <CodeMirror ref="codemirror" v-model="currentInfo.default_values" />
       </Resize>
     </div>
-    <el-table :data="currentInfo.variables || []" style="width: 100%;" default-expand-all>
+    <el-table :data="currentInfo.services || []" style="width: 100%;" default-expand-all>
       <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
       <el-table-column type="expand" width="100px" label="变量配置">
         <template slot-scope="{ row }">

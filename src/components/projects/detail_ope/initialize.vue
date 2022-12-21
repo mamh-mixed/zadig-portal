@@ -141,6 +141,9 @@ export default {
           }
           if (product.deploy_type !== 'helm') {
             product.deploy_type = 'k8s'
+            product.services.forEach(svc => {
+              svc.canEditYaml = !!svc.variable_yaml
+            })
           }
         })
         const fn = obj => {
