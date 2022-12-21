@@ -209,10 +209,10 @@ export default {
           const deployed = !resource.resources.find(
             re => re.status === 'undeployed'
           )
-          this.svcResources[resource.service_name] = {
+          this.$set(this.svcResources, resource.service_name, {
             ...resource,
             deployed
-          }
+          })
           svcStatus[resource.service_name] = deployed
         })
         return Promise.resolve(svcStatus)
