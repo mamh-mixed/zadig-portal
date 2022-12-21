@@ -79,7 +79,7 @@
                   </el-radio-group>
                 </div>
                 <div class="parse-container">
-                  <el-button v-if="variableSwitcher === 'yamlEditor'" class="parse-btn" type="text">自动解析变量</el-button>
+                  <el-button v-if="variableSwitcher === 'yamlEditor'" @click="parseK8sYamlVariable" :disabled="fileContent.variable_yaml===''" class="parse-btn" type="text">自动解析变量</el-button>
                 </div>
               </div>
               <div v-if="variableSwitcher === 'yamlEditor'" class="kv-container">
@@ -143,7 +143,8 @@
 import {
   getKubernetesTemplateBuildReferenceAPI,
   validateKubernetesTemplateVariableAPI,
-  saveKubernetesTemplateVariableAPI
+  saveKubernetesTemplateVariableAPI,
+  parseK8sYamlVariableAPI
 } from '@api'
 import { debounce } from 'lodash'
 import { codemirror } from 'vue-codemirror'
@@ -219,6 +220,20 @@ export default {
               this.$t('templates.k8sYaml.successfullySaved')
             )
             this.$emit('updateTemplate', this.fileContent)
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+    },
+    parseK8sYamlVariable () {
+      const payload = {
+        variable_yaml: this.fileContent.variable_yaml
+      }
+      parseK8sYamlVariableAPI(payload)
+        .then(res => {
+          if (res) {
+            this.fileContent.variable_kvs = res
           }
         })
         .catch(err => {
