@@ -83,7 +83,10 @@ exports.default = {
     basicInfo: '基本信息',
     retry: '重试',
     expand: '展开',
-    collapse: '收起'
+    collapse: '收起',
+    defaultValue: '默认值',
+    serviceModule: '服务组件',
+    templates: '模板库'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -190,6 +193,7 @@ exports.default = {
     tests: '测试',
     scannings: '代码扫描',
     versions: '版本管理',
+    buildTemplates: '构建模板',
     createWorkflow: '新建工作流',
     createEnvironment: '新建环境',
     createBuild: '新建构建',
@@ -503,14 +507,21 @@ exports.default = {
       confirmToSaveTemplate: 'Dockerfile 模板未保存，是否保存？',
       deleteChange: '放弃'
     },
-    build: {}
-  },
-  build: {
-    sharedStorage: '共享存储',
-    policyConfiguration: '策略配置',
-    resourceConfiguration: '资源配置',
-    selectCluster: '集群选择',
-    operatingSystemSpecifications: '操作系统规格'
+    build: {
+      noTemplate: '暂无模板，点击',
+      createTemplate: '创建模板',
+      inputTemplateName: '请输入模板名称',
+      templateNameIsDuplicated: '模板名称与现有名称重复',
+      selectTemplateToEdit: '请在左侧选择需要编辑的模板',
+      searchTemplate: '搜索模板',
+      referenceList: '引用列表',
+      buildName: '构建名称',
+      noneVariable: '空',
+      deleteConfirmation: '确定要删除 {name} 这个模板吗？',
+      templateDeleted: '删除成功',
+      confirmToSaveTemplate: '构建模板未保存，是否保存？',
+      deleteChange: '放弃'
+    }
   },
   workflowTaskStatus: {
     notRunning: '未运行',
@@ -645,7 +656,6 @@ exports.default = {
     yaml: 'YAML',
     desc: '描述信息',
     jobName: '任务名称',
-    serviceComponent: '服务组件',
     buildName: '构建名称',
     buildConfig: '构建配置',
     varConfig: '变量配置',
@@ -1653,9 +1663,51 @@ exports.default = {
     }
   },
   build: {
+    testEnv: '测试执行环境',
+    buildEnv: '构建环境',
+    image: '操作系统',
+    customize: '自定义',
+    packages: '依赖的软件包',
+    variableKey: '变量名称',
+    variableOptions: '可选值',
+    systemTestVariables: '内置测试变量',
+    systemBuildVariables: '内置构建变量',
+    testVariables: '自定义测试变量',
+    buildVariables: '自定义构建变量',
+    imageNamingRules: '镜像名称规则',
+    secretParameter: '敏感信息',
+    secretParameterTooltip: '设置为敏感信息变量后，系统会将变量进行加密，使用时进行解密，同时在工作流运行日志里不可见',
+    addSteps: '添加步骤',
+    stepImageBuild: '镜像构建',
+    stepArtifactUpload: '二进制包存储',
+    stepFileUpload: '文件存储',
+    stepRunShellScript: 'Shell 脚本执行',
+    buildContextDirectory: '构建上下文目录',
+    dockerfileSource: 'Dockerfile 来源',
+    dockerfileAbsolutePath: 'Dockerfile 的绝对路径',
+    dockerBuildArgs: '构建参数',
+    artifactPath: '二进制包存储路径',
+    uploadFile: '上传文件',
+    prompt: {
+      select: '请选择',
+      selectTemplate: '模板选择',
+      selectImage: '请选择操作系统',
+      packageCannotBeEmpty: '不能为空',
+      variableOptions: '可选值之间用英文 “,” 隔开',
+      useSystemImageNamingRules: '使用系统内置变量 $IMAGE，具体详见',
+      noImageRegistry: '私有镜像仓库未集成，请前往系统设置 -> Registry 管理  进行集成。',
+      dockerBuildArgs: '支持所有 Docker Build 参数',
+      selectObjectStorage: '请选择对象存储',
+      runShellScriptDescription: '构建运行完成后执行的 Shell 脚本',
+      fillInDockerBuildWorkingDirectory: '请填写镜像构建目录',
+      fillInDockerfilePath: '请填写 Dockerfile 路径',
+      selectInDockerfileTemplate: '请选择模板',
+      fillInArchiveFilePath: '请填写文件路径'
+    },
     advancedSettings: {
       title: '高级配置',
       strategy: '策略配置',
+      sharedStorage: '共享存储',
       cache: '缓存配置',
       workspace: '工作空间 $WORKSPACE',
       customCacheDirectory: '自定义目录',
@@ -1687,5 +1739,38 @@ exports.default = {
       typeInCorrectNumber: '请输入正确数字',
       paramaterNamingConvention: '变量名称仅支持英文字母、数字、下划线且首个字符不以数字开头'
     }
+  },
+  systemVariables: {
+    encrypted: '',
+    workspace: '工作目录',
+    workflowTaskID: '工作流任务 ID',
+    image: '输出镜像名称',
+    updateImageNamingRulesPrompt: '更新镜像命名规则',
+    artifact: '构建出的 Tar 包名称',
+    updateArtifactNamingRulesPrompt: '更新 Tar 包命名规则',
+    service: '构建的服务名称',
+    serviceModule: '构建的服务组件名称',
+    artifactPath: '构建出的 Tar 包的目的目录',
+    buildEnvName: '执行的环境名称',
+    buildTaskLink: '构建任务的 URL',
+    ci: '值恒等于 true，表示当前环境是 CI/CD 环境',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoIndex: '指定 <index> 的代码库名称（可用于代码信息相关变量名，仓库名称中的中划线 "-" 替换成下划线"_"），其中 <index> 为构建配置中代码库的位置，初始值为 0',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoNameIndex: '指定 <index> 的代码库名称，其中 <index> 为构建配置中代码库的位置，初始值为 0',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoPR: '构建时使用的代码 Pull Request 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_<index> 变量使用，比如可以通过 eval PR=\${${REPO_0}_PR} 方式获取第一个代码库的 Pull Request 信息，如选择多个 PR，变量值形如 1,2,3',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoBranch: '构建时使用的代码分支信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval BRANCH=\\${${REPO_0}_BRANCH} 方式获取第一个代码库的分支信息',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoTag: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的分支信息',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoCommitID: '构建时使用代码 Commit 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index]变量使用，比如可以通过 eval COMMITID=\\${${REPO_0}_COMMIT_ID} 方式获取第一个代码库的 COMMIT 信息',
+    linkedEnv: '被测命名空间',
+    testEnvName: '被测环境名称',
+    testTaskLink: '测试任务的 URL',
+    // eslint-disable-next-line no-template-curly-in-string
+    testServices: '通过工作流任务更新的服务组，服务名以 “,” 分隔，形如 service1,service2,service3。推荐使用 array=(${SERVICES//,/ } 方式转化成数组',
+    zadig: '值恒等于 true，表示在 ZADIG 系统上执行脚本'
   }
 }

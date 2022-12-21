@@ -45,7 +45,7 @@
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
-              <el-form-item :label="$t(`workflow.serviceComponent`)">
+              <el-form-item :label="$t(`global.serviceModule`)">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -92,7 +92,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item :label="$t(`workflow.serviceComponent`)" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`global.serviceModule`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable

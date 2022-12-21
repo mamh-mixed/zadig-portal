@@ -10,7 +10,7 @@
         </el-select>
       </el-form-item>
       <el-row :gutter="24" class="mg-b16">
-        <el-col :span="6" class="title">{{$t(`workflow.serviceComponent`)}}</el-col>
+        <el-col :span="6" class="title">{{$t(`global.serviceModule`)}}</el-col>
         <el-col :span="6" class="title">{{$t(`workflow.buildName`)}}</el-col>
         <el-col :span="6" class="title">{{$t(`workflow.buildConfig`)}}</el-col>
       </el-row>

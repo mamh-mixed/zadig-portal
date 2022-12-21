@@ -8,7 +8,7 @@
       label-width="120px"
       inline-message
     >
-      <div class="item-title">{{$t(`build.policyConfiguration`)}}</div>
+      <div class="item-title">{{$t(`build.advancedSettings.strategy`)}}</div>
       <el-form-item :label="$t(`global.timeout`)">
         <el-input-number v-if="(typeof buildConfig.timeout) !== 'undefined'" size="mini" :min="1" v-model="buildConfig.timeout"></el-input-number>
         <el-input-number
@@ -48,9 +48,9 @@
           </el-radio>
         </el-radio-group>
       </el-form-item>
-      <div class="item-title">{{$t(`build.resourceConfiguration`)}}</div>
+      <div class="item-title">{{$t(`build.advancedSettings.resourceConfig`)}}</div>
       <el-form-item
-        :label="$t(`build.selectCluster`)"
+        :label="$t(`build.advancedSetting.cluster`)"
         :prop="`${secondaryProp}.cluster_id`"
         :rules="{ required: true, message: '请选择集群名称', trigger: ['change', 'blur'] }"
       >
@@ -60,7 +60,7 @@
       </el-form-item>
       <el-form-item
         v-if="!hiddenSystem"
-        :label="$t(`build.operatingSystemSpecifications`)"
+        :label="$t(`build.advancedSettings.resource`)"
         :prop="`${secondaryProp}.res_req`"
         :rules="{ required: true, message: '请选择操作系统', trigger: ['change', 'blur'] }"
       >

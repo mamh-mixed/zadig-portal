@@ -83,7 +83,10 @@ exports.default = {
     basicInfo: 'Basic Info',
     retry: 'Retry',
     expand: 'Expand',
-    collapse: 'Collapse'
+    collapse: 'Collapse',
+    defaultValue: 'Default Value',
+    serviceModule: 'Service Module',
+    templates: 'Templates'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -190,6 +193,7 @@ exports.default = {
     tests: 'Tests',
     scannings: 'Code Scanning',
     versions: 'Versions',
+    buildTemplates: 'Build Templates',
     createWorkflow: 'Create Workflow',
     createEnvironment: 'Create Env',
     createBuild: 'Create Build',
@@ -646,7 +650,6 @@ exports.default = {
     yaml: 'YAML',
     desc: 'Description',
     jobName: 'Job Name',
-    serviceComponent: 'Service Component',
     buildName: 'Build Name',
     buildConfig: 'Build Config',
     varConfig: 'Var Config',
