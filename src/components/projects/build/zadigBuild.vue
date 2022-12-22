@@ -99,18 +99,6 @@ import ValidateSubmit from '@utils/validateAsync'
 import { getCodeSourceMaskedAPI, getBuildTemplatesAPI, getBuildTemplateDetailAPI } from '@api'
 import { cloneDeep, differenceBy, intersectionBy } from 'lodash'
 
-const validateBuildConfigName = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error(this.$t(`build.prompt.fillInBuildName`)))
-  } else {
-    if (!/^[a-z0-9-]+$/.test(value)) {
-      callback(new Error(this.$t(`build.prompt.buildNameConvention`)))
-    } else {
-      callback()
-    }
-  }
-}
-
 const initBuildConfig = {
   name: '',
   targets: [],
@@ -187,6 +175,17 @@ export default {
       return this.$route.params.project_name
     },
     createRules () {
+      const validateBuildConfigName = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t(`build.prompt.fillInBuildName`)))
+        } else {
+          if (!/^[a-z0-9-]+$/.test(value)) {
+            callback(new Error(this.$t(`build.prompt.buildNameConvention`)))
+          } else {
+            callback()
+          }
+        }
+      }
       return {
         name: [
           {

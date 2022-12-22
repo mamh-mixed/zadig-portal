@@ -5,13 +5,13 @@
       :label="$t(`build.image`)"
       :prop="`${secondaryProp}.image_id`"
       class="secondary-label"
-      :rules="{ required: true, message: this.$t(`build.prompt.selectImage`), trigger: ['change', 'blur'] }"
+      :rules="{ required: true, message: $t(`build.prompt.selectImage`), trigger: ['change', 'blur'] }"
     >
       <el-select size="small" v-model="currentEnv.image_id" :placeholder="$t(`build.prompt.select`)" @change="changeImage('id', $event)">
         <el-option disabled value="NEWCUSTOM">
           <router-link to="/v1/system/imgs" class="env-link">
             <i class="el-icon-circle-plus-outline" style="margin-right: 3px;"></i>
-            {{ isTest ? this.$t(`build.testEnv`) : this.$t(`build.buildEnv`) }}
+            {{ isTest ? $t(`build.testEnv`) : $t(`build.buildEnv`) }}
           </router-link>
         </el-option>
         <el-option v-for="(sys,index) in systems" :key="index" :label="sys.label" :value="sys.id">
@@ -30,8 +30,8 @@
       v-for="(app,appIndex) in currentEnv.installs"
       :key="appIndex"
       :prop="`${secondaryProp}.installs.${appIndex}.name`"
-      :rules="{required: false, message: this.$t(`build.prompt.packageCannotBeEmpty`), trigger: 'blur'}"
-      :label="appIndex === 0 ? this.$t(`build.packages`) : ''"
+      :rules="{required: false, message: $t(`build.prompt.packageCannotBeEmpty`), trigger: 'blur'}"
+      :label="appIndex === 0 ? $t(`build.packages`) : ''"
       class="secondary-label"
     >
       <el-select v-model="currentEnv.installs[appIndex]" :placeholder="$t(`build.prompt.select`)" size="small" value-key="id" filterable>

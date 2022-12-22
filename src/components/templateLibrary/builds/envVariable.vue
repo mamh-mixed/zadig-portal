@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form ref="buildEnvRef" :inline="true" :model="preEnvs" class="variable-form" label-position="top" label-width="80px">
-      <span v-if="!isJenkins" class="item-title" :style="{'margin-bottom': isTest ? '12px' : '0px'}">{{ isTest ? this.$t(`build.testVariables`) : this.$t(`build.buildVariables`) }}</span>
+      <span v-if="!isJenkins" class="item-title" :style="{'margin-bottom': isTest ? '12px' : '0px'}">{{ isTest ? $t(`build.testVariables`) : $t(`build.buildVariables`) }}</span>
       <el-button
         v-if="preEnvs.envs && preEnvs.envs.length===0 && !isJenkins"
         @click="addFirstBuildEnv()"
@@ -99,7 +99,7 @@
     </el-dialog>
     <section class="inner-variable" v-if="!isJenkins">
       <div @click="showBuildInEnvVar = !showBuildInEnvVar" class="item-title inner-title">
-        {{ isTest ? this.$t(`build.systemTestVariables`) : this.$t(`build.systemBuildVariables`) }}
+        {{ isTest ? $t(`build.systemTestVariables`) : $t(`build.systemBuildVariables`) }}
         <i
           style="margin-left: 10px;"
           :class="[showBuildInEnvVar ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"

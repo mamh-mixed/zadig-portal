@@ -214,11 +214,7 @@ exports.default = {
     changeProjectTypeFourthTip: '3. 切换操作不可逆，请谨慎操作',
     changeProjectTypeConfirm: '确认切换项目类型？',
     changeProjectTypeSuccess: '切换项目类型成功!',
-    cancelChangeProjectType: '取消切换项目类型',
-    insights: '效能洞察',
-    deployInsight: '部署效能',
-    testInsight: '测试效能',
-    buildInsight: '构建效能'
+    cancelChangeProjectType: '取消切换项目类型'
   },
   profile: {
     profile: '账号设置',

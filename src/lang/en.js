@@ -214,11 +214,7 @@ exports.default = {
     changeProjectTypeFourthTip: '3. Changing operation is irreversible, please operate with caution',
     changeProjectTypeConfirm: 'Are you sure to change project type?',
     changeProjectTypeSuccess: 'Type changed successfully!',
-    cancelChangeProjectType: 'Change project type has been cancelled',
-    insights: 'Insights',
-    deployInsight: 'Deployment Insights',
-    testInsight: 'Test Insights',
-    buildInsight: 'Build Insights'
+    cancelChangeProjectType: 'Change project type has been cancelled'
   },
   profile: {
     profile: 'Profile',
@@ -1814,37 +1810,37 @@ exports.default = {
   },
   systemVariables: {
     encrypted: '',
-    workspace: '工作目录',
-    workflowTaskID: '工作流任务 ID',
-    image: '输出镜像名称',
-    updateImageNamingRulesPrompt: '更新镜像命名规则',
-    artifact: '构建出的 Tar 包名称',
-    updateArtifactNamingRulesPrompt: '更新 Tar 包命名规则',
-    service: '构建的服务名称',
-    serviceModule: '构建的服务组件名称',
-    artifactPath: '构建出的 Tar 包的目的目录',
-    buildEnvName: '执行的环境名称',
-    buildTaskLink: '构建任务的 URL',
-    ci: '值恒等于 true，表示当前环境是 CI/CD 环境',
+    workspace: 'Workspace of the build script',
+    workflowTaskID: 'Workflow task ID',
+    image: 'Image full name of the build task.',
+    updateImageNamingRulesPrompt: 'Update image naming rules',
+    artifact: 'Artifact full name of the build task',
+    updateArtifactNamingRulesPrompt: 'Update artifact naming rules',
+    service: 'The service name to be build.',
+    serviceModule: 'The service module name to be build.',
+    artifactPath: 'The path of the built artifact.',
+    buildEnvName: 'Environment name of the build task.',
+    buildTaskLink: 'The link to the build task',
+    ci: 'A Variable to indicate that this is a CI/CD environment. Its value will always be true',
     // eslint-disable-next-line no-template-curly-in-string
-    repoIndex: '指定 <index> 的代码库名称（可用于代码信息相关变量名，仓库名称中的中划线 "-" 替换成下划线"_"），其中 <index> 为构建配置中代码库的位置，初始值为 0',
+    repoIndex: 'The name of the repository at <index> position, all - in this name will be replaced by _. This is 0-indexed. ',
     // eslint-disable-next-line no-template-curly-in-string
-    repoNameIndex: '指定 <index> 的代码库名称，其中 <index> 为构建配置中代码库的位置，初始值为 0',
+    repoNameIndex: 'The name of the repository at <index> position. This is 0-indexed. ',
     // eslint-disable-next-line no-template-curly-in-string
-    repoPR: '构建时使用的代码 Pull Request 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_<index> 变量使用，比如可以通过 eval PR=\${${REPO_0}_PR} 方式获取第一个代码库的 Pull Request 信息，如选择多个 PR，变量值形如 1,2,3',
+    repoPR: 'The PR info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval PR=\${${REPO_0}_PR} to get the PR information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
-    repoBranch: '构建时使用的代码分支信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval BRANCH=\\${${REPO_0}_BRANCH} 方式获取第一个代码库的分支信息',
+    repoBranch: 'The branch info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval BRANCH=\${${REPO_0}_BRANCH} to get the branch information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
-    repoTag: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的分支信息',
+    repoTag: 'The tag info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval TAG=\${${REPO_0}_TAG} to get the tag information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
-    repoCommitID: '构建时使用代码 Commit 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index]变量使用，比如可以通过 eval COMMITID=\\${${REPO_0}_COMMIT_ID} 方式获取第一个代码库的 COMMIT 信息',
+    repoCommitID: 'The commit info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval COMMIT=\${${REPO_0}_COMMIT} to get the commit information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
-    otherTypeRepoWarning: '如使用 其他 代码源，$<REPO>_PR 和 $<REPO>_COMMIT_ID 变量不支持',
-    linkedEnv: '被测命名空间',
-    testEnvName: '被测环境名称',
-    testTaskLink: '测试任务的 URL',
+    otherTypeRepoWarning: 'If you are using repository of other type, you cannot use $<REPO>_PR and $<REPO>_COMMIT_ID',
+    linkedEnv: 'The namespace of the tested environment.',
+    testEnvName: 'The environment of the tested environment.',
+    testTaskLink: 'The link to the build task',
     // eslint-disable-next-line no-template-curly-in-string
-    testServices: '通过工作流任务更新的服务组，服务名以 “,” 分隔，形如 service1,service2,service3。推荐使用 array=(${SERVICES//,/ } 方式转化成数组',
-    zadig: '值恒等于 true，表示在 ZADIG 系统上执行脚本'
+    testServices: 'A list or services to be updated by the workflow, seprated by comma. It is recommended to use array=(${SERVICES//,/ } to convert the value into an array',
+    zadig: 'A Variable to indicate that this is a zadig environment. Its value will always be true'
   }
 }

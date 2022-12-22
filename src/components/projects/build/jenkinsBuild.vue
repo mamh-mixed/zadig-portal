@@ -16,7 +16,7 @@
         :label="$t(`build.buildName`)"
         prop="name"
         :rules="[
-              { required: true, message: this.$t(`build.prompt.buildNameCannotBeEmpty`), trigger: ['blur', 'change'] },
+              { required: true, message: $t(`build.prompt.buildNameCannotBeEmpty`), trigger: ['blur', 'change'] },
               { validator: validName, trigger: ['blur', 'change'] }
             ]"
       >
@@ -32,7 +32,7 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="Jenkins Job" prop="jenkins_build.job_name" :rules="[{ required: true, trigger: 'change', message: this.$t(`build.prompt.jobsCannotBeEmpty`) }]">
+      <el-form-item label="Jenkins Job" prop="jenkins_build.job_name" :rules="[{ required: true, trigger: 'change', message: $t(`build.prompt.jobsCannotBeEmpty`) }]">
         <el-select v-model="jenkinsBuild.jenkins_build.job_name" size="small" value-key="key" @change="changeJobName" filterable>
           <el-option v-for="(item,index) in jenkinsJobList" :key="index" :label="item" :value="item"></el-option>
         </el-select>
@@ -59,17 +59,6 @@
 import { queryJenkinsJob, queryJenkinsParams } from '@api'
 import EnvVariable from './envVariable.vue'
 
-const validName = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error(this.$t(`build.prompt.fillInBuildName`)))
-  } else {
-    if (!/^[a-z0-9-]+$/.test(value)) {
-      callback(new Error(this.$t(`build.prompt.buildNameConvention`)))
-    } else {
-      callback()
-    }
-  }
-}
 export default {
   props: {
     jenkinsBuildData: Object,
@@ -82,7 +71,6 @@ export default {
   data () {
     return {
       jenkinsJobList: [],
-      validName,
       initJenkinsBuild: {
         name: '',
         desc: '',
@@ -103,6 +91,20 @@ export default {
   computed: {
     jenkinsBuild () {
       return Object.assign(this.initJenkinsBuild, this.jenkinsBuildData)
+    },
+    validName () {
+      const ret = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t(`build.prompt.fillInBuildName`)))
+        } else {
+          if (!/^[a-z0-9-]+$/.test(value)) {
+            callback(new Error(this.$t(`build.prompt.buildNameConvention`)))
+          } else {
+            callback()
+          }
+        }
+      }
+      return ret
     }
   },
   watch: {

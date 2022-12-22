@@ -36,7 +36,7 @@
               label-width="50px"
               inline-message
             >
-              <el-form-item v-if="buildConfig.cache_dir_type === 'user_defined'" label="路径" prop="cache_user_dir" :rules="{required: buildConfig.cache_dir_type === 'user_defined', trigger: ['change', 'blur'],message: this.$t(`build.prompt.fillInPath`)}">
+              <el-form-item v-if="buildConfig.cache_dir_type === 'user_defined'" label="路径" prop="cache_user_dir" :rules="{required: buildConfig.cache_dir_type === 'user_defined', trigger: ['change', 'blur'],message: $t(`build.prompt.fillInPath`)}">
                 <el-input
                   :style=" {width: mini? '100%' : '298px', 'margin-left': mini ? '0' : '5px'}"
                   v-model="buildConfig.cache_user_dir"
@@ -52,7 +52,7 @@
       <el-form-item
         :label="$t(`build.advancedSettings.cluster`)"
         :prop="`${secondaryProp}.cluster_id`"
-        :rules="{ required: true, message: this.$t(`build.advancedSettings.selectClusterPrompt`), trigger: ['change', 'blur'] }"
+        :rules="{ required: true, message: $t(`build.advancedSettings.selectClusterPrompt`), trigger: ['change', 'blur'] }"
       >
         <el-select v-model="currentResource.cluster_id" :placeholder="$t(`build.advancedSettings.selectClusterPrompt`)" size="small">
           <el-option v-for="cluster in clusters" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
@@ -62,7 +62,7 @@
         v-if="!hiddenSystem"
         :label="$t(`build.advancedSettings.resource`)"
         :prop="`${secondaryProp}.res_req`"
-        :rules="{ required: true, message: this.$t(`build.advancedSettings.selectResourcePrompt`), trigger: ['change', 'blur'] }"
+        :rules="{ required: true, message: $t(`build.advancedSettings.selectResourcePrompt`), trigger: ['change', 'blur'] }"
       >
         <el-select size="small" v-model="currentResource.res_req" :placeholder="$t(`build.prompt.select`)">
           <el-option :label="$t(`build.advancedSettings.resourceTypeHigh`)" value="high"></el-option>
@@ -114,7 +114,7 @@
       </el-form-item>
       <div class="item-title" v-if="!hiddenVars">
         {{$t(`build.advancedSettings.parameterPassing`)}}
-        <el-tooltip effect="dark" :content="fromWorkflow?this.$t(`build.advancedSettings.parameterPassingTooltipProductWorkflow`): this.$t(`build.advancedSettings.parameterPassingTooltipProductWorkflow`)" placement="top">
+        <el-tooltip effect="dark" :content="fromWorkflow?$t(`build.advancedSettings.parameterPassingTooltipProductWorkflow`): $t(`build.advancedSettings.parameterPassingTooltipProductWorkflow`)" placement="top">
           <i class="pointer el-icon-question"></i>
         </el-tooltip>
       </div>
