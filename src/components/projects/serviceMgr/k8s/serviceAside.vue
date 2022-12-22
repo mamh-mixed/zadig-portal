@@ -323,6 +323,15 @@ export default {
           this.service.service_name,
           this.projectNameOfService
         ).then(res => {
+          if (res.variable_kvs && res.service_vars) {
+            res.variable_kvs.forEach(element => {
+              if (res.service_vars.includes(element.key)) {
+                element.show = true
+              } else {
+                element.show = false
+              }
+            })
+          }
           this.serviceConfigs = res
           this.initVariableYaml = res.variable_yaml
         })

@@ -243,6 +243,15 @@ export default {
       const serviceName = this.service.service_name
       const projectName = this.projectName
       serviceTemplateWithConfigAPI(serviceName, projectName).then(res => {
+        if (res.variable_kvs && res.service_vars) {
+          res.variable_kvs.forEach(element => {
+            if (res.service_vars.includes(element.key)) {
+              element.show = true
+            } else {
+              element.show = false
+            }
+          })
+        }
         this.serviceWithConfigs = res
       })
     },
