@@ -27,10 +27,11 @@
           v-if="hasPlutus && opeType==='add'"
           :checkResource="checkResource"
           :currentResourceCheck="currentResourceCheck"
+          :expandKeys="expandKeys"
           @checkRes="svcResources = $event"
           showExpand
         />
-        <el-table v-else :data="currentResourceCheck" style="width: 100%;" default-expand-all>
+        <el-table v-else :data="currentResourceCheck" style="width: 100%;" row-key="service_name" :expand-row-keys="expandKeys">
           <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
           <el-table-column type="expand" width="100px" label="变量配置">
             <template slot-scope="{ row }">
@@ -84,7 +85,8 @@ export default {
       },
       loading: false,
       svcResources: {},
-      checkResource: null
+      checkResource: null,
+      expandKeys: []
     }
   },
   computed: {
@@ -93,9 +95,15 @@ export default {
     },
     currentResourceCheck () {
       const res = []
+      const expandKeys = []
       this.updateServices.service_names.forEach(name => {
-        res.push(this.svcResources[name] || this.serviceVariables[name])
+        const curSvc = this.svcResources[name] || this.serviceVariables[name]
+        if (curSvc.canEditYaml) {
+          expandKeys.push(curSvc.service_name)
+        }
+        res.push(curSvc)
       })
+      this.expandKeys = expandKeys
       return res
     },
     opeDesc () {

@@ -6,7 +6,7 @@
         <CodeMirror ref="codemirror" v-model="currentInfo.default_values" />
       </Resize>
     </div>
-    <el-table :data="currentInfo.services || []" style="width: 100%;" default-expand-all>
+    <el-table :data="currentInfo.services || []" style="width: 100%;" row-key="service_name" :expand-row-keys="expandKeys">
       <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
       <el-table-column type="expand" width="100px" label="变量配置">
         <template slot-scope="{ row }">
@@ -32,7 +32,9 @@ export default {
     currentInfo: Object
   },
   data () {
-    return {}
+    return {
+      expandKeys: []
+    }
   },
   methods: {
     getEnvInfo () {
@@ -42,11 +44,18 @@ export default {
         this.$set(this.currentInfo, 'default_values', res.default_variable)
       })
       getServiceDefaultVariableAPI(projectName, envName).then(res => {
+        const expandKeys = []
         this.$set(
           this.currentInfo,
           'services',
-          res.map(re => ({ ...re, canEditYaml: !!re.variable_yaml }))
+          res.map(re => {
+            if (re.variable_yaml) {
+              expandKeys.push(re.service_name)
+            }
+            return { ...re, canEditYaml: !!re.variable_yaml }
+          })
         )
+        this.expandKeys = expandKeys
       })
     }
   },
@@ -55,6 +64,10 @@ export default {
       handler (val) {
         if (val && typeof val.default_values === 'undefined') {
           this.getEnvInfo()
+        } else if (val) {
+          this.expandKeys = val.services
+            .filter(svc => svc.variable_yaml)
+            .map(svc => svc.service_name)
         }
       },
       immediate: true

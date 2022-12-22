@@ -1,6 +1,6 @@
 
 <template>
-  <el-table :data="currentResource" style="width: 100%;" default-expand-all>
+  <el-table :data="currentResource" style="width: 100%;" row-key="service_name" :expand-row-keys="expandKeys">
     <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
     <el-table-column>
       <span slot="header">
@@ -52,6 +52,10 @@ export default {
     showExpand: {
       default: false,
       type: Boolean
+    },
+    expandKeys: {
+      default: () => [],
+      type: Array
     }
   },
   data () {
