@@ -5,7 +5,7 @@
         <span>{{`${serviceName}`}}</span>
       </template>
     </van-nav-bar>
-    <van-divider content-position="left">基本信息</van-divider>
+    <van-divider content-position="left">{{$t('global.basicInfo')}}</van-divider>
     <div class="service-info">
       <van-row>
         <van-col span="12">

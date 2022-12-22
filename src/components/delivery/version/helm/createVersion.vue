@@ -13,8 +13,8 @@
     </keep-alive>
 
     <footer class="footer">
-      <el-button size="small" v-show="activeStep !== 0" @click="activeStep -= 1" :disabled="createLoading">上一步</el-button>
-      <el-button size="small" type="primary" @click="nextStep" :loading="createLoading">{{activeStep - 2 ? '下一步' : '完成' }}</el-button>
+      <el-button size="small" v-show="activeStep !== 0" @click="activeStep -= 1" :disabled="createLoading">{{$t('global.back')}}</el-button>
+      <el-button size="small" type="primary" @click="nextStep" :loading="createLoading">{{activeStep - 2 ? $t('global.next') : $t('global.finish') }}</el-button>
       <el-button size="small" type="text" @click="cancel">{{$t(`global.cancel`)}}</el-button>
     </footer>
   </div>

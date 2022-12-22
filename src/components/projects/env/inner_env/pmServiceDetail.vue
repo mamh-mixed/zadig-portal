@@ -2,7 +2,7 @@
   <div class="service-details-container">
     <div class="info-card">
       <div class="info-header">
-        <span>基本信息</span>
+        <span>{{$t('global.basicInfo')}}</span>
       </div>
       <el-row :gutter="0"
               class="info-body">
