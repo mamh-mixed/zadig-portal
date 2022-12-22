@@ -86,7 +86,8 @@ exports.default = {
     collapse: 'Collapse',
     defaultValue: 'Default Value',
     serviceModule: 'Service Module',
-    templates: 'Templates'
+    templates: 'Templates',
+    updateTime: 'Update Time'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -138,7 +139,7 @@ exports.default = {
     forum: 'Forum',
     testCenter: 'Tests',
     deliveryCenter: 'Delivery',
-    dataViews: 'Data Views',
+    dataViews: 'Statistics',
     dataOverview: 'Overview',
     dataInsight: 'Insights',
     setting: 'Settings',
@@ -213,7 +214,11 @@ exports.default = {
     changeProjectTypeFourthTip: '3. Changing operation is irreversible, please operate with caution',
     changeProjectTypeConfirm: 'Are you sure to change project type?',
     changeProjectTypeSuccess: 'Type changed successfully!',
-    cancelChangeProjectType: 'Change project type has been cancelled'
+    cancelChangeProjectType: 'Change project type has been cancelled',
+    insights: 'Insights',
+    deployInsight: 'Deployment Insights',
+    testInsight: 'Test Insights',
+    buildInsight: 'Build Insights'
   },
   profile: {
     profile: 'Profile',

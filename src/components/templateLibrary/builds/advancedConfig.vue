@@ -49,7 +49,7 @@
         </el-select>
       </el-form-item>
       <el-form-item :label="$t(`build.advancedSettings.resource`)" :prop="`${secondaryProp}.res_req`" :rules="{ required: true, message: this.$t(`build.advancedSettings.selectResourcePrompt`), trigger: ['change', 'blur'] }">
-        <el-select size="small" v-model="currentResource.res_req" placeholder="请选择">
+        <el-select size="small" v-model="currentResource.res_req" :placeholder="$t(`build.prompt.select`)">
           <el-option :label="$t(`build.advancedSettings.resourceTypeHigh`)" value="high"></el-option>
           <el-option :label="$t(`build.advancedSettings.resourceTypeMedium`)" value="medium"></el-option>
           <el-option :label="$t(`build.advancedSettings.resourceTypeLow`)" value="low"></el-option>
@@ -126,7 +126,7 @@
             plain
           ></el-button>
         </el-form-item>
-        <el-button type="text" @click="addVars">+添加</el-button>
+        <el-button type="text" @click="addVars">{{$t(`build.specialAdd`)}}</el-button>
       </el-form-item>
     </el-form>
   </section>

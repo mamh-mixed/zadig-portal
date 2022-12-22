@@ -19,7 +19,7 @@
           @updateBtnLoading="saveLoading = $event"
           :loading="saveLoading"
           type="text"
-        >保存为模板</el-button>
+        >{{$t(`build.saveAsTemplate`)}}</el-button>
       </footer>
     </template>
   </CommonBuild>
@@ -76,17 +76,17 @@ export default {
     bus.$emit('set-topbar-title', {
       title: '',
       breadcrumb: [
-        { title: this.$t('subTopbarMenu.projects'), url: '/v1/projects' },
+        { title: this.$t(`subTopbarMenu.projects`), url: '/v1/projects' },
         {
           title: this.projectName,
           isProjectName: true,
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         {
-          title: this.$t('subTopbarMenu.builds'),
+          title: this.$t(`subTopbarMenu.builds`),
           url: `/v1/projects/detail/${this.projectName}/builds`
         },
-        { title: this.isCreate ? '新建' : this.buildConfigName, url: '' }
+        { title: this.isCreate ? this.$t(`global.create`) : this.buildConfigName, url: '' }
       ]
     })
   },

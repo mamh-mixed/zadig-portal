@@ -405,9 +405,9 @@ export default {
                 return !item.file_path || !item.dest_path
               })
               if (value.length === 0) {
-                callback(new Error('请至少添加一个上传文件'))
+                callback(new Error(this.$t(`build.prompt.atLeastUploadOneFile`)))
               } else if (empty) {
-                callback(new Error('上传文件路径为空，请检查'))
+                callback(new Error(this.$t(`build.prompt.uploadFilePathEmpty`)))
               } else {
                 callback()
               }

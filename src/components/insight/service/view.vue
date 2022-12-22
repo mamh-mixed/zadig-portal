@@ -86,6 +86,7 @@ export default {
       breadcrumb: [
         { title: this.$t('sidebarMenu.dataInsight'), url: '/v1/insight' },
         { title: this.$t('dataStatistics.insight.deployInsight'), url: '' }
+
       ]
     })
   }

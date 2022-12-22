@@ -18,12 +18,12 @@
         <div class="primary-title">{{$t(`global.gitMessage`)}}</div>
         <span class="tips">
           <i class="el-icon-info"></i>
-          使用模板新建时配置</span>
+          {{$t(`build.prompt.buildRepoNotification`)}}</span>
       </div>
       <section>
-        <div class="primary-title not-first-child">构建变量</div>
+        <div class="primary-title not-first-child">{{$t(`build.variables`)}}</div>
         <EnvVariable :preEnvs="buildConfig.pre_build" :validObj="validObj" :fromServicePage="false" :mini="mini"/>
-        <div class="primary-title not-first-child">通用构建脚本</div>
+        <div class="primary-title not-first-child">{{$t(`build.commonScript`)}}</div>
         <div class="deploy-script">
           <Resize :resize="'both'">
             <Editor v-model="buildConfig.scripts"/>
@@ -68,10 +68,10 @@ import { cloneDeep } from 'lodash'
 
 const validateBuildConfigName = (rule, value, callback) => {
   if (value === '') {
-    callback(new Error('请输入构建名称'))
+    callback(new Error(this.$t(`build.prompt.fillInBuildName`)))
   } else {
     if (!/^[a-z0-9-]+$/.test(value)) {
-      callback(new Error('名称只支持小写字母和数字，特殊字符只支持中划线'))
+      callback(new Error(this.$t(`build.prompt.buildNameConvention`)))
     } else {
       callback()
     }
@@ -131,7 +131,7 @@ export default {
         'pre_build.image_id': {
           type: 'string',
           required: true,
-          message: '请选择操作系统',
+          message: this.$t(`build.prompt.selectImage`),
           trigger: 'blur'
         }
       },
