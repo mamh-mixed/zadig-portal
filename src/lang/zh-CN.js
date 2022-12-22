@@ -1733,6 +1733,7 @@ exports.default = {
     updatedBy: '最后修改',
     saveAsTemplate: '保存为模板',
     timeout: '构建超时',
+    preview: '预览',
     prompt: {
       select: '请选择',
       selectTemplate: '模板选择',
@@ -1748,6 +1749,7 @@ exports.default = {
       fillInDockerfilePath: '请填写 Dockerfile 路径',
       fillInPath: '请输入路径',
       selectInDockerfileTemplate: '请选择模板',
+      selectBuildTemplate: '选择模板',
       fillInArchiveFilePath: '请填写文件路径',
       atLeastUploadOneFile: '请至少添加一个上传文件',
       uploadFilePathEmpty: '上传文件路径为空，请检查',
@@ -1769,7 +1771,8 @@ exports.default = {
       chooseJenkins: 'Jenkins 选择',
       buildNameCannotBeEmpty: '构建名称不能为空',
       jobsCannotBeEmpty: 'jobs不能为空',
-      jenkinsBuildArgs: 'Jenkins Build Parameters 中必须存在“IMAGE”变量，作为构建镜像的名称，Jenkins 成功构建镜像后，部署阶段会使用该镜像更新服务'
+      jenkinsBuildArgs: 'Jenkins Build Parameters 中必须存在“IMAGE”变量，作为构建镜像的名称，Jenkins 成功构建镜像后，部署阶段会使用该镜像更新服务',
+      selectBuildTemplateII: '请选择构建模板'
     },
     advancedSettings: {
       title: '高级配置',

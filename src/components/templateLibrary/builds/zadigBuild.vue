@@ -119,7 +119,18 @@ export default {
   },
   data () {
     return {
-      createRules: {
+      validObj: new ValidateSubmit(),
+      allCodeHosts: [],
+      configDataLoading: true,
+      buildConfig: cloneDeep(initBuildConfig)
+    }
+  },
+  computed: {
+    projectName () {
+      return this.$route.params.project_name
+    },
+    createRules () {
+      return {
         name: [
           {
             type: 'string',
@@ -134,16 +145,7 @@ export default {
           message: this.$t(`build.prompt.selectImage`),
           trigger: 'blur'
         }
-      },
-      validObj: new ValidateSubmit(),
-      allCodeHosts: [],
-      configDataLoading: true,
-      buildConfig: cloneDeep(initBuildConfig)
-    }
-  },
-  computed: {
-    projectName () {
-      return this.$route.params.project_name
+      }
     }
   },
   watch: {

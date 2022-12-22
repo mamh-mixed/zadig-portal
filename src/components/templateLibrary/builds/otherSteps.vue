@@ -83,7 +83,7 @@
                 style="margin-left: 5px;"
                 type="text"
                 @click="showDockerfile = true"
-              >预览</el-button>
+              >{{$t(`build.preview`)}}</el-button>
               <div v-if="dockerfileTemplate.variable && dockerfileTemplate.variable.length > 0" class="dockerfile-args-container">
                 <span>ARG</span>
                 <span v-for="(item,index) in dockerfileTemplate.variable" :key="index">
@@ -133,7 +133,7 @@
       >
         <div class="dashed-container">
           <span class="primary-title">
-            {{$t(`build.stepArtifactUpload`)}}
+            {{$t(`build.stepFileUpload`)}}
             <el-button type="text" @click="removeObject" icon="el-icon-delete"></el-button>
           </span>
           <el-form-item :label="$t(`sidebarMenu.objectStorage`)" prop="object_storage_id">
