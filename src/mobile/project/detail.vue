@@ -9,7 +9,7 @@
     </van-sticky>
     <van-divider content-position="left">
       <van-icon class-prefix="iconfont" name="category iconfont iconxiangmuloading" />
-      <span>基本信息</span>
+      <span>{{$t('global.basicInfo')}}</span>
     </van-divider>
     <div v-if="projectInfo" class="task-info">
       <van-row>

@@ -26,7 +26,7 @@
     </el-dialog>
     <div class="info-card">
       <div class="info-header">
-        <span>基本信息</span>
+        <span>{{$t('global.basicInfo')}}</span>
       </div>
       <el-row :gutter="0"
               class="info-body">
@@ -437,7 +437,7 @@
                    ref="debug"/>
       <div class="download-content">
         <el-input v-model="downloadFilePath" placeholder="输入文件在容器中的绝对路径"></el-input>
-        <el-button type="primary" @click="downloadFile(execModal.podName, execModal.containerName)" :disabled="!downloadFilePath" plain>下载</el-button>
+        <el-button type="primary" @click="downloadFile(execModal.podName, execModal.containerName)" :disabled="!downloadFilePath" plain>{{$t('global.download')}}</el-button>
       </div>
     </el-dialog>
 
@@ -466,7 +466,7 @@
               <el-button @click="toggleYAML(obj)"
                          type="text"
                          icon="el-icon-caret-bottom">
-                {{ obj.expanded ? '收起' : '展开' }}
+                {{ obj.expanded ? $t('global.collapse') : $t('global.expand') }}
               </el-button>
               <el-button @click="copyYAML(obj, i)"
                          type="primary"
