@@ -76,11 +76,6 @@ export default {
       }
     }
   },
-  computed: {
-    subtext () {
-      return this.$t(`statistics.monthlyBuildData`)
-    }
-  },
   methods: {
     checkRateColor (rate) {
       if (rate >= 60) {

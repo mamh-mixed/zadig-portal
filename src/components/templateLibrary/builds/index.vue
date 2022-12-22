@@ -43,7 +43,7 @@
                 @click="createFile()"
                 plain
                 circle
-              ></el-button>{{$t(`templates.build.createTemplate`)}}
+              ></el-button>{{$t(`templates.build.createTemplateTooltip`)}}
             </p>
             <p v-else-if="file.name==='模板列表' && templates.length >0">{{$t(`templates.build.selectTemplateToEdit`)}}</p>
             <p v-else-if="!file.name && templates.length >0">{{$t(`templates.build.selectTemplateToEdit`)}}</p>

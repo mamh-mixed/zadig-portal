@@ -50,7 +50,7 @@
       </el-form-item>
       <div class="item-title">{{$t(`build.advancedSettings.resourceConfig`)}}</div>
       <el-form-item
-        :label="$t(`build.advancedSetting.cluster`)"
+        :label="$t(`build.advancedSettings.cluster`)"
         :prop="`${secondaryProp}.cluster_id`"
         :rules="{ required: true, message: this.$t(`build.advancedSettings.selectClusterPrompt`), trigger: ['change', 'blur'] }"
       >
@@ -143,7 +143,7 @@
         </el-form-item>
         <el-button type="text" @click="addVars">+{{$t('global.add')}}</el-button>
       </el-form-item>
-      <div class="item-title" v-if="isShowShareStorage">{{$t(`build.sharedStorage`)}}</div>
+      <div class="item-title" v-if="isShowShareStorage">{{$t(`build.advancedSettings.sharedStorage`)}}</div>
       <el-form-item
         :label="$t(`workflow.enableSharedStorage`)"
         v-if="isShowShareStorage"
