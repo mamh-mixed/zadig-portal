@@ -87,7 +87,8 @@ exports.default = {
     defaultValue: '默认值',
     serviceModule: '服务组件',
     templates: '模板库',
-    updateTime: '更新时间'
+    updateTime: '更新时间',
+    lastModified: '最后修改'
   },
   permission: {
     lackPermission: '无权限操作'
@@ -457,6 +458,13 @@ exports.default = {
       policyDesc: '描述信息',
       policyModifiedTime: '修改时间',
       permissionManagement: '权限管理'
+    },
+    varsGroup: {
+      name: '变量组名称',
+      inputVarsGroupName: '请输入变量组名称',
+      inputVarsGroupYaml: '请输入 YAML 格式变量',
+      confirmToDeleteVarsGroup: '确定要删除 {name}?',
+      deleteVarsGroupSuccess: '变量组 {name} 删除成功！'
     }
   },
   templates: {

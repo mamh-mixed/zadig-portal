@@ -87,7 +87,8 @@ exports.default = {
     defaultValue: 'Default Value',
     serviceModule: 'Service Module',
     templates: 'Templates',
-    updateTime: 'Update Time'
+    updateTime: 'Update Time',
+    lastModified: 'Last Modified'
   },
   permission: {
     lackPermission: 'Unauthorized'
@@ -457,6 +458,13 @@ exports.default = {
       policyDesc: 'Description',
       policyModifiedTime: 'Modified Time',
       permissionManagement: 'Permission'
+    },
+    varsGroup: {
+      name: 'Name',
+      inputVarsGroupName: 'Please input vars group name',
+      inputVarsGroupYaml: 'Please enter the YAML format variables',
+      confirmToDeleteVarsGroup: 'Are you sure to delete {name}?',
+      deleteVarsGroupSuccess: 'Variable group {name} deleted successfully!'
     }
   },
   templates: {
