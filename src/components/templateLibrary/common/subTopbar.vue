@@ -9,12 +9,6 @@
               <span class="name">{{item.name}}</span>
             </li>
           </router-link>
-          <router-link :to="`/v1/template/workflows`" v-if="hasPlutus" active-class="active">
-            <li class="nav-item">
-              <i class="icon iconfont icongongzuoliucheng"></i>
-              <span class="name">{{$t(`global.workflow`)}}</span>
-            </li>
-          </router-link>
         </ul>
       </div>
     </div>
@@ -71,10 +65,7 @@ export default {
           url: `/v1/template/builds`
         }
       ]
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     createWorkflowTemplate (val) {
