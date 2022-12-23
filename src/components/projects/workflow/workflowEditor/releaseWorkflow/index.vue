@@ -652,22 +652,10 @@ export default {
       }
       this.payload.stages.forEach(stage => {
         if (stage.approval.type === 'native') {
-          const params = {
-            approve_users: stage.approval.approve_users,
-            needed_approvers: stage.approval.needed_approvers,
-            timeout: stage.approval.timeout
-          }
-          stage.approval.native_approval = params
+          delete stage.approval.lark_approval
         } else {
-          const params = {
-            approve_users: stage.approval.approve_users,
-            approval_id: stage.approval.approval_id,
-            timeout: stage.approval.timeout
-          }
-          stage.approval.lark_approval = params
+          delete stage.approval.native_approval
         }
-        delete stage.approval.approve_users
-        delete stage.approval.timeout
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
@@ -791,25 +779,15 @@ export default {
       this.workflowCurJobLength = this.payload.stages[
         this.curStageIndex
       ].jobs.length
-      this.payload.params.forEach(item => {
-        if (item.value.includes('<+fixed>')) {
-          item.command = 'fixed'
-          item.value = item.value.replaceAll('<+fixed>', '')
-        }
-      })
+      if (this.payload.params.length > 0) {
+        this.payload.params.forEach(item => {
+          if (item.value && item.value.includes('<+fixed>')) {
+            item.command = 'fixed'
+            item.value = item.value.replaceAll('<+fixed>', '')
+          }
+        })
+      }
       this.payload.stages.forEach(stage => {
-        if (stage.approval.type === 'lark') {
-          stage.approval.approval_id = stage.approval.lark_approval.approval_id
-          stage.approval.timeout = stage.approval.lark_approval.timeout
-          stage.approval.approve_users =
-            stage.approval.lark_approval.approve_users
-        } else {
-          stage.approval.approve_users =
-            stage.approval.native_approval.approve_users
-          stage.approval.needed_approvers =
-            stage.approval.native_approval.needed_approvers
-          stage.approval.timeout = stage.approval.native_approval.timeout
-        }
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {

@@ -230,6 +230,10 @@ const globalConstEnvs = [
 ]
 const notifyType = [
   {
+    label: 'created',
+    desc: '任务开始'
+  },
+  {
     label: 'passed',
     desc: 'passed'
   },

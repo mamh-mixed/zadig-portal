@@ -3,7 +3,7 @@ export function wordTranslate (word, category, subitem = '') {
   const wordComparisonTable = {
     approval: {
       status: {
-        '': '待审核',
+        '': '待审批',
         waiting: '排队中',
         running: '正在运行',
         failed: '失败',

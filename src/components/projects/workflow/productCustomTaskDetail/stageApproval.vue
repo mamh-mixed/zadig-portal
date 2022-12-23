@@ -10,7 +10,7 @@
       </el-col>
       <el-col :span="6" class="text" v-if="!isDisabled">
         <span class="red">{{timeout}} 分钟</span>
-        <span>后审核超时</span>
+        <span>后审批超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>
         <span>{{$t(`global.endTime`)}}：</span>
@@ -47,7 +47,7 @@
         <el-table-column prop="comment" :label="$t(`workflow.comments`)"></el-table-column>
       </el-table>
       <el-row class="mg-t24" v-if="approvalInfo.approval.type === 'native'">
-        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审核</el-button>
+        <el-button type="warning" size="small" @click="isShowCommentDialog=true" :disabled="isDisabled">审批</el-button>
       </el-row>
     </main>
     <el-dialog title="评论信息" :visible.sync="isShowCommentDialog">
