@@ -4,7 +4,7 @@
     <div class="manage-services-container">
       <el-form ref="serviceFormRef" class="primary-form" :model="updateServices" label-width="100px" label-position="left">
         <el-form-item
-          label="服务选择"
+          :label="$t(`workflow.selectService`)"
           props="service_names"
           :rules="{ required: true, type: 'array', message: '请选择服务名称', trigger: ['blur', 'change']}"
         >
@@ -31,8 +31,8 @@
             />
           </div>
           <el-table :data="currentVars" style="width: 100%;">
-            <el-table-column prop="key" label="键"></el-table-column>
-            <el-table-column label="值">
+            <el-table-column prop="key" :label="$t(`global.key`)"></el-table-column>
+            <el-table-column :label="$t(`global.value`)">
               <template slot-scope="{ row }">
                 <VariableEditor :varKey="row.key" :value.sync="row.value" />
               </template>
@@ -42,8 +42,8 @@
       </template>
     </div>
     <div slot="footer">
-      <el-button @click="closeDialog" size="small" :disabled="loading">取 消</el-button>
-      <el-button type="primary" size="small" @click="updateEnvironment" :loading="loading">确 定</el-button>
+      <el-button @click="closeDialog" size="small" :disabled="loading">{{$t(`global.cancel`)}}</el-button>
+      <el-button type="primary" size="small" @click="updateEnvironment" :loading="loading">{{$t(`global.confirm`)}}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -109,9 +109,9 @@ export default {
     },
     opeDesc () {
       const typeEnum = {
-        add: '添加',
-        update: '更新',
-        delete: '删除'
+        add: this.$t('global.add'),
+        update: this.$t('global.update'),
+        delete: this.$t('global.delete')
       }
       return typeEnum[this.opeType] || ''
     },
@@ -222,8 +222,8 @@ export default {
         `您的更新操作将覆盖环境中 ${key} 的 ${value} 服务变更，确认继续?`,
         '提示',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }
       ).then(() => {

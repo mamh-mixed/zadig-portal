@@ -1,7 +1,7 @@
 <template>
   <div class="project-home"
        v-loading="loading"
-       element-loading-text="加载中..."
+       :element-loading-text="$t(`global.loading`)"
        element-loading-spinner="iconfont iconfont-loading iconrongqi">
     <div v-if="loading"
          class="no-show">

@@ -1,11 +1,11 @@
 
 <template>
   <el-table :data="currentResource" style="width: 100%;">
-    <el-table-column prop="service_name" label="服务名称"></el-table-column>
+    <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
     <el-table-column>
       <span slot="header">
-        资源检测
-        <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
+        {{$t('environments.k8s.serviceListComp.resourceDetection')}}
+        <el-tooltip effect="dark" :content="$t('environments.k8s.serviceListComp.resourceDetectionTip')" placement="top">
           <i class="el-icon-info gray"></i>
         </el-tooltip>
       </span>
@@ -16,11 +16,11 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column label="操作" width="200px">
+    <el-table-column :label="$t(`global.operation`)" width="200px">
       <template slot-scope="{ row }">
         <el-radio-group v-model="row.deploy_strategy">
-          <el-radio label="import" :disabled="!row.deployed">仅导入服务</el-radio>
-          <el-radio label="deploy">执行部署</el-radio>
+          <el-radio label="import" :disabled="!row.deployed">{{$t('environments.k8s.serviceListComp.onlyImport')}}</el-radio>
+          <el-radio label="deploy">{{$t('environments.k8s.serviceListComp.executeDeploy')}}</el-radio>
         </el-radio-group>
       </template>
     </el-table-column>

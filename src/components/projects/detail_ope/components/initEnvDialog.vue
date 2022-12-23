@@ -13,7 +13,7 @@
       ></HelmEnvTemplate>
     </div>
     <div slot="footer">
-      <el-button size="small" type="primary" @click="getEnvInfo">确 定</el-button>
+      <el-button size="small" type="primary" @click="getEnvInfo">{{$t(`global.confirm`)}}</el-button>
     </div>
   </el-dialog>
 </template>
