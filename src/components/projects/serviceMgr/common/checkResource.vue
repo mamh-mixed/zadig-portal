@@ -1,6 +1,6 @@
 
 <template>
-  <el-table :data="currentResource" style="width: 100%;">
+  <el-table :data="currentResource" style="width: 100%;" row-key="service_name" :expand-row-keys="expandKeys">
     <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
     <el-table-column>
       <span slot="header">
@@ -24,10 +24,23 @@
         </el-radio-group>
       </template>
     </el-table-column>
+    <el-table-column type="expand" width="100px" label="变量配置" v-if="showExpand">
+      <template slot-scope="{ row }">
+        <div v-if="row.canEditYaml">
+          <div class="primary-title">变量配置</div>
+          <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'200px'">
+            <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.variable_yaml" />
+          </Resize>
+        </div>
+        <div v-else style="font-size: 12px; text-align: center;">无变量配置</div>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import { checkK8sSvcResourceAPI } from '@api'
 import { mapState } from 'vuex'
 import { debounce } from 'lodash'
@@ -35,7 +48,15 @@ export default {
   props: {
     checkResource: Object,
     currentResourceCheck: Array,
-    serviceNames: Array
+    serviceNames: Array,
+    showExpand: {
+      default: false,
+      type: Boolean
+    },
+    expandKeys: {
+      default: () => [],
+      type: Array
+    }
   },
   data () {
     return {
@@ -55,7 +76,10 @@ export default {
       } else {
         for (const i in this.serviceNames) {
           const svc = this.serviceNames[i]
-          this.$set(this.serviceNames, i, { ...svc, ...this.svcResources[svc.service_name] })
+          this.$set(this.serviceNames, i, {
+            ...svc,
+            ...this.svcResources[svc.service_name]
+          })
         }
         return this.serviceNames
       }
@@ -74,12 +98,7 @@ export default {
           //  env_name,
           //  namespace,
           //  cluster_id,
-          //  services,
-          //  vars({
-          //   alias: va.alias,
-          //   key: va.key,
-          //   value: va.value
-          //  })
+          //  services: [{service_name, variable_yaml}]
           this.checkSvcResource(val)
         }
       },
@@ -89,6 +108,13 @@ export default {
   },
   methods: {
     checkSvcResource: debounce(async function (payload) {
+      const svcYaml = {}
+      payload.services.forEach(svc => {
+        svcYaml[svc.service_name] = {
+          variable_yaml: svc.variable_yaml,
+          canEditYaml: svc.canEditYaml || false
+        }
+      })
       this.svcResources = {}
       const res = await checkK8sSvcResourceAPI(
         this.projectName,
@@ -103,13 +129,19 @@ export default {
           svcResources[resource.service_name] = {
             ...resource,
             deployed,
-            deploy_strategy: deployed ? 'import' : 'deploy'
+            deploy_strategy: deployed ? 'import' : 'deploy',
+            variable_yaml: svcYaml[resource.service_name].variable_yaml,
+            canEditYaml: svcYaml[resource.service_name].canEditYaml
           }
         })
         this.svcResources = svcResources
         this.$emit('checkRes', svcResources)
       }
     }, 300)
+  },
+  components: {
+    Resize,
+    CodeMirror
   }
 }
 </script>
@@ -125,5 +157,9 @@ export default {
 
 .fail {
   color: @danger;
+}
+
+.primary-title {
+  margin-bottom: 14px;
 }
 </style>

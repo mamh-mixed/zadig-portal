@@ -81,6 +81,16 @@
               </el-form-item>
             </template>
           </div>
+          <div v-if="service.canEditYaml" class="var-config">
+            <div class="primary-title var-title">变量配置</div>
+            <Resize @sizeChange="$refs[`codemirror-${serviceName}`][0].refresh()" :height="'200px'">
+              <CodeMirror
+                :ref="`codemirror-${serviceName}`"
+                v-model="service.variable_yaml"
+                @input="checkCurSvcResource({services: [{ service_name: serviceName, variable_yaml: $event }]})"
+              />
+            </Resize>
+          </div>
         </div>
       </el-form>
     </div>
@@ -88,6 +98,8 @@
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import virtualListItem from '../../common/imageItem'
 import virtualScrollList from 'vue-virtual-scroll-list'
 import { imagesAPI, checkK8sSvcResourceAPI } from '@api'
@@ -98,6 +110,7 @@ export default {
     showFilter: Boolean,
     cantOperate: Boolean,
     selectedContainerMap: Object,
+    checkCurSvcResource: Function,
     registryId: {
       required: true,
       type: String
@@ -185,33 +198,32 @@ export default {
       if (!this.hasPlutus) {
         return Promise.reject()
       }
-      // payload: env_name, namespace, cluster_id, vars
-      this.svcResources = {}
+      // payload: env_name, namespace, cluster_id, default_values, services[service_name, variable_yaml]
       const res = await checkK8sSvcResourceAPI(
         projectName,
         payload
       ).catch(err => console.log(err))
       if (res) {
-        const svcResources = {}
         const svcStatus = {}
         res.forEach(resource => {
           const deployed = !resource.resources.find(
             re => re.status === 'undeployed'
           )
-          svcResources[resource.service_name] = {
+          this.$set(this.svcResources, resource.service_name, {
             ...resource,
             deployed
-          }
+          })
           svcStatus[resource.service_name] = deployed
         })
-        this.svcResources = svcResources
         return Promise.resolve(svcStatus)
       }
       return Promise.reject()
     }
   },
   components: {
-    virtualScrollList
+    virtualScrollList,
+    Resize,
+    CodeMirror
   }
 }
 </script>
@@ -309,6 +321,14 @@ export default {
         .el-select {
           width: 100%;
         }
+      }
+    }
+
+    .var-config {
+      margin-top: 14px;
+
+      .var-title {
+        margin-bottom: 5px;
       }
     }
   }

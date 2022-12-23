@@ -42,4 +42,11 @@ const i18n = new VueI18n({
 })
 locale.i18n((key, value) => i18n.t(key, value))
 
+if (module.hot) {
+  module.hot.accept(['./zh-CN', './en'], function () {
+    i18n.setLocaleMessage('en', require('./en').default)
+    i18n.setLocaleMessage('zh-cn', require('./zh-CN').default)
+  })
+}
+
 export default i18n
