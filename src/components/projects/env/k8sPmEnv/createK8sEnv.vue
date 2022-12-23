@@ -117,24 +117,19 @@
         </el-form-item>
       </el-form>
       <EnvConfig class="common-parcel-block" ref="envConfigRef" />
-      <div
-        v-if="(variables.length && !$utils.isEmpty(containerMap) && (projectConfig.source==='system')||projectConfig.source==='copy')"
-        class="common-parcel-block box-card-service"
-      >
-        <div class="primary-title">
-          {{$t('environments.k8s.variablesList')}}
-          <VariablePreviewEditor :services="previewServices" :projectName="projectConfig.product_name" :variables="variables" />
-        </div>
-        <VarList :variables="variables" :rollbackMode="rollbackMode" />
-      </div>
-      <K8sServiceList
-        v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
-        ref="k8sServiceListRef"
-        :showFilter="showFilter"
-        :cantOperate="rollbackMode"
-        :selectedContainerMap="selectedContainerMap"
-        :registryId="projectConfig.registry_id"
-      />
+      <template  v-if="projectConfig.source==='system' || projectConfig.source==='copy'">
+        <VarYaml ref="varYamlRef" v-model="projectConfig.default_values" class="common-parcel-block box-card-service" />
+        <K8sServiceList
+          v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
+          ref="k8sServiceListRef"
+          :showFilter="showFilter"
+          :cantOperate="rollbackMode"
+          :selectedContainerMap="selectedContainerMap"
+          :registryId="projectConfig.registry_id"
+          :checkCurSvcResource="checkSvcResource"
+        />
+      </template>
+
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">{{$t(`global.cancel`)}}</el-button>
@@ -159,7 +154,7 @@
 <script>
 import EnvConfig from '../env_detail/common/envConfig.vue'
 import K8sServiceList from './k8sServiceList.vue'
-import VarList from './varList.vue'
+import VarYaml from './varYaml.vue'
 import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,
@@ -169,10 +164,12 @@ import {
   envRevisionsAPI,
   getClusterListAPI,
   createEnvAPI,
-  getRegistryWhenBuildAPI
+  getRegistryWhenBuildAPI,
+  getEnvDefaultVariableAPI,
+  getServiceDefaultVariableAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { uniq, cloneDeep, intersection, flattenDeep, debounce } from 'lodash'
+import { uniq, cloneDeep, flattenDeep, debounce, flatten } from 'lodash'
 import { serviceTypeMap } from '@utils/wordTranslate'
 
 const projectConfig = {
@@ -182,7 +179,7 @@ const projectConfig = {
   source: 'system',
   namespace: '',
   defaultNamespace: '',
-  vars: [],
+  default_values: '',
   revision: null,
   isPublic: true,
   roleIds: [],
@@ -230,21 +227,6 @@ export default {
       return this.serviceNames.map(item => {
         return { service_name: item }
       })
-    },
-    variables () {
-      if (this.projectConfig.source === 'system') {
-        const services = this.projectConfig.selectedService
-        const currentVars = this.projectConfig.vars.filter(
-          item => intersection(item.services, services).length
-        )
-        currentVars.forEach(item => {
-          item.allServices = item.services
-          item.services = intersection(item.services, services)
-        })
-        return currentVars
-      } else {
-        return this.projectConfig.vars
-      }
     },
     selectedContainerMap () {
       // Filtered Container Services
@@ -420,16 +402,31 @@ export default {
         }
       })
     },
+    async getServiceDefaultVariable (env_name, serviceNames = []) {
+      const res = await getServiceDefaultVariableAPI(this.projectName, env_name, serviceNames).catch(err => console.log(err))
+      const resMap = {}
+      if (res) {
+        res.forEach(svc => {
+          resMap[svc.service_name] = svc
+        })
+      }
+      return resMap
+    },
     async changeSourceEnv (envName) {
       const projectName = this.projectName
       const envInfo = await getEnvInfoAPI(projectName, envName)
       const envRevision = await envRevisionsAPI(projectName, envName)
-      const vars = envInfo.vars
+
+      const defaultVar = await getEnvDefaultVariableAPI(projectName, envName)
+      this.projectConfig.default_values = defaultVar.default_variable
+      this.$refs.varYamlRef.showYaml = !!defaultVar.default_variable
+
       const availableServices = flattenDeep(envInfo.services)
       const serviceImages = envRevision[0].services.filter(item => {
         return availableServices.indexOf(item.service_name) >= 0
       })
       const clusterId = envInfo.cluster_id
+      const yamlMap = await this.getServiceDefaultVariable(envName, availableServices)
       for (
         let groupIndex = 0;
         groupIndex < envInfo.services.length;
@@ -442,9 +439,13 @@ export default {
           serviceIndex++
         ) {
           const service = group[serviceIndex]
-          const currnt = serviceImages.find(elemnet => {
-            return elemnet.service_name === service
-          })
+          const currnt = {
+            ...serviceImages.find(element => {
+              return element.service_name === service
+            }),
+            variable_yaml: yamlMap[service] ? yamlMap[service].variable_yaml : '',
+            canEditYaml: !!(yamlMap[service] && yamlMap[service].variable_yaml)
+          }
           group[serviceIndex] = currnt
         }
       }
@@ -492,8 +493,8 @@ export default {
         Object.keys(containerMap)
       )
       this.projectConfig.cluster_id = clusterId
-      this.projectConfig.vars = vars
       this.projectConfig.registry_id = envInfo.registry_id
+      this.checkSvcResource()
     },
     async getTemplateAndImg () {
       const projectName = this.projectName
@@ -511,7 +512,6 @@ export default {
       )
       this.loading = false
       this.projectConfig.revision = template.revision
-      this.projectConfig.vars = template.vars || []
       if (template.source === '' || template.source === 'spock') {
         this.projectConfig.source = 'system'
       }
@@ -535,6 +535,8 @@ export default {
             containerMap[ser.service_name] = ser
             ser.picked = true
             ser.deploy_strategy = 'deploy'
+            ser.variable_yaml = ser.variable_yaml || ''
+            ser.canEditYaml = !!ser.variable_yaml
             const containers = ser.containers
             if (containers) {
               for (const con of containers) {
@@ -557,7 +559,10 @@ export default {
       } else {
         this.projectConfig.selectedService = Object.keys(containerMap)
       }
+      this.projectConfig.default_values = ''
+      this.$refs.varYamlRef && (this.$refs.varYamlRef.showYaml = false)
       this.getImages()
+      this.checkSvcResource()
     },
     getImages () {
       this.$refs.k8sServiceListRef.getImages(
@@ -614,11 +619,6 @@ export default {
             payload.services = cloneDeep(selectedServices) // full service to partial service
           }
 
-          this.variables.forEach(item => {
-            item.services = item.allServices
-            delete item.allServices
-          })
-          payload.vars = this.variables // variables referenced by the selected service
           delete payload.selectedService // unwanted data: selected service name
 
           payload.source = 'spock'
@@ -674,22 +674,26 @@ export default {
       env_name = this.projectConfig.env_name,
       namespace = this.projectConfig.defaultNamespace,
       cluster_id = this.projectConfig.cluster_id,
-      vars = this.projectConfig.vars
-    }) {
+      default_values = this.projectConfig.default_values,
+      services = flatten(this.projectConfig.services)
+    } = {}) {
       const payload = {
         env_name,
         namespace,
         cluster_id,
-        vars: vars.map(va => ({ alias: va.alias, key: va.key, value: va.value }))
+        default_values,
+        services: services.map(va => ({ service_name: va.service_name, variable_yaml: va.variable_yaml || '' }))
       }
-      if (this.$refs.k8sServiceListRef && env_name && namespace && cluster_id) {
+      if (this.$refs.k8sServiceListRef && env_name && namespace && cluster_id && services.length) {
         this.$refs.k8sServiceListRef
           .checkSvcResource(this.projectName, payload)
           .then(res => {
             this.serviceNames.forEach(name => {
-              this.containerMap[name].deploy_strategy = res[name]
-                ? 'import'
-                : 'deploy'
+              if (typeof res[name] !== 'undefined') {
+                this.containerMap[name].deploy_strategy = res[name]
+                  ? 'import'
+                  : 'deploy'
+              }
             })
           }).catch((err) => console.log(err))
       }
@@ -702,11 +706,8 @@ export default {
     'projectConfig.cluster_id' (val) {
       this.checkSvcResource({ cluster_id: val })
     },
-    variables: {
-      handler (val) {
-        this.checkSvcResource({ vars: val })
-      },
-      deep: true
+    'projectConfig.default_values' (val) {
+      this.checkSvcResource({ default_values: val })
     }
   },
   created () {
@@ -743,7 +744,7 @@ export default {
     })
   },
   components: {
-    VarList,
+    VarYaml,
     EnvConfig,
     K8sServiceList
   }

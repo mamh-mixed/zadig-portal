@@ -75,7 +75,7 @@ export default {
     },
     getNewCollaboration () {
       getNewCollaborationAPI(this.projectName).then(res => {
-        res.product.forEach(product => {
+        res.product.forEach(async product => {
           if (
             product.collaboration_type === 'new' &&
             product.deploy_type === 'helm'
@@ -141,6 +141,9 @@ export default {
           }
           if (product.deploy_type !== 'helm') {
             product.deploy_type = 'k8s'
+            product.services.forEach(svc => {
+              svc.canEditYaml = !!svc.variable_yaml
+            })
           }
         })
         const fn = obj => {
