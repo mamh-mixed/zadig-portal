@@ -1,3 +1,4 @@
+import i18n from '@/lang'
 export function wordTranslate (word, category, subitem = '') {
   const wordComparisonTable = {
     approval: {
@@ -108,23 +109,23 @@ export function calcEnvStatusColor (status) {
 
 export function translateEnvStatus (status, updateble) {
   if (status === 'Running' && updateble) {
-    return '环境可更新'
+    return i18n.t('environmentStatus.updateable')
   } else if (status === 'Creating') {
-    return '正在创建'
+    return i18n.t('environmentStatus.creating')
   } else if (status === 'Running') {
-    return '正在运行'
+    return i18n.t('environmentStatus.running')
   } else if (status === 'Updating') {
-    return '更新中'
+    return i18n.t('environmentStatus.updating')
   } else if (status === 'Succeeded') {
-    return '正常'
+    return i18n.t('environmentStatus.succeeded')
   } else if (status === 'Unstable') {
-    return '运行不稳定'
+    return i18n.t('environmentStatus.unstable')
   } else if (status === 'Deleting') {
-    return '删除中'
+    return i18n.t('environmentStatus.deleting')
   } else if (status === 'Error') {
-    return '内部错误'
+    return i18n.t('environmentStatus.error')
   } else if (status === 'Unknown') {
-    return '未知'
+    return i18n.t('environmentStatus.unknown')
   }
 }
 

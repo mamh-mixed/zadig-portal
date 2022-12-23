@@ -953,6 +953,17 @@ exports.default = {
       helmReleaseName: 'Release 名称'
     }
   },
+  environmentStatus: {
+    updateable: '环境可更新',
+    creating: '正在创建',
+    running: '正在运行',
+    updating: '更新中',
+    succeeded: '正常',
+    unstable: '运行不稳定',
+    deleting: '删除中',
+    error: '内部错误',
+    unknown: '未知'
+  },
   environments: {
     common: {
       environmentWithoutService: '该环境暂无服务，请点击',
@@ -1880,5 +1891,9 @@ exports.default = {
     // eslint-disable-next-line no-template-curly-in-string
     testServices: '通过工作流任务更新的服务组，服务名以 “,” 分隔，形如 service1,service2,service3。推荐使用 array=(${SERVICES//,/ } 方式转化成数组',
     zadig: '值恒等于 true，表示在 ZADIG 系统上执行脚本'
+  },
+  timeFormate: {
+    seconds: '秒',
+    minutes: '分'
   }
 }

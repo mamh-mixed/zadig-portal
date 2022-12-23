@@ -953,6 +953,17 @@ exports.default = {
       helmReleaseName: 'Release Name'
     }
   },
+  environmentStatus: {
+    updateable: 'Updateable',
+    creating: 'Creating',
+    running: 'Running',
+    updating: 'Updating',
+    succeeded: 'Succeed',
+    unstable: 'Unstable',
+    deleting: 'Deleting',
+    error: 'Error',
+    unknown: 'Unknown'
+  },
   environments: {
     common: {
       environmentWithoutService: 'No service,please click',
@@ -1880,5 +1891,9 @@ exports.default = {
     // eslint-disable-next-line no-template-curly-in-string
     testServices: 'A list or services to be updated by the workflow, seprated by comma. It is recommended to use array=(${SERVICES//,/ } to convert the value into an array',
     zadig: 'A Variable to indicate that this is a zadig environment. Its value will always be true'
+  },
+  timeFormate: {
+    seconds: 's',
+    minutes: 'min'
   }
 }
