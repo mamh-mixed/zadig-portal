@@ -128,7 +128,6 @@
         >{{$t('subTopbarMenu.createVersion')}}</el-button>
       </template>
       <template v-if="comp && comp.isProjectAdmin && $route.path === `/v1/projects/detail/${projectName}/detail`">
-        <el-button v-if="hasPlutus && deployType === 'external'" type="text" @click="convertType">{{$t('subTopbarMenu.changeProjectType')}}</el-button>
         <el-dropdown
           placement="bottom"
           trigger="click"
@@ -184,10 +183,7 @@ export default {
         project => project.name === this.projectName
       )
       return project ? project.deployType : ''
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     convertType () {
