@@ -10,23 +10,23 @@
       <div class="aside-bar">
         <div class="tabs__wrap tabs__wrap_vertical">
           <div class="tabs__item" :class="{'selected': selected === 'var'}" @click="changeRoute('var')">
-            <span class="step-name">变量</span>
+            <span class="step-name">{{$t('services.k8s.variablesSection')}}</span>
           </div>
           <div class="tabs__item" :class="{'selected': selected === 'policy'}" @click="changeRoute('policy')">
-            <span class="step-name">策略</span>
+            <span class="step-name">{{$t('services.common.policySection')}}</span>
           </div>
           <div class="tabs__item" :class="{'selected': selected === 'help'}" @click="changeRoute('help')">
-            <span class="step-name">帮助</span>
+            <span class="step-name">{{$t('services.common.helpSection')}}</span>
           </div>
         </div>
       </div>
       <div class="aside__content">
         <div v-if="selected === 'build'" class="service-aside--variables">
           <div style="padding-left: 15px;">
-            <el-button @click="$router.back()" icon="el-icon-back" type="text">返回</el-button>
+            <el-button @click="$router.back()" icon="el-icon-back" type="text">{{$t('global.back')}}</el-button>
           </div>
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">构建</div>
+            <div class="service-aside-box__title">{{$t('services.common.serviceBuild')}}</div>
           </header>
           <div class="service-aside-box__content">
             <CommonBuild
@@ -45,16 +45,16 @@
         </div>
         <div v-if="selected === 'var'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">变量</div>
+            <div class="service-aside-box__title">{{$t('services.k8s.variablesSection')}}</div>
           </header>
           <div class="service-aside-box__content">
             <section class="aside-section">
               <h4>
                 <span>
                   <i class="iconfont iconfuwu"></i>
-                </span> 检测到的服务组件
+                </span> {{$t('services.common.detectedServiceModules')}}
                 <el-tooltip effect="dark" placement="top">
-                  <div slot="content">可被更新的服务容器名称</div>
+                  <div slot="content">{{$t('services.common.detectedServiceModulesTooltip')}}</div>
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
@@ -69,11 +69,11 @@
                 </el-alert>
               </div>
               <el-table :data="serviceConfigs.service_module" stripe style="width: 100%;">
-                <el-table-column prop="name" label="服务组件"></el-table-column>
-                <el-table-column prop="image_name" label="镜像名"></el-table-column>
+                <el-table-column prop="name" :label="$t('services.common.serviceModule')"></el-table-column>
+                <el-table-column prop="image_name" :label="$t('services.common.serviceImageName')"></el-table-column>
                 <el-table-column prop="image">
                   <template slot="header">
-                    <span>当前镜像版本($IMAGE)</span>
+                    <span>{{$t('services.common.serviceImageLabel')}}</span>
                     <el-tooltip effect="dark" placement="top">
                       <div slot="content">
                         工作流任务执行过程中，由构建任务生成 $IMAGE 镜像，部署任务使用生成的 $IMAGE 镜像更新服务。
@@ -86,20 +86,14 @@
                     </el-tooltip>
                   </template>
                 </el-table-column>
-                <el-table-column label="构建信息/操作">
+                <el-table-column :label="$t('services.common.buildInfoAndOperation')">
                   <template slot-scope="scope">
                     <div v-for="(buildName, index) in scope.row.build_names" :key="index">
                       <router-link :to="`${buildBaseUrl}?rightbar=build&service_name=${scope.row.name}&build_name=${buildName}`">
                         <span class="build-name">{{ buildName }}</span>
                       </router-link>
                     </div>
-                    <el-button
-                      size="small"
-                      v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}"
-                      :disabled="projectName !== projectNameOfService"
-                      @click="addBuild(scope.row)"
-                      type="text"
-                    >添加构建</el-button>
+                    <el-button size="small" v-hasPermi="{projectName: projectName, action: 'create_build',isBtn:true}" :disabled="projectName !== projectNameOfService" @click="addBuild(scope.row)" type="text">{{$t('services.common.addServiceBuild')}}</el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -108,8 +102,8 @@
               <h4>
                 <span>
                   <i class="iconfont iconchakanbianliang"></i>
-                </span> 系统内置变量
-                <el-tooltip effect="dark" content="在服务配置中使用 $Namespace$，$Product$，$Service$，$EnvName$ 方式引用" placement="top">
+                </span> {{$t('services.k8s.buildInVariables')}}
+                <el-tooltip effect="dark" :content="$t('services.k8s.buildInVariablesTooltip')" placement="top">
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
@@ -117,10 +111,10 @@
               </h4>
               <el-table :data="serviceConfigs.system_variable" stripe style="width: 100%;">
                 <el-table-column prop="key" :label="$t(`global.var`)"></el-table-column>
-                <el-table-column prop="value" label="当前值">
+                <el-table-column prop="value" :label="$t('services.k8s.currentValue')">
                   <template slot-scope="scope">
                     <span v-if="scope.row.value">{{scope.row.value}}</span>
-                    <span v-else>空</span>
+                    <span v-else>{{$t('global.emptyText')}}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -129,8 +123,8 @@
               <h4>
                 <span>
                   <i class="iconfont iconchakanbianliang"></i>
-                </span> 自定义变量
-                <el-tooltip effect="dark" :content="'自定义变量通过'+' {{'+'.key}} ' +' 引用'" placement="top">
+                </span> {{$t('services.k8s.globalVariables')}}
+                <el-tooltip effect="dark" :content="$t('services.k8s.globalVariablesTooltip')" placement="top">
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
@@ -211,7 +205,7 @@
         </div>
         <div v-if="selected === 'policy'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">策略</div>
+            <div class="service-aside-box__title">{{$t('services.common.policySection')}}</div>
           </header>
           <div class="service-aside-help__content">
             <Policy :service="serviceConfigs.service_module" />
@@ -219,7 +213,7 @@
         </div>
         <div v-if="selected === 'help'" class="service-aside--variables">
           <header class="service-aside-box__header">
-            <div class="service-aside-box__title">帮助</div>
+            <div class="service-aside-box__title">{{$t('services.common.helpSection')}}</div>
           </header>
           <div class="service-aside-help__content">
             <Help />
@@ -709,6 +703,7 @@ export default {
           .step-name {
             font-weight: 500;
             font-size: 14px;
+            writing-mode: vertical-rl;
           }
         }
       }

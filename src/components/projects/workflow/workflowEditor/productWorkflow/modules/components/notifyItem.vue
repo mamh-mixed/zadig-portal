@@ -93,6 +93,10 @@ export default {
     return {
       notifyType: [
         {
+          label: 'created',
+          desc: '任务开始'
+        },
+        {
           label: 'passed',
           desc: 'passed'
         },
@@ -137,7 +141,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: this.$t(`workflow.inputDingDingWebhook`),
+            message: this.$t(`workflow.inputDingTalkWebhook`),
             trigger: 'blur'
           }
         ],
@@ -145,7 +149,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: this.$t(`workflow.inputFeishuWebhook`),
+            message: this.$t(`workflow.inputLarkWebhook`),
             trigger: 'blur'
           }
         ],

@@ -236,7 +236,7 @@
         <el-button :plain="true"
                    size="small"
                    @click="dialogStorageCreateFormVisible=true"
-                   type="success">新建</el-button>
+                   type="success">{{$t('global.add')}}</el-button>
       </div>
       <div class="storage-list">
         <template>
@@ -473,12 +473,8 @@ export default {
       })
     }
   },
-  computed: {
-
-  },
   created () {
-    bus.$emit('set-topbar-title', { title: '对象存储', breadcrumb: [] })
-
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.objectStorage`), url: '' }] })
     this.getStorage()
   }
 }

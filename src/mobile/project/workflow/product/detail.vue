@@ -5,12 +5,12 @@
         <span>{{displayName}}</span>
       </template>
     </van-nav-bar>
-    <van-divider content-position="left">基本信息</van-divider>
+    <van-divider content-position="left">{{$t('global.basicInfo')}}</van-divider>
     <div class="task-info">
       <van-row>
         <van-col span="12">
           <div class="mobile-block">
-            <h2 class="mobile-block-title">创建者</h2>
+            <h2 class="mobile-block-title">{{$t(`global.creator`)}}</h2>
             <div class="mobile-block-desc">{{ workflow.update_by }}</div>
           </div>
         </van-col>

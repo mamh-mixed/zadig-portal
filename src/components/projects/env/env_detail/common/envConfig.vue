@@ -1,7 +1,7 @@
 <template>
   <div class="env-config-container">
     <div class="primary-title" :style="{ 'margin-bottom' : showConfig ? '14px' : '0'}">
-      <span>环境配置</span>
+      <span>{{$t('environments.k8s.envConfigComp.envConfiguration')}}</span>
       <i
         style="margin-left: 10px; cursor: pointer;"
         :class="[showConfig ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"
@@ -23,7 +23,7 @@
       </div>
     </div>
     <el-dialog :visible.sync="dialogVisible" width="60%" custom-class="env-config-dialog" append-to-body>
-      <ImportConfig :importRepoInfo="repoConfig" />
+      <ImportConfig :importRepoInfo="repoConfig" :placeholder="$t('environments.k8s.envConfigComp.addEnvConfigurationPlaceholder')" />
       <div slot="footer">
         <el-button size="small" @click="handleConfig(false)">{{$t(`global.cancel`)}}</el-button>
         <el-button size="small" type="primary" @click="handleConfig(true)">{{$t(`global.confirm`)}}</el-button>
@@ -73,7 +73,7 @@ export default {
     addEnvConfig () {
       const index = this.curConfigInfo.index || 1
       const next = {
-        name: `配置 ${index}`,
+        name: `${this.$t('environments.k8s.envConfigComp.configuration')} ${index}`,
         overrideYaml: '',
         initYaml: ''
       }

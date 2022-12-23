@@ -292,7 +292,7 @@ export default {
     addJob () {
       if (this.stageInfo.jobs.length > 0) {
         if (this.isShowFooter) {
-          this.$message.error('请先保存上一个任务配置')
+          this.$message.error(this.$t(`workflow.saveLastJobconfigFirst`))
         } else {
           this.isShowJobOperateDialog = true
         }

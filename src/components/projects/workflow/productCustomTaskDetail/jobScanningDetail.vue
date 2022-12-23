@@ -204,7 +204,11 @@ export default {
           if (oldVal && val.name !== oldVal.name) {
             this.firstLoad = false
           }
-          if (val.status && !this.firstLoad) {
+          if (
+            (val.status === 'running' && !this.firstLoad) ||
+            (val.status === 'passed' && !this.firstLoad) ||
+            (val.status === 'failed' && !this.firstLoad)
+          ) {
             this.getLog()
             this.firstLoad = true
           }

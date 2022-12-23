@@ -103,7 +103,7 @@
         <XtermLog :id="jobInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="jobInfo.name" />
       </section>
     </main>
-    <el-dialog :visible.sync="artifactModalVisible" width="60%" title="Artifact 文件导出" class="downloadArtifact-dialog">
+    <el-dialog :visible.sync="artifactModalVisible" width="60%" :title="$t(`testing.taskDetails.exportArtifact`)" class="downloadArtifact-dialog">
       <ArtifactDownload
         ref="downloadArtifact"
         type="customWorkflow"
@@ -271,7 +271,11 @@ export default {
           if (oldVal && val.name !== oldVal.name) {
             this.firstLoad = false
           }
-          if (val.status && !this.firstLoad) {
+          if (
+            (val.status === 'running' && !this.firstLoad) ||
+            (val.status === 'passed' && !this.firstLoad) ||
+            (val.status === 'failed' && !this.firstLoad)
+          ) {
             this.getLog()
             this.firstLoad = true
           }

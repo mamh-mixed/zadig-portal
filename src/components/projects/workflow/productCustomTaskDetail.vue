@@ -9,7 +9,7 @@
             </el-tooltip>#
           </span>
           <span>{{taskId}}</span>
-          <span :class="$translate.calcTaskStatusColor(payload.status)">{{translateStatus(payload.status)}}</span>
+          <span :class="$translate.calcTaskStatusColor(payload.status)">{{ payload.status? $t(`workflowTaskStatus.${payload.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
         </el-col>
         <el-col :offset="4" :span="4">
           <i class="el-icon-video-play"></i>
@@ -258,7 +258,6 @@ import JobIstioReleaseDetail from './productCustomTaskDetail/jobIstioReleaseDeta
 import JobIstioReleaseRollbackDetail from './productCustomTaskDetail/jobIstioReleaseRollbackDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
-import { wordTranslate } from '@utils/wordTranslate.js'
 
 export default {
   data () {
@@ -361,7 +360,7 @@ export default {
         if (this.envList.length === 0) {
           // global env and stage are not in same level data,  so need to handle data
           this.handleEnv()
-          const globalEnv = [{ name: '工作流变量', envs: this.payload.params }]
+          const globalEnv = [{ name: this.$t(`workflow.workflowVars`), envs: this.payload.params }]
           const jobs = this.payload.stages.map(item => {
             return item.jobs.map(job => job)
           })
@@ -459,16 +458,13 @@ export default {
     showFooter (val) {
       this.isShowConsoleFooter = val
     },
-    translateStatus (word) {
-      return wordTranslate(word, 'approval', 'status')
-    },
     cancel () {
       deleteCustomWorkflowTaskAPI(
         this.workflowName,
         this.taskId,
         this.projectName
       ).then(res => {
-        this.$message.success(' 取消成功')
+        this.$message.success(this.$t(`workflow.cancelSuccess`))
       })
     },
     closeFooter () {
@@ -478,14 +474,14 @@ export default {
       bus.$emit('set-topbar-title', {
         title: '',
         breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
+          { title: this.$t(`global.project`), url: '/v1/projects' },
           {
             title: this.projectName,
             isProjectName: true,
             url: `/v1/projects/detail/${this.projectName}/detail`
           },
           {
-            title: '工作流',
+            title: this.$t(`global.workflow`),
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {

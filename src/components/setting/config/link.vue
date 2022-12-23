@@ -14,7 +14,7 @@
         <el-table-column prop="name" :label="$t(`global.name`)">
           <template slot-scope="{row}">
             <span v-show="!row.edit">{{row.name}}</span>
-            <el-input v-show="row.edit" v-model="row.name" placeholder="请输入名称" size="small"></el-input>
+            <el-input v-show="row.edit" v-model="row.name" :placeholder="$t(`global.inputName`)" size="small"></el-input>
           </template>
         </el-table-column>
         <el-table-column prop="url" label="URL">

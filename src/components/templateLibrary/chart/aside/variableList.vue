@@ -1,12 +1,12 @@
 <template>
   <div class="variable-list">
-    <header class="var-title">变量列表</header>
+    <header class="var-title">{{$t(`templates.helmChart.variablesList`)}}</header>
     <section>
       <article>
         <h4>
           <span>
             <i class="iconfont iconfuwu"></i>
-          </span> 系统内置变量
+          </span> {{$t(`templates.helmChart.systemVariables`)}}
         </h4>
         <el-table :data="systemVariables" style="width: 100%;">
           <el-table-column prop="key" label="Key"></el-table-column>
@@ -17,8 +17,8 @@
         <h4>
           <span>
             <i class="iconfont icontanhao"></i>
-          </span> 自定义变量
-          <el-tooltip effect="dark" :content="'自定义变量通过'+' {{'+'.key}} ' +' 声明'" placement="top">
+          </span> {{$t(`templates.helmChart.customVariables`)}}
+          <el-tooltip effect="dark" :content="$t(`templates.helmChart.customVariablesTooltip`)" placement="top">
             <span>
               <i class="el-icon-question"></i>
             </span>
@@ -33,7 +33,7 @@
           </el-table-column>
         </el-table>
         <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}"  type="primary" @click="saveCustomVariables" size="small" :loading="saveLoading">{{$t(`global.save`)}}</el-button>
-        <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}" type="default" size="small" @click="multiUpdate">应用到服务</el-button>
+        <el-button v-hasPermi="{type: 'system', action: 'edit_template',isBtn:true}" type="default" size="small" @click="multiUpdate">{{$t(`templates.helmChart.applyToServices`)}}</el-button>
       </article>
     </section>
   </div>
@@ -65,23 +65,23 @@ export default {
   methods: {
     saveCustomVariables () {
       if (!this.serviceName) {
-        this.$message.info('未选择服务')
+        this.$message.info(this.$t(`templates.helmChart.emptyService`))
         return
       }
       this.saveLoading = true
       saveHelmTemplateVariableAPI(this.serviceName, this.customVariables)
         .then(res => {
-          this.$message.success(`自定义变量保存成功！`)
+          this.$message.success(this.$t(`templates.helmChart.saveCustomVariablesSuccess`))
         })
         .catch(err => {
-          this.$message.error(`自定义变量保存失败：${err}`)
+          this.$message.error(this.$t(`templates.helmChart.saveCustomVariablesSuccess`, { message: err }))
         })
         .then(() => {
           this.saveLoading = false
         })
     },
     multiUpdate () {
-      this.$confirm(`确认后，所有开启「自动同步」的服务配置会应用最新的模板。`, '确定应用到服务？', {
+      this.$confirm(this.$t(`templates.helmChart.applyToServicesTooltip`), this.$t(`templates.helmChart.confirmToApply`), {
         confirmButtonText: this.$t(`global.confirm`),
         cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
@@ -90,7 +90,7 @@ export default {
           updateHelmTemplateAPI(this.serviceName).then(res => {
             this.$message({
               type: 'success',
-              message: `应用到服务成功`
+              message: this.$t(`templates.helmChart.applyToServicesSuccessfully`)
             })
           })
         })

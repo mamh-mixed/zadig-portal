@@ -5,7 +5,7 @@
              :body-style="{padding: '8px 20px', margin: '5px 0 0 0' }">
       <div slot="header"
            class="clearfix subtask-header">
-        <span>构建</span>
+        <span>{{$t(`status.build`)}}</span>
         <div v-if="buildv2.status==='running'"
              class="loader">
           <div class="ball-scale-multiple">

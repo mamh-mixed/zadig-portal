@@ -1,14 +1,14 @@
 <template>
   <div class="common-parcel-block">
-    <div class="primary-title">服务列表</div>
+    <div class="primary-title">{{$t('environments.k8s.serviceListComp.serviceList')}}</div>
     <div>
       <div v-if="showFilter" class="service-filter-block">
         <span class="service-filter">
-          快速过滤:
+          {{$t('environments.k8s.serviceListComp.quickFilter')}}
           <el-tooltip class="img-tooltip" effect="dark" placement="top">
             <div slot="content">
-              智能选择会优先选择最新的容器镜像，如果在 Registry
-              <br />下不存在该容器镜像，则会选择模板中的默认镜像进行填充
+              {{$t('environments.k8s.serviceListComp.quickFilterFirstTip')}}
+              <br />{{$t('environments.k8s.serviceListComp.quickFilterSecondTip')}}
             </div>
             <i class="el-icon-info"></i>
           </el-tooltip>
@@ -17,11 +17,11 @@
             size="small"
             class="img-select"
             v-model="quickSelection"
-            placeholder="请选择"
+            :placeholder="$t('environments.k8s.serviceListComp.selectFilterMethod')"
             @change="quickInitImage"
           >
-            <el-option label="全容器-智能选择镜像" value="latest"></el-option>
-            <el-option label="全容器-全部默认镜像" value="default"></el-option>
+            <el-option :label="$t('environments.k8s.serviceListComp.selectLatestImage')" value="latest"></el-option>
+            <el-option :label="$t('environments.k8s.serviceListComp.selectDefaultImage')" value="default"></el-option>
           </el-select>
         </span>
       </div>
@@ -32,8 +32,8 @@
             <template v-if="hasPlutus">
               <div class="service-resource">
                 <span class="middle">
-                  资源检测
-                  <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
+                  {{$t('environments.k8s.serviceListComp.resourceDetection')}}
+                  <el-tooltip effect="dark" :content="$t('environments.k8s.serviceListComp.resourceDetectionTip')" placement="top">
                     <i class="el-icon-info gray"></i>
                   </el-tooltip>
                 </span>
@@ -50,8 +50,8 @@
               </div>
               <div class="service-operation">
                 <el-radio-group v-model="service.deploy_strategy">
-                  <el-radio label="import" :disabled="!(svcResources[serviceName] && svcResources[serviceName].deployed)">仅导入服务</el-radio>
-                  <el-radio label="deploy">执行部署</el-radio>
+                  <el-radio label="import" :disabled="!(svcResources[serviceName] && svcResources[serviceName].deployed)">{{$t('environments.k8s.serviceListComp.onlyImport')}}</el-radio>
+                  <el-radio label="deploy">{{$t('environments.k8s.serviceListComp.executeDeploy')}}</el-radio>
                 </el-radio-group>
               </div>
             </template>

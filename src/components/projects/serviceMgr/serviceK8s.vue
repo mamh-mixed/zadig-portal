@@ -27,7 +27,7 @@
                      type="primary"
                      @click="autoUpgradeEnv">{{$t(`global.confirm`)}}</el-button>
           <el-button size="small"
-                     @click="updateEnvDialogVisible=false">跳过</el-button>
+                     @click="updateEnvDialogVisible=false">{{$t(`global.skip`)}}</el-button>
 
         </span>
       </el-dialog>
@@ -135,12 +135,16 @@
                  class="no-content">
               <img src="@assets/icons/illustration/editorNoService.svg"
                    alt="">
-              <p v-if="services.length === 0">暂无服务，点击 <el-button size="mini"
+              <p v-if="services.length === 0">
+                <span>{{$t('services.common.projectWithoutService')}}</span>
+                <el-button size="mini"
                            icon="el-icon-plus"
                            @click="createService()"
                            plain
                            circle>
-                </el-button> 创建服务</p>
+                </el-button>
+                <span>{{$t('services.common.toCreateService')}}</span>
+              </p>
               <p v-else-if="service.service_name==='服务列表' && services.length >0">请在左侧选择需要编辑的服务</p>
               <p v-else-if="!service.service_name && services.length >0">请在左侧选择需要编辑的服务</p>
             </div>
@@ -152,7 +156,7 @@
             <el-button type="primary"
                        size="small"
                        :disabled="!enableOnboardingNext"
-                       @click="showOnboardingNext">下一步</el-button>
+                       @click="showOnboardingNext">{{$t('global.next')}}</el-button>
           </div>
       </div>
     </div>

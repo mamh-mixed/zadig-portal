@@ -10,7 +10,7 @@
             :href="`https://docs.koderover.com/zadig/settings/custom-task/`"
             :underline="false"
             target="_blank"
-          >帮助</el-link>
+          >{{$t('global.help')}}</el-link>
         </el-col>
         <el-button type="primary" plain size="small" v-if="plugins.length===0&&!isShowOperateForm" @click="isShowOperateForm=true">+ {{$t(`global.add`)}}</el-button>
         <div v-else>
@@ -118,7 +118,7 @@
           <el-col :span="6" class="mg-t4">
             <el-button type="primary" plain size="small" v-if="!isSaved" @click="submit('save')">{{$t(`global.save`)}}</el-button>
             <el-button type="primary" plain size="small" v-if="isSaved" @click="isSaved=false">{{$t(`global.edit`)}}</el-button>
-            <el-button type="success" plain size="small" :disabled="!isSaved" @click="submit('sync')">同步</el-button>
+            <el-button type="success" plain size="small" :disabled="!isSaved" @click="submit('sync')">{{$t('global.sync')}}</el-button>
             <el-button type="danger" plain size="small" v-if="plugins.length>0" @click="del">{{$t(`global.delete`)}}</el-button>
           </el-col>
         </div>
@@ -129,7 +129,7 @@
       <span>{{$utils.convertTimestamp(source.update_time)}}</span>
     </div>
     <div class="tip" v-if="source.error">
-      <span>错误信息：</span>
+      <span>{{$t('global.errorMsg')}} : </span>
       <span>{{source.error}}</span>
     </div>
   </div>
@@ -145,7 +145,7 @@ import {
   delPlugin,
   getPlugins
 } from '@api'
-
+import bus from '@utils/eventBus'
 export default {
   data () {
     return {
@@ -166,9 +166,6 @@ export default {
       isSaved: false,
       loading: false
     }
-  },
-  created () {
-    this.getPlugins()
   },
   methods: {
     getPlugins () {
@@ -408,6 +405,10 @@ export default {
         }
       })
     }
+  },
+  created () {
+    this.getPlugins()
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.plugins`), url: '' }] })
   }
 }
 </script>

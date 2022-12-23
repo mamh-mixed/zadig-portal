@@ -8,11 +8,11 @@
         @click="startTask(workflow)"
         class="left"
       >
-        <span class="iconfont iconzhixing">&nbsp;执行</span>
+        <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
       </el-button>
-      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+      <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
         <el-button type="primary" effect="dark" class="left permission-disabled">
-          <span class="iconfont iconzhixing">&nbsp;执行</span>
+          <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
         </el-button>
       </el-tooltip>
       <router-link
@@ -22,7 +22,7 @@
       >
         <span class="iconfont icondeploy edit-setting"></span>
       </router-link>
-      <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+      <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
         <span class="middle">
           <span class="permission-disabled iconfont icondeploy edit-setting"></span>
         </span>
@@ -71,7 +71,7 @@
         showOperation />
     </el-card>
 
-    <el-dialog :visible.sync="taskDialogVisible" title="运行 产品-工作流" custom-class="run-workflow" width="60%" class="dialog">
+    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runProductWorkflow`)" custom-class="run-workflow" width="60%" class="dialog">
       <run-workflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
@@ -247,22 +247,22 @@ export default {
       const isEmpty = this.$utils.isEmpty
       const stages = []
       if (!isEmpty(workflow.build_stage) && workflow.build_stage.enabled) {
-        stages.push('构建部署')
+        stages.push(this.$t(`productWorkflowSideBar.build`))
       }
       if (
         !isEmpty(workflow.artifact_stage) &&
         workflow.artifact_stage.enabled
       ) {
-        stages.push('交付物部署')
+        stages.push(this.$t(`productWorkflowSideBar.artifact`))
       }
       if (!isEmpty(workflow.test_stage) && workflow.test_stage.enabled) {
-        stages.push('测试')
+        stages.push(this.$t(`productWorkflowSideBar.test`))
       }
       if (
         !isEmpty(workflow.distribute_stage) &&
         workflow.distribute_stage.enabled
       ) {
-        stages.push('分发部署')
+        stages.push(this.$t(`productWorkflowSideBar.distribute`))
       }
       this.stages = stages
     }
@@ -280,14 +280,14 @@ export default {
     bus.$emit('set-topbar-title', {
       title: '',
       breadcrumb: [
-        { title: '项目', url: '/v1/projects' },
+        { title: this.$t(`global.project`), url: '/v1/projects' },
         {
           title: this.projectName,
           isProjectName: true,
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         {
-          title: '工作流',
+          title: this.$t(`global.workflow`),
           url: `/v1/projects/detail/${this.projectName}/pipelines`
         },
         { title: this.displayName || this.workflowName, url: '' }

@@ -16,7 +16,7 @@
           </el-table-column>
           <el-table-column :label="$t(`global.type`)">
             <template slot-scope="scope">
-              <span>{{scope.row.type === 'string' ? '字符串':scope.row.type==='text'?'多行文本':'枚举'}}</span>
+              <span>{{scope.row.type === 'string' ? $t(`global.string`):scope.row.type==='text'?$t(`global.multilineText`):$t(`global.enumerate`)}}</span>
               <i v-show="scope.row.type  === 'choice'" class="el-icon-edit edit-icon" @click="updateParams(scope.row)"></i>
             </template>
           </el-table-column>
@@ -80,7 +80,7 @@
         <section>
           <div style="margin-bottom: 8px;">
             <el-button type="primary" size="small" plain @click="advanced_setting_modified = !advanced_setting_modified">
-              高级配置
+              {{$t(`project.createProjectComp.advancedConfigurations`)}}
               <i :class="[advanced_setting_modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
             </el-button>
           </div>
