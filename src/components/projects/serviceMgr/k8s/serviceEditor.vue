@@ -152,6 +152,8 @@ export default {
         ? this.service.visibility
         : 'private'
       const yaml = this.service.yaml
+      const variableYaml = this.service.variable_yaml
+      const serviceVars = this.service.service_vars
       const isEdit = this.serviceInTree.status === 'added'
       const payload = {
         product_name: projectName,
@@ -159,7 +161,9 @@ export default {
         visibility: visibility,
         type: 'k8s',
         yaml: yaml,
-        source: 'spock'
+        source: 'spock',
+        variable_yaml: variableYaml,
+        service_vars: serviceVars
       }
       return saveServiceTemplateAPI(isEdit, payload).then(res => {
         this.$message({

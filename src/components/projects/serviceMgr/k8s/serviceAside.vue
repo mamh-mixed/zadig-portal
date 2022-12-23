@@ -68,7 +68,7 @@
                   </div>
                 </el-alert>
               </div>
-              <el-table :data="serviceModules" stripe style="width: 100%;">
+              <el-table :data="serviceConfigs.service_module" stripe style="width: 100%;">
                 <el-table-column prop="name" :label="$t('services.common.serviceModule')"></el-table-column>
                 <el-table-column prop="image_name" :label="$t('services.common.serviceImageName')"></el-table-column>
                 <el-table-column prop="image">
@@ -109,7 +109,7 @@
                   </span>
                 </el-tooltip>
               </h4>
-              <el-table :data="sysEnvs" stripe style="width: 100%;">
+              <el-table :data="serviceConfigs.system_variable" stripe style="width: 100%;">
                 <el-table-column prop="key" :label="$t(`global.var`)"></el-table-column>
                 <el-table-column prop="value" :label="$t('services.k8s.currentValue')">
                   <template slot-scope="scope">
@@ -129,10 +129,33 @@
                     <i class="el-icon-question"></i>
                   </span>
                 </el-tooltip>
-                 <VariablePreviewEditor :serviceName="service.service_name" :services="services" :projectName="projectName" :variables="customEnvs" />
               </h4>
-              <div class="kv-container">
-                <el-table :data="customEnvs" style="width: 100%;">
+              <div class="variable-operation-container">
+                <div class="tab-conatiner">
+                  <el-radio-group v-model="variableSwitcher" @input="changeVariableView" size="mini">
+                    <el-radio-button label="yamlEditor">
+                      <i class="iconfont iconchakanbianliang"></i>
+                    </el-radio-button>
+                    <el-radio-button label="list">
+                      <i class="iconfont iconshuru"></i>
+                    </el-radio-button>
+                  </el-radio-group>
+                </div>
+                <div class="parse-container">
+                  <el-button v-if="variableSwitcher === 'yamlEditor'" @click="parseK8sYamlVariable" class="parse-btn" type="text" >自动解析变量</el-button>
+                </div>
+              </div>
+              <div v-if="variableSwitcher === 'yamlEditor'" class="kv-container">
+                <VariablesEditor
+                  style="width: 100%; height: 100%;"
+                  ref="myCm"
+                  :value="serviceConfigs.variable_yaml"
+                  :options="editorOptions"
+                  @input="onCmCodeChange"
+                />
+              </div>
+              <div v-else-if="variableSwitcher === 'list'" class="list-container">
+                <el-table :data="serviceConfigs.variable_kvs" style="width: 100%;">
                   <el-table-column label="Key">
                     <template slot-scope="scope">
                       <span>{{ scope.row.key }}</span>
@@ -140,82 +163,42 @@
                   </el-table-column>
                   <el-table-column label="Value">
                     <template slot-scope="scope">
-                      <VariableEditor :disabled="!editEnvIndex[scope.$index]" :varKey="scope.row.key" :value.sync="scope.row.value" />
+                      <span>{{ scope.row.value }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column v-hasPermi="{projectName: projectName, action: 'edit_service'}" :label="$t(`global.operation`)" width="150">
-                    <template slot-scope="scope">
-                      <span class="operate">
-                        <el-button
-                          v-if="!editEnvIndex[scope.$index]"
-                          type="text"
-                          @click="editRenderKey(scope.$index,scope.row.state)"
-                          class="edit"
-                        >{{$t(`global.edit`)}}</el-button>
-                        <el-button
-                          v-if="editEnvIndex[scope.$index]"
-                          type="text"
-                          @click="saveRenderKey(scope.$index,scope.row.state)"
-                          class="edit"
-                        >{{$t(`global.save`)}}</el-button>
-                        <el-button
-                          v-if="scope.row.state === 'unused'"
-                          type="text"
-                          @click="deleteRenderKey(scope.$index,scope.row.state)"
-                          class="delete"
-                        >{{$t(`global.remove`)}}</el-button>
-                        <el-tooltip
-                          v-if="scope.row.state === 'present'||scope.row.state === 'new'"
-                          effect="dark"
-                          content="服务中已经用到的 Key 无法被删除"
-                          placement="top"
-                        >
-                          <span class="el-icon-question"></span>
-                        </el-tooltip>
+                  <el-table-column>
+                    <template slot="header">
+                      <span>服务变量中可见</span>
+                      <el-tooltip effect="dark" content="关闭后在「环境」-「服务变量」中不可配置" placement="top">
+                        <span class="icon-tooltip">
+                          <i class="el-icon-question"></i>
+                        </span>
+                      </el-tooltip>
+                      <span  @click="enableAllVariablesView" class="icon-view">
+                        <i class="el-icon-view"></i>
                       </span>
+                    </template>
+                    <template slot-scope="scope">
+                      <i v-if="scope.row.show" @click="disableVariableView(scope.row)" class="icon-view el-icon-view"></i>
+                      <i v-else @click="enableVariableView(scope.row)" class="icon-view iconfont iconinvisible"></i>
                     </template>
                   </el-table-column>
                 </el-table>
-                <div v-if="addKeyInputVisable" class="add-key-container">
-                  <el-table :data="addKeyData" :show-header="false" style="width: 100%;">
-                    <el-table-column>
-                      <template slot-scope="{ row }">
-                        <el-form :model="row" :rules="keyCheckRule" ref="addKeyForm" label-position="left" hide-required-asterisk>
-                          <el-form-item label="Key" prop="key" inline-message>
-                            <el-input
-                              size="small"
-                              type="text"
-                              v-model="row.key"
-                              placeholder="Key"
-                            ></el-input>
-                          </el-form-item>
-                        </el-form>
-                      </template>
-                    </el-table-column>
-                    <el-table-column>
-                      <template slot-scope="{ row }">
-                        <el-form :model="row" :rules="keyCheckRule" ref="addValueForm" label-position="left" hide-required-asterisk>
-                          <el-form-item label="Value" prop="value" inline-message>
-                            <VariableEditor style="line-height: 22px;" :varKey="row.key" :value.sync="row.value" />
-                          </el-form-item>
-                        </el-form>
-                      </template>
-                    </el-table-column>
-                    <el-table-column width="150">
-                      <template>
-                        <span style="display: inline-block; margin-bottom: 15px;">
-                          <el-button @click="addRenderKey()" type="text">{{$t('global.confirm')}}</el-button>
-                          <el-button @click="addKeyInputVisable=false" type="text">{{$t(`global.cancel`)}}</el-button>
-                        </span>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-                <div v-hasPermi="{projectName: projectName, action: 'edit_service'}">
-                  <el-button size="medium" class="add-kv-btn" @click="addKeyInputVisable=true" type="text">
-                    <i class="el-icon-circle-plus-outline"></i>{{$t('global.add')}}
-                  </el-button>
-                </div>
+              </div>
+              <div class="operation">
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="validateVariables"
+                  plain
+                  :disabled="variableYamlIsEmpty"
+                >{{$t(`global.validate`)}}</el-button>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="saveServiceVariable"
+                  :disabled="variableYamlIsEmpty"
+                >{{$t(`global.save`)}}</el-button>
               </div>
             </section>
           </div>
@@ -225,7 +208,7 @@
             <div class="service-aside-box__title">{{$t('services.common.policySection')}}</div>
           </header>
           <div class="service-aside-help__content">
-            <Policy :service="serviceModules" />
+            <Policy :service="serviceConfigs.service_module" />
           </div>
         </div>
         <div v-if="selected === 'help'" class="service-aside--variables">
@@ -241,71 +224,42 @@
   </div>
 </template>
 <script>
-import bus from '@utils/eventBus'
 import {
   serviceTemplateWithConfigAPI,
   getSingleProjectAPI,
-  updateEnvTemplateAPI,
   getRegistryWhenBuildAPI,
-  getCodeProviderAPI
+  getCodeProviderAPI,
+  validateKubernetesTemplateVariableAPI,
+  saveServiceVariableAPI,
+  parseK8sYamlVariableAPI,
+  flatVariableToKvAPI
 } from '@api'
 import CommonBuild from '@/components/projects/build/commonBuild.vue'
 import Help from './container/help.vue'
 import Policy from './container/policy.vue'
 import IntegrationCode from '../common/integrationCode.vue'
 import IntegrationRegistry from '@/components/projects/common/integrationRegistry.vue'
-
+import { codemirror } from 'vue-codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/neo.css'
 import qs from 'qs'
+import { debounce } from 'lodash'
 
-const validateKey = (rule, value, callback) => {
-  if (typeof value === 'undefined' || value === '') {
-    callback(new Error('请输入 Key'))
-  } else {
-    if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-      callback(new Error('Key 只支持字母大小写和数字，特殊字符只支持下划线'))
-    } else {
-      callback()
-    }
-  }
-}
 export default {
   data () {
     return {
       allRegistry: [],
-      serviceModules: this.detectedServices,
-      sysEnvs: this.systemEnvs,
-      customEnvs: this.detectedEnvs,
-      addKeyInputVisable: false,
-      integrationCodeDrawer: false,
-      editEnvIndex: {},
-      projectForm: {},
-      addKeyData: [
-        {
-          key: '',
-          value: '',
-          state: 'unused'
-        }
-      ],
-      keyCheckRule: {
-        key: [
-          {
-            type: 'string',
-            required: true,
-            validator: validateKey,
-            trigger: 'blur'
-          }
-        ],
-        value: [
-          {
-            type: 'string',
-            required: false,
-            message: 'value',
-            trigger: 'blur'
-          }
-        ]
+      customEnvs: [],
+      serviceConfigs: {
+        variable_yaml: '',
+        service_vars: [],
+        variable_kvs: []
       },
+      integrationCodeDrawer: false,
+      projectForm: {},
       registryCreateVisible: false,
-      buildNameIndex: 0
+      buildNameIndex: 0,
+      variableSwitcher: 'yamlEditor'
     }
   },
   methods: {
@@ -333,7 +287,7 @@ export default {
       }
     },
     followUpFn () {
-      this.$emit('getServiceModules')
+      this.getServiceTemplateWithConfig()
       this.$router.replace({
         query: Object.assign(
           {},
@@ -348,7 +302,6 @@ export default {
       const projectName = this.projectName
       getSingleProjectAPI(projectName).then(res => {
         this.projectForm = res
-        this.customEnvs = res.vars
         if (res.team_id === 0) {
           this.projectForm.team_id = null
         }
@@ -364,9 +317,17 @@ export default {
           this.service.service_name,
           this.projectNameOfService
         ).then(res => {
-          this.serviceModules = res.service_module
-          this.sysEnvs = res.system_variable
-          this.$store.dispatch('queryk8sService', res)
+          if (res.variable_kvs && res.service_vars) {
+            res.variable_kvs.forEach(element => {
+              if (res.service_vars.includes(element.key)) {
+                element.show = true
+              } else {
+                element.show = false
+              }
+            })
+          }
+          this.serviceConfigs = res
+          this.initVariableYaml = res.variable_yaml
         })
       }
       if (this.service.status === 'named') {
@@ -383,110 +344,104 @@ export default {
         })
       })
     },
-
-    checkExistVars () {
-      return new Promise((resolve, reject) => {
-        const isDuplicate = this.detectedEnvs
-          .map(item => {
-            return item.key
-          })
-          .some((item, idx) => {
-            return (
-              this.detectedEnvs
-                .map(item => {
-                  return item.key
-                })
-                .indexOf(item) !== idx
-            )
-          })
-        if (isDuplicate) {
-          this.$message({
-            message: '变量列表中存在相同的 Key 请检查后再保存',
-            type: 'warning'
-          })
-          reject(new Error('cancel save'))
-        } else {
-          resolve()
-        }
-      })
-    },
-    updateEnvTemplate (projectName, payload, verbose) {
-      updateEnvTemplateAPI(projectName, payload).then(res => {
-        bus.$emit('refresh-service')
-        if (verbose) {
-          this.$notify({
-            title: '保存成功',
-            message: '变量列表保存成功',
-            type: 'success'
-          })
-        }
-      })
-    },
-    addRenderKey () {
-      if (this.addKeyData[0].key !== '') {
-        this.$refs.addKeyForm.validate(valid => {
-          if (valid) {
-            this.customEnvs.push(this.$utils.cloneObj(this.addKeyData[0]))
-            this.projectForm.vars = this.customEnvs
-            this.checkExistVars()
-              .then(() => {
-                this.updateEnvTemplate(this.projectName, this.projectForm)
-                this.addKeyData[0].key = ''
-                this.addKeyData[0].value = ''
-              })
-              .catch(() => {
-                this.addKeyData[0].key = ''
-                this.addKeyData[0].value = ''
-                this.$refs.addKeyForm.resetFields()
-                this.$refs.addValueForm.resetFields()
-                this.addKeyInputVisable = false
-                console.log('error')
-              })
-          } else {
-            return false
-          }
-        })
-      }
-    },
-    editRenderKey (index, state) {
-      this.$set(this.editEnvIndex, index, true)
-    },
-    saveRenderKey (index, state) {
-      this.$set(this.editEnvIndex, index, false)
-      this.projectForm.vars = this.customEnvs
-      this.updateEnvTemplate(this.projectName, this.projectForm)
-    },
-    deleteRenderKey (index, state) {
-      if (state === 'present') {
-        this.$confirm('该 Key 被产品引用，确定删除', '提示', {
-          confirmButtonText: this.$t(`global.confirm`),
-          cancelButtonText: this.$t(`global.cancel`),
-          type: 'warning'
-        })
-          .then(() => {
-            this.customEnvs.splice(index, 1)
-            this.projectForm.vars = this.customEnvs
-            this.updateEnvTemplate(this.projectName, this.projectForm)
-          })
-          .catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消删除'
-            })
-          })
-      } else {
-        this.customEnvs.splice(index, 1)
-        this.projectForm.vars = this.customEnvs
-        this.updateEnvTemplate(this.projectName, this.projectForm)
-      }
-    },
     getRegistryWhenBuild () {
       getRegistryWhenBuildAPI(this.projectName).then(res => {
         this.allRegistry = res
       })
+    },
+    onCmCodeChange: debounce(function (newCode) {
+      this.serviceConfigs.variable_yaml = newCode
+    }, 300),
+    validateVariables () {
+      const payload = {
+        content: this.serviceConfigs.service.yaml,
+        variable_yaml: this.serviceConfigs.variable_yaml
+      }
+      validateKubernetesTemplateVariableAPI(payload)
+        .then(res => {
+          if (res) {
+            this.$message.success(
+              this.$t('templates.k8sYaml.validationSuccess')
+            )
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+    },
+    saveServiceVariable () {
+      const projectName = this.projectName
+      const serviceName = this.service.service_name
+      if (this.serviceConfigs.variable_kvs) {
+        const serviceVars = []
+        this.serviceConfigs.variable_kvs.forEach(element => {
+          if (element.show) {
+            serviceVars.push(element.key)
+          }
+        })
+        this.serviceConfigs.service_vars = serviceVars
+      }
+      const payload = {
+        variable_yaml: this.serviceConfigs.variable_yaml,
+        service_vars: this.serviceConfigs.service_vars
+      }
+      saveServiceVariableAPI(serviceName, projectName, payload)
+        .then(res => {
+          if (res) {
+            this.$message.success('变量保存成功')
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+    },
+    parseK8sYamlVariable () {
+      const payload = {
+        variable_yaml: this.serviceConfigs.service.yaml
+      }
+      parseK8sYamlVariableAPI(payload)
+        .then(res => {
+          if (res) {
+            this.serviceConfigs.variable_yaml = res
+          }
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
+    },
+    changeVariableView (val) {
+      if (val === 'list' && this.serviceConfigs.service_vars.length === 0 && this.serviceConfigs.variable_kvs.length === 0) {
+        const payload = {
+          variable_yaml: this.serviceConfigs.variable_yaml
+        }
+        flatVariableToKvAPI(payload)
+          .then(res => {
+            if (res) {
+              res.forEach(element => {
+                element.show = true
+              })
+              this.serviceConfigs.variable_kvs = res
+            }
+          })
+          .catch(err => {
+            this.$message.error(err.message)
+          })
+      }
+    },
+    enableVariableView (row) {
+      this.$set(row, 'show', true)
+    },
+    disableVariableView (row) {
+      this.$set(row, 'show', false)
+    },
+    enableAllVariablesView () {
+      this.serviceConfigs.variable_kvs.forEach(element => {
+        this.$set(element, 'show', true)
+      })
     }
   },
   created () {
+    this.getRegistryWhenBuild()
     this.getProject()
     this.getServiceTemplateWithConfig()
     if (this.$route.query.rightbar) {
@@ -494,28 +449,8 @@ export default {
     } else {
       this.changeRoute('var')
     }
-    bus.$on(`save-var`, () => {
-      this.projectForm.vars = this.detectedEnvs
-      this.updateEnvTemplate(this.projectName, this.projectForm)
-    })
-    this.getRegistryWhenBuild()
-  },
-  beforeDestroy () {
-    bus.$off('save-var')
   },
   props: {
-    detectedEnvs: {
-      required: false,
-      type: Array
-    },
-    detectedServices: {
-      required: false,
-      type: Array
-    },
-    systemEnvs: {
-      required: false,
-      type: Array
-    },
     service: {
       required: false,
       type: Object
@@ -531,15 +466,6 @@ export default {
     changeEditorWidth: Function
   },
   watch: {
-    detectedServices (val) {
-      this.serviceModules = val
-    },
-    systemEnvs (val) {
-      this.sysEnvs = val
-    },
-    detectedEnvs (val) {
-      this.customEnvs = val
-    },
     service (val) {
       if (val) {
         this.getServiceTemplateWithConfig()
@@ -566,6 +492,23 @@ export default {
         this.changeEditorWidth('50%')
       }
       return selected
+    },
+    editorOptions () {
+      return {
+        tabSize: 5,
+        readOnly: this.notSaved ? 'nocursor' : false,
+        theme: 'neo',
+        mode: 'text/plain',
+        lineNumbers: true,
+        line: true,
+        collapseIdentical: true
+      }
+    },
+    variableYamlIsEmpty () {
+      return this.serviceConfigs.variable_yaml === ''
+    },
+    variableNotChanged () {
+      return this.serviceConfigs.variable_yaml === this.initVariableYaml
     }
   },
   components: {
@@ -573,85 +516,17 @@ export default {
     Policy,
     Help,
     IntegrationCode,
-    IntegrationRegistry
+    IntegrationRegistry,
+    VariablesEditor: codemirror
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .aside__wrap {
   position: relative;
   display: flex;
   flex: 1;
   height: 100%;
-
-  .kv-container {
-    .el-table {
-      .unused {
-        background: #e6effb;
-      }
-
-      .present {
-        background: #fff;
-      }
-
-      .new {
-        background: oldlace;
-      }
-    }
-
-    .el-table__row {
-      .cell {
-        span {
-          font-weight: 400;
-        }
-
-        .operate {
-          font-size: 1.12rem;
-
-          .delete {
-            color: #ff1949;
-          }
-
-          .edit {
-            color: @themeColor;
-          }
-        }
-      }
-    }
-
-    .render-value {
-      display: block;
-      max-width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .add-key-container {
-      .el-form-item__label {
-        display: none;
-      }
-
-      .el-form-item {
-        margin-bottom: 15px;
-      }
-    }
-
-    .add-kv-btn {
-      margin-top: 10px;
-    }
-  }
-
-  .service-aside-right--resizable {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 99;
-    width: 5px;
-    height: 100%;
-    border-left: 1px solid transparent;
-    transition: border-color ease-in-out 200ms;
-  }
 
   .aside__inner {
     display: flex;
@@ -706,9 +581,59 @@ export default {
               font-weight: 300;
             }
 
-            .el-table td,
-            .el-table th {
+            /deep/ .el-table td,
+            /deep/ .el-table th {
               padding: 6px 0;
+            }
+
+            .variable-operation-container {
+              display: flex;
+              flex-direction: row;
+              align-content: center;
+              align-items: center;
+              justify-content: space-between;
+
+              .tab-conatiner {
+                display: flex;
+              }
+
+              .parse-container {
+                display: flex;
+
+                .parse-btn {
+                  padding: 0;
+                }
+              }
+            }
+
+            .kv-container {
+              height: 200px;
+              margin-top: 5px;
+
+              /deep/ .vue-codemirror {
+                width: 100%;
+                height: 100%;
+
+                .CodeMirror {
+                  height: 100%;
+                  border: 1px solid #ccc;
+                  border-radius: 4px;
+                }
+              }
+
+              .icon-tooltip {
+                cursor: pointer;
+              }
+            }
+
+            .list-container {
+              .icon-view {
+                cursor: pointer;
+              }
+            }
+
+            .operation {
+              margin-top: 10px;
             }
 
             .build-name {
@@ -717,10 +642,6 @@ export default {
               font-size: 12px;
               line-height: 16px;
             }
-          }
-
-          .create-footer {
-            right: 47px;
           }
         }
 
