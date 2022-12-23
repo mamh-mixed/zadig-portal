@@ -241,7 +241,7 @@ export default {
         })
     },
     changeVariableView (val) {
-      if (val === 'list' && this.fileContent.service_vars.length === 0) {
+      if (val === 'list' && this.fileContent.service_vars.length === 0 && this.fileContent.variable_kvs.length === 0) {
         const payload = {
           variable_yaml: this.fileContent.variable_yaml
         }
