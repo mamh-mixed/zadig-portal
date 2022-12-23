@@ -14,11 +14,11 @@
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.services')}}：</span>
-          <span>{{ services.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ services.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.environments')}}：</span>
-          <span>{{ envNames.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ envNames.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div style="margin: 12px 0 4px;">
           {{$t('project.deleteProjectComp.deleteProjectTip')}}
@@ -28,11 +28,11 @@
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.builds')}}：</span>
-          <span>{{ buildConfigs.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ buildConfigs.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.workflows')}}：</span>
-          <span>{{ workflows.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ workflows.join(', ') || $t('global.emptyText') }}</span>
         </div>
       </template>
       <template v-else>
@@ -44,19 +44,19 @@
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.services')}}：</span>
-          <span>{{ services.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ services.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.environments')}}：</span>
-          <span>{{ envNames.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ envNames.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.builds')}}：</span>
-          <span>{{ buildConfigs.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ buildConfigs.join(', ') || $t('global.emptyText') }}</span>
         </div>
         <div>
           <span style="font-weight: 500;">{{$t('project.workflows')}}：</span>
-          <span>{{ workflows.join(', ') || $t('project.deleteProjectComp.noResource') }}</span>
+          <span>{{ workflows.join(', ') || $t('global.emptyText') }}</span>
         </div>
       </template>
       <div style="margin: 16px 0 6px;">
@@ -67,7 +67,7 @@
       </div>
       <el-form ref="deleteForm" :model="projectDeleteInfo" :rules="deleteRules" label-width="80px">
         <el-form-item label-width="0" prop="project_name">
-          <el-input v-model="projectDeleteInfo.project_name" :placeholder="$t('project.inputProjectName')" size="small"></el-input>
+          <el-input v-model="projectDeleteInfo.project_name" :placeholder="$t('project.createProjectComp.inputProjectName')" size="small"></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -114,7 +114,7 @@ export default {
             required: true,
             validator: (rule, value, callback) => {
               if (!value) {
-                callback(new Error(this.$t('project.inputProjectName')))
+                callback(new Error(this.$t('project.createProjectComp.inputProjectName')))
               } else if (value !== this.projectName) {
                 callback(new Error(this.$t('project.deleteProjectComp.projectNameDontMatch')))
               } else {

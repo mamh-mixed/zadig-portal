@@ -5,7 +5,7 @@
              :body-style="{padding: '8px 20px', margin: '5px 0 0 0' }">
       <div slot="header"
            class="clearfix subtask-header">
-        <span>构建</span>
+        <span>{{$t(`status.build`)}}</span>
         <div v-if="buildv2.status==='running'"
              class="loader">
           <div class="ball-scale-multiple">
@@ -54,7 +54,7 @@
                   :key="index">
             <el-col :span="6">
               <div class="grid-content item-title">
-                <i class="iconfont icondaima"></i> {{$t(`status.repoName`)}}({{build.source}})
+                <i class="iconfont icondaima"></i> {{$t(`global.repository`)}}({{build.source}})
               </div>
             </el-col>
             <el-col :span="6">
@@ -63,7 +63,7 @@
             </el-col>
             <el-col :span="6">
               <div class="grid-content item-title">
-                <i class="iconfont iconinfo"></i> {{$t(`workflow.codeInfo`)}}
+                <i class="iconfont iconinfo"></i> {{$t(`global.gitMessage`)}}
               </div>
             </el-col>
             <el-col :span="6">

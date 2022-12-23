@@ -70,8 +70,12 @@
       </el-form-item>
       <el-form-item prop="notify_type" :label="$t(`workflow.notifyEvents`)">
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-        <el-checkbox-group @change="handleCheckedValueChange" v-model="notify.notify_type">
-          <el-checkbox v-for="type in notifyType" :key="type.label" :label="type.label">{{$t(`workflow.notifyType.${type.desc}`)}}</el-checkbox>
+        <el-checkbox-group @change="handleCheckedValueChange" v-model="notify.notify_type" class="events">
+          <el-row :gutter="4">
+            <el-col :span="4" v-for="(type) in notifyType" :key="type.label">
+              <el-checkbox :label="type.label">{{$t(`workflow.notifyType.${type.desc}`)}}</el-checkbox>
+            </el-col>
+          </el-row>
         </el-checkbox-group>
       </el-form-item>
     </el-form>
@@ -108,7 +112,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: this.$t(`workflow.inputDingDingWebhook`),
+            message: this.$t(`workflow.inputDingTalkWebhook`),
             trigger: 'blur'
           }
         ],
@@ -116,7 +120,7 @@ export default {
           {
             type: 'string',
             required: true,
-            message: this.$t(`workflow.inputFeishuWebhook`),
+            message: this.$t(`workflow.inputLarkWebhook`),
             trigger: 'blur'
           }
         ],
@@ -243,3 +247,12 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.notify-operate {
+  .events {
+    /deep/div.el-col:nth-child(4) {
+      margin-right: 30%;
+    }
+  }
+}
+</style>

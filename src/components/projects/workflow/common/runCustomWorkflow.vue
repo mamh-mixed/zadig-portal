@@ -6,7 +6,7 @@
     </div>
     <el-form label-position="left" label-width="140px" size="small">
       <el-collapse v-model="activeName">
-        <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
+        <el-collapse-item :title="$t(`workflow.workflowVars`)" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">
             <el-table-column :label="$t(`global.key`)">
               <template slot-scope="scope">{{scope.row.name}}</template>
@@ -49,7 +49,7 @@
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
-              <el-form-item label="服务组件">
+              <el-form-item :label="$t(`global.serviceModule`)">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -94,7 +94,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`global.serviceModule`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -140,7 +140,7 @@
               </div>
             </div>
             <div v-if="job.type === 'custom-deploy'">
-              <el-form-item label="选择容器" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`workflow.selectContainer`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -255,7 +255,7 @@
             </div>
             <div v-if="job.type === 'k8s-gray-release'">
               <el-form-item :label="$t(`workflow.grayPercentage`)">{{job.spec.gray_scale}}</el-form-item>
-              <el-form-item label="选择容器" v-if="!job.spec.from_job">
+              <el-form-item :label="$t(`workflow.selectContainer`)" v-if="!job.spec.from_job">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -335,7 +335,7 @@
                 </el-form-item>
               </div>
             </div>
-            <div style="color: #666;" v-if="job.type === 'k8s-canary-release'">无需输入变量</div>
+            <div class="font-gray" v-if="job.type === 'k8s-canary-release'">{{$t(`workflow.noNeedToEnterVariables`)}}</div>
             <div v-if="job.type === 'k8s-blue-green-deploy'">
               <el-form-item label="K8s service 名称">
                 <el-select
@@ -374,7 +374,7 @@
                 </el-form-item>
               </div>
             </div>
-            <div style="color: #666;" v-if="job.type === 'k8s-blue-green-release'">无需输入变量</div>
+            <div class="font-gray" v-if="job.type === 'k8s-blue-green-release'">{{$t(`workflow.noNeedToEnterVariables`)}}</div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job" />
             </div>
@@ -393,7 +393,7 @@
             </div>
             <div v-if="job.type==='zadig-distribute-image'">
               <div v-if="job.spec.source === 'runtime'">
-                <el-form-item label="服务组件">
+                <el-form-item :label="$t(`global.serviceModule`)">
                   <el-select
                     v-model="job.pickedTargets"
                     filterable
@@ -478,7 +478,7 @@
                 <span>新版本副本数百分比:{{job.spec.replica_percentage}}%</span>
                 <span style="margin-left: 10px;">新版本流量百分比:{{job.spec.weight}}%</span>
               </div>
-              <el-form-item label="选择容器" v-if="!job.spec.from_job">
+              <el-form-item :label="$t(`workflow.selectContainer`)" v-if="!job.spec.from_job">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -521,7 +521,7 @@
               </div>
             </div>
             <div v-if="job.type === 'istio-rollback'">
-              <el-form-item label="选择容器">
+              <el-form-item :label="$t(`workflow.selectContainer`)">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -557,21 +557,18 @@
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}</el-button>
+      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?$t(`workflow.starting`):$t(`workflow.run`) }}</el-button>
     </el-form>
     <el-dialog
-      title="修改手机号码"
+      :title="$t(`profile.changePhone`)"
       :close-on-click-modal="false"
       :append-to-body="true"
       custom-class="edit-form-dialog"
       :visible.sync="dialogMailEditFormVisible"
     >
       <el-form :model="userInfo" @submit.native.prevent ref="mailForm">
-        <el-form-item label="原手机号码" label-width="100px" prop="originPhone">
-          <el-input :value="userInfo.originPhone" placeholder="原手机号码" size="small"></el-input>
-        </el-form-item>
         <el-form-item
-          label="新手机号码"
+          :label="$t(`profile.newPhone`)"
           label-width="100px"
           prop="phone"
           size="small"
@@ -585,8 +582,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" native-type="submit" size="small" @click="updateUser" class="start-create">确定</el-button>
-        <el-button plain native-type="submit" size="small" @click="dialogMailEditFormVisible=false">取消</el-button>
+        <el-button type="primary" native-type="submit" size="small" @click="updateUser" class="start-create">{{$t(`global.confirm`)}}</el-button>
+        <el-button plain native-type="submit" size="small" @click="dialogMailEditFormVisible=false">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -651,7 +648,6 @@ export default {
       dialogMailEditFormVisible: false,
       isShowCheckErrorTip: false,
       userInfo: {
-        originPhone: '',
         phone: ''
       }
     }
@@ -885,10 +881,6 @@ export default {
         .catch(error => {
           if (error.response && error.response.data.code === 6940) {
             this.isShowCheckErrorTip = true
-            const pattern = /(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}/
-            this.userInfo.originPhone = error.response.data.description.match(
-              pattern
-            )[0]
           }
           this.notReady = true
         })
@@ -1175,7 +1167,7 @@ export default {
               this.fromJobInfo.pickedTargets.forEach(item => {
                 if (item.update_tag && !item.target_tag) {
                   this.$message.error(
-                    `请填写 ${item.service_name} 中的目标镜像版本`
+                    this.$t(`workflow.inputTargetImage`, { serviceName: item.service_name })
                   )
                   throw Error()
                 }
@@ -1365,6 +1357,10 @@ export default {
     padding: 4px 8px;
     background: #fde2e2;
     transform: translateX(-50%);
+  }
+
+  .font-gray {
+    color: @fontLightGray;
   }
 
   .flex {

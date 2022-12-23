@@ -31,7 +31,7 @@
         </van-col>
         <van-col span="12">
           <div class="mobile-block">
-            <h2 class="mobile-block-title">创建者</h2>
+            <h2 class="mobile-block-title">{{$t(`global.creator`)}}</h2>
             <div class="mobile-block-desc">{{ taskDetail.task_creator }}</div>
           </div>
         </van-col>

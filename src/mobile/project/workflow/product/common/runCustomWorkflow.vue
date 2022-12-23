@@ -45,7 +45,7 @@
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
-              <el-form-item label="服务组件">
+              <el-form-item :label="$t(`global.serviceModule`)">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -92,7 +92,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`global.serviceModule`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -138,7 +138,7 @@
               </div>
             </div>
             <div v-if="job.type === 'custom-deploy'">
-              <el-form-item label="选择容器" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`workflow.selectContainer`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -184,7 +184,7 @@
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?'启动中':$t(`workflow.startTask`) }}</el-button>
+      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?$t(`workflow.starting`):$t(`workflow.run`) }}</el-button>
     </el-form>
   </div>
 </template>

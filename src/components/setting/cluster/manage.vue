@@ -92,7 +92,7 @@
           </Resize>
         </el-form-item>
         <el-button type="text" @click="expandAdvanced = !expandAdvanced">
-          高级配置
+          {{$t(`project.createProjectComp.advancedConfigurations`)}}
           <i :class="{'el-icon-arrow-right': !expandAdvanced,'el-icon-arrow-down': expandAdvanced}"></i>
         </el-button>
         <template v-if="expandAdvanced">
@@ -423,7 +423,7 @@
         </template>
       </el-alert>
       <div class="sync-container">
-        <el-button size="small" :plain="true" @click="clusterOperation('init')" type="success">新建</el-button>
+        <el-button size="small" :plain="true" @click="clusterOperation('init')" type="success">{{$t('global.add')}}</el-button>
       </div>
       <div class="cluster-list">
         <template>
@@ -1087,7 +1087,7 @@ export default {
   },
   created () {
     this.getCluster()
-    bus.$emit(`set-topbar-title`, { title: '集群管理', breadcrumb: [] })
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.clusters`), url: '' }] })
   },
   components: {
     Resize,

@@ -49,7 +49,7 @@
           <el-col :span="6">
             <div class="grid-content item-title">
               <i class="iconfont icondaima"></i>
-              {{$t(`repository.repository`)}}({{build.source}})
+              {{$t(`global.repository`)}}({{build.source}})
             </div>
           </el-col>
           <el-col :span="6">
@@ -57,7 +57,7 @@
           </el-col>
           <el-col :span="6">
             <div class="grid-content item-title">
-              <i class="iconfont iconinfo"></i> {{$t(`repository.info`)}}
+              <i class="iconfont iconinfo"></i> {{$t(`global.gitMessage`)}}
             </div>
           </el-col>
           <el-col :span="6">

@@ -20,7 +20,7 @@
               <span class="desc">{{item.name}}</span>
             </div>
             <div class="cate">
-              <span class="title">{{$t(`global.codeLibrary`)}}</span>
+              <span class="title">{{$t(`global.repository`)}}</span>
               <span class="desc">{{item.main_repo.repo_name + '/' + item.main_repo.branch}}</span>
             </div>
           </div>
@@ -132,13 +132,13 @@
             ref="webhookNamedRef"
             :disabled="webhookEditMode"
             v-model="currentWebhook.name"
-            placeholder="请输入名称"
+            :placeholder="$t(`global.inputName`)"
           ></el-input>
         </el-form-item>
         <el-form-item :label="$t('global.desc')" prop="description">
           <el-input size="small" type="textarea" v-model="currentWebhook.description" placeholder="请输入描述"></el-input>
         </el-form-item>
-        <el-form-item :label="$t(`global.codeLibrary`)" prop="repo">
+        <el-form-item :label="$t(`global.repository`)" prop="repo">
           <el-select
             style="width: 100%;"
             v-model="currentWebhook.repo"
@@ -349,14 +349,14 @@
       append-to-body
     >
       <div class="trigger-types-container">
-        <span>选择触发器类型</span>
+        <span>{{$t(`workflow.selectTriggerType`)}}</span>
         <div class="trigger-item" @click="triggerTypeDialogVisible = false;addWebhook()">
           <div class="icon">
             <span class="iconfont iconvery-master"></span>
           </div>
           <div class="detail">
-            <h4 class="trigger-title">Git 触发器</h4>
-            <span class="trigger-desc">代码变更触发</span>
+            <h4 class="trigger-title">{{$t(`workflow.gitTrigger`)}}</h4>
+            <span class="trigger-desc">{{$t(`workflow.codeChangeTrigger`)}}</span>
           </div>
         </div>
         <div class="trigger-item" @click="triggerTypeDialogVisible = false;addTimer()">
@@ -365,7 +365,7 @@
           </div>
           <div class="detail">
             <h4 class="trigger-title">{{$t(`workflow.timer`)}}</h4>
-            <span class="trigger-desc">定时触发</span>
+            <span class="trigger-desc">{{$t(`workflow.timedTrigger`)}}</span>
           </div>
         </div>
       </div>
@@ -863,21 +863,27 @@ export default {
                   delete job.pickedTargets
                 } else {
                   // fromjob
-                  payload.workflow_arg.fromJobInfo.pickedTargets.forEach(item => {
-                    if (item.update_tag && !item.target_tag) {
-                      this.$message.error(`请填写 ${item.service_name} 中的目标镜像版本`)
-                      throw Error()
+                  payload.workflow_arg.fromJobInfo.pickedTargets.forEach(
+                    item => {
+                      if (item.update_tag && !item.target_tag) {
+                        this.$message.error(
+                          this.$t(`workflow.inputTargetImage`, { serviceName: item.service_name })
+                        )
+                        throw Error()
+                      }
                     }
-                  })
-                  job.spec.targets = payload.workflow_arg.fromJobInfo.pickedTargets.map(item => {
-                    return {
-                      service_name: item.service_name,
-                      service_module: item.service_module,
-                      source_tag: item.source_tag,
-                      target_tag: item.target_tag,
-                      update_tag: item.update_tag
+                  )
+                  job.spec.targets = payload.workflow_arg.fromJobInfo.pickedTargets.map(
+                    item => {
+                      return {
+                        service_name: item.service_name,
+                        service_module: item.service_module,
+                        source_tag: item.source_tag,
+                        target_tag: item.target_tag,
+                        update_tag: item.update_tag
+                      }
                     }
-                  })
+                  )
                   delete payload.workflow_arg.fromJobInfo
                 }
               }
@@ -1087,8 +1093,8 @@ export default {
     },
     checkingBuildStageChanged (newConfig, oldConfig) {
       if (!isEqual(newConfig, oldConfig)) {
-        this.$confirm('保存当前工作流配置后才可配置触发器?', '确认', {
-          confirmButtonText: '保存',
+        this.$confirm(this.$t(`workflow.pleaseSaveTrigger`), '确认', {
+          confirmButtonText: this.$t(`global.save`),
           cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         })
@@ -1114,11 +1120,15 @@ export default {
       async handler (newValue, oldValue) {
         if (newValue) {
           if (!this.isEdit) {
-            this.$confirm('保存当前工作流配置后才可配置触发器?', '确认', {
-              confirmButtonText: '保存',
-              cancelButtonText: this.$t(`global.cancel`),
-              type: 'warning'
-            })
+            this.$confirm(
+              this.$t(`workflow.pleaseSaveTrigger`),
+              this.$t(`global.confirmation`),
+              {
+                confirmButtonText: this.$t(`global.save`),
+                cancelButtonText: this.$t(`global.cancel`),
+                type: 'warning'
+              }
+            )
               .then(() => {
                 this.$emit('closeDrawer')
                 this.$emit('saveWorkflow')

@@ -65,7 +65,7 @@
           <el-input size="small" clearable type="passsword" show-password v-if="dialogRegistryFormVisible" v-model="registry.secret_key"></el-input>
         </el-form-item>
         <el-button type="text" @click="registry.advanced_setting.modified = !registry.advanced_setting.modified">
-          高级配置
+          {{$t(`project.createProjectComp.advancedConfigurations`)}}
           <i :class="[registry.advanced_setting.modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
         </el-button>
         <template v-if="registry.advanced_setting.modified">
@@ -110,7 +110,7 @@
         </template>
       </el-alert>
       <div class="sync-container">
-        <el-button :plain="true" @click="addRegistryBtn" size="small" type="success">新建</el-button>
+        <el-button :plain="true" @click="addRegistryBtn" size="small" type="success">{{$t('global.add')}}</el-button>
       </div>
       <div class="registry-list">
         <template>
@@ -542,8 +542,7 @@ export default {
     }
   },
   created () {
-    bus.$emit(`set-topbar-title`, { title: '镜像仓库', breadcrumb: [] })
-
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.dockerRegistry`), url: '' }] })
     this.getRegistry()
   }
 }

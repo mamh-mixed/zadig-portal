@@ -24,13 +24,13 @@
         </div>
         <el-row class="item" :gutter="0" v-for="(build,index) in commonInfo.spec.repos" :key="index">
           <el-col :span="4">
-            <div class="item-title">{{$t(`global.codeLibrary`)}}({{build.source}})</div>
+            <div class="item-title">{{$t(`global.repository`)}}({{build.source}})</div>
           </el-col>
           <el-col :span="8">
             <div class="item-desc">{{build.repo_name}}</div>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">{{$t(`workflow.codeInfo`)}}</div>
+            <div class="item-title">{{$t(`global.gitMessage`)}}</div>
           </el-col>
           <el-col :span="8">
             <RepoJump :build="build" />
@@ -177,7 +177,11 @@ export default {
           if (oldVal && val.name !== oldVal.name) {
             this.firstLoad = false
           }
-          if (val.status && !this.firstLoad) {
+          if (
+            (val.status === 'running' && !this.firstLoad) ||
+            (val.status === 'passed' && !this.firstLoad) ||
+            (val.status === 'failed' && !this.firstLoad)
+          ) {
             this.getLog()
             this.firstLoad = true
           }

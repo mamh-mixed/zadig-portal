@@ -61,7 +61,7 @@
           >
             <li class="nav-item">
               <i class="icon iconfont iconvery-scanner"></i>
-              <span class="name">{{$t('subTopbarMenu.codeScanner')}}</span>
+              <span class="name">{{$t('subTopbarMenu.scannings')}}</span>
             </li>
           </router-link>
           <router-link

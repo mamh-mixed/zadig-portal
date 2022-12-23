@@ -10,7 +10,7 @@
       >
         <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
       </el-button>
-      <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+      <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
         <el-button type="primary" effect="dark" class="left permission-disabled">
           <span class="iconfont iconzhixing">&nbsp;{{$t(`workflow.run`)}}</span>
         </el-button>
@@ -23,7 +23,7 @@
         >
           <span class="iconfont icondeploy edit-setting"></span>
         </router-link>
-        <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+        <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
           <span class="middle">
             <span class="permission-disabled iconfont icondeploy edit-setting"></span>
           </span>
@@ -37,7 +37,7 @@
         >
           <span class="iconfont icondeploy edit-setting"></span>
         </router-link>
-        <el-tooltip v-else effect="dark" :content="$t(`workflow.noAuth`)" placement="top">
+        <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
           <span class="middle">
             <span class="permission-disabled iconfont icondeploy edit-setting"></span>
           </span>
@@ -254,14 +254,14 @@ export default {
     bus.$emit('set-topbar-title', {
       title: '',
       breadcrumb: [
-        { title: '项目', url: '/v1/projects' },
+        { title: this.$t(`global.project`), url: '/v1/projects' },
         {
           title: this.projectName,
           isProjectName: true,
           url: `/v1/projects/detail/${this.projectName}/detail`
         },
         {
-          title: '工作流',
+          title: this.$t(`global.workflow`),
           url: `/v1/projects/detail/${this.projectName}/pipelines`
         },
         { title: this.displayName || this.workflowName, url: '' }

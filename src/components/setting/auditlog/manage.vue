@@ -235,7 +235,7 @@ export default {
 
       .type {
         display: inline-block;
-        width: 120px;
+        width: 140px;
       }
 
       .keyword {

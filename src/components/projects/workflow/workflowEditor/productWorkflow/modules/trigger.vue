@@ -22,12 +22,12 @@
     </div>
       <el-form :model="webhookSwap" ref="triggerForm" label-position="left" label-width="125px" :rules="rules">
         <el-form-item :label="$t(`global.name`)" prop="name" class="bottom-22">
-          <el-input size="small" autofocus ref="webhookNamedRef" v-model="webhookSwap.name" placeholder="请输入名称"></el-input>
+          <el-input size="small" autofocus ref="webhookNamedRef" v-model="webhookSwap.name" :placeholder="$t(`global.inputName`)"></el-input>
         </el-form-item>
         <el-form-item :label="$t('global.desc')">
           <el-input size="small" type="textarea" v-model="webhookSwap.description" placeholder="请输入描述"></el-input>
         </el-form-item>
-        <el-form-item :label="$t(`global.codeLibrary`)" prop="repo" :rules="[
+        <el-form-item :label="$t(`global.repository`)" prop="repo" :rules="[
           { trigger: ['blur', 'change'], validator: validateRepo }
         ]">
           <el-select
@@ -305,7 +305,7 @@
               <el-table-column :label="$t(`global.operation`)">
                 <template slot-scope="{ $index }">
                   <el-button @click.native.prevent="editWebhook($index)" type="text" size="small">{{$t(`global.edit`)}}</el-button>
-                  <el-button @click.native.prevent="deleteWebhook($index)" type="text" size="small">移除</el-button>
+                  <el-button @click.native.prevent="deleteWebhook($index)" type="text" size="small">{{$t(`global.remove`)}}</el-button>
                 </template>
               </el-table-column>
             </el-table>

@@ -59,10 +59,10 @@
             v-for="item in tabList"
             :key="item.name"
             @click="handleTabChange(item.name)"
-          >{{item.label}}</span>
+          >{{$t(`workflow.${item.label}`)}}</span>
         </div>
         <div>
-          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模板</el-button>
+          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">{{$t(`workflow.saveAsTemplate`)}}</el-button>
           <el-button type="primary" size="small" @click="operateWorkflow">{{$t(`global.save`)}}</el-button>
           <el-button size="small" @click="cancelWorkflow">{{$t(`global.cancel`)}}</el-button>
         </div>
@@ -294,11 +294,11 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || $t(`global.cancel`)}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{$t(`global.cancel`)}}</el-button>
         </div>
         <div v-else>
-          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:$t(`global.confirm`)}}</el-button>
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText?drawerCancelText:$t(`global.cancel`)}}</el-button>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{$t(`global.confirm`)}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{$t(`global.cancel`)}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
@@ -336,10 +336,10 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="保存为模板" :visible.sync="isShowModelDialog" width="30%">
+    <el-dialog :title="$t(`workflow.saveAsTemplate`)" :visible.sync="isShowModelDialog" width="30%">
       <el-form inline ref="modelForm" :model="modelFormInfo" label-position="left">
-        <el-form-item label="模板名称" :rules="{required: true,message: '请填写模板名称', trigger: ['blur', 'change']}" prop="name">
-          <el-input placeholder="请输入模板名称" size="small" v-model="modelFormInfo.name"></el-input>
+        <el-form-item :label="$t(`workflow.templateName`)" :rules="{required: true,message: $t(`workflow.inputTemplateName`), trigger: ['blur', 'change']}" prop="name">
+          <el-input :placeholder="$t(`workflow.inputTemplateName`)" size="small" v-model="modelFormInfo.name"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -581,14 +581,14 @@ export default {
       bus.$emit('set-topbar-title', {
         title: '',
         breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
+          { title: this.$t(`global.project`), url: '/v1/projects' },
           {
             title: this.projectName,
             isProjectName: true,
             url: `/v1/projects/detail/${this.projectName}/detail`
           },
           {
-            title: '工作流',
+            title: this.$t(`global.workflow`),
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {
@@ -624,17 +624,17 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.payload.stages.length === 0) {
-            this.$message.error(' 请至少填写一个阶段')
+            this.$message.error(this.$t(`workflow.atLeastOneStage`))
             return
           }
           this.payload.stages.forEach(item => {
             if (item.jobs.length === 0) {
-              this.$message.error(`请填写 ${item.name} 中的任务`)
+              this.$message.error(this.$t(`workflow.inputStageJob`, { name: item.name }))
               throw Error()
             }
           })
           if (this.isShowFooter) {
-            this.$message.error('请先保存任务配置')
+            this.$message.error(this.$t(`workflow.saveJobconfigFirst`))
             return
           }
           this.saveWorkflow()
@@ -652,22 +652,10 @@ export default {
       }
       this.payload.stages.forEach(stage => {
         if (stage.approval.type === 'native') {
-          const params = {
-            approve_users: stage.approval.approve_users,
-            needed_approvers: stage.approval.needed_approvers,
-            timeout: stage.approval.timeout
-          }
-          stage.approval.native_approval = params
+          delete stage.approval.lark_approval
         } else {
-          const params = {
-            approve_users: stage.approval.approve_users,
-            approval_id: stage.approval.approval_id,
-            timeout: stage.approval.timeout
-          }
-          stage.approval.lark_approval = params
+          delete stage.approval.native_approval
         }
-        delete stage.approval.approve_users
-        delete stage.approval.timeout
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
@@ -791,25 +779,15 @@ export default {
       this.workflowCurJobLength = this.payload.stages[
         this.curStageIndex
       ].jobs.length
-      this.payload.params.forEach(item => {
-        if (item.value.includes('<+fixed>')) {
-          item.command = 'fixed'
-          item.value = item.value.replaceAll('<+fixed>', '')
-        }
-      })
+      if (this.payload.params.length > 0) {
+        this.payload.params.forEach(item => {
+          if (item.value && item.value.includes('<+fixed>')) {
+            item.command = 'fixed'
+            item.value = item.value.replaceAll('<+fixed>', '')
+          }
+        })
+      }
       this.payload.stages.forEach(stage => {
-        if (stage.approval.type === 'lark') {
-          stage.approval.approval_id = stage.approval.lark_approval.approval_id
-          stage.approval.timeout = stage.approval.lark_approval.timeout
-          stage.approval.approve_users =
-            stage.approval.lark_approval.approve_users
-        } else {
-          stage.approval.approve_users =
-            stage.approval.native_approval.approve_users
-          stage.approval.needed_approvers =
-            stage.approval.native_approval.needed_approvers
-          stage.approval.timeout = stage.approval.native_approval.timeout
-        }
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
@@ -911,11 +889,11 @@ export default {
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {
-        this.$message.error('请至少创建一个任务')
+        this.$message.error(this.$t(`workflow.atLeastOneJob`))
         return
       }
       if (this.isShowFooter) {
-        this.$message.error('请先保存上一个任务配置')
+        this.$message.error(this.$t(`workflow.saveLastJobconfigFirst`))
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -988,7 +966,7 @@ export default {
         if (valid) {
           const curJob = this.$refs[this.job.type].getData()
           if (!this.isEditJob && allJobList.includes(curJob.name)) {
-            this.$message.error(' Job 名称重复')
+            this.$message.error(this.$t(`workflow.duplicateJobName`))
             return false
           }
           this.$set(

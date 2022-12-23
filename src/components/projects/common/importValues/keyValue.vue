@@ -1,6 +1,6 @@
 <template>
   <div class="key-value-container">
-    <div class="secondary-title" style="margin-bottom: 10px;">指定需要覆盖的键值对</div>
+    <div class="secondary-title" style="margin-bottom: 10px;">{{$t('environments.helm.keyValueComp.title')}}</div>
     <el-form ref="form" :model="keyValueForm" label-position="left">
       <el-table :data="keyValues">
         <el-table-column :label="$t(`global.key`)">
@@ -95,6 +95,7 @@ export default {
       const keys = this.keyValues.map(kv => kv.key)
       return Object.keys(this.listKeyValues).filter(key => !keys.includes(key))
     }
+
   },
   methods: {
     selectKey (key, index) {

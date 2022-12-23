@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column align="left" :label="$t(`global.status`)" width="220px">
         <template slot="header" slot-scope="{}">
-          状态{{`(${runningContainerService}/${containerServiceList.length})`}}
+        {{$t('environments.common.serviceDetail.serviceStatus')}}{{`(${runningContainerService}/${containerServiceList.length})`}}
           <el-tooltip effect="dark" placement="top">
             <div slot="content">实际正常的服务/预期的正常服务数量</div>
             <i class="status-icon el-icon-question"></i>
@@ -60,7 +60,7 @@
           <el-tag size="small" :type="statusIndicator[scope.row.status]">{{scope.row.status}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="left" label="镜像信息" min-width="150px">
+      <el-table-column align="left" :label="$t('environments.common.imageInfo')" min-width="150px">
         <template slot-scope="scope">
           <div v-for="(image,index) in scope.row.images" :key="index">
             <el-tooltip effect="dark" :content="image" placement="top">
@@ -69,7 +69,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="left" width="150px" label="服务入口">
+      <el-table-column align="left" width="150px" :label="$t('global.serviceEntrypoint')">
         <template slot-scope="scope">
           <template v-if="scope.row.ingress && scope.row.ingress.host_info && scope.row.ingress.host_info.length>0">
             <el-tooltip
@@ -93,7 +93,7 @@
             <el-tooltip
               v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})"
               effect="dark"
-              content="通过工作流升级服务"
+              :content="$t('environments.common.runWorkflowToUpgradeService')"
               placement="top"
             >
               <i @click="upgradeServiceByWorkflow(projectName,envName,scope.row.service_name,scope.row.type)" class="iconfont iconshengji"></i>
@@ -101,17 +101,17 @@
             <el-tooltip
               v-else
               effect="dark"
-              content="无权限操作"
+              :content="$t('permission.lackPermission')"
               placement="top"
             >
               <i class="iconfont iconshengji permission-disabled"></i>
             </el-tooltip>
           </span>
           <span class="operation">
-            <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})" effect="dark" content="重启服务" placement="top">
+            <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})" effect="dark" :content="$t('environments.common.serviceDetail.restartService')" placement="top">
               <i @click="restartService(projectName,scope.row.service_name,$route.query.envName)" class="el-icon-refresh"></i>
             </el-tooltip>
-            <el-tooltip v-else effect="dark" content="无权限操作" placement="top">
+            <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
               <i class="el-icon-refresh permission-disabled"></i>
             </el-tooltip>
           </span>
@@ -119,7 +119,7 @@
             <el-tooltip
               v-if="checkPermissionSyncMixin({projectName: projectName, action: 'manage_environment',resource:{name:envName,type:'env'}})"
               effect="dark"
-              content="更新服务"
+              :content="$t('environments.common.updateService')"
               placement="top"
             >
               <i @click="updateServiceDialog(scope.row)" class="iconfont icongengxin"></i>
@@ -127,7 +127,7 @@
             <el-tooltip
               v-else
               effect="dark"
-              content="无权限操作"
+              :content="$t('permission.lackPermission')"
               placement="top"
             >
               <span><i class="iconfont icongengxin permission-disabled"></i></span>

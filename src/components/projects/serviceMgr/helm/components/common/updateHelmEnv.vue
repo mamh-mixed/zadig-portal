@@ -20,7 +20,7 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button size="small" :disabled="!checkedEnvList.length" type="primary" @click="autoUpgradeEnv">{{$t(`global.confirm`)}}</el-button>
-      <el-button size="small" @click="skipUpdate">跳过</el-button>
+      <el-button size="small" @click="skipUpdate">{{$t(`global.skip`)}}</el-button>
     </span>
   </el-dialog>
 </template>

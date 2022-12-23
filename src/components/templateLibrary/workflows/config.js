@@ -14,11 +14,11 @@ const validateJobName = (rule, value, callback) => {
 }
 const tabList = [
   {
-    label: '界面化',
+    label: 'ui',
     name: 'ui'
   },
   {
-    label: 'YAML',
+    label: 'yaml',
     name: 'yaml'
   }
 ]
@@ -162,7 +162,7 @@ const configList = [
     value: 'env'
   },
   {
-    label: 'high',
+    label: 'advancedSettings',
     value: 'high'
   }
 ]
@@ -262,6 +262,10 @@ const globalConstEnvs = [
   '{{.workflow.task.timestamp}}'
 ]
 const notifyType = [
+  {
+    label: 'created',
+    desc: '任务开始'
+  },
   {
     label: 'passed',
     desc: 'passed'
