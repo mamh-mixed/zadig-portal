@@ -32,7 +32,7 @@
       </div>
       <template v-if="cleanStatus">
         <div class="desc">
-          <span class="title">状态：</span>
+          <span class="title">{{$t('global.status')}} :</span>
           <el-tag size="mini"
                   :type="tagTypeMap[cleanStatus.status]">{{statusMap[cleanStatus.status]}}
           </el-tag>

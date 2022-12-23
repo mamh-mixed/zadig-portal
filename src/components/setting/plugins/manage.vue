@@ -129,7 +129,7 @@
       <span>{{$utils.convertTimestamp(source.update_time)}}</span>
     </div>
     <div class="tip" v-if="source.error">
-      <span>错误信息：</span>
+      <span>{{$t('global.errorMsg')}} : </span>
       <span>{{source.error}}</span>
     </div>
   </div>

@@ -33,7 +33,7 @@
                 <span class="name">{{ policyMap.workflow[verb] }}</span>
               </li>
             </ul>
-            <span v-if="workflow.verbs.length === 0">无</span>
+            <span v-if="workflow.verbs.length === 0">{{$t('global.emptyText')}}</span>
           </div>
           <div v-for="product in changedInfo[key].products" :key="product.name" class="resource-container">
             <div class="resource-name">{{ product.collaboration_type === 'new' ? '独享': '共享' }}环境 {{ product.name }} ：</div>
@@ -43,7 +43,7 @@
                 <span v-if="key ==='deleted'" class="icon deleted el-icon-circle-close"></span>
                 <span class="name">{{ policyMap.environment[verb] }}</span>
               </li>
-              <span v-if="product.verbs.length === 0">无</span>
+              <span v-if="product.verbs.length === 0">{{$t('global.emptyText')}}</span>
             </ul>
           </div>
           <div v-if="changedInfo.updated && changedInfo.updated.recycle_day">资源回收策略更新为 {{ changedInfo.updated.recycle_day }} 天。</div>
