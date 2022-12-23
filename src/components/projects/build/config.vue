@@ -11,7 +11,7 @@
       </div>
       <el-table :data="filteredBuildConfigs">
         <el-table-column :label="$t(`global.name`)" prop="name" min-width="180"></el-table-column>
-        <el-table-column prop="services" :label="$t(`global.ServiceModule`)" min-width="180">
+        <el-table-column prop="services" :label="$t(`global.serviceModule`)" min-width="180">
           <template slot-scope="scope">
             <div class="service-container">
               <div v-if="scope.row.targets.length > 0" class="service-left">
