@@ -1087,7 +1087,7 @@ export default {
   },
   created () {
     this.getCluster()
-    bus.$emit(`set-topbar-title`, { title: '集群管理', breadcrumb: [] })
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.clusters`), url: '' }] })
   },
   components: {
     Resize,

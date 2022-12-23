@@ -145,7 +145,7 @@ import {
   delPlugin,
   getPlugins
 } from '@api'
-
+import bus from '@utils/eventBus'
 export default {
   data () {
     return {
@@ -166,9 +166,6 @@ export default {
       isSaved: false,
       loading: false
     }
-  },
-  created () {
-    this.getPlugins()
   },
   methods: {
     getPlugins () {
@@ -408,6 +405,10 @@ export default {
         }
       })
     }
+  },
+  created () {
+    this.getPlugins()
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.plugins`), url: '' }] })
   }
 }
 </script>

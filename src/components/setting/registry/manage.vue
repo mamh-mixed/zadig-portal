@@ -542,8 +542,7 @@ export default {
     }
   },
   created () {
-    bus.$emit(`set-topbar-title`, { title: '镜像仓库', breadcrumb: [] })
-
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.dockerRegistry`), url: '' }] })
     this.getRegistry()
   }
 }
