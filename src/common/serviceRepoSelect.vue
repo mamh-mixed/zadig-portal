@@ -1,39 +1,6 @@
 <template>
   <div class="service-repo-select">
     <span class="primary-title">选择服务和代码信息</span>
-    <span v-if="hasPlutus" class="multi-import" @click="openMultiImport">
-      <i class="el-icon-sort"></i> 批量录入
-    </span>
-    <el-dialog
-      title="批量录入"
-      :visible.sync="showMultiImport"
-      width="65%"
-      custom-class="multi-import-repo-dialog"
-      :close-on-click-modal="false"
-    >
-      <div class="input-tip">
-        <ul>
-          <li>- 格式：服务组件(服务),代码源标识,带分支信息的代码库 URL</li>
-          <li>- 例如：aslan(zadig),koderover,https://github.com/koderover/zadig/tree/main</li>
-          <li>- 请确保代码库信息 URL 在 Zadig 中已经成功集成</li>
-          <li>- 请确保一行一条数据</li>
-          <li>- 支持 GitHub、GitLab、Gitee</li>
-        </ul>
-      </div>
-      <div class="editor">
-        <el-input
-          type="textarea"
-          :autosize="{ minRows: 10}"
-          placeholder="例如：aslan(zadig),koderover,https://github.com/koderover/zadig/tree/main"
-          v-model="multiImportTxt"
-        ></el-input>
-        <span v-if="parseErr" class="error-msg">{{parseErr}}</span>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="showMultiImport = false">{{$t(`global.cancel`)}}</el-button>
-        <el-button size="small" type="primary" @click="parseMultiImport">{{$t(`global.confirm`)}}</el-button>
-      </span>
-    </el-dialog>
     <template v-if="targets.length > 0">
       <div v-for="(target,targetIndex) in targets" :key="targetIndex" class="service-repo-container">
         <div class="operation">
@@ -329,8 +296,7 @@ import {
   getRepoNameByIdAPI,
   getBranchInfoByIdAPI
 } from '@api'
-import { mapState } from 'vuex'
-import { orderBy, cloneDeep, drop, dropRight } from 'lodash'
+import { orderBy, cloneDeep } from 'lodash'
 export default {
   data () {
     return {
@@ -341,8 +307,6 @@ export default {
       ],
       showAdvancedSetting: {},
       validateName: 'repoSelect',
-      showMultiImport: false,
-      multiImportTxt: '',
       parseErr: '',
       loading: {
         owner: false,
@@ -426,10 +390,7 @@ export default {
   computed: {
     projectName () {
       return this.$route.params.project_name
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     addService () {
@@ -831,145 +792,6 @@ export default {
         )
         this.$set(this.codeInfo[targetIndex][repoIndex], 'branches', items)
       }
-    },
-    openMultiImport () {
-      this.multiImportTxt = ''
-      this.parseErr = ''
-      const prefixPaddings = []
-      this.serviceTargets.forEach(element => {
-        prefixPaddings.push(
-          `${element.service_module}(${element.service_name}),代码源标识`
-        )
-      })
-      this.multiImportTxt = prefixPaddings.join('\n')
-      this.showMultiImport = true
-    },
-    parseRepo (providerAlias, repoStr) {
-      try {
-        let trimedRepoStr = ''
-        const allCodeHosts = this.allCodeHosts
-        if (repoStr.endsWith('/')) {
-          trimedRepoStr = repoStr.slice(0, -1)
-        } else {
-          trimedRepoStr = repoStr
-        }
-        const URLObject = new URL(trimedRepoStr)
-        const providerAddress = URLObject.origin
-        const provider = allCodeHosts.find(item => {
-          return (
-            item.address === providerAddress && item.alias === providerAlias
-          )
-        })
-        if (provider) {
-          let repoName = ''
-          let branch = ''
-          let namespace = ''
-          const type = provider.type
-          if (type === 'github') {
-            // /koderover/zadig/tree/main
-            const splitBySlash = drop(URLObject.pathname.split('/'), 1)
-            namespace = URLObject.pathname.split('/')[1]
-            repoName = splitBySlash[1]
-            branch = splitBySlash[splitBySlash.length - 1]
-          } else if (type === 'gitee') {
-            // /koderover/zadig/tree/main/
-            const splitBySlash = drop(URLObject.pathname.split('/'), 1)
-            namespace = URLObject.pathname.split('/')[1]
-            repoName = splitBySlash[1]
-            branch = splitBySlash[splitBySlash.length - 1]
-          } else if (type === 'gitlab') {
-            // /kr-test-org1/microservice-demo/-/tree/main
-            // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/-/tree/main
-            const splitBySlash = URLObject.pathname.split('-/tree')
-            // /kr-test-org1/microservice-demo/ + /main
-            // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/ + /main
-            branch = splitBySlash[splitBySlash.length - 1].split('/')[1]
-            // /kr-test-org1/microservice-demo/
-            // /kr-test-org1/subgroup-1/subgroup-2/subgroup-3/helloworld/
-            const repoOwnerAndRepoNameSplit = drop(
-              dropRight(splitBySlash[0].split('/'), 1),
-              1
-            )
-            if (repoOwnerAndRepoNameSplit.length > 2) {
-              // subgroup
-              repoName =
-                repoOwnerAndRepoNameSplit[repoOwnerAndRepoNameSplit.length - 1]
-              namespace = dropRight(repoOwnerAndRepoNameSplit).join('/')
-            } else {
-              namespace = URLObject.pathname.split('/')[1]
-              repoName = repoOwnerAndRepoNameSplit[1]
-            }
-          } else if (type === 'gitee-enterprise') {
-            // /enterprise/dashboard/programs/215/projects/enterprise/multiservice-demo/tree/feature-1
-            const splitBySlash = drop(URLObject.pathname.split('/'), 1)
-            branch = splitBySlash[splitBySlash.length - 1]
-            repoName = splitBySlash[splitBySlash.length - 3]
-            namespace = splitBySlash[splitBySlash.length - 4]
-          }
-          return {
-            address: provider.address,
-            branch: branch,
-            codehost_id: provider.id,
-            is_primary: false,
-            remote_name: 'origin',
-            repo_name: repoName,
-            repo_namespace: namespace,
-            repo_owner: namespace,
-            source: provider.type
-          }
-        } else {
-          this.parseErr = '代码源标识不匹配，请检查。如需 添加/修改 代码源，可前往：系统设置-代码源'
-        }
-      } catch (error) {
-        console.log(error)
-        throw new Error(error)
-      }
-    },
-    parseReposInfo (reposStrArray) {
-      const providerAlias = reposStrArray[0]
-      reposStrArray = drop(reposStrArray).map(repoStr => {
-        return this.parseRepo(providerAlias, repoStr)
-      })
-      return reposStrArray
-    },
-    parseServiceInfo (line) {
-      const projectName = this.projectName
-      const serviceWithModule = line.split(',')[0]
-      const serviceModule = serviceWithModule.split('(')[0]
-      const serviceName = serviceWithModule.split('(')[1].split(')')[0]
-      return {
-        key: `${serviceName}/${serviceModule}`,
-        product_name: projectName,
-        service_module: serviceModule,
-        service_name: serviceName
-      }
-    },
-    parseMultiImport () {
-      const lines = this.multiImportTxt.split('\n')
-      const targets = []
-      this.parseErr = ''
-      lines.every((line, index) => {
-        if (line.split(',').length >= 3) {
-          const service = this.parseServiceInfo(line)
-          const reposStrArray = drop(line.split(','), 1)
-          const repos = this.parseReposInfo(reposStrArray)
-          if (repos[0] && service) {
-            targets.push({
-              repos: repos,
-              service: service
-            })
-            this.getInitRepoInfo(targets)
-            this.$emit('update:targets', targets)
-            this.showMultiImport = false
-            return true
-          } else {
-            return false
-          }
-        } else {
-          this.parseErr = `格式错误解析失败，请检查第 ${index + 1} 行!`
-          return false
-        }
-      })
     }
   },
   mounted () {
