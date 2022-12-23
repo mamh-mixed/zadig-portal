@@ -30,8 +30,8 @@
       v-for="(app,appIndex) in currentEnv.installs"
       :key="appIndex"
       :prop="`${secondaryProp}.installs.${appIndex}.name`"
-      :rules="{required: false, message: this.$t(`build.prompt.packageCannotBeEmpty`), trigger: 'blur'}"
-      :label="appIndex === 0 ? this.$t(`build.packages`) : ''"
+      :rules="{required: false, message: $t(`build.prompt.packageCannotBeEmpty`), trigger: 'blur'}"
+      :label="appIndex === 0 ? $t(`build.packages`) : ''"
       class="secondary-label"
     >
       <el-select v-model="currentEnv.installs[appIndex]" :placeholder="$t(`build.prompt.select`)" size="small" value-key="id" filterable>
