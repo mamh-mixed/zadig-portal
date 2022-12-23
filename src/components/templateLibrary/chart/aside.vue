@@ -51,7 +51,9 @@ export default {
     .bar-title {
       margin: 0 0 1px 1px;
       padding: 20px 17px;
+      text-transform: uppercase;
       transition: all 0.5s;
+      writing-mode: vertical-rl;
 
       &.selected,
       &:hover {
