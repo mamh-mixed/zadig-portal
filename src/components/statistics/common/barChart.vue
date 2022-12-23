@@ -41,6 +41,7 @@ export default {
         tooltip: {
           trigger: 'axis'
         },
+        // TODO: THIS
         legend: {
           data: [this.$t('workflowTaskStatus.passed'), this.$t('workflowTaskStatus.failed')]
         },
