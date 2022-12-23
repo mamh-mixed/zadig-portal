@@ -45,26 +45,11 @@
         <div v-if="checkedEnvList.length > 0 && (checkedEnvList[0].vars &&checkedEnvList[0].vars.length > 0 || hasPlutus)" class="env-tabs">
           <el-tabs v-model="activeEnvTabName" type="card">
             <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
-              <CheckResource v-if="hasPlutus && !env.hasDeployed" :checkResource="env.checkResource" :serviceNames="env.serviceNames" />
-              <el-table v-if="env.vars.length" :data="env.vars" style="width: 100%;">
-                <el-table-column :label="$t(`global.key`)">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.key }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column :label="$t(`global.value`)">
-                  <template slot-scope="scope">
-                    <el-input
-                      size="small"
-                      v-model="scope.row.value"
-                      type="textarea"
-                      :autosize="{ minRows: 1, maxRows: 4}"
-                      placeholder="请输入内容"
-                    ></el-input>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <div v-else-if="!(hasPlutus && !env.hasDeployed)" style="margin-top: 10px;">该服务未引用全局变量！</div>
+              <CheckResource v-if="hasPlutus" :checkResource="env.checkResource" :serviceNames="env.serviceNames" />
+              <div class="variable-yaml-container" style="margin: 5px 0;">
+                <span style="display: inline-block; margin: 5px 0;">变量配置</span>
+                <el-input type="textarea" :rows="10"  v-model="env.variableYaml"></el-input>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </div>
@@ -122,11 +107,10 @@
                 <MultipaneResizer/>
                 <aside class="service-aside service-aside-right"
                        :style="{ flexGrow: 1 }">
-                  <ServiceAside :service="service"
+                  <ServiceAside ref="serviceAside"
+                                :service="service"
                                 :services="services"
-                                :serviceWithConfigs="serviceWithConfigs"
                                 :buildBaseUrl="isOnboarding?`/v1/projects/create/${projectName}/k8s/service`:`/v1/projects/detail/${projectName}/services`"
-                                @getServiceModules="getServiceModules"
                                 :changeEditorWidth="changeEditorWidth" />
                 </aside>
 
@@ -168,7 +152,7 @@ import ServiceAside from './k8s/serviceAside.vue'
 import ServiceEditor from './k8s/serviceEditor.vue'
 import ServiceTree from './common/serviceTree.vue'
 import IntegrationCode from './common/integrationCode.vue'
-import { sortBy, cloneDeep, uniqBy } from 'lodash'
+import { sortBy } from 'lodash'
 import { getSingleProjectAPI, getServiceTemplatesAPI, getServicesTemplateWithSharedAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import { mapState } from 'vuex'
@@ -186,7 +170,6 @@ export default {
       services: [],
       sharedServices: [],
       detectedEnvs: [],
-      serviceWithConfigs: {},
       checkedEnvList: [],
       currentServiceYamlKinds: {},
       showNext: false,
@@ -199,7 +182,8 @@ export default {
       deployableEnvs: [],
       activeEnvTabName: '',
       deletedService: '',
-      middleWidth: '50%'
+      middleWidth: '50%',
+      deployableEnvListWithVars: []
     }
   },
   methods: {
@@ -243,22 +227,6 @@ export default {
         })), 'service_name')
       })
     },
-    getServiceModules () {
-      const serviceName = this.service.service_name
-      const projectName = this.projectName
-      serviceTemplateWithConfigAPI(serviceName, projectName).then(res => {
-        if (res.variable_kvs && res.service_vars) {
-          res.variable_kvs.forEach(element => {
-            if (res.service_vars.includes(element.key)) {
-              element.show = true
-            } else {
-              element.show = false
-            }
-          })
-        }
-        this.serviceWithConfigs = res
-      })
-    },
     showJoinToEnvDialog () {
       this.checkedEnvList = []
       this.getServiceDeployableEnvs()
@@ -286,7 +254,6 @@ export default {
         this.$refs.serviceTree.getServiceGroup()
         this.getSharedServices()
       }
-      this.serviceWithConfigs = res
     },
     updateYaml (switchNode) {
       this.$refs.serviceEditor.updateService().then(() => {
@@ -324,8 +291,7 @@ export default {
       const payload = this.checkedEnvList.map(item => {
         return {
           env_name: item.env_name,
-          services: item.serviceNames.map(svc => ({ service_name: svc.service_name, deploy_strategy: svc.deploy_strategy })),
-          vars: item.vars
+          services: item.serviceNames.map(svc => ({ service_name: svc.service_name, deploy_strategy: svc.deploy_strategy, variable_yaml: item.variableYaml }))
         }
       })
       const projectName = this.projectName
@@ -407,12 +373,33 @@ export default {
         })
       }
     },
-    getServiceDeployableEnvs () {
+    async getServiceDeployableEnvs () {
       const projectName = this.projectName
       const serviceName = this.service.service_name
-      getServiceDeployableEnvsAPI(projectName, serviceName).then(res => {
-        this.deployableEnvs = res.envs
+      const result = await Promise.all([getServiceDeployableEnvsAPI(projectName, serviceName), serviceTemplateWithConfigAPI(serviceName, projectName)])
+      const deployableEnvs = result[0].envs
+      const variableYaml = result[1].variable_yaml
+      deployableEnvs.forEach(env => {
+        env.checkResource = {
+          env_name: env.env_name,
+          namespace: env.namespace,
+          cluster_id: env.cluster_id,
+          services: [{
+            service_name: serviceName,
+            variable_yaml: variableYaml
+          }]
+        }
+        env.services.push({
+          service_name: serviceName,
+          variable_yaml: variableYaml
+        })
+        env.variableYaml = variableYaml
+        env.serviceNames = [{
+          service_name: serviceName,
+          deploy_strategy: 'deploy'
+        }]
       })
+      this.deployableEnvListWithVars = deployableEnvs
     },
     showOnboardingNext () {
       this.$router.push(`/v1/projects/create/${this.projectName}/k8s/runtime?serviceName=${this.serviceName}`)
@@ -427,27 +414,6 @@ export default {
     },
     serviceName () {
       return this.$route.query.service_name
-    },
-    deployableEnvListWithVars () {
-      const curServiceName = this.service.service_name
-      const vars = cloneDeep(this.detectedEnvs.filter(item => item.services.includes(curServiceName)))
-      return this.deployableEnvs.map(env => {
-        const envVars = env.vars.filter(item => item.services.includes(curServiceName))
-        this.$set(env, 'vars', uniqBy([].concat(envVars, vars), 'key'))
-        env.hasDeployed = env.services.includes(curServiceName)
-        env.checkResource = {
-          env_name: env.env_name,
-          namespace: env.namespace,
-          cluster_id: env.cluster_id,
-          services: [curServiceName],
-          vars: env.vars
-        }
-        env.serviceNames = [{
-          service_name: curServiceName,
-          deploy_strategy: 'deploy'
-        }]
-        return env
-      })
     },
     enableOnboardingNext () {
       const services = this.services.filter(service => service.status === 'added')

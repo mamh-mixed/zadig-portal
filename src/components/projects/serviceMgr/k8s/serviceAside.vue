@@ -287,7 +287,7 @@ export default {
       }
     },
     followUpFn () {
-      this.$emit('getServiceModules')
+      this.getServiceTemplateWithConfig()
       this.$router.replace({
         query: Object.assign(
           {},
@@ -453,10 +453,6 @@ export default {
   props: {
     service: {
       required: false,
-      type: Object
-    },
-    serviceWithConfigs: {
-      required: true,
       type: Object
     },
     services: {
