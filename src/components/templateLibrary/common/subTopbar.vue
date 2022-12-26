@@ -13,24 +13,6 @@
       </div>
     </div>
     <div class="operation">
-      <template>
-        <el-dropdown
-          v-if="$route.path === `/v1/template/workflows`"
-          @command="createWorkflowTemplate"
-          placement="bottom"
-          trigger="click"
-        >
-          <button type="button" class="display-btn el-button">
-            <i class="el-icon-plus"></i>
-            &nbsp;&nbsp;{{$t(`workflow.workflowTemplate`)}}&nbsp;&nbsp;
-            <i class="el-icon-caret-bottom el-icon--right"></i>
-          </button>
-          <el-dropdown-menu slot="dropdown" class="create-workflow-template">
-            <el-dropdown-item command="custom">{{$t(`workflow.customWorkflow`)}}</el-dropdown-item>
-            <el-dropdown-item command="release">{{$t(`workflow.releaseWorkflow`)}}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </template>
     </div>
   </div>
 </template>

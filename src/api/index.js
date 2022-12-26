@@ -1812,9 +1812,6 @@ export function getBuildTemplateReferenceAPI (id) {
 }
 
 // Template Workflow
-export function getWorkflowTemplateListAPI (category, excludeBuildIn = false, projectName) {
-  return http.get(`/api/aslan/template/workflow?category=${category}&excludeBuildIn=${excludeBuildIn}&projectName=${projectName}`)
-}
 
 export function addWorkflowTemplateAPI (payload) {
   return http.post(`/api/aslan/template/workflow`, payload)

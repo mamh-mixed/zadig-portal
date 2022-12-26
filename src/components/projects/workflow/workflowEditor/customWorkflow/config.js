@@ -54,11 +54,6 @@ const jobTabList = [
   }
 ]
 const jobTypeList = [
-  // {
-  //   label: '自定义',
-  //   name: 'custom',
-  //   tip: '自定义'
-  // },
   {
     label: 'build',
     name: 'zadig-build',
@@ -142,16 +137,7 @@ const jobType = {
   test: 'zadig-test',
   scanning: 'zadig-scanning',
   distribute: 'zadig-distribute-image',
-  customDeploy: 'custom-deploy',
-  canaryDeploy: 'k8s-canary-deploy',
-  canaryConfirm: 'k8s-canary-release',
-  blueGreenDeploy: 'k8s-blue-green-deploy',
-  blueGreenConfirm: 'k8s-blue-green-release',
-  k8sResourcePatch: 'k8s-resource-patch',
-  k8sGrayRollback: 'k8s-gray-rollback',
-  grayDeploy: 'k8s-gray-release',
-  istioRelease: 'istio-release',
-  istioRollback: 'istio-rollback'
+  customDeploy: 'custom-deploy'
 }
 const editorOptions = {
   mode: 'yaml',

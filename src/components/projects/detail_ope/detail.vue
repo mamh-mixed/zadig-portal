@@ -56,11 +56,10 @@
           <el-table-column :label="$t(`global.name`)">
             <template slot-scope="{ row }">
               <el-tag v-if="row.workflow_type === 'common_workflow'" size="mini" class="mg-r8" type="plain">{{$t('workflow.customWorkflowTag')}}</el-tag>
-              <el-tag v-else-if="row.workflow_type === 'release'" size="mini" class="mg-r8"  type="plain">{{$t('workflow.releaseWorkflowTag')}}</el-tag>
               <el-tag v-else size="mini" class="mg-r8" type="plain">{{$t('workflow.productWorkflowTag')}}</el-tag>
               <router-link
                 class="pipeline-name"
-                :to=" (row.workflow_type === 'common_workflow' || row.workflow_type === 'release')? `/v1/projects/detail/${projectName}/pipelines/custom/${row.name}?display_name=${row.display_name}`  :  `/v1/projects/detail/${projectName}/pipelines/multi/${row.name}?display_name=${row.display_name}`"
+                :to=" (row.workflow_type === 'common_workflow')? `/v1/projects/detail/${projectName}/pipelines/custom/${row.name}?display_name=${row.display_name}`  :  `/v1/projects/detail/${projectName}/pipelines/multi/${row.name}?display_name=${row.display_name}`"
               >{{row.display_name}}</router-link>
             </template>
           </el-table-column>
@@ -128,8 +127,7 @@ export default {
       if (res) {
         res.workflow_list.forEach(workflow => {
           if (
-            workflow.workflow_type !== 'common_workflow' &&
-            workflow.workflow_type !== 'release'
+            workflow.workflow_type !== 'common_workflow'
           ) {
             workflow.enabledStages = workflow.enabledStages.map(stage => {
               return this.wordTranslation(stage, 'workflowStage')

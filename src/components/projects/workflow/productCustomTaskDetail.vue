@@ -96,58 +96,6 @@
           :projectName="projectName"
           @showFooter="showFooter"
         />
-        <JobBlueGreenConfirmDetail
-          v-if="curJob.type === jobType.blueGreenDeploy"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobBlueGreenConfirmDetail
-          v-if="curJob.type === jobType.blueGreenConfirm"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobCanaryDeployDetail
-          v-if="curJob.type === jobType.canaryDeploy"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobCanaryConfirmDetail
-          v-if="curJob.type === jobType.canaryConfirm"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobGrayRollbackDetail
-          v-if="curJob.type === jobType.k8sGrayRollback"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobK8sGrayDeployDetail
-          v-if="curJob.type === jobType.grayDeploy"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobK8sResourceUpdateDetail
-          @showFooter="showFooter"
-          v-if="curJob.type=== jobType.k8sResourcePatch"
-          :jobInfo="curJob"
-          :projectName="projectName"
-        />
         <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.k8sDeploy" :jobInfo="curJob" :projectName="projectName" />
         <JobTestDetail
           v-if="curJob.type === jobType.test"
@@ -169,24 +117,6 @@
         />
         <JobImageDistributeDetail
           v-if="curJob.type === jobType.distribute"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobIstioReleaseDetail
-          v-if="curJob.type === jobType.istioRelease"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobIstioReleaseRollbackDetail
-          v-if="curJob.type === jobType.istioRollback"
           :jobInfo="curJob"
           :taskId="taskId"
           :workflowName="workflowName"
@@ -246,16 +176,7 @@ import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
 import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue'
 import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
 import JobScanningDetail from './productCustomTaskDetail/jobScanningDetail.vue'
-import JobK8sResourceUpdateDetail from './productCustomTaskDetail/jobK8sResourceUpdateDetail.vue'
-import JobBlueGreenConfirmDetail from './productCustomTaskDetail/jobBlueGreenConfirmDetail.vue'
-import JobBlueGreenDeployDetail from './productCustomTaskDetail/jobBlueGreenDeployDetail.vue'
-import JobCanaryDeployDetail from './productCustomTaskDetail/jobCanaryDeployDetail.vue'
-import JobCanaryConfirmDetail from './productCustomTaskDetail/jobCanaryConfirmDetail.vue'
-import JobK8sGrayDeployDetail from './productCustomTaskDetail/jobK8sGrayDeployDetail.vue'
-import JobGrayRollbackDetail from './productCustomTaskDetail/jobGrayRollbackDetail.vue'
 import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
-import JobIstioReleaseDetail from './productCustomTaskDetail/jobIstioReleaseDetail.vue'
-import JobIstioReleaseRollbackDetail from './productCustomTaskDetail/jobIstioReleaseRollbackDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 
@@ -287,16 +208,7 @@ export default {
     JobTestDetail,
     JobScanningDetail,
     StageApproval,
-    JobK8sResourceUpdateDetail,
-    JobBlueGreenConfirmDetail,
-    JobBlueGreenDeployDetail,
-    JobCanaryDeployDetail,
-    JobCanaryConfirmDetail,
-    JobGrayRollbackDetail,
-    JobK8sGrayDeployDetail,
-    JobImageDistributeDetail,
-    JobIstioReleaseDetail,
-    JobIstioReleaseRollbackDetail
+    JobImageDistributeDetail
   },
   computed: {
     taskId () {

@@ -147,7 +147,7 @@ export default {
       const res = await getCustomWorkflowListAPI(projectName)
       if (res) {
         this.workflows = res.workflow_list.filter(
-          workflow => (workflow.workflow_type !== 'common_workflow' && workflow.workflow_type !== 'release')
+          workflow => (workflow.workflow_type !== 'common_workflow')
         )
       }
     },

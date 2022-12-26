@@ -18,7 +18,7 @@
     :description="workflow.description"
     @refreshWorkflow="refreshWorkflow"
   >
-    <template v-if="workflow.workflow_type === 'common_workflow'||workflow.workflow_type === 'release'" slot="operations">
+    <template v-if="workflow.workflow_type === 'common_workflow'" slot="operations">
       <el-button
         type="primary"
         v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'run_workflow',resource:{type:'workflow',name:workflow.name}})"
@@ -36,17 +36,6 @@
         <router-link
           v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
           :to="`/v1/projects/detail/${workflow.projectName}/pipelines/custom/edit/${workflow.name}?projectName=${workflow.projectName}&display_name=${workflow.display_name}`"
-        >
-          <span class="menu-item iconfont icondeploy"></span>
-        </router-link>
-        <el-tooltip v-else effect="dark" :content="$t(`permission.lackPermission`)" placement="top">
-          <span class="permission-disabled menu-item iconfont icondeploy"></span>
-        </el-tooltip>
-      </template>
-      <template v-if="workflow.workflow_type === 'release'">
-        <router-link
-          v-if="checkPermissionSyncMixin({projectName: workflow.projectName, action: 'edit_workflow', resource:{type:'workflow',name:workflow.name}})"
-          :to="`/v1/projects/detail/${workflow.projectName}/pipelines/release/edit/${workflow.name}?projectName=${workflow.projectName}&display_name=${workflow.display_name}`"
         >
           <span class="menu-item iconfont icondeploy"></span>
         </router-link>
@@ -208,8 +197,7 @@ export default {
     stages () {
       let stages = []
       if (
-        this.workflow.workflow_type === 'common_workflow' ||
-        this.workflow.workflow_type === 'release'
+        this.workflow.workflow_type === 'common_workflow'
       ) {
         stages = this.workflow.enabledStages
       } else {

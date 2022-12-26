@@ -95,11 +95,6 @@
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
         <div class="type-desc">{{$t(`workflow.customWorkflowAbility`)}}</div>
-        <el-radio v-model="selectWorkflowType" label="release" v-if="hasPlutus">
-          {{$t(`workflow.releaseWorkflow`)}}
-          <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
-        </el-radio>
-        <div class="type-desc" v-if="hasPlutus">{{$t(`workflow.releaseWorkflowAbility`)}}</div>
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">{{$t(`global.cancel`)}}</el-button>
@@ -162,95 +157,6 @@
         <el-button size="small" @click="cancelEditView('workflowViewForm')">{{$t(`global.cancel`)}}</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      :title="$t(`workflow.selectTemplate`)"
-      :visible.sync="showWorkflowTemplateDialog"
-      :close-on-click-modal="false"
-      class="model-dialog"
-      width="60%"
-    >
-      <el-card shadow="hover" @mouseover.native="currentTemplate=''">
-        <div class="card" style="height: 30px; line-height: 30px;">
-          <div>
-            <i class="el-icon-plus"></i>
-            {{$t(`workflow.addEmptyWorkflow`)}}
-          </div>
-          <div v-if="!currentTemplate">
-            <router-link
-              class="card-btn"
-              :to="`/v1/projects/detail/${projectName}/pipelines/${selectWorkflowType}/create?projectName=${projectName}`"
-            >{{$t(`workflow.use`)}}</router-link>
-          </div>
-        </div>
-      </el-card>
-      <div>
-        <div class="title" v-if="selectWorkflowType==='release'">{{$t(`workflow.releaseWorkflowTemplate`)}}</div>
-        <div class="title" v-if="selectWorkflowType==='custom'">{{$t(`workflow.customWorkflowTemplate`)}}</div>
-        <el-card
-          shadow="hover"
-          v-for="(item) in customWorkflowTemplates"
-          :key="item.id"
-          class="mg-b8"
-          @mouseover.native="currentTemplate=item.template_name"
-        >
-          <div class="card">
-            <div class="card-content">
-              <section>
-                <div class="name">
-                  <el-tooltip effect="dark" :content="item.template_name" placement="top">
-                    <span>{{ item.template_name }}</span>
-                  </el-tooltip>
-                </div>
-                <div class="desc">{{item.description}}</div>
-              </section>
-              <section class="stages">
-                <CusTags :values="item.stages" noLimit />
-              </section>
-            </div>
-            <div v-if="currentTemplate===item.template_name">
-              <router-link
-                class="card-btn"
-                :to="`/v1/projects/detail/${projectName}/pipelines/${selectWorkflowType}/create?projectName=${projectName}&id=${item.id}`"
-              >{{$t(`workflow.use`)}}</router-link>
-            </div>
-          </div>
-        </el-card>
-      </div>
-      <div>
-        <div class="title">{{$t(`workflow.builtInTemplate`)}}</div>
-        <el-card
-          shadow="hover"
-          v-for="(item) in buildInWorkflowTemplates"
-          :key="item.id"
-          class="mg-b8"
-          @mouseover.native="currentTemplate=item.template_name"
-        >
-          <div class="card">
-            <div class="card-content">
-              <section>
-                <div class="name">
-                  <el-tooltip effect="dark" :content="item.template_name" placement="top">
-                    <span>{{ item.template_name }}</span>
-                  </el-tooltip>
-                </div>
-                <el-tooltip effect="dark" :content="item.description" placement="top">
-                  <div class="desc">{{item.description}}</div>
-                </el-tooltip>
-              </section>
-              <section class="stages">
-                <CusTags :values="item.stages" noLimit />
-              </section>
-            </div>
-            <div v-if="currentTemplate === item.template_name">
-              <router-link
-                class="card-btn"
-                :to="`/v1/projects/detail/${projectName}/pipelines/${selectWorkflowType}/create?projectName=${projectName}&id=${item.id}`"
-              >{{$t(`workflow.use`)}}</router-link>
-            </div>
-          </div>
-        </el-card>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -273,11 +179,10 @@ import {
   removeWorkflowViewAPI,
   getWorkflowViewListAPI,
   addWorkflowViewAPI,
-  editWorkflowViewAPI,
-  getWorkflowTemplateListAPI
+  editWorkflowViewAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { orderBy } from 'lodash'
 
 export default {
@@ -326,9 +231,6 @@ export default {
   },
   computed: {
     ...mapGetters(['getOnboardingTemplates']),
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    }),
     projectName () {
       return this.$route.params.project_name
     },
@@ -435,21 +337,7 @@ export default {
       if (type === 'product') {
         path = '/workflows/product/create'
       } else if (type === 'custom') {
-        if (this.hasPlutus) {
-          this.showWorkflowTemplateDialog = true
-          this.getWorkflowTemplateList()
-          return
-        } else {
-          path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
-        }
-      } else if (type === 'release') {
-        if (this.hasPlutus) {
-          this.showWorkflowTemplateDialog = true
-          this.getWorkflowTemplateList()
-          return
-        } else {
-          path = `/v1/projects/detail/${this.projectName}/pipelines/release/create`
-        }
+        path = `/v1/projects/detail/${this.projectName}/pipelines/custom/create`
       }
       this.$router.push(
         `${path}?projectName=${this.projectName ? this.projectName : ''}`
@@ -708,13 +596,6 @@ export default {
           this.view = ''
           this.getWorkflowViewList()
         })
-      })
-    },
-    getWorkflowTemplateList () {
-      const type =
-        this.selectWorkflowType === 'custom' ? '' : this.selectWorkflowType
-      getWorkflowTemplateListAPI(type, false, this.projectName).then(res => {
-        this.workflowTemplates = res
       })
     }
   },
