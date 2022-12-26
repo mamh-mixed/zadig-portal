@@ -688,7 +688,7 @@ exports.default = {
       freestyle: '通用任务',
       plugin: '插件',
       test: '测试',
-      scan: '扫描',
+      scan: '代码扫描',
       distribute: '镜像分发',
       customDeploy: 'Kubernetes 部署',
       canaryDeploy: '金丝雀发布',
