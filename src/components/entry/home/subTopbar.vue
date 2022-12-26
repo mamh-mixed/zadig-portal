@@ -128,7 +128,7 @@
         >{{$t('subTopbarMenu.createVersion')}}</el-button>
       </template>
       <template v-if="comp && comp.isProjectAdmin && $route.path === `/v1/projects/detail/${projectName}/detail`">
-        <el-button v-if="hasPlutus && deployType === 'external'" type="text" @click="convertType">{{$t('subTopbarMenu.changeProjectType')}}</el-button>
+      <el-button v-if="deployType === 'external'" type="text" >{{$t('subTopbarMenu.changeProjectType')}}</el-button>
         <el-dropdown
           placement="bottom"
           trigger="click"
@@ -162,8 +162,6 @@
   </div>
 </template>
 <script>
-import { updateProjectTypeAPI } from '@api'
-import { mapState } from 'vuex'
 
 export default {
   data () {
@@ -184,42 +182,9 @@ export default {
         project => project.name === this.projectName
       )
       return project ? project.deployType : ''
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
-    convertType () {
-      const content = `
-      <div>
-        <div style="font-weight: 500;color: #303133;">${this.$t('subTopbarMenu.changeProjectTypeFirstTip')}</div>
-        <p>${this.$t('subTopbarMenu.changeProjectTypeSecondTip')}</p>
-        <p>${this.$t('subTopbarMenu.changeProjectTypeThirdTip')}</p>
-        <p>${this.$t('subTopbarMenu.changeProjectTypeFourthTip')}</p>
-      </div>
-      `
-      this.$confirm(content, this.$t('subTopbarMenu.changeProjectTypeConfirm'), {
-        confirmButtonText: this.$t(`global.confirm`),
-        cancelButtonText: this.$t(`global.cancel`),
-        dangerouslyUseHTMLString: true
-      })
-        .then(() => {
-          updateProjectTypeAPI(this.projectName).then(() => {
-            this.$message({
-              type: 'success',
-              message: this.$t('subTopbarMenu.changeProjectTypeSuccess')
-            })
-            this.$router.push(`/v1/projects`)
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: this.$t('subTopbarMenu.cancelChangeProjectType')
-          })
-        })
-    },
     bindComp (comp, type) {
       if (type === 'workflow') {
         comp.showSelectWorkflowType = true

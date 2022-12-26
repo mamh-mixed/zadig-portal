@@ -265,17 +265,6 @@
         <el-button type="primary" @click="operateStage('',stage)" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
-    <el-dialog :title="$t(`workflow.saveAsTemplate`)" :visible.sync="isShowModelDialog" width="30%">
-      <el-form inline ref="modelForm" :model="modelFormInfo" label-position="left">
-        <el-form-item :label="$t(`workflow.templateName`)" :rules="{required: true,message: $t(`workflow.inputTemplateName`), trigger: ['blur', 'change']}" prop="name">
-          <el-input :placeholder="$t(`workflow.inputTemplateName`)" size="small" v-model="modelFormInfo.name"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="isShowModelDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
-        <el-button type="primary" @click="saveModel" size="small">{{$t(`global.confirm`)}}</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -293,9 +282,7 @@ import {
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
   getCustomWorkflowDetailAPI,
-  checkCustomWorkflowYaml,
-  addWorkflowTemplateAPI,
-  getWorkflowTemplateDetailAPI
+  checkCustomWorkflowYaml
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import Stage from './components/stage.vue'
@@ -378,9 +365,7 @@ export default {
       isShowDrawer: false,
       scal: '1',
       insertSatgeIndex: 0,
-      notComputedPayload: {},
-      isShowModelDialog: false,
-      modelFormInfo: { name: '' }
+      notComputedPayload: {}
     }
   },
   components: {
@@ -455,7 +440,6 @@ export default {
       return res ? res.drawerHideButton : false
     },
     ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus,
       isEditJob: state => state.customWorkflow.isEditJob,
       isShowFooter: state => state.customWorkflow.isShowFooter
     })
@@ -468,21 +452,11 @@ export default {
       this.payload.project = this.projectName
       this.getServiceAndBuildList()
       this.setTitle()
-      if (this.modelId) {
-        this.getWorkflowTemplateDetail()
-      } else {
-        // edit
-        if (this.isEdit) {
-          this.getWorkflowDetail(this.$route.params.workflow_name)
-        }
+      // edit
+      if (this.isEdit) {
+        this.getWorkflowDetail(this.$route.params.workflow_name)
       }
       this.$store.dispatch('setIsShowFooter', false)
-    },
-    getWorkflowTemplateDetail () {
-      getWorkflowTemplateDetailAPI(this.modelId, this.projectName).then(res => {
-        this.payload = jsyaml.load(res)
-        this.handleEnv()
-      })
     },
     setTitle () {
       bus.$emit('set-topbar-title', {
@@ -972,24 +946,6 @@ export default {
       }
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
-    },
-    saveModel () {
-      this.$refs.modelForm.validate(valid => {
-        if (valid) {
-          const params = {
-            category: '',
-            ...this.payload,
-            template_name: this.modelFormInfo.name
-          }
-          addWorkflowTemplateAPI(params).then(res => {
-            this.isShowModelDialog = false
-            this.$message({
-              type: 'success',
-              message: '新增成功'
-            })
-          })
-        }
-      })
     }
   },
   watch: {

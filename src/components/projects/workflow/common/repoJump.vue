@@ -10,7 +10,7 @@
           target="_blank"
         >{{build.tag }}</a>
         <a
-          v-else-if="build.source==='gitee'||build.source==='gitee-enterprise'"
+          v-else-if="build.source==='gitee'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.tag}`"
           target="_blank"
         >{{build.tag }}</a>
@@ -33,7 +33,7 @@
       <span v-if="build.branch && !build.tag && build.source!=='other'" class="link">
         <i v-if=" build.branch" class="iconfont iconicon_git-branch repo-icon"></i>
         <a
-          v-if="build.source==='github'||build.source==='gitee'|| build.source==='gitee-enterprise'||build.source==='gitlab'"
+          v-if="build.source==='github'||build.source==='gitee'||build.source==='gitlab'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/tree/${build.branch}`"
           target="_blank"
         >{{build.branch}}</a>
@@ -60,7 +60,7 @@
           <span v-for="item in build.prs" :key="item" @click="setPr(item)">#{{item}}</span>
         </a>
         <a
-          v-else-if="build.source==='gitee'|| build.source==='gitee-enterprise'"
+          v-else-if="build.source==='gitee'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/pulls/${curPr}`"
           target="_blank"
         >
@@ -83,11 +83,6 @@
         <a
           v-if="build.source==='github'||build.source==='gitee'||build.source==='gitlab'"
           :href="`${build.address}/${build.repo_owner}/${build.repo_name}/commit/${build.commit_id}`"
-          target="_blank"
-        >{{build.commit_id.substring(0, 10)}}</a>
-        <a
-          v-else-if="build.source==='gitee-enterprise'"
-          :href="`${build.address}/enterprise/dashboard/projects/${build.repo_owner}/${build.repo_name}/commit/${build.commit_id}`"
           target="_blank"
         >{{build.commit_id.substring(0, 10)}}</a>
         <span v-else-if="build.source==='gerrit'&& (build.prs&&build.prs.length===0)">{{''+build.commit_id.substring(0, 8)}}</span>

@@ -57,10 +57,6 @@
         >
           <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path">
             <span>{{repo.path}}</span>
-            <template v-if="codehostSource === 'gitee-enterprise'">
-              <span v-if="repo.kind==='enterprise'">(企业)</span>
-              <span v-else-if="repo.kind==='org'">(团队)</span>
-            </template>
           </el-option>
         </el-select>
       </el-form-item>
@@ -173,7 +169,7 @@
     </el-form>
 
     <el-dialog
-      v-if="codehostSource === 'gerrit' || codehostSource === 'gitee' || codehostSource === 'gitee-enterprise'"
+      v-if="codehostSource === 'gerrit' || codehostSource === 'gitee'"
       :append-to-body="true"
       :visible.sync="workSpaceModalVisible"
       width="60%"
@@ -424,8 +420,7 @@ export default {
       const projectName = this.$route.params.project_name
       if (
         this.codehostSource === 'gerrit' ||
-        this.codehostSource === 'gitee' ||
-        this.codehostSource === 'gitee-enterprise'
+        this.codehostSource === 'gitee'
       ) {
         const params = {
           codehostId: this.source.codehostId,
@@ -452,8 +447,7 @@ export default {
         payload = {
           source:
             source === 'gerrit' ||
-            source === 'gitee' ||
-            source === 'gitee-enterprise'
+            source === 'gitee'
               ? source
               : 'repo',
           createFrom: {

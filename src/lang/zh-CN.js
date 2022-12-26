@@ -1107,7 +1107,7 @@ exports.default = {
       rollbackVersion: '选择版本',
       selectVersion: '请选择版本',
       versionLabel: '版本号：{version} 创建时间：{time} 创建人：{createBy}',
-      variablesList: '变量列表',
+      globalVariables: '全局变量',
       servicewithoutImage: '{serviceName} 未选择镜像',
       subEnvCreation: '创建子环境',
       envConfigComp: {

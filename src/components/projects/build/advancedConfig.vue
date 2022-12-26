@@ -93,7 +93,6 @@
           </el-form-item>
 
           <el-form-item
-            v-if="hasPlutus"
             ref="gpuItem"
             :label="$t(`build.advancedSettings.customizeGPUResource`)"
             label-width="72px"
@@ -108,7 +107,7 @@
           </el-form-item>
         </div>
       </el-form-item>
-      <el-form-item v-if="hasPlutus && useDockerDaemon">
+      <el-form-item v-if="useDockerDaemon">
         <div slot="label" style="width: 110px; line-height: 20px;">{{$t(`build.advancedSettings.useHostDockerDaemon`)}}</div>
         <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
       </el-form-item>
@@ -170,7 +169,6 @@
 
 <script>
 import { getClusterListAPI, getClusterStatusAPI } from '@api'
-import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -269,10 +267,7 @@ export default {
         })
       }
       return this.buildConfig[this.secondaryProp]
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     handleSwitchChange (val, item) {
@@ -293,9 +288,6 @@ export default {
         if (local) {
           currentResource.cluster_id = local.id
         }
-      }
-      if (this.hasPlutus && this.useDockerDaemon && (typeof currentResource.use_host_docker_daemon === 'undefined')) {
-        this.$set(currentResource, 'use_host_docker_daemon', false)
       }
     },
     checkSpec () {

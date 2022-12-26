@@ -17,11 +17,6 @@
             <Code v-if="currentTab === 'code'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane v-if="hasPlutus" name="config" :label="$t(`sysSetting.integration.configsTab`)">
-          <keep-alive>
-            <ConfigManage v-if="currentTab === 'config'" />
-          </keep-alive>
-        </el-tab-pane>
         <el-tab-pane name="jenkins" :label="$t(`sysSetting.integration.jenkinsTab`)">
           <keep-alive>
             <Jenkins v-if="currentTab === 'jenkins'" />
@@ -30,11 +25,6 @@
         <el-tab-pane name="sonar" :label="$t(`sysSetting.integration.sonarTab`)">
           <keep-alive>
             <Sonar v-if="currentTab === 'sonar'" />
-          </keep-alive>
-        </el-tab-pane>
-        <el-tab-pane name="approval" :label="$t(`sysSetting.integration.approvalSystemTab`)" v-if="hasPlutus">
-          <keep-alive>
-            <Approval v-if="currentTab === 'approval'" />
           </keep-alive>
         </el-tab-pane>
         <el-tab-pane name="external" :label="$t(`sysSetting.integration.otherSystemTab`)">
@@ -51,12 +41,9 @@ import bus from '@utils/eventBus'
 import Account from './account.vue'
 import Project from './project.vue'
 import Code from './code.vue'
-import ConfigManage from './configManage.vue'
 import Jenkins from './jenkins.vue'
 import Sonar from './sonar.vue'
 import External from './external.vue'
-import Approval from './approval.vue'
-import { mapState } from 'vuex'
 
 export default {
   name: 'integration',
@@ -64,11 +51,9 @@ export default {
     Account,
     Project,
     Code,
-    ConfigManage,
     Jenkins,
     Sonar,
-    External,
-    Approval
+    External
   },
   data () {
     return {
@@ -88,11 +73,6 @@ export default {
         query: { currentTab: detail.name }
       })
     }
-  },
-  computed: {
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
   },
   mounted () {
     bus.$emit('set-topbar-title', { title: this.$t(`sidebarMenu.integration`), breadcrumb: [] })

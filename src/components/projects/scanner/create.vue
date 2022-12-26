@@ -168,7 +168,6 @@ import Editor from 'vue2-ace-bind'
 import Resize from '@/components/common/resize.vue'
 import AdvancedConfig from './common/advancedConfig.vue'
 import ValidateSubmit from '@utils/validateAsync'
-import { mapState } from 'vuex'
 
 import {
   getCodeSourceMaskedAPI,
@@ -219,15 +218,6 @@ export default {
             enabled: true,
             items: []
           }
-          // schedules: { // for timing trigger
-          //   enabled: false,
-          //   items: []
-          // },
-          // notify_ctl: {  // for notify
-          //   enabled: false,
-          //   weChat_webHook: '',
-          //   notify_type: []
-          // }
         },
         outputs: [],
         advanced_setting_modified: false
@@ -279,10 +269,7 @@ export default {
           trigger: ['blur', 'change']
         }
       }
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     getAllApps () {

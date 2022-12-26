@@ -50,19 +50,19 @@
         </span>
         <el-input style="width: 350px;" size="small" v-model="notify.dingding_webhook"></el-input>
       </el-form-item>
-      <el-form-item v-if="hasPlutus&&notify.webhook_type==='dingding'" prop="at_mobiles">
+      <el-form-item v-if="notify.webhook_type==='dingding'" prop="at_mobiles">
         <span slot="label">
           <span>{{$t(`workflow.specifyMembersTip1`)}}：</span>
         </span>
         <el-input style="width: 350px;" type="textarea" :rows="3" :placeholder="$t(`workflow.specifyMembersTip1`)" v-model="mobileStr"></el-input>
       </el-form-item>
-      <el-form-item v-if="hasPlutus&&notify.webhook_type==='wechat'" prop="wechat_user_ids">
+      <el-form-item v-if="notify.webhook_type==='wechat'" prop="wechat_user_ids">
         <span slot="label">
           <span>{{$t(`workflow.specifyMembersTip2`)}}：</span>
         </span>
         <el-input style="width: 350px;" type="textarea" :rows="3" :placeholder="$t(`workflow.specifyMembersTip1`)" v-model="wechatMobileStr"></el-input>
       </el-form-item>
-      <el-form-item v-if="hasPlutus&&notify.webhook_type==='feishu'" prop="lark_user_ids">
+      <el-form-item v-if="notify.webhook_type==='feishu'" prop="lark_user_ids">
         <span slot="label">
           <span>{{$t(`workflow.specifyMembersTip1`)}}：</span>
         </span>
@@ -83,7 +83,6 @@
 </template>
 <script type="text/javascript">
 import { notifyType } from '../../config'
-import { mapState } from 'vuex'
 
 export default {
   data () {
@@ -218,10 +217,7 @@ export default {
           this.$set(this.notify, 'at_mobiles', newValue.split(';'))
         }
       }
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     validate () {

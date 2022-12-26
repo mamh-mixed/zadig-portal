@@ -96,12 +96,6 @@
                       <span class="profile-list__text">{{$t(`topbarMenu.sysSetting`)}}</span>
                     </li>
                   </router-link>
-                  <router-link v-if="hasPlutus" to="/v1/enterprise/">
-                    <li class="profile-list__item">
-                      <i class="iconfont iconcompany-info"></i>
-                      <span class="profile-list__text">{{$t(`topbarMenu.enterprise`)}}</span>
-                    </li>
-                  </router-link>
                 </ul>
                 <ul class="profile-list profile-list__with-icon">
                   <router-link to="/v1/profile/info">
@@ -157,8 +151,7 @@ export default {
     ...mapGetters(['projectList', 'showSidebar', 'projectAliasByName']),
     ...mapState({
       role: state => state.login.role,
-      userInfo: state => state.login.userinfo,
-      hasPlutus: state => state.checkPlutus.hasPlutus
+      userInfo: state => state.login.userinfo
     }),
     filteredProjectList () {
       return this.projectList.filter(item => {
