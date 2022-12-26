@@ -723,19 +723,33 @@ export default {
         vertical-align: middle;
       }
     }
+    /* stylelint-disable no-descending-specificity */
+    &.active,
+    &:hover {
+      background-color: @sidebarActiveColor;
+      border-radius: 6px;
+
+      .nav-item-label {
+        color: @themeColor;
+      }
+    }
 
     &.disabled {
-      cursor: pointer;
-    }
-  }
+      cursor: not-allowed;
 
-  .nav-item.active,
-  .nav-item:hover {
-    background-color: @sidebarActiveColor;
-    border-radius: 6px;
+      &:hover {
+        background-color: @sidebarDisabledColor;
 
-    .nav-item-label {
-      color: @themeColor;
+        .nav-item-icon,
+        .nav-item-label {
+          color: #909399;
+        }
+      }
+
+      .nav-item-icon,
+      .nav-item-label {
+        color: #909399;
+      }
     }
   }
 
