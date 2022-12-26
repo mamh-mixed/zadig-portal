@@ -19,6 +19,8 @@ exports.default = {
     operation: '操作',
     successfullySaved: '保存成功',
     helpDoc: '帮助文档',
+    document: '文档',
+    enterprisefeaturesReferforDetails: '企业版功能，详情参考',
     help: '帮助',
     desc: '描述',
     type: '类型',

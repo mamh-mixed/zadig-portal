@@ -12,8 +12,22 @@
               <i class="pointer el-icon-warning"></i>
             </el-tooltip>
           </span>
-          <span>开启自动更新</span>
-          <el-switch v-model="projectForm.auto_deploy.enable" />
+          <span style="color: #ddd;">开启自动更新
+            <el-tooltip class="item" effect="dark" placement="top">
+              <i class="pointer el-icon-warning"></i>
+              <div slot="content">
+                {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                <el-link
+                  style="font-size: 14px; vertical-align: baseline;"
+                  type="primary"
+                  :href="`https://docs.koderover.com/project/service/k8s/#基本说明`"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+            </el-tooltip>
+          </span>
+          <el-switch v-model="projectForm.auto_deploy.enable" disabled/>
         </el-form-item>
         <el-form-item label="交付物命名规则设置">
           <span slot="label">
