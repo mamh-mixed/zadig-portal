@@ -285,33 +285,6 @@ const routes = [
             }
           },
           {
-            path: 'version',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/projects/version/index.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: i18n.t('subTopbarMenu.versions')
-            }
-          },
-          {
-            path: 'version/create',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/delivery/version/helm/createVersion.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: i18n.t('metaTitle.createVersion')
-            }
-          },
-          {
-            path: 'version/detail/:id',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/projects/version/detail.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: i18n.t('metaTitle.versionDetail')
-            }
-          },
-          {
             path: 'envs',
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/home.vue'),
             meta: {
@@ -438,25 +411,7 @@ const routes = [
         children: [
           {
             path: '',
-            redirect: 'version'
-          },
-          {
-            path: 'version',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/delivery/version/index.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: i18n.t('subTopbarMenu.versions')
-            }
-          },
-          {
-            path: 'version/detail/:project_name/:id',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/delivery/version/detail.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: i18n.t('metaTitle.versionDetail')
-            }
+            redirect: 'artifacts'
           },
           {
             path: 'artifacts',
