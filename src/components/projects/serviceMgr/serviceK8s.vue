@@ -140,7 +140,7 @@
             <el-button type="primary"
                        size="small"
                        :disabled="!enableOnboardingNext"
-                       @click="showOnboardingNext">{{$t('global.next')}}</el-button>
+                       @click="showOnboardingNext">{{$t('project.onboardingComp.nextStep')}}</el-button>
           </div>
       </div>
     </div>
