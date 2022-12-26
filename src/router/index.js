@@ -340,6 +340,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/createEnv.vue'),
                 meta: {
                   requiresAuth: true,
+                  createEnv: true,
                   title: i18n.t('subTopbarMenu.createEnvironment')
                 }
               },
@@ -664,6 +665,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/createEnv.vue'),
             meta: {
               requiresAuth: true,
+              createEnv: true,
               title: i18n.t('subTopbarMenu.createEnvironment')
             }
           },
