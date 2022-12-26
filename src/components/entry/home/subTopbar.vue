@@ -75,7 +75,7 @@
                 target="_blank"
               >{{$t(`global.document`)}}</el-link>
             </div>
-            <li class="nav-item">
+            <li class="nav-item disabled">
               <i class="icon iconfont iconvery-versionmana"></i>
               <span class="name">{{$t('subTopbarMenu.versions')}}</span>
             </li>
@@ -275,6 +275,10 @@ export default {
             margin-right: 18px;
             color: #d2d2d2;
             font-size: 22px;
+          }
+
+          &.disabled {
+            color: #c0c4cc;
           }
         }
 
