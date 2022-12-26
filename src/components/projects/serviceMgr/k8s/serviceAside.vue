@@ -123,8 +123,8 @@
               <h4>
                 <span>
                   <i class="iconfont iconchakanbianliang"></i>
-                </span> {{$t('services.k8s.globalVariables')}}
-                <el-tooltip effect="dark" :content="$t('services.k8s.globalVariablesTooltip')" placement="top">
+                </span> {{$t('services.k8s.customVariables')}}
+                <el-tooltip effect="dark" :content="$t('services.k8s.customVariablesTooltip')" placement="top">
                   <span>
                     <i class="el-icon-question"></i>
                   </span>
