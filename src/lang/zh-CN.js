@@ -940,8 +940,8 @@ exports.default = {
       variablesSection: '变量',
       buildInVariables: '系统内置变量',
       buildInVariablesTooltip: '在服务配置中使用 $Namespace$，$Product$，$Service$，$EnvName$ 方式引用',
-      globalVariables: '全局变量',
-      globalVariablesTooltip: '全局变量通过 {{.key}} 引用，项目中的所有服务均可使用',
+      customVariables: '自定义变量',
+      customVariablesTooltip: '自定义变量通过 {{.key}} 引用',
       currentValue: '当前值'
     },
     pm: {},
