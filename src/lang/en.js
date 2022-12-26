@@ -230,6 +230,8 @@ exports.default = {
     buildTemplates: 'Build Templates',
     createWorkflow: 'Create',
     createEnvironment: 'Create',
+    testEnvironment: 'Test Environment',
+    productionEnvironment: 'Production Environment',
     createBuild: 'Create',
     createTest: 'Create',
     createScanner: 'Create',

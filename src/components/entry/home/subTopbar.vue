@@ -102,7 +102,7 @@
           <el-dropdown-menu slot="dropdown" class="project-config">
             <el-dropdown-item
               @click.native="bindComp(comp,'env')"
-            >测试环境
+            >{{$t('subTopbarMenu.testEnvironment')}}
             </el-dropdown-item>
             <el-tooltip  effect="dark" placement="top">
               <div slot="content">
@@ -110,13 +110,13 @@
                 <el-link
                   style="font-size: 13px; vertical-align: baseline;"
                   type="primary"
-                  :href="`https://docs.koderover.com/project/env/k8s/`"
+                  :href="docLink[deployType]"
                   :underline="false"
                   target="_blank"
                 >{{$t(`global.document`)}}</el-link>
               </div>
              <el-dropdown-item style="color: #ddd;">
-              生产环境
+              {{$t('subTopbarMenu.productionEnvironment')}}
             </el-dropdown-item>
           </el-tooltip>
           </el-dropdown-menu>
@@ -195,7 +195,13 @@
 <script>
 export default {
   data () {
-    return {}
+    return {
+      docLink: {
+        k8s: 'https://docs.koderover.com/project/env/k8s/',
+        helm: 'https://docs.koderover.com/project/env/helm/chart/',
+        external: 'https://docs.koderover.com/project/env/k8s/host/'
+      }
+    }
   },
   props: {
     projectName: {

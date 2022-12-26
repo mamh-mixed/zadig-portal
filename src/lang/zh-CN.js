@@ -230,6 +230,8 @@ exports.default = {
     buildTemplates: '构建模板',
     createWorkflow: '新建工作流',
     createEnvironment: '新建环境',
+    testEnvironment: '测试环境',
+    productionEnvironment: '生产环境',
     createBuild: '新建构建',
     createTest: '新建测试',
     createScanner: '新建代码扫描',
