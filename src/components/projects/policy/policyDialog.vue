@@ -3,7 +3,7 @@
     <div
       slot="title"
       style="text-align: center;"
-    >{{ mode | desc }}协作模式 {{ mode === 'updated' ? collaborationData.initName : collaborationData.name }}</div>
+    >{{ mode | desc(that) }}协作模式 {{ mode === 'updated' ? collaborationData.initName : collaborationData.name }}</div>
     <div class="policy-content">
       <div
         class="title update-name"
@@ -20,7 +20,7 @@
           </li>
         </ul>
         <div class="permission-desc">
-          <span :class="[key]">{{ key | desc }}</span>
+          <span :class="[key]">{{ key | desc(that) }}</span>
           <span>以下权限</span>
         </div>
         <div class="content">
@@ -76,7 +76,8 @@ export default {
   },
   data () {
     return {
-      loading: false
+      loading: false,
+      that: this
     }
   },
   computed: {
@@ -96,11 +97,11 @@ export default {
     }
   },
   filters: {
-    desc (val) {
+    desc (val, that) {
       const info = {
-        added: this.$t('global.add'),
-        deleted: this.$t('global.delete'),
-        updated: this.$t('global.update')
+        added: that.$t('global.add'),
+        deleted: that.$t('global.delete'),
+        updated: that.$t('global.update')
       }
       return info[val]
     }
