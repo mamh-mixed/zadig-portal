@@ -155,7 +155,6 @@
             <el-option label="GitHub" value="github"></el-option>
             <el-option label="Gerrit" value="gerrit"></el-option>
             <el-option :label="$t(`sysSetting.integration.gitProviders.giteeCE`)" value="gitee"></el-option>
-            <el-option v-if="hasPlutus" :label="$t(`sysSetting.integration.gitProviders.giteeEE`)" value="gitee-enterprise"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t(`sysSetting.integration.gitProviders.providerAlias`)" prop="alias">
@@ -427,7 +426,6 @@
             <el-option label="GitHub" value="github"></el-option>
             <el-option label="Gerrit" value="gerrit"></el-option>
             <el-option :label="$t(`sysSetting.integration.gitProviders.giteeCE`)" value="gitee"></el-option>
-            <el-option v-if="hasPlutus" :label="$t(`sysSetting.integration.gitProviders.giteeEE`)" value="gitee-enterprise"></el-option>
             <el-option :label="$t(`sysSetting.integration.gitProviders.otherProvider`)" value="other"></el-option>
           </el-select>
         </el-form-item>
@@ -603,7 +601,6 @@ import {
   createCodeSourceAPI,
   getProxyConfigAPI
 } from '@api'
-import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -768,10 +765,7 @@ export default {
         }
       }
       return validateGitURL
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     updateRepoProxySettings (row) {
