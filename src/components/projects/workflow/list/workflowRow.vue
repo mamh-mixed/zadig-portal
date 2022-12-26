@@ -14,7 +14,6 @@
         </div>
         <div class="tag-container">
           <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.customWorkflowTag`)}}</el-tag>
-          <el-tag v-else-if="workflowInfo.workflow_type === 'release'" class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.releaseWorkflowTag`)}}</el-tag>
           <el-tag v-else class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.productWorkflowTag`)}}</el-tag>
         </div>
 
@@ -181,9 +180,6 @@ export default {
     setFavorite (projectName, workflowName, type) {
       if (type === 'common_workflow') {
         this.$message.info(this.$t(`workflow.customWorkflowsDonotSupportCollections`))
-        return
-      } else if (type === 'release') {
-        this.$message.info(this.$t(`workflow.releaseWorkflowsDonotSupportCollections`))
         return
       }
       const payload = {

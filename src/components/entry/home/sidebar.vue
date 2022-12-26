@@ -5,10 +5,8 @@
     </a>
     <div class="sidebar-header" :style="{ width: showSidebar ? '100%' : 'auto'}">
       <router-link to="/v1/status">
-        <img v-if="showSidebar&&!showBackPath&&bigLogoUrl" class="logo" :src="bigLogoUrl" />
-        <img v-if="showSidebar&&!showBackPath&&!bigLogoUrl" class="logo" src="@assets/icons/logo/logo.svg" />
-        <img v-if="!showSidebar&&!showBackPath&&smallLogoUrl" class="logo" :src="smallLogoUrl" />
-        <img v-if="!showSidebar&&!showBackPath&&!smallLogoUrl" class="logo" src="@assets/icons/logo/small-logo.png" />
+        <img v-if="showSidebar&&!showBackPath" class="logo" src="@assets/icons/logo/logo.svg" />
+        <img v-if="!showSidebar&&!showBackPath" class="logo" src="@assets/icons/logo/small-logo.png" />
       </router-link>
       <router-link class="sidebar-header-item back-to" v-show="showSidebar&&showBackPath" :to="backUrl">
         <div class="sidebar-header__icon">
@@ -76,17 +74,14 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import bus from '@utils/eventBus'
 import { debounce, cloneDeep, remove } from 'lodash'
-import { getEnterpriseInfoAPI } from '@api'
 export default {
   data () {
     return {
       showSidebar: true,
       backTitle: '',
       backUrl: '/v1/status',
-      enterpriseInfo: null,
       accountSetting: [
         {
           items: [
@@ -99,22 +94,6 @@ export default {
               name: 'preference',
               icon: 'iconfont iconxitong-system',
               url: 'profile/preference'
-            }
-          ]
-        }
-      ],
-      enterpriseMenu: [
-        {
-          items: [
-            {
-              name: 'enterpriseInfo',
-              icon: 'iconfont iconcompany-info',
-              url: 'enterprise/info'
-            },
-            {
-              name: 'license',
-              icon: 'iconfont iconxukezheng',
-              url: 'enterprise/license'
             }
           ]
         }
@@ -255,34 +234,7 @@ export default {
             }
           ]
         }
-      ],
-      plutusMenu: {
-        delivery: {
-          category_name: 'customerDelivery',
-          items: [
-            {
-              name: 'deliveryBoard',
-              icon: 'iconfont iconBoardList',
-              url: 'plutus/deliveryBoard'
-            },
-            {
-              name: 'deliveryVersion',
-              icon: 'iconfont iconbanben1',
-              url: 'plutus/version'
-            },
-            {
-              name: 'deliveryCustomers',
-              icon: 'iconfont iconCustomermanagement',
-              url: 'plutus/customer'
-            }
-          ]
-        },
-        manage: {
-          name: 'enterprise',
-          icon: 'iconfont iconcompany-info',
-          url: 'enterprise/'
-        }
-      }
+      ]
     }
   },
   methods: {
@@ -298,11 +250,6 @@ export default {
     },
     collapseMenu (nav) {
       nav.isOpened = !nav.isOpened
-    },
-    getEnterpriseInfo () {
-      getEnterpriseInfoAPI().then(res => {
-        this.enterpriseInfo = res
-      })
     }
   },
   computed: {
@@ -313,9 +260,6 @@ export default {
         return true
       } else if (path.includes('/v1/system')) {
         this.backTitle = this.$t(`sidebarMenu.sysSetting`)
-        return true
-      } else if (path.includes('/v1/enterprise')) {
-        this.backTitle = this.$t(`sidebarMenu.enterprise`)
         return true
       } else if (path.includes('/v1/profile')) {
         this.backTitle = this.$t(`sidebarMenu.profile`)
@@ -331,10 +275,6 @@ export default {
         return false
       }
     },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus,
-      signatureFeatures: state => state.checkPlutus.features
-    }),
     showEfficiencyInsight () {
       const showEfficiencyInsight = this.checkPermissionSyncMixin({
         type: 'system',
@@ -368,26 +308,11 @@ export default {
       const path = this.$route.path
       const defaultMenu = cloneDeep(this.defaultMenu)
       const adminMenu = cloneDeep(this.adminMenu)
-      if (path.includes('/v1/enterprise')) {
-        return this.enterpriseMenu
-      } else if (path.includes('/v1/system')) {
+      if (path.includes('/v1/system')) {
         return this.systemMenu
       } else if (path.includes('/v1/profile')) {
         return this.accountSetting
       }
-      /** plutus menu */
-      if (this.isAdmin && this.hasPlutus) {
-        if (
-          this.signatureFeatures.delivery &&
-          !defaultMenu.find(menu => menu.category_name === 'deliveryCustomers')
-        ) {
-          defaultMenu.splice(1, 0, this.plutusMenu.delivery)
-        }
-        if (!adminMenu[0].items.find(menu => menu.name === 'enterprise')) {
-          adminMenu[0].items.splice(1, 0, this.plutusMenu.manage)
-        }
-      }
-      /** End */
       if (this.isAdmin) {
         return defaultMenu.concat(adminMenu)
       } else {
@@ -416,20 +341,6 @@ export default {
         }
         return defaultMenu
       }
-    },
-    smallLogoUrl () {
-      if (this.enterpriseInfo) {
-        return this.enterpriseInfo.small_logo
-      } else {
-        return ''
-      }
-    },
-    bigLogoUrl () {
-      if (this.enterpriseInfo) {
-        return this.enterpriseInfo.big_logo
-      } else {
-        return ''
-      }
     }
   },
   watch: {
@@ -438,7 +349,6 @@ export default {
     }
   },
   created () {
-    this.getEnterpriseInfo()
     bus.$on('show-sidebar', params => {
       this.showSidebar = params
     })

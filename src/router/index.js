@@ -128,22 +128,6 @@ const routes = [
             }
           },
           {
-            path: 'pipelines/release/create',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/releaseWorkflow'),
-            meta: {
-              requiresAuth: true,
-              title: i18n.t('metaTitle.createWorkflow')
-            }
-          },
-          {
-            path: 'pipelines/release/edit/:workflow_name',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/releaseWorkflow'),
-            meta: {
-              requiresAuth: true,
-              title: i18n.t('metaTitle.editWorkflow')
-            }
-          },
-          {
             path: 'pipelines/multi/testcase/:workflow_name/:task_id/:test_name/:test_job_name',
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/report/productWorkflowTestCase.vue'),
             meta: {
@@ -340,6 +324,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/createEnv.vue'),
                 meta: {
                   requiresAuth: true,
+                  createEnv: true,
                   title: i18n.t('subTopbarMenu.createEnvironment')
                 }
               },
@@ -439,20 +424,6 @@ const routes = [
             component: () => import(/* webpackChunkName: "Build Template" */ '@/components/templateLibrary/builds/index.vue'),
             meta: {
               title: i18n.t('metaTitle.buildTemplates')
-            }
-          },
-          {
-            path: 'workflows',
-            component: () => import(/* webpackChunkName: "Workflows Template" */ '@/components/templateLibrary/workflows/index.vue'),
-            meta: {
-              title: i18n.t('metaTitle.workflowTemplates')
-            }
-          },
-          {
-            path: 'workflows/config',
-            component: () => import(/* webpackChunkName: "Workflows Template" */ '@/components/templateLibrary/workflows/config.vue'),
-            meta: {
-              title: i18n.t('metaTitle.editWorkflowTemplate')
             }
           }
         ]
@@ -664,6 +635,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/createEnv.vue'),
             meta: {
               requiresAuth: true,
+              createEnv: true,
               title: i18n.t('subTopbarMenu.createEnvironment')
             }
           },

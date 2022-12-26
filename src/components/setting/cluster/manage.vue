@@ -217,17 +217,6 @@
                 </el-radio>
               </el-radio-group>
             </el-form-item>
-            <!-- <el-form-item v-if="cluster.cache.medium_type === 'object'" prop="cache.object_properties.id">
-              <span slot="label">选择对象存储</span>
-              <el-select v-model="cluster.cache.object_properties.id" placeholder="请选择对象存储" style="width: 100%;" size="small">
-                <template v-if="allStorage.length > 0">
-                  <el-option v-for="(item,index) in (cluster.local ? allStorage : externalStorage)" :key="index" :label="`${item.endpoint}/${item.bucket}`" :value="item.id"></el-option>
-                </template>
-                <el-option v-if="(cluster.local ? allStorage : externalStorage).length === 0" value="NEWCUSTOM">
-                  <router-link to="/v1/system/storage" style="color: #606266;">集成对象存储</router-link>
-                </el-option>
-              </el-select>
-            </el-form-item>-->
             <template v-if="cluster.cache.medium_type === 'nfs'">
               <el-form-item prop="cache.nfs_properties.provision_type">
                 <span slot="label">选择存储资源</span>
@@ -527,8 +516,6 @@
 </template>
 
 <script>
-import Resize from '@/components/common/resize'
-import Codemirror from '@/components/projects/common/codemirror.vue'
 import {
   getClusterListAPI,
   createClusterAPI,
@@ -545,7 +532,6 @@ import {
 import { wordTranslate } from '@utils/wordTranslate'
 import bus from '@utils/eventBus'
 import { cloneDeep, omit, keyBy } from 'lodash'
-import { mapState } from 'vuex'
 const validateClusterName = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入集群名称'))
@@ -771,72 +757,34 @@ export default {
     projectNames () {
       return this.$store.getters.projectList.map(project => project.name)
     },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    }),
     providers () {
-      if (this.hasPlutus) {
-        return [
-          {
-            value: 1,
-            label: '阿里云 ACK',
-            icon: 'iconfont iconaliyun'
-          },
-          {
-            value: 2,
-            label: '腾讯云 TKE',
-            icon: 'iconfont icontengxunyun'
-          },
-          {
-            value: 5,
-            label: '腾讯云 EKS',
-            icon: 'iconfont icontengxunyun'
-          },
-          {
-            value: 3,
-            label: '华为云 CCE',
-            icon: 'iconfont iconhuawei'
-          },
-          {
-            value: 4,
-            label: 'Amazon EKS',
-            icon: 'iconfont iconaws'
-          },
-          {
-            value: 0,
-            label: '其它',
-            icon: 'iconfont iconqita'
-          }
-        ]
-      } else {
-        return [
-          {
-            value: 1,
-            label: '阿里云 ACK',
-            icon: 'iconfont iconaliyun'
-          },
-          {
-            value: 2,
-            label: '腾讯云 TKE',
-            icon: 'iconfont icontengxunyun'
-          },
-          {
-            value: 3,
-            label: '华为云 CCE',
-            icon: 'iconfont iconhuawei'
-          },
-          {
-            value: 4,
-            label: 'Amazon EKS',
-            icon: 'iconfont iconaws'
-          },
-          {
-            value: 0,
-            label: '其它',
-            icon: 'iconfont iconqita'
-          }
-        ]
-      }
+      return [
+        {
+          value: 1,
+          label: '阿里云 ACK',
+          icon: 'iconfont iconaliyun'
+        },
+        {
+          value: 2,
+          label: '腾讯云 TKE',
+          icon: 'iconfont icontengxunyun'
+        },
+        {
+          value: 3,
+          label: '华为云 CCE',
+          icon: 'iconfont iconhuawei'
+        },
+        {
+          value: 4,
+          label: 'Amazon EKS',
+          icon: 'iconfont iconaws'
+        },
+        {
+          value: 0,
+          label: '其它',
+          icon: 'iconfont iconqita'
+        }
+      ]
     },
     providerMap () {
       return keyBy(this.providers, 'value')
@@ -1077,9 +1025,6 @@ export default {
           if (!re.advanced_config.node_labels) {
             re.advanced_config.node_labels = []
           }
-          if (this.hasPlutus && !re.advanced_config.tolerations) {
-            re.advanced_config.tolerations = ''
-          }
           return re
         })
       })
@@ -1129,10 +1074,6 @@ export default {
   created () {
     this.getCluster()
     bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.clusters`), url: '' }] })
-  },
-  components: {
-    Resize,
-    Codemirror
   }
 }
 </script>

@@ -9,44 +9,18 @@
               <span class="name">{{item.name}}</span>
             </li>
           </router-link>
-          <router-link :to="`/v1/template/workflows`" v-if="hasPlutus" active-class="active">
-            <li class="nav-item">
-              <i class="icon iconfont icongongzuoliucheng"></i>
-              <span class="name">{{$t(`global.workflow`)}}</span>
-            </li>
-          </router-link>
         </ul>
       </div>
     </div>
     <div class="operation">
-      <template>
-        <el-dropdown
-          v-if="$route.path === `/v1/template/workflows`"
-          @command="createWorkflowTemplate"
-          placement="bottom"
-          trigger="click"
-        >
-          <button type="button" class="display-btn el-button">
-            <i class="el-icon-plus"></i>
-            &nbsp;&nbsp;{{$t(`workflow.workflowTemplate`)}}&nbsp;&nbsp;
-            <i class="el-icon-caret-bottom el-icon--right"></i>
-          </button>
-          <el-dropdown-menu slot="dropdown" class="create-workflow-template">
-            <el-dropdown-item command="custom">{{$t(`workflow.customWorkflow`)}}</el-dropdown-item>
-            <el-dropdown-item command="release">{{$t(`workflow.releaseWorkflow`)}}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </template>
     </div>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
 export default {
   data () {
     return {}
   },
-  props: {},
   computed: {
     routerList () {
       return [
@@ -71,10 +45,7 @@ export default {
           url: `/v1/template/builds`
         }
       ]
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     createWorkflowTemplate (val) {

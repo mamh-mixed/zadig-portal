@@ -7,8 +7,7 @@
             <div class="details">
               <header>
                 <a href="#">
-                  <img v-if="bigLogoUrl" :src="bigLogoUrl" alt="logo" />
-                  <img v-else src="@assets/icons/logo/default-logo.png" alt="logo" />
+                  <img src="@assets/icons/logo/default-logo.png" alt="logo" />
                 </a>
               </header>
               <section>
@@ -74,9 +73,7 @@ import moment from 'moment'
 import { isMobile } from 'mobile-device-detect'
 import {
   checkConnectorsAPI,
-  checkRegistrationAPI,
-  getEnterpriseInfoAPI,
-  getLicenseStatusAPI
+  checkRegistrationAPI
 } from '@api'
 import ForgetPassword from './components/forgetPassword.vue'
 import SignUp from './components/signUp.vue'
@@ -95,7 +92,6 @@ export default {
       showRegistration: false,
       retrieveToken: '',
       loading: false,
-      enterpriseInfo: null,
       loginForm: {
         account: '',
         password: ''
@@ -152,19 +148,6 @@ export default {
           this.$router.push('/v1/projects')
         }
       }
-    },
-    async getLicenseStatus () {
-      const license = await getLicenseStatusAPI().catch(err => console.log(err))
-      if (license) {
-        if (!license.is_inited) {
-          // this.$router.replace('/license')
-          window.location.href = '/plutus-vendor/license'
-        } else {
-          getEnterpriseInfoAPI().then(res => {
-            this.enterpriseInfo = res
-          })
-        }
-      }
     }
   },
   computed: {
@@ -189,17 +172,9 @@ export default {
     },
     showSlogan () {
       return this.slogan.common
-    },
-    bigLogoUrl () {
-      if (this.enterpriseInfo) {
-        return this.enterpriseInfo.big_logo
-      } else {
-        return ''
-      }
     }
   },
   async mounted () {
-    this.getLicenseStatus()
     const token = this.$route.query.token
     // 邮箱通过 Token 设置新密码接收参数
     const retrieveToken = this.$route.query.idtoken

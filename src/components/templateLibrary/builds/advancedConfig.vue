@@ -105,7 +105,7 @@
           </el-form-item>
         </div>
       </el-form-item>
-      <el-form-item v-if="hasPlutus">
+      <el-form-item>
         <div slot="label" style="width: 110px; line-height: 20px;">{{$t(`build.advancedSettings.useHostDockerDaemon`)}}</div>
         <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
       </el-form-item>
@@ -146,7 +146,6 @@
 
 <script>
 import { getClusterListAPI } from '@api'
-import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -219,10 +218,7 @@ export default {
   computed: {
     currentResource () {
       return this.buildConfig[this.secondaryProp]
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     initAdvancedConfig (buildConfig = this.buildConfig) {
@@ -233,9 +229,6 @@ export default {
         if (local) {
           currentResource.cluster_id = local.id
         }
-      }
-      if (this.hasPlutus && (typeof currentResource.use_host_docker_daemon === 'undefined')) {
-        this.$set(currentResource, 'use_host_docker_daemon', false)
       }
     },
     checkSpec () {

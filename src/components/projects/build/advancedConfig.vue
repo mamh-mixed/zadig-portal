@@ -195,7 +195,6 @@
 
 <script>
 import { getClusterListAPI, getClusterStatusAPI } from '@api'
-import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -294,10 +293,7 @@ export default {
         })
       }
       return this.buildConfig[this.secondaryProp]
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     handleSwitchChange (val, item) {
@@ -318,9 +314,6 @@ export default {
         if (local) {
           currentResource.cluster_id = local.id
         }
-      }
-      if (this.hasPlutus && this.useDockerDaemon && (typeof currentResource.use_host_docker_daemon === 'undefined')) {
-        this.$set(currentResource, 'use_host_docker_daemon', false)
       }
     },
     checkSpec () {

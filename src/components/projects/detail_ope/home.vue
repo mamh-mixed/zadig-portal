@@ -159,7 +159,7 @@
 <script>
 import DeleteProject from './components/deleteProject.vue'
 import bus from '@utils/eventBus'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { isMobile } from 'mobile-device-detect'
 import store from 'storejs'
 export default {
@@ -207,10 +207,7 @@ export default {
     searchedProjectList () {
       const searchProject = this.searchProject
       return this.projectList.filter(pro => pro.alias.indexOf(searchProject) !== -1)
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   mounted () {
     this.$store.dispatch('getProjectList')

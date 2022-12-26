@@ -1,7 +1,7 @@
 <template>
   <div class="variable-list">
     <div class="primary-title" style="margin-bottom: 0;">
-      <span>{{$t('environments.k8s.variablesList')}}</span>
+      <span>{{$t('environments.k8s.globalVariables')}}</span>
       <i
         style="margin-left: 10px; cursor: pointer;"
         :class="[showYaml ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"

@@ -495,7 +495,7 @@ export function getRepoFilesAPI ({ codehostId = '', repoOwner = '', repoName = '
       }
     }
     return http.get(`/api/aslan/code/workspace/tree`, { params })
-  } else if (type === 'gerrit' || type === 'gitee' || type === 'gitee-enterprise') {
+  } else if (type === 'gerrit' || type === 'gitee') {
     const params = {
       repoOwner: repoOwner,
       repoName: repoName,
@@ -973,23 +973,6 @@ export function createJiraAPI (payload) {
   return http.post(`/api/v1/jira`, payload)
 }
 
-// config management
-export function createConfigManageAPI (payload) {
-  return http.post('/api/aslan/system/configuration', payload)
-}
-export function getConfigManagesAPI () {
-  return http.get(`/api/aslan/system/configuration`)
-}
-export function updateConfigManageAPI (id, payload) {
-  return http.put(`/api/aslan/system/configuration/${id}`, payload)
-}
-export function deleteConfigManageAPI (id) {
-  return http.delete(`/api/aslan/system/configuration/${id}`)
-}
-export function checkConfigConnectionAPI (payload) {
-  return http.post('/api/aslan/system/configuration/validate', payload)
-}
-
 // Jenkins
 export function addJenkins (payload) {
   return http.post('/api/aslan/system/jenkins/integration', payload)
@@ -1070,21 +1053,6 @@ export function getApprovalListAPI (projectName) {
   return http.get(`/api/aslan/system/im_app?projectName=${projectName}`)
 }
 
-export function createApprovalAPI (payload) {
-  return http.post(`/api/aslan/system/im_app`, payload)
-}
-
-export function updateApprovalAPI (id, payload) {
-  return http.put(`/api/aslan/system/im_app/${id}`, payload)
-}
-
-export function deleteApprovalAPI (id) {
-  return http.delete(`/api/aslan/system/im_app/${id}`)
-}
-
-export function checkApprovalConfigAPI (payload) {
-  return http.post('/api/aslan/system/im_app/validate', payload)
-}
 export function getDepartmentAPI (id, department_id, projectName) {
   return http.get(`/api/aslan/system/lark/${id}/department/${department_id}?projectName=${projectName}`)
 }
@@ -1356,9 +1324,6 @@ export function deleteHostAPI (id) {
   return http.delete(`/api/aslan/system/privateKey/${id}`)
 }
 
-export function importHostAPI (payload) {
-  return http.post(`/api/aslan/system/privateKey/batch`, payload)
-}
 // Project Host
 export function getProjectHostListAPI (key, projectName = '', keyword = '') {
   return http.get(`/api/aslan/project/pms?encryptedKey=${key}&projectName=${projectName}&keyword=${keyword}`)
@@ -1374,10 +1339,6 @@ export function updateProjectHostAPI (id, projectName = '', payload) {
 
 export function deleteProjectHostAPI (id, projectName) {
   return http.delete(`/api/aslan/project/pms/${id}?projectName=${projectName}`)
-}
-
-export function importProjectHostAPI (projectName = '', payload) {
-  return http.post(`/api/aslan/project/pms/batch?projectName=${projectName}`, payload)
 }
 
 // Delivery Center
@@ -1844,9 +1805,6 @@ export function getBuildTemplateReferenceAPI (id) {
 }
 
 // Template Workflow
-export function getWorkflowTemplateListAPI (category, excludeBuildIn = false, projectName) {
-  return http.get(`/api/aslan/template/workflow?category=${category}&excludeBuildIn=${excludeBuildIn}&projectName=${projectName}`)
-}
 
 export function addWorkflowTemplateAPI (payload) {
   return http.post(`/api/aslan/template/workflow`, payload)
@@ -2321,14 +2279,6 @@ export function getPlugins () {
 // ----- Enterprise -----
 export function checkPlutusAPI () {
   return http.get(`/api/plutus/health`)
-}
-
-export function getLicenseStatusAPI () {
-  return http.get(`/api/plutus/signature/status`)
-}
-
-export function getEnterpriseInfoAPI () {
-  return http.get(`/api/plutus/organization`)
 }
 
 export function getSignatureFeaturesAPI () {
