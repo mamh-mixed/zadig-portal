@@ -33,8 +33,7 @@
         <el-form-item :label="$t(`workflow.approvalWay`)" prop="approval.type">
           <el-radio-group v-model="form.approval.type">
             <el-radio label="native">Zadig</el-radio>
-            <el-radio label="lark" :disabled="!hasPlutus">飞书</el-radio>
-            <!-- <el-radio v-if="hasPlutus">钉钉</el-radio> -->
+            <el-radio label="lark" :disabled="true">飞书</el-radio>
           </el-radio-group>
           <el-tooltip effect="dark" placement="top">
             <div slot="content">
@@ -47,7 +46,7 @@
                 target="_blank"
               >文档</el-link>
             </div>
-            <i class="el-icon-warning operation error" v-if="!hasPlutus"></i>
+            <i class="el-icon-warning operation error"></i>
           </el-tooltip>
         </el-form-item>
         <el-form-item :label="$t(`workflow.approvalApplication`)" v-if="form.approval.type==='lark'">
@@ -167,7 +166,6 @@
 <script>
 import { getUsersAPI, getApprovalListAPI, getDepartmentAPI } from '@api'
 import { cloneDeep } from 'lodash'
-import { mapState } from 'vuex'
 
 export default {
   name: 'StageOperate',
@@ -248,10 +246,7 @@ export default {
         )
       }
       return users.toString()
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   created () {
     this.getUserList()
