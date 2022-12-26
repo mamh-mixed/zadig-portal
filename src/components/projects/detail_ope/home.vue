@@ -26,8 +26,26 @@
               <el-dropdown-item icon="iconfont iconvery-k8s" @click.native="$router.push(`/v1/template/k8s-yamls`)">K8s YAML</el-dropdown-item>
               <el-dropdown-item icon="iconfont iconhelmrepo" @click.native="$router.push(`/v1/template/charts`)">Helm Chart</el-dropdown-item>
               <el-dropdown-item icon="iconfont icondocker" @click.native="$router.push(`/v1/template/dockerfiles`)">Dockerfile</el-dropdown-item>
-              <el-dropdown-item icon="iconfont iconvery-build" @click.native="$router.push(`/v1/template/builds`)">{{$t(`project.buildTemplate`)}}</el-dropdown-item>
-              <el-dropdown-item icon="iconfont icongongzuoliucheng">{{$t(`project.workflowTemplate`)}}</el-dropdown-item>
+              <el-dropdown-item
+                icon="iconfont iconvery-build"
+                @click.native="$router.push(`/v1/template/builds`)"
+              >{{$t(`project.buildTemplate`)}}</el-dropdown-item>
+              <el-tooltip class="item" effect="dark" placement="top">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 14px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/template/workflow/`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <el-dropdown-item
+                  style="color: #ddd;"
+                  icon="iconfont icongongzuoliucheng"
+                >{{$t(`project.workflowTemplate`)}}</el-dropdown-item>
+              </el-tooltip>
             </el-dropdown-menu>
           </el-dropdown>
         </template>

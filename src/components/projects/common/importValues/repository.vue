@@ -104,12 +104,22 @@
       </el-form-item>
       <el-form-item v-if="showAutoSync && codehostSource !== 'other'" prop="autoSync" :label="$t('global.autoSync')" :show-message="false">
         <span slot="label">
-          <span>{{$t('global.autoSync')}}</span>
-          <el-tooltip effect="dark" content="开启后，Zadig 会定时从代码库拉取配置文件并将其自动更新到环境中，目前只支持 GitHub/GitLab" placement="top">
+          <span style="color: #ddd;">{{$t('global.autoSync')}}</span>
+           <el-tooltip class="item" effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/project/service/k8s/#基本说明`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
             <i class="pointer el-icon-question"></i>
           </el-tooltip>
         </span>
-        <el-switch v-model="source.autoSync"></el-switch>
+        <el-switch v-model="source.autoSync" disabled></el-switch>
       </el-form-item>
       <el-dialog :title="typeObject[fileType].dialogTitle" :visible.sync="showFileSelectDialog" append-to-body>
         <TreeFile
