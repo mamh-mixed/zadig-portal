@@ -97,12 +97,22 @@
             <Editor v-model="scannerConfig.parameter"></Editor>
           </Resize>
         </div>
-        <div class="primary-title not-first-child" v-if="hasPlutus">
-          <span>{{$t(`scanning.details.qualityGate`)}}</span>
+        <div class="primary-title not-first-child">
+          <span class="title">{{$t(`scanning.details.qualityGate`)}}</span>
           <el-tooltip effect="dark" :content="$t(`scanning.prompt.qualityGatePopup`)" placement="top" class="mg-r8">
             <i class="el-icon-warning"></i>
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/project/scan/#%E8%B4%A8%E9%87%8F%E9%97%A8%E7%A6%81%E6%A3%80%E6%9F%A5`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
           </el-tooltip>
-          <el-switch v-model="scannerConfig.check_quality_gate"></el-switch>
+          <el-switch v-model="scannerConfig.check_quality_gate" disabled></el-switch>
         </div>
       </section>
 
@@ -460,6 +470,10 @@ export default {
       color: @secondaryColor;
       font-weight: @itemWeight;
     }
+  }
+
+  .title {
+    color: #ddd;
   }
 
   .create-footer {
