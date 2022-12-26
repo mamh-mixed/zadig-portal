@@ -11,7 +11,21 @@
             type="text"
           />
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="openVarGroupDisable">使用变量组</el-dropdown-item>
+            <el-dropdown-item disabled style="pointer-events: auto;">
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    href="https://docs.koderover.com/zadig/project/env/helm/chart/#基本操作"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>使用变量组</span>
+              </el-tooltip>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </span>

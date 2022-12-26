@@ -128,7 +128,21 @@
         >{{$t('subTopbarMenu.createVersion')}}</el-button>
       </template>
       <template v-if="comp && comp.isProjectAdmin && $route.path === `/v1/projects/detail/${projectName}/detail`">
-        <el-button v-if="hasPlutus && deployType === 'external'" type="text" @click="convertType">{{$t('subTopbarMenu.changeProjectType')}}</el-button>
+        <el-button v-if="deployType === 'external'" type="text" disabled>
+          <el-tooltip effect="dark" placement="top">
+            <div slot="content">
+              <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+              <el-link
+                style="font-size: 13px; vertical-align: baseline;"
+                type="primary"
+                href="https://docs.koderover.com/zadig/project/host-k8s-resources/#托管项目切换-k8s-yaml-项目"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <span>{{$t('subTopbarMenu.changeProjectType')}}</span>
+          </el-tooltip>
+        </el-button>
         <el-dropdown
           placement="bottom"
           trigger="click"
@@ -152,8 +166,23 @@
             <el-dropdown-item
               v-if="deployType === 'helm'"
               icon="item-icon iconfont iconchakanbianliang"
-              @click.native="$router.push(`/v1/projects/detail/${projectName}/group`)"
-            >{{$t('subTopbarMenu.varsGroup')}}</el-dropdown-item>
+              disabled
+              style="pointer-events: auto;"
+            >
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    href="https://docs.koderover.com/zadig/project/config/#变量组"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>{{$t('subTopbarMenu.varsGroup')}}</span>
+              </el-tooltip>
+            </el-dropdown-item>
             <el-dropdown-item icon="el-icon-delete" @click.native="comp.deleteProject">{{$t(`global.delete`)}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

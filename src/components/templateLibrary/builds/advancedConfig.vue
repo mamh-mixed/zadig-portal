@@ -87,7 +87,7 @@
           >
             <el-tooltip effect="dark" placement="top">
               <div slot="content">
-                <span>{{ $t('global.enterpriseTips') }}</span>
+                <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
                 <el-link
                   style="font-size: 13px; vertical-align: baseline;"
                   type="primary"
