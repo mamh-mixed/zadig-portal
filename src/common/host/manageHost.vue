@@ -30,7 +30,7 @@
       </el-alert>
       <div class="sync-container">
         <el-button size="small" :plain="true" @click="hostOperation('add')" type="success">{{$t('global.add')}}</el-button>
-        <el-tooltip class="item" effect="dark" placement="top">
+        <el-tooltip effect="dark" placement="top">
           <div slot="content">
             {{$t(`global.enterprisefeaturesReferforDetails`)}}
             <el-link
@@ -41,7 +41,9 @@
               target="_blank"
             >{{$t(`global.document`)}}</el-link>
           </div>
-          <el-button size="small"  type="info">{{$t('global.import')}}</el-button>
+          <span style="margin-left: 4px;">
+            <el-button size="small" type="info" disabled>{{$t('global.import')}}</el-button>
+          </span>
         </el-tooltip>
       </div>
       <div class="host-list">

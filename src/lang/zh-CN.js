@@ -230,6 +230,8 @@ exports.default = {
     buildTemplates: '构建模板',
     createWorkflow: '新建工作流',
     createEnvironment: '新建环境',
+    testEnvironment: '测试环境',
+    productionEnvironment: '生产环境',
     createBuild: '新建构建',
     createTest: '新建测试',
     createScanner: '新建代码扫描',
@@ -758,6 +760,7 @@ exports.default = {
     specifyMembersTip1: '@指定成员（输入指定通知接收人的手机号码，使用 ; 分割，为空则全员通知）',
     specifyMembersTip2: '@指定成员（输入指定通知接收人的 user_id，使用 ; 分割）',
     notifyType: {
+      created: '任务开始',
       passed: '任务成功',
       failed: '任务失败',
       timeout: '任务超时',

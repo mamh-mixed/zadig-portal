@@ -92,7 +92,7 @@ export default {
       notifyType: [
         {
           label: 'created',
-          desc: '任务开始'
+          desc: 'created'
         },
         {
           label: 'passed',
