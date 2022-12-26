@@ -27,11 +27,6 @@
             <Sonar v-if="currentTab === 'sonar'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="approval" :label="$t(`sysSetting.integration.approvalSystemTab`)" v-if="hasPlutus">
-          <keep-alive>
-            <Approval v-if="currentTab === 'approval'" />
-          </keep-alive>
-        </el-tab-pane>
         <el-tab-pane name="external" :label="$t(`sysSetting.integration.otherSystemTab`)">
           <keep-alive>
             <External v-if="currentTab === 'external'" />
@@ -49,7 +44,6 @@ import Code from './code.vue'
 import Jenkins from './jenkins.vue'
 import Sonar from './sonar.vue'
 import External from './external.vue'
-import Approval from './approval.vue'
 
 export default {
   name: 'integration',
@@ -59,8 +53,7 @@ export default {
     Code,
     Jenkins,
     Sonar,
-    External,
-    Approval
+    External
   },
   data () {
     return {
