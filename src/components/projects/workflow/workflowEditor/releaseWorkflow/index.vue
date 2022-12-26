@@ -62,7 +62,7 @@
           >{{$t(`workflow.${item.label}`)}}</span>
         </div>
         <div>
-          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">{{$t(`workflow.saveAsTemplate`)}}</el-button>
+          <el-button type="text"  @click="isShowModelDialog=true">{{$t(`workflow.saveAsTemplate`)}}</el-button>
           <el-button type="primary" size="small" @click="operateWorkflow">{{$t(`global.save`)}}</el-button>
           <el-button size="small" @click="cancelWorkflow">{{$t(`global.cancel`)}}</el-button>
         </div>

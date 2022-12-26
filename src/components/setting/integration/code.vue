@@ -96,33 +96,6 @@
             </span>
           </slot>
         </el-alert>
-        <el-alert v-if="codeEdit.type === 'gitee-enterprise'" type="info" :closable="false">
-          <slot>
-            <span class="tips">- {{$t(`sysSetting.integration.gitProviders.appAuthCallbackTip`)}}</span>
-            <span class="tips code-line">
-              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
-              <span
-                v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
-                v-clipboard:success="copyCommandSuccess"
-                v-clipboard:error="copyCommandError"
-                class="el-icon-document-copy copy"
-              ></span>
-            </span>
-            <span
-              class="tips"
-            >- {{$t(`sysSetting.integration.gitProviders.appPermissionCheckTip`)}}projects、groups、pull_requests、hook、enterprises</span>
-            <span class="tips">
-              - {{$t(`sysSetting.integration.gitProviders.referToDoc`)}}
-              <el-link
-                style="font-size: 14px; vertical-align: baseline;"
-                type="primary"
-                :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
-                :underline="false"
-                target="_blank"
-              >{{$t(`global.helpDoc`)}}</el-link>
-            </span>
-          </slot>
-        </el-alert>
         <el-alert v-else-if="codeEdit.type === 'other'" type="info" :closable="false">
           <slot>
             <span class="tips">- {{$t(`sysSetting.integration.gitProviders.otherProviderTipFirst`)}}</span>
@@ -210,24 +183,6 @@
           </el-form-item>
         </template>
         <template v-else-if="codeEdit.type==='gitee'">
-          <el-form-item label="Client ID" prop="application_id">
-            <el-input v-model="codeEdit.application_id" placeholder="Client ID" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Client Secret" prop="client_secret">
-            <el-input
-              v-model="codeEdit.client_secret"
-              show-password
-              v-if="dialogCodeEditFormVisible"
-              type="password"
-              placeholder="Client Secret"
-              auto-complete="off"
-            ></el-input>
-          </el-form-item>
-        </template>
-        <template v-else-if="codeEdit.type==='gitee-enterprise'">
-          <el-form-item :label="$t(`sysSetting.integration.gitProviders.giteeUrl`)" prop="address">
-            <el-input v-model.trim="codeEdit.address" :placeholder="$t(`sysSetting.integration.gitProviders.giteeUrl`)" auto-complete="off"></el-input>
-          </el-form-item>
           <el-form-item label="Client ID" prop="application_id">
             <el-input v-model="codeEdit.application_id" placeholder="Client ID" auto-complete="off"></el-input>
           </el-form-item>
@@ -375,33 +330,6 @@
             </span>
           </slot>
         </el-alert>
-        <el-alert v-if="codeAdd.type === 'gitee-enterprise'" type="info" :closable="false">
-          <slot>
-            <span class="tips">- {{$t(`sysSetting.integration.gitProviders.appAuthCallbackTip`)}}</span>
-            <span class="tips code-line">
-              {{`${$utils.getOrigin()}/api/directory/codehosts/callback`}}
-              <span
-                v-clipboard:copy="`${$utils.getOrigin()}/api/directory/codehosts/callback`"
-                v-clipboard:success="copyCommandSuccess"
-                v-clipboard:error="copyCommandError"
-                class="el-icon-document-copy copy"
-              ></span>
-            </span>
-            <span
-              class="tips"
-            >- {{$t(`sysSetting.integration.gitProviders.appPermissionCheckTip`)}}projects、groups、pull_requests、hook、enterprises</span>
-            <span class="tips">
-              - {{$t(`sysSetting.integration.gitProviders.referToDoc`)}}
-              <el-link
-                style="font-size: 14px; vertical-align: baseline;"
-                type="primary"
-                :href="`https://docs.koderover.com/zadig/settings/codehost/gitee-enterprise/`"
-                :underline="false"
-                target="_blank"
-              >{{$t(`global.helpDoc`)}}</el-link>
-            </span>
-          </slot>
-        </el-alert>
         <el-alert v-else-if="codeAdd.type === 'other'" type="info" :closable="false">
           <slot>
             <span class="tips">- {{$t(`sysSetting.integration.gitProviders.otherProviderTipFirst`)}}</span>
@@ -468,24 +396,6 @@
         <template v-else-if="codeAdd.type==='gitee'">
           <el-form-item label="Client ID" prop="application_id">
             <el-input v-model="codeAdd.application_id" placeholder="Client ID" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Client Secret" prop="client_secret">
-            <el-input
-              v-model="codeAdd.client_secret"
-              placeholder="Client Secret"
-              show-password
-              v-if="dialogCodeAddFormVisible"
-              type="password"
-              auto-complete="off"
-            ></el-input>
-          </el-form-item>
-        </template>
-        <template v-else-if="codeAdd.type==='gitee-enterprise'">
-          <el-form-item :label="$t(`sysSetting.integration.gitProviders.giteeUrl`)" prop="address">
-            <el-input v-model.trim="codeAdd.address" :placeholder="$t(`sysSetting.integration.gitProviders.giteeUrl`)" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Client ID" prop="application_id">
-            <el-input v-model="codeAdd.application_id" placeholder="Access Key" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="Client Secret" prop="client_secret">
             <el-input
@@ -902,7 +812,6 @@ export default {
             if (
               payload.type === 'gitlab' ||
               payload.type === 'gitee' ||
-              payload.type === 'gitee-enterprise' ||
               payload.type === 'github'
             ) {
               this.$message({

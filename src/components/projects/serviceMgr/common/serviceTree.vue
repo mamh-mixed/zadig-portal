@@ -62,10 +62,6 @@
             >
               <el-option v-for="(repo,index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path">
                 <span>{{repo.path}}</span>
-                <template v-if="source.gitType === 'gitee-enterprise'">
-                  <span v-if="repo.kind==='enterprise'">{{$t('repository.prompt.enterprise')}}</span>
-                  <span v-else-if="repo.kind==='org'">{{$t('repository.prompt.org')}}</span>
-                </template>
               </el-option>
             </el-select>
           </el-form-item>
@@ -305,7 +301,7 @@
                 ></el-button>
                 <el-button
                   v-hasPermi="{projectName: projectName, action: 'edit_service',isBtn:true}"
-                  v-if="data.source && (data.source === 'gitee' || data.source === 'gitee-enterprise' || data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
+                  v-if="data.source && (data.source === 'gitee' || data.source === 'gerrit'|| data.source === 'gitlab' || data.source==='github' || data.source==='template' ) && data.type==='k8s' && data.product_name=== projectName "
                   type="text"
                   size="mini"
                   icon="el-icon-refresh"
@@ -936,7 +932,7 @@ export default {
       const type = this.allCodeHosts.find(item => {
         return item.id === id
       }).type
-      if ((type === 'github' || type === 'gitee-enterprise') && query !== '') {
+      if ((type === 'github') && query !== '') {
         const items = this.$utils.filterObjectArrayByKey(
           'path',
           query,
