@@ -186,9 +186,7 @@
                     target="_blank"
                   >{{$t(`global.document`)}}</el-link>
                 </div>
-                <Resize :resize="'vertical'" :height="'100px'" @sizeChange="$refs.codemirror.refresh()">
-                  <Codemirror ref="codemirror" v-model="cluster.advanced_config.tolerations" :placeholder="tolerancePlaceholder" disabled></Codemirror>
-                </Resize>
+                <el-input type="textarea" :rows="4" disabled v-model="cluster.advanced_config.tolerations"></el-input>
               </el-tooltip>
             </el-form-item>
           </section>
