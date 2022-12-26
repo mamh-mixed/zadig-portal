@@ -942,8 +942,8 @@ exports.default = {
       variablesSection: 'Variables',
       buildInVariables: 'System built-in variables',
       buildInVariablesTooltip: 'Referenced by $Namespace$, $Product$, $Service$, $EnvName$ in the service yaml',
-      globalVariables: 'Global Variables',
-      globalVariablesTooltip: 'Global variables are referenced by {{.key}} and are available to all services in the project',
+      customVariables: 'Custom Variables',
+      customVariablesTooltip: 'Custom variables are referenced by {{.key}}',
       currentValue: 'Current Value'
     },
     pm: {},
