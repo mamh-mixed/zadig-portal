@@ -760,6 +760,7 @@ exports.default = {
     specifyMembersTip1: '@指定成员（输入指定通知接收人的手机号码，使用 ; 分割，为空则全员通知）',
     specifyMembersTip2: '@指定成员（输入指定通知接收人的 user_id，使用 ; 分割）',
     notifyType: {
+      created: '任务开始',
       passed: '任务成功',
       failed: '任务失败',
       timeout: '任务超时',
