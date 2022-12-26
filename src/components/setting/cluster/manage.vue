@@ -86,6 +86,24 @@
         <el-form-item :label="$t('global.desc')" prop="description">
           <el-input size="small" v-model="cluster.description" placeholder="请输入描述"></el-input>
         </el-form-item>
+        <el-form-item label="生产集群" prop="description">
+          <el-radio-group v-model="cluster.production">
+            <el-tooltip effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/pages/cluster_manage/#添加集群`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <el-radio :label="true" disabled>是</el-radio>
+          </el-tooltip>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="KubeConfig" prop="config" v-if="cluster.type === 'kubeconfig'" :show-message="false">
           <Resize :resize="'vertical'" :height="'100px'" @sizeChange="$refs.codemirror.refresh()">
             <Codemirror ref="codemirror" v-model="cluster.config" placeholder="请输入目标集群 KubeConfig" />

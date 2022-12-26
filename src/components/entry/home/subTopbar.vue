@@ -92,7 +92,37 @@
           plain
         >{{$t('subTopbarMenu.createWorkflow')}}</el-button>
       </template>
-      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail`">
+      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail` && deployType !=='cloud_host'">
+        <el-dropdown placement="bottom" trigger="click">
+          <button v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}" type="button" class="display-btn el-button">
+            <i class="el-icon-plus"></i>
+            &nbsp;&nbsp;{{$t('subTopbarMenu.createEnvironment')}}&nbsp;&nbsp;
+            <i class="el-icon-caret-bottom el-icon--right"></i>
+          </button>
+          <el-dropdown-menu slot="dropdown" class="project-config">
+            <el-dropdown-item
+              @click.native="bindComp(comp,'env')"
+            >测试环境
+            </el-dropdown-item>
+            <el-tooltip  effect="dark" placement="top">
+              <div slot="content">
+                {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                <el-link
+                  style="font-size: 14px; vertical-align: baseline;"
+                  type="primary"
+                  :href="`https://docs.koderover.com/project/env/k8s/`"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+             <el-dropdown-item style="color: #ddd;">
+              生产环境
+            </el-dropdown-item>
+          </el-tooltip>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </template>
+      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail` && deployType ==='cloud_host'">
         <el-button
           v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}"
           @click="bindComp(comp,'env')"
