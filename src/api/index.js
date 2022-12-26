@@ -2281,14 +2281,6 @@ export function checkPlutusAPI () {
   return http.get(`/api/plutus/health`)
 }
 
-export function getLicenseStatusAPI () {
-  return http.get(`/api/plutus/signature/status`)
-}
-
-export function getEnterpriseInfoAPI () {
-  return http.get(`/api/plutus/organization`)
-}
-
 export function getSignatureFeaturesAPI () {
   return http.get(`/api/plutus/signature/features`)
 }
