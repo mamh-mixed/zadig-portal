@@ -88,7 +88,9 @@ exports.default = {
     serviceModule: 'Service Module',
     templates: 'Templates',
     updateTime: 'Update Time',
-    lastModified: 'Last Modified'
+    lastModified: 'Last Modified',
+    enterpriseTips: 'Enterprise features, refer to the',
+    document: 'Document'
   },
   metaTitle: {
     projectDetail: 'Project Detail',

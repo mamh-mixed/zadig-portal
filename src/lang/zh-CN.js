@@ -88,7 +88,9 @@ exports.default = {
     serviceModule: '服务组件',
     templates: '模板库',
     updateTime: '更新时间',
-    lastModified: '最后修改'
+    lastModified: '最后修改',
+    enterpriseTips: '企业版功能，详情参考',
+    document: '文档'
   },
   metaTitle: {
     projectDetail: '项目详情',
