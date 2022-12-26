@@ -1324,9 +1324,6 @@ export function deleteHostAPI (id) {
   return http.delete(`/api/aslan/system/privateKey/${id}`)
 }
 
-export function importHostAPI (payload) {
-  return http.post(`/api/aslan/system/privateKey/batch`, payload)
-}
 // Project Host
 export function getProjectHostListAPI (key, projectName = '', keyword = '') {
   return http.get(`/api/aslan/project/pms?encryptedKey=${key}&projectName=${projectName}&keyword=${keyword}`)
@@ -1342,10 +1339,6 @@ export function updateProjectHostAPI (id, projectName = '', payload) {
 
 export function deleteProjectHostAPI (id, projectName) {
   return http.delete(`/api/aslan/project/pms/${id}?projectName=${projectName}`)
-}
-
-export function importProjectHostAPI (projectName = '', payload) {
-  return http.post(`/api/aslan/project/pms/batch?projectName=${projectName}`, payload)
 }
 
 // Delivery Center
