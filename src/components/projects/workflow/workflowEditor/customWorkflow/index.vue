@@ -40,7 +40,19 @@
           >{{$t(`workflow.${item.label}`)}}</span>
         </div>
         <div>
-          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">{{$t(`workflow.saveAsTemplate`)}}</el-button>
+          <el-tooltip class="item" effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/template/workflow/`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <el-button type="text" style="color: #ddd;" >{{$t(`workflow.saveAsTemplate`)}}</el-button>
+          </el-tooltip>
           <el-button type="primary" size="small" @click="operateWorkflow">{{$t(`global.save`)}}</el-button>
           <el-button size="small" @click="cancelWorkflow">{{$t(`global.cancel`)}}</el-button>
         </div>

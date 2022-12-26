@@ -19,6 +19,8 @@ exports.default = {
     operation: 'Operation',
     successfullySaved: 'Successfully saved',
     helpDoc: 'help doc',
+    document: 'document',
+    enterprisefeaturesReferforDetails: 'Enterprise Edition features, please refer to for details',
     help: 'Help',
     desc: 'Description',
     type: 'Type',
