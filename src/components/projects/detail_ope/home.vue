@@ -27,6 +27,7 @@
               <el-dropdown-item icon="iconfont iconhelmrepo" @click.native="$router.push(`/v1/template/charts`)">Helm Chart</el-dropdown-item>
               <el-dropdown-item icon="iconfont icondocker" @click.native="$router.push(`/v1/template/dockerfiles`)">Dockerfile</el-dropdown-item>
               <el-dropdown-item icon="iconfont iconvery-build" @click.native="$router.push(`/v1/template/builds`)">{{$t(`project.buildTemplate`)}}</el-dropdown-item>
+              <el-dropdown-item icon="iconfont icongongzuoliucheng">{{$t(`project.workflowTemplate`)}}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </template>
@@ -140,7 +141,7 @@
 <script>
 import DeleteProject from './components/deleteProject.vue'
 import bus from '@utils/eventBus'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { isMobile } from 'mobile-device-detect'
 import store from 'storejs'
 export default {
