@@ -1105,7 +1105,7 @@ exports.default = {
       rollbackVersion: 'Version',
       selectVersion: 'Please select version',
       versionLabel: 'Version: {version} CreateAt: {time} Creator: {createBy}',
-      variablesList: 'Variables List',
+      globalVariables: 'Global Variables',
       servicewithoutImage: 'Please select image for this service {serviceName}',
       subEnvCreation: 'Create Sub-Environment',
       envConfigComp: {
