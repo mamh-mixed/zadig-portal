@@ -1594,27 +1594,6 @@ export function getProjectIngressAPI (projectName) {
   return http.get(`/api/aslan/environment/environments?subresource=ingress&projectName=${projectName}`)
 }
 
-// Delivery
-export function getVersionListAPI (workflowName = '', projectName = '', taskId = '', serviceName = '', verbosity = 'detailed') {
-  return http.get(`/api/aslan/delivery/releases?workflowName=${workflowName}&projectName=${projectName}&taskId=${taskId}&serviceName=${serviceName}&verbosity=${verbosity}`)
-}
-
-export function getVersionServiceListAPI (projectName = '') {
-  return http.get(`/api/aslan/delivery/servicenames?projectName=${projectName}`)
-}
-
-export function deleteVersionAPI (projectName, versionId) {
-  return http.delete(`/api/aslan/delivery/releases/${versionId}?projectName=${projectName}`)
-}
-
-export function getVersionDetailAPI (projectName, versionId) {
-  return http.get(`/api/aslan/delivery/releases/${versionId}?projectName=${projectName}`)
-}
-
-export function getVersionProductListAPI () {
-  return http.get(`/api/v1/picket/projects?ignoreNoVersions=false&verbosity=detailed`)
-}
-
 export function productHostingNamespaceAPI (clusterId, type = '') {
   return http.get(`/api/aslan/environment/kube/available_namespaces?clusterId=${clusterId}&type=${type}`)
 }

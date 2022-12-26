@@ -25,16 +25,6 @@
                 <i class="el-icon-warning" style="color: red;"></i>
               </el-tooltip>
             </el-form-item>
-            <el-form-item v-if="taskDetail.releases && taskDetail.releases.length > 0 && taskDetail.status==='passed'" :label="$t(`workflow.deliveryList`)">
-              <router-link
-                :to="`/v1/delivery/version/detail/${projectName}/${taskDetail.releases[0].id}?version=${taskDetail.releases[0].version}&type=k8s`"
-              >
-                <span class="version-link">
-                  {{ $utils.tailCut(taskDetail.releases[0].id,8,'#')+
-                  taskDetail.releases[0].version }}
-                </span>
-              </router-link>
-            </el-form-item>
             <el-form-item v-if="showOperation()" :label="$t(`global.operation`)">
               <el-button
                 v-hasPermi="{projectName: projectName, action: 'run_workflow',resource:{name:taskDetail.pipeline_name,type:'workflow'},isBtn:true}"
@@ -110,18 +100,6 @@
           <div class="build-summary" v-if="jenkinsSummary.length > 0">
             <Etable class="blank-background-header" :tableColumns="jenkinsBuildColumns" :tableData="jenkinsSummary" id="id" />
           </div>
-        </div>
-        <div class="basic-right version-info" v-if="taskDetail.workflow_args && taskDetail.workflow_args.version_args">
-          <div class="primary-title not-first-child">{{$t(`workflow.versionInfo`)}}</div>
-          <el-form class="secondary-form" label-width="100px" label-position="left">
-            <el-form-item :label="$t(`workflow.versionName`)">{{taskDetail.workflow_args.version_args.version}}</el-form-item>
-            <el-form-item :label="$t(`workflow.versionInfo`)">{{taskDetail.workflow_args.version_args.desc}}</el-form-item>
-            <el-form-item :label="$t(`workflow.versionTag`)">
-              <span v-for="(label,index) in taskDetail.workflow_args.version_args.labels" :key="index" style="margin-right: 3px;">
-                <el-tag size="small">{{label}}</el-tag>
-              </span>
-            </el-form-item>
-          </el-form>
         </div>
       </div>
 

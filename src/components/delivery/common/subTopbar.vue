@@ -3,18 +3,28 @@
     <div class="nav-container">
       <div class="nav-content">
         <ul class="nav-item-list">
-          <router-link v-hasPermi="{type: 'system', action: 'release_get'}" active-class="active" to="/v1/delivery/version">
-            <li class="nav-item">
-              <i class="icon iconfont iconvery-versionmana"></i>
-              <span class="name">{{$t('deliveryCenter.versionManagement')}}</span>
-            </li>
-          </router-link>
           <router-link v-hasPermi="{type: 'system', action: 'delivery_get'}" active-class="active" to="/v1/delivery/artifacts">
             <li class="nav-item">
               <i class="icon iconfont iconvery-delitracking"></i>
               <span class="name">{{$t('deliveryCenter.artifactsTracking')}}</span>
             </li>
           </router-link>
+          <el-tooltip class="item" effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/delivery/version-management/`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <li class="nav-item">
+              <i class="icon iconfont iconvery-versionmana"></i>
+              <span class="name">{{$t('deliveryCenter.versionManagement')}}</span>
+            </li>
+          </el-tooltip>
         </ul>
       </div>
     </div>
