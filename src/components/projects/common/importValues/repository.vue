@@ -111,7 +111,7 @@
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
                 type="primary"
-                :href="fromGlobal?`https://docs.koderover.com/project/env/helm/chart/#全局服务变量`: `https://docs.koderover.com/project/env/helm/chart/#服务变量`"
+                :href="fromGlobal?`https://docs.koderover.com/project/env/helm/chart/#全局变量`: `https://docs.koderover.com/project/env/helm/chart/#服务变量`"
                 :underline="false"
                 target="_blank"
               >{{$t(`global.document`)}}</el-link>
