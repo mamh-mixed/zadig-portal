@@ -12,7 +12,6 @@ const reqExps = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloa
 const analyticsPrefix = 'https://api.koderover.com'
 const analyticsReq = `${analyticsPrefix}/api/operation/upload`
 const userInitEnvRoute = '/v1/projects/initialize/'
-const ignorePrefix = '/api/plutus/'
 
 const http = axios.create()
 const CancelToken = axios.CancelToken
@@ -130,9 +129,7 @@ http.interceptors.response.use(
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log(error.response)
-      if (error.response.config.url.includes(ignorePrefix) && error.response.status === 404) {
-        return Promise.reject(error)
-      } else if (document.title !== '登录') {
+      if (document.title !== '登录') {
         // unauthorized 401
         if (error.response.status === 401) {
           const redirectPath = window.location.pathname + window.location.search
@@ -2227,15 +2224,6 @@ export function delPlugin (id) {
 
 export function getPlugins () {
   return http.get(`/api/aslan/workflow/plugin`)
-}
-
-// ----- Enterprise -----
-export function checkPlutusAPI () {
-  return http.get(`/api/plutus/health`)
-}
-
-export function getSignatureFeaturesAPI () {
-  return http.get(`/api/plutus/signature/features`)
 }
 
 export function getNamespaceListAPI (clusterID) {
