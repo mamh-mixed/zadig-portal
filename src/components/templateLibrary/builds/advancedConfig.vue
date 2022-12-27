@@ -83,12 +83,25 @@
             label-width="72px"
             :prop="`${secondaryProp}.res_req_spec`"
             :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'gpu_limit' }"
+            data-disabled
           >
-            <el-input
-              v-model="currentResource.res_req_spec.gpu_limit"
-              :placeholder="$t(`build.advancedSettings.customizeGPUTooltip`)"
-              size="small"
-            ></el-input>
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                <el-link
+                  style="font-size: 13px; vertical-align: baseline;"
+                  type="primary"
+                  href="https://docs.koderover.com/zadig/project/build/#高级配置"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+              <el-input
+                v-model="currentResource.res_req_spec.gpu_limit"
+                :placeholder="$t(`build.advancedSettings.customizeGPUTooltip`)"
+                size="small"
+              ></el-input>
+            </el-tooltip>
           </el-form-item>
         </div>
       </el-form-item>

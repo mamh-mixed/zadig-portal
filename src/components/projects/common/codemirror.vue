@@ -4,6 +4,7 @@
       <pre>{{ placeholder }}</pre>
     </div>
     <codemirror class="codemirror" ref="cmEditor" :value="value" :options="options" @input="handleInput" />
+    <div class="codemirror-mask" v-if="disabled"></div>
   </div>
 </template>
 
@@ -39,7 +40,8 @@ export default {
     placeholder: {
       type: String,
       default: ''
-    }
+    },
+    disabled: Boolean
   },
   computed: {
     options () {
@@ -100,6 +102,17 @@ export default {
     /deep/.CodeMirror-sizer {
       padding: 0 5px;
     }
+  }
+
+  .codemirror-mask {
+    position: absolute;
+    top: -2px;
+    right: -5px;
+    bottom: -10px;
+    left: -5px;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.7);
+    cursor: not-allowed;
   }
 }
 </style>

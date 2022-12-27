@@ -98,18 +98,44 @@
             label-width="72px"
             :prop="`${secondaryProp}.res_req_spec`"
             :rules="{ validator: validateReqLimit, trigger: ['change', 'blur'], item: 'gpu_limit' }"
+            data-disabled
           >
-            <el-input
-              v-model="currentResource.res_req_spec.gpu_limit"
-              :placeholder="$t(`build.advancedSettings.customizeGPUTooltip`)"
-              size="small"
-            ></el-input>
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                <el-link
+                  style="font-size: 13px; vertical-align: baseline;"
+                  type="primary"
+                  href="https://docs.koderover.com/zadig/project/build/#高级配置"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+              <el-input
+                v-model="currentResource.res_req_spec.gpu_limit"
+                :placeholder="$t(`build.advancedSettings.customizeGPUTooltip`)"
+                size="small"
+                disabled
+              ></el-input>
+            </el-tooltip>
           </el-form-item>
         </div>
       </el-form-item>
-      <el-form-item v-if="useDockerDaemon">
+      <el-form-item v-if="useDockerDaemon" data-disabled>
         <div slot="label" style="width: 110px; line-height: 20px;">{{$t(`build.advancedSettings.useHostDockerDaemon`)}}</div>
-        <el-switch v-model="currentResource.use_host_docker_daemon"></el-switch>
+        <el-tooltip effect="dark" placement="top">
+          <div slot="content">
+            <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              href="https://docs.koderover.com/zadig/project/build/#高级配置"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <el-switch v-model="currentResource.use_host_docker_daemon" disabled></el-switch>
+        </el-tooltip>
       </el-form-item>
       <div class="item-title" v-if="!hiddenVars">
         {{$t(`build.advancedSettings.parameterPassing`)}}
