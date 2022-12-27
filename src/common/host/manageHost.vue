@@ -30,7 +30,21 @@
       </el-alert>
       <div class="sync-container">
         <el-button size="small" :plain="true" @click="hostOperation('add')" type="success">{{$t('global.add')}}</el-button>
-        <el-button size="small" :disabled="true" type="primary">{{$t('global.import')}}</el-button>
+        <el-tooltip effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/settings/vm-management/#批量导入主机`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <span style="margin-left: 4px;">
+            <el-button size="small" type="info" disabled>{{$t('global.import')}}</el-button>
+          </span>
+        </el-tooltip>
       </div>
       <div class="host-list">
         <template>

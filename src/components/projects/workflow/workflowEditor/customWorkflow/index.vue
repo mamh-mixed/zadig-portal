@@ -44,7 +44,7 @@
             <div slot="content">
               {{$t(`global.enterprisefeaturesReferforDetails`)}}
               <el-link
-                style="font-size: 14px; vertical-align: baseline;"
+                style="font-size: 13px; vertical-align: baseline;"
                 type="primary"
                 :href="`https://docs.koderover.com/template/workflow/`"
                 :underline="false"

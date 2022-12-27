@@ -21,7 +21,12 @@
     </el-form-item>
     <el-form-item :label="$t(`status.imageRepo`)">
       <el-select v-model="pickedRegistry" filterable clearable @change="changeRegistry" size="medium" class="full-width">
-        <el-option v-for="(reg,index) of allRegistry" :key="index" :label="reg.namespace ? `${reg.reg_addr}/${reg.namespace}` : reg.reg_addr" :value="reg.id"></el-option>
+        <el-option
+          v-for="(reg,index) of allRegistry"
+          :key="index"
+          :label="reg.namespace ? `${reg.reg_addr}/${reg.namespace}` : reg.reg_addr"
+          :value="reg.id"
+        ></el-option>
       </el-select>
     </el-form-item>
     <el-table v-if="pickedTargetServices.length > 0" :data="pickedTargetServices" empty-text="无" class="service-deploy-table">
@@ -79,8 +84,20 @@
       </el-table-column>
     </el-table>
     <div v-if="showCreateVersion" class="create-version">
-      <div v-hasPermi="{projectName: projectName, action: 'create_delivery'}" class="create-checkbox">
-        <el-checkbox v-model="versionInfo.enabled">创建版本</el-checkbox>
+      <div class="create-checkbox">
+        <el-tooltip class="item" effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/project/version/`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <el-checkbox v-model="versionInfo.enabled" disabled>创建版本</el-checkbox>
+        </el-tooltip>
       </div>
       <el-form v-if="versionInfo.enabled" :model="versionInfo" label-width="90px" ref="versionForm" :rules="versionRules">
         <el-form-item label="版本名称" prop="version">
@@ -166,7 +183,11 @@ export default {
           for (const image of images) {
             image.full = `${image.name}:${image.tag}`
           }
-          this.$set(this, 'imageMap', this.$utils.makeMapOfArray(images, 'name'))
+          this.$set(
+            this,
+            'imageMap',
+            this.$utils.makeMapOfArray(images, 'name')
+          )
           this.pickedTargetServices.forEach(tar => {
             this.$set(tar, 'image', '')
           })
@@ -185,7 +206,11 @@ export default {
           for (const image of images) {
             image.full = `${image.name}:${image.tag}`
           }
-          this.$set(this, 'imageMap', this.$utils.makeMapOfArray(images, 'name'))
+          this.$set(
+            this,
+            'imageMap',
+            this.$utils.makeMapOfArray(images, 'name')
+          )
           resolve()
         })
       })

@@ -29,23 +29,11 @@
           <el-select class="select" @change="changeCreateMethod" v-model="projectConfig.source" size="small" :placeholder="$t('environments.common.selectCreationMethod')">
             <el-option :label="$t('environments.common.createNewEnv')" value="system"></el-option>
             <el-option :label="$t('environments.common.copyEnv')" value="copy"></el-option>
-            <el-option v-if="currentProductDeliveryVersions.length > 0"  :label="$t('environments.k8s.envRollback')" value="versionBack"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item v-if="projectConfig.source==='copy'" :label="$t('environments.common.copyFrom')" prop="base_env_name">
           <el-select @change="changeSourceEnv" :placeholder="$t('environments.common.selectSourceEnv')" size="small" v-model="projectConfig.base_env_name" value-key="version">
             <el-option v-for="(item,index) in envNameList" :key="index" :label="item.name" :value="item.name"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="projectConfig.source==='versionBack'" :label="$t('environments.k8s.rollbackVersion')">
-          <el-select @change="changeSelectValue" :placeholder="$t('environments.k8s.selectVersion')" size="small" v-model="selection" value-key="version">
-            <el-option
-              v-for="(item,index) in currentProductDeliveryVersions"
-              :key="index"
-              :disabled="!item.versionInfo.productEnvInfo"
-              :label="$t('environments.k8s.versionLabel',{version: item.versionInfo.version, time: $utils.convertTimestamp(item.versionInfo.created_at), createBy: item.versionInfo.createdBy})"
-              :value="item.versionInfo"
-            ></el-option>
           </el-select>
         </el-form-item>
         <div class="primary-title">{{$t('environments.common.selectResources')}}</div>
@@ -123,7 +111,7 @@
           v-if="projectConfig.source==='system'||projectConfig.source==='copy'"
           ref="k8sServiceListRef"
           :showFilter="showFilter"
-          :cantOperate="rollbackMode"
+          :cantOperate="false"
           :selectedContainerMap="selectedContainerMap"
           :registryId="projectConfig.registry_id"
           :checkCurSvcResource="checkSvcResource"
@@ -158,7 +146,6 @@ import VarYaml from './varYaml.vue'
 import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,
-  getVersionListAPI,
   listProductAPI,
   getEnvInfoAPI,
   envRevisionsAPI,
@@ -192,7 +179,6 @@ export default {
     return {
       selection: '',
       editButtonDisabled: true,
-      currentProductDeliveryVersions: [],
       projectConfig: cloneDeep(projectConfig),
       hostingNamespace: [],
       allCluster: [],
@@ -213,9 +199,6 @@ export default {
   computed: {
     projectName () {
       return this.$route.params.project_name
-    },
-    rollbackMode () {
-      return this.projectConfig.source === 'versionBack'
     },
     nsIsExisted () {
       return this.hostingNamespace.includes(this.projectConfig.defaultNamespace)
@@ -311,84 +294,18 @@ export default {
         }
       })
       const cluster_id = this.projectConfig.cluster_id
-      if (!this.rollbackMode) {
-        this.allCluster = res.filter(element => {
-          return element.status === 'normal'
-        })
-        if (this.createShare && this.clusterId) {
-          this.projectConfig.cluster_id = this.clusterId
-        } else if (!cluster_id) {
-          this.projectConfig.cluster_id = this.defaultResource.clusterId
-        }
-      } else if (this.rollbackMode) {
-        this.allCluster = res.filter(element => {
-          return element.status === 'normal' && !element.production
-        })
-        if (!cluster_id) {
-          this.projectConfig.cluster_id = this.defaultResource.clusterId
-        }
+      this.allCluster = res.filter(element => {
+        return element.status === 'normal'
+      })
+      if (this.createShare && this.clusterId) {
+        this.projectConfig.cluster_id = this.clusterId
+      } else if (!cluster_id) {
+        this.projectConfig.cluster_id = this.defaultResource.clusterId
       }
+
       if (this.projectConfig.cluster_id) {
         this.changeCluster(this.projectConfig.cluster_id)
       }
-    },
-    changeSelectValue (versionInfo) {
-      const template = versionInfo.productEnvInfo
-      const source = this.projectConfig.source
-      const env_name = this.projectConfig.env_name
-      this.projectConfig = {
-        ...cloneDeep(projectConfig),
-        ...cloneDeep(template)
-      }
-
-      for (const group of template.services) {
-        group.sort((a, b) => {
-          if (a.service_name !== b.service_name) {
-            return a.service_name.charCodeAt(0) - b.service_name.charCodeAt(0)
-          }
-          if (a.type === 'k8s' || b.type === 'k8s') {
-            return a.type === 'k8s' ? 1 : -1
-          }
-          return 0
-        })
-      }
-      const map = {}
-      for (const group of template.services) {
-        for (const ser of group) {
-          map[ser.service_name] = ser
-          if (ser.type === 'k8s') {
-            this.hasK8s = true
-          }
-          ser.picked = true
-          ser.deploy_strategy = 'deploy'
-          const containers = ser.containers
-          if (containers) {
-            for (const con of containers) {
-              Object.defineProperty(con, 'defaultImage', {
-                value: con.image,
-                enumerable: false,
-                writable: false
-              })
-            }
-          }
-        }
-      }
-      if (template.source === '' || template.source === 'spock') {
-        this.projectConfig.source = 'system'
-      }
-      if (source === 'versionBack') {
-        this.projectConfig.source = 'versionBack'
-      }
-      this.projectConfig.env_name = env_name
-      this.projectConfig.cluster_id = this.defaultResource.clusterId
-      this.projectConfig.registry_id = this.defaultResource.registryId
-      this.containerMap = map
-    },
-    getVersionList () {
-      const projectName = this.projectName
-      getVersionListAPI('', projectName).then(res => {
-        this.currentProductDeliveryVersions = res
-      })
     },
     getEnvNameList () {
       const projectName = this.projectName
@@ -568,7 +485,7 @@ export default {
       this.$refs.k8sServiceListRef.getImages(
         this.containerNames,
         this.projectConfig.registry_id || '',
-        !this.rollbackMode && this.projectConfig.source !== 'copy',
+        this.projectConfig.source !== 'copy',
         this.projectConfig.services
       )
     },
@@ -615,10 +532,7 @@ export default {
           }
 
           const payload = this.$utils.cloneObj(this.projectConfig)
-          if (this.projectConfig.source !== 'versionBack') {
-            payload.services = cloneDeep(selectedServices) // full service to partial service
-          }
-
+          payload.services = cloneDeep(selectedServices) // full service to partial service
           delete payload.selectedService // unwanted data: selected service name
 
           payload.source = 'spock'
@@ -727,7 +641,6 @@ export default {
         { title: this.createShare ? this.$t('environments.k8s.subEnvCreation') : this.$t('environments.common.envCreation'), url: '' }
       ]
     })
-    this.getVersionList()
     this.getEnvNameList()
     this.projectConfig.product_name = this.projectName
     this.getCluster()

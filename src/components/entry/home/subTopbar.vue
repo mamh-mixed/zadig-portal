@@ -64,17 +64,22 @@
               <span class="name">{{$t('subTopbarMenu.scannings')}}</span>
             </li>
           </router-link>
-          <router-link
-            v-if="deployType === 'helm' ||deployType === 'k8s' "
-            v-hasPermi="{projectName: projectName, action: 'get_delivery'}"
-            active-class="active"
-            :to="`/v1/projects/detail/${projectName}/version`"
-          >
-            <li class="nav-item">
+          <el-tooltip v-if="deployType === 'helm' ||deployType === 'k8s' " effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 13px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/project/version/`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <li class="nav-item disabled">
               <i class="icon iconfont iconvery-versionmana"></i>
               <span class="name">{{$t('subTopbarMenu.versions')}}</span>
             </li>
-          </router-link>
+          </el-tooltip>
         </ul>
       </div>
     </div>
@@ -87,7 +92,37 @@
           plain
         >{{$t('subTopbarMenu.createWorkflow')}}</el-button>
       </template>
-      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail`">
+      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail` && deployType !=='cloud_host'">
+        <el-dropdown placement="bottom" trigger="click">
+          <button v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}" type="button" class="display-btn el-button">
+            <i class="el-icon-plus"></i>
+            &nbsp;&nbsp;{{$t('subTopbarMenu.createEnvironment')}}&nbsp;&nbsp;
+            <i class="el-icon-caret-bottom el-icon--right"></i>
+          </button>
+          <el-dropdown-menu slot="dropdown" class="project-config">
+            <el-dropdown-item
+              @click.native="bindComp(comp,'env')"
+            >{{$t('subTopbarMenu.testEnvironment')}}
+            </el-dropdown-item>
+            <el-tooltip  effect="dark" placement="top">
+              <div slot="content">
+                {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                <el-link
+                  style="font-size: 13px; vertical-align: baseline;"
+                  type="primary"
+                  :href="docLink[deployType]"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+             <el-dropdown-item style="color: #ddd;">
+              {{$t('subTopbarMenu.productionEnvironment')}}
+            </el-dropdown-item>
+          </el-tooltip>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </template>
+      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail` && deployType ==='cloud_host'">
         <el-button
           v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}"
           @click="bindComp(comp,'env')"
@@ -119,14 +154,6 @@
           plain
         >{{$t('subTopbarMenu.createScanner')}}</el-button>
       </template>
-      <template v-if="$route.path === `/v1/projects/detail/${projectName}/version` && deployType === 'helm'">
-        <el-button
-          v-hasPermi="{projectName: projectName, action: 'create_delivery',isBtn:true}"
-          @click="bindComp(comp,'version')"
-          icon="el-icon-plus"
-          plain
-        >{{$t('subTopbarMenu.createVersion')}}</el-button>
-      </template>
       <template v-if="comp && comp.isProjectAdmin && $route.path === `/v1/projects/detail/${projectName}/detail`">
         <el-button v-if="deployType === 'external'" type="text" disabled>
           <el-tooltip effect="dark" placement="top">
@@ -153,11 +180,18 @@
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </button>
           <el-dropdown-menu slot="dropdown" class="project-config">
-            <el-dropdown-item icon="el-icon-edit-outline" @click.native="$router.push(`/v1/projects/edit/${projectName}`)">{{$t('subTopbarMenu.editProject')}}</el-dropdown-item>
+            <el-dropdown-item
+              icon="el-icon-edit-outline"
+              @click.native="$router.push(`/v1/projects/edit/${projectName}`)"
+            >{{$t('subTopbarMenu.editProject')}}</el-dropdown-item>
             <el-dropdown-item v-if="deployType === 'cloud_host'" @click.native="$router.push(`/v1/projects/detail/${projectName}/host`)">
-              <i class="iconfont iconwuliji"></i>{{$t('subTopbarMenu.hostManagement')}}
+              <i class="iconfont iconwuliji"></i>
+              {{$t('subTopbarMenu.hostManagement')}}
             </el-dropdown-item>
-            <el-dropdown-item icon="el-icon-lock" @click.native="$router.push(`/v1/projects/detail/${projectName}/rbac`)">{{$t('subTopbarMenu.projectPermission')}}</el-dropdown-item>
+            <el-dropdown-item
+              icon="el-icon-lock"
+              @click.native="$router.push(`/v1/projects/detail/${projectName}/rbac`)"
+            >{{$t('subTopbarMenu.projectPermission')}}</el-dropdown-item>
             <el-dropdown-item
               v-if="deployType !== 'cloud_host'"
               icon="item-icon iconfont iconvery-collaboratiom"
@@ -191,10 +225,15 @@
   </div>
 </template>
 <script>
-
 export default {
   data () {
-    return {}
+    return {
+      docLink: {
+        k8s: 'https://docs.koderover.com/project/env/k8s/',
+        helm: 'https://docs.koderover.com/project/env/helm/chart/',
+        external: 'https://docs.koderover.com/project/env/k8s/host/'
+      }
+    }
   },
   props: {
     projectName: {
@@ -274,6 +313,10 @@ export default {
             margin-right: 18px;
             color: #d2d2d2;
             font-size: 22px;
+          }
+
+          &.disabled {
+            color: #c0c4cc;
           }
         }
 

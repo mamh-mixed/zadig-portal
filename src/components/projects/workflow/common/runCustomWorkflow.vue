@@ -1,9 +1,5 @@
 <template>
   <div class="custom-workflow">
-    <div class="error" v-if="isShowCheckErrorTip">
-      审批发起人手机号码未找到，请正确配置您的手机号码
-      <el-button type="text" plain size="mini" @click="updateEmail">点击修改</el-button>
-    </div>
     <el-form label-position="left" label-width="140px" size="small">
       <el-collapse v-model="activeName">
         <el-collapse-item :title="$t(`workflow.workflowVars`)" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
@@ -280,41 +276,12 @@
       </el-collapse>
       <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?$t(`workflow.starting`):$t(`workflow.run`) }}</el-button>
     </el-form>
-    <el-dialog
-      :title="$t(`profile.changePhone`)"
-      :close-on-click-modal="false"
-      :append-to-body="true"
-      custom-class="edit-form-dialog"
-      :visible.sync="dialogMailEditFormVisible"
-    >
-      <el-form :model="userInfo" @submit.native.prevent ref="mailForm">
-        <el-form-item
-          :label="$t(`profile.newPhone`)"
-          label-width="100px"
-          prop="phone"
-          size="small"
-          :rules="{
-            required: true,
-            validator: validatePhone,
-            trigger: ['blur', 'change']
-          }"
-        >
-          <el-input v-model="userInfo.phone"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" native-type="submit" size="small" @click="updateUser" class="start-create">{{$t(`global.confirm`)}}</el-button>
-        <el-button plain native-type="submit" size="small" @click="dialogMailEditFormVisible=false">{{$t(`global.cancel`)}}</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import CustomWorkflowBuildRows from '@/components/common/customWorkflowBuildRows.vue'
 import CustomWorkflowCommonRows from '@/components/common/customWorkflowCommonRows.vue'
-import { mapState } from 'vuex'
-import store from 'storejs'
 import {
   listProductAPI,
   getAllBranchInfoAPI,
@@ -322,9 +289,7 @@ import {
   imagesAPI,
   getCustomWorkfloweTaskPresetAPI,
   getRegistryWhenBuildAPI,
-  getAssociatedBuildsAPI,
-  updateCurrentUserMailAPI,
-  checkWorkflowApprovalAPI
+  getAssociatedBuildsAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
 
@@ -353,7 +318,6 @@ export default {
       dockerList: [],
       startTaskLoading: false,
       activeName: ['env', '00'],
-      notReady: false,
       payload: {
         workflow_name: '',
         stages: [
@@ -365,12 +329,7 @@ export default {
       },
       originServiceAndBuilds: [],
       isShowParams: true,
-      fromJobInfo: {},
-      dialogMailEditFormVisible: false,
-      isShowCheckErrorTip: false,
-      userInfo: {
-        phone: ''
-      }
+      fromJobInfo: {}
     }
   },
   props: {
@@ -395,19 +354,11 @@ export default {
     CustomWorkflowBuildRows,
     CustomWorkflowCommonRows
   },
-  computed: {
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
-  },
   created () {
     this.init()
   },
   methods: {
     init () {
-      if (this.hasPlutus) {
-        this.checkWorkflowApproval()
-      }
       this.getEnvList()
       this.getRegistryWhenBuild()
       this.getServiceAndBuildList()
@@ -558,39 +509,6 @@ export default {
           }
         })
       })
-    },
-    checkWorkflowApproval () {
-      checkWorkflowApprovalAPI(this.workflowName)
-        .then(res => {
-          this.isShowCheckErrorTip = false
-          this.notReady = false
-        })
-        .catch(error => {
-          if (error.response && error.response.data.code === 6940) {
-            this.isShowCheckErrorTip = true
-          }
-          this.notReady = true
-        })
-    },
-    updateUser () {
-      const userInfo = store.get('userInfo')
-      this.$refs.mailForm.validate().then(valid => {
-        if (valid) {
-          const params = {
-            name: userInfo.name,
-            phone: this.userInfo.phone
-          }
-          updateCurrentUserMailAPI(userInfo.uid, params).then(res => {
-            this.checkWorkflowApproval(this.workflowName)
-            this.dialogMailEditFormVisible = false
-            this.userInfo.phone = ''
-          })
-        }
-      })
-    },
-    updateEmail () {
-      this.isShowCheckErrorTip = false
-      this.dialogMailEditFormVisible = true
     },
     getWorkflowPresetInfo (workflowName) {
       // const key = this.$utils.rsaEncrypt()

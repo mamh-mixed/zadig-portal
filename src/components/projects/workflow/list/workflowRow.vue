@@ -13,8 +13,8 @@
           <span v-else class="el-icon-warning"></span>
         </div>
         <div class="tag-container">
-          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.customWorkflowTag`)}}</el-tag>
-          <el-tag v-else class="workflow-tag" size="mini" effect="plain">{{$t(`workflow.productWorkflowTag`)}}</el-tag>
+          <el-tag v-if="workflowInfo.workflow_type === 'common_workflow'" class="workflow-tag" size="mini" effect="plain" type="info">{{$t(`workflow.customWorkflowTag`)}}</el-tag>
+          <el-tag v-else class="workflow-tag" size="mini" effect="plain" type="info">{{$t(`workflow.productWorkflowTag`)}}</el-tag>
         </div>
 
         <div class="stages-container">
@@ -29,15 +29,16 @@
           <div class="name-container">
             <div class="workflow-name">
               <router-link :to="workflowLink">
-                <el-tooltip effect="dark" :content="displayName" placement="top">
+                <el-tooltip v-if="description" effect="dark" :content="description" placement="top">
                   <span class="name-span">{{ displayName }}</span>
                 </el-tooltip>
+                <span v-else class="name-span">{{ displayName }}</span>
               </router-link>
             </div>
-            <el-tooltip v-if="description" effect="dark" :content="description" placement="top">
+            <!-- <el-tooltip v-if="description" effect="dark" :content="description" placement="top">
               <div class="gray-desc workflow-desc">{{ $utils.tailCut(description,25) }}</div>
             </el-tooltip>
-            <div v-else class="gray-desc workflow-desc">-</div>
+            <div v-else class="gray-desc workflow-desc">-</div> -->
           </div>
         </div>
       </section>
@@ -222,7 +223,7 @@ export default {
     .info-header {
       display: inline-flex;
       align-items: center;
-      padding: 8px 10px;
+      padding: 6px 8px;
       background-color: #fff;
       border-radius: 6px 6px 0 0;
 

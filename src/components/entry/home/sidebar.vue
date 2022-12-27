@@ -42,14 +42,34 @@
                 </div>
               </a>
             </div>
-            <el-tooltip v-else effect="dark" :content="$t(`sidebarMenu.${nav.name}`)" placement="right" :disabled="showSidebar">
-              <router-link class="nav-item" active-class="active" :to="`/v1/${nav.url}`">
-                <div class="nav-item-icon">
-                  <i :class="nav.icon"></i>
+            <template v-else>
+              <el-tooltip v-if="nav.disabled" effect="dark" placement="right">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/release/center`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
                 </div>
-                <div v-show="showSidebar" class="nav-item-label">{{$t(`sidebarMenu.${nav.name}`)}}</div>
-              </router-link>
-            </el-tooltip>
+                <div class="nav-item disabled" active-class="active">
+                  <div class="nav-item-icon">
+                    <i :class="nav.icon"></i>
+                  </div>
+                  <div v-show="showSidebar" class="nav-item-label">{{$t(`sidebarMenu.${nav.name}`)}}</div>
+                </div>
+              </el-tooltip>
+              <el-tooltip v-else effect="dark" :content="$t(`sidebarMenu.${nav.name}`)" placement="right" :disabled="showSidebar">
+                <router-link class="nav-item" active-class="active" :to="`/v1/${nav.url}`">
+                  <div class="nav-item-icon">
+                    <i :class="nav.icon"></i>
+                  </div>
+                  <div v-show="showSidebar" class="nav-item-label">{{$t(`sidebarMenu.${nav.name}`)}}</div>
+                </router-link>
+              </el-tooltip>
+            </template>
             <ul v-if="nav.hasSubItem && nav.isOpened" class="sub-menu" style="overflow: hidden;">
               <li class="sub-menu-item-group">
                 <ul>
@@ -204,6 +224,12 @@ export default {
               name: 'deliveryCenter',
               url: 'delivery',
               icon: 'iconfont iconvery-deli'
+            },
+            {
+              name: 'releaseCenter',
+              url: '#',
+              disabled: true,
+              icon: 'iconfont icongongzuoliucheng'
             }
           ]
         },
@@ -697,15 +723,33 @@ export default {
         vertical-align: middle;
       }
     }
-  }
+    /* stylelint-disable no-descending-specificity */
+    &.active,
+    &:hover {
+      background-color: @sidebarActiveColor;
+      border-radius: 6px;
 
-  .nav-item.active,
-  .nav-item:hover {
-    background-color: @sidebarActiveColor;
-    border-radius: 6px;
+      .nav-item-label {
+        color: @themeColor;
+      }
+    }
 
-    .nav-item-label {
-      color: @themeColor;
+    &.disabled {
+      cursor: not-allowed;
+
+      &:hover {
+        background-color: @sidebarDisabledColor;
+
+        .nav-item-icon,
+        .nav-item-label {
+          color: #909399;
+        }
+      }
+
+      .nav-item-icon,
+      .nav-item-label {
+        color: #909399;
+      }
     }
   }
 

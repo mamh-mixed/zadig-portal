@@ -104,7 +104,7 @@
             <div slot="content">
               {{$t(`global.enterprisefeaturesReferforDetails`)}}
               <el-link
-                style="font-size: 14px; vertical-align: baseline;"
+                style="font-size: 13px; vertical-align: baseline;"
                 type="primary"
                 :href="`https://docs.koderover.com/project/scan/#%E8%B4%A8%E9%87%8F%E9%97%A8%E7%A6%81%E6%A3%80%E6%9F%A5`"
                 :underline="false"

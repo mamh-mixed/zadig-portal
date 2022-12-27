@@ -230,6 +230,8 @@ exports.default = {
     buildTemplates: 'Build Templates',
     createWorkflow: 'Create',
     createEnvironment: 'Create',
+    testEnvironment: 'Test Environment',
+    productionEnvironment: 'Production Environment',
     createBuild: 'Create',
     createTest: 'Create',
     createScanner: 'Create',
@@ -758,6 +760,7 @@ exports.default = {
     specifyMembersTip1: '@Designated members (enter the mobile phone number of the designated notification recipient, use ; to split, if it is empty, all members will be notified)',
     specifyMembersTip2: '@Specify members (enter the user_id of the specified notification receiver and use; to split)',
     notifyType: {
+      created: 'created',
       passed: 'passed',
       failed: 'failed',
       timeout: 'timeout',
@@ -942,8 +945,8 @@ exports.default = {
       variablesSection: 'Variables',
       buildInVariables: 'System built-in variables',
       buildInVariablesTooltip: 'Referenced by $Namespace$, $Product$, $Service$, $EnvName$ in the service yaml',
-      globalVariables: 'Global Variables',
-      globalVariablesTooltip: 'Global variables are referenced by {{.key}} and are available to all services in the project',
+      customVariables: 'Custom Variables',
+      customVariablesTooltip: 'Custom variables are referenced by {{.key}}',
       currentValue: 'Current Value'
     },
     pm: {},

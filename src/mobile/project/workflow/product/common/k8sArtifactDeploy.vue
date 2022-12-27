@@ -76,8 +76,20 @@
       </el-table-column>
     </el-table>
     <div v-if="showCreateVersion" class="create-version">
-      <div v-hasPermi="{projectName: projectName, action: 'create_delivery'}" class="create-checkbox">
-        <el-checkbox v-model="versionInfo.enabled">创建版本</el-checkbox>
+      <div class="create-checkbox">
+        <el-tooltip class="item" effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/project/version/`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <el-checkbox v-model="versionInfo.enabled" disabled>创建版本</el-checkbox>
+        </el-tooltip>
       </div>
       <el-form v-if="versionInfo.enabled" :model="versionInfo"  ref="versionForm" label-position="left" :rules="versionRules">
         <el-form-item label="版本名称" prop="version">
