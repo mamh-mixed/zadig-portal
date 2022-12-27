@@ -7,6 +7,7 @@
       @closeValueEdit="envVariable.overrideYaml = ''"
       showAutoSync
       useVarGroup
+      fromGlobal
       style="margin-top: 0;"
     />
   </div>

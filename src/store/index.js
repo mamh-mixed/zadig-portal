@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 // Login
 import login from './modules/login'
 
-// global config
+// Global config
 import globalConfig from './modules/globalConfig'
 
 // Project
@@ -29,9 +29,6 @@ import externalLink from './modules/externalLink'
 // Custom Workflow
 import customWorkflow from './modules/customWorkflow'
 
-// Plutus
-import checkPlutus from './modules/checkPlutus'
-
 // Preference
 import theme from './modules/theme'
 
@@ -51,7 +48,6 @@ export default new Vuex.Store({
     k8sService,
     externalLink,
     customWorkflow,
-    checkPlutus,
     theme
   },
   strict: debug

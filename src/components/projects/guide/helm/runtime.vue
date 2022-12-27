@@ -123,7 +123,6 @@
               :envNames="envNames"
               :handledEnv="activeName"
               :envScene="`createEnv`"
-              :checkResource="checkResource"
             />
             <div class="ai-bottom">
               <el-button type="primary" size="small" @click="createHelmProductEnv" :loading="isCreating" :disabled="!cantNext">{{$t('environments.common.envCreation')}}</el-button>
@@ -435,19 +434,6 @@ export default {
       ].includes(this.currentInfo.namespace)
       this.currentInfo.is_existed = nsIsExisted
       return nsIsExisted
-    },
-    checkResource () {
-      if (this.activeName === 'addNew') {
-        return null
-      }
-      const activeName = this.activeName
-      const infos = this.envInfos.find(info => info.initName === activeName)
-        .infos
-      return {
-        env_name: infos.env_name,
-        cluster_id: infos.cluster_id,
-        namespace: infos.namespace
-      }
     },
     rules () {
       return {

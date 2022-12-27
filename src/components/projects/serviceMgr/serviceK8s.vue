@@ -42,10 +42,9 @@
                          :label="env">{{env.env_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <div v-if="checkedEnvList.length > 0 && (checkedEnvList[0].vars &&checkedEnvList[0].vars.length > 0 || hasPlutus)" class="env-tabs">
+        <div v-if="checkedEnvList.length > 0 && (checkedEnvList[0].vars &&checkedEnvList[0].vars.length > 0)" class="env-tabs">
           <el-tabs v-model="activeEnvTabName" type="card">
             <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
-              <CheckResource v-if="hasPlutus" :checkResource="env.checkResource" :serviceNames="env.serviceNames" />
               <div class="variable-yaml-container" style="margin: 5px 0;">
                 <span style="display: inline-block; margin: 5px 0;">变量配置</span>
                 <el-input type="textarea" :rows="10"  v-model="env.variableYaml"></el-input>
@@ -147,7 +146,6 @@
 </template>
 <script>
 import mixin from '@/mixin/serviceModuleMixin'
-import CheckResource from '@/components/projects/serviceMgr/common/checkResource.vue'
 import ServiceAside from './k8s/serviceAside.vue'
 import ServiceEditor from './k8s/serviceEditor.vue'
 import ServiceTree from './common/serviceTree.vue'
@@ -155,7 +153,6 @@ import IntegrationCode from './common/integrationCode.vue'
 import { sortBy } from 'lodash'
 import { getSingleProjectAPI, getServiceTemplatesAPI, getServicesTemplateWithSharedAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
-import { mapState } from 'vuex'
 export default {
   props: {
     isOnboarding: {
@@ -233,7 +230,7 @@ export default {
       this.joinToEnvDialogVisible = true
     },
     changeUpgradeEnv (val) {
-      if (this.checkedEnvList.length && (this.hasPlutus || this.checkedEnvList[0].vars.length > 0)) {
+      if (this.checkedEnvList.length && (this.checkedEnvList[0].vars.length > 0)) {
         this.activeEnvTabName = val[val.length - 1].env_name
       }
     },
@@ -291,7 +288,7 @@ export default {
       const payload = this.checkedEnvList.map(item => {
         return {
           env_name: item.env_name,
-          services: item.serviceNames.map(svc => ({ service_name: svc.service_name, deploy_strategy: svc.deploy_strategy, variable_yaml: item.variableYaml }))
+          services: item.services.map(svc => ({ service_name: svc.service_name, deploy_strategy: '', variable_yaml: item.variableYaml }))
         }
       })
       const projectName = this.projectName
@@ -380,24 +377,11 @@ export default {
       const deployableEnvs = result[0].envs
       const variableYaml = result[1].variable_yaml
       deployableEnvs.forEach(env => {
-        env.checkResource = {
-          env_name: env.env_name,
-          namespace: env.namespace,
-          cluster_id: env.cluster_id,
-          services: [{
-            service_name: serviceName,
-            variable_yaml: variableYaml
-          }]
-        }
         env.services.push({
           service_name: serviceName,
           variable_yaml: variableYaml
         })
         env.variableYaml = variableYaml
-        env.serviceNames = [{
-          service_name: serviceName,
-          deploy_strategy: 'deploy'
-        }]
       })
       this.deployableEnvListWithVars = deployableEnvs
     },
@@ -406,9 +390,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    }),
     projectName () {
       return this.$route.params.project_name
     },
@@ -438,8 +419,7 @@ export default {
     ServiceTree,
     Multipane,
     MultipaneResizer,
-    IntegrationCode,
-    CheckResource
+    IntegrationCode
   },
   mixins: [mixin]
 }

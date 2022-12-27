@@ -29,34 +29,8 @@
         <div class="service-item" v-for="(service, serviceName) in selectedContainerMap" :key="serviceName">
           <div class="primary-title service-title">
             <div class="service-name">{{ serviceName }}</div>
-            <template v-if="hasPlutus">
-              <div class="service-resource">
-                <span class="middle">
-                  {{$t('environments.k8s.serviceListComp.resourceDetection')}}
-                  <el-tooltip effect="dark" :content="$t('environments.k8s.serviceListComp.resourceDetectionTip')" placement="top">
-                    <i class="el-icon-info gray"></i>
-                  </el-tooltip>
-                </span>
-                <div style="display: inline-block;">
-                  <span
-                    class="resource-item"
-                    v-for="(resource, index) in svcResources[serviceName] ? svcResources[serviceName].resources : []"
-                    :key="index"
-                  >
-                    <i class="middle" :class="[resource.status === 'deployed' ? 'el-icon-success success' : 'el-icon-error fail']"></i>
-                    <span>{{ `${resource.type}/${resource.name}` }}</span>
-                  </span>
-                </div>
-              </div>
-              <div class="service-operation">
-                <el-radio-group v-model="service.deploy_strategy">
-                  <el-radio label="import" :disabled="!(svcResources[serviceName] && svcResources[serviceName].deployed)">{{$t('environments.k8s.serviceListComp.onlyImport')}}</el-radio>
-                  <el-radio label="deploy">{{$t('environments.k8s.serviceListComp.executeDeploy')}}</el-radio>
-                </el-radio-group>
-              </div>
-            </template>
           </div>
-          <div class="service-content" v-show="service.deploy_strategy !== 'import'">
+          <div class="service-content">
             <template v-if="service.type==='k8s' && service.containers">
               <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name" label-width="40%">
                 <el-select v-model="con.image" :disabled="cantOperate" filterable size="small">
@@ -87,7 +61,6 @@
               <CodeMirror
                 :ref="`codemirror-${serviceName}`"
                 v-model="service.variable_yaml"
-                @input="checkCurSvcResource({services: [{ service_name: serviceName, variable_yaml: $event }]})"
               />
             </Resize>
           </div>
@@ -102,15 +75,13 @@ import Resize from '@/components/common/resize'
 import CodeMirror from '@/components/projects/common/codemirror.vue'
 import virtualListItem from '../../common/imageItem'
 import virtualScrollList from 'vue-virtual-scroll-list'
-import { imagesAPI, checkK8sSvcResourceAPI } from '@api'
-import { mapState } from 'vuex'
+import { imagesAPI } from '@api'
 
 export default {
   props: {
     showFilter: Boolean,
     cantOperate: Boolean,
     selectedContainerMap: Object,
-    checkCurSvcResource: Function,
     registryId: {
       required: true,
       type: String
@@ -132,10 +103,7 @@ export default {
   computed: {
     imageMap () {
       return this.imageMapById[this.registryId] || {}
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     async getImages (containerNames, registryId, init, services) {
@@ -193,31 +161,6 @@ export default {
           }
         }
       }
-    },
-    async checkSvcResource (projectName, payload) {
-      if (!this.hasPlutus) {
-        return Promise.reject()
-      }
-      // payload: env_name, namespace, cluster_id, default_values, services[service_name, variable_yaml]
-      const res = await checkK8sSvcResourceAPI(
-        projectName,
-        payload
-      ).catch(err => console.log(err))
-      if (res) {
-        const svcStatus = {}
-        res.forEach(resource => {
-          const deployed = !resource.resources.find(
-            re => re.status === 'undeployed'
-          )
-          this.$set(this.svcResources, resource.service_name, {
-            ...resource,
-            deployed
-          })
-          svcStatus[resource.service_name] = deployed
-        })
-        return Promise.resolve(svcStatus)
-      }
-      return Promise.reject()
     }
   },
   components: {

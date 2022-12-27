@@ -114,7 +114,6 @@
           :cantOperate="false"
           :selectedContainerMap="selectedContainerMap"
           :registryId="projectConfig.registry_id"
-          :checkCurSvcResource="checkSvcResource"
         />
       </template>
 
@@ -156,7 +155,7 @@ import {
   getServiceDefaultVariableAPI
 } from '@api'
 import bus from '@utils/eventBus'
-import { uniq, cloneDeep, flattenDeep, debounce, flatten } from 'lodash'
+import { uniq, cloneDeep, flattenDeep } from 'lodash'
 import { serviceTypeMap } from '@utils/wordTranslate'
 
 const projectConfig = {
@@ -283,7 +282,6 @@ export default {
       ) {
         this.projectConfig.defaultNamespace = this.projectName + '-env-' + value
       }
-      this.checkSvcResource({ env_name: value, namespace: this.projectConfig.defaultNamespace })
     },
     async getCluster () {
       const projectName = this.projectName
@@ -411,7 +409,6 @@ export default {
       )
       this.projectConfig.cluster_id = clusterId
       this.projectConfig.registry_id = envInfo.registry_id
-      this.checkSvcResource()
     },
     async getTemplateAndImg () {
       const projectName = this.projectName
@@ -480,7 +477,6 @@ export default {
       this.projectConfig.default_values = ''
       this.$refs.varYamlRef && (this.$refs.varYamlRef.showYaml = false)
       this.getImages()
-      this.checkSvcResource()
     },
     getImages () {
       this.$refs.k8sServiceListRef.getImages(
@@ -584,45 +580,6 @@ export default {
           console.log('not-valid')
         }
       })
-    },
-    checkSvcResource: debounce(function ({
-      env_name = this.projectConfig.env_name,
-      namespace = this.projectConfig.defaultNamespace,
-      cluster_id = this.projectConfig.cluster_id,
-      default_values = this.projectConfig.default_values,
-      services = flatten(this.projectConfig.services)
-    } = {}) {
-      const payload = {
-        env_name,
-        namespace,
-        cluster_id,
-        default_values,
-        services: services.map(va => ({ service_name: va.service_name, variable_yaml: va.variable_yaml || '' }))
-      }
-      if (this.$refs.k8sServiceListRef && env_name && namespace && cluster_id && services.length) {
-        this.$refs.k8sServiceListRef
-          .checkSvcResource(this.projectName, payload)
-          .then(res => {
-            this.serviceNames.forEach(name => {
-              if (typeof res[name] !== 'undefined') {
-                this.containerMap[name].deploy_strategy = res[name]
-                  ? 'import'
-                  : 'deploy'
-              }
-            })
-          }).catch((err) => console.log(err))
-      }
-    }, 300)
-  },
-  watch: {
-    'projectConfig.defaultNamespace' (val) {
-      this.checkSvcResource({ namespace: val })
-    },
-    'projectConfig.cluster_id' (val) {
-      this.checkSvcResource({ cluster_id: val })
-    },
-    'projectConfig.default_values' (val) {
-      this.checkSvcResource({ default_values: val })
     }
   },
   created () {

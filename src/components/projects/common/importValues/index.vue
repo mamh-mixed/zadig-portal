@@ -35,7 +35,7 @@
       <codemirror ref="codemirror" v-model="importRepoInfoUse.overrideYaml" />
     </Resize>
     <el-dialog :title="$t('global.importFromRepository')" :visible.sync="showGitImportDialog" append-to-body>
-      <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" :showAutoSync="showAutoSync" />
+      <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" :fromGlobal="fromGlobal" :showAutoSync="showAutoSync" />
       <div slot="footer">
         <el-button @click="showGitImportDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="importOverrideYaml" size="small" :loading="loadValueYamls">导 入</el-button>
@@ -100,6 +100,10 @@ export default {
           direction: 'none'
         }
       }
+    },
+    fromGlobal: {
+      default: false,
+      type: Boolean
     },
     importRepoInfo: Object,
     useVarGroup: Boolean
