@@ -12,7 +12,7 @@
               <i class="pointer el-icon-warning"></i>
             </el-tooltip>
           </span>
-          <span style="color: #ddd;">开启自动更新
+          <span style="color: #c0c4cc;">开启自动更新
             <el-tooltip class="item" effect="dark" placement="top">
               <i class="pointer el-icon-warning"></i>
               <div slot="content">

@@ -460,7 +460,7 @@ export default {
   }
 
   .title {
-    color: #ddd;
+    color: #c0c4cc;
   }
 
   .create-footer {

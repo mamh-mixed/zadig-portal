@@ -104,14 +104,14 @@
       </el-form-item>
       <el-form-item v-if="showAutoSync && codehostSource !== 'other'" prop="autoSync" :label="$t('global.autoSync')" :show-message="false">
         <span slot="label">
-          <span style="color: #ddd;">{{$t('global.autoSync')}}</span>
+          <span style="color: #c0c4cc;">{{$t('global.autoSync')}}</span>
            <el-tooltip class="item" effect="dark" placement="top">
             <div slot="content">
               {{$t(`global.enterprisefeaturesReferforDetails`)}}
               <el-link
                 style="font-size: 14px; vertical-align: baseline;"
                 type="primary"
-                :href="`https://docs.koderover.com/project/service/k8s/#基本说明`"
+                :href="fromGlobal?`https://docs.koderover.com/project/env/helm/chart/#全局服务变量`: `https://docs.koderover.com/project/env/helm/chart/#服务变量`"
                 :underline="false"
                 target="_blank"
               >{{$t(`global.document`)}}</el-link>
@@ -153,6 +153,10 @@ export default {
       type: String
     },
     showAutoSync: {
+      default: false,
+      type: Boolean
+    },
+    fromGlobal: {
       default: false,
       type: Boolean
     }
