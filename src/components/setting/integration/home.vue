@@ -32,6 +32,23 @@
             <External v-if="currentTab === 'external'" />
           </keep-alive>
         </el-tab-pane>
+        <el-tab-pane name="approval" :label="$t(`sysSetting.integration.approvalSystemTab`)" disabled>
+          <span slot="label">
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                <el-link
+                  style="font-size: 13px; vertical-align: baseline;"
+                  type="primary"
+                  href="https://docs.koderover.com/zadig/settings/approval/"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+              <span>{{$t(`sysSetting.integration.approvalSystemTab`)}}</span>
+            </el-tooltip>
+          </span>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -75,7 +92,10 @@ export default {
     }
   },
   mounted () {
-    bus.$emit('set-topbar-title', { title: this.$t(`sidebarMenu.integration`), breadcrumb: [] })
+    bus.$emit('set-topbar-title', {
+      title: this.$t(`sidebarMenu.integration`),
+      breadcrumb: []
+    })
     this.showCurrentTab()
   }
 }
