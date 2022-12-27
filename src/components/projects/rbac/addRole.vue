@@ -158,13 +158,16 @@ export default {
       const projectType = currentProject && projectTypeMap[currentProject.deployType]
       const res = await queryPolicyDefinitionsAPI(projectName, 'project', projectType).catch(error => console.log(error))
       if (res) {
-        res.forEach(group => {
+        const filterRes = res.filter((item) => {
+          return item.resource !== 'Delivery'
+        })
+        filterRes.forEach(group => {
           group.rules.forEach(item => {
             item.uniqueAction = `${group.resource}/${item.action}`
             item.resource = group.resource
           })
         })
-        this.permissionGroups = res
+        this.permissionGroups = filterRes
       }
     },
     async submit () {

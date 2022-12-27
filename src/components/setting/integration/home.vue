@@ -49,7 +49,7 @@
             </el-tooltip>
           </span>
         </el-tab-pane>
-        <el-tab-pane name="approval" :label="$t(`sysSetting.integration.configsTab`)" disabled>
+        <el-tab-pane name="configs" :label="$t(`sysSetting.integration.configsTab`)" disabled>
           <span slot="label">
             <el-tooltip effect="dark" placement="top">
               <div slot="content">
