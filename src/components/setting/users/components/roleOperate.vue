@@ -161,7 +161,10 @@ export default {
       )
       if (res) {
         res.forEach(group => {
-          group.rules.map((item, index) => {
+          group.rules = group.rules.filter((item) => {
+            return item.action !== 'release_get'
+          })
+          group.rules.forEach((item, index) => {
             item.uniqueAction = `${group.resource}/${item.action}`
             item.resource = group.resource
             item.parent = item.alias.includes('|')
@@ -171,7 +174,6 @@ export default {
               item.parent = ''
               item.isChild = true
             }
-            return item.action !== 'release_get'
           })
         })
         this.permissionGroups = res
