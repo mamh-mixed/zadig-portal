@@ -81,7 +81,7 @@
 
     <VarYaml class="common-parcel-block box-card-service" ref="varYamlRef" v-model="projectConfig.default_values" />
 
-    <K8sServiceList ref="k8sServiceListRef" :selectedContainerMap="selectedContainerMap" :registryId="projectConfig.registry_id" :checkCurSvcResource="checkSvcResource" />
+    <K8sServiceList ref="k8sServiceListRef" :selectedContainerMap="selectedContainerMap" :registryId="projectConfig.registry_id" />
   </div>
 </template>
 
@@ -95,7 +95,7 @@ import {
   getClusterListAPI,
   getRegistryWhenBuildAPI
 } from '@api'
-import { uniq, cloneDeep, debounce, flatten } from 'lodash'
+import { uniq, cloneDeep } from 'lodash'
 
 const projectConfig = {
   product_name: '',
@@ -195,7 +195,6 @@ export default {
         this.projectConfig.namespace = this.projectName + '-env-' + value
       }
       this.projectConfig.env_name = value
-      this.checkSvcResource({ env_name: value, namespace: this.projectConfig.namespace })
     },
     async initProjectInfo () {
       this.projectInitLoading = true
@@ -283,7 +282,6 @@ export default {
       this.serviceNames = Object.keys(servicesMap)
       this.containerNames = uniq(containerNames)
       this.projectConfigInit.selectedService = Object.keys(servicesMap)
-      // todo: this.checkSvcResource()
     },
     async getImages (
       registry_id = this.projectConfig.registry_id,
@@ -350,51 +348,6 @@ export default {
       }).catch(() => {
         console.log('not-valid')
       })
-    },
-    checkSvcResource: debounce(function (payload = {}) {
-      this.checkSvcResourceSimple(payload)
-    }, 300),
-    checkSvcResourceSimple ({
-      env_name = this.projectConfig.env_name,
-      namespace = this.projectConfig.namespace,
-      cluster_id = this.projectConfig.cluster_id,
-      default_values = this.projectConfig.default_values,
-      services = flatten(this.projectConfig.services)
-    } = {}) {
-      const payload = {
-        env_name,
-        namespace,
-        cluster_id,
-        default_values,
-        services: services.map(va => ({ service_name: va.service_name, variable_yaml: va.variable_yaml || '' }))
-      }
-      if (this.$refs.k8sServiceListRef && env_name && namespace && cluster_id && services.length) {
-        this.$refs.k8sServiceListRef
-          .checkSvcResource(this.projectName, payload)
-          .then(res => {
-            this.serviceNames.forEach(name => {
-              if (typeof res[name] !== 'undefined') {
-                this.projectConfig.servicesMap[name].deploy_strategy = res[name]
-                  ? 'import'
-                  : 'deploy'
-              }
-            })
-          }).catch((err) => console.log(err))
-      }
-    }
-  },
-  watch: {
-    'projectConfig.namespace' (val) {
-      this.checkSvcResource({ namespace: val })
-    },
-    'projectConfig.cluster_id' (val) {
-      this.checkSvcResource({ cluster_id: val })
-    },
-    'projectConfig.default_values' (val) {
-      this.checkSvcResource({ default_values: val })
-    },
-    'projectConfig.env_name' (val) {
-      this.checkSvcResourceSimple({ env_name: val })
     }
   },
   created () {

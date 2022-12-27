@@ -26,8 +26,7 @@
         :envScene="envScene"
         :showEnvTabs="showEnvTabs"
         :defaultEnvValue="defaultEnvValue"
-        :baseEnvObj="baseEnvObj"
-        :checkResource="checkResource" />
+        :baseEnvObj="baseEnvObj" />
     </div>
   </div>
 </template>
@@ -80,8 +79,7 @@ export default {
       // current env object
       type: Object,
       required: false
-    },
-    checkResource: Object
+    }
   },
   computed: {
     defaultEnvValue () {

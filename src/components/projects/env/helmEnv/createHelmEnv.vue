@@ -118,8 +118,7 @@
         :chartNames="projectConfig.selectedService"
         :envNames="envNames"
         :handledEnv="envName"
-        :envScene="`createEnv`"
-        :checkResource="checkResource" />
+        :envScene="`createEnv`" />
       <el-form label-width="35%" class="ops">
         <el-form-item>
           <el-button @click="$router.back()" :loading="startDeployLoading" size="medium">{{$t(`global.cancel`)}}</el-button>
@@ -208,13 +207,6 @@ export default {
     },
     isBaseEnv () {
       return !this.baseEnvName
-    },
-    checkResource () {
-      return {
-        env_name: this.projectConfig.env_name,
-        cluster_id: this.projectConfig.cluster_id,
-        namespace: this.projectConfig.defaultNamespace
-      }
     },
     rules () {
       const validateEnvName = (rule, value, callback) => {

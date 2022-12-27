@@ -23,15 +23,7 @@
       </el-form>
       <template v-if="opeType !== 'delete'">
         <div class="header">服务列表</div>
-        <CheckResource
-          v-if="hasPlutus && opeType==='add'"
-          :checkResource="checkResource"
-          :currentResourceCheck="currentResourceCheck"
-          :expandKeys="expandKeys"
-          @checkRes="svcResources = $event"
-          showExpand
-        />
-        <el-table v-else :data="currentResourceCheck" style="width: 100%;" row-key="service_name" :expand-row-keys="expandKeys">
+        <el-table :data="currentResourceCheck" style="width: 100%;" row-key="service_name" :expand-row-keys="expandKeys">
           <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
           <el-table-column type="expand" width="100px" label="变量配置">
             <template slot-scope="{ row }">
@@ -57,14 +49,12 @@
 <script>
 import Resize from '@/components/common/resize'
 import CodeMirror from '@/components/projects/common/codemirror.vue'
-import CheckResource from '@/components/projects/serviceMgr/common/checkResource.vue'
 import {
   autoUpgradeEnvAPI,
   deleteEnvServicesAPI,
   getServiceDefaultVariableAPI
 } from '@api'
 import { cloneDeep, flatten, difference } from 'lodash'
-import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -84,8 +74,6 @@ export default {
         // services: [{service_name: '', variable_yaml: '', deploy_strategy: ''}] // use
       },
       loading: false,
-      svcResources: {},
-      checkResource: null,
       expandKeys: []
     }
   },
@@ -97,7 +85,7 @@ export default {
       const res = []
       const expandKeys = []
       this.updateServices.service_names.forEach(name => {
-        const curSvc = this.svcResources[name] || this.serviceVariables[name]
+        const curSvc = this.serviceVariables[name]
         if (curSvc.canEditYaml) {
           expandKeys.push(curSvc.service_name)
         }
@@ -113,10 +101,7 @@ export default {
         delete: this.$t('global.delete')
       }
       return typeEnum[this.opeType] || ''
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     updateEnvironment () {
@@ -264,19 +249,9 @@ export default {
         })
         this.serviceVariables = serviceVariables
       }
-      this.checkSvcResource()
-    },
-    checkSvcResource () {
-      this.checkResource = {
-        env_name: this.productInfo.env_name,
-        namespace: this.productInfo.namespace,
-        cluster_id: this.productInfo.cluster_id,
-        services: Object.values(this.serviceVariables)
-      }
     }
   },
   components: {
-    CheckResource,
     Resize,
     CodeMirror
   }
@@ -297,14 +272,6 @@ export default {
     .header {
       margin: 20px 0 10px;
       font-weight: 500;
-    }
-
-    .var-title {
-      margin: 5px 0 10px;
-    }
-
-    .resource-item {
-      white-space: nowrap;
     }
 
     .el-radio {
