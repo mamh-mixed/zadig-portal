@@ -742,13 +742,13 @@ export default {
 
         .nav-item-icon,
         .nav-item-label {
-          color: #909399;
+          color: #a0a0a0;
         }
       }
 
       .nav-item-icon,
       .nav-item-label {
-        color: #909399;
+        color: #a0a0a0;
       }
     }
   }

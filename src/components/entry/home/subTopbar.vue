@@ -115,7 +115,7 @@
                   target="_blank"
                 >{{$t(`global.document`)}}</el-link>
               </div>
-             <el-dropdown-item style="color: #ddd;">
+             <el-dropdown-item style="color: #a0a0a0;">
               {{$t('subTopbarMenu.productionEnvironment')}}
             </el-dropdown-item>
           </el-tooltip>
@@ -316,7 +316,7 @@ export default {
           }
 
           &.disabled {
-            color: #c0c4cc;
+            color: #a0a0a0;
           }
         }
 

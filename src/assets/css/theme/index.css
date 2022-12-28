@@ -4269,7 +4269,7 @@
   cursor: pointer;
 }
 .el-tabs__item.is-disabled {
-  color: #c0c4cc;
+  color: #a0a0a0;
   cursor: default;
 }
 .el-tabs__content {
