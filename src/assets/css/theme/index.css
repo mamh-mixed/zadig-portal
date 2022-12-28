@@ -12494,7 +12494,7 @@
   background-color: #c0c4cc;
 }
 .el-radio__input.is-disabled + span.el-radio__label {
-  color: #c0c4cc;
+  color: #a0a0a0;
   cursor: not-allowed;
 }
 .el-radio__input.is-checked .el-radio__inner {
