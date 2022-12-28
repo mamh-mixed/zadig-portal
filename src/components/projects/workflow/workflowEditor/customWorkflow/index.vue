@@ -242,7 +242,7 @@
           :isEdit="isEdit"
           :isShowDrawer="isShowDrawer"
           :originalWorkflow="originalWorkflow"
-          @saveWorkflow="operateWorkflow"
+          @saveWorkflow="operateWorkflow('fromWebhook')"
           @closeDrawer="closeDrawer"
           ref="webhook"
         />
@@ -507,7 +507,7 @@ export default {
       this.$store.dispatch('setCurOperateType', 'tab')
       this.activeName = name
     },
-    operateWorkflow () {
+    operateWorkflow (params) {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
@@ -527,11 +527,11 @@ export default {
             this.$message.error(this.$t(`workflow.saveJobconfigFirst`))
             return
           }
-          this.saveWorkflow()
+          this.saveWorkflow(params)
         }
       })
     },
-    saveWorkflow () {
+    saveWorkflow (params) {
       this.notComputedPayload = cloneDeep(this.payload)
       if (this.payload.params && this.payload.params.length > 0) {
         this.payload.params.forEach(item => {
@@ -617,6 +617,9 @@ export default {
           .then(res => {
             this.$message.success('模板保存成功')
             this.getWorkflowDetail(this.payload.name)
+            if (params && params === 'fromWebhook') {
+              return
+            }
             this.$router.push(
               `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
             )
@@ -643,6 +646,9 @@ export default {
             .then(res => {
               this.$message.success('新建成功')
               this.getWorkflowDetail(this.payload.name)
+              if (params && params === 'fromWebhook') {
+                return
+              }
               this.$router.push(
                 `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
               )
