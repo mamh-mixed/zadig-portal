@@ -67,7 +67,7 @@
           }
 
           &.disabled {
-            color: #c0c4cc;
+            color: #a0a0a0;
           }
         }
 
