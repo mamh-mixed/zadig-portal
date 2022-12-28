@@ -168,6 +168,7 @@ exports.default = {
   sidebarMenu: {
     productDelivery: 'Product Delivery',
     status: 'Status',
+    dashboard: 'Dashboard',
     projects: 'Projects',
     forum: 'Forum',
     testCenter: 'Tests',
@@ -607,7 +608,8 @@ exports.default = {
     queued: 'Queued',
     skipped: 'Skipped',
     prepare: 'Preparing',
-    reject: 'Rejected'
+    reject: 'Rejected',
+    pending: 'Pending'
   },
   workflow: {
     ascendingByName: 'Ascending by name',
@@ -1036,6 +1038,7 @@ exports.default = {
       serviceCounts: 'Service Counts:',
       serviceCountsUnit: '',
       imageInfo: 'Image',
+      selectEnv: 'Select Environment',
       serviceDetail: {
         restartService: 'Restart',
         serviceStatus: 'Status',
@@ -1929,5 +1932,9 @@ exports.default = {
   timeFormate: {
     seconds: 's',
     minutes: 'min'
+  },
+  dashboard: {
+    addCard: 'Add Card',
+    noCard: 'No Card'
   }
 }
