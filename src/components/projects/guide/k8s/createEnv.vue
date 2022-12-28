@@ -93,9 +93,10 @@ import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,
   getClusterListAPI,
-  getRegistryWhenBuildAPI
+  getRegistryWhenBuildAPI,
+  getServiceDefaultVariableAPI
 } from '@api'
-import { uniq, cloneDeep } from 'lodash'
+import { uniq, cloneDeep, flattenDeep } from 'lodash'
 
 const projectConfig = {
   product_name: '',
@@ -240,10 +241,21 @@ export default {
 
       this.projectInitLoading = false
     },
+    async getServiceDefaultVariable (env_name, serviceNames = []) {
+      const res = await getServiceDefaultVariableAPI(this.projectName, env_name, serviceNames).catch(err => console.log(err))
+      const resMap = {}
+      if (res) {
+        res.forEach(svc => {
+          resMap[svc.service_name] = svc
+        })
+      }
+      return resMap
+    },
     async getTemplateAndImg () {
       // init all project information
       const projectName = this.projectName
       const template = await initProjectEnvAPI(projectName)
+      const yamlMap = await this.getServiceDefaultVariable('', flattenDeep(template.services).map(svc => svc.service_name))
       this.projectConfigInit.product_name = projectName
       this.projectConfigInit.revision = template.revision
       this.projectConfigInit.source = 'system'
@@ -265,7 +277,7 @@ export default {
             servicesMap[ser.service_name] = ser
             ser.picked = true
             ser.deploy_strategy = 'deploy'
-            ser.variable_yaml = ser.variable_yaml || ''
+            ser.variable_yaml = yamlMap[ser.service_name] ? yamlMap[ser.service_name].variable_yaml : ''
             ser.canEditYaml = !!ser.variable_yaml
             const containers = ser.containers
             if (containers) {
