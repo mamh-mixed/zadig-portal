@@ -371,7 +371,7 @@ export default {
         name: '',
         parallel: true,
         approval: {
-          enabled: true,
+          enabled: false,
           type: 'native',
           description: '',
           native_approval: {
