@@ -42,7 +42,7 @@
                          :label="env">{{env.env_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <div v-if="checkedEnvList.length > 0 && (checkedEnvList[0].vars &&checkedEnvList[0].vars.length > 0)" class="env-tabs">
+        <div v-if="checkedEnvList.length > 0" class="env-tabs">
           <el-tabs v-model="activeEnvTabName" type="card">
             <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
               <div class="variable-yaml-container" style="margin: 5px 0;">
@@ -94,6 +94,7 @@
                                     :showNext.sync="showNext"
                                     :yamlChange.sync="yamlChange"
                                     :isOnboarding="isOnboarding"
+                                    :serviceWithConfigs="serviceWithConfigs"
                                     :showJoinToEnvBtn.sync="showJoinToEnvBtn"
                                     @onGetTemplateId="getTemplateId"
                                     @onParseKind="getYamlKind"
@@ -101,6 +102,7 @@
                                     @onRefreshSharedService="getSharedServices"
                                     @onUpdateService="onUpdateService"
                                     @showJoinToEnvDialog="showJoinToEnvDialog"
+                                    @onGetLatestServiceYaml="getLatestYaml"
                                     class="service-editor-content" />
                 </div>
                 <MultipaneResizer/>
@@ -109,6 +111,8 @@
                   <ServiceAside ref="serviceAside"
                                 :service="service"
                                 :services="services"
+                                :latestYaml="latestYaml"
+                                @onGetServiceWithConfigs="getServiceWithConfigs"
                                 :buildBaseUrl="isOnboarding?`/v1/projects/create/${projectName}/k8s/service`:`/v1/projects/detail/${projectName}/services`"
                                 :changeEditorWidth="changeEditorWidth" />
                 </aside>
@@ -180,7 +184,9 @@ export default {
       activeEnvTabName: '',
       deletedService: '',
       middleWidth: '50%',
-      deployableEnvListWithVars: []
+      deployableEnvListWithVars: [],
+      serviceWithConfigs: {},
+      latestYaml: ''
     }
   },
   methods: {
@@ -230,7 +236,7 @@ export default {
       this.joinToEnvDialogVisible = true
     },
     changeUpgradeEnv (val) {
-      if (this.checkedEnvList.length && (this.checkedEnvList[0].vars.length > 0)) {
+      if (this.checkedEnvList.length) {
         this.activeEnvTabName = val[val.length - 1].env_name
       }
     },
@@ -387,6 +393,12 @@ export default {
     },
     showOnboardingNext () {
       this.$router.push(`/v1/projects/create/${this.projectName}/k8s/runtime?serviceName=${this.serviceName}`)
+    },
+    getServiceWithConfigs (data) {
+      this.serviceWithConfigs = data
+    },
+    getLatestYaml (data) {
+      this.latestYaml = data
     }
   },
   computed: {
