@@ -95,6 +95,23 @@
           <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
         <div class="type-desc">{{$t(`workflow.customWorkflowAbility`)}}</div>
+        <el-tooltip  effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              href="https://docs.koderover.com/zadig/project/release-workflow/"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <el-radio v-model="selectWorkflowType" disabled label="release">
+            {{$t(`workflow.releaseWorkflow`)}}
+            <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
+          </el-radio>
+          </el-tooltip>
+        <div class="type-desc">{{$t(`workflow.releaseWorkflowAbility`)}}</div>
       </div>
       <div slot="footer">
         <el-button size="small" @click="showSelectWorkflowType = false">{{$t(`global.cancel`)}}</el-button>
