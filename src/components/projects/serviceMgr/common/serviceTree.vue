@@ -1004,7 +1004,7 @@ export default {
         this.currentUpdatedServiceName = data.service_name
         this.currentUpdatedServiceTemplateId = data.create_from.template_id
         this.currentUpdatedServiceAutoSync = data.auto_sync
-        this.currentUpdatedServiceVariableYaml = data.create_from.variable_yaml
+        this.currentUpdatedServiceVariableYaml = data.estimated_merged_variable
         this.openImportYamlDialog = true
       } else {
         this.dialogImportFromRepoVisible = true
