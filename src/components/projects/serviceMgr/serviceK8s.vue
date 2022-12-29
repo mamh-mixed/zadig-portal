@@ -381,21 +381,20 @@ export default {
       const serviceName = this.service.service_name
       const result = await Promise.all([getServiceDeployableEnvsAPI(projectName, serviceName), serviceTemplateWithConfigAPI(serviceName, projectName)])
       const deployableEnvs = result[0].envs
-      let variableYaml = result[1].variable_yaml
+      const variableYaml = result[1].variable_yaml
       deployableEnvs.forEach(env => {
-        const currentService = env.services
-          ? env.services.find((element) => {
-            return element.service_name === serviceName
-          })
-          : []
-        if (currentService && currentService.variable_yaml) {
-          variableYaml = currentService.variable_yaml
-        }
-        env.services.push({
-          service_name: serviceName,
-          variable_yaml: variableYaml
+        env.services = env.services.filter((item) => {
+          return item.service_name === serviceName
         })
-        env.variableYaml = variableYaml
+        if (env.services.length === 0) {
+          env.services = [{
+            service_name: serviceName,
+            variable_yaml: variableYaml
+          }]
+          env.variableYaml = variableYaml
+        } else {
+          env.variableYaml = env.services[0].variable_yaml
+        }
       })
       this.deployableEnvListWithVars = deployableEnvs
     },
