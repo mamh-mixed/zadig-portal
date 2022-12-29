@@ -222,7 +222,7 @@ export default {
           icon: 'iconfont logo iconaliyun'
         },
         {
-          value: 'acr',
+          value: 'acr-enterprise',
           label: '阿里云 ACR（企业版）',
           icon: 'iconfont logo iconaliyun',
           disabled: true,
@@ -248,7 +248,7 @@ export default {
           icon: 'iconfont logo icontengxunyun'
         },
         {
-          value: 'tcr',
+          value: 'tcr-enterprise',
           label: '腾讯云 TCR（企业版）',
           icon: 'iconfont logo icontengxunyun',
           disabled: true,

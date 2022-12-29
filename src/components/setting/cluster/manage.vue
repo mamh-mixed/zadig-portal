@@ -809,7 +809,7 @@ export default {
           label: '腾讯云 EKS',
           icon: 'iconfont icontengxunyun',
           disabled: true,
-          documentLink: '/pages/cluster_manage'
+          documentLink: '/pages/cluster_manage/'
         },
         {
           value: 3,
