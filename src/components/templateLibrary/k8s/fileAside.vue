@@ -93,8 +93,18 @@
               </div>
               <div v-else-if="variableSwitcher === 'list'" class="list-container">
                 <el-table :data="fileContent.variable_kvs" style="width: 100%;">
-                  <el-table-column prop="key" label="键"></el-table-column>
-                  <el-table-column prop="value" label="值"></el-table-column>
+                  <el-table-column label="Key">
+                    <template slot-scope="scope">
+                      <span>{{ scope.row.key }}</span>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="Value">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.value === true">true</span>
+                      <span v-else-if="scope.row.value === false">false</span>
+                      <span v-else>{{scope.row.value}}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column prop="show" label="服务变量中可见">
                     <template v-slot:header>
                       <span>服务变量中可见</span>
