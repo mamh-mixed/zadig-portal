@@ -229,7 +229,11 @@ export default {
           return element.indexOf('kind') > 0
         })
         .map(element => {
-          return jsyaml.load(element)
+          if (element.indexOf('{{- if') < 0) {
+            return jsyaml.load(element)
+          } else {
+            return ''
+          }
         })
       this.$emit('onParseKind', {
         service_name: this.service.service_name,
