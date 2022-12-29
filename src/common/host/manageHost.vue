@@ -42,7 +42,7 @@
             >{{$t(`global.document`)}}</el-link>
           </div>
           <span style="margin-left: 4px;">
-            <el-button size="small" type="info" disabled>{{$t('global.import')}}</el-button>
+            <el-button size="small" type="info" disabled>{{$t('global.multiImport')}}</el-button>
           </span>
         </el-tooltip>
       </div>

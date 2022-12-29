@@ -6,6 +6,17 @@
         <div class="title-container">
           <span class="first">{{$t('project.onboardingComp.thirdStep')}}</span>
           <span class="second">{{$t('project.onboardingComp.thirdStepTip')}}</span>
+          <span class="second gray">
+            <i class="el-icon-warning"></i>
+            {{$t('project.onboardingComp.thirdStepEnterpriseDocument')}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/zadig/project/k8s-yaml/#资源检测`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </span>
         </div>
         <div class="account-integrations block-list">
           <div class="second">{{$t('project.onboardingComp.configureTheFollowingEnvironments')}}</div>
@@ -283,6 +294,10 @@ export default {
         .second {
           color: #4c4c4c;
           font-size: 13px;
+
+          &.gray {
+            color: @disabledColor;
+          }
         }
       }
 

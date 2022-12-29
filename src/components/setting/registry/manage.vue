@@ -19,9 +19,27 @@
         </el-form-item>
         <el-form-item label="提供商" prop="reg_provider">
           <el-select v-model="registry.reg_provider" @change="changeProvider" style="width: 100%;" size="small" placeholder="请选择镜像仓库提供商">
-            <el-option v-for="(provider,index) in providers" :key="index" :value="provider.value" :label="provider.label">
-              <i :class="provider.icon"></i>
-              <span>{{provider.label}}</span>
+            <el-option v-for="(provider,index) in providers" :key="index" :value="provider.value" :label="provider.label" :disabled="provider.disabled">
+              <el-tooltip effect="dark" placement="top" v-if="provider.disabled">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/zadig${provider.documentLink}`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>
+                  <i :class="provider.icon"></i>
+                  <span>{{provider.label}}</span>
+                </span>
+              </el-tooltip>
+              <span v-else>
+                <i :class="provider.icon"></i>
+                <span>{{provider.label}}</span>
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -196,12 +214,19 @@ export default {
       return [
         {
           value: 'acr',
-          label: '阿里云 ACR',
+          label: '阿里云 ACR（个人版）',
           reg_addr: '地址',
           namespace: '命名空间',
           access_key: 'Docker 用户名',
           secret_key: 'Docker 密码',
           icon: 'iconfont logo iconaliyun'
+        },
+        {
+          value: 'acr',
+          label: '阿里云 ACR（企业版）',
+          icon: 'iconfont logo iconaliyun',
+          disabled: true,
+          documentLink: '/settings/image-registry/#阿里云-acr-企业版'
         },
         {
           value: 'swr',
@@ -215,12 +240,19 @@ export default {
         },
         {
           value: 'tcr',
-          label: '腾讯云 TCR',
+          label: '腾讯云 TCR（个人版）',
           reg_addr: '地址',
           namespace: '命名空间',
           access_key: 'Docker 用户名',
           secret_key: 'Docker 密码',
           icon: 'iconfont logo icontengxunyun'
+        },
+        {
+          value: 'tcr',
+          label: '腾讯云 TCR（企业版）',
+          icon: 'iconfont logo icontengxunyun',
+          disabled: true,
+          documentLink: '/settings/image-registry/#腾讯云-tcr-企业版'
         },
         {
           value: 'harbor',

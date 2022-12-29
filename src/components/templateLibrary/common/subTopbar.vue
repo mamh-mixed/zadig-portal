@@ -9,6 +9,22 @@
               <span class="name">{{item.name}}</span>
             </li>
           </router-link>
+          <el-tooltip effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterpriseWorkflowReferforDetails`)}}
+              <el-link
+                style="font-size: 13px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/template/workflow/`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <li class="nav-item disabled">
+              <i class="icon iconfont icongongzuoliucheng"></i>
+              <span class="name">{{$t('global.workflow')}}</span>
+            </li>
+          </el-tooltip>
         </ul>
       </div>
     </div>
@@ -82,6 +98,11 @@ export default {
           font-size: 16px;
           line-height: 22px;
           cursor: pointer;
+
+          &.disabled {
+            color: @disabledColor;
+            cursor: not-allowed;
+          }
 
           .icon {
             margin-right: 18px;

@@ -78,8 +78,27 @@
         <el-form-item label="集群提供商" prop="provider">
           <el-select v-model="cluster.provider" style="width: 100%;" size="small" placeholder="请选择集群提供商">
             <el-option v-for="(provider,index) in providers" :key="index" :value="provider.value"
-                       :label="provider.label">
-              <i class="iconfont" :class="provider.icon"></i> <span>{{provider.label}}</span>
+                       :label="provider.label"
+                       :disabled="provider.disabled">
+              <el-tooltip effect="dark" placement="top" v-if="provider.disabled">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/zadig${provider.documentLink}`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>
+                  <i class="iconfont" :class="provider.icon"></i>
+                  <span>{{provider.label}}</span>
+                </span>
+              </el-tooltip>
+              <span v-else>
+                <i class="iconfont" :class="provider.icon"></i> <span>{{provider.label}}</span>
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -784,6 +803,13 @@ export default {
           value: 2,
           label: '腾讯云 TKE',
           icon: 'iconfont icontengxunyun'
+        },
+        {
+          value: 5,
+          label: '腾讯云 EKS',
+          icon: 'iconfont icontengxunyun',
+          disabled: true,
+          documentLink: '/pages/cluster_manage'
         },
         {
           value: 3,
