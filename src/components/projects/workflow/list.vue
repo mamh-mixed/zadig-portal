@@ -92,9 +92,21 @@
         <div class="type-desc">{{$t(`workflow.productWorkflowAbility`)}}</div>
         <el-radio v-model="selectWorkflowType" label="custom">
           {{$t(`workflow.customWorkflow`)}}
-          <el-tag type="primary" size="mini" class="mg-l8" effect="plain">New</el-tag>
         </el-radio>
-        <div class="type-desc">{{$t(`workflow.customWorkflowAbility`)}}</div>
+        <div class="type-desc">
+          <div>{{$t(`workflow.customWorkflowAbility`)}}</div>
+          <div>
+            <i class="el-icon-warning"></i>
+            <span>{{$t(`workflow.customWorkflowDocument`)}}</span>
+            <el-link
+              style="font-size: 14px; vertical-align: baseline;"
+              type="primary"
+              href="https://docs.koderover.com/zadig/project/common-workflow/#使用模板新建"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+        </div>
         <el-tooltip  effect="dark" placement="top">
           <div slot="content">
             {{$t(`global.enterprisefeaturesReferforDetails`)}}

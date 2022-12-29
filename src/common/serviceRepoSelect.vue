@@ -1,6 +1,21 @@
 <template>
   <div class="service-repo-select">
     <span class="primary-title">选择服务和代码信息</span>
+    <span class="multi-import">
+      <el-tooltip effect="dark" placement="top">
+        <div slot="content">
+          <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+          <el-link
+            style="font-size: 13px; vertical-align: baseline;"
+            type="primary"
+            href="https://docs.koderover.com/zadig/project/build/#批量录入"
+            :underline="false"
+            target="_blank"
+          >{{$t(`global.document`)}}</el-link>
+        </div>
+        <span><i class="el-icon-sort"></i> 批量录入</span>
+      </el-tooltip>
+    </span>
     <template v-if="targets.length > 0">
       <div v-for="(target,targetIndex) in targets" :key="targetIndex" class="service-repo-container">
         <div class="operation">
@@ -845,10 +860,10 @@ export default {
 
 .service-repo-select {
   .multi-import {
-    color: @themeColor;
+    color: @disabledColor;
     font-weight: 300;
     font-size: 14px;
-    cursor: pointer;
+    cursor: not-allowed;
 
     i {
       transform: rotate(90deg);

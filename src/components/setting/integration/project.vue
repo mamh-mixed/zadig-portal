@@ -108,12 +108,12 @@
         <el-alert type="info"
                   :closable="false">
           <template>
-            支持集成 Jira，配置后工作流可以追踪到 Jira Issue，详情可参考
+            企业版支持深度集成 Jira 和飞书项目管理，详情参考
             <el-link style="font-size: 14px; vertical-align: baseline;"
                      type="primary"
                      :href="`https://docs.koderover.com/zadig/settings/jira/`"
                      :underline="false"
-                     target="_blank">{{$t(`global.helpDoc`)}}</el-link> 。
+                     target="_blank">{{$t(`global.document`)}}</el-link> 。
           </template>
         </el-alert>
       </template>
