@@ -819,7 +819,7 @@ export default {
               payload.type === 'github'
             ) {
               this.$message({
-                message: this.$t(`changeProviderInfoSuccessAndGoToAuth`),
+                message: this.$t(`sysSetting.integration.gitProviders.changeProviderInfoSuccessAndGoToAuth`),
                 type: 'success'
               })
               this.goToCodeHostAuth(codehostId, redirectUrl)
