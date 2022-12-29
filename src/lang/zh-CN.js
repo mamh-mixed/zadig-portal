@@ -1871,6 +1871,8 @@ exports.default = {
       resourceConfig: '资源配置',
       cluster: '集群选择',
       selectClusterPrompt: '请选择集群名称',
+      productionCluster: '生产集群',
+      nonProductionCluster: '非生产集群',
       resource: '操作系统规格',
       selectResourcePrompt: '请选择操作系统',
       resourceTypeHigh: '高 | CPU: 16 核 内存: 32 GB',
