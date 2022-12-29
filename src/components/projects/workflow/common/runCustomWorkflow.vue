@@ -505,6 +505,8 @@ export default {
                 service.value = `${service.service_name}/${service.service_module}`
               })
               this.registry_id = job.spec.source_registry_id
+            } else {
+              this.fromJobInfo.pickedTargets = cloneDeep(job.spec.targets)
             }
           }
         })
