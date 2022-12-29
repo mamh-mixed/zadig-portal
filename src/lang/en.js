@@ -1879,6 +1879,8 @@ exports.default = {
       resourceConfig: 'Resources And Clusters',
       cluster: 'Cluster',
       selectClusterPrompt: 'Choose your cluster',
+      productionCluster: 'Production Cluster',
+      nonProductionCluster: 'Non-Production Cluster',
       resource: 'Resources',
       selectResourcePrompt: 'Choose the resource required',
       resourceTypeHigh: 'High | CPU: 16 Core Mem: 32 GB',

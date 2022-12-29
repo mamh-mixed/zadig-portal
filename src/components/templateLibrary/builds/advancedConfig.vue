@@ -45,7 +45,15 @@
       <div class="item-title">{{$t(`build.advancedSettings.resourceConfig`)}}</div>
       <el-form-item :label="$t(`build.advancedSettings.cluster`)" :prop="`${secondaryProp}.cluster_id`" :rules="{ required: true, message: $t(`build.advancedSettings.selectClusterPrompt`), trigger: ['change', 'blur'] }">
         <el-select v-model="currentResource.cluster_id" :placeholder="$t(`build.advancedSettings.selectClusterPrompt`)" size="small">
-          <el-option v-for="cluster in clusters" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
+          <el-option-group
+            :key="$t(`build.advancedSettings.nonProductionCluster`)"
+            :label="$t(`build.advancedSettings.nonProductionCluster`)">
+           <el-option v-for="cluster in clusters" :key="cluster.id" :label="$utils.showClusterName(cluster)" :value="cluster.id"></el-option>
+          </el-option-group>
+          <el-option-group
+            :key="$t(`build.advancedSettings.productionCluster`)"
+            :label="$t(`build.advancedSettings.productionCluster`)">
+          </el-option-group>
         </el-select>
       </el-form-item>
       <el-form-item :label="$t(`build.advancedSettings.resource`)" :prop="`${secondaryProp}.res_req`" :rules="{ required: true, message: this.$t(`build.advancedSettings.selectResourcePrompt`), trigger: ['change', 'blur'] }">
