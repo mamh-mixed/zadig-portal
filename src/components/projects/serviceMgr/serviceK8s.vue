@@ -112,6 +112,7 @@
                                 :service="service"
                                 :services="services"
                                 :latestYaml="latestYaml"
+                                @onRefreshService="getServices"
                                 @onGetServiceWithConfigs="getServiceWithConfigs"
                                 :buildBaseUrl="isOnboarding?`/v1/projects/create/${projectName}/k8s/service`:`/v1/projects/detail/${projectName}/services`"
                                 :changeEditorWidth="changeEditorWidth" />

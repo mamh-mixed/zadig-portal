@@ -398,6 +398,7 @@ export default {
       saveServiceVariableAPI(serviceName, projectName, payload)
         .then(res => {
           if (res) {
+            this.$emit('onRefreshService')
             this.$message.success('变量保存成功')
           }
         })
