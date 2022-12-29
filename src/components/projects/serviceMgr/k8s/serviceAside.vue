@@ -163,7 +163,9 @@
                   </el-table-column>
                   <el-table-column label="Value">
                     <template slot-scope="scope">
-                      <span>{{ scope.row.value }}</span>
+                      <span v-if="scope.row.value === true">true</span>
+                      <span v-else-if="scope.row.value === false">false</span>
+                      <span v-else>{{scope.row.value}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column>
