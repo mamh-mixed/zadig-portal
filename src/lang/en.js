@@ -90,7 +90,8 @@ exports.default = {
     serviceModule: 'Service Module',
     templates: 'Templates',
     updateTime: 'Update Time',
-    lastModified: 'Last Modified'
+    lastModified: 'Last Modified',
+    autoCancel: 'Auto Cancel'
   },
   metaTitle: {
     projectDetail: 'Project Detail',
