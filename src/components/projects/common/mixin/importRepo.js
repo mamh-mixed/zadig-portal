@@ -81,6 +81,7 @@ export default {
     },
     async getRepoOwnerById (id, key = '') {
       this.source.owner = ''
+      this.source.namespace = ''
       this.source.repo = ''
       this.source.branch = ''
       const codehostSource = this.codehostSource
