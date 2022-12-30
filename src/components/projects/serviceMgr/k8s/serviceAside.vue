@@ -251,7 +251,7 @@ import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/neo.css'
 import qs from 'qs'
-import { debounce } from 'lodash'
+import { debounce, difference, sortBy } from 'lodash'
 
 export default {
   data () {
@@ -268,7 +268,10 @@ export default {
       registryCreateVisible: false,
       showAllVariables: true,
       buildNameIndex: 0,
-      variableSwitcher: 'yamlEditor'
+      variableSwitcher: 'yamlEditor',
+      initVariableYaml: '',
+      initVariableKvs: [],
+      initServiceVars: []
     }
   },
   methods: {
@@ -334,9 +337,12 @@ export default {
                 element.show = false
               }
             })
+            res.variable_kvs = sortBy(res.variable_kvs, 'key')
           }
           this.serviceConfigs = res
           this.initVariableYaml = res.variable_yaml
+          this.initVariableKvs = res.variable_kvs
+          this.initServiceVars = res.service_vars
           this.$emit('onGetServiceWithConfigs', res)
         })
       }
@@ -428,15 +434,28 @@ export default {
         flatVariableToKvAPI(payload)
           .then(res => {
             if (res) {
+              const latestVariableKvs = []
               res.forEach(element => {
-                if (this.serviceConfigs.service_vars && this.serviceConfigs.service_vars.includes(element.key)) {
+                latestVariableKvs.push(element.key)
+              })
+              console.log(latestVariableKvs)
+              const initVariableKeys = []
+              this.initVariableKvs.forEach(element => {
+                initVariableKeys.push(element.key)
+              })
+              const additionVariables = difference(latestVariableKvs, initVariableKeys)
+              res.forEach(element => {
+                if (this.initServiceVars && this.initServiceVars.includes(element.key)) {
                   element.show = true
                 }
-                if (this.serviceConfigs.variable_kvs.length === 0) {
+                if (additionVariables && additionVariables.includes(element.key)) {
+                  element.show = true
+                }
+                if (this.initVariableKvs.length === 0) {
                   element.show = true
                 }
               })
-              this.serviceConfigs.variable_kvs = res
+              this.serviceConfigs.variable_kvs = sortBy(res, 'key')
             }
           })
           .catch(err => {
