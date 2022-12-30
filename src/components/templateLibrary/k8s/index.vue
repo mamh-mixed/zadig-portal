@@ -30,6 +30,8 @@
                 <FileAside
                   :fileContent="fileContent"
                   :initVariableYaml="initVariableYaml"
+                  :initVariableKvs="initVariableKvs"
+                  :initServiceVars="initServiceVars"
                   :systemVariables="systemVariables"
                   @updateTemplate="updateTemplate"
                 />
@@ -69,6 +71,8 @@ export default {
       files: [],
       inputVariables: [],
       systemVariables: [],
+      initVariableKvs: [],
+      initServiceVars: [],
       initFileContent: '',
       initVariableYaml: ''
     }
@@ -114,6 +118,8 @@ export default {
           this.fileContent = res
           this.initFileContent = res.content
           this.initVariableYaml = res.variable_yaml
+          this.initVariableKvs = res.variable_kvs
+          this.initServiceVars = res.service_vars
         }
       }
     },

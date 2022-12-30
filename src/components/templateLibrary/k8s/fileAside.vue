@@ -164,7 +164,7 @@ import {
   parseK8sYamlVariableAPI,
   flatVariableToKvAPI
 } from '@api'
-import { debounce } from 'lodash'
+import { debounce, difference, sortBy } from 'lodash'
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/neo.css'
@@ -266,15 +266,27 @@ export default {
         flatVariableToKvAPI(payload)
           .then(res => {
             if (res) {
+              const latestVariableKvs = []
               res.forEach(element => {
-                if (this.fileContent.service_vars && this.fileContent.service_vars.includes(element.key)) {
+                latestVariableKvs.push(element.key)
+              })
+              const initVariableKeys = []
+              this.initVariableKvs.forEach(element => {
+                initVariableKeys.push(element.key)
+              })
+              const additionVariables = difference(latestVariableKvs, initVariableKeys)
+              res.forEach(element => {
+                if (this.initServiceVars && this.initServiceVars.includes(element.key)) {
                   element.show = true
                 }
-                if (this.fileContent.variable_kvs.length === 0) {
+                if (additionVariables && additionVariables.includes(element.key)) {
+                  element.show = true
+                }
+                if (this.initVariableKvs.length === 0) {
                   element.show = true
                 }
               })
-              this.fileContent.variable_kvs = res
+              this.fileContent.variable_kvs = sortBy(res, 'key')
             }
           })
           .catch(err => {
@@ -308,6 +320,14 @@ export default {
     initVariableYaml: {
       required: true,
       type: String
+    },
+    initServiceVars: {
+      required: true,
+      type: Array
+    },
+    initVariableKvs: {
+      required: true,
+      type: Array
     }
   },
   computed: {
