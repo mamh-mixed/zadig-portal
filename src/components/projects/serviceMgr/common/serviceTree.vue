@@ -510,7 +510,7 @@ export default {
       })
     },
     addSharedService (node, data) {
-      if (this.yamlChange) {
+      if (this.yamlChange && this.filteredServices.length > 0) {
         this.askSaveYamlConfig()
         return
       }
@@ -769,7 +769,7 @@ export default {
       updateServicesOrchestrationAPI(this.projectName, { services })
     },
     async createService (cmd) {
-      if (this.yamlChange) {
+      if (this.yamlChange && this.filteredServices.length > 0) {
         this.askSaveYamlConfig()
         return
       }
