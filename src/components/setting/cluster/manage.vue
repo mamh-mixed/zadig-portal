@@ -551,6 +551,8 @@
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import Codemirror from '@/components/projects/common/codemirror.vue'
 import {
   getClusterListAPI,
   createClusterAPI,
@@ -1116,6 +1118,10 @@ export default {
   created () {
     this.getCluster()
     bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.clusters`), url: '' }] })
+  },
+  components: {
+    Resize,
+    Codemirror
   }
 }
 </script>
