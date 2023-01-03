@@ -16,8 +16,8 @@
               <el-tooltip effect="dark" :content="payload.name" placement="top" :disabled="!payload.name">
                 <el-input v-model="payload.name" :placeholder="$t(`workflow.inputWorkflowID`)" size="small" :disabled="!editName" class="name-input"></el-input>
               </el-tooltip>
-              <span @click="editName = editName ? false : true" class="mg-r8">
-                <i class="name-icon" :class="[editName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+              <span @click="editName = editName || isEdit? false : true" class="mg-r8" >
+                <i class="name-icon" :class="[editName ? 'el-icon-finished' : 'el-icon-edit-outline name-disabled']"></i>
               </span>
             </el-form-item>
             <el-form-item prop="description">
@@ -1042,6 +1042,10 @@ export default {
 
         &-icon {
           cursor: pointer;
+        }
+
+        &-disabled {
+          cursor: default;
         }
 
         /deep/.el-form-item {
