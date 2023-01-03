@@ -945,20 +945,23 @@ export function setDefaultAccountAPI (payload) {
 }
 
 // Jira
-export function getJiraAPI (key) {
-  return http.get(`/api/v1/jira?encryptedKey=${key}`)
+export function getProjectManage (key) {
+  return http.get(`/api/aslan/system/project_management?encryptedKey=${key}`)
 }
 
-export function updateJiraAPI (payload) {
-  return http.patch(`/api/v1/jira`, payload)
+export function updateProjectManage (payload) {
+  return http.patch(`/api/aslan/system/project_management`, payload)
 }
 
-export function deleteJiraAPI () {
-  return http.delete(`/api/v1/jira`)
+export function deleteProjectManage (id) {
+  return http.delete(`/api/aslan/system/project_management/${id}`)
 }
 
-export function createJiraAPI (payload) {
-  return http.post(`/api/v1/jira`, payload)
+export function createProjectManage (payload) {
+  return http.post(`/api/aslan/system/project_management`, payload)
+}
+export function checkProjectManage (payload) {
+  return http.post(`/api/aslan/system/project_management/validate`, payload)
 }
 
 // config management

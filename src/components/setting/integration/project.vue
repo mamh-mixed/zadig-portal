@@ -6,35 +6,30 @@
       custom-class="edit-form-dialog"
       :visible.sync="dialogJiraAddFormVisible"
     >
-      <el-form
-        :model="params"
-        @submit.native.prevent
-        label-position="left"
-        :rules="jiraRules"
-        label-width="120px"
-        class="mg-t32"
-        ref="jiraEditForm"
-      >
-        <el-form-item label="类型" prop="type">
+      <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'&&errorMessage" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
+      <el-form :model="params" @submit.native.prevent label-position="left" :rules="jiraRules" label-width="120px" ref="form">
+        <el-form-item label="系统类型" prop="type">
           <el-select v-model="params.type">
             <el-option label="飞书项目" value="lark" :disabled="isLarkDisabled"></el-option>
-            <el-option label="Jira" value="list" :disabled="isJiraDisabled"></el-option>
+            <el-option label="Jira" value="jira" :disabled="isJiraDisabled"></el-option>
           </el-select>
         </el-form-item>
-        <div v-if="params.type==='list'">
-          <el-form-item label="访问地址" prop="host">
-            <el-input v-model.trim="params.host" placeholder="企业 Jira 地址" autofocus auto-complete="off"></el-input>
+        <div v-if="params.type==='jira'">
+          <el-form-item label="访问地址" prop="jira_host">
+            <el-input v-model.trim="params.jira_host" placeholder="Jira 访问地址" autofocus auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="用户名" prop="user">
-            <el-input v-model="params.user" placeholder="有读写 Issue 权限的用户" autofocus auto-complete="off"></el-input>
+          <el-form-item label="用户名" prop="jira_user">
+            <el-input v-model="params.jira_user" placeholder="有 issue 读写权限的用户名" autofocus auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="access_token">
+          <el-form-item label="密码/Token" prop="jira_token">
             <el-input
-              v-model="params.access_token"
-              placeholder="用户密码"
+              v-model="params.jira_token"
+              placeholder="用户密码/Access Token"
               autofocus
               v-if="dialogJiraAddFormVisible"
               show-password
+              @blur="validate"
+              :suffix-icon="showCheckIcon"
               type="password"
               auto-complete="off"
             ></el-input>
@@ -97,16 +92,14 @@
         <el-button v-if="!isJiraDisabled||!isLarkDisabled" size="small" type="primary" plain @click="handleJiraEdit('add',params)">添加</el-button>
       </div>
       <el-table :data="list" style="width: 100%;">
-        <el-table-column label="访问地址">
-          <template slot-scope="scope">{{scope.row.host}}</template>
-        </el-table-column>
+        <el-table-column label="访问地址" prop="jira_host"></el-table-column>
         <el-table-column label="最后更新">
-          <template slot-scope="scope">{{scope.row.user}}</template>
+          <template slot-scope="scope">{{ $utils.convertTimestamp(scope.row.updated_at)}}</template>
         </el-table-column>
         <el-table-column label="操作" width="160">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" plain @click="handleJiraEdit('edit',scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="handleJiraDelete" plain>删除</el-button>
+            <el-button type="danger" size="mini" @click="handleJiraDelete(scope.row)" plain>删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -114,7 +107,13 @@
   </div>
 </template>
 <script>
-import { getJiraAPI, updateJiraAPI, deleteJiraAPI, createJiraAPI } from '@api'
+import {
+  getProjectManage,
+  updateProjectManage,
+  deleteProjectManage,
+  createProjectManage,
+  checkProjectManage
+} from '@api'
 const validateJiraURL = (rule, value, callback) => {
   if (value === '') {
     callback(new Error('请输入服务 URL，包含协议'))
@@ -135,17 +134,17 @@ export default {
       list: [],
       params: {
         type: 'lark',
-        host: '',
-        user: '',
-        access_token: ''
+        jira_host: '',
+        jira_user: '',
+        jira__token: ''
       },
       jiraRules: {
-        user: {
+        jira_user: {
           required: true,
           message: '请输入用户名',
           trigger: ['blur', 'change']
         },
-        host: [
+        jira_host: [
           {
             required: true,
             message: '请输入 Host',
@@ -157,7 +156,7 @@ export default {
             trigger: ['blur', 'change']
           }
         ],
-        access_token: {
+        jira_token: {
           required: true,
           message: '请输入密码',
           trigger: ['blur', 'change']
@@ -178,7 +177,9 @@ export default {
           trigger: ['blur', 'change']
         }
       },
-      dialogJiraAddFormVisible: false
+      dialogJiraAddFormVisible: false,
+      checkRes: '',
+      errorMessage: ''
     }
   },
   computed: {
@@ -187,22 +188,46 @@ export default {
     },
     isJiraDisabled () {
       return this.list.filter(item => item.type === 'jira').length > 0
+    },
+    showCheckIcon () {
+      if (this.checkRes === 'pass') {
+        return 'el-icon-success'
+      } else if (this.checkRes === 'fail') {
+        return 'el-icon-error'
+      } else {
+        return ''
+      }
     }
   },
   methods: {
+    validate () {
+      const { type, jira_host, jira_user, jira_token } = this.params
+      const params = { type, jira_host, jira_user, jira_token }
+      checkProjectManage(params)
+        .then(res => {
+          if (res && res.message === 'success') {
+            this.checkRes = 'pass'
+          }
+        })
+        .catch(error => {
+          this.checkRes = 'fail'
+          this.errorMessage = error.response.data.message
+        })
+    },
     clearValidate (ref) {
       this.$refs[ref].clearValidate()
     },
     getJiraConfig () {
       const key = this.$utils.rsaEncrypt()
-      getJiraAPI(key).then(res => {
+      getProjectManage(key).then(res => {
         console.log(res)
-        if (res) {
-          res.access_token = this.$utils.aesDecrypt(res.access_token)
-          this.$set(this.list, [0], res)
-        } else {
-          this.$set(this, 'list', [])
-        }
+        this.list = res
+        // if (res) {
+        //   res.access_token = this.$utils.aesDecrypt(res.access_token)
+        //   this.$set(this.list, [0], res)
+        // } else {
+        //   this.$set(this, 'list', [])
+        // }
       })
     },
 
@@ -211,13 +236,13 @@ export default {
       this.dialogJiraAddFormVisible = true
       this.params = this.$utils.cloneObj(row)
     },
-    handleJiraDelete () {
-      this.$confirm(`确定要删除这个 Jira 配置吗？`, '确认', {
+    handleJiraDelete (item) {
+      this.$confirm(`确定要删除这个配置吗？`, '确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteJiraAPI().then(res => {
+        deleteProjectManage(item.id).then(res => {
           this.getJiraConfig()
           this.$message({
             message: '配置删除成功',
@@ -227,20 +252,21 @@ export default {
       })
     },
     updateJiraConfig () {
-      this.$refs.jiraEditForm.validate(valid => {
+      this.$refs.form.validate(valid => {
         if (valid) {
           let params = {}
           if (this.params.type === 'lark') {
             params = {}
           } else {
             params = {
-              host: this.params.host,
-              user: this.params.user,
-              access_token: this.params.access_token
+              type: 'jira',
+              jira_host: this.params.jira_host,
+              jira_user: this.params.jira_user,
+              jira_token: this.params.jira_token
             }
           }
           if (this.operateType === 'add') {
-            createJiraAPI(params).then(res => {
+            createProjectManage(params).then(res => {
               this.getJiraConfig()
               this.handleJiraCancel()
               this.$message({
@@ -249,7 +275,7 @@ export default {
               })
             })
           } else {
-            updateJiraAPI(params).then(res => {
+            updateProjectManage(params).then(res => {
               this.getJiraConfig()
               this.handleJiraCancel()
               this.$message({
@@ -264,12 +290,12 @@ export default {
       })
     },
     handleJiraCancel () {
-      if (this.$refs.jiraAddForm) {
-        this.$refs.jiraAddForm.resetFields()
+      if (this.$refs.form) {
+        this.$refs.form.resetFields()
         this.dialogJiraAddFormVisible = false
       }
-      if (this.$refs.jiraEditForm) {
-        this.$refs.jiraEditForm.resetFields()
+      if (this.$refs.form) {
+        this.$refs.form.resetFields()
         this.dialogJiraAddFormVisible = false
       }
     }
@@ -280,7 +306,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .integration-project-container {
   position: relative;
   flex: 1;
@@ -333,5 +359,18 @@ export default {
       display: inline-block;
     }
   }
+}
+
+/deep/ .el-icon-success {
+  margin-left: 10px;
+  color: @success;
+  font-size: 20px;
+}
+
+/deep/ .el-icon-error {
+  display: block;
+  margin-left: 10px;
+  color: red;
+  font-size: 20px;
 }
 </style>
