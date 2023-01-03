@@ -44,6 +44,7 @@
                :editMode="editMode"
                :projectName="workflowInfo.product_tmpl_name"
                :presets="presets"
+               :buildStage="workflowInfo.build_stage"
                :workflowToRun="workflowInfo"
                :schedules="workflowInfo.schedules"
                :webhook="workflowInfo.hook_ctl"/>

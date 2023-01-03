@@ -161,7 +161,10 @@ export default {
       const deployID = (deploy) => {
         return `${deploy.env}|${deploy.type}`
       }
-      createWorkflowTaskAPI(this.targetProject, namespace).then(res => {
+      const payload = this.buildStage.modules.map((item) => {
+        return item.target
+      })
+      createWorkflowTaskAPI(this.targetProject, namespace, payload).then(res => {
         // prepare targets for view
         for (let i = 0; i < res.targets.length; i++) {
           res.targets[i].picked = false
@@ -387,6 +390,12 @@ export default {
     whichSave: {
       typeof: String,
       default: 'inside'
+    },
+    buildStage: {
+      type: Object,
+      default () {
+        return {}
+      }
     }
   },
   components: {

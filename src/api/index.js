@@ -655,8 +655,8 @@ export function copyProductWorkflowAPI (projectName, oldName, newName, newDispla
 export function precreateWorkflowTaskAPI (projectName, workflowName, envName) {
   return http.get(`/api/aslan/workflow/workflowtask/preset/${envName}/${workflowName}?projectName=${projectName}`)
 }
-export function createWorkflowTaskAPI (projectName, envName) {
-  return http.get(`/api/aslan/workflow/workflowtask/targets/${projectName}/${envName}?projectName=${projectName}`)
+export function createWorkflowTaskAPI (projectName, envName, payload) {
+  return http.post(`/api/aslan/workflow/workflowtask/targets/${projectName}/${envName}?projectName=${projectName}`, payload)
 }
 
 export function getRegistryWhenBuildAPI (projectName) {
