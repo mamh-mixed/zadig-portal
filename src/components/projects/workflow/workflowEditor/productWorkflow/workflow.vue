@@ -262,6 +262,8 @@ export default {
     savePipeline () {
       this.workflowInfo.schedule_enabled = this.workflowInfo.schedules.enabled
       this.workflowInfo.hook_ctl.product_tmpl_name = this.workflowInfo.product_tmpl_name
+      this.workflowInfo.display_name = this.workflowInfo.display_name.trim() // display_name 中间支持空格 结尾不支持
+      this.workflowInfo.name = this.workflowInfo.name.trim() // display_name 中间支持空格 结尾不支持
       this.checkCurrentTab().then(() => {
         (this.editMode ? updateWorkflowAPI : createWorkflowAPI)(this.workflowInfo).then(res => {
           this.$message.success('保存成功')
