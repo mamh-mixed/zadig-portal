@@ -453,7 +453,7 @@ export default {
         .then(({ value }) => {
           deleteCustomWorkflowAPI(workflow.name, projectName).then(res => {
             this.getWorkflows(this.projectName)
-            this.$message.success(this.$t(`workflow.delSuccess`)`！`)
+            this.$message.success(this.$t(`workflow.delSuccess`))
           })
         })
         .catch(() => {
