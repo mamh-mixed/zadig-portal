@@ -400,7 +400,7 @@ export default {
         )
         return
       }
-      this.$prompt(this.$t(`workflow.confirmWorkflowName`), `${name}`, {
+      this.$prompt(this.$t(`workflow.confirmWorkflowName`), this.$t('workflow.deleteWorkflowTip', { name: name }), {
         confirmButtonText: this.$t(`global.confirm`),
         cancelButtonText: this.$t(`global.cancel`),
         confirmButtonClass: 'el-button el-button--danger',
@@ -436,7 +436,7 @@ export default {
         )
         return
       }
-      this.$prompt(this.$t(`workflow.confirmWorkflowName`), `${name}`, {
+      this.$prompt(this.$t(`workflow.confirmWorkflowName`), this.$t('workflow.deleteWorkflowTip', { name: name }), {
         confirmButtonText: this.$t(`global.confirm`),
         cancelButtonText: this.$t(`global.cancel`),
         confirmButtonClass: 'el-button--danger',
