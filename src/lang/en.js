@@ -710,7 +710,8 @@ exports.default = {
       k8sGrayRollback: 'Gray Rollback',
       grayDeploy: 'Gray Release',
       istioRelease: 'Istio Release',
-      istioRollback: 'Istio Rollback'
+      istioRollback: 'Istio Rollback',
+      jira: 'Jira'
     },
     imageName: 'Image Name',
     deploymentEnv: 'Environment',

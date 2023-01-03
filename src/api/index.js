@@ -2301,3 +2301,28 @@ export function getMyEnvAPI (name, projectName) {
 export function getMyWorkflowsAPI (projectName) {
   return http.get(`/api/v1/picket/workflows/all?projectName=${projectName}`)
 }
+// workflow Jira job
+export function getJirasAPI (projectName) {
+  return http.get(`/api/aslan/system/project_management/jira/project?projectName=${projectName}`)
+}
+export function getIssueTypesAndStatusAPI (projectName) {
+  return http.get(`/api/aslan/system/project_management/jira/type?project=${projectName}`)
+}
+
+export function searchIssueAPI (project, type, status) {
+  return http.get(`/api/aslan/system/project_management/jira/issue?project=${project}&type=${type}&status=${status}`)
+}
+export function getWebhookJiraAPI (workflowName) {
+  return http.get(`/api/aslan/workflow/v4/jirahook/${workflowName}`)
+}
+
+export function deleteWebhookJiraAPI (workflowName, hookName, payload) {
+  return http.delete(`/api/aslan/workflow/v4/jirahook/${workflowName}/${hookName}`, payload)
+}
+
+export function updateWebhookJiraAPI (workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/jirahook/${workflowName}`, payload)
+}
+export function addWebhookJiraAPI (workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/jirahook/${workflowName}`, payload)
+}

@@ -256,7 +256,13 @@
       :close-on-click-modal="false"
       append-to-body
     >
-      <el-form ref="webhookForm" :model="currentWebhook" label-position="left" :label-width="curLanguage === 'zh-cn' ?'120px' :'160px'" :rules="webhookRules">
+      <el-form
+        ref="webhookForm"
+        :model="currentWebhook"
+        label-position="left"
+        :label-width="curLanguage === 'zh-cn' ?'120px' :'160px'"
+        :rules="webhookRules"
+      >
         <el-form-item :label="$t(`global.name`)" prop="name">
           <el-input
             size="small"
@@ -369,7 +375,10 @@
               placeholder="输入目录时，多个目录请用回车换行分隔"
             ></el-input>
           </el-form-item>
-          <ul style="color: #909399; font-size: 12px; line-height: 20px;" :style="{'paddingLeft':curLanguage === 'zh-cn' ?'120px' :'160px'}">
+          <ul
+            style="color: #909399; font-size: 12px; line-height: 20px;"
+            :style="{'paddingLeft':curLanguage === 'zh-cn' ?'120px' :'160px'}"
+          >
             <li>输入目录时，多个目录请用回车换行分隔</li>
             <li>"/" 表示代码库中的所有文件</li>
             <li>用 "!" 符号开头可以排除相应的文件</li>
@@ -483,7 +492,7 @@
           <el-input v-model="currentJIRA.name" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="currentJIRA.desc" placeholder="请输入描述"></el-input>
+          <el-input v-model="currentJIRA.description" placeholder="请输入描述"></el-input>
         </el-form-item>
       </el-form>
       <div style="margin: 10px 0;">
@@ -623,7 +632,11 @@ import {
   removeCustomTimerAPI,
   updateCustomTimerAPI,
   getCustomTimerPresetAPI,
-  checkRegularAPI
+  checkRegularAPI,
+  addWebhookJiraAPI,
+  updateWebhookJiraAPI,
+  getWebhookJiraAPI,
+  deleteWebhookJiraAPI
 } from '@api'
 const validateName = (rule, value, callback) => {
   if (!/^[a-zA-Z0-9]([a-zA-Z0-9_\-\.]*[a-zA-Z0-9])?$/.test(value)) {
@@ -1136,7 +1149,8 @@ export default {
                 } else {
                   // fromjob
                   if (
-                    payload.workflow_arg.fromJobInfo.pickedTargets && payload.workflow_arg.fromJobInfo.pickedTargets.length > 0
+                    payload.workflow_arg.fromJobInfo.pickedTargets &&
+                    payload.workflow_arg.fromJobInfo.pickedTargets.length > 0
                   ) {
                     payload.workflow_arg.fromJobInfo.pickedTargets.forEach(
                       item => {
@@ -1346,18 +1360,17 @@ export default {
       })
     },
     async getJIRAs () {
-      const projectName = this.projectName
       const workflowName = this.workflowName
-      const result = await getCustomWebhooksAPI(projectName, workflowName)
+      const result = await getWebhookJiraAPI(workflowName)
       if (result) {
         this.jiras = result
       }
     },
     async addJIRA () {
-      const projectName = this.projectName
+      // const projectName = this.projectName
       const workflowName = this.workflowName
       this.currentTimer = cloneDeep(timerInfo)
-      const preset = await getCustomTimerPresetAPI(projectName, workflowName)
+      const preset = await getWebhookJiraAPI(workflowName)
       if (preset) {
         this.$set(
           this.currentTimer,
@@ -1374,11 +1387,7 @@ export default {
       this.JIRAEditMode = true
       const currentTimer = cloneDeep(item)
       const timerID = currentTimer.id
-      const preset = await getCustomTimerPresetAPI(
-        projectName,
-        workflowName,
-        timerID
-      )
+      const preset = await getWebhookJiraAPI(workflowName, timerID)
       this.$set(
         currentTimer,
         'workflow_v4_args',
@@ -1388,9 +1397,9 @@ export default {
       this.JIRADialogVisible = true
     },
     removeJIRA (index, timerID) {
-      const projectName = this.projectName
+      // const projectName = this.projectName
       const workflowName = this.workflowName
-      removeCustomTimerAPI(projectName, workflowName, timerID).then(res => {
+      deleteWebhookJiraAPI(workflowName, timerID).then(res => {
         this.$message.success('删除成功')
         this.getJIRAs()
       })
@@ -1401,67 +1410,74 @@ export default {
           const payload = cloneDeep(this.currentJIRA)
           const workflowName = this.workflowName
           const projectName = this.projectName
-          payload.workflow_v4_args.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              job.spec.service_and_builds = job.pickedTargets
-              delete job.pickedTargets
-              if (
-                job.spec.service_and_images &&
-                job.spec.service_and_images.length > 0
-              ) {
-                job.spec.service_and_images.forEach(item => {
-                  delete item.images
-                })
-              }
-              if (
-                job.spec.service_and_builds &&
-                job.spec.service_and_builds.length > 0
-              ) {
-                job.spec.service_and_builds.forEach(item => {
-                  if (item.repos) {
-                    item.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
+          console.log(payload)
+          if (
+            payload.workflow_v4_args.stages &&
+            payload.workflow_v4_args.stages.length > 0
+          ) {
+            payload.workflow_v4_args.stages.forEach(stage => {
+              stage.jobs.forEach(job => {
+                job.spec.service_and_builds = job.pickedTargets
+                delete job.pickedTargets
+                if (
+                  job.spec.service_and_images &&
+                  job.spec.service_and_images.length > 0
+                ) {
+                  job.spec.service_and_images.forEach(item => {
+                    delete item.images
+                  })
+                }
+                if (
+                  job.spec.service_and_builds &&
+                  job.spec.service_and_builds.length > 0
+                ) {
+                  job.spec.service_and_builds.forEach(item => {
+                    if (item.repos) {
+                      item.repos.forEach(repo => {
+                        if (typeof repo.prs === 'string') {
+                          repo.prs = repo.prs.split(',').map(Number)
                         }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
+                        if (repo.branchOrTag) {
+                          if (repo.branchOrTag.type === 'branch') {
+                            repo.branch = repo.branchOrTag.name
+                          }
+                          if (repo.branchOrTag.type === 'tag') {
+                            repo.tag = repo.branchOrTag.name
+                          }
                         }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'freestyle') {
-                job.spec.steps.forEach(step => {
-                  if (step.type === 'git') {
-                    step.spec.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
+                      })
+                    }
+                  })
+                }
+                if (job.type === 'freestyle') {
+                  job.spec.steps.forEach(step => {
+                    if (step.type === 'git') {
+                      step.spec.repos.forEach(repo => {
+                        if (typeof repo.prs === 'string') {
+                          repo.prs = repo.prs.split(',').map(Number)
                         }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
+                        if (repo.branchOrTag) {
+                          if (repo.branchOrTag.type === 'branch') {
+                            repo.branch = repo.branchOrTag.name
+                          }
+                          if (repo.branchOrTag.type === 'tag') {
+                            repo.tag = repo.branchOrTag.name
+                          }
                         }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'zadig-deploy') {
-                job.spec.service_and_images = job.spec.service_and_builds
-                delete job.spec.service_and_builds
-              }
+                      })
+                    }
+                  })
+                }
+                if (job.type === 'zadig-deploy') {
+                  job.spec.service_and_images = job.spec.service_and_builds
+                  delete job.spec.service_and_builds
+                }
+              })
             })
-          })
-          if (this.timerEditMode) {
-            const result = await updateCustomTimerAPI(projectName, payload)
+          }
+
+          if (this.JIRAEditMode) {
+            const result = await updateWebhookJiraAPI(workflowName, payload)
             if (result) {
               this.$message.success('修改成功')
               this.$refs.timerForm.resetFields()
@@ -1469,8 +1485,7 @@ export default {
               this.getJIRAs()
             }
           } else {
-            const result = await addCustomTimerAPI(
-              projectName,
+            const result = await addWebhookJiraAPI(
               workflowName,
               payload
             )

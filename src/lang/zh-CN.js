@@ -710,7 +710,8 @@ exports.default = {
       k8sGrayRollback: '灰度回滚',
       grayDeploy: '灰度发布',
       istioRelease: 'Istio 发布',
-      istioRollback: 'Istio 回滚'
+      istioRollback: 'Istio 回滚',
+      jira: 'JIRA 问题状态变更'
     },
     imageName: '镜像名称',
     deploymentEnv: '部署环境',

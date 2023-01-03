@@ -102,6 +102,13 @@ const jobTypeList = [
     type: 'zadig-distribute-image',
     is_offical: true,
     description: '可将镜像 Retag 后推送到镜像仓库'
+  },
+  {
+    label: 'jira',
+    name: 'jira',
+    type: 'jira',
+    is_offical: true,
+    description: '修改指定的 JIRA 问题状态'
   }
 ]
 const configList = [
@@ -137,7 +144,8 @@ const jobType = {
   test: 'zadig-test',
   scanning: 'zadig-scanning',
   distribute: 'zadig-distribute-image',
-  customDeploy: 'custom-deploy'
+  customDeploy: 'custom-deploy',
+  jira: 'jira'
 }
 const editorOptions = {
   mode: 'yaml',

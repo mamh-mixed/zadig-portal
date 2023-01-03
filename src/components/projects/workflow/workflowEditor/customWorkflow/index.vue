@@ -200,6 +200,13 @@
               :ref="jobType.distribute"
               :workflowInfo="payload"
             />
+            <JobJira
+              :projectName="projectName"
+              v-if="job.type === jobType.jira"
+              :job="job"
+              :ref="jobType.jira"
+              :workflowInfo="payload"
+            />
           </div>
         </footer>
       </Multipane>
@@ -295,6 +302,7 @@ import JobK8sDeploy from './components/jobs/jobK8sDeploy'
 import JobTest from './components/jobs/jobTest'
 import JobScanning from './components/jobs/jobScanning.vue'
 import JobImageDistribute from './components/jobs/jobImageDistribute.vue'
+import JobJira from './components/jobs/jobJira'
 import RunCustomWorkflow from '../../common/runCustomWorkflow'
 import Env from './components/base/env.vue'
 import Webhook from './components/base/webhook.vue'
@@ -381,6 +389,7 @@ export default {
     JobTest,
     JobScanning,
     JobImageDistribute,
+    JobJira,
     RunCustomWorkflow,
     codemirror,
     Env,

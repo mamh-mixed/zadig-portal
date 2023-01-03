@@ -190,6 +190,18 @@ export default {
             timeout: 10,
             cluster_id: ''
           }
+        },
+        jira: {
+          name: 'default',
+          type: 'jira',
+          spec: {
+            source: 'runtime',
+            project_id: '',
+            issue_type: '',
+            issues: [],
+            issues_default: [],
+            target_status: ''
+          }
         }
       },
       isShowJobOperateDialog: false,
