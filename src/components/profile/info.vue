@@ -352,7 +352,7 @@ export default {
           callback(new Error(this.$t(`profile.inputNewPass`)))
         } else {
           if (this.pwd.confirmPassword !== '') {
-            this.$refs.ruleForm.validateField('confirmPassword')
+            this.$refs.passwordForm.validateField('confirmPassword')
           }
           callback()
         }
