@@ -161,7 +161,7 @@ export default {
       const deployID = (deploy) => {
         return `${deploy.env}|${deploy.type}`
       }
-      const payload = this.presets.map((item) => {
+      const payload = this.buildStage.modules.map((item) => {
         return item.target
       })
       createWorkflowTaskAPI(this.targetProject, namespace, payload).then(res => {
@@ -391,10 +391,10 @@ export default {
       typeof: String,
       default: 'inside'
     },
-    presets: {
-      type: Array,
+    buildStage: {
+      type: Object,
       default () {
-        return []
+        return {}
       }
     }
   },

@@ -224,7 +224,7 @@
                   :targetProject="workflowToRun.product_tmpl_name"
                   :forcedUserInput="orgsObject || {}"
                   :testInfos="testInfos"
-                  :presets="presets"
+                  :buildStage="buildStage"
                   whichSave="outside"
                   ref="pipelineConfig"
                 ></workflow-args>
@@ -467,6 +467,10 @@ export default {
     presets: {
       required: true,
       type: Array
+    },
+    buildStage: {
+      required: true,
+      type: Object
     }
   },
   methods: {
