@@ -9,44 +9,34 @@
               <span class="name">{{item.name}}</span>
             </li>
           </router-link>
-          <router-link :to="`/v1/template/workflows`" v-if="hasPlutus" active-class="active">
-            <li class="nav-item">
+          <el-tooltip effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterpriseWorkflowReferforDetails`)}}
+              <el-link
+                style="font-size: 13px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/template/workflow/`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <li class="nav-item disabled">
               <i class="icon iconfont icongongzuoliucheng"></i>
-              <span class="name">工作流</span>
+              <span class="name">{{$t('global.workflow')}}</span>
             </li>
-          </router-link>
+          </el-tooltip>
         </ul>
       </div>
     </div>
     <div class="operation">
-      <template>
-        <el-dropdown
-          v-if="$route.path === `/v1/template/workflows`"
-          @command="createWorkflowTemplate"
-          placement="bottom"
-          trigger="click"
-        >
-          <button type="button" class="display-btn el-button">
-            <i class="el-icon-plus"></i>
-            &nbsp;&nbsp;工作流模板&nbsp;&nbsp;
-            <i class="el-icon-caret-bottom el-icon--right"></i>
-          </button>
-          <el-dropdown-menu slot="dropdown" class="create-workflow-template">
-            <el-dropdown-item command="custom">自定义工作流</el-dropdown-item>
-            <el-dropdown-item command="release">发布工作流</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </template>
     </div>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
 export default {
   data () {
     return {}
   },
-  props: {},
   computed: {
     routerList () {
       return [
@@ -66,15 +56,12 @@ export default {
           url: `/v1/template/dockerfiles`
         },
         {
-          name: '构建',
+          name: this.$t(`global.build`),
           icon: 'iconfont iconvery-build',
           url: `/v1/template/builds`
         }
       ]
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     createWorkflowTemplate (val) {
@@ -111,6 +98,11 @@ export default {
           font-size: 16px;
           line-height: 22px;
           cursor: pointer;
+
+          &.disabled {
+            color: @disabledColor;
+            cursor: not-allowed;
+          }
 
           .icon {
             margin-right: 18px;

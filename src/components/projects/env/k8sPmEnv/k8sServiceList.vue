@@ -1,14 +1,14 @@
 <template>
   <div class="common-parcel-block">
-    <div class="primary-title">服务列表</div>
+    <div class="primary-title">{{$t('environments.k8s.serviceListComp.serviceList')}}</div>
     <div>
       <div v-if="showFilter" class="service-filter-block">
         <span class="service-filter">
-          快速过滤:
+          {{$t('environments.k8s.serviceListComp.quickFilter')}}
           <el-tooltip class="img-tooltip" effect="dark" placement="top">
             <div slot="content">
-              智能选择会优先选择最新的容器镜像，如果在 Registry
-              <br />下不存在该容器镜像，则会选择模板中的默认镜像进行填充
+              {{$t('environments.k8s.serviceListComp.quickFilterFirstTip')}}
+              <br />{{$t('environments.k8s.serviceListComp.quickFilterSecondTip')}}
             </div>
             <i class="el-icon-info"></i>
           </el-tooltip>
@@ -17,11 +17,11 @@
             size="small"
             class="img-select"
             v-model="quickSelection"
-            placeholder="请选择"
+            :placeholder="$t('environments.k8s.serviceListComp.selectFilterMethod')"
             @change="quickInitImage"
           >
-            <el-option label="全容器-智能选择镜像" value="latest"></el-option>
-            <el-option label="全容器-全部默认镜像" value="default"></el-option>
+            <el-option :label="$t('environments.k8s.serviceListComp.selectLatestImage')" value="latest"></el-option>
+            <el-option :label="$t('environments.k8s.serviceListComp.selectDefaultImage')" value="default"></el-option>
           </el-select>
         </span>
       </div>
@@ -29,34 +29,8 @@
         <div class="service-item" v-for="(service, serviceName) in selectedContainerMap" :key="serviceName">
           <div class="primary-title service-title">
             <div class="service-name">{{ serviceName }}</div>
-            <template v-if="hasPlutus">
-              <div class="service-resource">
-                <span class="middle">
-                  资源检测
-                  <el-tooltip effect="dark" content="检查服务中定义的资源在所选的 K8s 命名空间中是否存在" placement="top">
-                    <i class="el-icon-info gray"></i>
-                  </el-tooltip>
-                </span>
-                <div style="display: inline-block;">
-                  <span
-                    class="resource-item"
-                    v-for="(resource, index) in svcResources[serviceName] ? svcResources[serviceName].resources : []"
-                    :key="index"
-                  >
-                    <i class="middle" :class="[resource.status === 'deployed' ? 'el-icon-success success' : 'el-icon-error fail']"></i>
-                    <span>{{ `${resource.type}/${resource.name}` }}</span>
-                  </span>
-                </div>
-              </div>
-              <div class="service-operation">
-                <el-radio-group v-model="service.deploy_strategy">
-                  <el-radio label="import" :disabled="!(svcResources[serviceName] && svcResources[serviceName].deployed)">仅导入服务</el-radio>
-                  <el-radio label="deploy">执行部署</el-radio>
-                </el-radio-group>
-              </div>
-            </template>
           </div>
-          <div class="service-content" v-show="service.deploy_strategy !== 'import'">
+          <div class="service-content">
             <template v-if="service.type==='k8s' && service.containers">
               <el-form-item v-for="con of service.containers" :key="con.name" :label="con.name" label-width="40%">
                 <el-select v-model="con.image" :disabled="cantOperate" filterable size="small">
@@ -81,6 +55,15 @@
               </el-form-item>
             </template>
           </div>
+          <div v-if="service.canEditYaml" class="var-config">
+            <div class="primary-title var-title">变量配置</div>
+            <Resize @sizeChange="$refs[`codemirror-${serviceName}`][0].refresh()" :height="'200px'">
+              <CodeMirror
+                :ref="`codemirror-${serviceName}`"
+                v-model="service.variable_yaml"
+              />
+            </Resize>
+          </div>
         </div>
       </el-form>
     </div>
@@ -88,10 +71,11 @@
 </template>
 
 <script>
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import virtualListItem from '../../common/imageItem'
 import virtualScrollList from 'vue-virtual-scroll-list'
-import { imagesAPI, checkK8sSvcResourceAPI } from '@api'
-import { mapState } from 'vuex'
+import { imagesAPI } from '@api'
 
 export default {
   props: {
@@ -119,10 +103,7 @@ export default {
   computed: {
     imageMap () {
       return this.imageMapById[this.registryId] || {}
-    },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
+    }
   },
   methods: {
     async getImages (containerNames, registryId, init, services) {
@@ -180,38 +161,12 @@ export default {
           }
         }
       }
-    },
-    async checkSvcResource (projectName, payload) {
-      if (!this.hasPlutus) {
-        return Promise.reject()
-      }
-      // payload: env_name, namespace, cluster_id, vars
-      this.svcResources = {}
-      const res = await checkK8sSvcResourceAPI(
-        projectName,
-        payload
-      ).catch(err => console.log(err))
-      if (res) {
-        const svcResources = {}
-        const svcStatus = {}
-        res.forEach(resource => {
-          const deployed = !resource.resources.find(
-            re => re.status === 'undeployed'
-          )
-          svcResources[resource.service_name] = {
-            ...resource,
-            deployed
-          }
-          svcStatus[resource.service_name] = deployed
-        })
-        this.svcResources = svcResources
-        return Promise.resolve(svcStatus)
-      }
-      return Promise.reject()
     }
   },
   components: {
-    virtualScrollList
+    virtualScrollList,
+    Resize,
+    CodeMirror
   }
 }
 </script>
@@ -309,6 +264,14 @@ export default {
         .el-select {
           width: 100%;
         }
+      }
+    }
+
+    .var-config {
+      margin-top: 14px;
+
+      .var-title {
+        margin-bottom: 5px;
       }
     }
   }

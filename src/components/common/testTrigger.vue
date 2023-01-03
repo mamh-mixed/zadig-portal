@@ -2,7 +2,7 @@
   <div class="test-trigger">
     <!-- start of edit webhook dialog -->
     <el-dialog width="40%"
-               :title="webhookEditMode?'修改触发器配置':'添加触发器'"
+               :title="webhookEditMode?$t(`workflow.editTrigger`):$t(`workflow.addTrigger`)"
                :visible.sync="showWebhookDialog"
                :close-on-click-modal="false"
                custom-class="add-trigger-dialog"
@@ -10,9 +10,9 @@
       <el-form ref="triggerForm"
                :model="webhookSwap"
                label-position="left"
-               label-width="90px"
+               :label-width="curLanguage === 'zh-cn' ?'120px' :'160px'"
                :rules="rules">
-        <el-form-item label="代码库" prop="repo" :rules="[
+        <el-form-item :label="$t(`global.repository`)" prop="repo" :rules="[
           { trigger: ['blur', 'change'], validator: validateRepo }
         ]">
           <el-select v-model="webhookSwap.repo"
@@ -30,12 +30,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="目标分支" prop="repo.branch"
-          v-if="checkGitRepo && canSwitchBranch"
+        <el-form-item :label="$t(`workflow.targetBranch`)" prop="repo.branch"
+          v-if="checkGitRepo"
           :rules="[
-          { required: true, message: webhookSwap.repo.is_regular ? '请输入正则表达式配置' : '请选择目标分支', trigger: ['blur', 'change'] }
+          { required: true, message: webhookSwap.repo.is_regular ? $t(`workflow.inputRegExpressionConfiguration`):$t(`workflow.selectTargetBranch`), trigger: ['blur', 'change'] }
         ]">
-          <el-input style="width: 100%;" v-if="webhookSwap.repo.is_regular"  v-model="webhookSwap.repo.branch" placeholder="请输入正则表达式配置" size="small"></el-input>
+          <el-input style="width: 100%;" v-if="webhookSwap.repo.is_regular"  v-model="webhookSwap.repo.branch" :placeholder="$t(`workflow.inputRegExpressionConfiguration`)" size="small"></el-input>
           <el-select v-else
                      style="width: 100%;"
                      v-model="webhookSwap.repo.branch"
@@ -51,14 +51,14 @@
             </el-option>
           </el-select>
           <el-switch  v-if="webhookSwap.repo.source!=='gerrit'"
-            v-model="webhookSwap.repo.is_regular" active-text="正则表达式配置" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
+            v-model="webhookSwap.repo.is_regular" :active-text="$t(`workflow.regularExpressionConfiguration`)" @change="webhookSwap.repo.branch = '';matchedBranchNames=null;"></el-switch>
           <div v-show="webhookSwap.repo.is_regular">
             <span v-show="matchedBranchNames">当前正则匹配到的分支：{{matchedBranchNames && matchedBranchNames.length === 0 ? '无': ''}}</span>
             <span style="display: inline-block; padding-right: 10px;" v-for="branch in matchedBranchNames" :key="branch">{{ branch }}</span>
           </div>
         </el-form-item>
         <el-form-item v-if="webhookSwap.repo.source==='gerrit'"
-                      label="触发事件"
+                      :label="$t(`workflow.triggerEvents`)"
                       prop="events">
           <el-checkbox-group v-model="webhookSwap.events">
             <el-checkbox style="display: block;"
@@ -69,7 +69,7 @@
                 <span>patchset-created</span>
                 <span style="color: #606266;">评分标签</span>
                 <el-input size="mini"
-                          style="width: 250px;"
+                          style="width: 200px;"
                           v-model="webhookSwap.repo.label"
                           placeholder="Code-Review"></el-input>
               </template>
@@ -79,15 +79,15 @@
 
         </el-form-item>
         <el-form-item v-else-if="webhookSwap.repo.source!=='gerrit'"
-                      label="触发事件"
+                      :label="$t(`workflow.triggerEvents`)"
                       prop="events">
           <el-checkbox-group v-model="webhookSwap.events">
             <el-checkbox v-for="tri in triggerMethods.git" :key="tri.value" :label="tri.value">{{ tri.label }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="自动取消" class="label-icon">
+        <el-form-item :label="$t(`global.autoCancel`)" class="label-icon">
           <span slot="label">
-            <span>自动取消</span>
+            <span>{{$t(`global.autoCancel`)}}</span>
             <el-tooltip effect="dark"
                         content="如果您希望只构建最新的提交，则使用这个选项会自动取消队列中的任务"
                         placement="right">
@@ -97,7 +97,7 @@
           <el-checkbox v-model="webhookSwap.auto_cancel"></el-checkbox>
         </el-form-item>
         <el-form-item v-if="webhookSwap.repo.source!=='gerrit'"
-                      label="文件目录"
+                      :label="$t(`global.fileDirectory`)"
                       prop="match_folders">
           <el-input :autosize="{ minRows: 4, maxRows: 10}"
                     type="textarea"
@@ -105,7 +105,7 @@
                     placeholder="输入目录时，多个目录请用回车换行分隔"></el-input>
         </el-form-item>
         <ul v-if="webhookSwap.repo.source!=='gerrit'"
-            style="padding-left: 80px;">
+             :style="{'paddingLeft':curLanguage === 'zh-cn' ?'120px' :'160px'}">
           <li> "/" 表示代码库中的所有文件</li>
           <li> 用 "!" 符号开头可以排除相应的文件</li>
         </ul>
@@ -114,12 +114,12 @@
            class="dialog-footer">
         <el-button size="mini"
                    round
-                   @click="webhookAddMode?webhookAddMode=false:webhookEditMode=false">取 消
+                   @click="webhookAddMode?webhookAddMode=false:webhookEditMode=false">{{$t(`global.cancel`)}}
         </el-button>
         <el-button size="mini"
                    round
                    type="primary"
-                   @click="webhookAddMode?addWebhook():saveWebhook()">确定</el-button>
+                   @click="webhookAddMode?addWebhook():saveWebhook()">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of edit webhook dialog -->
@@ -135,17 +135,17 @@
                 <span>{{ scope.row.main_repo.repo_owner }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="代码库">
+            <el-table-column :label="$t(`global.repository`)">
               <template slot-scope="scope">
                 <span>{{ scope.row.main_repo.repo_name }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="目标分支">
+            <el-table-column :label="$t(`workflow.targetBranch`)">
               <template slot-scope="scope">
                 <span>{{ scope.row.main_repo.branch }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="触发方式">
+            <el-table-column :label="$t(`workflow.triggerWay`)">
               <template slot-scope="scope">
                   <div v-if="scope.row.main_repo.events.length">
                     <div v-for="event in scope.row.main_repo.events" :key="event">
@@ -159,14 +159,14 @@
                   </div>
               </template>
             </el-table-column>
-            <el-table-column label="文件目录">
+            <el-table-column :label="$t(`global.fileDirectory`)">
               <template slot-scope="scope">
                 <span
                       v-if="scope.row.main_repo.source!=='gerrit'">{{ scope.row.main_repo.match_folders.join() }}</span>
                 <span v-else-if="scope.row.main_repo.source==='gerrit'"> N/A </span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="150">
+            <el-table-column :label="$t(`global.operation`)" width="150">
               <template slot-scope="scope">
                 <el-button @click.native.prevent="editWebhook(scope.$index)"
                            type="primary"
@@ -192,6 +192,7 @@
 <script type="text/javascript">
 import { getBranchInfoByIdAPI, checkRegularAPI } from '@api'
 import { debounce } from 'lodash'
+import store from 'storejs'
 export default {
   data () {
     this.validateRepo = (rule, value, callback) => {
@@ -250,7 +251,8 @@ export default {
       currenteditWebhookIndex: null,
       webhookEditMode: false,
       webhookAddMode: false,
-      matchedBranchNames: null
+      matchedBranchNames: null,
+      curLanguage: store.get('language')
     }
   },
   props: {

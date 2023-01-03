@@ -3,12 +3,12 @@
     <div v-for="task in scannerTasks.running" :key="task.task_id" class="progress-header">
       <div class="progress-header-view">
         <div class="status-view">
-          <div class="status running">正在运行</div>
+          <div class="status running">{{ $t(`workflowTaskStatus.${task.status}`) }}</div>
         </div>
         <div class="info-view">
           <span class="spec">
             <span>
-              <label>代码扫描 {{`#${task.task_id}`}}</label>
+              <label>{{ $t(`workflowTaskStatus.${task.codeScanner}`) }} {{`#${task.task_id}`}}</label>
               <br />
               <router-link :to="getTaskUrl(task)">
                 <span class="workflow-name">
@@ -46,12 +46,12 @@
     <div v-for="task in scannerTasks.pending" :key="task.task_id" class="progress-header">
       <div class="progress-header-view">
         <div class="status-view">
-          <div class="status pending">队列中</div>
+          <div class="status pending">{{$t('status.queued')}}</div>
         </div>
         <div class="info-view">
           <span class="spec">
             <span>
-              <label>代码扫描 {{`#${task.task_id}`}}</label>
+              <label>{{ $t(`workflowTaskStatus.${task.codeScanner}`) }}  {{`#${task.task_id}`}}</label>
               <br />
               <router-link :to="getTaskUrl(task)">
                 <span class="workflow-name">
@@ -109,8 +109,8 @@ export default {
           case 'cancel':
             cancelScannerTaskAPI(projectName, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '运行任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelRunningTaskSuccess'),
                 type: 'success',
                 offset: 50
               })
@@ -128,8 +128,8 @@ export default {
           case 'cancel':
             cancelScannerTaskAPI(projectName, id).then(res => {
               this.$notify({
-                title: '成功',
-                message: '队列任务取消成功',
+                title: this.$t('status.success'),
+                message: this.$t('status.cancelQueuedTaskSuccess'),
                 type: 'success',
                 offset: 50
               })

@@ -25,9 +25,9 @@
               class="dialog-footer">
           <el-button size="small"
                      type="primary"
-                     @click="autoUpgradeEnv">确 定</el-button>
+                     @click="autoUpgradeEnv">{{$t(`global.confirm`)}}</el-button>
           <el-button size="small"
-                     @click="updateEnvDialogVisible=false">跳过</el-button>
+                     @click="updateEnvDialogVisible=false">{{$t(`global.skip`)}}</el-button>
 
         </span>
       </el-dialog>
@@ -42,39 +42,23 @@
                          :label="env">{{env.env_name}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <div v-if="checkedEnvList.length > 0 && (checkedEnvList[0].vars &&checkedEnvList[0].vars.length > 0 || hasPlutus)" class="env-tabs">
+        <div v-if="checkedEnvList.length > 0" class="env-tabs">
           <el-tabs v-model="activeEnvTabName" type="card">
             <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
-              <CheckResource v-if="hasPlutus && !env.hasDeployed" :checkResource="env.checkResource" :serviceNames="env.serviceNames" />
-              <el-table v-if="env.vars.length" :data="env.vars" style="width: 100%;">
-                <el-table-column label="键">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.key }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="值">
-                  <template slot-scope="scope">
-                    <el-input
-                      size="small"
-                      v-model="scope.row.value"
-                      type="textarea"
-                      :autosize="{ minRows: 1, maxRows: 4}"
-                      placeholder="请输入内容"
-                    ></el-input>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <div v-else-if="!(hasPlutus && !env.hasDeployed)" style="margin-top: 10px;">该服务未引用全局变量！</div>
+              <div class="variable-yaml-container" style="margin: 5px 0;">
+                <span style="display: inline-block; margin: 5px 0;">变量配置</span>
+                <el-input type="textarea" :rows="10"  v-model="env.variableYaml"></el-input>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </div>
         <span slot="footer"
               class="dialog-footer">
           <el-button size="small"
-                     @click="joinToEnvDialogVisible = false">取消</el-button>
+                     @click="joinToEnvDialogVisible = false">{{$t(`global.cancel`)}}</el-button>
           <el-button size="small"
                      type="primary"
-                     @click="joinToEnv">确定</el-button>
+                     @click="joinToEnv">{{$t(`global.confirm`)}}</el-button>
 
         </span>
       </el-dialog>
@@ -110,6 +94,7 @@
                                     :showNext.sync="showNext"
                                     :yamlChange.sync="yamlChange"
                                     :isOnboarding="isOnboarding"
+                                    :serviceWithConfigs="serviceWithConfigs"
                                     :showJoinToEnvBtn.sync="showJoinToEnvBtn"
                                     @onGetTemplateId="getTemplateId"
                                     @onParseKind="getYamlKind"
@@ -117,18 +102,19 @@
                                     @onRefreshSharedService="getSharedServices"
                                     @onUpdateService="onUpdateService"
                                     @showJoinToEnvDialog="showJoinToEnvDialog"
+                                    @onGetLatestServiceYaml="getLatestYaml"
                                     class="service-editor-content" />
                 </div>
                 <MultipaneResizer/>
                 <aside class="service-aside service-aside-right"
                        :style="{ flexGrow: 1 }">
-                  <ServiceAside :service="service"
+                  <ServiceAside ref="serviceAside"
+                                :service="service"
                                 :services="services"
-                                :detectedEnvs="detectedEnvs"
-                                :detectedServices="detectedServices"
-                                :systemEnvs="systemEnvs"
+                                :latestYaml="latestYaml"
+                                @onRefreshService="getServices"
+                                @onGetServiceWithConfigs="getServiceWithConfigs"
                                 :buildBaseUrl="isOnboarding?`/v1/projects/create/${projectName}/k8s/service`:`/v1/projects/detail/${projectName}/services`"
-                                @getServiceModules="getServiceModules"
                                 :changeEditorWidth="changeEditorWidth" />
                 </aside>
 
@@ -137,12 +123,16 @@
                  class="no-content">
               <img src="@assets/icons/illustration/editorNoService.svg"
                    alt="">
-              <p v-if="services.length === 0">暂无服务，点击 <el-button size="mini"
+              <p v-if="services.length === 0">
+                <span>{{$t('services.common.projectWithoutService')}}</span>
+                <el-button size="mini"
                            icon="el-icon-plus"
                            @click="createService()"
                            plain
                            circle>
-                </el-button> 创建服务</p>
+                </el-button>
+                <span>{{$t('services.common.toCreateService')}}</span>
+              </p>
               <p v-else-if="service.service_name==='服务列表' && services.length >0">请在左侧选择需要编辑的服务</p>
               <p v-else-if="!service.service_name && services.length >0">请在左侧选择需要编辑的服务</p>
             </div>
@@ -154,22 +144,20 @@
             <el-button type="primary"
                        size="small"
                        :disabled="!enableOnboardingNext"
-                       @click="showOnboardingNext">下一步</el-button>
+                       @click="showOnboardingNext">{{$t('project.onboardingComp.nextStep')}}</el-button>
           </div>
       </div>
     </div>
 </template>
 <script>
 import mixin from '@/mixin/serviceModuleMixin'
-import CheckResource from '@/components/projects/serviceMgr/common/checkResource.vue'
 import ServiceAside from './k8s/serviceAside.vue'
 import ServiceEditor from './k8s/serviceEditor.vue'
 import ServiceTree from './common/serviceTree.vue'
 import IntegrationCode from './common/integrationCode.vue'
-import { sortBy, cloneDeep, uniqBy } from 'lodash'
+import { sortBy } from 'lodash'
 import { getSingleProjectAPI, getServiceTemplatesAPI, getServicesTemplateWithSharedAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
-import { mapState } from 'vuex'
 export default {
   props: {
     isOnboarding: {
@@ -184,8 +172,6 @@ export default {
       services: [],
       sharedServices: [],
       detectedEnvs: [],
-      detectedServices: [],
-      systemEnvs: [],
       checkedEnvList: [],
       currentServiceYamlKinds: {},
       showNext: false,
@@ -198,7 +184,10 @@ export default {
       deployableEnvs: [],
       activeEnvTabName: '',
       deletedService: '',
-      middleWidth: '50%'
+      middleWidth: '50%',
+      deployableEnvListWithVars: [],
+      serviceWithConfigs: {},
+      latestYaml: ''
     }
   },
   methods: {
@@ -242,22 +231,13 @@ export default {
         })), 'service_name')
       })
     },
-    getServiceModules () {
-      const serviceName = this.service.service_name
-      const projectName = this.projectName
-      serviceTemplateWithConfigAPI(serviceName, projectName).then(res => {
-        this.detectedEnvs = res.custom_variable ? res.custom_variable : []
-        this.detectedServices = res.service_module ? res.service_module : []
-        this.systemEnvs = res.system_variable ? res.system_variable : []
-      })
-    },
     showJoinToEnvDialog () {
       this.checkedEnvList = []
       this.getServiceDeployableEnvs()
       this.joinToEnvDialogVisible = true
     },
     changeUpgradeEnv (val) {
-      if (this.checkedEnvList.length && (this.hasPlutus || this.checkedEnvList[0].vars.length > 0)) {
+      if (this.checkedEnvList.length) {
         this.activeEnvTabName = val[val.length - 1].env_name
       }
     },
@@ -278,9 +258,6 @@ export default {
         this.$refs.serviceTree.getServiceGroup()
         this.getSharedServices()
       }
-      this.detectedEnvs = res.custom_variable ? res.custom_variable : []
-      this.detectedServices = res.service_module ? res.service_module : []
-      this.systemEnvs = res.system_variable ? res.system_variable : []
     },
     updateYaml (switchNode) {
       this.$refs.serviceEditor.updateService().then(() => {
@@ -318,8 +295,7 @@ export default {
       const payload = this.checkedEnvList.map(item => {
         return {
           env_name: item.env_name,
-          services: item.serviceNames.map(svc => ({ service_name: svc.service_name, deploy_strategy: svc.deploy_strategy })),
-          vars: item.vars
+          services: item.services.map(svc => ({ service_name: svc.service_name, deploy_strategy: '', variable_yaml: item.variableYaml }))
         }
       })
       const projectName = this.projectName
@@ -374,8 +350,8 @@ export default {
         return item.name
       })
       this.$confirm(`您的更新操作将覆盖环境中 ${key} 的 ${value} 服务变更，确认继续?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
         const force = true
@@ -401,47 +377,44 @@ export default {
         })
       }
     },
-    getServiceDeployableEnvs () {
+    async getServiceDeployableEnvs () {
       const projectName = this.projectName
       const serviceName = this.service.service_name
-      getServiceDeployableEnvsAPI(projectName, serviceName).then(res => {
-        this.deployableEnvs = res.envs
+      const result = await Promise.all([getServiceDeployableEnvsAPI(projectName, serviceName), serviceTemplateWithConfigAPI(serviceName, projectName)])
+      const deployableEnvs = result[0].envs
+      const variableYaml = result[1].variable_yaml
+      deployableEnvs.forEach(env => {
+        env.services = env.services.filter((item) => {
+          return item.service_name === serviceName
+        })
+        if (env.services.length === 0) {
+          env.services = [{
+            service_name: serviceName,
+            variable_yaml: variableYaml
+          }]
+          env.variableYaml = variableYaml
+        } else {
+          env.variableYaml = env.services[0].variable_yaml
+        }
       })
+      this.deployableEnvListWithVars = deployableEnvs
     },
     showOnboardingNext () {
       this.$router.push(`/v1/projects/create/${this.projectName}/k8s/runtime?serviceName=${this.serviceName}`)
+    },
+    getServiceWithConfigs (data) {
+      this.serviceWithConfigs = data
+    },
+    getLatestYaml (data) {
+      this.latestYaml = data
     }
   },
   computed: {
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    }),
     projectName () {
       return this.$route.params.project_name
     },
     serviceName () {
       return this.$route.query.service_name
-    },
-    deployableEnvListWithVars () {
-      const curServiceName = this.service.service_name
-      const vars = cloneDeep(this.detectedEnvs.filter(item => item.services.includes(curServiceName)))
-      return this.deployableEnvs.map(env => {
-        const envVars = env.vars.filter(item => item.services.includes(curServiceName))
-        this.$set(env, 'vars', uniqBy([].concat(envVars, vars), 'key'))
-        env.hasDeployed = env.services.includes(curServiceName)
-        env.checkResource = {
-          env_name: env.env_name,
-          namespace: env.namespace,
-          cluster_id: env.cluster_id,
-          services: [curServiceName],
-          vars: env.vars
-        }
-        env.serviceNames = [{
-          service_name: curServiceName,
-          deploy_strategy: 'deploy'
-        }]
-        return env
-      })
     },
     enableOnboardingNext () {
       const services = this.services.filter(service => service.status === 'added')
@@ -466,8 +439,7 @@ export default {
     ServiceTree,
     Multipane,
     MultipaneResizer,
-    IntegrationCode,
-    CheckResource
+    IntegrationCode
   },
   mixins: [mixin]
 }

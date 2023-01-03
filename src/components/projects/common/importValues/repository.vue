@@ -25,7 +25,7 @@
             :key="index"
             :label="host.address + '('+host.alias+')'"
             :value="host.id"
-            :disabled="host.type === 'gitee'||host.type === 'gitee-enterprise'"
+            :disabled="host.type === 'gitee'"
           >{{ host.address + '('+host.alias+')'}}</el-option>
         </el-select>
       </el-form-item>
@@ -44,7 +44,7 @@
           <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item prop="repo" label="代码库" :show-message="false">
+      <el-form-item prop="repo" :label="$t(`global.repository`)" :show-message="false">
         <el-input v-if="codehostSource === 'other'" v-model.trim="source.repo" size="small" placeholder="请输入代码库" clearable></el-input>
         <el-select
           v-else
@@ -102,14 +102,24 @@
           <i v-else-if="fileType === 'k8sYaml'" class="el-icon-plus"></i>
         </el-button>
       </el-form-item>
-      <el-form-item v-if="showAutoSync && codehostSource !== 'other'" prop="autoSync" label="自动同步" :show-message="false">
+      <el-form-item v-if="showAutoSync && codehostSource !== 'other'" prop="autoSync" :label="$t('global.autoSync')" :show-message="false">
         <span slot="label">
-          <span>自动同步</span>
-          <el-tooltip effect="dark" content="开启后，Zadig 会定时从代码库拉取配置文件并将其自动更新到环境中，目前只支持 GitHub/GitLab" placement="top">
+          <span style="color: #c0c4cc;">{{$t('global.autoSync')}}</span>
+           <el-tooltip class="item" effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 14px; vertical-align: baseline;"
+                type="primary"
+                :href="fromGlobal?`https://docs.koderover.com/project/env/helm/chart/#全局变量`: `https://docs.koderover.com/project/env/helm/chart/#服务变量`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
             <i class="pointer el-icon-question"></i>
           </el-tooltip>
         </span>
-        <el-switch v-model="source.autoSync"></el-switch>
+        <el-switch v-model="source.autoSync" disabled></el-switch>
       </el-form-item>
       <el-dialog :title="typeObject[fileType].dialogTitle" :visible.sync="showFileSelectDialog" append-to-body>
         <TreeFile
@@ -143,6 +153,10 @@ export default {
       type: String
     },
     showAutoSync: {
+      default: false,
+      type: Boolean
+    },
+    fromGlobal: {
       default: false,
       type: Boolean
     }

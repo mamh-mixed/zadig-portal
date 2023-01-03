@@ -11,7 +11,7 @@
     <div class="manage-services-container">
       <el-form ref="serviceFormRef" class="primary-form" :model="updateServices" label-width="100px" label-position="left">
         <el-form-item
-          label="服务选择"
+          :label="$t(`workflow.selectService`)"
           props="service_names"
           :rules="{ required: true, type: 'array', message: '请选择服务名称', trigger: ['blur', 'change']}"
         >
@@ -38,19 +38,18 @@
           :envNames="[productInfo.env_name]"
           :handledEnv="productInfo.env_name"
           :envScene="`updateEnv`"
-          :checkResource="checkResource"
         />
       </template>
     </div>
     <div slot="footer">
-      <el-button @click="closeDialog()" size="small" :disabled="loading">取 消</el-button>
+      <el-button @click="closeDialog()" size="small" :disabled="loading">{{$t(`global.cancel`)}}</el-button>
       <el-button
         type="primary"
         size="small"
         :disabled="!updateServices.service_names.length"
         @click="updateEnvironment"
         :loading="loading"
-      >确 定</el-button>
+      >{{$t(`global.confirm`)}}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -86,9 +85,9 @@ export default {
     },
     opeDesc () {
       const typeEnum = {
-        add: '添加',
-        update: '更新',
-        delete: '删除'
+        add: this.$t('global.add'),
+        update: this.$t('global.update'),
+        delete: this.$t('global.delete')
       }
       return typeEnum[this.opeType] || ''
     },
@@ -100,17 +99,6 @@ export default {
     },
     envType () {
       return this.productInfo.share_env_enable ? 'share' : 'general'
-    },
-    checkResource () {
-      if (this.opeType === 'add' && this.dialogVisible) {
-        return {
-          env_name: this.productInfo.env_name,
-          cluster_id: this.productInfo.cluster_id,
-          namespace: this.productInfo.namespace
-        }
-      } else {
-        return null
-      }
     }
   },
   methods: {

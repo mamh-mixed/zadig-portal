@@ -4,28 +4,28 @@
       <header>
         <div class="name">
           <el-form ref="form" :model="payload" inline>
-            <el-form-item prop="display_name" :rules="{required: true,message:'请输入工作流名称', trigger: ['blur', 'change']}" class="mg-r16">
+            <el-form-item prop="display_name" :rules="{required: true,message:this.$t(`workflow.inputWorkflowName`), trigger: ['blur', 'change']}" class="mg-r16">
               <el-tooltip effect="dark" :content="payload.display_name" placement="top" :disabled="!payload.display_name">
-                <el-input v-model="payload.display_name" placeholder="工作流名称" size="small" :disabled="!editDisplayName" class="name-input"></el-input>
+                <el-input v-model="payload.display_name" :placeholder="this.$t(`workflow.inputWorkflowName`)" size="small" :disabled="!editDisplayName" class="name-input"></el-input>
               </el-tooltip>
               <span @click="editDisplayName = editDisplayName ? false : true" class="mg-r8">
-                <i :class="[editDisplayName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+                <i class="name-icon" :class="[editDisplayName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
               </span>
             </el-form-item>
             <el-form-item prop="name" :rules="{required: true,validator:validateWorkflowName, trigger: ['blur', 'change']}" class="mg-r16">
               <el-tooltip effect="dark" :content="payload.name" placement="top" :disabled="!payload.name">
-                <el-input v-model="payload.name" placeholder="工作流标识" size="small" :disabled="!editName" class="name-input"></el-input>
+                <el-input v-model="payload.name" :placeholder="$t(`workflow.inputWorkflowID`)" size="small" :disabled="!editName" class="name-input"></el-input>
               </el-tooltip>
               <span @click="editName = editName ? false : true" class="mg-r8">
-                <i :class="[editName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+                <i class="name-icon" :class="[editName ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
               </span>
             </el-form-item>
             <el-form-item prop="description">
               <el-tooltip effect="dark" :content="payload.description" placement="top" :disabled="!payload.description">
-                <el-input v-model="payload.description" placeholder="描述信息" size="small" :disabled="!editDesc" class="name-input"></el-input>
+                <el-input v-model="payload.description" :placeholder="$t(`workflow.desc`)" size="small" :disabled="!editDesc" class="name-input"></el-input>
               </el-tooltip>
               <span @click="editDesc = editDesc ? false : true" class="mg-r8">
-                <i :class="[editDesc ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
+                <i class="name-icon" :class="[editDesc ? 'el-icon-finished' : 'el-icon-edit-outline']"></i>
               </span>
             </el-form-item>
           </el-form>
@@ -37,12 +37,24 @@
             v-for="item in tabList"
             :key="item.name"
             @click="handleTabChange(item.name)"
-          >{{item.label}}</span>
+          >{{$t(`workflow.${item.label}`)}}</span>
         </div>
         <div>
-          <el-button type="text" v-if="hasPlutus" @click="isShowModelDialog=true">保存为模板</el-button>
-          <el-button type="primary" size="small" @click="operateWorkflow">保存</el-button>
-          <el-button size="small" @click="cancelWorkflow">取消</el-button>
+          <el-tooltip class="item" effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 13px; vertical-align: baseline;"
+                type="primary"
+                :href="`https://docs.koderover.com/template/workflow/`"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <el-button type="text" style="color: #ddd;" >{{$t(`workflow.saveAsTemplate`)}}</el-button>
+          </el-tooltip>
+          <el-button type="primary" size="small" @click="operateWorkflow">{{$t(`global.save`)}}</el-button>
+          <el-button size="small" @click="cancelWorkflow">{{$t(`global.cancel`)}}</el-button>
         </div>
       </header>
       <Multipane layout="horizontal" style="height: 100%;" v-show="activeName === 'ui'">
@@ -75,7 +87,7 @@
               </div>
             </div>
             <div>
-              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ 阶段</el-button>
+              <el-button @click="showStageOperateDialog('add')" size="small" class="stage-add">+ {{$t(`workflow.stage`)}}</el-button>
             </div>
             <div class="line"></div>
             <span class="ui-text mg-l8">End</span>
@@ -87,8 +99,8 @@
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
-              <el-button size="mini" type="primary" @click="saveJobConfig">确定</el-button>
-              <el-button size="mini" @click.stop="closeFooter">取消</el-button>
+              <el-button size="mini" type="primary" @click="saveJobConfig">{{$t(`global.confirm`)}}</el-button>
+              <el-button size="mini" @click.stop="closeFooter">{{$t(`global.cancel`)}}</el-button>
             </div>
           </div>
           <div v-if="payload.stages.length > 0 && job" class="main">
@@ -129,7 +141,7 @@
                 plain
                 :disabled="Object.keys(service).length === 0"
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
-              >+ 添加</el-button>
+              >+ {{$t(`global.add`)}}</el-button>
             </div>
             <JobPlugin
               v-if="job.type === jobType.plugin"
@@ -197,7 +209,7 @@
       </section>
     </div>
     <div class="right">
-      <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{item.label}}</div>
+      <div v-for="item in configList" :key="item.label" class="right-tab" @click="setCurDrawer(item.value)">{{$t(`workflow.baseType.${item.label}`)}}</div>
     </div>
     <el-drawer
       :visible.sync="isShowDrawer"
@@ -211,11 +223,11 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText || '取消'}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{$t(`global.cancel`)}}</el-button>
         </div>
         <div v-else>
-          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{drawerConfirmText?drawerConfirmText:'确定'}}</el-button>
-          <el-button size="mini" plain @click="closeDrawer">{{drawerCancelText?drawerCancelText:'取消'}}</el-button>
+          <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{$t(`global.confirm`)}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{$t(`global.cancel`)}}</el-button>
         </div>
       </span>
       <div v-if="curDrawer === 'high'">
@@ -230,7 +242,7 @@
           :isEdit="isEdit"
           :isShowDrawer="isShowDrawer"
           :originalWorkflow="originalWorkflow"
-          @saveWorkflow="operateWorkflow"
+          @saveWorkflow="operateWorkflow('fromWebhook')"
           @closeDrawer="closeDrawer"
           ref="webhook"
         />
@@ -239,7 +251,7 @@
         <Notify :config="payload" :isEdit="isEdit" ref="notify" />
       </div>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? '新建阶段' : '编辑阶段'" :visible.sync="isShowStageOperateDialog" width="30%">
+    <el-dialog :title="stageOperateType === 'add' ? $t(`workflow.addStage`): $t(`workflow.editStage`)" :visible.sync="isShowStageOperateDialog" width="30%">
       <StageOperate
         ref="stageOperate"
         :stageInfo="stage"
@@ -249,19 +261,8 @@
         @submitEvent="operateStage('',stage)"
       />
       <div slot="footer">
-        <el-button @click="isShowStageOperateDialog = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="operateStage('',stage)" size="small">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog title="保存为模板" :visible.sync="isShowModelDialog" width="30%">
-      <el-form inline ref="modelForm" :model="modelFormInfo" label-position="left">
-        <el-form-item label="模板名称" :rules="{required: true,message: '请填写模板名称', trigger: ['blur', 'change']}" prop="name">
-          <el-input placeholder="请输入模板名称" size="small" v-model="modelFormInfo.name"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer">
-        <el-button @click="isShowModelDialog = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveModel" size="small">确 定</el-button>
+        <el-button @click="isShowStageOperateDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
+        <el-button type="primary" @click="operateStage('',stage)" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -281,9 +282,7 @@ import {
   addCustomWorkflowAPI,
   updateCustomWorkflowAPI,
   getCustomWorkflowDetailAPI,
-  checkCustomWorkflowYaml,
-  addWorkflowTemplateAPI,
-  getWorkflowTemplateDetailAPI
+  checkCustomWorkflowYaml
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import Stage from './components/stage.vue'
@@ -366,9 +365,7 @@ export default {
       isShowDrawer: false,
       scal: '1',
       insertSatgeIndex: 0,
-      notComputedPayload: {},
-      isShowModelDialog: false,
-      modelFormInfo: { name: '' }
+      notComputedPayload: {}
     }
   },
   components: {
@@ -407,7 +404,7 @@ export default {
     curJobType () {
       if (this.job) {
         const curType = jobTypeList.find(item => item.type === this.job.type)
-        return curType ? curType.label : this.job.spec.plugin.name
+        return curType ? this.$t(`workflow.jobType.${curType.label}`) : this.job.spec.plugin.name
       } else {
         return ''
       }
@@ -416,7 +413,7 @@ export default {
       const res = this.configList.find(item => {
         return item.value === this.curDrawer
       })
-      return res ? res.label : ''
+      return res ? this.$t(`workflow.baseType.${res.label}`) : ''
     },
     drawerSize () {
       const res = this.configList.find(item => {
@@ -443,7 +440,6 @@ export default {
       return res ? res.drawerHideButton : false
     },
     ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus,
       isEditJob: state => state.customWorkflow.isEditJob,
       isShowFooter: state => state.customWorkflow.isShowFooter
     })
@@ -456,41 +452,31 @@ export default {
       this.payload.project = this.projectName
       this.getServiceAndBuildList()
       this.setTitle()
-      if (this.modelId) {
-        this.getWorkflowTemplateDetail()
-      } else {
-        // edit
-        if (this.isEdit) {
-          this.getWorkflowDetail(this.$route.params.workflow_name)
-        }
+      // edit
+      if (this.isEdit) {
+        this.getWorkflowDetail(this.$route.params.workflow_name)
       }
       this.$store.dispatch('setIsShowFooter', false)
-    },
-    getWorkflowTemplateDetail () {
-      getWorkflowTemplateDetailAPI(this.modelId, this.projectName).then(res => {
-        this.payload = jsyaml.load(res)
-        this.handleEnv()
-      })
     },
     setTitle () {
       bus.$emit('set-topbar-title', {
         title: '',
         breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
+          { title: this.$t(`global.project`), url: '/v1/projects' },
           {
             title: this.projectName,
             isProjectName: true,
             url: `/v1/projects/detail/${this.projectName}/detail`
           },
           {
-            title: '工作流',
-            url: `/v1/projects/detail/${this.projectName}/pipelines`
+            title: this.$t(`global.workflow`),
+            url: `/v1/projects/detail/${this.projectName}/pipelines?display_name=${this.$route.query.display_name}`
           },
           {
             title:
               this.$route.query.display_name ||
               this.$route.params.workflow_name,
-            url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}`
+            url: `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.$route.params.workflow_name}?display_name=${this.$route.query.display_name}`
           }
         ]
       })
@@ -521,31 +507,31 @@ export default {
       this.$store.dispatch('setCurOperateType', 'tab')
       this.activeName = name
     },
-    operateWorkflow () {
+    operateWorkflow (params) {
       if (this.activeName === 'yaml') {
         this.payload = jsyaml.load(this.yaml)
       }
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.payload.stages.length === 0) {
-            this.$message.error(' 请至少填写一个阶段')
+            this.$message.error(this.$t(`workflow.atLeastOneStage`))
             return
           }
           this.payload.stages.forEach(item => {
             if (item.jobs.length === 0) {
-              this.$message.error(`请填写 ${item.name} 中的任务`)
+              this.$message.error(this.$t(`workflow.inputStageJob`, { name: item.name }))
               throw Error()
             }
           })
           if (this.isShowFooter) {
-            this.$message.error('请先保存任务配置')
+            this.$message.error(this.$t(`workflow.saveJobconfigFirst`))
             return
           }
-          this.saveWorkflow()
+          this.saveWorkflow(params)
         }
       })
     },
-    saveWorkflow () {
+    saveWorkflow (params) {
       this.notComputedPayload = cloneDeep(this.payload)
       if (this.payload.params && this.payload.params.length > 0) {
         this.payload.params.forEach(item => {
@@ -631,6 +617,9 @@ export default {
           .then(res => {
             this.$message.success('模板保存成功')
             this.getWorkflowDetail(this.payload.name)
+            if (params && params === 'fromWebhook') {
+              return
+            }
             this.$router.push(
               `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
             )
@@ -657,6 +646,9 @@ export default {
             .then(res => {
               this.$message.success('新建成功')
               this.getWorkflowDetail(this.payload.name)
+              if (params && params === 'fromWebhook') {
+                return
+              }
               this.$router.push(
                 `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
               )
@@ -797,11 +789,11 @@ export default {
         this.payload.stages.length !== 0 &&
         this.stage.jobs.length === 0
       ) {
-        this.$message.error('请至少创建一个任务')
+        this.$message.error(this.$t(`workflow.atLeastOneJob`))
         return
       }
       if (this.isShowFooter) {
-        this.$message.error('请先保存上一个任务配置')
+        this.$message.error(this.$t(`workflow.saveLastJobconfigFirst`))
       } else {
         this.isShowStageOperateDialog = true
       }
@@ -845,8 +837,8 @@ export default {
     },
     delStage (index, item) {
       this.$confirm(`确定删除阶段 [${item.name}]？`, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+        confirmButtonText: this.$t(`global.confirm`),
+        cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(res => {
         const stages = this.payload.stages.filter(
@@ -874,7 +866,7 @@ export default {
         if (valid) {
           const curJob = this.$refs[this.job.type].getData()
           if (!this.isEditJob && allJobList.includes(curJob.name)) {
-            this.$message.error(' Job 名称重复')
+            this.$message.error(this.$t(`workflow.duplicateJobName`))
             return false
           }
           this.$set(
@@ -960,24 +952,6 @@ export default {
       }
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
-    },
-    saveModel () {
-      this.$refs.modelForm.validate(valid => {
-        if (valid) {
-          const params = {
-            category: '',
-            ...this.payload,
-            template_name: this.modelFormInfo.name
-          }
-          addWorkflowTemplateAPI(params).then(res => {
-            this.isShowModelDialog = false
-            this.$message({
-              type: 'success',
-              message: '新增成功'
-            })
-          })
-        }
-      })
     }
   },
   watch: {
@@ -1066,8 +1040,17 @@ export default {
           width: 180px;
         }
 
+        &-icon {
+          cursor: pointer;
+        }
+
         /deep/.el-form-item {
           margin: 8px 0;
+        }
+
+        /deep/.el-input.is-disabled .el-input__inner {
+          background-color: #fff;
+          border-color: #fff;
         }
       }
 

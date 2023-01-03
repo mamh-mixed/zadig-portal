@@ -3,7 +3,7 @@
     <div class="values-title">
       <span class="title-left">
         <span class="secondary-title">Helm values 文件</span>
-        <el-button type="text" class="title-btn" @click="showGitImportDialog = true">从代码库导入</el-button>
+        <el-button type="text" class="title-btn" @click="showGitImportDialog = true">{{$t('global.importFromRepository')}}</el-button>
         <el-dropdown placement="bottom" style="margin-left: 10px;" v-if="useVarGroup">
           <el-button
             size="mini"
@@ -11,7 +11,21 @@
             type="text"
           />
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="openVarGroupDisable">使用变量组</el-dropdown-item>
+            <el-dropdown-item disabled style="pointer-events: auto;">
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    href="https://docs.koderover.com/zadig/project/env/helm/chart/#基本操作"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>使用变量组</span>
+              </el-tooltip>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </span>
@@ -20,10 +34,10 @@
     <Resize class="desc mirror" :resize="setResize.direction" :height="setResize.height" @sizeChange="$refs.codemirror.refresh()">
       <codemirror ref="codemirror" v-model="importRepoInfoUse.overrideYaml" />
     </Resize>
-    <el-dialog title="从代码库导入" :visible.sync="showGitImportDialog" append-to-body>
-      <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" :showAutoSync="showAutoSync" />
+    <el-dialog :title="$t('global.importFromRepository')" :visible.sync="showGitImportDialog" append-to-body>
+      <Repository ref="valueRepoRef" :repoSource="importRepoInfoUse.gitRepoConfig" :fromGlobal="fromGlobal" :showAutoSync="showAutoSync" />
       <div slot="footer">
-        <el-button @click="showGitImportDialog = false" size="small">取 消</el-button>
+        <el-button @click="showGitImportDialog = false" size="small">{{$t(`global.cancel`)}}</el-button>
         <el-button type="primary" @click="importOverrideYaml" size="small" :loading="loadValueYamls">导 入</el-button>
       </div>
     </el-dialog>
@@ -86,6 +100,10 @@ export default {
           direction: 'none'
         }
       }
+    },
+    fromGlobal: {
+      default: false,
+      type: Boolean
     },
     importRepoInfo: Object,
     useVarGroup: Boolean

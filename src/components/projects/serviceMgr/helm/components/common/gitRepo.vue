@@ -57,16 +57,12 @@
         >
           <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path">
             <span>{{repo.path}}</span>
-            <template v-if="codehostSource === 'gitee-enterprise'">
-              <span v-if="repo.kind==='enterprise'">(企业)</span>
-              <span v-else-if="repo.kind==='org'">(团队)</span>
-            </template>
           </el-option>
         </el-select>
       </el-form-item>
       <template>
         <el-form-item
-          label="名称"
+          :label="$t(`global.name`)"
           prop="repoName"
           :rules="{
                 required: true,
@@ -125,7 +121,7 @@
         </el-form-item>
         <el-form-item
           v-if="codehostSource === 'other'"
-          label="文件目录"
+          :label="$t(`global.fileDirectory`)"
           :rules="{
                 required: true,
                 message: '请输入文件目录',
@@ -163,7 +159,7 @@
       <el-form-item prop="url" label="仓库地址">
         <el-input v-model="source.url" placeholder="https://github.com/owner/repo" size="small" :disabled="isUpdate"></el-input>
       </el-form-item>
-      <el-form-item prop="path" label="文件目录">
+      <el-form-item prop="path" :label="$t(`global.fileDirectory`)">
         <span :key="item" v-for="item in selectPath">[{{ item }}]&nbsp;</span>
         <el-button @click="openFileTree" :disabled="!source.url || isUpdate" type="primary" plain size="mini" icon="el-icon-plus" circle></el-button>
       </el-form-item>
@@ -173,7 +169,7 @@
     </el-form>
 
     <el-dialog
-      v-if="codehostSource === 'gerrit' || codehostSource === 'gitee' || codehostSource === 'gitee-enterprise'"
+      v-if="codehostSource === 'gerrit' || codehostSource === 'gitee'"
       :append-to-body="true"
       :visible.sync="workSpaceModalVisible"
       width="60%"
@@ -424,8 +420,7 @@ export default {
       const projectName = this.$route.params.project_name
       if (
         this.codehostSource === 'gerrit' ||
-        this.codehostSource === 'gitee' ||
-        this.codehostSource === 'gitee-enterprise'
+        this.codehostSource === 'gitee'
       ) {
         const params = {
           codehostId: this.source.codehostId,
@@ -452,8 +447,7 @@ export default {
         payload = {
           source:
             source === 'gerrit' ||
-            source === 'gitee' ||
-            source === 'gitee-enterprise'
+            source === 'gitee'
               ? source
               : 'repo',
           createFrom: {
@@ -594,7 +588,6 @@ export default {
       margin-bottom: 20px;
       padding-right: 12px;
       line-height: 40px;
-      text-align: right;
     }
   }
 }

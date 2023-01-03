@@ -2,42 +2,66 @@
   <div class="integration-home">
     <div class="tab-container">
       <el-tabs @tab-click="changeTab" type="card" style="height: 200px;" v-model="currentTab">
-        <el-tab-pane name="account" label="账号系统">
+        <el-tab-pane name="account" :label="$t(`sysSetting.integration.accountsTab`)">
           <keep-alive>
             <Account v-if="currentTab === 'account'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="project" label="项目管理">
+        <el-tab-pane name="project" :label="$t(`sysSetting.integration.projectTab`)">
           <keep-alive>
             <Project v-if="currentTab === 'project'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="code" label="代码源">
+        <el-tab-pane name="code" :label="$t(`sysSetting.integration.gitProvidersTab`)">
           <keep-alive>
             <Code v-if="currentTab === 'code'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane v-if="hasPlutus" name="config" label="配置管理">
-          <keep-alive>
-            <ConfigManage v-if="currentTab === 'config'" />
-          </keep-alive>
+        <el-tab-pane name="configs" :label="$t(`sysSetting.integration.configsTab`)" disabled>
+          <span slot="label">
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <span>{{ $t('sysSetting.integration.configsDocumentLink') }}</span>
+                <el-link
+                  style="font-size: 13px; vertical-align: baseline;"
+                  type="primary"
+                  href="https://docs.koderover.com/zadig/settings/configsystem/apollo/"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+              <span>{{$t(`sysSetting.integration.configsTab`)}}</span>
+            </el-tooltip>
+          </span>
         </el-tab-pane>
-        <el-tab-pane name="jenkins" label="Jenkins 集成">
+        <el-tab-pane name="jenkins" :label="$t(`sysSetting.integration.jenkinsTab`)">
           <keep-alive>
             <Jenkins v-if="currentTab === 'jenkins'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="sonar" label="Sonar 集成">
+        <el-tab-pane name="sonar" :label="$t(`sysSetting.integration.sonarTab`)">
           <keep-alive>
             <Sonar v-if="currentTab === 'sonar'" />
           </keep-alive>
         </el-tab-pane>
-        <el-tab-pane name="approval" label="审批系统" v-if="hasPlutus">
-          <keep-alive>
-            <Approval v-if="currentTab === 'approval'" />
-          </keep-alive>
+        <el-tab-pane name="approval" :label="$t(`sysSetting.integration.approvalSystemTab`)" disabled>
+          <span slot="label">
+            <el-tooltip effect="dark" placement="top">
+              <div slot="content">
+                <span>{{ $t('sysSetting.integration.approvalSystemDocumentLink') }}</span>
+                <el-link
+                  style="font-size: 13px; vertical-align: baseline;"
+                  type="primary"
+                  href="https://docs.koderover.com/zadig/settings/approval/"
+                  :underline="false"
+                  target="_blank"
+                >{{$t(`global.document`)}}</el-link>
+              </div>
+              <span>{{$t(`sysSetting.integration.approvalSystemTab`)}}</span>
+            </el-tooltip>
+          </span>
         </el-tab-pane>
-        <el-tab-pane name="external" label="其他系统">
+        <el-tab-pane name="external" :label="$t(`sysSetting.integration.otherSystemTab`)">
           <keep-alive>
             <External v-if="currentTab === 'external'" />
           </keep-alive>
@@ -51,12 +75,9 @@ import bus from '@utils/eventBus'
 import Account from './account.vue'
 import Project from './project.vue'
 import Code from './code.vue'
-import ConfigManage from './configManage.vue'
 import Jenkins from './jenkins.vue'
 import Sonar from './sonar.vue'
 import External from './external.vue'
-import Approval from './approval.vue'
-import { mapState } from 'vuex'
 
 export default {
   name: 'integration',
@@ -64,11 +85,9 @@ export default {
     Account,
     Project,
     Code,
-    ConfigManage,
     Jenkins,
     Sonar,
-    External,
-    Approval
+    External
   },
   data () {
     return {
@@ -89,13 +108,11 @@ export default {
       })
     }
   },
-  computed: {
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
-  },
   mounted () {
-    bus.$emit('set-topbar-title', { title: '集成管理', breadcrumb: [] })
+    bus.$emit('set-topbar-title', {
+      title: this.$t(`sidebarMenu.integration`),
+      breadcrumb: []
+    })
     this.showCurrentTab()
   }
 }

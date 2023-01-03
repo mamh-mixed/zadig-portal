@@ -65,10 +65,6 @@
                 :label="repo_owner.path"
                 :value="repo_owner.path">
                 <span>{{repo_owner.path}}</span>
-                <template v-if="repo.source === 'gitee-enterprise'">
-                  <span v-if="repo_owner.kind==='enterprise'">(企业)</span>
-                  <span v-else-if="repo_owner.kind==='org'">(团队)</span>
-                </template>
               </el-option>
             </el-select>
           </el-form-item>
@@ -145,7 +141,7 @@
                 v-if="!showAdvancedSetting[repo_index]"
                 @click="$set(showAdvancedSetting,repo_index,true)"
               >
-                展开
+               {{$t('global.expand')}}
                 <i class="el-icon-arrow-down" />
               </el-button>
               <el-button
@@ -156,7 +152,7 @@
                 v-if="showAdvancedSetting[repo_index]"
                 @click="$set(showAdvancedSetting,repo_index,false)"
               >
-                收起
+                {{$t('global.collapse')}}
                 <i class="el-icon-arrow-up" />
               </el-button>
             </div>
@@ -391,7 +387,7 @@ export default {
       const codehostType = this.allCodeHosts.find(item => {
         return item.id === id
       }).type
-      if ((codehostType === 'github' || codehostType === 'gitee-enterprise') && query !== '') {
+      if ((codehostType === 'github') && query !== '') {
         const items = this.$utils.filterObjectArrayByKey(
           'path',
           query,
@@ -537,6 +533,7 @@ export default {
               return item.path === repoOwner
             })
             const type = item ? item.kind : 'group'
+            if (!repoOwner) return
             getRepoNameByIdAPI(
               codehostId,
               type,

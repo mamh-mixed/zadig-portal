@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import i18n from '@/lang'
 
 const onboarding_home = () => import('@/components/entry/home.vue')
 
@@ -10,13 +11,13 @@ const routes = [
     component: onboarding_home,
     meta: {},
     children: [
-      { path: 'statistics', component: () => import(/* webpackChunkName: "Statistics" */ '@/components/statistics/view.vue'), meta: { title: '数据概览' } },
+      { path: 'statistics', component: () => import(/* webpackChunkName: "Statistics" */ '@/components/statistics/view.vue'), meta: { title: i18n.t('sidebarMenu.dataOverview') } },
       {
         path: '/v1/insight',
         component: () => import(/* webpackChunkName: "Insight" */ '@/components/insight/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '效能洞察'
+          title: i18n.t('sidebarMenu.dataInsight')
         },
         redirect: '/v1/insight/build',
         children: [
@@ -25,7 +26,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Insight Build" */ '@/components/insight/build/view.vue'),
             meta: {
               requiresAuth: true,
-              title: '构建效能'
+              title: i18n.t('dataStatistics.insight.buildInsight')
             }
           },
           {
@@ -33,7 +34,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Insight Test" */ '@/components/insight/test/view.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试效能'
+              title: i18n.t('dataStatistics.insight.testInsight')
             }
           },
           {
@@ -41,17 +42,17 @@ const routes = [
             component: () => import(/* webpackChunkName: "Insight Service" */ '@/components/insight/service/view.vue'),
             meta: {
               requiresAuth: true,
-              title: '部署效能'
+              title: i18n.t('dataStatistics.insight.deployInsight')
             }
           }
         ]
       },
       {
-        path: 'status',
-        component: () => import('@/components/projects/workflow/status/status.vue'),
+        path: 'dashboard',
+        component: () => import('@/components/projects/dashboard.vue'),
         meta: {
           requiresAuth: true,
-          title: '运行状态'
+          title: i18n.t('sidebarMenu.dashboard')
         }
       },
       {
@@ -59,7 +60,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project List" */ '@/components/projects/detail_ope/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '项目'
+          title: i18n.t('subTopbarMenu.projects')
         }
       },
       {
@@ -67,7 +68,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project View" */ '@/components/projects/detail_ope/view.vue'),
         meta: {
           requiresAuth: true,
-          title: '项目'
+          title: i18n.t('subTopbarMenu.projects')
         },
         children: [
           {
@@ -75,7 +76,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Detail" */ '@/components/projects/detail_ope/detail.vue'),
             meta: {
               requiresAuth: true,
-              title: '项目详情'
+              title: i18n.t('metaTitle.projectDetail')
             }
           },
           {
@@ -83,7 +84,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/list.vue'),
             meta: {
               requiresAuth: true,
-              title: '工作流'
+              title: i18n.t('subTopbarMenu.workflows')
             }
           },
           {
@@ -91,7 +92,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '工作流详情'
+              title: i18n.t('metaTitle.workflowDetail')
             }
           },
           {
@@ -99,7 +100,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/customWorkflow'),
             meta: {
               requiresAuth: true,
-              title: '新建工作流'
+              title: i18n.t('metaTitle.createWorkflow')
             }
           },
           {
@@ -107,7 +108,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/customWorkflow'),
             meta: {
               requiresAuth: true,
-              title: '编辑工作流'
+              title: i18n.t('metaTitle.editWorkflow')
             }
           },
           {
@@ -115,7 +116,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productTaskDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '任务详情'
+              title: i18n.t('metaTitle.taskDetail')
             }
           },
           {
@@ -123,23 +124,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomTaskDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '工作流任务详情'
-            }
-          },
-          {
-            path: 'pipelines/release/create',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/releaseWorkflow'),
-            meta: {
-              requiresAuth: true,
-              title: '新建工作流'
-            }
-          },
-          {
-            path: 'pipelines/release/edit/:workflow_name',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/workflowEditor/releaseWorkflow'),
-            meta: {
-              requiresAuth: true,
-              title: '编辑工作流'
+              title: i18n.t('metaTitle.taskDetail')
             }
           },
           {
@@ -147,7 +132,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/report/productWorkflowTestCase.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试报告'
+              title: i18n.t('metaTitle.testReport')
             }
           },
           {
@@ -155,7 +140,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/report/customWorkflowTestCase.vue'),
             meta: {
               requiresAuth: true,
-              title: '自定义工作流测试报告'
+              title: i18n.t('metaTitle.testReport')
             }
           },
           {
@@ -163,7 +148,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '工作流任务列表'
+              title: i18n.t('metaTitle.taskList')
             }
           },
           {
@@ -171,7 +156,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Service" */ '@/components/projects/serviceMgr/service.vue'),
             meta: {
               requiresAuth: true,
-              title: '服务'
+              title: i18n.t('subTopbarMenu.services')
             }
           },
           {
@@ -179,7 +164,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Build" */ '@/components/projects/build/config.vue'),
             meta: {
               requiresAuth: true,
-              title: '构建'
+              title: i18n.t('subTopbarMenu.builds')
             }
           },
           {
@@ -187,7 +172,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Build" */ '@/components/projects/build/configDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '新建构建'
+              title: i18n.t('metaTitle.createBuild')
             }
           },
           {
@@ -195,7 +180,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Build" */ '@/components/projects/build/configDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '构建详情'
+              title: i18n.t('metaTitle.buildDetail')
             }
           },
           {
@@ -203,7 +188,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/common/function/function.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试中心'
+              title: i18n.t('subTopbarMenu.tests')
             }
           },
           {
@@ -211,7 +196,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/function/functionDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试'
+              title: i18n.t('subTopbarMenu.tests')
             }
           },
           {
@@ -219,7 +204,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/function/functionDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试-添加'
+              title: i18n.t('metaTitle.addTest')
             }
           },
           {
@@ -227,7 +212,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/function/functionSummary.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试-详情统计'
+              title: i18n.t('metaTitle.testDetail')
             }
           },
           {
@@ -235,7 +220,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/function/functionTaskDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试-任务详情'
+              title: i18n.t('metaTitle.testTaskDetail')
             }
           },
           {
@@ -243,7 +228,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/report/testCase.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试-测试报告'
+              title: i18n.t('metaTitle.testReport')
             }
           },
           {
@@ -251,7 +236,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Test" */ '@/components/projects/test/report/testCase.vue'),
             meta: {
               requiresAuth: true,
-              title: '测试-测试报告'
+              title: i18n.t('metaTitle.testReport')
             }
           },
           {
@@ -260,7 +245,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               requiresSuperAdmin: false,
-              title: '代码扫描'
+              title: i18n.t('subTopbarMenu.scannings')
             }
           },
           {
@@ -269,7 +254,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               requiresSuperAdmin: false,
-              title: '新建扫描'
+              title: i18n.t('metaTitle.createScanning')
             }
           },
           {
@@ -278,7 +263,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               requiresSuperAdmin: false,
-              title: '编辑扫描'
+              title: i18n.t('metaTitle.editScanning')
             }
           },
           {
@@ -287,7 +272,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               requiresSuperAdmin: false,
-              title: '扫描列表'
+              title: i18n.t('metaTitle.taskList')
             }
           },
           {
@@ -296,34 +281,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               requiresSuperAdmin: false,
-              title: '扫描任务详情'
-            }
-          },
-          {
-            path: 'version',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/projects/version/index.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: '版本管理'
-            }
-          },
-          {
-            path: 'version/create',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/delivery/version/helm/createVersion.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: '创建版本'
-            }
-          },
-          {
-            path: 'version/detail/:id',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/projects/version/detail.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: '版本详情'
+              title: i18n.t('metaTitle.scanningTaskDetail')
             }
           },
           {
@@ -331,7 +289,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/home.vue'),
             meta: {
               requiresAuth: true,
-              title: '环境'
+              title: i18n.t('subTopbarMenu.environments')
             },
             children: [
               {
@@ -339,7 +297,8 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/createEnv.vue'),
                 meta: {
                   requiresAuth: true,
-                  title: '创建环境'
+                  createEnv: true,
+                  title: i18n.t('subTopbarMenu.createEnvironment')
                 }
               },
               {
@@ -347,7 +306,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/envDetail.vue'),
                 meta: {
                   requiresAuth: true,
-                  title: '环境'
+                  title: i18n.t('subTopbarMenu.environments')
                 }
               },
               {
@@ -355,7 +314,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/changeLog.vue'),
                 meta: {
                   requiresAuth: true,
-                  title: '变更记录'
+                  title: i18n.t('environments.common.envChangeLog')
                 }
               },
               {
@@ -371,7 +330,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/serviceDetail.vue'),
                 meta: {
                   requiresAuth: true,
-                  title: '服务详情'
+                  title: i18n.t('metaTitle.serviceDetail')
                 }
               },
               {
@@ -379,7 +338,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/pmServiceDetail.vue'),
                 meta: {
                   requiresAuth: true,
-                  title: '服务详情'
+                  title: i18n.t('metaTitle.serviceDetail')
                 }
               },
               {
@@ -387,7 +346,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/serviceConfig.vue'),
                 meta: {
                   requiresAuth: true,
-                  title: '配置详情'
+                  title: i18n.t('metaTitle.serviceConfiguration')
                 }
               },
               {
@@ -395,7 +354,7 @@ const routes = [
                 component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/env_detail/envConfig/home.vue'),
                 meta: {
                   requiresAuth: true,
-                  title: '环境配置'
+                  title: i18n.t('metaTitle.serviceConfiguration')
                 }
               }
             ]
@@ -406,7 +365,7 @@ const routes = [
         path: 'template',
         component: () => import(/* webpackChunkName: "Template Library" */ '@/components/templateLibrary/index.vue'),
         meta: {
-          title: '模板库'
+          title: i18n.t('subTopbarMenu.templates')
         },
         children: [
           {
@@ -417,7 +376,7 @@ const routes = [
             path: 'charts',
             component: () => import(/* webpackChunkName: "Chart Template" */ '@/components/templateLibrary/chart/index.vue'),
             meta: {
-              title: 'Chart 模板库'
+              title: i18n.t('metaTitle.chartTemplates')
             }
           }, {
             path: 'dockerfiles',
@@ -430,28 +389,14 @@ const routes = [
             path: 'k8s-yamls',
             component: () => import(/* webpackChunkName: "K8s Template" */ '@/components/templateLibrary/k8s/index.vue'),
             meta: {
-              title: 'Kubernetes YAML 模板库'
+              title: i18n.t('metaTitle.k8sTemplates')
             }
           },
           {
             path: 'builds',
             component: () => import(/* webpackChunkName: "Build Template" */ '@/components/templateLibrary/builds/index.vue'),
             meta: {
-              title: '构建模板库'
-            }
-          },
-          {
-            path: 'workflows',
-            component: () => import(/* webpackChunkName: "Workflows Template" */ '@/components/templateLibrary/workflows/index.vue'),
-            meta: {
-              title: '工作流'
-            }
-          },
-          {
-            path: 'workflows/config',
-            component: () => import(/* webpackChunkName: "Workflows Template" */ '@/components/templateLibrary/workflows/config.vue'),
-            meta: {
-              title: '工作流配置'
+              title: i18n.t('metaTitle.buildTemplates')
             }
           }
         ]
@@ -461,30 +406,12 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/delivery/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '交付中心'
+          title: i18n.t('sidebarMenu.deliveryCenter')
         },
         children: [
           {
             path: '',
-            redirect: 'version'
-          },
-          {
-            path: 'version',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/delivery/version/index.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: '版本管理'
-            }
-          },
-          {
-            path: 'version/detail/:project_name/:id',
-            component: () => import(/* webpackChunkName: "Project Delivery" */ '@/components/delivery/version/detail.vue'),
-            meta: {
-              requiresAuth: true,
-              requiresSuperAdmin: false,
-              title: '版本详情'
-            }
+            redirect: 'artifacts'
           },
           {
             path: 'artifacts',
@@ -492,7 +419,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               requiresSuperAdmin: false,
-              title: '交付物追踪'
+              title: i18n.t('deliveryCenter.artifactsTracking')
             }
           },
           {
@@ -501,7 +428,7 @@ const routes = [
             meta: {
               requiresAuth: true,
               requiresSuperAdmin: false,
-              title: '交付物追踪'
+              title: i18n.t('deliveryCenter.artifactsTracking')
             }
           }
         ]
@@ -511,7 +438,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project" */ '@/components/projects/detail_ope/create.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -519,7 +446,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding K8s" */ '@/components/projects/guide/k8s/basicInfo.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -527,7 +454,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding K8s" */ '@/components/projects/guide/k8s/service.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -535,7 +462,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding K8s" */ '@/components/projects/guide/k8s/runtime.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -543,7 +470,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding K8s" */ '@/components/projects/guide/k8s/delivery.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -551,7 +478,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Host" */ '@/components/projects/guide/host/hostConfig.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -559,7 +486,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Helm" */ '@/components/projects/guide/helm/basicInfo.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -567,7 +494,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Helm" */ '@/components/projects/guide/helm/service.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -575,7 +502,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Helm" */ '@/components/projects/guide/helm/runtime.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -583,7 +510,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Helm" */ '@/components/projects/guide/helm/delivery.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -591,7 +518,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Host" */ '@/components/projects/guide/pm/info.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -599,7 +526,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Host" */ '@/components/projects/guide/pm/config.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -607,7 +534,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Host" */ '@/components/projects/guide/pm/deploy.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -615,7 +542,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Onboarding Host" */ '@/components/projects/guide/pm/delivery.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建项目'
+          title: i18n.t('metaTitle.createProject')
         }
       },
       {
@@ -623,7 +550,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project" */ '@/components/projects/detail_ope/create.vue'),
         meta: {
           requiresAuth: true,
-          title: '修改项目'
+          title: i18n.t('project.createProjectComp.editProjectInfo')
         }
       },
       {
@@ -631,7 +558,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project Init" */ '@/components/projects/detail_ope/initialize.vue'),
         meta: {
           requiresAuth: true,
-          title: '项目详情'
+          title: i18n.t('metaTitle.projectDetail')
         }
       },
       {
@@ -639,7 +566,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/list.vue'),
         meta: {
           requiresAuth: true,
-          title: '工作流'
+          title: i18n.t('subTopbarMenu.workflows')
         }
       },
       {
@@ -647,7 +574,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project Service" */ '@/components/projects/serviceMgr/service.vue'),
         meta: {
           requiresAuth: true,
-          title: '服务'
+          title: i18n.t('subTopbarMenu.services')
         }
       },
       {
@@ -655,7 +582,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '环境'
+          title: i18n.t('subTopbarMenu.environments')
         },
         children: [
           {
@@ -663,7 +590,8 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/createEnv.vue'),
             meta: {
               requiresAuth: true,
-              title: '创建环境'
+              createEnv: true,
+              title: i18n.t('subTopbarMenu.createEnvironment')
             }
           },
           {
@@ -671,7 +599,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/envDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '环境'
+              title: i18n.t('subTopbarMenu.environments')
             }
           },
           {
@@ -687,7 +615,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/serviceDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '服务详情'
+              title: i18n.t('metaTitle.serviceDetail')
             }
           },
           {
@@ -695,7 +623,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/pmServiceDetail.vue'),
             meta: {
               requiresAuth: true,
-              title: '服务详情'
+              title: i18n.t('metaTitle.serviceDetail')
             }
           },
           {
@@ -703,7 +631,7 @@ const routes = [
             component: () => import(/* webpackChunkName: "Project Env" */ '@/components/projects/env/inner_env/serviceConfig.vue'),
             meta: {
               requiresAuth: true,
-              title: '配置详情'
+              title: i18n.t('metaTitle.serviceConfiguration')
             }
           }
         ]
@@ -713,7 +641,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project RBAC" */ '@/components/projects/rbac/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '权限管理'
+          title: i18n.t('subTopbarMenu.projectPermission')
         }
       },
       {
@@ -721,7 +649,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project Policy" */ '@/components/projects/policy/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '协作模式'
+          title: i18n.t('subTopbarMenu.projectCollaborationMode')
         }
       },
       {
@@ -729,7 +657,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Environment Group" */ '@/components/projects/group/index.vue'),
         meta: {
           requiresAuth: true,
-          title: '变量组'
+          title: i18n.t('subTopbarMenu.varsGroup')
         }
       },
       {
@@ -737,7 +665,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Environment Group" */ '@/components/projects/group/create.vue'),
         meta: {
           requiresAuth: true,
-          title: '变量组'
+          title: i18n.t('subTopbarMenu.varsGroup')
         }
       },
       {
@@ -745,7 +673,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Project Host Management" */ '@/components/projects/host/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '主机管理'
+          title: i18n.t('subTopbarMenu.hostManagement')
         }
       }
     ]
@@ -755,7 +683,7 @@ const routes = [
     component: onboarding_home,
     meta: {
       requiresAuth: true,
-      title: '测试中心'
+      title: i18n.t('sidebarMenu.testCenter')
     },
     children: [
       {
@@ -763,7 +691,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Quality Manage" */ '@/components/projects/test/common/function/function.vue'),
         meta: {
           requiresAuth: true,
-          title: '测试中心'
+          title: i18n.t('sidebarMenu.testCenter')
         }
       }
     ]
@@ -773,7 +701,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "Workflow Editor" */ '@/components/projects/workflow/workflowEditor/view.vue'),
     meta: {
       requiresAuth: true,
-      title: '工作流管理'
+      title: i18n.t('metaTitle.editWorkflow')
     },
     children: [
       {
@@ -781,7 +709,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Workflow Editor" */ '@/components/projects/workflow/workflowEditor/productWorkflow/workflow.vue'),
         meta: {
           requiresAuth: true,
-          title: '新建工作流'
+          title: i18n.t('metaTitle.createWorkflow')
         }
       },
       {
@@ -789,7 +717,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Workflow Editor" */ '@/components/projects/workflow/workflowEditor/productWorkflow/workflow.vue'),
         meta: {
           requiresAuth: true,
-          title: '编辑工作流'
+          title: i18n.t('metaTitle.editWorkflow')
         }
       }
     ]
@@ -810,7 +738,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "User Setting" */ '@/components/profile/info.vue'),
         meta: {
           requiresAuth: true,
-          title: '账号信息'
+          title: i18n.t('sidebarMenu.profile')
         }
       },
       {
@@ -818,7 +746,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "User Setting" */ '@/components/profile/preference.vue'),
         meta: {
           requiresAuth: true,
-          title: '偏好设置'
+          title: i18n.t('sidebarMenu.preference')
         }
       }
     ]
@@ -836,7 +764,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '系统设置'
+          title: i18n.t('sidebarMenu.settings')
         }
       },
       {
@@ -845,7 +773,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '软件包管理'
+          title: i18n.t('sidebarMenu.packages')
         }
       },
       {
@@ -854,7 +782,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '自定义镜像管理'
+          title: i18n.t('sidebarMenu.images')
         }
       },
       {
@@ -863,7 +791,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '工作流任务'
+          title: i18n.t('sidebarMenu.plugins')
         }
       },
       {
@@ -872,7 +800,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '镜像仓库'
+          title: i18n.t('sidebarMenu.dockerRegistry')
         }
       },
       {
@@ -881,7 +809,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '对象存储'
+          title: i18n.t('sidebarMenu.objectStorage')
         }
       },
       {
@@ -890,7 +818,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: 'HELM 仓库'
+          title: i18n.t('sidebarMenu.helmRepo')
         }
       },
       {
@@ -899,7 +827,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '集群管理'
+          title: i18n.t('sidebarMenu.clusters')
         }
       },
       {
@@ -908,7 +836,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '主机管理'
+          title: i18n.t('sidebarMenu.hosts')
         }
       },
       {
@@ -916,7 +844,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/home.vue'),
         meta: {
           requiresAuth: true,
-          title: '系统集成'
+          title: i18n.t('sidebarMenu.systemIntegration')
         }
       },
       {
@@ -925,7 +853,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '系统配置'
+          title: i18n.t('sidebarMenu.settings')
         },
         children: [
           {
@@ -963,7 +891,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '用户管理'
+          title: i18n.t('sidebarMenu.users')
         }
       },
       {
@@ -972,7 +900,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '公告管理'
+          title: i18n.t('sidebarMenu.announcement')
         }
       },
       {
@@ -981,7 +909,7 @@ const routes = [
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
-          title: '操作日志'
+          title: i18n.t('sidebarMenu.auditLog')
         }
       }
     ]
@@ -999,7 +927,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/workflow/status.vue'),
         meta: {
           requiresAuth: true,
-          title: '运行状态'
+          title: i18n.t('sidebarMenu.status')
         }
       },
       {
@@ -1007,7 +935,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/profile.vue'),
         meta: {
           requiresAuth: true,
-          title: '账号设置'
+          title: i18n.t('sidebarMenu.profile')
         }
       },
       {
@@ -1015,7 +943,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/projects.vue'),
         meta: {
           requiresAuth: true,
-          title: '项目'
+          title: i18n.t('sidebarMenu.projects')
         }
       },
       {
@@ -1023,7 +951,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/detail.vue'),
         meta: {
           requiresAuth: true,
-          title: '项目详情'
+          title: i18n.t('metaTitle.projectDetail')
         }
       },
       {
@@ -1031,7 +959,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/workflow/product/detail.vue'),
         meta: {
           requiresAuth: true,
-          title: '工作流详情'
+          title: i18n.t('metaTitle.workflowDetail')
         }
       },
       {
@@ -1039,7 +967,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/workflow/product/taskDetail.vue'),
         meta: {
           requiresAuth: true,
-          title: '任务详情'
+          title: i18n.t('metaTitle.taskDetail')
         }
       },
       {
@@ -1047,7 +975,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/test/detail.vue'),
         meta: {
           requiresAuth: true,
-          title: '测试详情'
+          title: i18n.t('metaTitle.testDetail')
         }
       },
       {
@@ -1055,7 +983,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/test/taskDetail.vue'),
         meta: {
           requiresAuth: true,
-          title: '测试任务详情'
+          title: i18n.t('metaTitle.testTaskDetail')
         }
       },
       {
@@ -1063,7 +991,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/envDetail.vue'),
         meta: {
           requiresAuth: true,
-          title: '环境详情'
+          title: i18n.t('metaTitle.envDetail')
         }
       },
       {
@@ -1071,7 +999,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/k8sServiceDetail.vue'),
         meta: {
           requiresAuth: true,
-          title: '服务详情'
+          title: i18n.t('metaTitle.serviceDetail')
         }
       },
       {
@@ -1079,7 +1007,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/helmServiceDetail.vue'),
         meta: {
           requiresAuth: true,
-          title: '服务详情'
+          title: i18n.t('metaTitle.serviceDetail')
         }
       },
       {
@@ -1087,7 +1015,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Mobile" */ '@/mobile/project/env/pmServiceDetail.vue'),
         meta: {
           requiresAuth: true,
-          title: '服务详情'
+          title: i18n.t('metaTitle.serviceDetail')
         }
       }
     ]
@@ -1096,7 +1024,7 @@ const routes = [
     path: '/signin',
     component: () => import('@/components/entry/login.vue'),
     meta: {
-      title: '登录'
+      title: i18n.t('login.signIn')
     }
   },
   {
@@ -1110,14 +1038,14 @@ const routes = [
     path: '/',
     component: () => import('@/components/entry/login.vue'),
     meta: {
-      title: '登录'
+      title: i18n.t('login.signIn')
     }
   },
   {
     path: '/login/password',
     component: () => import('@/components/entry/passwordLogin.vue'),
     meta: {
-      title: '登录'
+      title: i18n.t('login.signIn')
     }
   },
   {

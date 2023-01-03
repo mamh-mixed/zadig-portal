@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form-item v-if="!disableServiceSelection" label="服务">
+    <el-form-item v-if="!disableServiceSelection" :label="$t(`project.services`)">
       <el-select
         v-model="pickedTargetServices"
         @change="getServiceImg"
@@ -16,13 +16,13 @@
         </el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="镜像仓库">
+    <el-form-item :label="$t(`status.imageRepo`)">
       <el-select v-model="pickedRegistry" filterable clearable @change="changeRegistry" size="medium" class="full-width">
         <el-option v-for="(reg,index) of allRegistry" :key="index" :label="reg.namespace ? `${reg.reg_addr}/${reg.namespace}` : reg.reg_addr" :value="reg.id"></el-option>
       </el-select>
     </el-form-item>
     <el-table v-if="pickedTargetServices.length > 0" :data="pickedTargetServices" empty-text="无">
-      <el-table-column prop="name" label="服务" width="150px"></el-table-column>
+      <el-table-column prop="name" :label="$t(`project.services`)" width="150px"></el-table-column>
       <el-table-column label="镜像">
         <template slot-scope="scope">
           <div class="workflow-build-rows">
@@ -76,8 +76,20 @@
       </el-table-column>
     </el-table>
     <div v-if="showCreateVersion" class="create-version">
-      <div v-hasPermi="{projectName: projectName, action: 'create_delivery'}" class="create-checkbox">
-        <el-checkbox v-model="versionInfo.enabled">创建版本</el-checkbox>
+      <div class="create-checkbox">
+        <el-tooltip class="item" effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/project/version/`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <el-checkbox v-model="versionInfo.enabled" disabled>创建版本</el-checkbox>
+        </el-tooltip>
       </div>
       <el-form v-if="versionInfo.enabled" :model="versionInfo"  ref="versionForm" label-position="left" :rules="versionRules">
         <el-form-item label="版本名称" prop="version">

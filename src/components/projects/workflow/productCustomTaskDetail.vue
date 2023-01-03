@@ -9,7 +9,7 @@
             </el-tooltip>#
           </span>
           <span>{{taskId}}</span>
-          <span :class="$translate.calcTaskStatusColor(payload.status)">{{translateStatus(payload.status)}}</span>
+          <span :class="$translate.calcTaskStatusColor(payload.status)">{{ payload.status? $t(`workflowTaskStatus.${payload.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
         </el-col>
         <el-col :offset="4" :span="4">
           <i class="el-icon-video-play"></i>
@@ -24,13 +24,13 @@
           <span>{{payload.task_revoker}}</span>
         </el-col>
         <el-col :span="1" v-if="payload.status==='waiting'||payload.status==='running'">
-          <el-button size="small" @click="cancel">取消</el-button>
+          <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
         </el-col>
       </el-row>
     </header>
     <div class="tab">
-      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">工作流</span>
-      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">变量</span>
+      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">{{$t(`global.workflow`)}}</span>
+      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">{{$t(`global.var`)}}</span>
     </div>
     <Multipane v-if="activeName==='workflow'" layout="horizontal" style="height: 100%;">
       <main>
@@ -39,7 +39,7 @@
           <div class="line"></div>
           <div class="stages" v-for="(stage,curStageIndex) in payload.stages" :key="stage.label">
             <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,curStageIndex)">
-              <el-button type="primary" size="small">{{stage.approval.type==='lark'?'飞书审批':'人工审批'}}</el-button>
+              <el-button type="primary" size="small">{{stage.approval.type==='lark'?$t(`approvalType.feishu`):$t(`approvalType.manualApproval`)}}</el-button>
               <div class="line"></div>
             </div>
             <div class="stage">
@@ -77,6 +77,7 @@
           :approvalInfo="curStage"
           :workflowName="workflowName"
           :taskId="taskId"
+          :firstLoad="firstLoad"
           :projectName="projectName"
           @showFooter="showFooter"
         />
@@ -95,58 +96,6 @@
           :taskId="taskId"
           :projectName="projectName"
           @showFooter="showFooter"
-        />
-        <JobBlueGreenConfirmDetail
-          v-if="curJob.type === jobType.blueGreenDeploy"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobBlueGreenConfirmDetail
-          v-if="curJob.type === jobType.blueGreenConfirm"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobCanaryDeployDetail
-          v-if="curJob.type === jobType.canaryDeploy"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobCanaryConfirmDetail
-          v-if="curJob.type === jobType.canaryConfirm"
-          :jobInfo="curJob"
-          :workflowName="workflowName"
-          :taskId="taskId"
-          @showFooter="showFooter"
-        />
-        <JobGrayRollbackDetail
-          v-if="curJob.type === jobType.k8sGrayRollback"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobK8sGrayDeployDetail
-          v-if="curJob.type === jobType.grayDeploy"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobK8sResourceUpdateDetail
-          @showFooter="showFooter"
-          v-if="curJob.type=== jobType.k8sResourcePatch"
-          :jobInfo="curJob"
-          :projectName="projectName"
         />
         <JobK8sDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.k8sDeploy" :jobInfo="curJob" :projectName="projectName" />
         <JobTestDetail
@@ -169,24 +118,6 @@
         />
         <JobImageDistributeDetail
           v-if="curJob.type === jobType.distribute"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobIstioReleaseDetail
-          v-if="curJob.type === jobType.istioRelease"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
-        <JobIstioReleaseRollbackDetail
-          v-if="curJob.type === jobType.istioRollback"
           :jobInfo="curJob"
           :taskId="taskId"
           :workflowName="workflowName"
@@ -226,8 +157,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="键" prop="name"></el-table-column>
-        <el-table-column label="值"></el-table-column>
+        <el-table-column :label="$t(`global.key`)" prop="name"></el-table-column>
+        <el-table-column :label="$t(`global.value`)"></el-table-column>
       </el-table>
     </div>
   </div>
@@ -246,19 +177,9 @@ import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
 import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue'
 import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
 import JobScanningDetail from './productCustomTaskDetail/jobScanningDetail.vue'
-import JobK8sResourceUpdateDetail from './productCustomTaskDetail/jobK8sResourceUpdateDetail.vue'
-import JobBlueGreenConfirmDetail from './productCustomTaskDetail/jobBlueGreenConfirmDetail.vue'
-import JobBlueGreenDeployDetail from './productCustomTaskDetail/jobBlueGreenDeployDetail.vue'
-import JobCanaryDeployDetail from './productCustomTaskDetail/jobCanaryDeployDetail.vue'
-import JobCanaryConfirmDetail from './productCustomTaskDetail/jobCanaryConfirmDetail.vue'
-import JobK8sGrayDeployDetail from './productCustomTaskDetail/jobK8sGrayDeployDetail.vue'
-import JobGrayRollbackDetail from './productCustomTaskDetail/jobGrayRollbackDetail.vue'
 import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
-import JobIstioReleaseDetail from './productCustomTaskDetail/jobIstioReleaseDetail.vue'
-import JobIstioReleaseRollbackDetail from './productCustomTaskDetail/jobIstioReleaseRollbackDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
-import { wordTranslate } from '@utils/wordTranslate.js'
 
 export default {
   data () {
@@ -288,16 +209,7 @@ export default {
     JobTestDetail,
     JobScanningDetail,
     StageApproval,
-    JobK8sResourceUpdateDetail,
-    JobBlueGreenConfirmDetail,
-    JobBlueGreenDeployDetail,
-    JobCanaryDeployDetail,
-    JobCanaryConfirmDetail,
-    JobGrayRollbackDetail,
-    JobK8sGrayDeployDetail,
-    JobImageDistributeDetail,
-    JobIstioReleaseDetail,
-    JobIstioReleaseRollbackDetail
+    JobImageDistributeDetail
   },
   computed: {
     taskId () {
@@ -314,9 +226,6 @@ export default {
     },
     buildOverallStatus () {
       return this.$utils.calcOverallBuildStatus(this.buildStage)
-    },
-    buildOverallStatusZh () {
-      return this.myTranslate(this.buildOverallStatus)
     },
     buildOverallColor () {
       return this.colorTranslation(this.buildOverallStatus, 'pipeline', 'task')
@@ -364,7 +273,7 @@ export default {
         if (this.envList.length === 0) {
           // global env and stage are not in same level data,  so need to handle data
           this.handleEnv()
-          const globalEnv = [{ name: '工作流变量', envs: this.payload.params }]
+          const globalEnv = [{ name: this.$t(`workflow.workflowVars`), envs: this.payload.params }]
           const jobs = this.payload.stages.map(item => {
             return item.jobs.map(job => job)
           })
@@ -462,16 +371,13 @@ export default {
     showFooter (val) {
       this.isShowConsoleFooter = val
     },
-    translateStatus (word) {
-      return wordTranslate(word, 'approval', 'status')
-    },
     cancel () {
       deleteCustomWorkflowTaskAPI(
         this.workflowName,
         this.taskId,
         this.projectName
       ).then(res => {
-        this.$message.success(' 取消成功')
+        this.$message.success(this.$t(`workflow.cancelSuccess`))
       })
     },
     closeFooter () {
@@ -481,14 +387,14 @@ export default {
       bus.$emit('set-topbar-title', {
         title: '',
         breadcrumb: [
-          { title: '项目', url: '/v1/projects' },
+          { title: this.$t(`global.project`), url: '/v1/projects' },
           {
             title: this.projectName,
             isProjectName: true,
             url: `/v1/projects/detail/${this.projectName}/detail`
           },
           {
-            title: '工作流',
+            title: this.$t(`global.workflow`),
             url: `/v1/projects/detail/${this.projectName}/pipelines`
           },
           {

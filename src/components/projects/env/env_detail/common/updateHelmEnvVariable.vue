@@ -7,6 +7,7 @@
       @closeValueEdit="envVariable.overrideYaml = ''"
       showAutoSync
       useVarGroup
+      fromGlobal
       style="margin-top: 0;"
     />
   </div>
@@ -71,7 +72,7 @@ export default {
       if (res) {
         this.envVariable = {
           yamlSource: (res.yaml_data && res.yaml_data.source) || 'customEdit',
-          overrideYaml: res.defaultValues,
+          overrideYaml: res.default_variable,
           gitRepoConfig: res.gitRepoConfig,
           variableSet: res.variableSet
         }
@@ -101,7 +102,7 @@ export default {
             }
           }
           this.$set(this.defaultEnvsValues, envName, {
-            envValue: res.defaultValues,
+            envValue: res.default_variable,
             yamlSource: (res.yaml_data && res.yaml_data.source) || 'customEdit',
             gitRepoConfig,
             variableSet

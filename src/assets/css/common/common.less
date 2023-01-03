@@ -109,6 +109,7 @@
   &.primary-form {
     .el-form-item__label {
       color: @primaryColor;
+      font-weight: @itemWeight;
     }
 
     .item-title {
@@ -122,6 +123,7 @@
   &.secondary-form {
     .el-form-item__label {
       color: @secondaryColor;
+      font-weight: @itemWeight;
     }
   }
 
@@ -136,12 +138,14 @@
     }
   }
 
+  .el-form-item[data-disabled] {
+    .el-form-item__label {
+      color: #a0a0a0;
+    }
+  }
+
   &.primary-form,
   &.secondary-form {
-    .el-form-item__label {
-      font-weight: @itemWeight;
-    }
-
     .el-form-item {
       margin-bottom: @formItemBottom;
 

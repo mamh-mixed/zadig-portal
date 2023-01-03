@@ -4,11 +4,9 @@
       <i :class="showSidebar?'el-icon-arrow-right':'el-icon-arrow-left'"></i>
     </a>
     <div class="sidebar-header" :style="{ width: showSidebar ? '100%' : 'auto'}">
-      <router-link to="/v1/status">
-        <img v-if="showSidebar&&!showBackPath&&bigLogoUrl" class="logo" :src="bigLogoUrl" />
-        <img v-if="showSidebar&&!showBackPath&&!bigLogoUrl" class="logo" src="@assets/icons/logo/logo.svg" />
-        <img v-if="!showSidebar&&!showBackPath&&smallLogoUrl" class="logo" :src="smallLogoUrl" />
-        <img v-if="!showSidebar&&!showBackPath&&!smallLogoUrl" class="logo" src="@assets/icons/logo/small-logo.png" />
+      <router-link to="/v1/dashboard">
+        <img v-if="showSidebar&&!showBackPath" class="logo" src="@assets/icons/logo/logo.svg" />
+        <img v-if="!showSidebar&&!showBackPath" class="logo" src="@assets/icons/logo/small-logo.png" />
       </router-link>
       <router-link class="sidebar-header-item back-to" v-show="showSidebar&&showBackPath" :to="backUrl">
         <div class="sidebar-header__icon">
@@ -27,7 +25,7 @@
     <div class="nav grow-all main-menu">
       <div v-for="(item,index) in navList" :key="index" class="category-wrapper">
         <h4 v-if="navList[index].items.length > 0" class="category-name" :class="{ opened: !showSidebar }">
-          {{item.category_name}}
+          <span v-if="item.category_name">{{$t(`sidebarMenu.${item.category_name}`) }}</span>
           <span v-if="item.new_feature" class="new-feature">New</span>
         </h4>
         <div class="nav__new-wrapper" v-for="(nav,nav_index) in navList[index].items" :key="nav_index">
@@ -38,20 +36,40 @@
               </div>
               <a href="javascript:void(0)">
                 <div class="nav-item-label">
-                  {{nav.name}}
+                  {{$t(`sidebarMenu.${nav.name}`) }}
                   <i v-if="nav.isOpened" class="el-icon-arrow-up arrow"></i>
                   <i v-else-if="!nav.isOpened" class="el-icon-arrow-down arrow"></i>
                 </div>
               </a>
             </div>
-            <el-tooltip v-else effect="dark" :content="nav.name" placement="right" :disabled="showSidebar">
-              <router-link class="nav-item" active-class="active" :to="`/v1/${nav.url}`">
-                <div class="nav-item-icon">
-                  <i :class="nav.icon"></i>
+            <template v-else>
+              <el-tooltip v-if="nav.disabled" effect="dark" placement="right">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/release/center`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
                 </div>
-                <div v-show="showSidebar" class="nav-item-label">{{nav.name}}</div>
-              </router-link>
-            </el-tooltip>
+                <div class="nav-item disabled" active-class="active">
+                  <div class="nav-item-icon">
+                    <i :class="nav.icon"></i>
+                  </div>
+                  <div v-show="showSidebar" class="nav-item-label">{{$t(`sidebarMenu.${nav.name}`)}}</div>
+                </div>
+              </el-tooltip>
+              <el-tooltip v-else effect="dark" :content="$t(`sidebarMenu.${nav.name}`)" placement="right" :disabled="showSidebar">
+                <router-link class="nav-item" active-class="active" :to="`/v1/${nav.url}`">
+                  <div class="nav-item-icon">
+                    <i :class="nav.icon"></i>
+                  </div>
+                  <div v-show="showSidebar" class="nav-item-label">{{$t(`sidebarMenu.${nav.name}`)}}</div>
+                </router-link>
+              </el-tooltip>
+            </template>
             <ul v-if="nav.hasSubItem && nav.isOpened" class="sub-menu" style="overflow: hidden;">
               <li class="sub-menu-item-group">
                 <ul>
@@ -76,126 +94,107 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import bus from '@utils/eventBus'
 import { debounce, cloneDeep, remove } from 'lodash'
-import { getEnterpriseInfoAPI } from '@api'
 export default {
   data () {
     return {
       showSidebar: true,
       backTitle: '',
-      backUrl: '/v1/status',
-      enterpriseInfo: null,
+      backUrl: '/v1/dashboard',
       accountSetting: [
         {
           items: [
             {
-              name: '账号信息',
+              name: 'profile',
               icon: 'iconfont iconfenzucopy',
               url: 'profile/info'
             },
             {
-              name: '偏好设置',
+              name: 'preference',
               icon: 'iconfont iconxitong-system',
               url: 'profile/preference'
             }
           ]
         }
       ],
-      enterpriseMenu: [
-        {
-          items: [
-            {
-              name: '企业信息',
-              icon: 'iconfont iconcompany-info',
-              url: 'enterprise/info'
-            },
-            {
-              name: '许可证',
-              icon: 'iconfont iconxukezheng',
-              url: 'enterprise/license'
-            }
-          ]
-        }
-      ],
       systemMenu: [
         {
-          category_name: '集成管理',
+          category_name: 'integration',
           items: [
             {
-              name: '系统集成',
+              name: 'systemIntegration',
               icon: 'iconfont iconicon_jichengguanli',
               url: 'system/integration'
             },
             {
-              name: '软件包管理',
+              name: 'packages',
               icon: 'iconfont iconyingyongshezhi',
               url: 'system/apps'
             },
             {
-              name: '自定义镜像管理',
+              name: 'images',
               icon: 'iconfont iconjingxiang',
               url: 'system/imgs'
             },
             {
-              name: '工作流任务',
+              name: 'plugins',
               icon: 'iconfont el-icon-sell',
               url: 'system/plugins'
             }
           ]
         },
         {
-          category_name: '基础设施',
+          category_name: 'infraIntegration',
           items: [
             {
-              name: '镜像仓库',
+              name: 'dockerRegistry',
               icon: 'iconfont icondocker',
               url: 'system/registry'
             },
             {
-              name: '对象存储',
+              name: 'objectStorage',
               icon: 'iconfont iconduixiangcunchu',
               url: 'system/storage'
             },
             {
-              name: 'HELM 仓库',
+              name: 'helmRepo',
               icon: 'iconfont iconhelmrepo',
               url: 'system/helm',
               features: 'helm'
             },
             {
-              name: '集群管理',
+              name: 'clusters',
               icon: 'iconfont iconjiqun',
               url: 'system/cluster'
             },
             {
-              name: '主机管理',
+              name: 'hosts',
               icon: 'iconfont iconzhuji',
               url: 'system/host'
             }
           ]
         },
         {
-          category_name: '系统',
+          category_name: 'system',
           items: [
             {
-              name: '系统配置',
+              name: 'settings',
               icon: 'iconfont iconfuwupeizhi',
               url: 'system/config'
             },
             {
-              name: '用户管理',
+              name: 'users',
               icon: 'iconfont icongeren',
               url: 'system/users'
             },
             {
-              name: '公告管理',
+              name: 'announcement',
               icon: 'iconfont icongonggao',
               url: 'system/announcement'
             },
             {
-              name: '操作日志',
+              name: 'auditLog',
               icon: 'iconfont iconiconlog',
               url: 'system/auditlog'
             }
@@ -204,40 +203,46 @@ export default {
       ],
       defaultMenu: [
         {
-          category_name: '产品交付',
+          category_name: 'productDelivery',
           items: [
             {
-              name: '运行状态',
+              name: 'dashboard',
               icon: 'iconfont iconyunhangzhuangtai',
-              url: 'status'
+              url: 'dashboard'
             },
             {
-              name: '项目',
+              name: 'projects',
               icon: 'iconfont iconxiangmuloading',
               url: 'projects'
             },
             {
-              name: '测试中心',
+              name: 'testCenter',
               url: 'tests',
               icon: 'iconfont iconvery-testing'
             },
             {
-              name: '交付中心',
+              name: 'deliveryCenter',
               url: 'delivery',
               icon: 'iconfont iconvery-deli'
+            },
+            {
+              name: 'releaseCenter',
+              url: '#',
+              disabled: true,
+              icon: 'iconfont icongongzuoliucheng'
             }
           ]
         },
         {
-          category_name: '数据视图',
+          category_name: 'dataViews',
           items: [
             {
-              name: '数据概览',
+              name: 'dataOverview',
               icon: 'iconfont iconvery-dataov',
               url: 'statistics'
             },
             {
-              name: '效能洞察',
+              name: 'dataInsight',
               icon: 'iconfont iconvery-datain',
               url: 'insight'
             }
@@ -246,43 +251,16 @@ export default {
       ],
       adminMenu: [
         {
-          category_name: '设置',
+          category_name: 'setting',
           items: [
             {
-              name: '系统设置',
+              name: 'sysSetting',
               icon: 'iconfont iconvery-setting',
               url: 'system'
             }
           ]
         }
-      ],
-      plutusMenu: {
-        delivery: {
-          category_name: '客户交付',
-          items: [
-            {
-              name: '交付看板',
-              icon: 'iconfont iconBoardList',
-              url: 'plutus/deliveryBoard'
-            },
-            {
-              name: '版本',
-              icon: 'iconfont iconbanben1',
-              url: 'plutus/version'
-            },
-            {
-              name: '客户',
-              icon: 'iconfont iconCustomermanagement',
-              url: 'plutus/customer'
-            }
-          ]
-        },
-        manage: {
-          name: '企业管理',
-          icon: 'iconfont iconcompany-info',
-          url: 'enterprise/'
-        }
-      }
+      ]
     }
   },
   methods: {
@@ -298,27 +276,19 @@ export default {
     },
     collapseMenu (nav) {
       nav.isOpened = !nav.isOpened
-    },
-    getEnterpriseInfo () {
-      getEnterpriseInfoAPI().then(res => {
-        this.enterpriseInfo = res
-      })
     }
   },
   computed: {
     showBackPath () {
       const path = this.$route.path
       if (path.includes('/v1/users')) {
-        this.backTitle = '用户管理'
+        this.backTitle = this.$t(`sidebarMenu.users`)
         return true
       } else if (path.includes('/v1/system')) {
-        this.backTitle = '系统设置'
-        return true
-      } else if (path.includes('/v1/enterprise')) {
-        this.backTitle = '企业管理'
+        this.backTitle = this.$t(`sidebarMenu.sysSetting`)
         return true
       } else if (path.includes('/v1/profile')) {
-        this.backTitle = '账号设置'
+        this.backTitle = this.$t(`sidebarMenu.profile`)
         return true
       } else {
         return false
@@ -331,10 +301,6 @@ export default {
         return false
       }
     },
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus,
-      signatureFeatures: state => state.checkPlutus.features
-    }),
     showEfficiencyInsight () {
       const showEfficiencyInsight = this.checkPermissionSyncMixin({
         type: 'system',
@@ -368,67 +334,38 @@ export default {
       const path = this.$route.path
       const defaultMenu = cloneDeep(this.defaultMenu)
       const adminMenu = cloneDeep(this.adminMenu)
-      if (path.includes('/v1/enterprise')) {
-        return this.enterpriseMenu
-      } else if (path.includes('/v1/system')) {
+      if (path.includes('/v1/system')) {
         return this.systemMenu
       } else if (path.includes('/v1/profile')) {
         return this.accountSetting
       }
-      /** plutus menu */
-      if (this.isAdmin && this.hasPlutus) {
-        if (
-          this.signatureFeatures.delivery &&
-          !defaultMenu.find(menu => menu.category_name === '客户交付')
-        ) {
-          defaultMenu.splice(1, 0, this.plutusMenu.delivery)
-        }
-        if (!adminMenu[0].items.find(menu => menu.name === '企业管理')) {
-          adminMenu[0].items.splice(1, 0, this.plutusMenu.manage)
-        }
-      }
-      /** End */
       if (this.isAdmin) {
         return defaultMenu.concat(adminMenu)
       } else {
         if (!this.showTestCenter) {
           remove(defaultMenu[0].items, item => {
-            return item.name === '测试中心'
+            return item.name === 'testCenter'
           })
         }
         if (!this.showDeliveryCenter) {
           remove(defaultMenu[0].items, item => {
-            return item.name === '交付中心'
+            return item.name === 'deliveryCenter'
           })
         }
         const dataReview = defaultMenu.find(
-          menu => menu.category_name === '数据视图'
+          menu => menu.category_name === 'dataViews'
         )
         if (!this.showDataOverview) {
           remove(dataReview.items, item => {
-            return item.name === '数据概览'
+            return item.name === 'dataOverview'
           })
         }
         if (!this.showEfficiencyInsight) {
           remove(dataReview.items, item => {
-            return item.name === '效能洞察'
+            return item.name === 'dataInsight'
           })
         }
         return defaultMenu
-      }
-    },
-    smallLogoUrl () {
-      if (this.enterpriseInfo) {
-        return this.enterpriseInfo.small_logo
-      } else {
-        return ''
-      }
-    },
-    bigLogoUrl () {
-      if (this.enterpriseInfo) {
-        return this.enterpriseInfo.big_logo
-      } else {
-        return ''
       }
     }
   },
@@ -438,7 +375,6 @@ export default {
     }
   },
   created () {
-    this.getEnterpriseInfo()
     bus.$on('show-sidebar', params => {
       this.showSidebar = params
     })
@@ -496,7 +432,6 @@ export default {
       font-size: 16px;
       white-space: nowrap;
       text-align: left;
-      text-transform: uppercase;
 
       i {
         position: relative;
@@ -788,15 +723,33 @@ export default {
         vertical-align: middle;
       }
     }
-  }
+    /* stylelint-disable no-descending-specificity */
+    &.active,
+    &:hover {
+      background-color: @sidebarActiveColor;
+      border-radius: 6px;
 
-  .nav-item.active,
-  .nav-item:hover {
-    background-color: @sidebarActiveColor;
-    border-radius: 6px;
+      .nav-item-label {
+        color: @themeColor;
+      }
+    }
 
-    .nav-item-label {
-      color: @themeColor;
+    &.disabled {
+      cursor: not-allowed;
+
+      &:hover {
+        background-color: @sidebarDisabledColor;
+
+        .nav-item-icon,
+        .nav-item-label {
+          color: #a0a0a0;
+        }
+      }
+
+      .nav-item-icon,
+      .nav-item-label {
+        color: #a0a0a0;
+      }
     }
   }
 

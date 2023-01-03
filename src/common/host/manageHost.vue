@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading iconzhuji"
     class="setting-host-container"
   >
@@ -9,21 +9,11 @@
     <el-dialog :title="title" :visible.sync="dialogHostFormVisible" custom-class="dialog-style" :close-on-click-modal="false" width="45%">
       <AddHost ref="add-host" :host="host" />
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogHostFormVisible = false">取 消</el-button>
-        <el-button :plain="true" size="small" type="success" @click="hostOperation">保存</el-button>
+        <el-button size="small" @click="dialogHostFormVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" size="small" type="success" @click="hostOperation">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--Host-edit-dialog-->
-
-    <!--Host-import-dialog-->
-    <el-dialog :title="title" :visible.sync="dialogImportHostVisible" custom-class="dialog-style" :close-on-click-modal="false" width="35%">
-      <ImportHosts ref="import-hosts" :originHosts="allHost" :type="type" />
-      <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogImportHostVisible = false">取 消</el-button>
-        <el-button :plain="true" size="small" type="success" @click="hostOperation">保存</el-button>
-      </div>
-    </el-dialog>
-    <!--Host-import-dialog-->
 
     <div class="section">
       <el-alert type="info" :closable="false">
@@ -35,12 +25,26 @@
             :href="`https://docs.koderover.com/zadig/settings/vm-management/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
       <div class="sync-container">
-        <el-button size="small" :plain="true" @click="hostOperation('add')" type="success">新建</el-button>
-        <el-button size="small" :plain="true" @click="hostOperation('import')" type="success">导入</el-button>
+        <el-button size="small" :plain="true" @click="hostOperation('add')" type="success">{{$t('global.add')}}</el-button>
+        <el-tooltip effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/settings/vm-management/#批量导入主机`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <span style="margin-left: 4px;">
+            <el-button size="small" type="info" disabled>{{$t('global.multiImport')}}</el-button>
+          </span>
+        </el-tooltip>
       </div>
       <div class="host-list">
         <template>
@@ -51,7 +55,7 @@
                 <span>{{scope.row.name}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="状态">
+            <el-table-column :label="$t(`global.status`)">
               <template slot-scope="{ row }">
                 <el-tag
                   size="small"
@@ -75,10 +79,10 @@
                 <span>{{scope.row.user_name}}</span>
               </template>
             </el-table-column>
-            <el-table-column width="240" label="操作">
+            <el-table-column width="240" :label="$t(`global.operation`)">
               <template slot-scope="scope">
-                <el-button @click="hostOperation('update',scope.row)" size="mini" type="primary" plain>编辑</el-button>
-                <el-button @click="hostOperation('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
+                <el-button @click="hostOperation('update',scope.row)" size="mini" type="primary" plain>{{$t(`global.edit`)}}</el-button>
+                <el-button @click="hostOperation('delete',scope.row)" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -150,7 +154,6 @@ export default {
         }
       },
       dialogHostFormVisible: false,
-      dialogImportHostVisible: false,
       operate: '',
       loading: false
     }
@@ -170,8 +173,6 @@ export default {
         return '创建主机资源'
       } else if (this.operate === 'update') {
         return '修改主机资源'
-      } else if (this.operate === 'import') {
-        return '导入主机资源'
       } else {
         return ''
       }
@@ -193,8 +194,8 @@ export default {
       } else if (operate === 'delete') {
         const id = current_host.id
         this.$confirm(`确定要删除 ${current_host.name} ?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(({ value }) => {
           if (this.type === 'project') {
@@ -215,9 +216,6 @@ export default {
             })
           }
         })
-      } else if (operate === 'import') {
-        this.operate = operate
-        this.dialogImportHostVisible = true
       } else {
         if (this.operate === 'add' || this.operate === 'update') {
           const fn = this.operate === 'add' ? 'saveHost' : 'updateHost'

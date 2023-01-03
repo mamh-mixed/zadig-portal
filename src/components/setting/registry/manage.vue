@@ -1,7 +1,7 @@
 <template>
   <div
     v-loading="loading"
-    element-loading-text="加载中..."
+    :element-loading-text="$t(`global.loading`)"
     element-loading-spinner="iconfont iconfont-loading icondocker"
     class="setting-registry-container"
   >
@@ -19,9 +19,27 @@
         </el-form-item>
         <el-form-item label="提供商" prop="reg_provider">
           <el-select v-model="registry.reg_provider" @change="changeProvider" style="width: 100%;" size="small" placeholder="请选择镜像仓库提供商">
-            <el-option v-for="(provider,index) in providers" :key="index" :value="provider.value" :label="provider.label">
-              <i :class="provider.icon"></i>
-              <span>{{provider.label}}</span>
+            <el-option v-for="(provider,index) in providers" :key="index" :value="provider.value" :label="provider.label" :disabled="provider.disabled">
+              <el-tooltip effect="dark" placement="top" v-if="provider.disabled">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/zadig${provider.documentLink}`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>
+                  <i :class="provider.icon"></i>
+                  <span>{{provider.label}}</span>
+                </span>
+              </el-tooltip>
+              <span v-else>
+                <i :class="provider.icon"></i>
+                <span>{{provider.label}}</span>
+              </span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -65,7 +83,7 @@
           <el-input size="small" clearable type="passsword" show-password v-if="dialogRegistryFormVisible" v-model="registry.secret_key"></el-input>
         </el-form-item>
         <el-button type="text" @click="registry.advanced_setting.modified = !registry.advanced_setting.modified">
-          高级配置
+          {{$t(`project.createProjectComp.advancedConfigurations`)}}
           <i :class="[registry.advanced_setting.modified ? 'el-icon-arrow-up' : 'el-icon-arrow-down']" style="margin-left: 8px;"></i>
         </el-button>
         <template v-if="registry.advanced_setting.modified">
@@ -91,8 +109,8 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogRegistryFormVisible = false">取 消</el-button>
-        <el-button :plain="true" type="success" size="small" @click="mode === 'create' ? registryAction('add'): registryAction('update')">保存</el-button>
+        <el-button size="small" @click="dialogRegistryFormVisible = false">{{$t(`global.cancel`)}}</el-button>
+        <el-button :plain="true" type="success" size="small" @click="mode === 'create' ? registryAction('add'): registryAction('update')">{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--registry-create-dialog-->
@@ -106,11 +124,11 @@
             :href="`https://docs.koderover.com/zadig/settings/image-registry/`"
             :underline="false"
             target="_blank"
-          >帮助文档</el-link>
+          >{{$t(`global.helpDoc`)}}</el-link>
         </template>
       </el-alert>
       <div class="sync-container">
-        <el-button :plain="true" @click="addRegistryBtn" size="small" type="success">新建</el-button>
+        <el-button :plain="true" @click="addRegistryBtn" size="small" type="success">{{$t('global.add')}}</el-button>
       </div>
       <div class="registry-list">
         <template>
@@ -140,10 +158,10 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="操作" width="180px">
+            <el-table-column :label="$t(`global.operation`)" width="180px">
               <template slot-scope="scope">
-                <el-button @click="registryAction('edit',scope.row)" size="mini" type="primary" plain>编辑</el-button>
-                <el-button @click="registryAction('delete',scope.row)" size="mini" type="danger" plain>删除</el-button>
+                <el-button @click="registryAction('edit',scope.row)" size="mini" type="primary" plain>{{$t(`global.edit`)}}</el-button>
+                <el-button @click="registryAction('delete',scope.row)" size="mini" type="danger" plain>{{$t(`global.delete`)}}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -162,7 +180,6 @@ import {
 } from '@api'
 import { keyBy, cloneDeep } from 'lodash'
 import bus from '@utils/eventBus'
-import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -193,165 +210,88 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    }),
     providers () {
-      if (this.hasPlutus) {
-        return [
-          {
-            value: 'acr',
-            label: '阿里云 ACR',
-            reg_addr: '地址',
-            namespace: '命名空间',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo iconaliyun'
-          },
-          {
-            value: 'acr-enterprise',
-            label: '阿里云 ACR（企业版）',
-            reg_addr: '地址',
-            namespace: '命名空间',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo iconaliyun'
-          },
-          {
-            value: 'swr',
-            label: '华为云 SWR',
-            reg_addr: '地址',
-            namespace: '组织名称',
-            region: '区域',
-            access_key: 'Access Key',
-            secret_key: 'Secret Key',
-            icon: 'iconfont logo iconhuawei'
-          },
-          {
-            value: 'tcr',
-            label: '腾讯云 TCR',
-            reg_addr: '地址',
-            namespace: '命名空间',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo icontengxunyun'
-          },
-          {
-            value: 'tcr-enterprise',
-            label: '腾讯云 TCR（企业版）',
-            reg_addr: '地址',
-            namespace: '命名空间',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo icontengxunyun'
-          },
-          {
-            value: 'harbor',
-            label: 'Harbor',
-            reg_addr: '地址',
-            namespace: '项目',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo iconHarbor'
-          },
-          {
-            value: 'dockerhub',
-            label: 'DockerHub',
-            reg_addr: '地址',
-            namespace: 'Organization',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo icondocker'
-          },
-          {
-            value: 'ecr',
-            label: 'Amazon ECR',
-            reg_addr: 'URI',
-            namespace: '',
-            region: 'Region',
-            access_key: 'Access Key ID',
-            secret_key: 'Secret Access Key',
-            icon: 'iconfont logo iconaws'
-          },
-          {
-            value: 'native',
-            label: '其他',
-            reg_addr: '地址',
-            namespace: 'Namespace',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo iconqita'
-          }
-        ]
-      } else {
-        return [
-          {
-            value: 'acr',
-            label: '阿里云 ACR',
-            reg_addr: '地址',
-            namespace: '命名空间',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo iconaliyun'
-          },
-          {
-            value: 'swr',
-            label: '华为云 SWR',
-            reg_addr: '地址',
-            namespace: '组织名称',
-            region: '区域',
-            access_key: 'Access Key',
-            secret_key: 'Secret Key',
-            icon: 'iconfont logo iconhuawei'
-          },
-          {
-            value: 'tcr',
-            label: '腾讯云 TCR',
-            reg_addr: '地址',
-            namespace: '命名空间',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo icontengxunyun'
-          },
-          {
-            value: 'harbor',
-            label: 'Harbor',
-            reg_addr: '地址',
-            namespace: '项目',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo iconHarbor'
-          },
-          {
-            value: 'dockerhub',
-            label: 'DockerHub',
-            reg_addr: '地址',
-            namespace: 'Organization',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo icondocker'
-          },
-          {
-            value: 'ecr',
-            label: 'Amazon ECR',
-            reg_addr: 'URI',
-            namespace: '',
-            region: 'Region',
-            access_key: 'Access Key ID',
-            secret_key: 'Secret Access Key',
-            icon: 'iconfont logo iconaws'
-          },
-          {
-            value: 'native',
-            label: '其他',
-            reg_addr: '地址',
-            namespace: 'Namespace',
-            access_key: 'Docker 用户名',
-            secret_key: 'Docker 密码',
-            icon: 'iconfont logo iconqita'
-          }
-        ]
-      }
+      return [
+        {
+          value: 'acr',
+          label: '阿里云 ACR（个人版）',
+          reg_addr: '地址',
+          namespace: '命名空间',
+          access_key: 'Docker 用户名',
+          secret_key: 'Docker 密码',
+          icon: 'iconfont logo iconaliyun'
+        },
+        {
+          value: 'acr-enterprise',
+          label: '阿里云 ACR（企业版）',
+          icon: 'iconfont logo iconaliyun',
+          disabled: true,
+          documentLink: '/settings/image-registry/#阿里云-acr-企业版'
+        },
+        {
+          value: 'swr',
+          label: '华为云 SWR',
+          reg_addr: '地址',
+          namespace: '组织名称',
+          region: '区域',
+          access_key: 'Access Key',
+          secret_key: 'Secret Key',
+          icon: 'iconfont logo iconhuawei'
+        },
+        {
+          value: 'tcr',
+          label: '腾讯云 TCR（个人版）',
+          reg_addr: '地址',
+          namespace: '命名空间',
+          access_key: 'Docker 用户名',
+          secret_key: 'Docker 密码',
+          icon: 'iconfont logo icontengxunyun'
+        },
+        {
+          value: 'tcr-enterprise',
+          label: '腾讯云 TCR（企业版）',
+          icon: 'iconfont logo icontengxunyun',
+          disabled: true,
+          documentLink: '/settings/image-registry/#腾讯云-tcr-企业版'
+        },
+        {
+          value: 'harbor',
+          label: 'Harbor',
+          reg_addr: '地址',
+          namespace: '项目',
+          access_key: 'Docker 用户名',
+          secret_key: 'Docker 密码',
+          icon: 'iconfont logo iconHarbor'
+        },
+        {
+          value: 'dockerhub',
+          label: 'DockerHub',
+          reg_addr: '地址',
+          namespace: 'Organization',
+          access_key: 'Docker 用户名',
+          secret_key: 'Docker 密码',
+          icon: 'iconfont logo icondocker'
+        },
+        {
+          value: 'ecr',
+          label: 'Amazon ECR',
+          reg_addr: 'URI',
+          namespace: '',
+          region: 'Region',
+          access_key: 'Access Key ID',
+          secret_key: 'Secret Access Key',
+          icon: 'iconfont logo iconaws'
+        },
+        {
+          value: 'native',
+          label: '其他',
+          reg_addr: '地址',
+          namespace: 'Namespace',
+          access_key: 'Docker 用户名',
+          secret_key: 'Docker 密码',
+          icon: 'iconfont logo iconqita'
+        }
+      ]
     },
     providerMap () {
       return keyBy(this.providers, 'value')
@@ -431,8 +371,8 @@ export default {
                 `修改「开启 SSL 校验」或 「TLS 证书内容（公钥）」会对正在运行的工作流任务产生影响，确认修改？`,
                 '确认',
                 {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
+                  confirmButtonText: this.$t(`global.confirm`),
+                  cancelButtonText: this.$t(`global.cancel`),
                   type: 'warning'
                 }
               ).then(() => {
@@ -466,8 +406,8 @@ export default {
                 `修改「开启 SSL 校验」或 「TLS 证书内容（公钥）」会对正在运行的工作流任务产生影响，确认修改？`,
                 '确认',
                 {
-                  confirmButtonText: '确定',
-                  cancelButtonText: '取消',
+                  confirmButtonText: this.$t(`global.confirm`),
+                  cancelButtonText: this.$t(`global.cancel`),
                   type: 'warning'
                 }
               ).then(() => {
@@ -487,8 +427,8 @@ export default {
       } else if (action === 'delete') {
         const id = registry.id
         this.$confirm(`确定要删除 ${registry.reg_addr} ?`, '确认', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(({ value }) => {
           deleteRegistryAPI(id).then(res => {
@@ -542,8 +482,7 @@ export default {
     }
   },
   created () {
-    bus.$emit(`set-topbar-title`, { title: '镜像仓库', breadcrumb: [] })
-
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.dockerRegistry`), url: '' }] })
     this.getRegistry()
   }
 }

@@ -37,9 +37,7 @@ const actions = {
     const userInfo = await userLoginAPI(args).catch(error => console.log(error))
     if (userInfo) {
       store.set('userInfo', userInfo) // 存储用户信息，包括 Token
-      context.dispatch('GETUSERROLE').then((role) => {
-        context.dispatch('checkPlutusStatus', { isAdmin: role && role.includes('admin') })
-      })
+      context.dispatch('GETUSERROLE')
       context.dispatch('getPreferenceSetting', { uid: userInfo.uid })
     }
     return Promise.resolve(userInfo)

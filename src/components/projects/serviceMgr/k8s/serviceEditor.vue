@@ -12,8 +12,8 @@
               <CodeMirror style="width: 100%; height: 100%;" ref="myCm" :value="service.yaml" :options="cmOptions" @input="onCmCodeChange"/>
             </div>
             <div class="modal-block" v-if="service.source === 'template' && showModal">
-              <el-button v-if="service.auto_sync || (service.visibility === 'public' && service.product_name !== projectName)" type="primary" size="small" @click="showModal = false">预览</el-button>
-              <el-button v-else type="primary" size="small" @click="showModal = false">预览/编辑</el-button>
+              <el-button v-if="service.auto_sync || (service.visibility === 'public' && service.product_name !== projectName)" type="primary" size="small" @click="showModal = false">{{$t('global.preview')}}</el-button>
+              <el-button v-else type="primary" size="small" @click="showModal = false">{{$t('global.preview')}}/{{$t('global.edit')}}</el-button>
             </div>
           </div>
         </div>
@@ -35,8 +35,8 @@
       </div>
       <div class="controls__wrap">
         <div class="controls__right">
-          <el-button v-hasPermi="{projectName: projectName, actions:['edit_service','create_service'],operator:'or',isBtn:true}" v-if="!hideSave" type="primary" size="small" :disabled="disabledSave || !yamlChange" @click="updateService">保存</el-button>
-          <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" v-if="!isOnboarding" type="primary" size="small" :disabled="!showJoinToEnvBtn" @click="showJoinToEnvDialog">加入环境</el-button>
+          <el-button v-hasPermi="{projectName: projectName, actions:['edit_service','create_service'],operator:'or',isBtn:true}" v-if="!hideSave" type="primary" size="small" :disabled="disabledSave || !yamlChange" @click="updateService">{{$t(`global.save`)}}</el-button>
+          <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" v-if="!isOnboarding" type="primary" size="small" :disabled="!showJoinToEnvBtn" @click="showJoinToEnvDialog">{{$t('services.common.addToEnv')}}</el-button>
         </div>
       </div>
     </div>
@@ -77,6 +77,10 @@ export default {
     showJoinToEnvBtn: {
       type: Boolean,
       default: false
+    },
+    serviceWithConfigs: {
+      type: Object,
+      required: true
     },
     yamlChange: Boolean
   },
@@ -152,15 +156,32 @@ export default {
         ? this.service.visibility
         : 'private'
       const yaml = this.service.yaml
+      const variableYaml = this.serviceWithConfigs.variable_yaml
+      const serviceVars = this.serviceWithConfigs.variable_kvs
+        ? this.serviceWithConfigs.variable_kvs.filter((item) => {
+          return item.show
+        }).map((varItem) => { return varItem.key })
+        : []
       const isEdit = this.serviceInTree.status === 'added'
-      const payload = {
-        product_name: projectName,
-        service_name: serviceName,
-        visibility: visibility,
-        type: 'k8s',
-        yaml: yaml,
-        source: 'spock'
-      }
+      const payload = isEdit
+        ? {
+          product_name: projectName,
+          service_name: serviceName,
+          visibility: visibility,
+          type: 'k8s',
+          yaml: yaml,
+          source: 'spock',
+          variable_yaml: variableYaml,
+          service_vars: serviceVars
+        }
+        : {
+          product_name: projectName,
+          service_name: serviceName,
+          visibility: visibility,
+          type: 'k8s',
+          yaml: yaml,
+          source: 'spock'
+        }
       return saveServiceTemplateAPI(isEdit, payload).then(res => {
         this.$message({
           type: 'success',
@@ -181,6 +202,7 @@ export default {
     onCmCodeChange: debounce(function (newCode) {
       this.errors = []
       this.service.yaml = newCode
+      this.$emit('onGetLatestServiceYaml', newCode)
       this.$emit('update:yamlChange', this.initYaml !== this.service.yaml)
       if (this.service.yaml) {
         this.validateYaml(newCode)
@@ -207,7 +229,11 @@ export default {
           return element.indexOf('kind') > 0
         })
         .map(element => {
-          return jsyaml.load(element)
+          if (element.indexOf('{{- if') < 0) {
+            return jsyaml.load(element)
+          } else {
+            return ''
+          }
         })
       this.$emit('onParseKind', {
         service_name: this.service.service_name,
@@ -252,7 +278,6 @@ export default {
         this.service.source === 'github' ||
         this.service.source === 'gerrit' ||
         this.service.source === 'gitee' ||
-        this.service.source === 'gitee-enterprise' ||
         (this.service.visibility === 'public' &&
           this.service.product_name !== this.projectName) ||
         (this.service.source === 'template' && this.service.auto_sync)
@@ -293,7 +318,6 @@ export default {
             val.source === 'gitlab' ||
             val.source === 'gerrit' ||
             val.source === 'gitee' ||
-            val.source === 'gitee-enterprise' ||
             val.source === 'github' ||
             (val.visibility === 'public' &&
               val.product_name !== this.projectName) ||

@@ -1,17 +1,13 @@
 <template>
   <div class="custom-workflow">
-    <div class="error" v-if="isShowCheckErrorTip">
-      审批发起人手机号码未找到，请正确配置您的手机号码
-      <el-button type="text" plain size="mini" @click="updateEmail">点击修改</el-button>
-    </div>
     <el-form label-position="left" label-width="140px" size="small">
       <el-collapse v-model="activeName">
-        <el-collapse-item title="工作流变量" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
+        <el-collapse-item :title="$t(`workflow.workflowVars`)" name="env" class="mg-l8" v-if="payload.params && payload.params.length>0&&isShowParams">
           <el-table :data="payload.params.filter(item=>item.isShow)">
-            <el-table-column label="键">
+            <el-table-column :label="$t(`global.key`)">
               <template slot-scope="scope">{{scope.row.name}}</template>
             </el-table-column>
-            <el-table-column label="值">
+            <el-table-column :label="$t(`global.value`)">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
                   <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
@@ -49,7 +45,7 @@
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
-              <el-form-item label="服务组件">
+              <el-form-item :label="$t(`global.serviceModule`)">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -72,7 +68,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="镜像仓库" prop="docker_registry_id">
+              <el-form-item :label="$t(`status.imageRepo`)" prop="docker_registry_id">
                 <el-select v-model="job.spec.docker_registry_id" filterable placeholder="请选择镜像" size="small" style="width: 220px;">
                   <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
                 </el-select>
@@ -82,7 +78,7 @@
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
-              <el-form-item prop="productName" label="环境" v-if="!(job.spec.env.includes('<+fixed>')||job.spec.env.includes('{{'))">
+              <el-form-item prop="productName" :label="$t(`project.environments`)" v-if="!(job.spec.env.includes('<+fixed>')||job.spec.env.includes('{{'))">
                 <el-select v-model="job.spec.env" size="medium" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
@@ -94,7 +90,7 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="服务组件" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`global.serviceModule`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -140,7 +136,7 @@
               </div>
             </div>
             <div v-if="job.type === 'custom-deploy'">
-              <el-form-item label="选择容器" v-if="job.spec.source === 'runtime'">
+              <el-form-item :label="$t(`workflow.selectContainer`)" v-if="job.spec.source === 'runtime'">
                 <el-select
                   v-model="job.pickedTargets"
                   filterable
@@ -177,204 +173,6 @@
                 </el-form-item>
               </div>
             </div>
-            <div v-if="job.type === 'k8s-gray-rollback'">
-              <el-form-item label="选择 Deployment">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  clearable
-                  value-key="workload_name"
-                  reserve-keyword
-                  size="small"
-                  style="width: 220px;"
-                  @change="handleContainerChange($event,job)"
-                >
-                  <el-option v-for="(item,index) of job.spec.targets" :key="index" :label="item.workload_name" :value="item"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-table :data="job.pickedTargets">
-                <el-table-column label="Deployment  名称" prop="workload_name"></el-table-column>
-                <el-table-column label="镜像名称" prop="origin_image"></el-table-column>
-                <el-table-column label="副本数量" prop="origin_replica"></el-table-column>
-              </el-table>
-            </div>
-            <div v-if="job.type === 'k8s-resource-patch'">
-              <el-form-item label="资源名称">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  clearable
-                  reserve-keyword
-                  value-key="resource_name"
-                  size="medium"
-                  style="width: 220px;"
-                  @change="handleResourceChange($event,job)"
-                >
-                  <el-option
-                    v-for="(item,index) of job.spec.patch_items"
-                    :key="index"
-                    :label="`${item.resource_kind}/${item.resource_name}`"
-                    :value="item"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="更新内容">
-                <div v-for="(item,index) in job.pickedTargets" :key="index">
-                  <span>{{item.resource_name}}</span>
-                  <el-table :data="item.params">
-                    <el-table-column label="键" prop="name"></el-table-column>
-                    <el-table-column label="值">
-                      <template slot-scope="scope">
-                        <el-select v-model="scope.row.value" v-if="scope.row.type === 'choice'" size="small" style="width: 220px;">
-                          <el-option v-for="(item,index) in scope.row.choice_option" :key="index" :value="item" :label="item">{{item}}</el-option>
-                        </el-select>
-                        <el-input
-                          v-if="scope.row.type === 'text'"
-                          v-model="scope.row.value"
-                          size="small"
-                          type="textarea"
-                          :rows="2"
-                          style="width: 220px;"
-                        ></el-input>
-                        <el-input
-                          v-if="scope.row.type === 'string'"
-                          class="password"
-                          v-model="scope.row.value"
-                          size="small"
-                          :type="scope.row.is_credential ? 'passsword' : ''"
-                          :show-password="scope.row.is_credential ? true : false"
-                          style="width: 220px;"
-                        ></el-input>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </el-form-item>
-            </div>
-            <div v-if="job.type === 'k8s-gray-release'">
-              <el-form-item label="灰度百分比">{{job.spec.gray_scale}}</el-form-item>
-              <el-form-item label="选择容器" v-if="!job.spec.from_job">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  clearable
-                  reserve-keyword
-                  value-key="value"
-                  size="medium"
-                  style="width: 220px;"
-                  @change="handleResourceChange($event,job)"
-                >
-                  <el-option
-                    v-for="(item,index) of job.spec.targets"
-                    :key="index"
-                    :label="`${item.container_name}/${item.workload_name}`"
-                    :value="item"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label="`${item.container_name}/${item.workload_name}`">
-                  <el-select
-                    v-model="item.image"
-                    filterable
-                    clearable
-                    @change="handleCurImageChange"
-                    reserve-keyword
-                    size="medium"
-                    style="width: 220px;"
-                    placeholder="请选择镜像"
-                  >
-                    <el-option
-                      v-for="(image,index) of item.images"
-                      :key="index"
-                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
-                      :label="image.tag"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </div>
-            </div>
-            <div v-if="job.type === 'k8s-canary-deploy'">
-              <el-form-item label="K8s service 名称">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  clearable
-                  reserve-keyword
-                  size="medium"
-                  value-key="container_name"
-                  @change="handleK8sServiceChange($event,job)"
-                  style="width: 220px;"
-                >
-                  <el-option v-for="(service,index) of job.spec.targets" :key="index" :label="`${service.container_name}`" :value="service"></el-option>
-                </el-select>
-              </el-form-item>
-              <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label="`${item.container_name}`">
-                  <el-select
-                    v-model="item.image"
-                    filterable
-                    clearable
-                    reserve-keyword
-                    size="medium"
-                    @change="handleCurImageChange"
-                    style="width: 220px;"
-                    placeholder="请选择镜像"
-                  >
-                    <el-option
-                      v-for="(image,index) of item.images"
-                      :key="index"
-                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
-                      :label="image.tag"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </div>
-            </div>
-            <div class="font-gray" v-if="job.type === 'k8s-canary-release'">无需输入变量</div>
-            <div v-if="job.type === 'k8s-blue-green-deploy'">
-              <el-form-item label="K8s service 名称">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  clearable
-                  reserve-keyword
-                  value-key="container_name"
-                  size="medium"
-                  @change="handleK8sServiceChange($event,job)"
-                  style="width: 220px;"
-                >
-                  <el-option v-for="(service,index) of job.spec.targets" :key="index" :label="`${service.container_name}`" :value="service"></el-option>
-                </el-select>
-              </el-form-item>
-              <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label="`${item.container_name}`">
-                  <el-select
-                    v-model="item.image"
-                    filterable
-                    clearable
-                    reserve-keyword
-                    size="medium"
-                    @change="handleCurImageChange"
-                    style="width: 220px;"
-                    placeholder="请选择镜像"
-                  >
-                    <el-option
-                      v-for="(image,index) of item.images"
-                      :key="index"
-                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
-                      :label="image.tag"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </div>
-            </div>
-            <div class="font-gray" v-if="job.type === 'k8s-blue-green-release'">无需输入变量</div>
             <div v-if="job.type === 'freestyle'">
               <CustomWorkflowCommonRows :job="job" />
             </div>
@@ -393,7 +191,7 @@
             </div>
             <div v-if="job.type==='zadig-distribute-image'">
               <div v-if="job.spec.source === 'runtime'">
-                <el-form-item label="服务组件">
+                <el-form-item :label="$t(`global.serviceModule`)">
                   <el-select
                     v-model="job.pickedTargets"
                     filterable
@@ -417,7 +215,7 @@
                   </el-select>
                 </el-form-item>
                 <el-table :data="job.pickedTargets">
-                  <el-table-column label="服务" min-width="15%">
+                  <el-table-column :label="$t(`project.services`)" min-width="15%">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
                   <el-table-column label="原始镜像版本" min-width="25%">
@@ -448,7 +246,7 @@
               </div>
               <div v-else>
                 <el-table :data="fromJobInfo.pickedTargets">
-                  <el-table-column label="服务" min-width="20%">
+                  <el-table-column :label="$t(`project.services`)" min-width="20%">
                     <template slot-scope="scope">{{`${scope.row.service_module}(${scope.row.service_name})`}}</template>
                   </el-table-column>
                   <el-table-column label="原始镜像版本" min-width="20%">
@@ -473,134 +271,17 @@
                 </el-table>
               </div>
             </div>
-            <div v-if="job.type === 'istio-release'">
-              <div style="margin-bottom: 10px; color: #606266;">
-                <span>新版本副本数百分比:{{job.spec.replica_percentage}}%</span>
-                <span style="margin-left: 10px;">新版本流量百分比:{{job.spec.weight}}%</span>
-              </div>
-              <el-form-item label="选择容器" v-if="!job.spec.from_job">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  clearable
-                  reserve-keyword
-                  value-key="value"
-                  size="medium"
-                  style="width: 220px;"
-                  @change="handleResourceChange($event,job)"
-                >
-                  <el-option
-                    v-for="(item,index) of job.spec.targets"
-                    :key="index"
-                    :label="`${item.container_name}/${item.workload_name}`"
-                    :value="item"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <div v-for="(item,index) in job.pickedTargets" :key="index">
-                <el-form-item :label="`${item.container_name}/${item.workload_name}`">
-                  <el-select
-                    v-model="item.image"
-                    filterable
-                    clearable
-                    @change="handleCurImageChange"
-                    reserve-keyword
-                    size="medium"
-                    style="width: 220px;"
-                    placeholder="请选择镜像"
-                  >
-                    <el-option
-                      v-for="(image,index) of item.images"
-                      :key="index"
-                      :value="image.host+'/'+image.owner+'/'+image.name+':'+image.tag"
-                      :label="image.tag"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </div>
-            </div>
-            <div v-if="job.type === 'istio-rollback'">
-              <el-form-item label="选择容器">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  clearable
-                  reserve-keyword
-                  value-key="value"
-                  size="medium"
-                  style="width: 220px;"
-                  @change="handleResourceChange($event,job)"
-                >
-                  <el-option
-                    v-for="(item,index) of job.spec.targets"
-                    :key="index"
-                    :label="`${item.workload_name}/${item.container_name}`"
-                    :value="item"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-              <template v-if="job.pickedTargets.length > 0">
-                <span style="color: #606266;">回滚版本信息</span>
-                <el-table :data="job.pickedTargets">
-                  <el-table-column label="容器名称" prop="value">
-                    <template slot-scope="scope">
-                      <span>{{`${scope.row.workload_name}/${scope.row.container_name}`}}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="镜像名称" prop="image"></el-table-column>
-                  <el-table-column label="副本数量" prop="target_replica"></el-table-column>
-                </el-table>
-              </template>
-            </div>
           </el-collapse-item>
         </div>
       </el-collapse>
-      <el-button
-        @click="runTask"
-        :disabled="hasPlutus && notReady"
-        :loading="startTaskLoading"
-        type="primary"
-        size="small"
-        class="mg-t16"
-      >{{ startTaskLoading?'启动中':'启动任务' }}</el-button>
+      <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?$t(`workflow.starting`):$t(`workflow.run`) }}</el-button>
     </el-form>
-    <el-dialog
-      title="修改手机号码"
-      :close-on-click-modal="false"
-      :append-to-body="true"
-      custom-class="edit-form-dialog"
-      :visible.sync="dialogMailEditFormVisible"
-    >
-      <el-form :model="userInfo" @submit.native.prevent ref="mailForm">
-        <el-form-item
-          label="新手机号码"
-          label-width="100px"
-          prop="phone"
-          size="small"
-          :rules="{
-            required: true,
-            validator: validatePhone,
-            trigger: ['blur', 'change']
-          }"
-        >
-          <el-input v-model="userInfo.phone"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" native-type="submit" size="small" @click="updateUser" class="start-create">确定</el-button>
-        <el-button plain native-type="submit" size="small" @click="dialogMailEditFormVisible=false">取消</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import CustomWorkflowBuildRows from '@/components/common/customWorkflowBuildRows.vue'
 import CustomWorkflowCommonRows from '@/components/common/customWorkflowCommonRows.vue'
-import { mapState } from 'vuex'
-import store from 'storejs'
 import {
   listProductAPI,
   getAllBranchInfoAPI,
@@ -608,9 +289,7 @@ import {
   imagesAPI,
   getCustomWorkfloweTaskPresetAPI,
   getRegistryWhenBuildAPI,
-  getAssociatedBuildsAPI,
-  updateCurrentUserMailAPI,
-  checkWorkflowApprovalAPI
+  getAssociatedBuildsAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
 
@@ -639,7 +318,6 @@ export default {
       dockerList: [],
       startTaskLoading: false,
       activeName: ['env', '00'],
-      notReady: false,
       payload: {
         workflow_name: '',
         stages: [
@@ -651,12 +329,7 @@ export default {
       },
       originServiceAndBuilds: [],
       isShowParams: true,
-      fromJobInfo: {},
-      dialogMailEditFormVisible: false,
-      isShowCheckErrorTip: false,
-      userInfo: {
-        phone: ''
-      }
+      fromJobInfo: {}
     }
   },
   props: {
@@ -681,19 +354,11 @@ export default {
     CustomWorkflowBuildRows,
     CustomWorkflowCommonRows
   },
-  computed: {
-    ...mapState({
-      hasPlutus: state => state.checkPlutus.hasPlutus
-    })
-  },
   created () {
     this.init()
   },
   methods: {
     init () {
-      if (this.hasPlutus) {
-        this.checkWorkflowApproval()
-      }
       this.getEnvList()
       this.getRegistryWhenBuild()
       this.getServiceAndBuildList()
@@ -812,24 +477,6 @@ export default {
             const len = job.spec.plugin.inputs.filter(item => item.isShow)
             job.isShowPlugin = len.length !== 0
           }
-          if (job.type === 'k8s-canary-deploy') {
-            job.pickedTargets = cloneDeep(job.spec.targets)
-            this.handleK8sServiceChange(job.pickedTargets, job)
-          }
-          if (job.type === 'k8s-gray-rollback') {
-            job.pickedTargets = cloneDeep(job.spec.targets)
-          }
-          if (job.type === 'k8s-blue-green-deploy') {
-            job.pickedTargets = cloneDeep(job.spec.targets)
-            this.handleK8sServiceChange(job.pickedTargets, job)
-          }
-          if (job.type === 'k8s-gray-release') {
-            job.spec.targets.forEach(item => {
-              item.value = `${item.workload_type}/${item.workload_name}`
-            })
-            job.pickedTargets = cloneDeep(job.spec.targets)
-            this.handleContainerChange(job.pickedTargets, job)
-          }
           if (job.type === 'zadig-test') {
             job.pickedTargets = job.spec.test_modules
             job.spec.test_modules.forEach(service => {
@@ -858,59 +505,12 @@ export default {
                 service.value = `${service.service_name}/${service.service_module}`
               })
               this.registry_id = job.spec.source_registry_id
+            } else {
+              this.fromJobInfo.pickedTargets = cloneDeep(job.spec.targets)
             }
           }
-          if (job.type === 'istio-release') {
-            job.spec.targets.forEach(item => {
-              item.value = `${item.workload_name}/${item.container_name}`
-              item.service = item.container_name
-            })
-            job.pickedTargets = cloneDeep(job.spec.targets)
-            this.handleContainerChange(job.pickedTargets, job)
-          }
-          if (job.type === 'istio-rollback') {
-            job.spec.targets.forEach(item => {
-              item.value = `${item.workload_name}/${item.container_name}`
-              item.service = item.container_name
-            })
-            job.pickedTargets = cloneDeep(job.spec.targets)
-            this.handleContainerChange(job.pickedTargets, job)
-          }
         })
       })
-    },
-    checkWorkflowApproval () {
-      checkWorkflowApprovalAPI(this.workflowName)
-        .then(res => {
-          this.isShowCheckErrorTip = false
-          this.notReady = false
-        })
-        .catch(error => {
-          if (error.response && error.response.data.code === 6940) {
-            this.isShowCheckErrorTip = true
-          }
-          this.notReady = true
-        })
-    },
-    updateUser () {
-      const userInfo = store.get('userInfo')
-      this.$refs.mailForm.validate().then(valid => {
-        if (valid) {
-          const params = {
-            name: userInfo.name,
-            phone: this.userInfo.phone
-          }
-          updateCurrentUserMailAPI(userInfo.uid, params).then(res => {
-            this.checkWorkflowApproval(this.workflowName)
-            this.dialogMailEditFormVisible = false
-            this.userInfo.phone = ''
-          })
-        }
-      })
-    },
-    updateEmail () {
-      this.isShowCheckErrorTip = false
-      this.dialogMailEditFormVisible = true
     },
     getWorkflowPresetInfo (workflowName) {
       // const key = this.$utils.rsaEncrypt()
@@ -1171,68 +771,29 @@ export default {
               delete job.pickedTargets
             } else {
               // fromjob
-              this.fromJobInfo.pickedTargets.forEach(item => {
-                if (item.update_tag && !item.target_tag) {
-                  this.$message.error(
-                    `请填写 ${item.service_name} 中的目标镜像版本`
-                  )
-                  throw Error()
-                }
-              })
-              job.spec.targets = this.fromJobInfo.pickedTargets
-              job.spec.targets = job.spec.targets.map(item => {
-                return {
-                  service_name: item.service_name,
-                  service_module: item.service_module,
-                  source_tag: item.source_tag,
-                  target_tag: item.target_tag,
-                  update_tag: item.update_tag
-                }
-              })
+              if (this.fromJobInfo.pickedTargets && this.fromJobInfo.pickedTargets.length > 0) {
+                this.fromJobInfo.pickedTargets.forEach(item => {
+                  if (item.update_tag && !item.target_tag) {
+                    this.$message.error(
+                      this.$t(`workflow.inputTargetImage`, {
+                        serviceName: item.service_name
+                      })
+                    )
+                    throw Error()
+                  }
+                })
+                job.spec.targets = this.fromJobInfo.pickedTargets
+                job.spec.targets = job.spec.targets.map(item => {
+                  return {
+                    service_name: item.service_name,
+                    service_module: item.service_module,
+                    source_tag: item.source_tag,
+                    target_tag: item.target_tag,
+                    update_tag: item.update_tag
+                  }
+                })
+              }
             }
-          }
-          if (job.type === 'k8s-resource-patch') {
-            job.spec.patch_items = cloneDeep(job.pickedTargets)
-            delete job.pickedTargets
-          }
-          if (job.type === 'k8s-gray-rollback') {
-            job.spec.targets = cloneDeep(job.pickedTargets)
-            delete job.pickedTargets
-          }
-          if (job.type === 'k8s-blue-green-deploy') {
-            job.pickedTargets.forEach(item => {
-              delete item.images
-            })
-            job.spec.targets = job.pickedTargets
-            delete job.pickedTargets
-          }
-          if (job.type === 'k8s-canary-deploy') {
-            job.pickedTargets.forEach(item => {
-              delete item.images
-            })
-            job.spec.targets = job.pickedTargets
-            delete job.pickedTargets
-          }
-          if (job.type === 'k8s-gray-release') {
-            job.pickedTargets.forEach(item => {
-              delete item.images
-            })
-            job.spec.targets = job.pickedTargets
-            delete job.pickedTargets
-          }
-          if (job.type === 'istio-release') {
-            job.pickedTargets.forEach(item => {
-              delete item.images
-            })
-            job.spec.targets = job.pickedTargets
-            delete job.pickedTargets
-          }
-          if (job.type === 'istio-rollback') {
-            job.pickedTargets.forEach(item => {
-              delete item.images
-            })
-            job.spec.targets = job.pickedTargets
-            delete job.pickedTargets
           }
         })
       })

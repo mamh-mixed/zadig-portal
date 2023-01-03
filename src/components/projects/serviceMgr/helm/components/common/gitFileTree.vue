@@ -35,7 +35,7 @@
       </el-tree>
       <div>
         <span class="clean-workspace">
-          <el-button size="small" @click="selectFile" type="primary" plain>确定</el-button>
+          <el-button size="small" @click="selectFile" type="primary" plain>{{$t(`global.confirm`)}}</el-button>
         </span>
       </div>
     </el-card>
@@ -128,7 +128,7 @@ export default {
       this.selectPath = ''
       this.loading = true
       if (this.type === 'private') {
-        if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee' || this.codehostSource === 'gitee-enterprise') {
+        if (this.codehostSource === 'gerrit' || this.codehostSource === 'gitee') {
           params = {
             codehostId,
             repoOwner,
