@@ -224,6 +224,7 @@
                   :targetProject="workflowToRun.product_tmpl_name"
                   :forcedUserInput="orgsObject || {}"
                   :testInfos="testInfos"
+                  :presets="presets"
                   whichSave="outside"
                   ref="pipelineConfig"
                 ></workflow-args>
