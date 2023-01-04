@@ -187,7 +187,7 @@ import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue
 import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
 import JobScanningDetail from './productCustomTaskDetail/jobScanningDetail.vue'
 import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
-import JobJiraDetail from './productCustomTaskDetail/JobJiraDetail.vue'
+import JobJiraDetail from './productCustomTaskDetail/jobJiraDetail'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 
