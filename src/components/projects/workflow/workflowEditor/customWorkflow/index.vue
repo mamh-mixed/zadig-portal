@@ -1053,6 +1053,10 @@ export default {
           cursor: pointer;
         }
 
+        &-disabled {
+          cursor: default;
+        }
+
         &-font-disabled {
           color: #c0c4cc;
         }

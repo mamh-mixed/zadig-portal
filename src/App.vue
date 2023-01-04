@@ -29,7 +29,7 @@ export default {
   },
   mounted () {
     if (this.processEnv && this.processEnv.NODE_ENV === 'production') {
-      console.log('%cHello ZADIG！', 'color: #e20382;font-size: 13px;')
+      console.log('%cZadig Community Edition', 'color: #e20382;font-size: 13px;')
       const buildInfo = []
       if (this.processEnv.VERSION) {
         buildInfo.push(`${this.processEnv.VERSION}`)

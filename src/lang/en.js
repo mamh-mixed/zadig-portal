@@ -646,7 +646,7 @@ exports.default = {
     releaseWorkflowTemplate: 'Release Workflow Template',
     builtInTemplate: 'Built-in Template',
     selectTemplate: 'Select Template',
-    delWorkflow: 'Delete Workflow',
+    deleteWorkflowTip: 'Delete workflow {name}',
     confirmWorkflowName: 'Confirm Workflow Name',
     delSuccess: 'Delete Success',
     inputWorkflowName: 'Please input workflow name',

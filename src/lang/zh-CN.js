@@ -646,7 +646,7 @@ exports.default = {
     releaseWorkflowTemplate: '发布工作流模板',
     builtInTemplate: '内置模板',
     selectTemplate: '选择模板',
-    delWorkflow: '删除工作流',
+    deleteWorkflowTip: '删除工作流 {name}',
     confirmWorkflowName: '输入工作流名称确认',
     delSuccess: '删除成功',
     inputWorkflowName: '请输入工作流名称',
