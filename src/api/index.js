@@ -5,7 +5,6 @@ import Element from 'element-ui'
 import errorMap from '@/utilities/errorMap'
 import Store from '../store'
 import Router from '../router'
-import { get } from 'lodash'
 const specialAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifacts', '/api/aslan/environment/kube/workloads']
 const ignoreErrReq = '/api/aslan/services/validateUpdate/'
 const ignoreErrResponse = 'the following services are modified since last update:'

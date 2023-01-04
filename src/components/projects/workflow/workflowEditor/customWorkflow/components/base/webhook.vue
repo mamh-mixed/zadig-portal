@@ -1408,7 +1408,6 @@ export default {
       }
     },
     async addJIRA () {
-      const projectName = this.projectName
       const workflowName = this.workflowName
       const hookName = ''
       this.currentJIRA = cloneDeep(jiraInfo)
@@ -1451,7 +1450,6 @@ export default {
         if (valid) {
           const payload = cloneDeep(this.currentJIRA)
           const workflowName = this.workflowName
-          const projectName = this.projectName
           if (
             payload.workflow_arg.stages &&
             payload.workflow_arg.stages.length > 0
@@ -1684,7 +1682,6 @@ export default {
       })
     },
     async getCommons () {
-      const projectName = this.projectName
       const workflowName = this.workflowName
       const result = await getWebhookCommonAPI(workflowName)
       if (result) {
@@ -1706,7 +1703,6 @@ export default {
       }
     },
     async editCommon (item) {
-      const projectName = this.projectName
       const workflowName = this.workflowName
       this.commonEditMode = true
       const currentCommon = cloneDeep(item)
@@ -1735,7 +1731,6 @@ export default {
         if (valid) {
           const payload = cloneDeep(this.currentCommon)
           const workflowName = this.workflowName
-          const projectName = this.projectName
           payload.workflow_arg.stages.forEach(stage => {
             stage.jobs.forEach(job => {
               job.spec.service_and_builds = job.pickedTargets
