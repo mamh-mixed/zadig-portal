@@ -130,7 +130,7 @@
           <div class="content">
             <div class="cate">
               <span class="title">名称：</span>
-              <span>3232</span>
+              <span>{{item.name}}</span>
             </div>
           </div>
         </el-col>
@@ -138,7 +138,7 @@
           <div class="content">
             <div class="cate">
               <span class="title">描述：</span>
-              <span>2323</span>
+              <span>{{item.description}}</span>
             </div>
           </div>
         </el-col>
@@ -146,15 +146,18 @@
           <div class="content">
             <div class="cate">
               <span class="title">Webhook Url：</span>
-              <span>2323</span>
+              <span  v-clipboard:copy="getWebhookUrl(item,'jira')"
+                v-clipboard:success="copyCommandSuccess"
+                v-clipboard:error="copyCommandError"
+                class="el-icon-document-copy copy"></span>
             </div>
           </div>
         </el-col>
         <el-col :span="2">
           <div class="content">
             <div class="operation">
-              <span class="el-icon-edit" @click="editTimer(item)"></span>
-              <span class="el-icon-delete" @click="removeTimer(index,item.id)"></span>
+              <span class="el-icon-edit" @click="editJIRA(item)"></span>
+              <span class="el-icon-delete" @click="removeJIRA(index,item.name)"></span>
             </div>
           </div>
         </el-col>
@@ -218,7 +221,7 @@
           <div class="content">
             <div class="cate">
               <span class="title">名称：</span>
-              <span>3232</span>
+              <span>{{item.name}}</span>
             </div>
           </div>
         </el-col>
@@ -226,7 +229,7 @@
           <div class="content">
             <div class="cate">
               <span class="title">描述：</span>
-              <span>2323</span>
+              <span>{{item.description}}</span>
             </div>
           </div>
         </el-col>
@@ -234,15 +237,18 @@
           <div class="content">
             <div class="cate">
               <span class="title">Webhook Url：</span>
-              <span>2323</span>
+              <span  v-clipboard:copy="getWebhookUrl(item,'generalhook')"
+                v-clipboard:success="copyCommandSuccess"
+                v-clipboard:error="copyCommandError"
+                class="el-icon-document-copy copy"></span>
             </div>
           </div>
         </el-col>
         <el-col :span="2">
           <div class="content">
             <div class="operation">
-              <span class="el-icon-edit" @click="editTimer(item)"></span>
-              <span class="el-icon-delete" @click="removeTimer(index,item.id)"></span>
+              <span class="el-icon-edit" @click="editCommon(item)"></span>
+              <span class="el-icon-delete" @click="removeCommon(index,item.name)"></span>
             </div>
           </div>
         </el-col>
@@ -489,7 +495,7 @@
     >
       <el-form :model="currentJIRA" ref="JIRAForm" :rules="JIRARules" label-width="100px" label-position="left">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="currentJIRA.name" placeholder="请输入名称"></el-input>
+          <el-input v-model="currentJIRA.name" :disabled="JIRAEditMode" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="currentJIRA.description" placeholder="请输入描述"></el-input>
@@ -497,7 +503,7 @@
       </el-form>
       <div style="margin: 10px 0;">
         <span style="display: inline-block; margin-bottom: 10px;">工作流执行变量</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
+        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentJIRA.workflow_arg" />
       </div>
       <div slot="footer">
         <el-button @click="JIRADialogVisible = false" size="small">取 消</el-button>
@@ -529,23 +535,23 @@
       </div>
     </el-dialog>
     <el-dialog
-      :title="larkEditMode?'编辑通用项目':'添加通用项目'"
+      :title="commonEditMode?'编辑通用项目':'添加通用项目'"
       :visible.sync="commonDialogVisible"
       width="700px"
       :close-on-click-modal="false"
       append-to-body
     >
-      <el-form :model="currentCommon" ref="larkForm" :rules="commonRules" label-width="100px" label-position="left">
+      <el-form :model="currentCommon" ref="commonForm" :rules="commonRules" label-width="100px" label-position="left">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="currentCommon.name" placeholder="请输入名称"></el-input>
+          <el-input v-model="currentCommon.name" :disabled="commonEditMode" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="currentCommon.desc" placeholder="请输入描述"></el-input>
+          <el-input v-model="currentCommon.description" placeholder="请输入描述"></el-input>
         </el-form-item>
       </el-form>
       <div style="margin: 10px 0;">
         <span style="display: inline-block; margin-bottom: 10px;">工作流执行变量</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
+        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentCommon.workflow_arg" />
       </div>
       <div slot="footer">
         <el-button @click="commonDialogVisible = false" size="small">取 消</el-button>
@@ -636,7 +642,13 @@ import {
   addWebhookJiraAPI,
   updateWebhookJiraAPI,
   getWebhookJiraAPI,
-  deleteWebhookJiraAPI
+  deleteWebhookJiraAPI,
+  getWebhookJiraPresetAPI,
+  addWebhookCommonAPI,
+  updateWebhookCommonAPI,
+  getWebhookCommonAPI,
+  deleteWebhookCommonAPI,
+  getWebhookCommonPresetAPI
 } from '@api'
 const validateName = (rule, value, callback) => {
   if (!/^[a-zA-Z0-9]([a-zA-Z0-9_\-\.]*[a-zA-Z0-9])?$/.test(value)) {
@@ -906,6 +918,28 @@ export default {
     },
     validate () {
       return this.$refs.buildEnvRef.validate()
+    },
+    getWebhookUrl (item, type) {
+      const workflowName = this.workflowName
+      const hookName = item.name
+      const host = window.location.host
+      if (type === 'jira') {
+        return `${host}/api/aslan/system/project_management/jira/webhook/${workflowName}/${hookName}`
+      } else {
+        return `${host}/api/aslan/workflow/v4/${workflowName}/${hookName}/webhook`
+      }
+    },
+    copyCommandSuccess (event) {
+      this.$message({
+        message: '命令已成功复制到剪贴板',
+        type: 'success'
+      })
+    },
+    copyCommandError (event) {
+      this.$message({
+        message: '命令复制失败',
+        type: 'error'
+      })
     },
     changeWebhookStatus (webhook) {
       const projectName = this.projectName
@@ -1218,6 +1252,13 @@ export default {
         this.$message.success(`定时器已${timer.enabled ? '启用' : '禁用'}`)
       })
     },
+    changeJIRAStatus (JIRA) {
+      const projectName = this.projectName
+      updateWebhookJiraAPI(projectName, JIRA).then(() => {
+        this.getJIRAs()
+        this.$message.success(`JIRA 已${JIRA.enabled ? '启用' : '禁用'}`)
+      })
+    },
     async getTimers () {
       const projectName = this.projectName
       const workflowName = this.workflowName
@@ -1367,39 +1408,40 @@ export default {
       }
     },
     async addJIRA () {
-      // const projectName = this.projectName
+      const projectName = this.projectName
       const workflowName = this.workflowName
-      this.currentTimer = cloneDeep(timerInfo)
-      const preset = await getWebhookJiraAPI(workflowName)
+      const hookName = ''
+      this.currentJIRA = cloneDeep(jiraInfo)
+      const preset = await getWebhookJiraPresetAPI(
+        workflowName,
+        hookName)
       if (preset) {
         this.$set(
-          this.currentTimer,
-          'workflow_v4_args',
-          cloneDeep(preset.workflow_v4_args)
+          this.currentJIRA,
+          'workflow_arg',
+          cloneDeep(preset.workflow_arg)
         )
         this.JIRAEditMode = false
         this.JIRADialogVisible = true
       }
     },
     async editJIRA (item) {
-      const projectName = this.projectName
       const workflowName = this.workflowName
+      const hookName = item.name
       this.JIRAEditMode = true
-      const currentTimer = cloneDeep(item)
-      const timerID = currentTimer.id
-      const preset = await getWebhookJiraAPI(workflowName, timerID)
+      const currentJIRA = cloneDeep(item)
+      const preset = await getWebhookJiraPresetAPI(workflowName, hookName)
       this.$set(
-        currentTimer,
-        'workflow_v4_args',
-        cloneDeep(preset.workflow_v4_args)
+        currentJIRA,
+        'workflow_arg',
+        cloneDeep(preset.workflow_arg)
       )
-      this.currentTimer = currentTimer
+      this.currentJIRA = currentJIRA
       this.JIRADialogVisible = true
     },
-    removeJIRA (index, timerID) {
-      // const projectName = this.projectName
+    removeJIRA (index, name) {
       const workflowName = this.workflowName
-      deleteWebhookJiraAPI(workflowName, timerID).then(res => {
+      deleteWebhookJiraAPI(workflowName, name).then(res => {
         this.$message.success('删除成功')
         this.getJIRAs()
       })
@@ -1410,12 +1452,11 @@ export default {
           const payload = cloneDeep(this.currentJIRA)
           const workflowName = this.workflowName
           const projectName = this.projectName
-          console.log(payload)
           if (
-            payload.workflow_v4_args.stages &&
-            payload.workflow_v4_args.stages.length > 0
+            payload.workflow_arg.stages &&
+            payload.workflow_arg.stages.length > 0
           ) {
-            payload.workflow_v4_args.stages.forEach(stage => {
+            payload.workflow_arg.stages.forEach(stage => {
               stage.jobs.forEach(job => {
                 job.spec.service_and_builds = job.pickedTargets
                 delete job.pickedTargets
@@ -1480,7 +1521,7 @@ export default {
             const result = await updateWebhookJiraAPI(workflowName, payload)
             if (result) {
               this.$message.success('修改成功')
-              this.$refs.timerForm.resetFields()
+              this.$refs.JIRAForm.resetFields()
               this.JIRADialogVisible = false
               this.getJIRAs()
             }
@@ -1491,7 +1532,7 @@ export default {
             )
             if (result) {
               this.$message.success('添加成功')
-              this.$refs.timerForm.resetFields()
+              this.$refs.JIRAForm.resetFields()
               this.JIRADialogVisible = false
               this.getJIRAs()
             }
@@ -1645,21 +1686,20 @@ export default {
     async getCommons () {
       const projectName = this.projectName
       const workflowName = this.workflowName
-      const result = await getCustomTimersAPI(projectName, workflowName)
+      const result = await getWebhookCommonAPI(workflowName)
       if (result) {
         this.commons = result
       }
     },
     async addCommon () {
-      const projectName = this.projectName
       const workflowName = this.workflowName
       this.currentCommon = cloneDeep(commonInfo)
-      const preset = await getCustomTimerPresetAPI(projectName, workflowName)
+      const preset = await getWebhookCommonPresetAPI(workflowName)
       if (preset) {
         this.$set(
-          this.currentTimer,
-          'workflow_v4_args',
-          cloneDeep(preset.workflow_v4_args)
+          this.currentCommon,
+          'workflow_arg',
+          cloneDeep(preset.workflow_arg)
         )
         this.commonEditMode = false
         this.commonDialogVisible = true
@@ -1670,35 +1710,33 @@ export default {
       const workflowName = this.workflowName
       this.commonEditMode = true
       const currentCommon = cloneDeep(item)
-      const timerID = currentTimer.id
-      const preset = await getCustomTimerPresetAPI(
-        projectName,
+      const name = currentCommon.name
+      const preset = await getWebhookCommonPresetAPI(
         workflowName,
-        timerID
+        name
       )
       this.$set(
-        currentTimer,
-        'workflow_v4_args',
-        cloneDeep(preset.workflow_v4_args)
+        currentCommon,
+        'workflow_arg',
+        cloneDeep(preset.workflow_arg)
       )
-      this.currentCommon = currentTimer
+      this.currentCommon = currentCommon
       this.commonDialogVisible = true
     },
-    removeCommon (index, timerID) {
-      const projectName = this.projectName
+    removeCommon (index, name) {
       const workflowName = this.workflowName
-      removeCustomTimerAPI(projectName, workflowName, timerID).then(res => {
+      deleteWebhookCommonAPI(workflowName, name).then(res => {
         this.$message.success('删除成功')
-        this.getTimers()
+        this.getCommons()
       })
     },
     saveCommon () {
-      this.$refs.timerForm.validate(async valid => {
+      this.$refs.commonForm.validate(async valid => {
         if (valid) {
-          const payload = cloneDeep(this.currentTimer)
+          const payload = cloneDeep(this.currentCommon)
           const workflowName = this.workflowName
           const projectName = this.projectName
-          payload.workflow_v4_args.stages.forEach(stage => {
+          payload.workflow_arg.stages.forEach(stage => {
             stage.jobs.forEach(job => {
               job.spec.service_and_builds = job.pickedTargets
               delete job.pickedTargets
@@ -1757,23 +1795,22 @@ export default {
               }
             })
           })
-          if (this.timerEditMode) {
-            const result = await updateCustomTimerAPI(projectName, payload)
+          if (this.commonEditMode) {
+            const result = await updateWebhookCommonAPI(workflowName, payload)
             if (result) {
               this.$message.success('修改成功')
-              this.$refs.timerForm.resetFields()
-              this.timerDialogVisible = false
+              this.$refs.commonForm.resetFields()
+              this.commonDialogVisible = false
               this.getCommons()
             }
           } else {
-            const result = await addCustomTimerAPI(
-              projectName,
+            const result = await addWebhookCommonAPI(
               workflowName,
               payload
             )
             if (result) {
               this.$message.success('添加成功')
-              this.$refs.timerForm.resetFields()
+              this.$refs.commonForm.resetFields()
               this.commonDialogVisible = false
               this.getCommons()
             }
@@ -1856,6 +1893,8 @@ export default {
           if (this.isEdit) {
             this.getWebhooks()
             this.getTimers()
+            this.getJIRAs()
+            this.getCommons()
             this.checkingBuildStageChanged(
               cloneDeep(this.config),
               cloneDeep(this.originalWorkflow)
@@ -1988,6 +2027,10 @@ export default {
           color: @secondaryColor;
           font-weight: 400;
           font-size: 12px;
+        }
+
+        .copy {
+          cursor: pointer;
         }
 
         .desc {

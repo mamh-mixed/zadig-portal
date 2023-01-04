@@ -5,6 +5,7 @@ import Element from 'element-ui'
 import errorMap from '@/utilities/errorMap'
 import Store from '../store'
 import Router from '../router'
+import { get } from 'lodash'
 const specialAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifacts', '/api/aslan/environment/kube/workloads']
 const ignoreErrReq = '/api/aslan/services/validateUpdate/'
 const ignoreErrResponse = 'the following services are modified since last update:'
@@ -2325,4 +2326,25 @@ export function updateWebhookJiraAPI (workflowName, payload) {
 }
 export function addWebhookJiraAPI (workflowName, payload) {
   return http.post(`/api/aslan/workflow/v4/jirahook/${workflowName}`, payload)
+}
+export function getWebhookJiraPresetAPI (workflowName, hookName) {
+  return http.get(`/api/aslan/workflow/v4/jirahook/preset?workflowName=${workflowName}&hookName=${hookName}`)
+}
+
+export function getWebhookCommonAPI (workflowName) {
+  return http.get(`/api/aslan/workflow/v4/generalhook/${workflowName}`)
+}
+
+export function deleteWebhookCommonAPI (workflowName, hookName, payload) {
+  return http.delete(`/api/aslan/workflow/v4/generalhook/${workflowName}/${hookName}`, payload)
+}
+
+export function updateWebhookCommonAPI (workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/generalhook/${workflowName}`, payload)
+}
+export function addWebhookCommonAPI (workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/generalhook/${workflowName}`, payload)
+}
+export function getWebhookCommonPresetAPI (workflowName, hookName) {
+  return http.get(`/api/aslan/workflow/v4/generalhook/preset?workflowName=${workflowName}&hookName=${hookName}`)
 }
