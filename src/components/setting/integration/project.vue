@@ -9,9 +9,30 @@
       <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'&&errorMessage" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
       <el-form :model="params" @submit.native.prevent label-position="left" :rules="jiraRules" label-width="120px" ref="form">
         <el-form-item label="系统类型" prop="type">
-          <el-select v-model="params.type">
-            <el-option label="飞书项目" value="lark" :disabled="isLarkDisabled"></el-option>
-            <el-option label="Jira" value="jira" :disabled="isJiraDisabled"></el-option>
+          <el-select v-model="params.type" :disabled="operateType==='edit'">
+            <el-option label="飞书项目" value="lark" disabled>
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    href="https://docs.koderover.com/settings/lark/"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>
+                  <img src="@assets/icons/others/lark.png" alt="lark" style="width: 20px; height: 20px; vertical-align: text-bottom;" />
+                  <span>飞书项目</span>
+                  <i class="el-icon-warning"></i>
+                </span>
+              </el-tooltip>
+            </el-option>
+            <el-option label="Jira" value="jira" :disabled="isJiraDisabled">
+              <i class="config-icon iconfont iconjira"></i>
+              <span>Jira</span>
+            </el-option>
           </el-select>
         </el-form-item>
         <div v-if="params.type==='jira'">
@@ -133,7 +154,7 @@ export default {
       operateType: 'add',
       list: [],
       params: {
-        type: 'lark',
+        type: 'jira',
         jira_host: '',
         jira_user: '',
         jira__token: ''
@@ -275,7 +296,7 @@ export default {
               })
             })
           } else {
-            updateProjectManage(params).then(res => {
+            updateProjectManage(params, this.params.id).then(res => {
               this.getJiraConfig()
               this.handleJiraCancel()
               this.$message({
@@ -328,7 +349,7 @@ export default {
     color: #ff1949;
   }
 
-  .edit-form-dialog {
+  /deep/.edit-form-dialog {
     width: 550px;
 
     .el-dialog__header {
@@ -342,7 +363,7 @@ export default {
     }
 
     .el-dialog__body {
-      padding: 0 20px;
+      padding: 30px 20px;
       color: #606266;
       font-size: 14px;
 
@@ -357,6 +378,10 @@ export default {
 
     .el-input {
       display: inline-block;
+    }
+
+    .el-input__suffix-inner {
+      display: inline-flex;
     }
   }
 }

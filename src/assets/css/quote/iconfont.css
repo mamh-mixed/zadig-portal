@@ -16,6 +16,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.iconjira:before {
+  content: "\e7bc";
+}
+
+.icontongyonggongju:before {
+  content: "\e6bf";
+}
+
 .iconinvisible:before {
   content: "\e7d1";
 }

@@ -115,97 +115,6 @@
           </div>
         </el-col>
       </el-row>
-      <el-row :gutter="20" class="webhook-row" v-for="(item,index) in jiras" :key="item.id">
-        <el-col :span="2">
-          <div class="content">
-            <el-switch v-model="item.enabled" @change="changeJIRAStatus(item)"></el-switch>
-          </div>
-        </el-col>
-        <el-col :span="1">
-          <div class="content">
-            <span class="el-icon-time"></span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="content">
-            <div class="cate">
-              <span class="title">名称：</span>
-              <span>{{item.name}}</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="9">
-          <div class="content">
-            <div class="cate">
-              <span class="title">描述：</span>
-              <span>{{item.description}}</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="content">
-            <div class="cate">
-              <span class="title">Webhook Url：</span>
-              <span  v-clipboard:copy="getWebhookUrl(item,'jira')"
-                v-clipboard:success="copyCommandSuccess"
-                v-clipboard:error="copyCommandError"
-                class="el-icon-document-copy copy"></span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <div class="content">
-            <div class="operation">
-              <span class="el-icon-edit" @click="editJIRA(item)"></span>
-              <span class="el-icon-delete" @click="removeJIRA(index,item.name)"></span>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" class="webhook-row" v-for="(item,index) in larks" :key="item.id">
-        <el-col :span="2">
-          <div class="content">
-            <el-switch v-model="item.enabled" @change="changeJIRAStatus(item)"></el-switch>
-          </div>
-        </el-col>
-        <el-col :span="1">
-          <div class="content">
-            <span class="el-icon-time"></span>
-          </div>
-        </el-col>
-        <el-col :span="6">
-          <div class="content">
-            <div class="cate">
-              <span class="title">名称：</span>
-              <span>3232</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="9">
-          <div class="content">
-            <div class="cate">
-              <span class="title">描述：</span>
-              <span>2323</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="content">
-            <div class="cate">
-              <span class="title">Webhook Url：</span>
-              <span>2323</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="2">
-          <div class="content">
-            <div class="operation">
-              <span class="el-icon-edit" @click="editTimer(item)"></span>
-              <span class="el-icon-delete" @click="removeTimer(index,item.id)"></span>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
       <el-row :gutter="20" class="webhook-row" v-for="(item,index) in commons" :key="item.id">
         <el-col :span="2">
           <div class="content">
@@ -487,54 +396,6 @@
       </div>
     </el-dialog>
     <el-dialog
-      :title="JIRAEditMode?'编辑 JIRA 触发器':'添加 JIRA 触发器'"
-      :visible.sync="JIRADialogVisible"
-      width="700px"
-      :close-on-click-modal="false"
-      append-to-body
-    >
-      <el-form :model="currentJIRA" ref="JIRAForm" :rules="JIRARules" label-width="100px" label-position="left">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="currentJIRA.name" :disabled="JIRAEditMode" placeholder="请输入名称"></el-input>
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="currentJIRA.description" placeholder="请输入描述"></el-input>
-        </el-form-item>
-      </el-form>
-      <div style="margin: 10px 0;">
-        <span style="display: inline-block; margin-bottom: 10px;">工作流执行变量</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentJIRA.workflow_arg" />
-      </div>
-      <div slot="footer">
-        <el-button @click="JIRADialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveJIRA" size="small">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog
-      :title="larkEditMode?'编辑飞书项目':'添加飞书项目'"
-      :visible.sync="larkDialogVisible"
-      width="700px"
-      :close-on-click-modal="false"
-      append-to-body
-    >
-      <el-form :model="currentLark" ref="larkForm" :rules="larkRules" label-width="100px" label-position="left">
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="currentLark.name" placeholder="请输入名称"></el-input>
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="currentLark.desc" placeholder="请输入描述"></el-input>
-        </el-form-item>
-      </el-form>
-      <div style="margin: 10px 0;">
-        <span style="display: inline-block; margin-bottom: 10px;">工作流执行变量</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
-      </div>
-      <div slot="footer">
-        <el-button @click="larkDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveLark" size="small">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog
       :title="commonEditMode?'编辑通用项目':'添加通用项目'"
       :visible.sync="commonDialogVisible"
       width="700px"
@@ -586,27 +447,9 @@
             <span class="trigger-desc">{{$t(`workflow.timedTrigger`)}}</span>
           </div>
         </div>
-        <div class="trigger-item" @click="triggerTypeDialogVisible = false;addJIRA()">
-          <div class="icon">
-            <span class="iconfont iconvery-time"></span>
-          </div>
-          <div class="detail">
-            <h4 class="trigger-title">JIRA 触发器</h4>
-            <span class="trigger-desc">JIRA 问题状态变更触发</span>
-          </div>
-        </div>
-        <div class="trigger-item" @click="triggerTypeDialogVisible = false;addLark()">
-          <div class="icon">
-            <span class="iconfont iconvery-time"></span>
-          </div>
-          <div class="detail">
-            <h4 class="trigger-title">飞书项目触发器</h4>
-            <span class="trigger-desc">飞书工作项状态变更触发</span>
-          </div>
-        </div>
         <div class="trigger-item" @click="triggerTypeDialogVisible = false;addCommon()">
           <div class="icon">
-            <span class="iconfont iconvery-time"></span>
+            <span class="iconfont icontongyonggongju"></span>
           </div>
           <div class="detail">
             <h4 class="trigger-title">通用触发器</h4>
@@ -639,11 +482,6 @@ import {
   updateCustomTimerAPI,
   getCustomTimerPresetAPI,
   checkRegularAPI,
-  addWebhookJiraAPI,
-  updateWebhookJiraAPI,
-  getWebhookJiraAPI,
-  deleteWebhookJiraAPI,
-  getWebhookJiraPresetAPI,
   addWebhookCommonAPI,
   updateWebhookCommonAPI,
   getWebhookCommonAPI,
@@ -715,18 +553,6 @@ const timerInfo = {
   workflow_v4_args: {}
 }
 
-const larkInfo = {
-  name: '',
-  desc: '',
-  enabled: true,
-  workflow_v4_args: {}
-}
-const jiraInfo = {
-  name: '',
-  desc: '',
-  enabled: true,
-  workflow_v4_args: {}
-}
 const commonInfo = {
   name: '',
   desc: '',
@@ -745,18 +571,12 @@ export default {
       selectType: '',
       webhookEditMode: true,
       timerEditMode: true,
-      JIRAEditMode: true,
-      larkEditMode: true,
       commonEditMode: true,
       webhooks: [],
       timers: [],
-      larks: [],
-      jiras: [],
       commons: [],
       currentWebhook: cloneDeep(webhookInfo),
       currentTimer: cloneDeep(timerInfo),
-      currentLark: cloneDeep(larkInfo),
-      currentJIRA: cloneDeep(jiraInfo),
       currentCommon: cloneDeep(commonInfo),
       webhookBranches: {},
       webhookRepos: [],
@@ -922,7 +742,7 @@ export default {
     getWebhookUrl (item, type) {
       const workflowName = this.workflowName
       const hookName = item.name
-      const host = window.location.host
+      const host = `${window.location.protocol}//${window.location.host}`
       if (type === 'jira') {
         return `${host}/api/aslan/system/project_management/jira/webhook/${workflowName}/${hookName}`
       } else {
@@ -1318,7 +1138,6 @@ export default {
           payload.workflow_v4_args.stages.forEach(stage => {
             stage.jobs.forEach(job => {
               job.spec.service_and_builds = job.pickedTargets
-              delete job.pickedTargets
               if (
                 job.spec.service_and_images &&
                 job.spec.service_and_images.length > 0
@@ -1393,287 +1212,6 @@ export default {
               this.$refs.timerForm.resetFields()
               this.timerDialogVisible = false
               this.getTimers()
-            }
-          }
-        } else {
-          return false
-        }
-      })
-    },
-    async getJIRAs () {
-      const workflowName = this.workflowName
-      const result = await getWebhookJiraAPI(workflowName)
-      if (result) {
-        this.jiras = result
-      }
-    },
-    async addJIRA () {
-      const workflowName = this.workflowName
-      const hookName = ''
-      this.currentJIRA = cloneDeep(jiraInfo)
-      const preset = await getWebhookJiraPresetAPI(
-        workflowName,
-        hookName)
-      if (preset) {
-        this.$set(
-          this.currentJIRA,
-          'workflow_arg',
-          cloneDeep(preset.workflow_arg)
-        )
-        this.JIRAEditMode = false
-        this.JIRADialogVisible = true
-      }
-    },
-    async editJIRA (item) {
-      const workflowName = this.workflowName
-      const hookName = item.name
-      this.JIRAEditMode = true
-      const currentJIRA = cloneDeep(item)
-      const preset = await getWebhookJiraPresetAPI(workflowName, hookName)
-      this.$set(
-        currentJIRA,
-        'workflow_arg',
-        cloneDeep(preset.workflow_arg)
-      )
-      this.currentJIRA = currentJIRA
-      this.JIRADialogVisible = true
-    },
-    removeJIRA (index, name) {
-      const workflowName = this.workflowName
-      deleteWebhookJiraAPI(workflowName, name).then(res => {
-        this.$message.success('删除成功')
-        this.getJIRAs()
-      })
-    },
-    saveJIRA () {
-      this.$refs.JIRAForm.validate(async valid => {
-        if (valid) {
-          const payload = cloneDeep(this.currentJIRA)
-          const workflowName = this.workflowName
-          if (
-            payload.workflow_arg.stages &&
-            payload.workflow_arg.stages.length > 0
-          ) {
-            payload.workflow_arg.stages.forEach(stage => {
-              stage.jobs.forEach(job => {
-                job.spec.service_and_builds = job.pickedTargets
-                delete job.pickedTargets
-                if (
-                  job.spec.service_and_images &&
-                  job.spec.service_and_images.length > 0
-                ) {
-                  job.spec.service_and_images.forEach(item => {
-                    delete item.images
-                  })
-                }
-                if (
-                  job.spec.service_and_builds &&
-                  job.spec.service_and_builds.length > 0
-                ) {
-                  job.spec.service_and_builds.forEach(item => {
-                    if (item.repos) {
-                      item.repos.forEach(repo => {
-                        if (typeof repo.prs === 'string') {
-                          repo.prs = repo.prs.split(',').map(Number)
-                        }
-                        if (repo.branchOrTag) {
-                          if (repo.branchOrTag.type === 'branch') {
-                            repo.branch = repo.branchOrTag.name
-                          }
-                          if (repo.branchOrTag.type === 'tag') {
-                            repo.tag = repo.branchOrTag.name
-                          }
-                        }
-                      })
-                    }
-                  })
-                }
-                if (job.type === 'freestyle') {
-                  job.spec.steps.forEach(step => {
-                    if (step.type === 'git') {
-                      step.spec.repos.forEach(repo => {
-                        if (typeof repo.prs === 'string') {
-                          repo.prs = repo.prs.split(',').map(Number)
-                        }
-                        if (repo.branchOrTag) {
-                          if (repo.branchOrTag.type === 'branch') {
-                            repo.branch = repo.branchOrTag.name
-                          }
-                          if (repo.branchOrTag.type === 'tag') {
-                            repo.tag = repo.branchOrTag.name
-                          }
-                        }
-                      })
-                    }
-                  })
-                }
-                if (job.type === 'zadig-deploy') {
-                  job.spec.service_and_images = job.spec.service_and_builds
-                  delete job.spec.service_and_builds
-                }
-              })
-            })
-          }
-
-          if (this.JIRAEditMode) {
-            const result = await updateWebhookJiraAPI(workflowName, payload)
-            if (result) {
-              this.$message.success('修改成功')
-              this.$refs.JIRAForm.resetFields()
-              this.JIRADialogVisible = false
-              this.getJIRAs()
-            }
-          } else {
-            const result = await addWebhookJiraAPI(
-              workflowName,
-              payload
-            )
-            if (result) {
-              this.$message.success('添加成功')
-              this.$refs.JIRAForm.resetFields()
-              this.JIRADialogVisible = false
-              this.getJIRAs()
-            }
-          }
-        } else {
-          return false
-        }
-      })
-    },
-    async getLarks () {
-      const projectName = this.projectName
-      const workflowName = this.workflowName
-      const result = await getCustomWebhooksAPI(projectName, workflowName)
-      if (result) {
-        this.larks = result
-      }
-    },
-    async addLark () {
-      const projectName = this.projectName
-      const workflowName = this.workflowName
-      this.currentTimer = cloneDeep(timerInfo)
-      const preset = await getCustomTimerPresetAPI(projectName, workflowName)
-      if (preset) {
-        this.$set(
-          this.currentTimer,
-          'workflow_v4_args',
-          cloneDeep(preset.workflow_v4_args)
-        )
-        this.larkEditMode = false
-        this.larkDialogVisible = true
-      }
-    },
-    async editLark (item) {
-      const projectName = this.projectName
-      const workflowName = this.workflowName
-      this.larkEditMode = true
-      const currentTimer = cloneDeep(item)
-      const timerID = currentTimer.id
-      const preset = await getCustomTimerPresetAPI(
-        projectName,
-        workflowName,
-        timerID
-      )
-      this.$set(
-        currentTimer,
-        'workflow_v4_args',
-        cloneDeep(preset.workflow_v4_args)
-      )
-      this.currentTimer = currentTimer
-      this.larkDialogVisible = true
-    },
-    removeLark (index, timerID) {
-      const projectName = this.projectName
-      const workflowName = this.workflowName
-      removeCustomTimerAPI(projectName, workflowName, timerID).then(res => {
-        this.$message.success('删除成功')
-        this.getTimers()
-      })
-    },
-    saveLark () {
-      this.$refs.larkForm.validate(async valid => {
-        if (valid) {
-          const payload = cloneDeep(this.currentLark)
-          const workflowName = this.workflowName
-          const projectName = this.projectName
-          payload.workflow_v4_args.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              job.spec.service_and_builds = job.pickedTargets
-              delete job.pickedTargets
-              if (
-                job.spec.service_and_images &&
-                job.spec.service_and_images.length > 0
-              ) {
-                job.spec.service_and_images.forEach(item => {
-                  delete item.images
-                })
-              }
-              if (
-                job.spec.service_and_builds &&
-                job.spec.service_and_builds.length > 0
-              ) {
-                job.spec.service_and_builds.forEach(item => {
-                  if (item.repos) {
-                    item.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
-                        }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
-                        }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'freestyle') {
-                job.spec.steps.forEach(step => {
-                  if (step.type === 'git') {
-                    step.spec.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
-                        }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
-                        }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'zadig-deploy') {
-                job.spec.service_and_images = job.spec.service_and_builds
-                delete job.spec.service_and_builds
-              }
-            })
-          })
-          if (this.timerEditMode) {
-            const result = await updateCustomTimerAPI(projectName, payload)
-            if (result) {
-              this.$message.success('修改成功')
-              this.$refs.timerForm.resetFields()
-              this.larkDialogVisible = false
-              this.getLarks()
-            }
-          } else {
-            const result = await addCustomTimerAPI(
-              projectName,
-              workflowName,
-              payload
-            )
-            if (result) {
-              this.$message.success('添加成功')
-              this.$refs.timerForm.resetFields()
-              this.larkDialogVisible = false
-              this.getLarks()
             }
           }
         } else {
@@ -1888,7 +1426,6 @@ export default {
           if (this.isEdit) {
             this.getWebhooks()
             this.getTimers()
-            this.getJIRAs()
             this.getCommons()
             this.checkingBuildStageChanged(
               cloneDeep(this.config),

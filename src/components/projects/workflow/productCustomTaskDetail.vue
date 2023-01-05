@@ -125,15 +125,6 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
-        <JobJiraDetail
-          v-if="curJob.type === jobType.jira"
-          :jobInfo="curJob"
-          :taskId="taskId"
-          :workflowName="workflowName"
-          :projectName="projectName"
-          @showFooter="showFooter"
-          :isShowConsoleFooter.sync="isShowConsoleFooter"
-        />
       </footer>
     </Multipane>
     <div v-if="activeName==='env'" class="env">
@@ -187,7 +178,6 @@ import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue
 import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
 import JobScanningDetail from './productCustomTaskDetail/jobScanningDetail.vue'
 import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
-import JobJiraDetail from './productCustomTaskDetail/jobJiraDetail'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 
@@ -219,8 +209,7 @@ export default {
     JobTestDetail,
     JobScanningDetail,
     StageApproval,
-    JobImageDistributeDetail,
-    JobJiraDetail
+    JobImageDistributeDetail
   },
   computed: {
     taskId () {

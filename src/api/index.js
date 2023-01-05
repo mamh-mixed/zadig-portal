@@ -950,8 +950,8 @@ export function getProjectManage (key) {
   return http.get(`/api/aslan/system/project_management?encryptedKey=${key}`)
 }
 
-export function updateProjectManage (payload) {
-  return http.patch(`/api/aslan/system/project_management`, payload)
+export function updateProjectManage (payload, id) {
+  return http.patch(`/api/aslan/system/project_management/${id}`, payload)
 }
 
 export function deleteProjectManage (id) {
