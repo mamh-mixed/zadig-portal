@@ -118,7 +118,7 @@
       <el-row :gutter="20" class="webhook-row" v-for="(item,index) in commons" :key="item.id">
         <el-col :span="2">
           <div class="content">
-            <el-switch v-model="item.enabled" @change="changeJIRAStatus(item)"></el-switch>
+            <el-switch v-model="item.enabled" @change="changeCommonStatus(item)"></el-switch>
           </div>
         </el-col>
         <el-col :span="1">
@@ -1072,7 +1072,7 @@ export default {
         this.$message.success(`定时器已${timer.enabled ? '启用' : '禁用'}`)
       })
     },
-    changeJIRAStatus (JIRA) {
+    changeCommonStatus (JIRA) {
       const projectName = this.projectName
       updateWebhookJiraAPI(projectName, JIRA).then(() => {
         this.getJIRAs()
