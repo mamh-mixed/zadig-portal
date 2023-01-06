@@ -271,23 +271,6 @@
                 </el-table>
               </div>
             </div>
-            <div v-if="job.type==='jira'">
-              <el-form-item label="变更的问题" v-if="job.spec.source==='runtime'">
-                <el-select
-                  v-model="job.pickedTargets"
-                  filterable
-                  multiple
-                  @change="handleIssueChange"
-                  placeholder="请选择"
-                  value-key="key"
-                  size="small"
-                  style="width: 220px;"
-                >
-                  <el-option v-for="item in changedIssues" :key="item.key" :label="`${item.key}/${item.name}`" :value="item">{{item.key}}/{{item.name}}</el-option>
-                </el-select>
-              </el-form-item>
-              <div v-else class="font-gray">{{$t(`workflow.noNeedToEnterVariables`)}}</div>
-            </div>
           </el-collapse-item>
         </div>
       </el-collapse>
@@ -306,8 +289,7 @@ import {
   imagesAPI,
   getCustomWorkfloweTaskPresetAPI,
   getRegistryWhenBuildAPI,
-  getAssociatedBuildsAPI,
-  searchIssueAPI
+  getAssociatedBuildsAPI
 } from '@api'
 import { keyBy, orderBy, cloneDeep } from 'lodash'
 
@@ -347,8 +329,7 @@ export default {
       },
       originServiceAndBuilds: [],
       isShowParams: true,
-      fromJobInfo: {},
-      changedIssues: []
+      fromJobInfo: {}
     }
   },
   props: {
@@ -528,10 +509,6 @@ export default {
               this.fromJobInfo.pickedTargets = cloneDeep(job.spec.targets)
             }
           }
-          if (job.type === 'jira') {
-            job.pickedTargets = job.spec.issues
-            this.searchIssues(job)
-          }
         })
       })
     },
@@ -560,18 +537,6 @@ export default {
           this.handleEnv()
         }
       )
-    },
-    searchIssues (job) {
-      const { project_id, issue_type, target_status } = job.spec
-      if (!project_id || !issue_type) return
-      searchIssueAPI(project_id, issue_type, target_status).then(res => {
-        this.changedIssues = res.map(item => {
-          return { name: item.fields.summary, key: item.key }
-        })
-      })
-    },
-    handleIssueChange (val) {
-      this.$forceUpdate()
     },
     getEnvList () {
       const projectName = this.projectName
@@ -829,9 +794,6 @@ export default {
                 })
               }
             }
-          }
-          if (job.type === 'jira') {
-            delete job.pickedTargets
           }
         })
       })
