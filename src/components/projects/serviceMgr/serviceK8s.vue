@@ -47,7 +47,10 @@
             <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
               <div class="variable-yaml-container" style="margin: 5px 0;">
                 <span style="display: inline-block; margin: 5px 0;">变量配置</span>
-                <el-input type="textarea" :rows="10"  v-model="env.variableYaml"></el-input>
+                 <Resize v-if="env.variableYaml" @sizeChange="changeSize(`codemirror-${env.env_name}`)" :height="'200px'">
+                    <CodeMirror :ref="`codemirror-${env.env_name}`" v-model="env.variableYaml" />
+                 </Resize>
+                <div v-else style="font-size: 12px; text-align: center;">无变量配置</div>
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -155,6 +158,8 @@ import ServiceAside from './k8s/serviceAside.vue'
 import ServiceEditor from './k8s/serviceEditor.vue'
 import ServiceTree from './common/serviceTree.vue'
 import IntegrationCode from './common/integrationCode.vue'
+import Resize from '@/components/common/resize'
+import CodeMirror from '@/components/projects/common/codemirror.vue'
 import { sortBy } from 'lodash'
 import { getSingleProjectAPI, getServiceTemplatesAPI, getServicesTemplateWithSharedAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
@@ -402,6 +407,11 @@ export default {
     showOnboardingNext () {
       this.$router.push(`/v1/projects/create/${this.projectName}/k8s/runtime?serviceName=${this.serviceName}`)
     },
+    changeSize (ref) {
+      this.$nextTick(() => {
+        this.$refs[ref][0].refresh()
+      })
+    },
     getServiceWithConfigs (data) {
       this.serviceWithConfigs = data
     },
@@ -439,7 +449,9 @@ export default {
     ServiceTree,
     Multipane,
     MultipaneResizer,
-    IntegrationCode
+    IntegrationCode,
+    Resize,
+    CodeMirror
   },
   mixins: [mixin]
 }
