@@ -45,13 +45,13 @@
         <div v-if="checkedEnvList.length > 0" class="env-tabs">
           <el-tabs v-model="activeEnvTabName" type="card">
             <el-tab-pane v-for="(env,index) in checkedEnvList"  :key="index" :label="env.env_name" :name="env.env_name">
-              <div class="variable-yaml-container" style="margin: 5px 0;">
+              <div v-if="env.variableYaml" class="variable-yaml-container" style="margin: 5px 0;">
                 <span style="display: inline-block; margin: 5px 0;">变量配置</span>
-                 <Resize v-if="env.variableYaml" @sizeChange="changeSize(`codemirror-${env.env_name}`)" :height="'200px'">
+                 <Resize  @sizeChange="changeSize(`codemirror-${env.env_name}`)" :height="'200px'">
                     <CodeMirror :ref="`codemirror-${env.env_name}`" v-model="env.variableYaml" />
                  </Resize>
-                <div v-else style="font-size: 12px; text-align: center;">无变量配置</div>
               </div>
+              <div v-else style="font-size: 12px; text-align: center;">无变量配置</div>
             </el-tab-pane>
           </el-tabs>
         </div>
