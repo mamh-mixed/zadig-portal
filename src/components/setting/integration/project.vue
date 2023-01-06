@@ -7,7 +7,7 @@
       :visible.sync="dialogJiraAddFormVisible"
     >
       <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'&&errorMessage" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
-      <el-form :model="params" @submit.native.prevent label-position="left" :rules="jiraRules" label-width="120px" ref="form">
+      <el-form :model="params" @submit.native.prevent label-position="left" :rules="jiraRules" label-width="134px" ref="form">
         <el-form-item label="系统类型" prop="type">
           <el-select v-model="params.type" :disabled="operateType==='edit'">
             <el-option label="飞书项目" value="lark" disabled>
@@ -56,36 +56,6 @@
             ></el-input>
           </el-form-item>
         </div>
-        <div v-else>
-          <el-form-item label="访问地址" prop="host">
-            <el-input v-model.trim="params.host" placeholder="飞书项目访问地址" autofocus auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Plugin ID" prop="pluginID">
-            <el-input v-model="params.pluginID" placeholder="飞书 Plugin ID" autofocus auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="Plugin Secret" prop="pluginSecret">
-            <el-input
-              v-model="params.pluginSecret"
-              placeholder="飞书 Plugin Secret"
-              autofocus
-              v-if="dialogJiraAddFormVisible"
-              show-password
-              type="password"
-              auto-complete="off"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="User Key" prop="userKey">
-            <el-input
-              v-model="params.userKey"
-              placeholder="飞书 user_key"
-              autofocus
-              v-if="dialogJiraAddFormVisible"
-              show-password
-              type="password"
-              auto-complete="off"
-            ></el-input>
-          </el-form-item>
-        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" native-type="submit" size="small" @click="updateJiraConfig()" class="start-create">确定</el-button>
@@ -102,7 +72,7 @@
             <el-link
               style="font-size: 14px; vertical-align: baseline;"
               type="primary"
-              :href="`https://docs.koderover.com/zadig/settings/list/`"
+              :href="`https://docs.koderover.com/zadig/settings/jira/`"
               :underline="false"
               target="_blank"
             >帮助文档</el-link>。
@@ -110,7 +80,7 @@
         </el-alert>
       </template>
       <div class="sync-container">
-        <el-button v-if="!isJiraDisabled||!isLarkDisabled" size="small" type="primary" plain @click="handleJiraEdit('add',params)">添加</el-button>
+        <el-button v-if="list.length===0" size="small" type="primary" plain @click="handleJiraEdit('add',params)">添加</el-button>
       </div>
       <el-table :data="list" style="width: 100%;">
         <el-table-column label="访问地址" prop="jira_host"></el-table-column>
@@ -160,6 +130,9 @@ export default {
         jira__token: ''
       },
       jiraRules: {
+        type: {
+          required: true
+        },
         jira_user: {
           required: true,
           message: '请输入用户名',
@@ -180,21 +153,6 @@ export default {
         jira_token: {
           required: true,
           message: '请输入密码',
-          trigger: ['blur', 'change']
-        },
-        pluginID: {
-          required: true,
-          message: '请输入 Plugin ID',
-          trigger: ['blur', 'change']
-        },
-        pluginSecret: {
-          required: true,
-          message: '请输入 Plugin Secret',
-          trigger: ['blur', 'change']
-        },
-        userKey: {
-          required: true,
-          message: '请输入 User Key',
           trigger: ['blur', 'change']
         }
       },
@@ -241,14 +199,7 @@ export default {
     getJiraConfig () {
       const key = this.$utils.rsaEncrypt()
       getProjectManage(key).then(res => {
-        console.log(res)
         this.list = res
-        // if (res) {
-        //   res.access_token = this.$utils.aesDecrypt(res.access_token)
-        //   this.$set(this.list, [0], res)
-        // } else {
-        //   this.$set(this, 'list', [])
-        // }
       })
     },
 

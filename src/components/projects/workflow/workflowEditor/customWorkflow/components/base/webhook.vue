@@ -146,7 +146,7 @@
           <div class="content">
             <div class="cate">
               <span class="title">Webhook Url：</span>
-              <span  v-clipboard:copy="getWebhookUrl(item,'generalhook')"
+              <span  v-clipboard:copy="getWebhookUrl(item)"
                 v-clipboard:success="copyCommandSuccess"
                 v-clipboard:error="copyCommandError"
                 class="el-icon-document-copy copy"></span>
@@ -739,15 +739,11 @@ export default {
     validate () {
       return this.$refs.buildEnvRef.validate()
     },
-    getWebhookUrl (item, type) {
+    getWebhookUrl (item) {
       const workflowName = this.workflowName
       const hookName = item.name
       const host = `${window.location.protocol}//${window.location.host}`
-      if (type === 'jira') {
-        return `${host}/api/aslan/system/project_management/jira/webhook/${workflowName}/${hookName}`
-      } else {
-        return `${host}/api/aslan/workflow/v4/${workflowName}/${hookName}/webhook`
-      }
+      return `${host}/api/aslan/workflow/v4/generalhook/${workflowName}/${hookName}/webhook`
     },
     copyCommandSuccess (event) {
       this.$message({
