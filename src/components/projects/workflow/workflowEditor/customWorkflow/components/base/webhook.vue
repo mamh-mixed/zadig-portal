@@ -16,7 +16,7 @@
         <el-col :span="6">
           <div class="content">
             <div class="cate">
-              <span class="title">名称：</span>
+              <span class="title">{{$t(`global.name`)}}</span>
               <span class="desc">{{item.name}}</span>
             </div>
             <div class="cate">
@@ -53,7 +53,7 @@
         <el-col :span="4">
           <div class="content">
             <div class="cate">
-              <span class="title">描述：</span>
+              <span class="title">{{$t(`global.desc`)}}</span>
             </div>
             <div class="cate">
               <span class="desc">{{item.description}}</span>
@@ -129,7 +129,7 @@
         <el-col :span="6">
           <div class="content">
             <div class="cate">
-              <span class="title">名称：</span>
+              <span class="title">{{$t(`global.name`)}}</span>
               <span>{{item.name}}</span>
             </div>
           </div>
@@ -137,7 +137,7 @@
         <el-col :span="9">
           <div class="content">
             <div class="cate">
-              <span class="title">描述：</span>
+              <span class="title">{{$t(`global.desc`)}}</span>
               <span>{{item.description}}</span>
             </div>
           </div>
@@ -146,10 +146,12 @@
           <div class="content">
             <div class="cate">
               <span class="title">Webhook Url：</span>
-              <span  v-clipboard:copy="getWebhookUrl(item)"
+              <span
+                v-clipboard:copy="getWebhookUrl(item,'generalhook')"
                 v-clipboard:success="copyCommandSuccess"
                 v-clipboard:error="copyCommandError"
-                class="el-icon-document-copy copy"></span>
+                class="el-icon-document-copy copy"
+              ></span>
             </div>
           </div>
         </el-col>
@@ -396,27 +398,27 @@
       </div>
     </el-dialog>
     <el-dialog
-      :title="commonEditMode?'编辑通用项目':'添加通用项目'"
+      :title="commonEditMode?$t(`workflow.editCommonWebhook`):$t(`workflow.addCommonWebhook`)"
       :visible.sync="commonDialogVisible"
       width="700px"
       :close-on-click-modal="false"
       append-to-body
     >
-      <el-form :model="currentCommon" ref="commonForm" :rules="commonRules" label-width="100px" label-position="left">
-        <el-form-item label="名称" prop="name">
+      <el-form :model="currentCommon" ref="commonForm" :rules="commonRules" label-width="110px" label-position="left">
+        <el-form-item :label="$t(`global.name`)" prop="name">
           <el-input v-model="currentCommon.name" :disabled="commonEditMode" placeholder="请输入名称"></el-input>
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item :label="$t(`global.desc`)">
           <el-input v-model="currentCommon.description" placeholder="请输入描述"></el-input>
         </el-form-item>
       </el-form>
       <div style="margin: 10px 0;">
-        <span style="display: inline-block; margin-bottom: 10px;">工作流执行变量</span>
+        <span style="display: inline-block; margin-bottom: 10px;">{{$t(`workflow.workflowExecutionVariables`)}}</span>
         <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentCommon.workflow_arg" />
       </div>
       <div slot="footer">
-        <el-button @click="commonDialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="saveCommon" size="small">确 定</el-button>
+        <el-button @click="commonDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
+        <el-button type="primary" @click="saveCommon" size="small">{{$t(`global.confirm`)}}</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -452,8 +454,8 @@
             <span class="iconfont icontongyonggongju"></span>
           </div>
           <div class="detail">
-            <h4 class="trigger-title">通用触发器</h4>
-            <span class="trigger-desc">第三方系统 Webhook 触发</span>
+            <h4 class="trigger-title">{{$t(`workflow.commonWebhook`)}}</h4>
+            <span class="trigger-desc">{{$t(`workflow.commonWebhookTip`)}}</span>
           </div>
         </div>
       </div>
@@ -1241,15 +1243,8 @@ export default {
       this.commonEditMode = true
       const currentCommon = cloneDeep(item)
       const name = currentCommon.name
-      const preset = await getWebhookCommonPresetAPI(
-        workflowName,
-        name
-      )
-      this.$set(
-        currentCommon,
-        'workflow_arg',
-        cloneDeep(preset.workflow_arg)
-      )
+      const preset = await getWebhookCommonPresetAPI(workflowName, name)
+      this.$set(currentCommon, 'workflow_arg', cloneDeep(preset.workflow_arg))
       this.currentCommon = currentCommon
       this.commonDialogVisible = true
     },
@@ -1333,10 +1328,7 @@ export default {
               this.getCommons()
             }
           } else {
-            const result = await addWebhookCommonAPI(
-              workflowName,
-              payload
-            )
+            const result = await addWebhookCommonAPI(workflowName, payload)
             if (result) {
               this.$message.success('添加成功')
               this.$refs.commonForm.resetFields()

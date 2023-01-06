@@ -864,7 +864,25 @@ exports.default = {
     saveLastJobconfigFirst: '请先保存上一个任务配置',
     confirmDelStage: '确定删除阶段 {name}',
     duplicateJobName: 'Job 名称重复',
-    inputTargetImage: `请填写 {serviceName} 中的目标镜像版本`
+    inputTargetImage: `请填写 {serviceName} 中的目标镜像版本`,
+    addJIRAWebhook: '添加 JIRA 触发器',
+    editJIRAWebhook: '编辑 JIRA 触发器',
+    addLarkWebhook: '添加飞书项目',
+    editLarkWebhook: '编辑飞书项目',
+    addCommonWebhook: '添加通用项目',
+    editCommonWebhook: '编辑通用项目',
+    JIRAWebhook: 'JIRA 触发器',
+    JIRAWebhookTip: 'JIRA 问题状态变更触发',
+    larkWebhook: '飞书项目触发器',
+    larkWebhookTip: '飞书工作项状态变更触发',
+    commonWebhook: '通用触发器',
+    commonWebhookTip: '第三方系统 Webhook 触发',
+    jiraProject: 'Jira 项目',
+    issueType: '问题类型',
+    changedIssue: '变更的问题',
+    targetStatus: '目标状态',
+    keyword: '关键字',
+    outline: '概要'
   },
   webhookType: {
     dingding: '钉钉',
@@ -1276,6 +1294,19 @@ exports.default = {
         account: '账号系统名称',
         accountType: '账号系统类型',
         custom: '自定义'
+      },
+      project: {
+        sysType: '系统类型',
+        addProjectManageSys: '添加项目管理系统',
+        editProjectManageSys: '编辑项目管理系统',
+        address: '访问地址',
+        userName: '用户名',
+        token: '密码/Token',
+        configurationAddedSuccessfully: '配置添加成功',
+        configurationModifiedSuccessfully: '配置修改成功',
+        configurationDelSuccessfully: '配置删除成功',
+        referToDoc: '支持集成 Jira 和 飞书项目管理系统，详情可参考',
+        confirmDel: '确定要删除这个配置吗？'
       }
     },
     packages: {
