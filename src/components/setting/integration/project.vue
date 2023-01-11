@@ -62,6 +62,7 @@
           type="primary"
           native-type="submit"
           size="small"
+          :disabled="checkRes==='fail'"
           @click="updateJiraConfig()"
           class="start-create"
         >{{$t(`global.confirm`)}}</el-button>

@@ -56,7 +56,9 @@
               <span class="title">{{$t(`global.desc`)}}</span>
             </div>
             <div class="cate">
-              <span class="desc">{{item.description}}</span>
+              <span class="desc">
+                <el-tooltip effect="dark" :content="item.description" placement="top"><span>{{ $utils.tailCut(item.description, 10) }}</span></el-tooltip>
+              </span>
             </div>
           </div>
         </el-col>
@@ -84,7 +86,7 @@
         <el-col :span="6">
           <div class="content">
             <div class="cate">
-              <span class="title">{{$t(`workflow.triggerWay`)}}</span>
+              <span class="title">{{$t(`workflow.triggerWay`)}}：</span>
               <span v-if="item.job_type === 'timing'" class="desc">{{$t(`triggerWay.timing`)}}</span>
               <span v-else-if="item.job_type === 'gap'" class="desc">{{$t(`triggerWay.gap`)}}</span>
               <span v-else-if="item.job_type === 'crontab'" class="desc">{{$t(`triggerWay.crontab`)}}</span>
@@ -129,16 +131,16 @@
         <el-col :span="6">
           <div class="content">
             <div class="cate">
-              <span class="title">{{$t(`global.name`)}}</span>
-              <span>{{item.name}}</span>
+              <span class="title">{{$t(`global.name`)}}：</span>
+              <el-tooltip effect="dark" :content="item.name" placement="top"><span>{{ $utils.tailCut(item.name, 10) }}</span></el-tooltip>
             </div>
           </div>
         </el-col>
         <el-col :span="9">
           <div class="content">
             <div class="cate">
-              <span class="title">{{$t(`global.desc`)}}</span>
-              <span>{{item.description}}</span>
+              <span class="title">{{$t(`global.desc`)}}：</span>
+              <el-tooltip effect="dark" :content="item.description" placement="top"><span>{{ $utils.tailCut(item.description, 10) }}</span></el-tooltip>
             </div>
           </div>
         </el-col>
@@ -190,7 +192,7 @@
             :placeholder="$t(`global.inputName`)"
           ></el-input>
         </el-form-item>
-        <el-form-item :label="$t('global.desc')" prop="description">
+        <el-form-item :label="$t(`global.desc`)" prop="description">
           <el-input size="small" type="textarea" v-model="currentWebhook.description" placeholder="请输入描述"></el-input>
         </el-form-item>
         <el-form-item :label="$t(`global.repository`)" prop="repo">
@@ -406,10 +408,10 @@
     >
       <el-form :model="currentCommon" ref="commonForm" :rules="commonRules" label-width="110px" label-position="left">
         <el-form-item :label="$t(`global.name`)" prop="name">
-          <el-input v-model="currentCommon.name" :disabled="commonEditMode" placeholder="请输入名称"></el-input>
+          <el-input v-model="currentCommon.name" size="small" :disabled="commonEditMode" placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item :label="$t(`global.desc`)">
-          <el-input v-model="currentCommon.description" placeholder="请输入描述"></el-input>
+          <el-input v-model="currentCommon.description" size="small" placeholder="请输入描述"></el-input>
         </el-form-item>
       </el-form>
       <div style="margin: 10px 0;">
@@ -741,7 +743,7 @@ export default {
     validate () {
       return this.$refs.buildEnvRef.validate()
     },
-    getWebhookUrl (item) {
+    getWebhookUrl (item, type) {
       const workflowName = this.workflowName
       const hookName = item.name
       const host = `${window.location.protocol}//${window.location.host}`
@@ -882,157 +884,8 @@ export default {
           delete payload.repo
           const workflowName = this.workflowName
           const projectName = this.projectName
-          payload.workflow_arg.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              if (job.type === 'zadig-build') {
-                if (
-                  job.spec.service_and_builds &&
-                  job.spec.service_and_builds.length > 0
-                ) {
-                  job.spec.service_and_builds = job.pickedTargets
-                  job.spec.service_and_builds.forEach(item => {
-                    if (item.repos) {
-                      item.repos.forEach(repo => {
-                        if (typeof repo.prs === 'string') {
-                          repo.prs = repo.prs.split(',').map(Number)
-                        }
-                        if (repo.branchOrTag) {
-                          if (repo.branchOrTag.type === 'branch') {
-                            repo.branch = repo.branchOrTag.name
-                          }
-                          if (repo.branchOrTag.type === 'tag') {
-                            repo.tag = repo.branchOrTag.name
-                          }
-                        }
-                      })
-                    }
-                  })
-                  delete job.pickedTargets
-                }
-              }
-              if (job.type === 'freestyle') {
-                job.spec.steps.forEach(step => {
-                  if (step.type === 'git') {
-                    step.spec.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
-                        }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
-                        }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'zadig-deploy') {
-                job.spec.service_and_images = cloneDeep(job.pickedTargets)
-                if (
-                  job.spec.service_and_images &&
-                  job.spec.service_and_images.length > 0
-                ) {
-                  job.spec.service_and_images.forEach(item => {
-                    delete item.images
-                  })
-                  delete job.pickedTargets
-                }
-              }
-              if (job.type === 'custom-deploy') {
-                job.spec.targets = cloneDeep(job.pickedTargets)
-                delete job.pickedTargets
-              }
-              if (job.type === 'zadig-test') {
-                job.spec.test_modules = cloneDeep(job.pickedTargets)
-                if (job.spec.test_modules && job.spec.test_modules.length > 0) {
-                  job.spec.test_modules.forEach(item => {
-                    if (item.repos) {
-                      item.repos.forEach(repo => {
-                        if (typeof repo.prs === 'string') {
-                          repo.prs = repo.prs.split(',').map(Number)
-                        }
-                        if (repo.branchOrTag) {
-                          if (repo.branchOrTag.type === 'branch') {
-                            repo.branch = repo.branchOrTag.name
-                          }
-                          if (repo.branchOrTag.type === 'tag') {
-                            repo.tag = repo.branchOrTag.name
-                          }
-                        }
-                      })
-                    }
-                  })
-                }
-                delete job.pickedTargets
-              }
-              if (job.type === 'zadig-scanning') {
-                job.spec.scannings = cloneDeep(job.pickedTargets)
-                if (job.spec.scannings && job.spec.scannings.length > 0) {
-                  job.spec.scannings.forEach(item => {
-                    if (item.repos) {
-                      item.repos.forEach(repo => {
-                        if (typeof repo.prs === 'string') {
-                          repo.prs = repo.prs.split(',').map(Number)
-                        }
-                        if (repo.branchOrTag) {
-                          if (repo.branchOrTag.type === 'branch') {
-                            repo.branch = repo.branchOrTag.name
-                          }
-                          if (repo.branchOrTag.type === 'tag') {
-                            repo.tag = repo.branchOrTag.name
-                          }
-                        }
-                      })
-                    }
-                  })
-                }
-                delete job.pickedTargets
-              }
-              if (job.type === 'zadig-distribute-image') {
-                if (job.spec.source === 'runtime') {
-                  job.spec.targets = cloneDeep(job.pickedTargets)
-                  job.spec.targets.forEach(item => {
-                    delete item.images
-                  })
-                  delete job.pickedTargets
-                } else {
-                  // fromjob
-                  if (
-                    payload.workflow_arg.fromJobInfo.pickedTargets &&
-                    payload.workflow_arg.fromJobInfo.pickedTargets.length > 0
-                  ) {
-                    payload.workflow_arg.fromJobInfo.pickedTargets.forEach(
-                      item => {
-                        if (item.update_tag && !item.target_tag) {
-                          this.$message.error(
-                            this.$t(`workflow.inputTargetImage`, {
-                              serviceName: item.service_name
-                            })
-                          )
-                          throw Error()
-                        }
-                      }
-                    )
-                    job.spec.targets = payload.workflow_arg.fromJobInfo.pickedTargets.map(
-                      item => {
-                        return {
-                          service_name: item.service_name,
-                          service_module: item.service_module,
-                          source_tag: item.source_tag,
-                          target_tag: item.target_tag,
-                          update_tag: item.update_tag
-                        }
-                      }
-                    )
-                    delete payload.workflow_arg.fromJobInfo
-                  }
-                }
-              }
-            })
-          })
+          this.handleSavePayload(payload.workflow_arg.stages)
+
           if (this.webhookEditMode) {
             const result = await updateCustomWebhookAPI(
               projectName,
@@ -1070,11 +923,13 @@ export default {
         this.$message.success(`定时器已${timer.enabled ? '启用' : '禁用'}`)
       })
     },
-    changeCommonStatus (JIRA) {
-      const projectName = this.projectName
-      updateWebhookJiraAPI(projectName, JIRA).then(() => {
-        this.getJIRAs()
-        this.$message.success(`JIRA 已${JIRA.enabled ? '启用' : '禁用'}`)
+    changeCommonStatus (common) {
+      const workflowName = this.workflowName
+      updateWebhookCommonAPI(workflowName, common).then(() => {
+        this.getCommons()
+        this.$message.success(
+          `通用触发器 已${common.enabled ? '启用' : '禁用'}`
+        )
       })
     },
     async getTimers () {
@@ -1133,64 +988,8 @@ export default {
           const payload = cloneDeep(this.currentTimer)
           const workflowName = this.workflowName
           const projectName = this.projectName
-          payload.workflow_v4_args.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              job.spec.service_and_builds = job.pickedTargets
-              if (
-                job.spec.service_and_images &&
-                job.spec.service_and_images.length > 0
-              ) {
-                job.spec.service_and_images.forEach(item => {
-                  delete item.images
-                })
-              }
-              if (
-                job.spec.service_and_builds &&
-                job.spec.service_and_builds.length > 0
-              ) {
-                job.spec.service_and_builds.forEach(item => {
-                  if (item.repos) {
-                    item.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
-                        }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
-                        }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'freestyle') {
-                job.spec.steps.forEach(step => {
-                  if (step.type === 'git') {
-                    step.spec.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
-                        }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
-                        }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'zadig-deploy') {
-                job.spec.service_and_images = job.spec.service_and_builds
-                delete job.spec.service_and_builds
-              }
-            })
-          })
+          this.handleSavePayload(payload.workflow_v4_args.stages)
+
           if (this.timerEditMode) {
             const result = await updateCustomTimerAPI(projectName, payload)
             if (result) {
@@ -1260,65 +1059,7 @@ export default {
         if (valid) {
           const payload = cloneDeep(this.currentCommon)
           const workflowName = this.workflowName
-          payload.workflow_arg.stages.forEach(stage => {
-            stage.jobs.forEach(job => {
-              job.spec.service_and_builds = job.pickedTargets
-              delete job.pickedTargets
-              if (
-                job.spec.service_and_images &&
-                job.spec.service_and_images.length > 0
-              ) {
-                job.spec.service_and_images.forEach(item => {
-                  delete item.images
-                })
-              }
-              if (
-                job.spec.service_and_builds &&
-                job.spec.service_and_builds.length > 0
-              ) {
-                job.spec.service_and_builds.forEach(item => {
-                  if (item.repos) {
-                    item.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
-                        }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
-                        }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'freestyle') {
-                job.spec.steps.forEach(step => {
-                  if (step.type === 'git') {
-                    step.spec.repos.forEach(repo => {
-                      if (typeof repo.prs === 'string') {
-                        repo.prs = repo.prs.split(',').map(Number)
-                      }
-                      if (repo.branchOrTag) {
-                        if (repo.branchOrTag.type === 'branch') {
-                          repo.branch = repo.branchOrTag.name
-                        }
-                        if (repo.branchOrTag.type === 'tag') {
-                          repo.tag = repo.branchOrTag.name
-                        }
-                      }
-                    })
-                  }
-                })
-              }
-              if (job.type === 'zadig-deploy') {
-                job.spec.service_and_images = job.spec.service_and_builds
-                delete job.spec.service_and_builds
-              }
-            })
-          })
+          this.handleSavePayload(payload.workflow_arg.stages)
           if (this.commonEditMode) {
             const result = await updateWebhookCommonAPI(workflowName, payload)
             if (result) {
@@ -1379,6 +1120,66 @@ export default {
             this.$emit('closeDrawer')
           })
       }
+    },
+    handleSavePayload (stages) {
+      stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          job.spec.service_and_builds = job.pickedTargets
+          if (
+            job.spec.service_and_images &&
+            job.spec.service_and_images.length > 0
+          ) {
+            job.spec.service_and_images.forEach(item => {
+              delete item.images
+            })
+          }
+          if (
+            job.spec.service_and_builds &&
+            job.spec.service_and_builds.length > 0
+          ) {
+            job.spec.service_and_builds.forEach(item => {
+              if (item.repos) {
+                item.repos.forEach(repo => {
+                  if (typeof repo.prs === 'string') {
+                    repo.prs = repo.prs.split(',').map(Number)
+                  }
+                  if (repo.branchOrTag) {
+                    if (repo.branchOrTag.type === 'branch') {
+                      repo.branch = repo.branchOrTag.name
+                    }
+                    if (repo.branchOrTag.type === 'tag') {
+                      repo.tag = repo.branchOrTag.name
+                    }
+                  }
+                })
+              }
+            })
+          }
+          if (job.type === 'freestyle') {
+            job.spec.steps.forEach(step => {
+              if (step.type === 'git') {
+                step.spec.repos.forEach(repo => {
+                  if (typeof repo.prs === 'string') {
+                    repo.prs = repo.prs.split(',').map(Number)
+                  }
+                  if (repo.branchOrTag) {
+                    if (repo.branchOrTag.type === 'branch') {
+                      repo.branch = repo.branchOrTag.name
+                    }
+                    if (repo.branchOrTag.type === 'tag') {
+                      repo.tag = repo.branchOrTag.name
+                    }
+                  }
+                })
+              }
+            })
+          }
+          if (job.type === 'zadig-deploy') {
+            job.spec.service_and_images = job.spec.service_and_builds
+            delete job.spec.service_and_builds
+          }
+        })
+      })
     }
   },
   watch: {
