@@ -710,7 +710,8 @@ exports.default = {
       k8sGrayRollback: 'Gray Rollback',
       grayDeploy: 'Gray Release',
       istioRelease: 'Istio Release',
-      istioRollback: 'Istio Rollback'
+      istioRollback: 'Istio Rollback',
+      jira: 'JIRA Issue Status Change'
     },
     imageName: 'Image Name',
     deploymentEnv: 'Environment',
@@ -863,7 +864,25 @@ exports.default = {
     saveLastJobconfigFirst: 'Please save the previous task configuration first',
     confirmDelStage: 'Confirm delete "{name}" stage ?',
     duplicateJobName: 'Duplicate Job Name',
-    inputTargetImage: `Please fill in the target image version in {serviceName}`
+    inputTargetImage: `Please fill in the target image version in {serviceName}`,
+    addJIRAWebhook: 'Add JIRA Webhook',
+    editJIRAWebhook: 'Edit JIRA Webhook',
+    addLarkWebhook: 'Add Lark Webhook',
+    editLarkWebhook: 'Edit Lark Webhook',
+    addCommonWebhook: 'Add Common Webhook',
+    editCommonWebhook: 'Edit Common Webhook',
+    JIRAWebhook: 'JIRA Webhook',
+    JIRAWebhookTip: 'JIRA Issue Status Change Trigger',
+    larkWebhook: 'Lark Webhook',
+    larkWebhookTip: 'Trigger of flying book work item status change',
+    commonWebhook: 'Common Webhook',
+    commonWebhookTip: 'Triggered by third-party system Webhook',
+    jiraProject: 'Jira Project',
+    issueType: 'Issue Type',
+    changedIssue: 'Changed Issue',
+    targetStatus: 'Target Status',
+    keyword: 'Keyword',
+    outline: 'Outline'
   },
   webhookType: {
     dingding: 'DingDing',
@@ -1275,6 +1294,19 @@ exports.default = {
         account: 'Account',
         accountType: 'Type',
         custom: 'Custom'
+      },
+      project: {
+        sysType: 'System Type',
+        addProjectManageSys: 'Add Project Management System',
+        editProjectManageSys: 'Edit Project Management System',
+        address: 'Access Address',
+        userName: 'User Name',
+        token: 'Password/Token',
+        configurationAddedSuccessfully: 'Configuration Added Successfully',
+        configurationModifiedSuccessfully: 'Configuration Modified Successfully',
+        configurationDelSuccessfully: 'Configuration Delete Successfully',
+        referToDoc: 'Support the integration of Jira and Feishu project management systems. For details, please refer to',
+        confirmDel: 'Are you sure you want to delete this configuration?'
       }
     },
     packages: {

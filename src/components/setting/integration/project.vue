@@ -1,157 +1,103 @@
 <template>
   <div class="integration-project-container">
-
-    <!--start of edit jira dialog-->
-    <el-dialog title="Jira 配置-修改"
-               :close-on-click-modal="false"
-               custom-class="edit-form-dialog"
-               :visible.sync="dialogJiraEditFormVisible">
-      <el-form :model="jiraEdit"
-               @submit.native.prevent
-               label-position="left"
-               :rules="jiraRules"
-               label-width="100px"
-               class="mg-t32"
-               ref="jiraEditForm">
-        <el-form-item label="Jira 地址"
-                      prop="host">
-          <el-input v-model.trim="jiraEdit.host"
-                    placeholder="企业 Jira 地址"
-                    autofocus
-                    auto-complete="off"></el-input>
+    <el-dialog
+      :title="operateType==='add'?$t(`sysSetting.integration.project.addProjectManageSys`):$t(`sysSetting.integration.project.editProjectManageSys`)"
+      :close-on-click-modal="false"
+      custom-class="edit-form-dialog"
+      :visible.sync="dialogJiraAddFormVisible"
+    >
+      <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'&&errorMessage" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
+      <el-form :model="params" @submit.native.prevent label-position="left" :rules="jiraRules" label-width="134px" ref="form">
+        <el-form-item :label="$t(`sysSetting.integration.project.sysType`)" prop="type">
+          <el-select v-model="params.type" :disabled="operateType==='edit'">
+            <el-option label="飞书项目" value="lark" disabled>
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    href="https://docs.koderover.com/settings/lark/"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span>
+                  <img src="@assets/icons/others/lark.png" alt="lark" style="width: 16px; height: 16px; vertical-align: text-bottom;" />
+                  <span>飞书项目</span>
+                  <i class="el-icon-warning"></i>
+                </span>
+              </el-tooltip>
+            </el-option>
+            <el-option label="Jira" value="jira" :disabled="isJiraDisabled">
+              <i class="config-icon iconfont iconjira"></i>
+              <span>Jira</span>
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="用户名"
-                      prop="user">
-          <el-input v-model="jiraEdit.user"
-                    placeholder="有读写 Issue 权限的用户"
-                    autofocus
-                    auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="密码"
-                      prop="access_token">
-          <el-input v-model="jiraEdit.access_token"
-                    placeholder="用户密码"
-                    autofocus
-                    v-if="dialogJiraEditFormVisible"
-                    show-password
-                    type="password"
-                    auto-complete="off"></el-input>
-        </el-form-item>
+        <div v-if="params.type==='jira'">
+          <el-form-item :label="$t(`sysSetting.integration.project.address`)" prop="jira_host">
+            <el-input v-model.trim="params.jira_host" placeholder="Jira 访问地址" autofocus auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t(`sysSetting.integration.project.userName`)" prop="jira_user">
+            <el-input v-model="params.jira_user" placeholder="有 issue 读写权限的用户名" autofocus auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item :label="$t(`sysSetting.integration.project.token`)" prop="jira_token">
+            <el-input
+              v-model="params.jira_token"
+              placeholder="用户密码/Access Token"
+              autofocus
+              v-if="dialogJiraAddFormVisible"
+              show-password
+              @blur="validate"
+              :suffix-icon="showCheckIcon"
+              type="password"
+              auto-complete="off"
+            ></el-input>
+          </el-form-item>
+        </div>
       </el-form>
-      <div slot="footer"
-           class="dialog-footer">
-        <el-button type="primary"
-                   native-type="submit"
-                   size="small"
-                   @click="updateJiraConfig()"
-                   class="start-create">{{$t(`global.confirm`)}}</el-button>
-        <el-button plain
-                   native-type="submit"
-                   size="small"
-                   @click="handleJiraCancel()">{{$t(`global.cancel`)}}</el-button>
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          type="primary"
+          native-type="submit"
+          size="small"
+          :disabled="checkRes==='fail'"
+          @click="updateJiraConfig()"
+          class="start-create"
+        >{{$t(`global.confirm`)}}</el-button>
+        <el-button plain native-type="submit" size="small" @click="handleJiraCancel()">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
-    <!--end of edit jira dialog-->
+    <!--end of edit list dialog-->
 
-    <!--start of edit jira dialog-->
-    <el-dialog title="Jira 配置-添加"
-               :close-on-click-modal="false"
-               custom-class="edit-form-dialog"
-               :visible.sync="dialogJiraAddFormVisible">
-      <el-form :model="jiraAdd"
-               @submit.native.prevent
-               :rules="jiraRules"
-               label-position="left"
-               label-width="100px"
-               class="mg-t32"
-               ref="jiraAddForm">
-        <el-form-item label="Jira 地址"
-                      prop="host">
-          <el-input v-model.trim="jiraAdd.host"
-                    placeholder="企业 Jira 地址"
-                    autofocus
-                    auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="用户名"
-                      prop="user">
-          <el-input v-model="jiraAdd.user"
-                    placeholder="有读写 Issue 权限的用户"
-                    autofocus
-                    auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="密码"
-                      prop="access_token">
-          <el-input v-model="jiraAdd.access_token"
-                    placeholder="用户密码"
-                    autofocus
-                    show-password
-                    type="password"
-                    auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer"
-           class="dialog-footer">
-        <el-button type="primary"
-                   native-type="submit"
-                   size="small"
-                   @click="createJiraConfig()"
-                   class="start-create">{{$t(`global.confirm`)}}</el-button>
-        <el-button plain
-                   native-type="submit"
-                   size="small"
-                   @click="handleJiraCancel()">{{$t(`global.cancel`)}}</el-button>
-      </div>
-    </el-dialog>
-    <!--end of edit jira dialog-->
     <div class="tab-container">
       <template>
-        <el-alert type="info"
-                  :closable="false">
+        <el-alert type="info" :closable="false">
           <template>
-            企业版支持深度集成 Jira 和飞书项目管理，详情参考
-            <el-link style="font-size: 14px; vertical-align: baseline;"
-                     type="primary"
-                     :href="`https://docs.koderover.com/zadig/settings/jira/`"
-                     :underline="false"
-                     target="_blank">{{$t(`global.document`)}}</el-link> 。
+            {{$t(`sysSetting.integration.project.referToDoc`)}}
+            <el-link
+              style="font-size: 14px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/zadig/settings/jira/`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.helpDoc`)}}</el-link>
           </template>
         </el-alert>
       </template>
       <div class="sync-container">
-        <el-button v-if="jira.length === 0"
-                   size="small"
-                   type="primary"
-                   plain
-                   @click="handleJiraAdd">{{$t(`global.add`)}}</el-button>
+        <el-button v-if="list.length===0" size="small" type="primary" plain @click="handleJiraEdit('add',params)">{{$t(`global.add`)}}</el-button>
       </div>
-      <el-table :data="jira"
-                style="width: 100%;">
-        <el-table-column label="Jira 地址">
-          <template slot-scope="scope">
-            {{scope.row.host}}
-          </template>
+      <el-table :data="list" style="width: 100%;">
+        <el-table-column :label="$t(`sysSetting.integration.project.address`)" prop="jira_host"></el-table-column>
+        <el-table-column :label="$t(`sysSetting.integration.gitProviders.lastUpdated`)">
+          <template slot-scope="scope">{{ $utils.convertTimestamp(scope.row.updated_at)}}</template>
         </el-table-column>
-        <el-table-column label="用户名">
+        <el-table-column :label="$t(`global.operation`)" width="160">
           <template slot-scope="scope">
-            {{scope.row.user}}
-          </template>
-        </el-table-column>
-        <el-table-column label="密码">
-          <template>
-            **********
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t(`global.operation`)"
-                         width="160">
-          <template slot-scope="scope">
-            <el-button type="primary"
-                       size="mini"
-                       plain
-                       @click="handleJiraEdit(scope.row)">{{$t(`global.edit`)}}</el-button>
-            <el-button type="danger"
-                       size="mini"
-                       @click="handleJiraDelete"
-                       plain>{{$t(`global.delete`)}}</el-button>
+            <el-button type="primary" size="mini" plain @click="handleJiraEdit('edit',scope.row)">{{$t(`global.edit`)}}</el-button>
+            <el-button type="danger" size="mini" @click="handleJiraDelete(scope.row)" plain>{{$t(`global.delete`)}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -160,7 +106,11 @@
 </template>
 <script>
 import {
-  getJiraAPI, updateJiraAPI, deleteJiraAPI, createJiraAPI
+  getProjectManage,
+  updateProjectManage,
+  deleteProjectManage,
+  createProjectManage,
+  checkProjectManage
 } from '@api'
 const validateJiraURL = (rule, value, callback) => {
   if (value === '') {
@@ -178,121 +128,164 @@ export default {
     return {
       tabPosition: 'top',
       activeTab: '',
-      jira: [],
-      jiraAdd: {
-        host: '',
-        user: '',
-        access_token: ''
-      },
-      jiraEdit: {
-        host: '',
-        user: '',
-        access_token: ''
+      operateType: 'add',
+      list: [],
+      params: {
+        type: 'jira',
+        jira_host: '',
+        jira_user: '',
+        jira__token: ''
       },
       jiraRules: {
-        user: {
+        type: {
+          required: true
+        },
+        jira_user: {
           required: true,
           message: '请输入用户名',
           trigger: ['blur', 'change']
         },
-        host: [{
-          required: true,
-          message: '请输入 Host',
-          trigger: 'blur'
-        }, {
-          required: true,
-          validator: validateJiraURL,
-          trigger: ['blur', 'change']
-        }],
-        access_token: {
+        jira_host: [
+          {
+            required: true,
+            message: '请输入 Host',
+            trigger: 'blur'
+          },
+          {
+            required: true,
+            validator: validateJiraURL,
+            trigger: ['blur', 'change']
+          }
+        ],
+        jira_token: {
           required: true,
           message: '请输入密码',
           trigger: ['blur', 'change']
         }
       },
       dialogJiraAddFormVisible: false,
-      dialogJiraEditFormVisible: false
+      checkRes: '',
+      errorMessage: ''
+    }
+  },
+  computed: {
+    isLarkDisabled () {
+      return this.list.filter(item => item.type === 'lark').length > 0
+    },
+    isJiraDisabled () {
+      return this.list.filter(item => item.type === 'jira').length > 0
+    },
+    showCheckIcon () {
+      if (this.checkRes === 'pass') {
+        return 'el-icon-success'
+      } else if (this.checkRes === 'fail') {
+        return 'el-icon-error'
+      } else {
+        return ''
+      }
     }
   },
   methods: {
+    validate () {
+      const { type, jira_host, jira_user, jira_token } = this.params
+      const params = { type, jira_host, jira_user, jira_token }
+      checkProjectManage(params)
+        .then(res => {
+          if (res && res.message === 'success') {
+            this.checkRes = 'pass'
+          }
+        })
+        .catch(error => {
+          this.checkRes = 'fail'
+          this.errorMessage = error.response.data.message
+        })
+    },
     clearValidate (ref) {
       this.$refs[ref].clearValidate()
     },
     getJiraConfig () {
       const key = this.$utils.rsaEncrypt()
-      getJiraAPI(key).then((res) => {
-        if (res) {
-          res.access_token = this.$utils.aesDecrypt(res.access_token)
-          this.$set(this.jira, [0], res)
-        } else {
-          this.$set(this, 'jira', [])
-        }
+      getProjectManage(key).then(res => {
+        this.list = res
       })
     },
-    handleJiraAdd () {
+
+    handleJiraEdit (type, row) {
+      this.operateType = type
       this.dialogJiraAddFormVisible = true
+      this.params = this.$utils.cloneObj(row)
     },
-    handleJiraEdit (row) {
-      this.dialogJiraEditFormVisible = true
-      this.jiraEdit = this.$utils.cloneObj(row)
-    },
-    handleJiraDelete () {
-      this.$confirm(`确定要删除这个 Jira 配置吗？`, '确认', {
-        confirmButtonText: this.$t(`global.confirm`),
-        cancelButtonText: this.$t(`global.cancel`),
-        type: 'warning'
-      }).then(() => {
-        deleteJiraAPI().then((res) => {
+    handleJiraDelete (item) {
+      this.$confirm(
+        this.$t(`sysSetting.integration.project.confirmDel`),
+        this.$t(`global.confirmation`),
+        {
+          confirmButtonText: this.$t(`global.confirm`),
+          cancelButtonText: this.$t(`global.cancel`),
+          type: 'warning'
+        }
+      ).then(() => {
+        deleteProjectManage(item.id).then(res => {
           this.getJiraConfig()
           this.$message({
-            message: 'Jira 配置删除成功',
+            message: this.$t(
+              `sysSetting.integration.project.configurationDelSuccessfully`
+            ),
             type: 'success'
           })
         })
       })
     },
-    createJiraConfig () {
-      this.$refs.jiraAddForm.validate((valid) => {
-        if (valid) {
-          const payload = this.jiraAdd
-          createJiraAPI(payload).then((res) => {
-            this.getJiraConfig()
-            this.handleJiraCancel()
-            this.$message({
-              message: 'Jira 配置添加成功',
-              type: 'success'
-            })
-          })
-        } else {
-          return false
-        }
-      })
-    },
     updateJiraConfig () {
-      this.$refs.jiraEditForm.validate((valid) => {
+      this.$refs.form.validate(valid => {
         if (valid) {
-          const payload = this.jiraEdit
-          updateJiraAPI(payload).then((res) => {
-            this.getJiraConfig()
-            this.handleJiraCancel()
-            this.$message({
-              message: 'Jira 配置修改成功',
-              type: 'success'
+          let params = {}
+          if (this.params.type === 'lark') {
+            params = {}
+          } else {
+            params = {
+              type: 'jira',
+              jira_host: this.params.jira_host,
+              jira_user: this.params.jira_user,
+              jira_token: this.params.jira_token
+            }
+          }
+          if (this.operateType === 'add') {
+            createProjectManage(params).then(res => {
+              this.getJiraConfig()
+              this.handleJiraCancel()
+              this.$message({
+                message: this.$t(
+                  `sysSetting.integration.project.configurationAddedSuccessfully`
+                ),
+                type: 'success'
+              })
             })
-          })
+          } else {
+            updateProjectManage(params, this.params.id).then(res => {
+              this.getJiraConfig()
+              this.handleJiraCancel()
+              this.$message({
+                message: this.$t(
+                  `sysSetting.integration.project.configurationModifiedSuccessfully`
+                ),
+                type: 'success'
+              })
+            })
+          }
         } else {
           return false
         }
       })
     },
     handleJiraCancel () {
-      if (this.$refs.jiraAddForm) {
-        this.$refs.jiraAddForm.resetFields()
+      if (this.$refs.form) {
+        this.$refs.form.resetFields()
         this.dialogJiraAddFormVisible = false
       }
-      if (this.$refs.jiraEditForm) {
-        this.$refs.jiraEditForm.resetFields()
-        this.dialogJiraEditFormVisible = false
+      if (this.$refs.form) {
+        this.$refs.form.resetFields()
+        this.dialogJiraAddFormVisible = false
       }
     }
   },
@@ -302,7 +295,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .integration-project-container {
   position: relative;
   flex: 1;
@@ -324,7 +317,7 @@ export default {
     color: #ff1949;
   }
 
-  .edit-form-dialog {
+  /deep/.edit-form-dialog {
     width: 550px;
 
     .el-dialog__header {
@@ -338,7 +331,7 @@ export default {
     }
 
     .el-dialog__body {
-      padding: 0 20px;
+      padding: 30px 20px;
       color: #606266;
       font-size: 14px;
 
@@ -354,6 +347,23 @@ export default {
     .el-input {
       display: inline-block;
     }
+
+    .el-input__suffix-inner {
+      display: inline-flex;
+    }
   }
+}
+
+/deep/ .el-icon-success {
+  margin-left: 10px;
+  color: @success;
+  font-size: 20px;
+}
+
+/deep/ .el-icon-error {
+  display: block;
+  margin-left: 10px;
+  color: red;
+  font-size: 20px;
 }
 </style>

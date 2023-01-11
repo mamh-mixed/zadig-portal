@@ -946,20 +946,23 @@ export function setDefaultAccountAPI (payload) {
 }
 
 // Jira
-export function getJiraAPI (key) {
-  return http.get(`/api/v1/jira?encryptedKey=${key}`)
+export function getProjectManage (key) {
+  return http.get(`/api/aslan/system/project_management?encryptedKey=${key}`)
 }
 
-export function updateJiraAPI (payload) {
-  return http.patch(`/api/v1/jira`, payload)
+export function updateProjectManage (payload, id) {
+  return http.patch(`/api/aslan/system/project_management/${id}`, payload)
 }
 
-export function deleteJiraAPI () {
-  return http.delete(`/api/v1/jira`)
+export function deleteProjectManage (id) {
+  return http.delete(`/api/aslan/system/project_management/${id}`)
 }
 
-export function createJiraAPI (payload) {
-  return http.post(`/api/v1/jira`, payload)
+export function createProjectManage (payload) {
+  return http.post(`/api/aslan/system/project_management`, payload)
+}
+export function checkProjectManage (payload) {
+  return http.post(`/api/aslan/system/project_management/validate`, payload)
 }
 
 // Jenkins
@@ -2297,4 +2300,50 @@ export function getMyEnvAPI (name, projectName) {
 }
 export function getMyWorkflowsAPI (projectName) {
   return http.get(`/api/v1/picket/workflows/all?projectName=${projectName}`)
+}
+// workflow Jira job
+export function getJirasAPI (projectName) {
+  return http.get(`/api/aslan/system/project_management/jira/project?projectName=${projectName}`)
+}
+export function getIssueTypesAndStatusAPI (projectName) {
+  return http.get(`/api/aslan/system/project_management/jira/type?project=${projectName}`)
+}
+
+export function searchIssueAPI (project, type, status) {
+  return http.get(`/api/aslan/system/project_management/jira/issue?project=${project}&type=${type}&status=${status}`)
+}
+export function getWebhookJiraAPI (workflowName) {
+  return http.get(`/api/aslan/workflow/v4/jirahook/${workflowName}`)
+}
+
+export function deleteWebhookJiraAPI (workflowName, hookName, payload) {
+  return http.delete(`/api/aslan/workflow/v4/jirahook/${workflowName}/${hookName}`, payload)
+}
+
+export function updateWebhookJiraAPI (workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/jirahook/${workflowName}`, payload)
+}
+export function addWebhookJiraAPI (workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/jirahook/${workflowName}`, payload)
+}
+export function getWebhookJiraPresetAPI (workflowName, hookName) {
+  return http.get(`/api/aslan/workflow/v4/jirahook/preset?workflowName=${workflowName}&hookName=${hookName}`)
+}
+
+export function getWebhookCommonAPI (workflowName) {
+  return http.get(`/api/aslan/workflow/v4/generalhook/${workflowName}`)
+}
+
+export function deleteWebhookCommonAPI (workflowName, hookName, payload) {
+  return http.delete(`/api/aslan/workflow/v4/generalhook/${workflowName}/${hookName}`, payload)
+}
+
+export function updateWebhookCommonAPI (workflowName, payload) {
+  return http.put(`/api/aslan/workflow/v4/generalhook/${workflowName}`, payload)
+}
+export function addWebhookCommonAPI (workflowName, payload) {
+  return http.post(`/api/aslan/workflow/v4/generalhook/${workflowName}`, payload)
+}
+export function getWebhookCommonPresetAPI (workflowName, hookName) {
+  return http.get(`/api/aslan/workflow/v4/generalhook/preset?workflowName=${workflowName}&hookName=${hookName}`)
 }

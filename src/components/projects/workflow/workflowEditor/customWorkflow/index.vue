@@ -541,10 +541,12 @@ export default {
         })
       }
       this.payload.stages.forEach(stage => {
-        if (stage.approval.type === 'native') {
-          delete stage.approval.lark_approval
-        } else {
-          delete stage.approval.native_approval
+        if (stage.approval) {
+          if (stage.approval.type === 'native') {
+            delete stage.approval.lark_approval
+          } else {
+            delete stage.approval.native_approval
+          }
         }
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
