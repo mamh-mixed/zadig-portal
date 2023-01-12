@@ -155,7 +155,7 @@ export default {
     }),
     filteredProjectList () {
       return this.projectList.filter(item => {
-        return item.name.indexOf(this.searchProject) > -1
+        return item.name.indexOf(this.searchProject) > -1 || item.alias.indexOf(this.searchProject) > -1
       })
     },
     showProjectSwitcher () {
