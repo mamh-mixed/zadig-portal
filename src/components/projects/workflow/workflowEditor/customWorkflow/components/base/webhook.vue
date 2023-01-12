@@ -56,8 +56,10 @@
               <span class="title">{{$t(`global.desc`)}}：</span>
             </div>
             <div class="cate">
-              <span class="desc">
-                <el-tooltip effect="dark" :content="item.description" placement="top"><span>{{ $utils.tailCut(item.description, 10) }}</span></el-tooltip>
+              <span class="desc" v-if="item.description">
+                <el-tooltip effect="dark" :content="item.description" placement="top">
+                  <span>{{ $utils.tailCut(item.description, 10) }}</span>
+                </el-tooltip>
               </span>
             </div>
           </div>
@@ -125,14 +127,18 @@
         </el-col>
         <el-col :span="1">
           <div class="content">
-            <span class="el-icon-time"></span>
+            <span class="iconfont icontongyonggongju"></span>
           </div>
         </el-col>
         <el-col :span="6">
           <div class="content">
             <div class="cate">
               <span class="title">{{$t(`global.name`)}}：</span>
-              <el-tooltip effect="dark" :content="item.name" placement="top"><span>{{ $utils.tailCut(item.name, 10) }}</span></el-tooltip>
+              <span class="desc">
+                <el-tooltip v-if="item.name" effect="dark" :content="item.name" placement="top">
+                  <span>{{ $utils.tailCut(item.name, 10) }}</span>
+                </el-tooltip>
+              </span>
             </div>
           </div>
         </el-col>
@@ -140,7 +146,11 @@
           <div class="content">
             <div class="cate">
               <span class="title">{{$t(`global.desc`)}}：</span>
-              <el-tooltip effect="dark" :content="item.description" placement="top"><span>{{ $utils.tailCut(item.description, 10) }}</span></el-tooltip>
+              <span class="desc">
+                <el-tooltip v-if="item.description" effect="dark" :content="item.description" placement="top">
+                  <span>{{ $utils.tailCut(item.description, 10) }}</span>
+                </el-tooltip>
+              </span>
             </div>
           </div>
         </el-col>
