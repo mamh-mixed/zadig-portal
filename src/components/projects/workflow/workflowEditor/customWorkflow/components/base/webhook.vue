@@ -16,11 +16,11 @@
         <el-col :span="6">
           <div class="content">
             <div class="cate">
-              <span class="title">{{$t(`global.name`)}}</span>
+              <span class="title">{{$t(`global.name`)}}：</span>
               <span class="desc">{{item.name}}</span>
             </div>
             <div class="cate">
-              <span class="title">{{$t(`global.repository`)}}</span>
+              <span class="title">{{$t(`global.repository`)}}：</span>
               <span class="desc">{{item.main_repo.repo_name + '/' + item.main_repo.branch}}</span>
             </div>
           </div>
@@ -28,11 +28,11 @@
         <el-col :span="9">
           <div class="content">
             <div class="cate">
-              <span class="title">{{$t(`workflow.targetBranch`)}}</span>
+              <span class="title">{{$t(`workflow.targetBranch`)}}：</span>
               <span class="desc">{{item.main_repo.branch}}</span>
             </div>
             <div class="cate">
-              <span class="title">{{$t(`workflow.triggerEvents`)}}</span>
+              <span class="title">{{$t(`workflow.triggerEvents`)}}：</span>
               <span class="desc">
                 <div v-if="item.main_repo.events.length">
                   <span v-for="(event,index) in item.main_repo.events" :key="index">
@@ -53,7 +53,7 @@
         <el-col :span="4">
           <div class="content">
             <div class="cate">
-              <span class="title">{{$t(`global.desc`)}}</span>
+              <span class="title">{{$t(`global.desc`)}}：</span>
             </div>
             <div class="cate">
               <span class="desc">
