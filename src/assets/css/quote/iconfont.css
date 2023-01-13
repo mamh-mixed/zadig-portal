@@ -16,6 +16,22 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.iconfeishu-xin_new-lark:before {
+  content: "\e6c6";
+}
+
+.iconmac:before {
+  content: "\e6c3";
+}
+
+.iconwindows-fill:before {
+  content: "\e882";
+}
+
+.iconlinux:before {
+  content: "\e6c5";
+}
+
 .iconjira:before {
   content: "\e7bc";
 }

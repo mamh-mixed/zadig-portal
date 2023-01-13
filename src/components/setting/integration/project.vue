@@ -23,7 +23,7 @@
                   >{{$t(`global.document`)}}</el-link>
                 </div>
                 <span>
-                  <img src="@assets/icons/others/lark.png" alt="lark" style="width: 16px; height: 16px; vertical-align: text-bottom;" />
+                  <i class="config-icon iconfont iconfeishu-xin_new-lark"></i>
                   <span>飞书项目</span>
                   <i class="el-icon-warning"></i>
                 </span>
