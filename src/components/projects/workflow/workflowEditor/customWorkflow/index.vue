@@ -223,7 +223,7 @@
       <span slot="title" class="drawer-title">
         <span>{{drawerTitle}}</span>
         <div v-if="drawerHideButton">
-          <el-button size="mini" plain @click="closeDrawer">{{$t(`global.cancel`)}}</el-button>
+          <el-button size="mini" plain @click="closeDrawer">{{$t(`workflow.close`)}}</el-button>
         </div>
         <div v-else>
           <el-button type="primary" size="mini" plain @click="handleDrawerChange">{{$t(`global.confirm`)}}</el-button>
