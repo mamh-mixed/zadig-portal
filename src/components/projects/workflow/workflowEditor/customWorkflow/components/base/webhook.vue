@@ -58,7 +58,7 @@
             <div class="cate">
               <span class="desc" v-if="item.description">
                 <el-tooltip effect="dark" :content="item.description" placement="top">
-                  <span>{{ $utils.tailCut(item.description, 10) }}</span>
+                  <span>{{ $utils.tailCut(item.description, 20) }}</span>
                 </el-tooltip>
               </span>
             </div>
@@ -148,7 +148,7 @@
               <span class="title">{{$t(`global.desc`)}}：</span>
               <span class="desc">
                 <el-tooltip v-if="item.description" effect="dark" :content="item.description" placement="top">
-                  <span>{{ $utils.tailCut(item.description, 10) }}</span>
+                  <span>{{ $utils.tailCut(item.description, 20) }}</span>
                 </el-tooltip>
               </span>
             </div>
