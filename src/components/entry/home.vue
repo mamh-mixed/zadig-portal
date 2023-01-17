@@ -186,7 +186,7 @@ body {
             top: 40px;
             right: 0;
             left: 0;
-            z-index: 2;
+            z-index: 3;
           }
 
           .main-float {
