@@ -771,14 +771,14 @@ exports.default = {
     specifyMembersTip2: '@Specify members (enter the user_id of the specified notification receiver and use; to split)',
     specifyMembersTip3: '@Specify members (enter the user ID of the specified notification receiver, and use; split)',
     notifyType: {
-      created: 'created',
-      passed: 'passed',
-      failed: 'failed',
-      timeout: 'timeout',
-      cancelled: 'cancelled',
-      changed: 'changed',
-      reject: 'reject',
-      waitforapprove: 'waitforapprove'
+      created: 'Created',
+      passed: 'Passed',
+      failed: 'Failed',
+      timeout: 'Timeout',
+      cancelled: 'Cancelled',
+      changed: 'Changed',
+      reject: 'Reject',
+      waitforapprove: 'Waiting for approve'
     },
     addNotify: 'Add Notify',
     editNotify: 'Edit Notify',
