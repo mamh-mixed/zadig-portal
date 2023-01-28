@@ -38,7 +38,6 @@
             :title="`${job.name}`"
             :key="job.name"
             :name="`${stageIndex}${jobIndex}`"
-            class="mg-l8"
           >
             <template slot="title">
               <el-checkbox v-model="job.checked"></el-checkbox>
@@ -937,6 +936,23 @@ export default {
 
     .input {
       width: 220px;
+    }
+  }
+
+  /deep/.el-collapse {
+    border-bottom: none;
+
+    .el-collapse-item__header {
+      padding: 0 8px;
+      background: @globalBackgroundColor;
+    }
+
+    .el-collapse-item:last-child {
+      margin-bottom: 0;
+
+      .el-collapse-item__content {
+        padding: 8px;
+      }
     }
   }
 }
