@@ -159,7 +159,7 @@ export default {
     getEnvList () {
       const projectName = this.projectName
       listProductAPI(projectName).then(res => {
-        this.envList = res
+        this.envList = res.filter(re => !re.production)
       })
     },
     handleEnvChange (row, command) {
