@@ -565,6 +565,7 @@ export default {
           }
           this.isUpdate = true
         } else {
+          this.closeSelectRepo()
           this.isUpdate = false
         }
       },
