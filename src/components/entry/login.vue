@@ -117,7 +117,7 @@ export default {
         }
       })
     },
-    async checkLogin () {
+    async checkLogin (fromReset = false) {
       const userInfo = store.get('userInfo')
       if (userInfo) {
         this.redirectByDevice()
@@ -125,6 +125,8 @@ export default {
         const connectorsCheck = await checkConnectorsAPI()
         if (connectorsCheck && connectorsCheck.enabled) {
           window.location.href = '/api/v1/login'
+        } else if (fromReset) {
+          window.location.href = '/signin'
         }
       }
     },
