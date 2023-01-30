@@ -130,7 +130,7 @@ export default {
             cpu_limit: 1000,
             memory_limit: 512
           },
-          installs: [{ name: '', version: '' }],
+          installs: [], // { name: '', version: '' }
           envs: []
         },
         outputs: [],
