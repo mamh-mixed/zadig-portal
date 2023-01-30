@@ -127,7 +127,7 @@
         <el-table-column prop="envs" :label="$t(`project.environmentCounts`)">
           <template slot-scope="scope">{{scope.row.envs.length}}</template>
         </el-table-column>
-        <el-table-column :label="$t(`project.update`)">
+        <el-table-column :label="$t(`project.updates`)">
           <template slot-scope="scope">
             <div>
               <i class="el-icon-time"></i>
