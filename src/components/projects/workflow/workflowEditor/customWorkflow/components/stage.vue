@@ -17,7 +17,7 @@
       :modal-append-to-body="false"
       direction="rtl"
       class="drawer"
-      size="24%"
+      size="30%"
       id="drawer"
       :style="{'zoom':scal}"
     >
@@ -283,10 +283,6 @@ export default {
       right: 0;
       bottom: 0;
       height: calc(~'100% - 102px') !important;
-    }
-
-    /deep/.el-drawer__body {
-      padding: 0 24px;
     }
   }
 
