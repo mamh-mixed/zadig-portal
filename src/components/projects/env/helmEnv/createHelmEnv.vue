@@ -364,7 +364,7 @@ export default {
             valuesData: valueInfo.envInfo[defaultEnv].valuesData,
             namespace: this.projectConfig.defaultNamespace,
             is_existed: this.nsIsExisted,
-            env_configs: this.$refs.envConfigRef.getEnvConfig()
+            env_configs: this.$refs.envConfigRef.getEnvConfig().default
           }
           if (this.createShare && this.baseEnvName) {
             payload.share_env = {
