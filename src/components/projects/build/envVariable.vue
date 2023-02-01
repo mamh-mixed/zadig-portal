@@ -57,10 +57,10 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="1" class="mg-t16">
+        <el-col :span="1" style="margin-top: 11px;" v-if="showEnvType">
           <EnvTypeSelect v-model="preEnvs.envs[build_env_index].command" isFixed isRuntime isOther  @change="handleEnvTypeChange($event, build_env_index)"/>
         </el-col>
-        <el-col :span="12" v-if="isJenkins&&preEnvs.envs[build_env_index].name==='IMAGE'" class="tip">
+        <el-col :span="11" v-if="isJenkins&&preEnvs.envs[build_env_index].name==='IMAGE'" class="tip">
           <el-checkbox v-model="preEnvs.envs[build_env_index].auto_generate"></el-checkbox>
           <span>{{$t(`build.prompt.useSystemImageNamingRules`)}}</span>
           <router-link
@@ -175,6 +175,10 @@ export default {
     envs: {
       type: Array,
       default: () => []
+    },
+    showEnvType: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
