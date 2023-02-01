@@ -71,7 +71,7 @@
             remote
             key="1"
             reserve-keyword
-            placeholder="请输入关键词"
+            placeholder="请选择审批人"
             :remote-method="getUserList"
             :loading="loading"
             value-key="user_id"
