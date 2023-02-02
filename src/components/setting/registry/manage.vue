@@ -283,6 +283,13 @@ export default {
           icon: 'iconfont logo iconaws'
         },
         {
+          value: 'jfrog',
+          label: 'JFrog',
+          icon: 'iconfont logo iconjfrog',
+          disabled: true,
+          documentLink: '/settings/image-registry/#jfrog'
+        },
+        {
           value: 'native',
           label: '其他',
           reg_addr: '地址',
