@@ -113,7 +113,7 @@ export default {
           )
           if (res) {
             this.$message.success(this.$t(`login.resetSuccess`))
-            this.openLogin()
+            this.openLogin(true)
           }
         }
       })

@@ -374,7 +374,7 @@ export default {
       const projectName = this.projectName
       const envNameList = await listProductAPI(projectName)
       if (envNameList.length) {
-        this.envNameList = envNameList.map(env => {
+        this.envNameList = envNameList.filter(re => !re.production).map(env => {
           return {
             name: env.name,
             is_existed: env.is_existed || false

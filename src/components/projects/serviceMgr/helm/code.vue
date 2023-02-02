@@ -652,24 +652,20 @@ export default {
   }
 
   .center {
+    display: flex;
+    flex-direction: column;
     width: 50%;
     min-width: 200px;
     height: 100%;
 
     .header {
-      position: absolute;
-      top: 0;
-      z-index: 99;
-      width: 100%;
-      height: 40px;
+      flex: 0 0 40px;
       overflow-x: scroll;
     }
 
     .code {
       position: relative;
-      box-sizing: border-box;
-      height: calc(~'100% - 85px');
-      margin-top: 40px;
+      flex: 1 1 auto;
       overflow-y: scroll;
       background-color: #fff;
 
@@ -703,11 +699,7 @@ export default {
     }
 
     .footer {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      height: 45px;
+      flex: 0 0 45px;
       padding: 0 10px;
       background: #fff;
     }

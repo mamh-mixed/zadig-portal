@@ -529,7 +529,7 @@ export default {
           res,
           ['production', 'name'],
           ['asc', 'asc']
-        )
+        ).filter(re => !re.production)
       })
     },
     getRegistryWhenBuild () {

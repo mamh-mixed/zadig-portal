@@ -81,6 +81,7 @@ export default {
           this.getHelmRepoChartVersionWhenReload(val.create_from.chart_repo_name, val.create_from.chart_name)
         } else {
           this.isUpdate = false
+          this.closeSelectRepo()
         }
       },
       immediate: true

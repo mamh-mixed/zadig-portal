@@ -353,7 +353,7 @@ export default {
   created () {
     this.runner.tests = this.testInfos
     listProductAPI(this.targetProject).then(res => {
-      this.products = res
+      this.products = res.filter(re => !re.production)
       const product = this.forcedUserInput.product_tmpl_name
       const namespace = this.forcedUserInput.namespace
       if (this.haveForcedInput &&

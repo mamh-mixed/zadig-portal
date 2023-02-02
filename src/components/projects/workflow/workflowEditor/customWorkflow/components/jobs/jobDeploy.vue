@@ -159,7 +159,7 @@ export default {
     getEnvList () {
       const projectName = this.projectName
       listProductAPI(projectName).then(res => {
-        this.envList = res
+        this.envList = res.filter(re => !re.production)
       })
     },
     handleEnvChange (row, command) {
@@ -208,7 +208,7 @@ export default {
 
   .status-check {
     /deep/ .el-form-item__label {
-      line-height: 20px;
+      line-height: 40px;
     }
   }
 }

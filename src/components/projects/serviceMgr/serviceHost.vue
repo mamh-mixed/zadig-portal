@@ -45,7 +45,7 @@ export default {
       envNameList.forEach(element => {
         element.envName = element.name
       })
-      this.envNameList = envNameList
+      this.envNameList = envNameList.filter(re => !re.production)
     }
   },
   async created () {

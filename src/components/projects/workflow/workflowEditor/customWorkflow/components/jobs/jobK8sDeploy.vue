@@ -156,7 +156,7 @@ export default {
 
   .status-check {
     /deep/ .el-form-item__label {
-      line-height: 20px;
+      line-height: 40px;
     }
   }
 }

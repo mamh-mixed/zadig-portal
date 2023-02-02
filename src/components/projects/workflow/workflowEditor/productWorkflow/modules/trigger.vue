@@ -802,7 +802,7 @@ export default {
     },
     getProjectEnvs () {
       listProductAPI(this.projectName).then(res => {
-        this.projectEnvs = res
+        this.projectEnvs = res.filter(re => !re.production)
       })
     },
     getBranchInfoById (id, repo_owner, repo_name) {

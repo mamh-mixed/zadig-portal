@@ -620,6 +620,9 @@ export default {
             this.$message.success('模板保存成功')
             this.getWorkflowDetail(this.payload.name)
             if (params && params === 'fromWebhook') {
+              this.$router.push(
+                `/v1/projects/detail/${this.projectName}/pipelines/custom/edit/${this.payload.name}?projectName=${this.projectName}&display_name=${this.payload.display_name}`
+              )
               return
             }
             this.$router.push(
@@ -634,6 +637,7 @@ export default {
           updateCustomWorkflowAPI(workflowName, yamlParams, this.projectName)
             .then(res => {
               this.$message.success('保存成功')
+              this.originalWorkflow = cloneDeep(this.payload)
               if (this.curDrawer !== 'webhook' && !this.isShowDrawer) {
                 this.$router.push(
                   `/v1/projects/detail/${this.projectName}/pipelines/custom/${this.payload.name}?display_name=${this.payload.display_name}`
@@ -649,6 +653,9 @@ export default {
               this.$message.success('新建成功')
               this.getWorkflowDetail(this.payload.name)
               if (params && params === 'fromWebhook') {
+                this.$router.push(
+                  `/v1/projects/detail/${this.projectName}/pipelines/custom/edit/${this.payload.name}?projectName=${this.projectName}&display_name=${this.payload.display_name}`
+                )
                 return
               }
               this.$router.push(

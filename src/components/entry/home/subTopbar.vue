@@ -92,8 +92,8 @@
           plain
         >{{$t('subTopbarMenu.createWorkflow')}}</el-button>
       </template>
-      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail` && deployType !=='cloud_host'">
-        <el-dropdown placement="bottom" trigger="click">
+      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail`">
+        <el-dropdown v-if="deployType !=='cloud_host'" placement="bottom" trigger="click">
           <button v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}" type="button" class="display-btn el-button">
             <i class="el-icon-plus"></i>
             &nbsp;&nbsp;{{$t('subTopbarMenu.createEnvironment')}}&nbsp;&nbsp;
@@ -121,14 +121,14 @@
           </el-tooltip>
           </el-dropdown-menu>
         </el-dropdown>
-      </template>
-      <template v-if="$route.path === `/v1/projects/detail/${projectName}/envs/detail` && deployType ==='cloud_host'">
-        <el-button
-          v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}"
-          @click="bindComp(comp,'env')"
-          icon="el-icon-plus"
-          plain
-        >{{$t('subTopbarMenu.createEnvironment')}}</el-button>
+        <template v-else>
+          <el-button
+            v-hasPermi="{projectName: projectName, action: 'create_environment',isBtn:true}"
+            @click="bindComp(comp, 'env')"
+            icon="el-icon-plus"
+            plain
+          >{{$t('subTopbarMenu.createEnvironment')}}</el-button>
+        </template>
       </template>
       <template v-if="$route.path === `/v1/projects/detail/${projectName}/builds`">
         <el-button

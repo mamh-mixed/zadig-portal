@@ -141,6 +141,7 @@ export default {
           this.variables = createFrom.variables || []
           this.isUpdate = true
         } else {
+          this.closeSelectRepo()
           this.isUpdate = false
         }
       },
