@@ -40,7 +40,7 @@
             :name="`${stageIndex}${jobIndex}`"
           >
             <template slot="title">
-              <el-checkbox v-model="job.checked"></el-checkbox>
+              <el-switch v-model="job.checked"></el-switch>
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
@@ -316,7 +316,7 @@ export default {
       currentProjectEnvs: [],
       dockerList: [],
       startTaskLoading: false,
-      activeName: ['env', '00'],
+      activeName: ['env'],
       payload: {
         workflow_name: '',
         stages: [

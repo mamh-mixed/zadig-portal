@@ -68,6 +68,7 @@ export default {
         'zadig-build': {
           name: 'default',
           type: 'zadig-build',
+          run_policy: '',
           spec: {
             docker_registry_id: '',
             service_and_builds: []
@@ -76,6 +77,7 @@ export default {
         'zadig-deploy': {
           name: 'default',
           type: 'zadig-deploy',
+          run_policy: '',
           spec: {
             env: '',
             source: '',
@@ -86,6 +88,7 @@ export default {
         'custom-deploy': {
           name: 'default',
           type: 'custom-deploy',
+          run_policy: '',
           spec: {
             timeout: '60',
             source: 'runtime',
@@ -95,6 +98,7 @@ export default {
         freestyle: {
           name: 'default',
           type: 'freestyle',
+          run_policy: '',
           isCreate: true, // 保存时删掉
           spec: {
             properties: {
@@ -150,6 +154,7 @@ export default {
         plugin: {
           type: 'plugin',
           name: 'default',
+          run_policy: '',
           isCreate: true,
           description: '',
           properties: {
@@ -166,6 +171,7 @@ export default {
         'zadig-test': {
           name: 'default',
           type: 'zadig-test',
+          run_policy: '',
           spec: {
             test_modules: []
           }
@@ -173,6 +179,7 @@ export default {
         'zadig-scanning': {
           name: 'default',
           type: 'zadig-scanning',
+          run_policy: '',
           spec: {
             scannings: []
           }
@@ -180,6 +187,7 @@ export default {
         'zadig-distribute-image': {
           name: 'default',
           type: 'zadig-distribute-image',
+          run_policy: '',
           isCreate: true,
           spec: {
             source: 'runtime',
