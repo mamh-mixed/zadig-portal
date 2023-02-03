@@ -16,6 +16,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.iconjfrog:before {
+  content: "\e6c8";
+}
+
 .iconfeishu-xin_new-lark:before {
   content: "\e6c6";
 }
