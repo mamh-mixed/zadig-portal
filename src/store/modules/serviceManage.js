@@ -4,6 +4,7 @@ import router from '@/router'
 export default {
   state: {
     serviceList: [],
+    showServiceName: '',
     serviceModules: [],
     showNext: false,
     serviceDialogVisible: false,
@@ -23,6 +24,7 @@ export default {
     },
     [Mutation.QUERY_SERVICE_LIST] (state, payload) {
       state.serviceList = payload.service
+      state.showServiceName = payload.showServiceName
     },
     [Mutation.OPEN_SHOW_NEXT] (state, payload) {
       state.showNext = payload
@@ -111,13 +113,13 @@ export default {
                 rightbar: 'var'
               })
           })
-          dispatch('queryServiceModule', params)
+          await dispatch('queryServiceModule', params)
         } else {
           commit(Mutation.OPEN_SHOW_NEXT, false)
-          dispatch('resetServiceModule')
+          await dispatch('resetServiceModule')
         }
       }
-      commit(Mutation.QUERY_SERVICE_LIST, { service: service, projectName: payload.projectName })
+      commit(Mutation.QUERY_SERVICE_LIST, { service: service, showServiceName: payload.showServiceName || '', projectName: payload.projectName })
     },
     async updateHelmChart ({ dispatch }, payload) {
       const params = {
