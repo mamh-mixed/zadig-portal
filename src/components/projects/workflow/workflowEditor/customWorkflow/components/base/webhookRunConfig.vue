@@ -33,15 +33,16 @@
           </el-table>
         </el-collapse-item>
         <div v-for="(stage,stageIndex) in payload.stages" :key="stage.name">
-          <el-collapse-item
-            v-for="(job,jobIndex) in stage.jobs"
-            :title="`${job.name}`"
-            :key="job.name"
-            :name="`${stageIndex}${jobIndex}`"
-          >
+          <el-collapse-item v-for="(job,jobIndex) in stage.jobs" :title="`${job.name}`" :key="job.name" :name="`${stageIndex}${jobIndex}`">
             <template slot="title">
               <!-- <el-checkbox v-model="job.skipped"></el-checkbox> -->
-              <el-switch v-model="job.skipped" :active-value="false" :inactive-value="true" @click.stop.native></el-switch>
+              <el-switch
+                v-model="job.skipped"
+                @click.stop.native
+                :active-value="false"
+                :inactive-value="true"
+                @change="handleSwitchChange($event, stageIndex, jobIndex)"
+              ></el-switch>
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
@@ -78,7 +79,11 @@
               </div>
             </div>
             <div v-if="job.type === 'zadig-deploy'">
-              <el-form-item prop="productName" :label="$t(`project.environments`)" v-if="!(job.spec.env.includes('fixed')||job.spec.env.includes('{{'))">
+              <el-form-item
+                prop="productName"
+                :label="$t(`project.environments`)"
+                v-if="!(job.spec.env.includes('fixed')||job.spec.env.includes('{{'))"
+              >
                 <el-select v-model="job.spec.env" size="small" @change="getRegistryId(job.spec.env)" style="width: 220px;">
                   <el-option
                     v-for="pro of currentProjectEnvs"
@@ -292,7 +297,12 @@
                   size="small"
                   style="width: 220px;"
                 >
-                  <el-option v-for="item in changedIssues" :key="item.key" :label="`${item.key}/${item.name}`" :value="item">{{item.key}}/{{item.name}}</el-option>
+                  <el-option
+                    v-for="item in changedIssues"
+                    :key="item.key"
+                    :label="`${item.key}/${item.name}`"
+                    :value="item"
+                  >{{item.key}}/{{item.name}}</el-option>
                 </el-select>
               </el-form-item>
               <div v-else class="font-gray">{{$t(`workflow.noNeedToEnterVariables`)}}</div>
@@ -702,6 +712,15 @@ export default {
     handleSourceTagChange (row) {
       if (!row.target_tag) {
         this.$set(row, 'target_tag', row.source_tag)
+      }
+    },
+    handleSwitchChange (val, stageIndex, jobIndex) {
+      if (val) {
+        this.activeName = this.activeName.filter(item => {
+          return item !== `${stageIndex}${jobIndex}`
+        })
+      } else {
+        this.activeName.push(`${stageIndex}${jobIndex}`)
       }
     }
   },

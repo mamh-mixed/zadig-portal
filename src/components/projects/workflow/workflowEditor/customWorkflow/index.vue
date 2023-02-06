@@ -112,14 +112,15 @@
                   >{{$t(`global.document`)}}</el-link>
                 </div>
               </el-tooltip>
-              <el-select v-model="job.run_policy" placeholder="请选择" size="small" style="width: 160px;" class="mg-r16" disabled>
-                <el-option
-                  v-for="item in runTypes"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+              <el-dropdown  class="mg-r16">
+                <span class="el-dropdown-link name">
+                  默认执行
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item v-for="item in runTypes" :key="item.value" disabled :command="item.value">{{item.label}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
               <el-button size="mini" type="primary" @click="saveJobConfig">{{$t(`global.confirm`)}}</el-button>
               <el-button size="mini" @click.stop="closeFooter">{{$t(`global.cancel`)}}</el-button>
             </div>
