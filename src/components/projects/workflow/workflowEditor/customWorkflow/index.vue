@@ -99,7 +99,7 @@
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
-              <el-tooltip class="item" effect="dark" placement="top">
+              <el-tooltip effect="dark" placement="top">
                 <i class="pointer el-icon-warning"></i>
                 <div slot="content">
                   {{$t(`global.enterprisefeaturesReferforDetails`)}}
@@ -113,9 +113,8 @@
                 </div>
               </el-tooltip>
               <el-dropdown  class="mg-r16">
-                <span class="el-dropdown-link name">
+                <span class="el-dropdown-link name" style="color: #ddd;">
                   默认执行
-                  <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item v-for="item in runTypes" :key="item.value" disabled :command="item.value">{{item.label}}</el-dropdown-item>
@@ -1225,6 +1224,10 @@ export default {
         line-height: 42px;
         border-top: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
+
+        .pointer {
+          color: #ddd;
+        }
       }
 
       .main {
