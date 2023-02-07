@@ -495,7 +495,7 @@ export default {
         // }
         // this.changeExpandFileList('add', item)
       } else {
-        const serviceName = this.$route.query.service_name
+        const serviceName = this.showServiceName || this.$route.query.service_name
         const node = this.nodeData.find(node => node.label === serviceName)
         if (node) {
           this.loadData(node)
@@ -525,6 +525,7 @@ export default {
     },
     ...mapState({
       service: state => state.serviceManage.serviceList,
+      showServiceName: state => state.serviceManage.showServiceName,
       serviceSource: state => state.serviceManage.serviceSource,
       dialogVisible: state => state.serviceManage.serviceDialogVisible,
       currentService: state => state.serviceManage.currentService,
