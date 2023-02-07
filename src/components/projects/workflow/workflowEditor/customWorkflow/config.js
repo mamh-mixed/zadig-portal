@@ -295,6 +295,19 @@ const notifyPlatform = [
     label: 'feishu',
     desc: '飞书'
   }]
+const runTypes = [
+  {
+    label: '默认执行',
+    value: ''
+  },
+  {
+    label: '默认不执行',
+    value: 'default_not_run'
+  },
+  {
+    label: '强制执行',
+    value: 'force_run'
+  }]
 export {
   validateJobName,
   validateWorkflowName,
@@ -309,5 +322,6 @@ export {
   buildEnvs,
   globalConstEnvs,
   notifyType,
-  notifyPlatform
+  notifyPlatform,
+  runTypes
 }

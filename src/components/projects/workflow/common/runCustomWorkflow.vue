@@ -40,7 +40,7 @@
             :name="`${stageIndex}${jobIndex}`"
           >
             <template slot="title">
-              <el-checkbox v-model="job.checked"></el-checkbox>
+              <el-switch v-model="job.skipped"  @click.stop.native :active-value="false" :inactive-value="true"  @change="handleSwitchChange($event, stageIndex, jobIndex)"></el-switch>
               <span class="mg-l8">{{job.name}}</span>
             </template>
             <div v-if="job.type === 'zadig-build'">
@@ -316,7 +316,7 @@ export default {
       currentProjectEnvs: [],
       dockerList: [],
       startTaskLoading: false,
-      activeName: ['env', '00'],
+      activeName: ['env'],
       payload: {
         workflow_name: '',
         stages: [
@@ -906,6 +906,15 @@ export default {
     handleSourceTagChange (row) {
       if (!row.target_tag) {
         this.$set(row, 'target_tag', row.source_tag)
+      }
+    },
+    handleSwitchChange (val, stageIndex, jobIndex) {
+      if (val) {
+        this.activeName = this.activeName.filter(item => {
+          return item !== `${stageIndex}${jobIndex}`
+        })
+      } else {
+        this.activeName.push(`${stageIndex}${jobIndex}`)
       }
     }
   }

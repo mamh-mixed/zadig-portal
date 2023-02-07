@@ -99,6 +99,27 @@
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
+              <el-tooltip effect="dark" placement="top">
+                <i class="pointer el-icon-warning"></i>
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/project/common-workflow/#任务执行策略配置`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+              </el-tooltip>
+              <el-dropdown  class="mg-r16">
+                <span class="el-dropdown-link name" style="color: #ddd;">
+                  默认执行
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item v-for="item in runTypes" :key="item.value" disabled :command="item.value">{{item.label}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
               <el-button size="mini" type="primary" @click="saveJobConfig">{{$t(`global.confirm`)}}</el-button>
               <el-button size="mini" @click.stop="closeFooter">{{$t(`global.cancel`)}}</el-button>
             </div>
@@ -275,7 +296,8 @@ import {
   editorOptions,
   jobType,
   jobTypeList,
-  validateWorkflowName
+  validateWorkflowName,
+  runTypes
 } from './config'
 import {
   getAssociatedBuildsAPI,
@@ -311,6 +333,7 @@ export default {
   data () {
     return {
       validateWorkflowName,
+      runTypes,
       tabList,
       configList,
       activeName: 'ui',
@@ -1208,6 +1231,10 @@ export default {
         line-height: 42px;
         border-top: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
+
+        .pointer {
+          color: #ddd;
+        }
       }
 
       .main {
