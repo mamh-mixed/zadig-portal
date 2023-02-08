@@ -497,11 +497,14 @@ export default {
       } else {
         const serviceName = this.showServiceName || this.$route.query.service_name
         const node = this.nodeData.find(node => node.label === serviceName)
+        let key = 0
         if (node) {
           this.loadData(node)
+          key = node.id
         } else {
           this.autoShowValuesYaml(this.nodeData[0])
         }
+        this.$refs.folder.setServiceSelected(key)
       }
     }
   },
