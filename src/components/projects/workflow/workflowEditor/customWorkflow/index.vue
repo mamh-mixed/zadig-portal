@@ -898,6 +898,9 @@ export default {
           }
         })
       })
+      this.workflowCurJobLength = this.payload.stages[
+        this.curStageIndex
+      ].jobs.length
       this.$refs[this.job.type].validate().then(valid => {
         if (valid) {
           const curJob = this.$refs[this.job.type].getData()
