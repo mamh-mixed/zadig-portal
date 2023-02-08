@@ -1046,6 +1046,11 @@ export default {
       if (!newVal) {
         this.curStageIndex = 0
         this.curJobIndex = -1
+        this.payload.stages.forEach((stage, i) => {
+          stage.jobs.forEach((job, j) => {
+            job.active = false
+          })
+        })
       }
     }
   }
