@@ -3,7 +3,7 @@
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
     </el-tooltip>
-    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job">
+    <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job" :class="{'active':item.active}">
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
         <span>{{item.name}}</span>
       </el-tooltip>
@@ -30,6 +30,8 @@
 <script>
 import JobOperate from './jobOperate.vue'
 import { jobType } from '../config'
+import { mapState } from 'vuex'
+
 export default {
   name: 'Stage',
   components: {
@@ -43,6 +45,10 @@ export default {
     workflowInfo: {
       type: Object,
       default: () => ({})
+    },
+    curStageIndex: {
+      type: Number,
+      default: 0
     },
     curJobIndex: {
       type: Number,
@@ -221,22 +227,19 @@ export default {
         this.$emit('update:curJobIndex', val)
       }
     },
-    isShowFooter () {
-      return this.$store.state.customWorkflow.isShowFooter
-    }
+    ...mapState({
+      isShowFooter: state => state.customWorkflow.isShowFooter,
+      curOperateType: state => state.customWorkflow.curOperateType
+    })
   },
   methods: {
     addJob () {
-      if (this.stageInfo.jobs.length > 0) {
-        if (this.isShowFooter) {
-          this.$message.error(this.$t(`workflow.saveLastJobconfigFirst`))
-        } else {
-          this.isShowJobOperateDialog = true
-        }
+      this.$store.dispatch('setCurOperateType', 'jobAdd')
+      if (this.isShowFooter) {
+        this.$message.error(this.$t(`workflow.saveLastJobconfigFirst`))
       } else {
         this.isShowJobOperateDialog = true
       }
-      this.$store.dispatch('setCurOperateType', 'jobAdd')
     },
     delJob (item, index) {
       this.$confirm(`确定删除任务 [${item.name}]？`, '确认', {
@@ -250,28 +253,73 @@ export default {
       })
     },
     setCurIndex (index) {
-      this.$store.dispatch('setCurOperateType', 'jobChange')
+      this.$store.dispatch('setCurOperateType', 'job')
       this.JobIndex = index
       this.$store.dispatch('setIsShowFooter', true)
       this.$store.dispatch('setIsEditJob', true)
+      // job 变化重新计算样式
+      this.workflowInfo.stages.forEach((stage, i) => {
+        stage.jobs.forEach((job, j) => {
+          if (i === this.curStageIndex) {
+            if (j === index) {
+              job.active = true
+            } else {
+              job.active = false
+            }
+          } else {
+            job.active = false
+          }
+        })
+        this.$forceUpdate()
+      })
     },
     setJob (newVal) {
       if (Object.keys(newVal).length === 0) {
         return
       }
+      this.resetActive()
       if (newVal.type === 'plugin') {
+        this.$set(newVal, 'active', true)
         this.stageInfo.jobs.push(newVal)
       } else {
+        this.$set(this.jobInfos[newVal.type], 'active', true)
         this.stageInfo.jobs.push(this.jobInfos[newVal.type])
       }
       this.JobIndex = this.stageInfo.jobs.length - 1
       this.isShowJobOperateDialog = false
       this.$store.dispatch('setIsShowFooter', true)
+    },
+    resetActive () {
+      this.workflowInfo.stages.forEach((stage, i) => {
+        stage.jobs.forEach((job, j) => {
+          job.active = false
+        })
+      })
     }
   },
   watch: {
     scale (val) {
       this.scal = 1 / val
+    },
+    curStageIndex: {
+      handler (newVal) {
+        // job 变化重新计算样式
+        this.workflowInfo.stages.forEach((stage, i) => {
+          stage.jobs.forEach((job, j) => {
+            if (i === newVal) {
+              if (j === this.curJobIndex) {
+                job.active = true
+              } else {
+                job.active = false
+              }
+              this.$forceUpdate()
+            } else {
+              job.active = false
+            }
+          })
+        })
+      },
+      immediate: true
     }
   }
 }
