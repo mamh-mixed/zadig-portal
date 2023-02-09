@@ -678,8 +678,6 @@ exports.default = {
     successRate: '成功率',
     cancelFavoriteSuccess: '取消收藏成功',
     addFavoriteSuccess: '添加收藏成功',
-    customWorkflowsDonotSupportCollections: '自定义工作流暂不支持收藏！',
-    releaseWorkflowsDonotSupportCollections: '发布工作流暂不支持收藏！',
     updateBy: '修改人',
     lastModify: '最后修改时间',
     historyTask: '历史任务',

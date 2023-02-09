@@ -678,8 +678,6 @@ exports.default = {
     successRate: 'Success Rate',
     cancelFavoriteSuccess: 'Cancel Favorite Success',
     addFavoriteSuccess: 'Add Favorite Success',
-    customWorkflowsDonotSupportCollections: 'Custom workflows do not currently support collections!',
-    releaseWorkflowsDonotSupportCollections: 'Release workflows do not currently support collections!',
     updateBy: 'Update By',
     lastModify: 'Last Modify',
     historyTask: 'Task History',

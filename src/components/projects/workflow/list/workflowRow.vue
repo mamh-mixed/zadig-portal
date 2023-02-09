@@ -179,17 +179,14 @@ export default {
   },
   methods: {
     setFavorite (projectName, workflowName, type) {
-      if (type === 'common_workflow') {
-        this.$message.info(this.$t(`workflow.customWorkflowsDonotSupportCollections`))
-        return
-      }
+      const curType = (type === 'common_workflow' || type === 'release') ? 'workflow_v4' : type
       const payload = {
         product_name: projectName,
         name: workflowName,
-        type: type
+        type: type === 'common_workflow' ? 'workflow_v4' : type
       }
       if (this.isFavorite) {
-        deleteFavoriteAPI(projectName, workflowName, type).then(res => {
+        deleteFavoriteAPI(projectName, workflowName, curType).then(res => {
           this.$emit('refreshWorkflow', this.projectName)
           this.$message({
             type: 'success',
