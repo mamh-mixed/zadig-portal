@@ -9,7 +9,7 @@
         <span>{{$utils.convertTimestamp(approvalInfo.start_time)}}</span>
       </el-col>
       <el-col :span="6" class="text" v-if="!isDisabled">
-        <span class="red">{{timeout}} 分钟</span>
+        <span class="red">{{approvalInfo.interval}} </span>
         <span>后审批超时</span>
       </el-col>
       <el-col :span="6" class="text" v-else>
@@ -156,6 +156,30 @@ export default {
     },
     wordTranslation (word, category, subitem) {
       return wordTranslate(word, category, subitem)
+    },
+    adaptTaskDetail (detail) {
+      detail.intervalSec =
+        (detail.status === 'running'
+          ? Math.round(new Date().getTime() / 1000)
+          : detail.end_time) - detail.start_time
+      detail.interval = this.$utils.timeFormat(
+        this.timeout * 60 - detail.intervalSec
+      )
+      console.log(detail.interval)
+      if (detail.interval.split(' ')[0] < 0) {
+        detail.interval = '0 秒'
+      }
+    }
+  },
+  watch: {
+    approvalInfo: {
+      handler (val, oldVal) {
+        if (val) {
+          this.adaptTaskDetail(val)
+        }
+      },
+      deep: true,
+      immediate: true
     }
   }
 }
