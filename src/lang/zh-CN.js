@@ -602,6 +602,7 @@ exports.default = {
   },
   workflowTaskStatus: {
     notRunning: '未运行',
+    waitforapprove: '待审批',
     created: '排队中',
     waiting: '排队中',
     running: '正在运行',
