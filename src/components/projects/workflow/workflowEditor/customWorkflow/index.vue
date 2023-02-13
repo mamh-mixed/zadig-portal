@@ -77,7 +77,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" />
+                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" :curStageIndex="curStageIndex" />
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -418,9 +418,6 @@ export default {
     projectName () {
       return this.$route.query.projectName
     },
-    curOperateType () {
-      return this.$store.state.customWorkflow.curOperateType
-    },
     isEdit () {
       return !!this.$route.params.workflow_name
     },
@@ -464,7 +461,8 @@ export default {
     },
     ...mapState({
       isEditJob: state => state.customWorkflow.isEditJob,
-      isShowFooter: state => state.customWorkflow.isShowFooter
+      isShowFooter: state => state.customWorkflow.isShowFooter,
+      curOperateType: state => state.customWorkflow.curOperateType
     })
   },
   created () {
@@ -882,6 +880,12 @@ export default {
       })
     },
     setCurStage (index, item) {
+      if (this.curOperateType === 'jobAdd') {
+        if (!this.isShowFooter) {
+          this.curStageIndex = index
+        }
+        return
+      }
       this.curStageIndex = index
       this.curStageInfo = item
     },
@@ -894,6 +898,9 @@ export default {
           }
         })
       })
+      this.workflowCurJobLength = this.payload.stages[
+        this.curStageIndex
+      ].jobs.length
       this.$refs[this.job.type].validate().then(valid => {
         if (valid) {
           const curJob = this.$refs[this.job.type].getData()
@@ -1033,6 +1040,17 @@ export default {
             style: pinyin.STYLE_NORMAL
           }).join('')
         }
+      }
+    },
+    isShowFooter (newVal, oldVal) {
+      if (!newVal) {
+        this.curStageIndex = 0
+        this.curJobIndex = -1
+        this.payload.stages.forEach((stage, i) => {
+          stage.jobs.forEach((job, j) => {
+            job.active = false
+          })
+        })
       }
     }
   }
