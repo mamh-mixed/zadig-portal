@@ -602,6 +602,7 @@ exports.default = {
   },
   workflowTaskStatus: {
     notRunning: 'Not running',
+    waitforapprove: 'Waiting for approve',
     created: 'Created',
     waiting: 'Waiting',
     running: 'Running',
