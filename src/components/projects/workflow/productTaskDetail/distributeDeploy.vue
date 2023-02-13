@@ -5,10 +5,11 @@
         <el-alert
           v-if="distributeDeploy.release_imageSubTask.error"
           :title="$t(`global.errorMsg`)"
-          :description="distributeDeploy.release_imageSubTask.error"
           type="error"
           :close-text="$t(`global.ok`)"
-        ></el-alert>
+        >
+          <span style="white-space: pre-wrap;">{{distributeDeploy.release_imageSubTask.error}}</span>
+        </el-alert>
       </div>
       <div slot="header" class="clearfix subtask-header">
         <span>分发</span>
