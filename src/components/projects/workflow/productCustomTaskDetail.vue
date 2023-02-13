@@ -37,8 +37,8 @@
         <div class="content">
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
-          <div class="stages" v-for="(stage,curStageIndex) in payload.stages" :key="stage.label">
-            <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,curStageIndex)">
+          <div class="stages" v-for="(stage,stageIndex) in payload.stages" :key="stage.label">
+            <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,stageIndex)">
               <el-button type="primary" size="small">{{stage.approval.type==='lark'?$t(`approvalType.feishu`):$t(`approvalType.manualApproval`)}}</el-button>
               <div class="line"></div>
             </div>
@@ -47,7 +47,7 @@
                 <div class="stage-name">{{$utils.tailCut(stage.name,15)}}</div>
               </el-tooltip>
               <div class="jobs" v-for="(job,index) in stage.jobs" :key="job.name">
-                <span class="job" @click="setCurJob(job,index,curStageIndex)">
+                <span class="job" @click="setCurJob(job,index,stageIndex)" :class="{'active': stageIndex === curStageIndex && index === curJobIndex}">
                   <span class="job-status" :class="$translate.calcTaskStatusColor(job.status)">•</span>
                   <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
                     <span class="job-name">{{job.name}}</span>
@@ -409,10 +409,18 @@ export default {
   mounted () {
     this.setTitle()
     this.refreshHistoryTaskDetail()
+    this.curJobIndex = -1
   },
   beforeDestroy () {
     this.timeTimeoutFinishFlag = true
     clearTimeout(this.timerId)
+  },
+  watch: {
+    isShowConsoleFooter (newVal, val) {
+      if (!newVal) {
+        this.curJobIndex = -1
+      }
+    }
   }
 }
 </script>
@@ -429,6 +437,33 @@ export default {
     color: #121212;
     line-height: 42px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .tab {
+    margin: 24px 0;
+    padding: 0 24px;
+    color: @projectNameColor;
+    font-size: 14px;
+    cursor: pointer;
+
+    span:first-child {
+      position: relative;
+      margin-right: 16px;
+
+      &::after {
+        position: absolute;
+        top: 0;
+        right: -10px;
+        width: 2px;
+        height: 100%;
+        background: @borderGray;
+        content: '';
+      }
+    }
+
+    .active {
+      color: @themeColor;
+    }
   }
 
   main {
@@ -473,15 +508,15 @@ export default {
         }
 
         .jobs {
-          height: 30px;
           margin-top: 8px;
-          padding: 0 8px;
+          padding: 0;
           line-height: 30px;
 
           .job {
-            display: inline-block;
+            display: block;
             box-sizing: border-box;
-            width: 7em;
+            width: 8em;
+            margin: 0 auto;
             padding: 0 8px;
             overflow: hidden;
             font-weight: 400;
@@ -490,12 +525,18 @@ export default {
             text-align: left;
             text-overflow: ellipsis;
             border: 1px solid @borderGray;
+            border-radius: 4px;
             cursor: pointer;
 
             &-status {
               font-size: 18px;
               vertical-align: -3px;
             }
+          }
+
+          .active {
+            border: 1px solid #06f;
+            box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
           }
         }
       }
@@ -552,33 +593,6 @@ export default {
       border: 1px solid @themeColor;
       border-radius: 50%;
       content: '';
-    }
-  }
-
-  .tab {
-    margin: 24px 0;
-    padding: 0 24px;
-    color: @projectNameColor;
-    font-size: 14px;
-    cursor: pointer;
-
-    span:first-child {
-      position: relative;
-      margin-right: 16px;
-
-      &::after {
-        position: absolute;
-        top: 0;
-        right: -10px;
-        width: 2px;
-        height: 100%;
-        background: @borderGray;
-        content: '';
-      }
-    }
-
-    .active {
-      color: @themeColor;
     }
   }
 

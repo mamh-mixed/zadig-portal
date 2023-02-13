@@ -157,7 +157,7 @@
                 >{{service.value}}</el-option>
               </el-select>
               <el-button
-                type="success"
+                type="primary"
                 size="mini"
                 plain
                 :disabled="Object.keys(service).length === 0"
