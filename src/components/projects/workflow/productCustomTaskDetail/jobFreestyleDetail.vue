@@ -20,7 +20,9 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="commonInfo.error" :title="$t(`global.errorMsg`)" :description="commonInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
+          <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
+            <span style="white-space: pre-wrap;">{{jobInfo.error}}</span>
+          </el-alert>
         </div>
         <el-row class="item" :gutter="0" v-for="(build,index) in commonInfo.spec.repos" :key="index">
           <el-col :span="4">

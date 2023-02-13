@@ -21,7 +21,9 @@
     </header>
     <main>
       <div class="error-wrapper mg-t8 mg-b8">
-        <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
+        <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
+          <span style="white-space: pre-wrap;">{{jobInfo.error}}</span>
+        </el-alert>
       </div>
       <div class="mg-b16 text-weight">更新内容</div>
       <div v-for="(item,index) in jobInfo.spec.patch_items" :key="index" style="width: 60%;" class="mg-t16 mg-b48">

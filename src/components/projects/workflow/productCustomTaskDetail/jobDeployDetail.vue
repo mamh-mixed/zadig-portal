@@ -34,8 +34,9 @@
     </header>
     <main>
       <div class="error-wrapper">
-        <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
-      </div>
+        <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
+          <span style="white-space: pre-wrap;">{{jobInfo.error}}</span>
+        </el-alert>      </div>
       <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
         <el-col :span="4">
           <div class="item-title">{{$t(`global.serviceName`)}}</div>

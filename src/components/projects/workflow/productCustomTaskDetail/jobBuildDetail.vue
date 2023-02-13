@@ -6,7 +6,10 @@
         <span>{{jobInfo.name}}</span>
       </el-col>
       <el-col :span="2">
-        <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?$t(`workflowTaskStatus.${jobInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
+        <a
+          :class="buildOverallColor"
+          href="#buildv4-log"
+        >{{jobInfo.status?$t(`workflowTaskStatus.${jobInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
       </el-col>
       <el-col :span="2">
         <span>{{jobInfo.interval}}</span>
@@ -20,7 +23,9 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
+          <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
+            <span style="white-space: pre-wrap;">{{jobInfo.error}}</span>
+          </el-alert>
         </div>
         <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
@@ -44,9 +49,7 @@
             <span class="item-desc">{{jobInfo.spec.service_name}}({{jobInfo.spec.service_module}})</span>
           </el-col>
           <el-col :span="4">
-            <div class="item-title">
-              {{$t(`workflow.imageName`)}}
-            </div>
+            <div class="item-title">{{$t(`workflow.imageName`)}}</div>
           </el-col>
           <el-col :span="8">
             <el-tooltip effect="dark" :content="jobInfo.spec.image" placement="top">

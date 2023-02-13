@@ -20,7 +20,9 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" :description="jobInfo.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
+          <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
+            <span style="white-space: pre-wrap;">{{jobInfo.error}}</span>
+          </el-alert>
         </div>
         <el-row :gutter="0" class="item">
           <el-col :span="4">
