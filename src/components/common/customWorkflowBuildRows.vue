@@ -31,7 +31,7 @@
       <el-table-column
         prop="service_module"
         :label="$t(`project.services`)"
-        width="100px"
+        width="200px"
         v-if="type!=='zadig-test'&&type!=='zadig-scanning'"
       ></el-table-column>
       <el-table-column :label="$t(`global.repository`)">

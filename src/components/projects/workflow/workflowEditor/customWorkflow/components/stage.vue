@@ -1,7 +1,7 @@
 <template>
   <div class="stage">
     <el-tooltip effect="dark" :content="stageInfo.name" placement="top">
-      <div class="stage-name">{{ $utils.tailCut(stageInfo.name,10) }}</div>
+      <div class="stage-name">{{ $utils.tailCut(stageInfo.name,15) }}</div>
     </el-tooltip>
     <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job" :class="{'active':item.active}">
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
@@ -343,8 +343,8 @@ export default {
   }
 
   &-name {
-    margin-right: 16px;
-    margin-left: 16px;
+    margin-right: 12px;
+    margin-left: 12px;
     padding-left: -8px;
     overflow: hidden;
     color: #121212;
@@ -359,11 +359,13 @@ export default {
     position: relative;
     width: 7em;
     margin: 8px auto;
+    padding: 0 8px;
     overflow: hidden;
     color: #555;
     font-size: 14px;
     line-height: 30px;
     white-space: nowrap;
+    text-indent: 7px;
     text-overflow: ellipsis;
     border: 1px solid @borderGray;
     border-radius: 2px;
@@ -391,7 +393,7 @@ export default {
   }
 
   .add {
-    width: 7em;
+    width: 8em;
     margin-top: 8px;
     font-size: 14px;
     border: 2px dotted @borderGray;

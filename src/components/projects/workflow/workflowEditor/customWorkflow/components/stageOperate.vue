@@ -364,6 +364,10 @@ export default {
       }
     },
     validate () {
+      if (this.form.approval.enabled && this.form.approval.native_approval.needed_approvers > this.form.approval.native_approval.approve_users.length) {
+        this.$message.error('审批人应少于等于需要审批人数')
+        return false
+      }
       return this.$refs.ruleForm.validate()
     },
     reset () {
