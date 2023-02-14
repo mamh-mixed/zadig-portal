@@ -73,7 +73,6 @@
               <ServiceTree :services="services"
                            :projectInfo="projectInfo"
                            :currentServiceYamlKinds="currentServiceYamlKinds"
-                           :sharedServices="sharedServices"
                            :basePath="`/v1/projects/detail/${projectName}/services`"
                            :showNext.sync="showNext"
                            :yamlChange="yamlChange"
@@ -83,7 +82,6 @@
                            @onRefreshProjectInfo="checkProjectFeature"
                            @onRefreshService="getServices"
                            @onDeleteService="deleteService"
-                           @onRefreshSharedService="getSharedServices"
                            @onSelectServiceChange="onSelectServiceChange"
                            @onShowJoinToEnvBtn="showJoinToEnvBtnEvent"
                            @updateYaml="updateYaml($event)" />
@@ -102,7 +100,6 @@
                                     @onGetTemplateId="getTemplateId"
                                     @onParseKind="getYamlKind"
                                     @onRefreshService="getServices"
-                                    @onRefreshSharedService="getSharedServices"
                                     @onUpdateService="onUpdateService"
                                     @showJoinToEnvDialog="showJoinToEnvDialog"
                                     @onGetLatestServiceYaml="getLatestYaml"
@@ -161,7 +158,7 @@ import IntegrationCode from './common/integrationCode.vue'
 import Resize from '@/components/common/resize'
 import CodeMirror from '@/components/projects/common/codemirror.vue'
 import { sortBy } from 'lodash'
-import { getSingleProjectAPI, getServiceTemplatesAPI, getServicesTemplateWithSharedAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
+import { getSingleProjectAPI, getServiceTemplatesAPI, serviceTemplateWithConfigAPI, autoUpgradeEnvAPI, listProductAPI, getServiceDeployableEnvsAPI } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 export default {
   props: {
@@ -175,7 +172,6 @@ export default {
       projectInfo: {},
       service: {},
       services: [],
-      sharedServices: [],
       detectedEnvs: [],
       checkedEnvList: [],
       currentServiceYamlKinds: {},
@@ -226,16 +222,6 @@ export default {
         })), 'service_name')
       })
     },
-    getSharedServices () {
-      const projectName = this.projectName
-      getServicesTemplateWithSharedAPI(projectName).then((res) => {
-        this.sharedServices = sortBy((res.map(service => {
-          service.status = 'added'
-          service.type = 'k8s'
-          return service
-        })), 'service_name')
-      })
-    },
     showJoinToEnvDialog () {
       this.checkedEnvList = []
       this.getServiceDeployableEnvs()
@@ -261,7 +247,6 @@ export default {
       if (serviceStatus === 'named') {
         this.getServices()
         this.$refs.serviceTree.getServiceGroup()
-        this.getSharedServices()
       }
     },
     updateYaml (switchNode) {
@@ -441,7 +426,6 @@ export default {
       this.detectedEnvs = vars || []
     })
     this.getServices()
-    this.getSharedServices()
   },
   components: {
     ServiceAside,
