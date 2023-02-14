@@ -54,7 +54,7 @@
           v-if="registry.reg_provider"
           :label="providerMap[registry.reg_provider].reg_addr"
           prop="reg_addr"
-          :rules="{ required: true,message: `请输入${providerMap[registry.reg_provider].reg_addr}，包含协议`,trigger: ['blur']}"
+          :rules="{ required: true,validator:validateURL, message: `请输入${providerMap[registry.reg_provider].reg_addr}，包含协议`,trigger: ['blur']}"
         >
           <el-input size="small" clearable v-model.trim="registry.reg_addr"></el-input>
         </el-form-item>
@@ -302,6 +302,21 @@ export default {
     },
     providerMap () {
       return keyBy(this.providers, 'value')
+    },
+    validateURL () {
+      const validateURL = (rule, value, callback) => {
+        const reg = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/
+        if (!reg.test(value)) {
+          callback(
+            new Error(
+              this.$t(`sysSetting.integration.gitProviders.inputAddress`)
+            )
+          )
+        } else {
+          callback()
+        }
+      }
+      return validateURL
     }
   },
   methods: {
