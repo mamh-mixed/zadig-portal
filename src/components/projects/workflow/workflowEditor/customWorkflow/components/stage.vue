@@ -65,6 +65,10 @@ export default {
     isShowCurJobDrawer: {
       type: Boolean,
       default: false
+    },
+    stageInfo: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
@@ -211,14 +215,6 @@ export default {
     }
   },
   computed: {
-    stageInfo: {
-      get () {
-        return this.value
-      },
-      set (val) {
-        this.$emit('input', val)
-      }
-    },
     JobIndex: {
       get () {
         return this.curJobIndex
@@ -320,6 +316,18 @@ export default {
         })
       },
       immediate: true
+    },
+    isShowFooter: {
+      handler (newVal) {
+        if (!newVal) {
+          this.JobIndex = -1
+          this.stageInfo.jobs.forEach((job, i) => {
+            job.active = false
+          })
+          this.$forceUpdate()
+        }
+      },
+      immediate: true
     }
   }
 }
@@ -368,7 +376,7 @@ export default {
     text-indent: 7px;
     text-overflow: ellipsis;
     border: 1px solid @borderGray;
-    border-radius: 2px;
+    border-radius: 4px;
     cursor: pointer;
 
     .del {
@@ -390,6 +398,7 @@ export default {
 
   .active {
     border: 1px solid #06f;
+    box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
   }
 
   .add {
