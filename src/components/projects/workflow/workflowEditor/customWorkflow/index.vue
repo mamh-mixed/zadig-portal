@@ -77,7 +77,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage v-model="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" :curStageIndex="curStageIndex" />
+                <Stage :stageInfo="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" :curStageIndex="curStageIndex" />
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -570,6 +570,7 @@ export default {
           }
         }
         stage.jobs.forEach(job => {
+          delete job.active
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
               job.spec.service_and_builds.forEach(service => {
@@ -720,6 +721,7 @@ export default {
       }
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
+          job.active = false
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
               job.spec.service_and_builds.forEach(service => {
@@ -898,6 +900,7 @@ export default {
           }
         })
       })
+      // 记录当前job长度 取消保存的时候 长度减1
       this.workflowCurJobLength = this.payload.stages[
         this.curStageIndex
       ].jobs.length
@@ -976,6 +979,7 @@ export default {
     setCurDrawer (val) {
       this.isShowDrawer = true
       this.curDrawer = val
+      this.$store.dispatch('setIsShowFooter', false)
     },
     closeDrawer () {
       this.isShowDrawer = false
@@ -986,6 +990,7 @@ export default {
         this.workflowCurJobLength !==
         this.payload.stages[this.curStageIndex].jobs.length
       ) {
+        // 如果job长度有变化 则删除当前job
         this.payload.stages[this.curStageIndex].jobs.pop()
         this.curJobIndex = this.curJobIndex - 1
       }
@@ -1040,17 +1045,6 @@ export default {
             style: pinyin.STYLE_NORMAL
           }).join('')
         }
-      }
-    },
-    isShowFooter (newVal, oldVal) {
-      if (!newVal) {
-        this.curStageIndex = 0
-        this.curJobIndex = -1
-        this.payload.stages.forEach((stage, i) => {
-          stage.jobs.forEach((job, j) => {
-            job.active = false
-          })
-        })
       }
     }
   }
