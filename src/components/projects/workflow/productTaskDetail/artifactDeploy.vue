@@ -13,7 +13,9 @@
       </div>
       <div class="deploy-item">
         <div class="error-wrapper">
-          <el-alert v-if="deploy.error" :title="$t(`global.errorMsg`)" :description="deploy.error" type="error" :close-text="$t(`global.ok`)"></el-alert>
+          <el-alert v-if="deploy.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
+            <span style="white-space: pre-wrap;">{{deploy.error}}</span>
+          </el-alert>
         </div>
         <el-row :gutter="0">
           <el-col :span="6">

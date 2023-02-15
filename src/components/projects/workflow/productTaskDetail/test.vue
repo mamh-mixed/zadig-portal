@@ -9,6 +9,7 @@
                   :description="testingv2.error"
                   type="error"
                   :close-text="$t(`global.ok`)">
+          <span style="white-space: pre-wrap;">{{testingv2.error}}</span>
         </el-alert>
       </div>
       <div slot="header"

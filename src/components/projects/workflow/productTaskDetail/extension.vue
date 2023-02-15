@@ -4,11 +4,12 @@
     <el-alert
       v-if="extensionStage.error"
       :title="$t(`global.errorMsg`)"
-      :description="extensionStage.error"
       type="error"
       :close-text="$t(`global.ok`)"
       style="margin: 8px 0;"
-    ></el-alert>
+    >
+      <span style="white-space: pre-wrap;">{{extensionStage.error}}</span>
+    </el-alert>
     <el-row :gutter="0" class="extension-content">
       <el-col :span="6">
         <i class="iconfont iconzhuangtai"></i> 状态

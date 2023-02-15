@@ -18,9 +18,9 @@
       <div class="error-wrapper">
         <el-alert v-if="buildv2.error"
                   :title="$t(`global.errorMsg`)"
-                  :description="buildv2.error"
                   type="error"
                   :close-text="$t(`global.ok`)">
+          <span style="white-space: pre-wrap;">{{buildv2.error}}</span>
         </el-alert>
       </div>
       <div class="text item">
