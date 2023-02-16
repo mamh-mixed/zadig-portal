@@ -257,7 +257,19 @@
           >
             <span class="service-status" :class="data.status"></span>
             <i v-if="data.type==='k8s'" class="service-type iconfont iconrongqifuwu"></i>
-            <span class="tree-service-name" :class="{'kind':data.type==='kind'?true:false}">
+            <el-tooltip v-if="isShared(data)" effect="light" placement="top">
+              <div slot="content">
+                <span>{{`${$t('services.k8s.serviceName')}:${data.service_name}`}}</span>
+                <span>
+                  <br />
+                  {{`${$t('services.k8s.originProject')}:${data.product_name}`}}
+                </span>
+              </div>
+              <div class="tree-service-name" :class="{'kind':data.type==='kind'?true:false}">
+                <span class="label">{{node.label}}</span>
+              </div>
+            </el-tooltip>
+            <span v-else class="tree-service-name" :class="{'kind':data.type==='kind'?true:false}">
               <span class="label">{{node.label}}</span>
             </span>
             <template>
@@ -269,6 +281,9 @@
                 icon="el-icon-edit-outline"
                 @click.stop="() => reEditServiceName(node, data)"
               ></el-button>
+              <span v-if="isShared(data)">
+                <el-tag v-if="data.type === 'k8s'" effect="plain" type="info" size="mini">{{$t('services.k8s.sharedService')}}</el-tag>
+              </span>
               <span :style="{'visibility': showHover[data.service_name] ? 'visible': 'hidden'}" class="operation-container">
                 <el-button
                   v-hasPermi="{projectName: projectName, action: 'delete_service',isBtn:true}"
@@ -430,6 +445,13 @@ export default {
     }
   },
   methods: {
+    isShared (data) {
+      return (
+        data.type !== 'kind' &&
+        data.visibility === 'public' &&
+        data.product_name !== this.projectName
+      )
+    },
     setHovered (name) {
       this.$nextTick(() => {
         this.$set(this.showHover, name, true)

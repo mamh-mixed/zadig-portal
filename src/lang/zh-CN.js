@@ -955,6 +955,7 @@ exports.default = {
       inputByManual: '手动输入',
       serviceName: '服务名称',
       originProject: '所属项目',
+      sharedService: '共享',
       confirmToDeleteService: '确定要删除 {serviceName} 这个服务吗？',
       importServiceSuccess: '导入服务成功',
       deleteServiceSuccess: '删除服务成功',
