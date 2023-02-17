@@ -282,12 +282,17 @@
                 @click.stop="() => reEditServiceName(node, data)"
               ></el-button>
               <span v-if="isShared(data)">
-                <el-tag v-if="data.type === 'k8s'" effect="plain" type="info" size="mini">{{$t('services.k8s.sharedService')}}</el-tag>
+                <el-tag
+                  v-if="data.type === 'k8s'"
+                  type="info"
+                  effect="plain"
+                  size="mini"
+                >{{$t('services.k8s.sharedService')}}</el-tag>
               </span>
               <span :style="{'visibility': showHover[data.service_name] ? 'visible': 'hidden'}" class="operation-container">
                 <el-button
                   v-hasPermi="{projectName: projectName, action: 'delete_service',isBtn:true}"
-                  v-if="(data.product_name===projectName||data.status === 'named')"
+                  v-if="(data.status === 'added'||data.status === 'named')"
                   type="text"
                   size="mini"
                   icon="el-icon-close"
@@ -448,8 +453,7 @@ export default {
     isShared (data) {
       return (
         data.type !== 'kind' &&
-        data.visibility === 'public' &&
-        data.product_name !== this.projectName
+        data.visibility === 'public'
       )
     },
     setHovered (name) {
