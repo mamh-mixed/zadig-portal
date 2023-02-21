@@ -161,7 +161,7 @@ export default {
           // Listen for messages without a specified event
           sse.subscribe('', data => {
             this.hasNewTestMsg = true
-            this.wsTestDataBuffer = this.wsTestDataBuffer.concat(Object.freeze(data + '\n'))
+            this.wsTestDataBuffer = this.wsTestDataBuffer.concat(Object.freeze(data))
           })
         }).catch(err => {
           console.error('Failed to connect to server', err)
@@ -185,7 +185,7 @@ export default {
       getWorkflowHistoryTestLogAPI(this.projectName, this.pipelineName, this.taskID, this.testName, this.serviceName).then(
         response => {
           this.testAnyLog = (response.split('\n')).map(element => {
-            return element + '\n'
+            return element
           })
         }
       )
