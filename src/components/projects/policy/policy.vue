@@ -77,7 +77,6 @@
                     :label="workflow.action"
                     class="permission-item"
                   >
-                    <i :class="[workflow.icon]"></i>
                     {{workflow.alias}}
                   </el-checkbox>
                 </el-checkbox-group>
@@ -146,7 +145,6 @@
                     :label="environment.action"
                     class="permission-item"
                   >
-                    <i :class="[environment.icon]"></i>
                     {{environment.alias}}
                   </el-checkbox>
                 </el-checkbox-group>
