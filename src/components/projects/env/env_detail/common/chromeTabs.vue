@@ -71,7 +71,8 @@ export default {
 @tabHeight: 40px;
 
 .custom-tab-class {
-  padding: 12px 0 0 5px;
+  width: calc(~'100% - 46px');
+  padding: 12px 0 0;
   background-color: #e5e5e5;
 
   /deep/.el-tabs {
@@ -106,6 +107,19 @@ export default {
         z-index: 2;
         width: calc(~'100% - 40px');
         overflow: hidden;
+
+        .favorite {
+          position: absolute;
+          top: 28%;
+          right: 0;
+          color: @backgroundColor;
+          font-size: 18px;
+          cursor: pointer;
+
+          &.active {
+            color: @themeColor;
+          }
+        }
       }
 
       .custom-tab-svg {

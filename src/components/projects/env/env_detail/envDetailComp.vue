@@ -10,9 +10,14 @@
       />
     </el-dialog>
     <div class="envs-container">
-      <ChromeTabs v-model="envName" :tabList="envNameList" :label="'name'" :name="'name'">
+      <div class="btn-container">
+        <button type="button" :class="{'active':showFavorite}" @click="showFavorite=!showFavorite" class="display-btn">
+          <i class="el-icon-star-on favorite"></i>
+        </button>
+      </div>
+      <ChromeTabs v-model="envName" :tabList="showEnvNames" :label="'name'" :name="'name'">
         <template v-slot="{ tab }">
-          <span>
+          <span class="title-content">
             <i v-if="tab.source==='helm'" class="iconfont iconhelmrepo"></i>
             <i v-else-if="tab.source==='spock'" class="el-icon-cloudy"></i>
             {{ $utils.tailCut(tab.name,14) }}
@@ -24,6 +29,7 @@
               size="mini"
               type="primary"
             >{{$t('environments.common.subEnv')}}</el-tag>
+            <i class="el-icon-star-on favorite" :class="{'active': tab.is_favorite}" @click.stop="setCurFavorite(tab)"></i>
           </span>
         </template>
       </ChromeTabs>
@@ -519,7 +525,9 @@ import {
   rmSource,
   getRegistryWhenBuildAPI,
   updateEnvImageRegistry,
-  checkingShareEnvStatusAPI
+  checkingShareEnvStatusAPI,
+  createFavoriteEnvAPI,
+  deleteFavoriteEnvAPI
 } from '@api'
 import _ from 'lodash'
 import RunWorkflow from './runWorkflow.vue'
@@ -532,6 +540,7 @@ import ManageK8sServicesDialog from './components/manageK8sServicesDialog.vue'
 import ManageHelmServicesDialog from './components/manageHelmServicesDialog.vue'
 import ChartList from './components/chartList.vue'
 import ServiceList from './components/serviceList.vue'
+import ChromeTabs from './common/chromeTabs.vue'
 
 const validateKey = (rule, value, callback) => {
   if (typeof value === 'undefined' || value === '') {
@@ -632,7 +641,8 @@ export default {
           }
         ]
       },
-      allServiceNames: []
+      allServiceNames: [],
+      showFavorite: false
     }
   },
   computed: {
@@ -720,9 +730,21 @@ export default {
         }
       })
       return findImage || defaultImage
+    },
+    showEnvNames () {
+      return this.showFavorite ? this.envNameList.filter(env => env.is_favorite) : this.envNameList
     }
   },
   methods: {
+    setCurFavorite (env) {
+      ;(env.is_favorite ? deleteFavoriteEnvAPI : createFavoriteEnvAPI)(
+        env.name,
+        this.projectName
+      ).then(() => {
+        this.$message.success(env.is_favorite ? '取消收藏' : '收藏成功')
+        this.getEnvNameList()
+      })
+    },
     jumpEnvConfigPage (configType) {
       this.$router.push(
         `/v1/projects/detail/${this.projectName}/envs/detail/${this.envName}/envConfig?type=${configType}`
@@ -1049,7 +1071,7 @@ export default {
       })
       if (envNameList) {
         this.envNameList = _.sortBy(envNameList, item => {
-          return item.production
+          return !item.is_favorite // item.production
         })
       }
     },
@@ -1506,7 +1528,8 @@ export default {
     ManageHelmServicesDialog,
     ShareEnvDialog,
     ChartList,
-    ServiceList
+    ServiceList,
+    ChromeTabs
   },
   props: {
     envBasePath: {
