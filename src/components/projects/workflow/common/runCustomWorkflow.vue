@@ -274,6 +274,27 @@
         </div>
       </el-collapse>
       <el-button @click="runTask" :loading="startTaskLoading" type="primary" size="small" class="mg-t16">{{ startTaskLoading?$t(`workflow.starting`):$t(`workflow.run`) }}</el-button>
+      <el-tooltip effect="dark" placement="top">
+        <div slot="content">
+          {{$t(`global.enterprisefeaturesReferforDetails`)}}
+          <el-link
+            style="font-size: 13px; vertical-align: baseline;"
+            type="primary"
+            :href="`https://docs.koderover.com/project/common-workflow/#调试`"
+            :underline="false"
+            target="_blank"
+          >{{$t(`global.document`)}}</el-link>
+        </div>
+        <span style="margin-left: 4px;">
+          <el-button
+            type="primary"
+            size="small"
+            class="mg-t16"
+            plain
+            disabled
+          >{{ $t(`workflow.debug`) }}</el-button>
+        </span>
+      </el-tooltip>
     </el-form>
   </div>
 </template>

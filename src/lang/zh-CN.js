@@ -664,6 +664,7 @@ exports.default = {
     delScuuess: '删除成功',
     run: '执行',
     starting: '启动中',
+    debug: '调试',
     close: '关闭',
     open: '打开',
     timer: '定时器',
