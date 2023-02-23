@@ -664,6 +664,7 @@ exports.default = {
     delScuuess: 'Delete Success',
     run: 'Run',
     starting: 'Starting',
+    debug: 'Debug',
     close: 'Close',
     open: 'Open',
     timer: 'Timer',
