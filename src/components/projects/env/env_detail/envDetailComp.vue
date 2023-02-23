@@ -1,7 +1,7 @@
 <template>
   <div class="env-detail-container" ref="envContainer">
     <PmHostList ref="pmHostList" :currentPmServiceData="currentPmServiceData" @success="refreshServiceList" />
-    <el-dialog :title="$t('environments.common.runWorkflowToUpgradeService')" :visible.sync="showStartProductBuild" custom-class="run-workflow" width="60%">
+    <el-dialog :title="$t('environments.common.runWorkflowToUpgradeService')" :visible.sync="showStartProductBuild" custom-class="run-workflow" width="70%">
       <RunWorkflow
         v-if="showStartProductBuild"
         :workflows="currentServiceWorkflows"

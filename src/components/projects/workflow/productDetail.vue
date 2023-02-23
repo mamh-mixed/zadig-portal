@@ -71,7 +71,7 @@
         showOperation />
     </el-card>
 
-    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runProductWorkflow`)" custom-class="run-workflow" width="60%" class="dialog">
+    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runProductWorkflow`)" custom-class="run-workflow" width="70%" class="dialog">
       <run-workflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
