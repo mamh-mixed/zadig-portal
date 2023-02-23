@@ -112,11 +112,12 @@ export default {
           position: absolute;
           top: 28%;
           right: 0;
-          color: @backgroundColor;
+          color: @globalBackgroundColor;
           font-size: 18px;
           cursor: pointer;
 
-          &.active {
+          &.active,
+          &:hover {
             color: @themeColor;
           }
         }
@@ -143,6 +144,17 @@ export default {
 
         .custom-tab {
           fill: @globalBackgroundColor;
+        }
+
+        .custom-tab-title {
+          .favorite {
+            color: @backgroundColor;
+
+            &.active,
+            &:hover {
+              color: @themeColor;
+            }
+          }
         }
       }
     }
