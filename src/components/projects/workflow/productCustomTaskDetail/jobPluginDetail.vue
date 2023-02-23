@@ -138,7 +138,7 @@ export default {
           sse.subscribe('', data => {
             this.hasNewMsg = true
             this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(
-              Object.freeze(data + '\n')
+              Object.freeze(data)
             )
           })
         })
@@ -158,7 +158,7 @@ export default {
           this.buildv4AnyLog = [response]
         } else {
           this.buildv4AnyLog = response.split('\n').map(element => {
-            return element + '\n'
+            return element
           })
         }
       })

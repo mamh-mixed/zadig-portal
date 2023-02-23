@@ -249,7 +249,7 @@ export default {
           // Listen for messages without a specified event
           sse.subscribe('', data => {
             this.hasNewMsg = true
-            this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(Object.freeze(data + '\n'))
+            this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(Object.freeze(data))
           })
         })
         .catch(err => {
@@ -265,7 +265,7 @@ export default {
       return getWorkflowHistoryBuildLogAPI(this.projectName, this.pipelineName, this.taskID, this.serviceName, type).then(
         response => {
           this.buildv2AnyLog = (response.split('\n')).map(element => {
-            return element + '\n'
+            return element
           })
         }
       )

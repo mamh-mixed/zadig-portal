@@ -215,7 +215,7 @@ export default {
           sse.subscribe('', data => {
             this.hasNewMsg = true
             this.wsBuildDataBuffer = this.wsBuildDataBuffer.concat(
-              Object.freeze(data + '\n')
+              Object.freeze(data)
             )
           })
         })
@@ -232,7 +232,7 @@ export default {
         this.projectName
       ).then(response => {
         this.buildv4AnyLog = response.split('\n').map(element => {
-          return element + '\n'
+          return element
         })
       })
     },
