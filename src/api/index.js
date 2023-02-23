@@ -274,6 +274,14 @@ export function listProductAPI (projectName = '', envType = '') {
   }
 }
 
+export function createFavoriteEnvAPI (name, projectName, type = 'environment') {
+  return http.post(`/api/aslan/system/favorite/${type}/${name}?projectName=${projectName}`)
+}
+
+export function deleteFavoriteEnvAPI (name, projectName, type = 'environment') {
+  return http.delete(`/api/aslan/system/favorite/${type}/${name}?projectName=${projectName}`)
+}
+
 export function getServicePipelineAPI (projectName, envName, serviceName, serviceType) {
   return http.get(`/api/aslan/workflow/servicetask/workflows/${projectName}/${envName}/${serviceName}/${serviceType}?projectName=${projectName}`)
 }

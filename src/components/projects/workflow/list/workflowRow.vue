@@ -313,7 +313,7 @@ export default {
           display: inline-flex;
           flex: 0 0 8px;
           margin: 0 8px;
-          color: #ebebf0;
+          color: @backgroundColor;
           font-size: 20px;
           text-align: center;
           cursor: pointer;
