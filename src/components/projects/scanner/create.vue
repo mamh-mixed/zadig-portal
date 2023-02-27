@@ -65,7 +65,6 @@
         </el-form-item>
       </el-form>
 
-      <!-- 仅支持一个代码库 -->
       <div class="section">
         <RepoSelect
           ref="repoSelectRef"
@@ -73,7 +72,6 @@
           :validObj="validObj"
           class="scanner-secondary-form"
           showFirstLine
-          showJustOne
         />
       </div>
 
