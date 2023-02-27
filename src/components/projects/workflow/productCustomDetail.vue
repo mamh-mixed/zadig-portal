@@ -86,7 +86,7 @@
       />
     </el-card>
 
-    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runWorkflow`)" custom-class="run-workflow" width="60%" class="dialog" :before-close="close">
+    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runWorkflow`)" custom-class="run-workflow" width="70%" class="dialog" :before-close="close">
       <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"

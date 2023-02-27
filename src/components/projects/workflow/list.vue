@@ -145,7 +145,7 @@
       :visible.sync="isShowRunCustomWorkflowDialog"
       :title="$t(`workflow.runWorkflow`)"
       custom-class="run-workflow"
-      width="60%"
+      width="70%"
       class="dialog"
     >
       <RunCustomWorkflow
