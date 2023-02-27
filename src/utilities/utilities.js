@@ -584,7 +584,7 @@ const utils = {
       return ''
     } else if (status === 'running') {
       return 'primary'
-    } else if (status === 'timeout' || status === 'pending-approval') {
+    } else if (status === 'timeout' || status === 'pending-approval' || status === 'waitforapprove') {
       return 'warning'
     } else if (status === 'cancelled' || status === 'skipped') {
       return 'info'
