@@ -114,10 +114,7 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      content: {
-        title: '',
-        breadcrumb: []
-      },
+      busReceivedData: {},
       searchProject: '',
       projectIconMap: {
         k8s: 'iconk8s',
@@ -160,6 +157,23 @@ export default {
     },
     projectName () {
       return this.$route.params.project_name
+    },
+    content () {
+      const busReceivedData = this.busReceivedData
+      if (busReceivedData.breadcrumb) {
+        busReceivedData.breadcrumb.forEach(bc => {
+          if (bc && bc.isProjectName) {
+            bc.name = bc.title
+            bc.title = this.projectAliasByName(bc.name)
+          }
+        })
+        return busReceivedData
+      } else {
+        return {
+          title: '',
+          breadcrumb: []
+        }
+      }
     }
   },
   methods: {
@@ -174,20 +188,11 @@ export default {
       if (command === 'logOut') {
         this.logOut()
       }
-    },
-    changeTitle (params) {
-      this.content = params
     }
   },
   created () {
     bus.$on('set-topbar-title', params => {
-      params.breadcrumb.forEach(bc => {
-        if (bc && bc.isProjectName) {
-          bc.name = bc.title
-          bc.title = this.projectAliasByName(bc.name)
-        }
-      })
-      this.changeTitle(params)
+      this.busReceivedData = params
     })
   },
   components: {
