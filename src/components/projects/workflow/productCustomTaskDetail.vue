@@ -1,45 +1,60 @@
 <template>
   <div class="product-custom-detail">
     <header>
-      <el-row>
-        <el-col :span="8">
-          <span>
-            <el-tooltip effect="dark" :content="displayName" placement="top">
-              <span>{{ $utils.tailCut(displayName,20) }}</span>
-            </el-tooltip>#
-          </span>
-          <span>{{taskId}}</span>
-          <span :class="$translate.calcTaskStatusColor(payload.status)">{{ payload.status? $t(`workflowTaskStatus.${payload.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
-        </el-col>
-        <el-col :offset="4" :span="4">
+      <div class="left">
+        <el-tooltip effect="dark" :content="displayName" placement="top">
+          <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/${workflowName}?display_name=${displayName}`">
+            <span class="mg-r8">{{ $utils.tailCut(displayName,20) }}</span>
+          </router-link>
+        </el-tooltip>#
+        <span class="mg-r8">{{taskId}}</span>
+        <span
+          :class="$translate.calcTaskStatusColor(payload.status)"
+        >{{ payload.status? $t(`workflowTaskStatus.${payload.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
+      </div>
+      <div class="right">
+        <div class="mg-l24">
           <i class="el-icon-video-play"></i>
           <span>{{$utils.convertTimestamp(payload.create_time)}}</span>
-        </el-col>
-        <el-col :span="3">
+        </div>
+        <div class="mg-l24">
           <i class="el-icon-time"></i>
           <span>{{ payload.interval }}</span>
-        </el-col>
-        <el-col :span="2">
+        </div>
+        <div class="mg-l24">
           <i class="el-icon-user"></i>
           <span>{{payload.task_revoker}}</span>
-        </el-col>
-        <el-col :span="1" v-if="payload.status==='waiting'||payload.status==='running'">
-          <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
-        </el-col>
-      </el-row>
+        </div>
+        <template v-if="['waiting', 'running', 'waitforapprove'].includes(payload.status)">
+          <div v-if="!payload.debug" class="mg-l24">
+            <el-button
+              type="text"
+              icon="iconfont iconceshi"
+              @click="enableDebug"
+              v-hasPermi="{projectName: projectName, action: 'debug_workflow',resource: { name: workflowName, type: 'workflow'}, isBtn: true}"
+            ></el-button>
+          </div>
+          <div>
+            <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
+          </div>
+        </template>
+      </div>
     </header>
-    <div class="tab">
-      <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">{{$t(`global.workflow`)}}</span>
-      <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">{{$t(`global.var`)}}</span>
-    </div>
-    <Multipane v-if="activeName==='workflow'" layout="horizontal" style="height: 100%;">
+    <Multipane layout="horizontal" style="height: 100%;">
       <main>
-        <div class="content">
+        <div class="tab">
+          <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">{{$t(`global.workflow`)}}</span>
+          <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">{{$t(`global.var`)}}</span>
+        </div>
+        <div class="content" v-if="activeName==='workflow'">
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
           <div class="stages" v-for="(stage,stageIndex) in payload.stages" :key="stage.label">
             <div v-if="stage.approval && stage.approval.enabled" class="stages-approval" @click="handleApprovalChange(stage,stageIndex)">
-              <el-button type="primary" size="small">{{stage.approval.type==='lark'?$t(`approvalType.feishu`):$t(`approvalType.manualApproval`)}}</el-button>
+              <el-button
+                type="primary"
+                size="small"
+              >{{stage.approval.type==='lark'?$t(`approvalType.feishu`):$t(`approvalType.manualApproval`)}}</el-button>
               <div class="line"></div>
             </div>
             <div class="stage">
@@ -47,17 +62,64 @@
                 <div class="stage-name">{{$utils.tailCut(stage.name,15)}}</div>
               </el-tooltip>
               <div class="jobs" v-for="(job,index) in stage.jobs" :key="job.name">
-                <span class="job" @click="setCurJob(job,index,stageIndex)" :class="{'active': stageIndex === curStageIndex && index === curJobIndex}">
-                  <span class="job-status" :class="$translate.calcTaskStatusColor(job.status)">•</span>
-                  <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
-                    <span class="job-name">{{job.name}}</span>
-                  </el-tooltip>
+                <span
+                  class="job"
+                  @click="setCurJob(job,index,stageIndex)"
+                  :class="{'active': stageIndex === curStageIndex && index === curJobIndex}"
+                >
+                  <div class="job-status" :class="$translate.calcTaskStatusColor(job.status)">
+                    <span v-if="job.status === 'passed'|| job.status === 'success'" class="el-icon-success"></span>
+                    <span v-else-if="job.status === 'failed'||job.status === 'failure'||job.status === 'timeout'" class="el-icon-error"></span>
+                    <span v-else-if="job.status === 'cancelled'||job.status === 'terminated'" class="el-icon-warning"></span>
+                    <span v-else-if="job.status === 'running'||job.status === 'elected'" class="el-icon-loading"></span>
+                    <span v-else class="el-icon-warning"></span>
+                  </div>
+                  <div class="job-content">
+                    <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
+                      <span class="name">{{$utils.tailCut(job.name,16)}}</span>
+                    </el-tooltip>
+                    <div>{{$utils.timeFormat(job.end_time-job.start_time)}}</div>
+                  </div>
                 </span>
               </div>
             </div>
             <div class="line"></div>
           </div>
           <span class="text mg-l8">End</span>
+        </div>
+        <div v-if="activeName==='env'" class="env">
+          <el-table :data="envList" v-if="envList.length>0" class="table">
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <div v-if="props.row.name==='工作流变量'">
+                  <div v-for="(env,index) in props.row.envs" :key="index" class="table-env">
+                    <span class="item">{{env.name}}</span>
+                    <span class="item">{{env.value}}</span>
+                  </div>
+                </div>
+                <div v-if="props.row.type==='zadig-build'">
+                  <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                    <span class="item">{{env.key}}</span>
+                    <span class="item">{{env.value}}</span>
+                  </div>
+                </div>
+                <div v-if="props.row.type === 'freestyle'">
+                  <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
+                    <span class="item" v-if="env">{{env.key}}</span>
+                    <span class="item" v-if="env">{{env.value}}</span>
+                  </div>
+                </div>
+                <div v-if="props.row.type === 'plugin'">
+                  <div v-for="(env,index) in props.row.spec.inputs" :key="index" class="table-env">
+                    <span class="item" v-if="env">{{env.name}}</span>
+                    <span class="item" v-if="env">{{env.value}}</span>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t(`global.key`)" prop="name"></el-table-column>
+            <el-table-column :label="$t(`global.value`)"></el-table-column>
+          </el-table>
         </div>
       </main>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
@@ -127,40 +189,6 @@
         />
       </footer>
     </Multipane>
-    <div v-if="activeName==='env'" class="env">
-      <el-table :data="envList" v-if="envList.length>0" class="table">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <div v-if="props.row.name==='工作流变量'">
-              <div v-for="(env,index) in props.row.envs" :key="index" class="table-env">
-                <span class="item">{{env.name}}</span>
-                <span class="item">{{env.value}}</span>
-              </div>
-            </div>
-            <div v-if="props.row.type==='zadig-build'">
-              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
-                <span class="item">{{env.key}}</span>
-                <span class="item">{{env.value}}</span>
-              </div>
-            </div>
-            <div v-if="props.row.type === 'freestyle'">
-              <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
-                <span class="item" v-if="env">{{env.key}}</span>
-                <span class="item" v-if="env">{{env.value}}</span>
-              </div>
-            </div>
-            <div v-if="props.row.type === 'plugin'">
-              <div v-for="(env,index) in props.row.spec.inputs" :key="index" class="table-env">
-                <span class="item" v-if="env">{{env.name}}</span>
-                <span class="item" v-if="env">{{env.value}}</span>
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t(`global.key`)" prop="name"></el-table-column>
-        <el-table-column :label="$t(`global.value`)"></el-table-column>
-      </el-table>
-    </div>
   </div>
 </template>
 <script>
@@ -273,7 +301,12 @@ export default {
         if (this.envList.length === 0) {
           // global env and stage are not in same level data,  so need to handle data
           this.handleEnv()
-          const globalEnv = [{ name: this.$t(`workflow.workflowVars`), envs: this.payload.params }]
+          const globalEnv = [
+            {
+              name: this.$t(`workflow.workflowVars`),
+              envs: this.payload.params
+            }
+          ]
           const jobs = this.payload.stages.map(item => {
             return item.jobs.map(job => job)
           })
@@ -431,17 +464,28 @@ export default {
   background: #fff;
 
   header {
+    display: flex;
+    justify-content: space-between;
     height: 42px;
     margin: 24px;
     padding: 0 24px;
     color: #121212;
     line-height: 42px;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+
+    .left {
+      width: 20%;
+    }
+
+    .right {
+      display: flex;
+      flex: 1 0 300px;
+      justify-content: flex-end;
+    }
   }
 
   .tab {
-    margin: 24px 0;
-    padding: 0 24px;
+    margin: 4px 0 24px 0;
     color: @projectNameColor;
     font-size: 14px;
     cursor: pointer;
@@ -469,6 +513,25 @@ export default {
   main {
     padding: 0 24px;
 
+    .env {
+      width: 50%;
+      height: 80%;
+      overflow-y: auto;
+
+      .table {
+        &-env {
+          height: 30px;
+          padding: 0 60px;
+          line-height: 30px;
+
+          .item {
+            display: inline-block;
+            width: 40%;
+          }
+        }
+      }
+    }
+
     .content {
       display: flex;
 
@@ -487,7 +550,7 @@ export default {
         }
 
         .stage {
-          width: 140px;
+          width: 180px;
           margin: -6px 4px;
           padding: 8px 0 16px 0;
           border: 2px dotted @borderGray;
@@ -509,34 +572,46 @@ export default {
 
         .jobs {
           margin-top: 8px;
-          padding: 0;
-          line-height: 30px;
+          padding: 0 16px;
+          line-height: 20px;
 
           .job {
-            display: block;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             box-sizing: border-box;
-            width: 8em;
-            margin: 0 auto;
-            padding: 0 8px;
-            overflow: hidden;
+            padding: 8px;
             font-weight: 400;
             font-size: 14px;
-            white-space: nowrap;
             text-align: left;
-            text-overflow: ellipsis;
             border: 1px solid @borderGray;
             border-radius: 4px;
             cursor: pointer;
 
             &-status {
+              flex: 0 0 12px;
               font-size: 18px;
-              vertical-align: -3px;
             }
-          }
 
-          .active {
-            border: 1px solid #06f;
-            box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
+            &-content {
+              flex: 1 1 auto;
+              margin-left: 8px;
+              text-align: left;
+
+              .name {
+                display: inline-block;
+                flex: 1 1 auto;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              }
+            }
+
+            .active {
+              border: 1px solid #06f;
+              box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
+            }
           }
         }
       }
@@ -593,26 +668,6 @@ export default {
       border: 1px solid @themeColor;
       border-radius: 50%;
       content: '';
-    }
-  }
-
-  .env {
-    width: 50%;
-    height: 80%;
-    padding: 0 24px;
-    overflow-y: auto;
-
-    .table {
-      &-env {
-        height: 30px;
-        padding: 0 60px;
-        line-height: 30px;
-
-        .item {
-          display: inline-block;
-          width: 40%;
-        }
-      }
     }
   }
 }
