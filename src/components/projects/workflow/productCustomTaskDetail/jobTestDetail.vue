@@ -104,6 +104,7 @@
       <section class="log-content mg-t8">
         <XtermLog :id="jobInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="jobInfo.name" />
       </section>
+      <section class="block"></section>
     </main>
     <el-dialog :visible.sync="artifactModalVisible" width="60%" :title="$t(`testing.taskDetails.exportArtifact`)" class="downloadArtifact-dialog">
       <ArtifactDownload
@@ -355,6 +356,20 @@ export default {
           cursor: not-allowed;
         }
       }
+    }
+
+    .log-content {
+      overflow-x: hidden;
+    }
+
+    .block {
+      position: relative;
+      top: -2px;
+      box-sizing: border-box;
+      width: 100%;
+      height: 200px;
+      background: #000;
+      border-right: 4px solid #edededba;
     }
 
     .el-col {

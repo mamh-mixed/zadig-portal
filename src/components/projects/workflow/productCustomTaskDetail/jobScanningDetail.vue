@@ -62,6 +62,7 @@
       <section class="log-content mg-t8">
         <XtermLog :id="jobInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="jobInfo.name" />
       </section>
+      <section class="block"></section>
     </main>
   </div>
 </template>
@@ -283,6 +284,20 @@ export default {
       &-desc {
         color: #4a4a4a;
       }
+    }
+
+    .log-content {
+      overflow-x: hidden;
+    }
+
+    .block {
+      position: relative;
+      top: -2px;
+      box-sizing: border-box;
+      width: 100%;
+      height: 200px;
+      background: #000;
+      border-right: 4px solid #edededba;
     }
   }
 }
