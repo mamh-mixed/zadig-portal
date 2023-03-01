@@ -165,7 +165,6 @@ export default {
       detail.interval = this.$utils.timeFormat(
         this.timeout * 60 - detail.intervalSec
       )
-      console.log(detail.interval)
       if (detail.interval.split(' ')[0] < 0) {
         detail.interval = '0 秒'
       }
