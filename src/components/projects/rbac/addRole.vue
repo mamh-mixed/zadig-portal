@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="form" :title="$t('project.rbac.addRole')" :visible.sync="dialogRoleAddFormVisible">
+  <el-dialog class="form" :title="$t('project.rbac.addRole')" :visible.sync="dialogRoleAddFormVisible" width="62%">
     <el-form ref="form" :model="form" :rules="formRules" label-position="left">
       <el-form-item :label="$t('project.rbac.roleName')" prop="name" label-width="130px">
         <el-input size="small" :disabled="isEdit" v-model="form.name"  :placeholder="$t('project.rbac.inputRoleName')"></el-input>
