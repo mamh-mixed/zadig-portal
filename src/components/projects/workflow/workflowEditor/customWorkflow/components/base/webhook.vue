@@ -1226,10 +1226,12 @@ export default {
             this.getWebhooks()
             this.getTimers()
             this.getCommons()
-            this.checkingBuildStageChanged(
-              cloneDeep(this.config),
-              cloneDeep(this.originalWorkflow)
-            )
+            this.$nextTick(() => {
+              this.checkingBuildStageChanged(
+                cloneDeep(this.config),
+                cloneDeep(this.originalWorkflow)
+              )
+            })
           }
         }
       },
