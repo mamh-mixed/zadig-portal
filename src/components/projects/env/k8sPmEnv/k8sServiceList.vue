@@ -18,7 +18,7 @@
             class="img-select"
             v-model="quickSelection"
             :placeholder="$t('environments.k8s.serviceListComp.selectFilterMethod')"
-            @change="quickInitImage"
+            @change="quickInitImage()"
           >
             <el-option :label="$t('environments.k8s.serviceListComp.selectLatestImage')" value="latest"></el-option>
             <el-option :label="$t('environments.k8s.serviceListComp.selectDefaultImage')" value="default"></el-option>
@@ -88,6 +88,8 @@ export default {
     }
   },
   data () {
+    this.services = []
+
     return {
       itemComponent: virtualListItem,
       virtualData: {
@@ -122,9 +124,10 @@ export default {
           )
         }
       }
+      this.services = services
       if (init) {
         this.quickSelection = 'latest'
-        this.quickInitImage(services, this.imageMapById[registryId])
+        this.quickInitImage(this.imageMapById[registryId])
       }
     },
     makeMapOfArray (arr, namePropName) {
@@ -138,8 +141,9 @@ export default {
       }
       return map
     },
-    quickInitImage (services, imageMap = this.imageMap) {
+    quickInitImage (imageMap = this.imageMap) {
       const select = this.quickSelection
+      const services = this.services || []
       for (const group of services) {
         for (const ser of group) {
           ser.picked =
