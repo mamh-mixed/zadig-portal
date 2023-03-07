@@ -4,10 +4,10 @@
       :title="operateType==='add'?$t(`sysSetting.integration.project.addProjectManageSys`):$t(`sysSetting.integration.project.editProjectManageSys`)"
       :close-on-click-modal="false"
       custom-class="edit-form-dialog"
-      :visible.sync="dialogJiraAddFormVisible"
+      :visible.sync="dialogVisible"
     >
-      <el-alert class="mg-t8 mg-b8" v-if="checkRes === 'fail'&&errorMessage" :title="errorMessage" type="error" :closable="false" show-icon></el-alert>
-      <el-form :model="params" @submit.native.prevent label-position="left" :rules="jiraRules" label-width="134px" ref="form">
+      <el-alert style="margin-bottom: 10px;" v-if="checkResult === 'fail'" :title="errorMessage" type="error" :closable="false" ></el-alert>
+      <el-form :model="params" @submit.native.prevent label-position="left" :rules="formRules" label-width="134px" ref="form">
         <el-form-item :label="$t(`sysSetting.integration.project.sysType`)" prop="type">
           <el-select v-model="params.type" :disabled="operateType==='edit'">
             <el-option label="飞书项目" value="lark" disabled>
@@ -37,19 +37,16 @@
         </el-form-item>
         <div v-if="params.type==='jira'">
           <el-form-item :label="$t(`sysSetting.integration.project.address`)" prop="jira_host">
-            <el-input v-model.trim="params.jira_host" placeholder="Jira 访问地址" autofocus auto-complete="off"></el-input>
+            <el-input v-model.trim="params.jira_host" placeholder="Jira 访问地址" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label="$t(`sysSetting.integration.project.userName`)" prop="jira_user">
-            <el-input v-model="params.jira_user" placeholder="有 issue 读写权限的用户名" autofocus auto-complete="off"></el-input>
+            <el-input v-model="params.jira_user" placeholder="有 issue 读写权限的用户名"  auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label="$t(`sysSetting.integration.project.token`)" prop="jira_token">
             <el-input
               v-model="params.jira_token"
               placeholder="用户密码/Access Token"
-              autofocus
-              v-if="dialogJiraAddFormVisible"
               show-password
-              @blur="validate"
               :suffix-icon="showCheckIcon"
               type="password"
               auto-complete="off"
@@ -62,11 +59,10 @@
           type="primary"
           native-type="submit"
           size="small"
-          :disabled="checkRes==='fail'"
-          @click="updateJiraConfig()"
-          class="start-create"
+          :loading="checkLoading"
+          @click="updateProjectManage()"
         >{{$t(`global.confirm`)}}</el-button>
-        <el-button plain native-type="submit" size="small" @click="handleJiraCancel()">{{$t(`global.cancel`)}}</el-button>
+        <el-button plain native-type="submit" size="small" @click="handleDialogCancel()">{{$t(`global.cancel`)}}</el-button>
       </div>
     </el-dialog>
     <!--end of edit list dialog-->
@@ -87,17 +83,25 @@
         </el-alert>
       </template>
       <div class="sync-container">
-        <el-button v-if="list.length===0" size="small" type="primary" plain @click="handleJiraEdit('add',params)">{{$t(`global.add`)}}</el-button>
+        <el-button
+          v-if="!isJiraDisabled"
+          size="small"
+          type="primary"
+          plain
+          @click="handleConfigEdit('add',params)"
+        >{{$t(`global.add`)}}</el-button>
       </div>
       <el-table :data="list" style="width: 100%;">
-        <el-table-column :label="$t(`sysSetting.integration.project.address`)" prop="jira_host"></el-table-column>
+        <el-table-column :label="$t(`sysSetting.integration.project.address`)">
+          <template slot-scope="scope">{{scope.row.type==='jira'?scope.row.jira_host:scope.row.meego_host}}</template>
+        </el-table-column>
         <el-table-column :label="$t(`sysSetting.integration.gitProviders.lastUpdated`)">
           <template slot-scope="scope">{{ $utils.convertTimestamp(scope.row.updated_at)}}</template>
         </el-table-column>
         <el-table-column :label="$t(`global.operation`)" width="160">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" plain @click="handleJiraEdit('edit',scope.row)">{{$t(`global.edit`)}}</el-button>
-            <el-button type="danger" size="mini" @click="handleJiraDelete(scope.row)" plain>{{$t(`global.delete`)}}</el-button>
+            <el-button type="primary" size="mini" @click="handleConfigEdit('edit',scope.row)" plain>{{$t(`global.edit`)}}</el-button>
+            <el-button type="danger" size="mini" @click="deleteProjectManage(scope.row)" plain>{{$t(`global.delete`)}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -106,11 +110,11 @@
 </template>
 <script>
 import {
-  getProjectManage,
-  updateProjectManage,
-  deleteProjectManage,
-  createProjectManage,
-  checkProjectManage
+  getProjectManageAPI,
+  updateProjectManageAPI,
+  deleteProjectManageAPI,
+  createProjectManageAPI,
+  checkProjectManageAPI
 } from '@api'
 const validateJiraURL = (rule, value, callback) => {
   if (value === '') {
@@ -126,17 +130,15 @@ const validateJiraURL = (rule, value, callback) => {
 export default {
   data () {
     return {
-      tabPosition: 'top',
-      activeTab: '',
       operateType: 'add',
       list: [],
       params: {
         type: 'jira',
         jira_host: '',
         jira_user: '',
-        jira__token: ''
+        jira_token: ''
       },
-      jiraRules: {
+      formRules: {
         type: {
           required: true
         },
@@ -154,7 +156,7 @@ export default {
           {
             required: true,
             validator: validateJiraURL,
-            trigger: ['blur', 'change']
+            trigger: ['change']
           }
         ],
         jira_token: {
@@ -163,59 +165,55 @@ export default {
           trigger: ['blur', 'change']
         }
       },
-      dialogJiraAddFormVisible: false,
-      checkRes: '',
-      errorMessage: ''
+      dialogVisible: false,
+      checkResult: '',
+      errorMessage: '',
+      checkLoading: false
     }
   },
   computed: {
-    isLarkDisabled () {
-      return this.list.filter(item => item.type === 'lark').length > 0
-    },
     isJiraDisabled () {
       return this.list.filter(item => item.type === 'jira').length > 0
     },
     showCheckIcon () {
-      if (this.checkRes === 'pass') {
-        return 'el-icon-success'
-      } else if (this.checkRes === 'fail') {
-        return 'el-icon-error'
+      if (this.checkResult === 'pass') {
+        return 'el-icon-circle-check'
+      } else if (this.checkResult === 'fail') {
+        return 'el-icon-circle-close'
       } else {
         return ''
       }
     }
   },
   methods: {
-    validate () {
-      const { type, jira_host, jira_user, jira_token } = this.params
-      const params = { type, jira_host, jira_user, jira_token }
-      checkProjectManage(params)
-        .then(res => {
-          if (res && res.message === 'success') {
-            this.checkRes = 'pass'
-          }
-        })
-        .catch(error => {
-          this.checkRes = 'fail'
-          this.errorMessage = error.response.data.message
-        })
-    },
     clearValidate (ref) {
       this.$refs[ref].clearValidate()
     },
-    getJiraConfig () {
+    getProjectManage () {
       const key = this.$utils.rsaEncrypt()
-      getProjectManage(key).then(res => {
+      getProjectManageAPI(key).then(res => {
         this.list = res
       })
     },
-
-    handleJiraEdit (type, row) {
+    handleConfigEdit (type, row) {
       this.operateType = type
-      this.dialogJiraAddFormVisible = true
-      this.params = this.$utils.cloneObj(row)
+      this.dialogVisible = true
+      this.checkResult = null
+      this.$nextTick(() => {
+        this.$refs.form.resetFields()
+      })
+      if (type === 'edit') {
+        this.params = this.$utils.cloneObj(row)
+      } else {
+        this.params = {
+          type: 'jira',
+          jira_host: '',
+          jira_user: '',
+          jira_token: ''
+        }
+      }
     },
-    handleJiraDelete (item) {
+    deleteProjectManage (item) {
       this.$confirm(
         this.$t(`sysSetting.integration.project.confirmDel`),
         this.$t(`global.confirmation`),
@@ -225,8 +223,8 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        deleteProjectManage(item.id).then(res => {
-          this.getJiraConfig()
+        deleteProjectManageAPI(item.id).then(res => {
+          this.getProjectManage()
           this.$message({
             message: this.$t(
               `sysSetting.integration.project.configurationDelSuccessfully`
@@ -236,61 +234,75 @@ export default {
         })
       })
     },
-    updateJiraConfig () {
-      this.$refs.form.validate(valid => {
+    async updateProjectManage () {
+      this.$refs.form.validate(async valid => {
         if (valid) {
-          let params = {}
-          if (this.params.type === 'lark') {
-            params = {}
-          } else {
-            params = {
+          const { type, jira_host, jira_user, jira_token } = this.params
+          const validatePayload = { type, jira_host, jira_user, jira_token }
+          this.checkLoading = true
+          const checkResult = await checkProjectManageAPI(validatePayload).catch(error => {
+            this.checkResult = 'fail'
+            this.checkLoading = false
+            this.errorMessage = error.response.data.message
+          })
+          if (checkResult) {
+            const params = {
               type: 'jira',
               jira_host: this.params.jira_host,
               jira_user: this.params.jira_user,
               jira_token: this.params.jira_token
             }
-          }
-          if (this.operateType === 'add') {
-            createProjectManage(params).then(res => {
-              this.getJiraConfig()
-              this.handleJiraCancel()
-              this.$message({
-                message: this.$t(
-                  `sysSetting.integration.project.configurationAddedSuccessfully`
-                ),
-                type: 'success'
+
+            if (this.operateType === 'add') {
+              const res = await createProjectManageAPI(params).catch(error => {
+                this.checkLoading = false
+                console.log(error)
               })
-            })
-          } else {
-            updateProjectManage(params, this.params.id).then(res => {
-              this.getJiraConfig()
-              this.handleJiraCancel()
-              this.$message({
-                message: this.$t(
-                  `sysSetting.integration.project.configurationModifiedSuccessfully`
-                ),
-                type: 'success'
+              if (res && res.message === 'success') {
+                this.getProjectManage()
+                this.handleDialogCancel()
+                this.checkLoading = false
+                this.$message({
+                  message: this.$t(
+                    `sysSetting.integration.project.configurationAddedSuccessfully`
+                  ),
+                  type: 'success'
+                })
+              }
+            } else {
+              const res = await updateProjectManageAPI(params, this.params.id).catch(error => {
+                this.checkLoading = false
+                console.log(error)
               })
-            })
+              if (res && res.message === 'success') {
+                this.getProjectManage()
+                this.handleDialogCancel()
+                this.checkLoading = false
+                this.$message({
+                  message: this.$t(
+                    `sysSetting.integration.project.configurationModifiedSuccessfully`
+                  ),
+                  type: 'success'
+                })
+              }
+            }
           }
         } else {
           return false
         }
       })
     },
-    handleJiraCancel () {
-      if (this.$refs.form) {
+    handleDialogCancel () {
+      this.$nextTick(() => {
+        this.checkResult = null
+        this.checkLoading = false
         this.$refs.form.resetFields()
-        this.dialogJiraAddFormVisible = false
-      }
-      if (this.$refs.form) {
-        this.$refs.form.resetFields()
-        this.dialogJiraAddFormVisible = false
-      }
+        this.dialogVisible = false
+      })
     }
   },
   activated () {
-    this.getJiraConfig()
+    this.getProjectManage()
   }
 }
 </script>
@@ -354,16 +366,13 @@ export default {
   }
 }
 
-/deep/ .el-icon-success {
+/deep/ .el-icon-circle-check {
   margin-left: 10px;
   color: @success;
-  font-size: 20px;
 }
 
-/deep/ .el-icon-error {
-  display: block;
+/deep/ .el-icon-circle-close {
   margin-left: 10px;
   color: red;
-  font-size: 20px;
 }
 </style>
