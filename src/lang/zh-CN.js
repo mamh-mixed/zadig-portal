@@ -171,6 +171,7 @@ exports.default = {
   sidebarMenu: {
     productDelivery: '产品交付',
     status: '运行状态',
+    personalView: '个人视图',
     dashboard: '仪表盘',
     projects: '项目',
     forum: '论坛',

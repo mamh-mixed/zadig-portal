@@ -8,7 +8,7 @@
         <div class="info-view">
           <span class="spec">
             <span>
-              <label>{{ $t(`workflowTaskStatus.${task.codeScanner}`) }} {{`#${task.task_id}`}}</label>
+              <label>{{$t('status.codeScanning')}} {{`#${task.task_id}`}}</label>
               <br />
               <router-link :to="getTaskUrl(task)">
                 <span class="workflow-name">
@@ -51,7 +51,7 @@
         <div class="info-view">
           <span class="spec">
             <span>
-              <label>{{ $t(`workflowTaskStatus.${task.codeScanner}`) }}  {{`#${task.task_id}`}}</label>
+              <label>{{$t('status.codeScanning')}} {{`#${task.task_id}`}}</label>
               <br />
               <router-link :to="getTaskUrl(task)">
                 <span class="workflow-name">

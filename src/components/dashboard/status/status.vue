@@ -20,7 +20,6 @@ import {
   getRunningStatusCustomWorkflowListAPI,
   getPendingStatusCustomWorkflowListAPI
 } from '@api'
-import bus from '@utils/eventBus'
 import ProductWorkflowStatus from './container/productWorkflowStatus'
 import CustomWorkflowStatus from './container/customWorkflowStatus'
 import TestStatus from './container/testStatus'
@@ -107,7 +106,6 @@ export default {
   mounted () {
     this.showTaskList('running')
     this.showTaskList('queue')
-    bus.$emit('set-topbar-title', { title: '运行状态', breadcrumb: [] })
   },
   components: {
     ProductWorkflowStatus,
