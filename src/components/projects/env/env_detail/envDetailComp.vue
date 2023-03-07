@@ -59,15 +59,24 @@
         element-loading-spinner="el-icon-loading"
         class="common-parcel-block basic-info-content"
       >
-        <el-tooltip v-if="envSource !== 'pm'" effect="dark" :content="$t('environments.common.envChangeLog')" placement="top">
-          <el-button
-            type="text"
-            v-hasPermi="{projectName: projectName,action:'config_environment',resource:{name:envName,type:'env'}, isBtn:true}"
-            icon="el-icon-document"
-            class="change-log"
-            @click="$router.push(`/v1/projects/detail/${projectName}/envs/${envName}/log`)"
-          ></el-button>
-        </el-tooltip>
+        <template v-if="envSource !== 'pm'">
+          <el-tooltip v-if="checkPermissionSyncMixin({projectName: projectName,action:'config_environment',resource:{name:envName,type:'env'}})" effect="dark" :content="$t('environments.common.envChangeLog')" placement="top">
+            <el-button
+              type="text"
+              icon="el-icon-document"
+              class="change-log"
+              @click="$router.push(`/v1/projects/detail/${projectName}/envs/${envName}/log`)"
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
+            <el-button
+                type="text"
+                style="color: #c0c4cc;"
+                class="change-log"
+                icon="el-icon-document">
+            </el-button>
+          </el-tooltip>
+        </template>
         <el-row :gutter="10">
           <el-col v-if="!pmServiceList.length" :span="12">
             <div class="grid-title">{{$t('environments.common.k8sCluster')}}</div>
