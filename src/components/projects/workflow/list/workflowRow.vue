@@ -22,8 +22,8 @@
         </div>
       </span>
     </div>
-    <div class="detail-container">
-      <section class="workflow-header" @click.stop>
+    <div class="detail-container" @click="$router.push(workflowLink)">
+      <section class="workflow-header">
         <div class="info-wrap">
           <span @click.stop="setFavorite(projectName,name,type)" class="favorite el-icon-star-on" :class="{'liked':isFavorite}"></span>
           <div class="name-container">
@@ -35,53 +35,24 @@
                 <span v-else class="name-span">{{ displayName }}</span>
               </router-link>
             </div>
-            <!-- <el-tooltip v-if="description" effect="dark" :content="description" placement="top">
-              <div class="gray-desc workflow-desc">{{ $utils.tailCut(description,25) }}</div>
-            </el-tooltip>
-            <div v-else class="gray-desc workflow-desc">-</div> -->
           </div>
         </div>
       </section>
-
-      <section class="recent-success">
-        <div class="gray-desc">
-          {{$t(`workflow.recentSuccess`)}}
-          <span style="display: inline-block; width: 80px;">
-            <span v-if="recentSuccessID">{{$utils.convertTimestamp(workflowInfo.recentSuccessfulTask.create_time,'mm-dd-mm')}}</span>
-          </span>
-        </div>
-        <div v-if="recentSuccessID" class="detail-desc">
-          <i class="icon el-icon-user"></i>
-          <span>{{workflowInfo.recentSuccessfulTask.task_creator}}</span>
-          <router-link :to="recentSuccessLink" class="success">{{ recentSuccessID }}</router-link>
-        </div>
-        <div v-else class="detail-desc">
-          <span>-</span>
-        </div>
+      <section class="status-barchart" @click.stop>
+        <StatusBarChart :projectName="projectName" :workflowName="name" :displayName="displayName" :type="type" :xData="xData" :yData="yData" />
       </section>
-      <section class="recent-failed">
-        <div class="gray-desc">
-          {{$t(`workflow.recentFail`)}}
-          <span style="display: inline-block; width: 80px;">
-            <span v-if="recentFailID">{{$utils.convertTimestamp(workflowInfo.recentFailedTask.create_time,'mm-dd-mm')}}</span>
-          </span>
-        </div>
-        <div v-if="recentFailID" class="detail-desc">
-          <i class="icon el-icon-user"></i>
-          <span>{{workflowInfo.recentFailedTask.task_creator}}</span>
-          <router-link :to="recentFailLink" class="failed">{{ recentFailID }}</router-link>
-        </div>
-        <div v-else class="detail-desc">
-          <span>-</span>
-        </div>
-      </section>
-      <section class="time-rate">
+      <section class="section-info">
         <div class="gray-desc">{{$t(`workflow.averageExecutionTime`)}}</div>
         <div class="value">{{ avgRuntime || '-' }}</div>
       </section>
-      <section class="time-rate">
+      <section class="section-info">
         <div class="gray-desc">{{$t(`workflow.successRate`)}}</div>
         <div class="value">{{ avgSuccessRate || '-' }}</div>
+      </section>
+      <section class="recent-info">
+        <div class="gray-desc">{{$t(`workflow.recentTask`)}}</div>
+        <div v-if="workflowInfo.recentTask && workflowInfo.recentTask.taskID" class="value">{{ `${workflowInfo.recentTask.task_creator} ${formateTime(workflowInfo.recentTask.create_time)}` }}</div>
+        <div v-else class="value">-</div>
       </section>
       <section class="operations" @click.stop>
         <slot name="operations"></slot>
@@ -92,6 +63,9 @@
 
 <script>
 import { setFavoriteAPI, deleteFavoriteAPI } from '@api'
+import StatusBarChart from '../common/statusBarChart.vue'
+import moment from 'moment'
+import { fill } from 'lodash'
 export default {
   data () {
     return {}
@@ -105,17 +79,14 @@ export default {
       type: String,
       required: true
     },
-
     type: {
       type: String,
       required: true
     },
-
     isFavorite: {
       type: Boolean,
       required: true
     },
-
     name: {
       type: String,
       required: true
@@ -133,12 +104,10 @@ export default {
       type: String,
       required: true
     },
-
     recentSuccessID: {
       type: String,
       required: true
     },
-
     recentSuccessLink: {
       type: String,
       required: true
@@ -175,6 +144,23 @@ export default {
       } else {
         return `/v1/projects/detail/${this.projectName}/pipelines/multi/${this.name}?display_name=${this.displayName}`
       }
+    },
+    xData () {
+      return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    },
+    yData () {
+      const recentTasks = this.workflowInfo.recentTasks ? this.workflowInfo.recentTasks : []
+      const formatedData = recentTasks.map((item) => {
+        const now = Math.floor(Date.now() / 1000)
+        const value = item.status === 'running' ? now - item.start_time : item.end_time - item.start_time
+        const statusFormated = `<span class="el-tag el-tag--${this.$utils.taskElTagType(item.status)} el-tag--mini el-tag--dark">${this.$t(`workflowTaskStatus.${item.status}`)}</span>`
+        const createTime = moment.unix(item.create_time).format('MM-DD HH:mm')
+        const durationFormated = item.status === 'running' ? (now - item.start_time) + 's' : this.$utils.timeFormatEn(item.end_time - item.start_time)
+        return { value: value, taskId: item.taskID, status: item.status, statusFormated: statusFormated, creator: item.task_creator, createTime: createTime, duration: 400, durationFormated: durationFormated }
+      })
+      const initArray = fill(Array(10), { value: 0 })
+      const yData = initArray.splice(formatedData.length).concat(formatedData.reverse())
+      return yData
     }
   },
   methods: {
@@ -202,7 +188,13 @@ export default {
           })
         })
       }
+    },
+    formateTime (time) {
+      return moment.unix(time).format('MM-DD HH:mm')
     }
+  },
+  components: {
+    StatusBarChart
   }
 }
 </script>
@@ -272,17 +264,26 @@ export default {
     width: 100%;
     height: 70px;
     margin-bottom: 14px;
-    overflow: auto;
     font-size: 14px;
     line-height: 22px;
     background: #fff;
     border-left: 0 solid #77797d;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
 
     .detail-desc {
       margin-top: 4px;
       color: #4a4a4a;
       font-size: 12px;
-      cursor: auto;
+
+      span,
+      .icon {
+        cursor: auto;
+      }
     }
 
     .gray-desc {
@@ -303,7 +304,6 @@ export default {
     .workflow-header {
       flex: 0 0 300px;
       max-width: 300px;
-      cursor: auto;
 
       .info-wrap {
         display: flex;
@@ -357,8 +357,20 @@ export default {
       font-size: 13px;
     }
 
-    .time-rate {
+    .section-info {
       flex: 0 0 80px;
+      margin-right: 20px;
+      white-space: nowrap;
+
+      .value {
+        margin-top: 4px;
+        color: #4a4a4a;
+        line-height: 22px;
+      }
+    }
+
+    .recent-info {
+      flex: 0 0 150px;
       margin-right: 20px;
       white-space: nowrap;
 
@@ -370,26 +382,11 @@ export default {
       }
     }
 
-    .recent-success {
-      flex: 0 0 80px;
+    .status-barchart {
+      flex: 0 0 180px;
+      width: 100%;
+      height: 70px;
       white-space: nowrap;
-
-      .detail-desc {
-        .success {
-          color: #06f;
-        }
-      }
-    }
-
-    .recent-failed {
-      flex: 0 0 80px;
-      white-space: nowrap;
-
-      .detail-desc {
-        .failed {
-          color: #06f;
-        }
-      }
     }
 
     .operations {
