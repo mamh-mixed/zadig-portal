@@ -314,7 +314,7 @@ export default {
       const payload = this.checkedEnvList.map(item => {
         return {
           env_name: item.name,
-          service_names: [this.deletedService]
+          services: [this.deletedService]
         }
       })
       const projectName = this.projectName
