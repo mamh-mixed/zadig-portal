@@ -16,6 +16,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.iconpersonalview:before {
+  content: "\e6c9";
+}
+
+.icondashboard:before {
+  content: "\e7a5";
+}
+
 .iconjfrog:before {
   content: "\e6c8";
 }

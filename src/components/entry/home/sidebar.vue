@@ -207,7 +207,7 @@ export default {
           items: [
             {
               name: 'dashboard',
-              icon: 'iconfont iconyunhangzhuangtai',
+              icon: 'iconfont icondashboard',
               url: 'dashboard'
             },
             {
