@@ -389,6 +389,8 @@ export default {
 
     &:hover {
       color: #000;
+      border: 1px solid #06f;
+      box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
 
       .del {
         display: block;

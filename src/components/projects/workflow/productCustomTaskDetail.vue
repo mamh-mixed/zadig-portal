@@ -78,7 +78,7 @@
                     <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
                       <span class="name">{{$utils.tailCut(job.name,16)}}</span>
                     </el-tooltip>
-                    <div>{{$utils.timeFormat(job.end_time-job.start_time)}}</div>
+                    <div class="second">{{$utils.timeFormat(job.end_time-job.start_time)}}</div>
                   </div>
                 </span>
               </div>
@@ -605,6 +605,11 @@ export default {
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
+              }
+
+              .second {
+                color: @fontGray;
+                font-size: 13px;
               }
             }
 
