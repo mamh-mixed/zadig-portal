@@ -12,7 +12,7 @@
         <div class="info-view">
           <span class="spec">
             <span>
-              <label>{{`#${task.task_id}`}}</label>
+              <label>{{$t('status.test')}} {{`#${task.task_id}`}}</label>
               <br>
               <router-link
                            :to="`/v1/projects/detail/${task.product_name}/test/detail/function/${task.test_args.test_name}-job/${task.task_id}?status=${task.status}`">
@@ -20,12 +20,6 @@
                      class="el-icon-link"></i>{{`${task.pipeline_name}`}}</span>
               </router-link>
             </span>
-          </span>
-          <span class="stages-tag">
-            <el-tag v-if="showStage(task.stages,'testingv2')"
-                    size=small
-                    class="stage"
-                    type="primary">{{ $t(`productWorkflowStage.testingv2`) }}</el-tag>
           </span>
           <section class="basic-info">
             <p class="author"><i class="el-icon-user"></i> {{task.task_creator}}</p>

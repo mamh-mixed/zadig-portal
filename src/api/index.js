@@ -5,10 +5,11 @@ import Element from 'element-ui'
 import errorMap from '@/utilities/errorMap'
 import Store from '../store'
 import Router from '../router'
-const specialAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifacts', '/api/aslan/environment/kube/workloads']
-const ignoreErrReq = '/api/aslan/services/validateUpdate/'
+const returnFullResponseAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifacts', '/api/aslan/environment/kube/workloads']
+const returnFullResponseRegexAPIs = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloads/, /api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/groups/, /api\/aslan\/environment\/production\/environments\/[a-z-A-Z-0-9]+\/groups/]
+const ignoreErrReqPrefix = '/api/aslan/services/validateUpdate/'
+const ignoreErrReqAPIs = ['/api/aslan/system/jenkins/user/connection', '/api/aslan/system/sonar/validate', '/api/aslan/system/project_management/validate']
 const ignoreErrResponse = 'the following services are modified since last update:'
-const reqExps = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloads/, /api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/groups/]
 const analyticsPrefix = 'https://api.koderover.com'
 const analyticsReq = `${analyticsPrefix}/api/operation/upload`
 const userInitEnvRoute = '/v1/projects/initialize/'
@@ -97,10 +98,10 @@ function displayError (error) {
 http.interceptors.response.use(
   (response) => {
     const req = response.config.url.split(/[?#]/)[0]
-    const isInReg = (reqExps.findIndex(element => {
+    const isInReg = (returnFullResponseRegexAPIs.findIndex(element => {
       return element.test(req)
     })) >= 0
-    if (specialAPIs.includes(req)) {
+    if (returnFullResponseAPIs.includes(req)) {
       return response
     } else if (isInReg) {
       return response
@@ -125,7 +126,8 @@ http.interceptors.response.use(
     if (
       error.response &&
       !error.response.config.url.startsWith(analyticsPrefix) &&
-      !error.response.config.url.includes(ignoreErrReq)) {
+      !error.response.config.url.includes(ignoreErrReqPrefix) &&
+      !ignoreErrReqAPIs.includes(error.response.config.url)) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log(error.response)
@@ -954,22 +956,22 @@ export function setDefaultAccountAPI (payload) {
 }
 
 // Jira
-export function getProjectManage (key) {
+export function getProjectManageAPI (key) {
   return http.get(`/api/aslan/system/project_management?encryptedKey=${key}`)
 }
 
-export function updateProjectManage (payload, id) {
+export function updateProjectManageAPI (payload, id) {
   return http.patch(`/api/aslan/system/project_management/${id}`, payload)
 }
 
-export function deleteProjectManage (id) {
+export function deleteProjectManageAPI (id) {
   return http.delete(`/api/aslan/system/project_management/${id}`)
 }
 
-export function createProjectManage (payload) {
+export function createProjectManageAPI (payload) {
   return http.post(`/api/aslan/system/project_management`, payload)
 }
-export function checkProjectManage (payload) {
+export function checkProjectManageAPI (payload) {
   return http.post(`/api/aslan/system/project_management/validate`, payload)
 }
 

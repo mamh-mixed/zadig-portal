@@ -114,7 +114,16 @@
         </div>
         <div class="footer" v-if="!isCreate">
           <el-button v-if="currentCode && currentCode.name === 'values.yaml' && currentCode.type==='file' && (currentCode.source==='chartTemplate'||currentCode.source==='customEdit') && !currentCode.autoSync" size="small" type="primary" :disabled="!contentChanged" @click="commit">{{$t(`global.save`)}}</el-button>
-          <el-button v-hasPermi="{projectName: projectName, action:'manage_environment',isBtn:true}" size="small" type="primary" :disabled="!updateEnv.length || !envNameList.length" @click="update()">{{$t('services.common.addToEnv')}}</el-button>
+          <el-button
+            v-if="checkPermissionSyncMixin({type:'project',projectName: projectName, action: 'manage_environment'})"
+            size="small"
+            type="primary"
+            :disabled="!(service && service.length) || !updateEnv.length || !envNameList.length"
+            @click="update()"
+          >{{$t('services.common.addToEnv')}}</el-button>
+          <el-tooltip v-else effect="dark" :content="$t('permission.lackPermission')" placement="top">
+            <el-button class="is-disabled" size="small" type="primary">{{$t('services.common.addToEnv')}}</el-button>
+          </el-tooltip>
         </div>
       </div>
       <MultipaneResizer class="multipane-resizer" v-if="service && service.length" />
@@ -658,6 +667,7 @@ export default {
   .center {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     width: 50%;
     min-width: 200px;
     height: 100%;

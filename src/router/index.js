@@ -49,7 +49,7 @@ const routes = [
       },
       {
         path: 'dashboard',
-        component: () => import('@/components/projects/dashboard.vue'),
+        component: () => import('@/components/dashboard/index.vue'),
         meta: {
           requiresAuth: true,
           title: i18n.t('sidebarMenu.dashboard')

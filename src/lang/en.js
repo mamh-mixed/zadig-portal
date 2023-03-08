@@ -171,6 +171,7 @@ exports.default = {
   sidebarMenu: {
     productDelivery: 'Product Delivery',
     status: 'Status',
+    personalView: 'Personal View',
     dashboard: 'Dashboard',
     projects: 'Projects',
     forum: 'Forum',
