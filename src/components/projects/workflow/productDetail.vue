@@ -68,7 +68,8 @@
         showEnv
         showTestReport
         showServiceNames
-        showOperation />
+        showOperation
+        showJobDetail />
     </el-card>
 
     <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runProductWorkflow`)" custom-class="run-workflow" width="70%" class="dialog">
@@ -94,6 +95,17 @@ import runWorkflow from './common/runWorkflow.vue'
 import FilterStatus from './productTaskDetail/filterStatus.vue'
 import TaskList from '@/components/projects/common/taskList.vue'
 import bus from '@utils/eventBus'
+
+const TypeEnums = {
+  buildv2: '构建',
+  deploy: '部署',
+  testingv2: '测试',
+  extension: '扩展',
+  artifact_deploy: '交付物部署',
+  release_image: '分发部署',
+  distribute2kodo: '分发部署'
+}
+
 export default {
   data () {
     this.filterInfo = { type: '', list: '' }
@@ -202,6 +214,11 @@ export default {
         filters
       ).then(res => {
         this.processTestData(res)
+
+        const keys = Object.keys(TypeEnums)
+        res.data.forEach(item => {
+          item.stages = item.stages.filter(stage => keys.includes(stage.name)).map(stage => ({ ...stage, type: TypeEnums[stage.name] }))
+        })
         this.workflowTasks = res.data
         this.total = res.total
       })
