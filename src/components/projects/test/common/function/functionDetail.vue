@@ -72,6 +72,10 @@
       />
     </section>
 
+    <section>
+      <OtherSteps ref="otherStepsRef" :testPostConfig="test.post_test" :validObj="validObj" />
+    </section>
+
     <footer class="create-footer">
       <router-link :to="`/v1/projects/detail/${projectName}/test`">
         <el-button style="margin-right: 15px;" type="primary" plain>{{$t(`global.cancel`)}}</el-button>
@@ -85,6 +89,7 @@
 import BuildEnv from '@/components/projects/build/buildEnv.vue'
 import EnvVariable from '@/components/projects/build/envVariable.vue'
 import AdvancedConfig from './container/advancedConfig.vue'
+import OtherSteps from './container/otherSteps.vue'
 import bus from '@utils/eventBus'
 import ValidateSubmit from '@utils/validateAsync'
 import Editor from 'vue2-ace-bind'
@@ -298,6 +303,9 @@ export default {
             element.disabledKey = true
           })
         }
+        if (this.test.post_test.object_storage_upload) {
+          this.$refs.otherStepsRef.initStepStatus(this.test.post_test)
+        }
         this.configDataLoading = false
       })
     }
@@ -307,7 +315,8 @@ export default {
     Resize,
     BuildEnv,
     EnvVariable,
-    AdvancedConfig
+    AdvancedConfig,
+    OtherSteps
   }
 }
 </script>
