@@ -332,12 +332,11 @@ export default {
           for (const group of projectConfig.services) {
             const currentGroup = []
             for (const ser of group) {
-              const containers = ser.containers
-              if (containers && ser.picked && ser.type === 'k8s') {
+              if (ser.picked) {
                 if (selectedServiceNames.includes(ser.service_name)) {
                   currentGroup.push(ser)
                 }
-                for (const con of ser.containers) {
+                for (const con of (ser.containers || [])) {
                   if (!con.image) {
                     this.$message.warning(this.$t('environments.k8s.servicewithoutImage', { serviceName: con.name }))
                     return
