@@ -83,6 +83,7 @@
         @currentChange="changeTaskPage"
         workflowType="buildv4"
         showOperation
+        showJobDetail
       />
     </el-card>
 
