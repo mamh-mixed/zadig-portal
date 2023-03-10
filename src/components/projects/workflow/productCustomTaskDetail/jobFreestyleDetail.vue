@@ -182,9 +182,7 @@ export default {
             'passed',
             'failed',
             'timeout',
-            'cancelled',
-            'debug_before',
-            'debug_after'
+            'cancelled'
           ]
           if (oldVal && val.name !== oldVal.name) {
             this.firstLoad = false

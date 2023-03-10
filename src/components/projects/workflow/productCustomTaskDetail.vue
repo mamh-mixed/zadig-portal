@@ -25,16 +25,6 @@
           <i class="el-icon-user"></i>
           <span>{{payload.task_revoker}}</span>
         </div>
-        <template v-if="['waiting', 'running', 'waitforapprove'].includes(payload.status)">
-          <div v-if="!payload.debug" class="mg-l24">
-            <el-button
-              type="text"
-              icon="iconfont iconceshi"
-              @click="enableDebug"
-              v-hasPermi="{projectName: projectName, action: 'debug_workflow',resource: { name: workflowName, type: 'workflow'}, isBtn: true}"
-            ></el-button>
-          </div>
-        </template>
         <div class="mg-l24" v-if="['waiting', 'running', 'waitforapprove'].includes(payload.status)">
           <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
         </div>
