@@ -32,6 +32,14 @@
     </header>
     <Multipane layout="horizontal" style="height: 100%;">
       <main style="max-height: 20%;">
+       <div class="scale">
+        <el-tooltip class="item" effect="dark" content="缩小" placement="top">
+          <span class="icon el-icon-minus" @click="scale('narrow')"></span>
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" content="放大" placement="top">
+          <span class="icon el-icon-plus" @click="scale('enlarge')"></span>
+        </el-tooltip>
+      </div>
         <div class="tab">
           <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">{{$t(`global.workflow`)}}</span>
           <span
@@ -40,7 +48,7 @@
             @click="activeName = 'env';isShowConsoleFooter=false"
           >{{$t(`global.var`)}}</span>
         </div>
-        <div class="content" v-if="activeName==='workflow'">
+        <div class="content" v-if="activeName==='workflow'" id="ui">
           <span class="text mg-r8">Start</span>
           <div class="line"></div>
           <div class="stages" v-for="(stage,stageIndex) in payload.stages" :key="stage.label">
@@ -51,7 +59,7 @@
               >{{stage.approval.type==='lark'?$t(`approvalType.feishu`):$t(`approvalType.manualApproval`)}}</el-button>
               <div class="line"></div>
             </div>
-            <div class="stage">
+            <div class="stage" :scale="scal">
               <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="stage.name">
                 <div class="stage-name">{{$utils.tailCut(stage.name,15)}}</div>
               </el-tooltip>
@@ -223,7 +231,8 @@ export default {
       timeTimeoutFinishFlag: false,
       activeName: 'workflow',
       activeEnvName: 'env',
-      envList: []
+      envList: [],
+      scal: '1'
     }
   },
   components: {
@@ -441,6 +450,19 @@ export default {
           { title: this.taskId, url: `` }
         ]
       })
+    },
+    scale (type) {
+      this.$nextTick(() => {
+        const main = document.getElementById('ui')
+        if (type === 'enlarge') {
+          if (this.scal > 1) return
+          this.scal = (parseFloat(this.scal) + 0.1).toFixed(2)
+        } else {
+          if (this.scal < 0.5) return
+          this.scal = (parseFloat(this.scal) - 0.1).toFixed(2)
+        }
+        main.style.zoom = this.scal
+      })
     }
   },
   mounted () {
@@ -511,6 +533,20 @@ export default {
 
     .active {
       color: @themeColor;
+    }
+  }
+
+  .scale {
+    position: absolute;
+    right: 4%;
+    bottom: 6%;
+    z-index: 0;
+    cursor: pointer;
+
+    .icon {
+      margin-right: 4px;
+      padding: 4px;
+      border: 1px solid #ddd;
     }
   }
 
