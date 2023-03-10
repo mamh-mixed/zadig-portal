@@ -34,17 +34,21 @@
               v-hasPermi="{projectName: projectName, action: 'debug_workflow',resource: { name: workflowName, type: 'workflow'}, isBtn: true}"
             ></el-button>
           </div>
-          <div>
-            <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
-          </div>
         </template>
+        <div class="mg-l24" v-if="payload.status==='waiting'||payload.status==='running'">
+          <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
+        </div>
       </div>
     </header>
     <Multipane layout="horizontal" style="height: 100%;">
-      <main>
+      <main style="max-height: 20%;">
         <div class="tab">
           <span class="tab-item" :class="{'active': activeName==='workflow'}" @click="activeName = 'workflow'">{{$t(`global.workflow`)}}</span>
-          <span class="tab-item" :class="{'active': activeName==='env'}" @click="activeName = 'env'">{{$t(`global.var`)}}</span>
+          <span
+            class="tab-item"
+            :class="{'active': activeName==='env'}"
+            @click="activeName = 'env';isShowConsoleFooter=false"
+          >{{$t(`global.var`)}}</span>
         </div>
         <div class="content" v-if="activeName==='workflow'">
           <span class="text mg-r8">Start</span>
@@ -72,7 +76,7 @@
                     <span v-else-if="job.status === 'failed'||job.status === 'failure'||job.status === 'timeout'" class="el-icon-error"></span>
                     <span v-else-if="job.status === 'cancelled'||job.status === 'terminated'" class="el-icon-warning"></span>
                     <span v-else-if="job.status === 'running'||job.status === 'elected'" class="el-icon-loading"></span>
-                    <span v-else class="el-icon-warning"></span>
+                    <span v-else class="el-icon-warning color-cancelled"></span>
                   </div>
                   <div class="job-content">
                     <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
@@ -103,6 +107,12 @@
                     <span class="item">{{env.value}}</span>
                   </div>
                 </div>
+                <div v-if="props.row.type==='zadig-deploy'">
+                  <div v-for="(env,index) in props.row.spec.key_vals" :key="index" class="table-env">
+                    <span class="item">{{env.key}}</span>
+                    <span class="item">{{env.value}}</span>
+                  </div>
+                </div>
                 <div v-if="props.row.type === 'freestyle'">
                   <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
                     <span class="item" v-if="env">{{env.key}}</span>
@@ -123,10 +133,10 @@
         </div>
       </main>
       <MultipaneResizer class="multipane-resizer" v-if="isShowConsoleFooter"></MultipaneResizer>
-      <footer :style="{minHeight:'600px'}" v-if="isShowConsoleFooter">
+      <footer :style="{minHeight:'500px'}" v-if="isShowConsoleFooter">
         <JobBuildDetail
           v-if="curJob.type === jobType.build"
-          :jobInfo="curJob"
+          :jobInfo.sync="curJob"
           :taskId="taskId"
           :workflowName="workflowName"
           :projectName="projectName"
@@ -273,12 +283,18 @@ export default {
         task_id,
         this.projectName
       ).then(res => {
+        this.$router.replace({
+          query: {
+            ...this.$route.query,
+            status: res.status
+          }
+        })
         // show approval detail when init data
         res.stages.forEach((item, index) => {
           if (
             item.approval &&
             item.approval.enabled &&
-            item.status === 'running' &&
+            (item.status === 'running' || item.status === 'waitforapprove') &&
             this.firstLoad
           ) {
             this.handleApprovalChange(item, index)
@@ -381,11 +397,9 @@ export default {
     },
     async refreshHistoryTaskDetail () {
       await this.getWorkflowTaskDetail(this.workflowName, this.taskId)
-      if (
-        !this.timeTimeoutFinishFlag &&
-        this.$route.query.status === 'running'
-      ) {
-        this.timerId = setTimeout(this.refreshHistoryTaskDetail, 3000) // 保证内存中只有一个定时器
+      const statusList = ['running', 'waiting', 'waitforapprove']
+      if (!this.timeTimeoutFinishFlag && statusList.includes(this.$route.query.status)) {
+        this.timerId = setTimeout(this.refreshHistoryTaskDetail, 1000) // 保证内存中只有一个定时器
       }
     },
     adaptTaskDetail (detail) {
@@ -513,25 +527,6 @@ export default {
   main {
     padding: 0 24px;
 
-    .env {
-      width: 50%;
-      height: 80%;
-      overflow-y: auto;
-
-      .table {
-        &-env {
-          height: 30px;
-          padding: 0 60px;
-          line-height: 30px;
-
-          .item {
-            display: inline-block;
-            width: 40%;
-          }
-        }
-      }
-    }
-
     .content {
       display: flex;
 
@@ -613,10 +608,35 @@ export default {
               }
             }
 
-            .active {
+            &:hover {
               border: 1px solid #06f;
               box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
             }
+          }
+
+          .active {
+            border: 1px solid #06f;
+            box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
+          }
+        }
+      }
+    }
+
+    .env {
+      width: 50%;
+      min-height: 400px;
+      max-height: 80%;
+      overflow-y: auto;
+
+      .table {
+        &-env {
+          height: 30px;
+          padding: 0 60px;
+          line-height: 30px;
+
+          .item {
+            display: inline-block;
+            width: 40%;
           }
         }
       }

@@ -203,14 +203,19 @@ export default {
     jobInfo: {
       handler (val, oldVal) {
         if (val) {
+          const hasLogStatus = [
+            'running',
+            'passed',
+            'failed',
+            'timeout',
+            'cancelled',
+            'debug_before',
+            'debug_after'
+          ]
           if (oldVal && val.name !== oldVal.name) {
             this.firstLoad = false
           }
-          if (
-            (val.status === 'running' && !this.firstLoad) ||
-            (val.status === 'passed' && !this.firstLoad) ||
-            (val.status === 'failed' && !this.firstLoad)
-          ) {
+          if (!this.firstLoad && hasLogStatus.includes(val.status)) {
             this.getLog()
             this.firstLoad = true
           }
