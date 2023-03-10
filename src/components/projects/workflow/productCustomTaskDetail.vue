@@ -35,7 +35,7 @@
             ></el-button>
           </div>
         </template>
-        <div class="mg-l24" v-if="payload.status==='waiting'||payload.status==='running'">
+        <div class="mg-l24" v-if="['waiting', 'running', 'waitforapprove'].includes(payload.status)">
           <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
         </div>
       </div>
