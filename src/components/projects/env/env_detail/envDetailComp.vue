@@ -628,7 +628,7 @@ export default {
       filterChartName: '*',
       envDeleteInfo: {
         deleteDialogVisible: false,
-        is_delete: true,
+        is_delete: false,
         project_name: '',
         env_name: '',
         envType: ''
@@ -1319,7 +1319,7 @@ export default {
       }
       this.envDeleteInfo = {
         deleteDialogVisible: true,
-        is_delete: true,
+        is_delete: false,
         project_name: project_name,
         env_name: '',
         envType: this.isProd ? 'prod' : ''
@@ -1336,7 +1336,7 @@ export default {
         ).then(res => {
           this.envDeleteInfo = {
             deleteDialogVisible: false,
-            is_delete: true,
+            is_delete: false,
             project_name: envDeleteInfo.project_name,
             env_name: '',
             envType: this.isProd ? 'prod' : ''
