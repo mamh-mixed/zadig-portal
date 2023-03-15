@@ -293,6 +293,12 @@ export default {
           desc: this.$t(`systemVariables.repoCommitID`)
         },
         {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$<REPO>_ORG',
+          // eslint-disable-next-line no-template-curly-in-string
+          desc: this.$t(`systemVariables.repoOrg`)
+        },
+        {
           variable: '',
           desc: this.$t(`systemVariables.otherTypeRepoWarning`)
         }
