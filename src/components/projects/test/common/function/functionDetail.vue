@@ -55,6 +55,10 @@
     </section>
 
     <section>
+      <OtherSteps ref="otherStepsRef" :testPostConfig="test.post_test" :validObj="validObj" />
+    </section>
+
+    <section>
       <div style="margin-bottom: 8px;">
         <el-button type="primary" size="small" plain @click="switchAdvancedStatus">
           {{$t(`testing.details.advancedSettings.title`)}}
@@ -70,10 +74,6 @@
           :validObj="validObj"
           @validateFailed="test.advanced_setting_modified = true"
       />
-    </section>
-
-    <section>
-      <OtherSteps ref="otherStepsRef" :testPostConfig="test.post_test" :validObj="validObj" />
     </section>
 
     <footer class="create-footer">
