@@ -303,8 +303,10 @@ export default {
             element.disabledKey = true
           })
         }
-        if (this.test.post_test.object_storage_upload) {
+        if (this.test.post_test) {
           this.$refs.otherStepsRef.initStepStatus(this.test.post_test)
+        } else {
+          this.$set(this.test, 'post_test', {})
         }
         this.configDataLoading = false
       })
