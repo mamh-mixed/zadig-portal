@@ -6,7 +6,7 @@
         <el-table-column>
           <template slot-scope="{ row }" v-if="row.repo_name">
             <el-row>
-              <template v-if="!row.use_default">
+              <template v-if="row.use_default">
                 <el-col :span="7">
                   <el-input v-if="row.source==='other'" v-model="row.branchOrTag.name" :placeholder="$t(`repository.prompt.inputBranchOrTag`)" size="small"></el-input>
                   <el-select

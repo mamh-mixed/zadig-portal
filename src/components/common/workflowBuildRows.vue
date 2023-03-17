@@ -13,7 +13,7 @@
           <el-row v-for="build of scope.row.build.repos"
                   class="build-row"
                   :key="build._id_">
-            <template v-if="!build.use_default">
+            <template v-if="build.use_default">
               <el-col :span="8">
                 <div class="repo-name-container">
                   <el-tooltip class="item" effect="dark" :content="build.repo_name" placement="top">
