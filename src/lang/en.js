@@ -1087,7 +1087,8 @@ exports.default = {
         ingressHosts: 'Ingress Hosts',
         serviceEndpoints: 'Endpoints',
         startEphemeralContainer: 'Debug'
-      }
+      },
+      serviceDeployStrategyTip: 'The service has not been deployed via Zadig and can be redeployed using the service configuration managed on Zadig by performing the "Update Service" operation'
     },
     config: {
       configuration: 'Configuration',
@@ -1183,7 +1184,6 @@ exports.default = {
         inputValue: 'Please input value'
       },
       chartListComp: {
-        serviceDeployStrategyTip: 'The service has not been deployed via Zadig and can be redeployed using the service configuration managed on Zadig by performing the "Update Service" operation',
         serviceConfigChangedTip: 'Update service configuration at the same time',
         updateServiceDialogTitle: 'Update service - {serviceName}',
         updateServiceConfigurationCheck: 'Update service configuration at the same time',
