@@ -1087,7 +1087,8 @@ exports.default = {
         ingressHosts: '外网访问',
         serviceEndpoints: '内网访问',
         startEphemeralContainer: '启动调试容器'
-      }
+      },
+      serviceDeployStrategyTip: '该服务尚未通过 Zadig 部署，可执行「更新服务」操作使用 Zadig 上管理的服务配置重新部署'
     },
     config: {
       configuration: '配置',
@@ -1183,7 +1184,6 @@ exports.default = {
         inputValue: '请输入 value 值'
       },
       chartListComp: {
-        serviceDeployStrategyTip: '该服务尚未通过 Zadig 部署，可执行「更新服务」操作使用 Zadig 上管理的服务配置重新部署',
         serviceConfigChangedTip: '服务配置有变更',
         updateServiceDialogTitle: '更新服务 - {serviceName}',
         updateServiceConfigurationCheck: '同时更新服务配置',

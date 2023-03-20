@@ -31,7 +31,7 @@
         </span>
         <span class="chart-right">
           <template v-if="serviceStatus[chart.serviceName] && serviceStatus[chart.serviceName].raw.deploy_strategy === 'import'">
-            <el-tooltip  effect="dark" :content="$t('environments.helm.chartListComp.serviceDeployStrategyTip')" placement="top">
+            <el-tooltip  effect="dark" :content="$t('environments.common.serviceDeployStrategyTip')" placement="top">
               <i class="el-icon-warning-outline common-icon"></i>
             </el-tooltip>
           </template>
