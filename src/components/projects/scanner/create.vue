@@ -320,7 +320,7 @@ export default {
             submodules: repo.submodules,
             checkout_path: repo.checkout_path,
             repo_namespace: repo.repo_namespace,
-            use_default: repo.use_default
+            hidden: repo.hidden
           }
         })
         this.saveLoading = true

@@ -219,9 +219,9 @@
               </el-tooltip>
             </template>
             <i class="iconfont icon"
-               :class="{'iconview-off1': !repo.use_default, iconview: repo.use_default}"
-               :style="{ color: !repo.use_default ? '#99a9bf': '#0066ff' }"
-               @click="repo.use_default = !repo.use_default"
+               :class="{'iconview-off1': repo.hidden, iconview: !repo.hidden}"
+               :style="{ color: repo.hidden ? '#99a9bf': '#0066ff' }"
+               @click="repo.hidden = !repo.hidden"
             ></i>
           </el-form-item>
         </el-col>
@@ -331,7 +331,7 @@ export default {
         checkout_path: '',
         remote_name: 'origin',
         submodules: false,
-        use_default: true
+        hidden: false
       }
       this.showTrigger && (repoMeta.enableTrigger = false)
       this.validateForm()
@@ -372,7 +372,7 @@ export default {
         checkout_path: '',
         remote_name: 'origin',
         submodules: false,
-        use_default: true
+        hidden: false
       }
       this.showTrigger && (repoMeta.enableTrigger = false)
       this.$set(this.codeInfo, 0, {

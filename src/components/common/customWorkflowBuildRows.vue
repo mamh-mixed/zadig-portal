@@ -36,7 +36,7 @@
       ></el-table-column>
       <el-table-column :label="$t(`global.repository`)">
         <template slot-scope="scope">
-          <el-row v-for="build of (scope.row.repos || []).filter(repo => repo.use_default)" class="build-row" :key="build.code_host_id">
+          <el-row v-for="build of (scope.row.repos || []).filter(repo => !repo.hidden)" class="build-row" :key="build.code_host_id">
             <el-col :span="8">
               <div class="repo-name-container">
                 <el-tooltip class="item" effect="dark" :content="build.repo_name" placement="top">

@@ -330,7 +330,7 @@ export default {
       const emptyValue = []
 
       this.allRepos.forEach(item => {
-        if (item.use_default || !item.repo_name) {
+        if (!item.hidden || !item.repo_name) {
           return
         }
 
