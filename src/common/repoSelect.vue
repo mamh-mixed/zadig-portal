@@ -205,9 +205,24 @@
             <el-input v-model="repo.checkout_path" size="small" placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="2" style="margin-left: 4px;">
+        <el-col :span="4" style="margin-left: 4px;">
           <el-form-item label="子模块">
             <el-switch v-model="repo.submodules"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-form-item>
+            <template slot="label">
+              <span>执行时显示</span>
+              <el-tooltip placement="top" content="关闭后，执行工作流时不显示该代码库选项">
+                <i style="cursor: pointer;" class="el-icon-warning"></i>
+              </el-tooltip>
+            </template>
+            <i class="iconfont icon"
+               :class="{'iconview-off1': repo.hidden, iconview: !repo.hidden}"
+               :style="{ color: repo.hidden ? '#99a9bf': '#0066ff' }"
+               @click="repo.hidden = !repo.hidden"
+            ></i>
           </el-form-item>
         </el-col>
       </el-row>
@@ -315,7 +330,8 @@ export default {
         type: '',
         checkout_path: '',
         remote_name: 'origin',
-        submodules: false
+        submodules: false,
+        hidden: false
       }
       this.showTrigger && (repoMeta.enableTrigger = false)
       this.validateForm()
@@ -355,7 +371,8 @@ export default {
         branch: '',
         checkout_path: '',
         remote_name: 'origin',
-        submodules: false
+        submodules: false,
+        hidden: false
       }
       this.showTrigger && (repoMeta.enableTrigger = false)
       this.$set(this.codeInfo, 0, {
@@ -654,6 +671,11 @@ export default {
     font-weight: @labelWeight;
     font-size: 14px;
     line-height: 22px;
+  }
+
+  .icon {
+    font-size: 18px;
+    cursor: pointer;
   }
 }
 

@@ -4,6 +4,7 @@
       <el-table-column :label="$t(`global.repository`)">
         <template slot-scope="scope">
           <el-row v-for="build of scope.row.spec.repos" class="build-row" :key="build.code_host_id">
+            <template v-if="!build.hidden || build.showTip">
             <el-col :span="8">
               <div class="repo-name-container">
                 <el-tooltip class="item" effect="dark" :content="build.repo_name" placement="top">
@@ -83,6 +84,7 @@
                   <i class="el-icon-question repo-warning"></i>
                 </el-tooltip>
               </el-col>
+            </template>
             </template>
           </el-row>
         </template>

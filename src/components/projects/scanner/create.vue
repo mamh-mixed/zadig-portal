@@ -319,7 +319,8 @@ export default {
             remote_name: repo.remote_name,
             submodules: repo.submodules,
             checkout_path: repo.checkout_path,
-            repo_namespace: repo.repo_namespace
+            repo_namespace: repo.repo_namespace,
+            hidden: repo.hidden
           }
         })
         this.saveLoading = true
