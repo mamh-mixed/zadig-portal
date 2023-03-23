@@ -106,7 +106,7 @@ export default {
               if (res && res.message === 'success') {
                 this.$message.success('新增成功')
                 this.dialogVisible = false
-                this.getJenkins()
+                this.getSonar()
               }
             }
           } else {
@@ -131,7 +131,7 @@ export default {
             if (res && res.message === 'success') {
               this.$message.success('保存成功')
               this.dialogVisible = false
-              this.getJenkins()
+              this.getSonar()
             }
           }
         } else {
