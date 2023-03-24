@@ -99,7 +99,7 @@
       </el-form>
     </section>
     <footer class="project-contexts-modal__footer">
-      <el-button type="primary" @click="submitForm('projectForm')">{{isEdit?$t(`project.createProjectComp.confirmUpdate`):$t(`project.createProjectComp.createNow`)}}</el-button>
+      <el-button type="primary" @click="submitForm('projectForm')" :loading="projectCreationLoading">{{isEdit?$t(`project.createProjectComp.confirmUpdate`):$t(`project.createProjectComp.createNow`)}}</el-button>
     </footer>
   </el-dialog>
 </template>
@@ -118,8 +118,8 @@ export default {
       dialogVisible: true,
       users: [],
       loading: false,
+      projectCreationLoading: false,
       editProjectName: false,
-      radio: true,
       projectForm: {
         project_name: '',
         product_name: '',
@@ -293,34 +293,43 @@ export default {
       }
     },
     createProject (payload) {
+      const sleep = function (time) {
+        return new Promise((resolve) => setTimeout(resolve, time))
+      }
+      this.projectCreationLoading = true
       createProjectAPI(payload).then(res => {
-        this.$message({
-          type: 'success',
-          message: this.$t(`project.createProjectComp.successfullySaved`)
-        })
         this.$store.dispatch('getProjectList')
-        if (payload.product_feature.basic_facility === 'kubernetes') {
-          if (payload.product_feature.create_env_type === 'external') {
+        sleep(1000).then(() => {
+          this.projectCreationLoading = false
+          this.$message({
+            type: 'success',
+            message: this.$t(`project.createProjectComp.successfullySaved`)
+          })
+          if (payload.product_feature.basic_facility === 'kubernetes') {
+            if (payload.product_feature.create_env_type === 'external') {
+              this.$router.push(
+                `/v1/projects/create/${payload.product_name}/host/config?step=1`
+              )
+              return
+            }
+            if (payload.product_feature.deploy_type === 'k8s') {
+              this.$router.push(
+                `/v1/projects/create/${payload.product_name}/k8s/info?rightbar=step`
+              )
+            }
+            if (payload.product_feature.deploy_type === 'helm') {
+              this.$router.push(
+                `/v1/projects/create/${payload.product_name}/helm/info?rightbar=step`
+              )
+            }
+          } else if (payload.product_feature.basic_facility === 'cloud_host') {
             this.$router.push(
-              `/v1/projects/create/${payload.product_name}/host/config?step=1`
-            )
-            return
-          }
-          if (payload.product_feature.deploy_type === 'k8s') {
-            this.$router.push(
-              `/v1/projects/create/${payload.product_name}/k8s/info?rightbar=step`
+              `/v1/projects/create/${payload.product_name}/pm/info`
             )
           }
-          if (payload.product_feature.deploy_type === 'helm') {
-            this.$router.push(
-              `/v1/projects/create/${payload.product_name}/helm/info?rightbar=step`
-            )
-          }
-        } else if (payload.product_feature.basic_facility === 'cloud_host') {
-          this.$router.push(
-            `/v1/projects/create/${payload.product_name}/pm/info`
-          )
-        }
+        }, () => {
+          this.projectCreationLoading = false
+        })
       })
     },
     updateSingleProject (projectName, payload) {
