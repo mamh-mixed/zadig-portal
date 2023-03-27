@@ -1,6 +1,6 @@
 <template>
   <div class="job-deploy">
-    <el-form label-width="100px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24 form-item">
+    <el-form label-width="136px" :model="job" ref="ruleForm" label-position="left" class="mg-t24 mg-b24 form-item">
       <el-form-item :label="$t(`workflow.jobName`)" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" class="fix-width"></el-input>
       </el-form-item>
@@ -77,7 +77,7 @@
           @change="handleEnvTypeChange($event,'select1')"
         />
       </el-form-item>
-      <el-form-item :label="$t(`workflow.serviceStatusCheck`)" class="status-check">
+      <el-form-item class="status-check">
         <span slot="label">
           {{$t(`workflow.serviceStatusCheck`)}}
           <el-tooltip effect="dark" content="开启后，部署任务会轮询服务运行状态，待服务正常运行，任务状态才为成功。" placement="top">

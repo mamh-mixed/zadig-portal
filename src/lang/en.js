@@ -717,7 +717,7 @@ exports.default = {
     imageName: 'Image Name',
     deploymentEnv: 'Environment',
     deploymentService: 'Deployment Service',
-    serviceStatusCheck: 'Service Status Check',
+    serviceStatusCheck: 'Status Check',
     notOpenServiceStatusCheck: 'Service status detection is not enabled',
     serviceStatusCheckPassed: 'Service status check passed',
     serviceStatusCheckFailed: 'Service status check failed',

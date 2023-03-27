@@ -717,7 +717,7 @@ exports.default = {
     imageName: '镜像名称',
     deploymentEnv: '部署环境',
     deploymentService: '部署服务',
-    serviceStatusCheck: '服务状态检测',
+    serviceStatusCheck: '状态检测',
     notOpenServiceStatusCheck: '未开启服务状态检测',
     serviceStatusCheckPassed: '服务状态检测通过',
     serviceStatusCheckFailed: '服务状态检测未通过',
