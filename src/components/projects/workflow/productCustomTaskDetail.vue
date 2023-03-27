@@ -80,7 +80,7 @@
                     <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
                       <span class="name">{{$utils.tailCut(job.name,16)}}</span>
                     </el-tooltip>
-                    <div class="second">{{$utils.timeFormat(job.end_time-job.start_time)}}</div>
+                    <div class="second">{{$utils.timeFormat(job.cost_seconds)}}</div>
                   </div>
                 </span>
               </div>
@@ -500,7 +500,7 @@ export default {
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
 
     .left {
-      width: 20%;
+      width: 30%;
     }
 
     .right {
