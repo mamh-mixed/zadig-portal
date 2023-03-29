@@ -73,7 +73,7 @@
                     <span v-if="job.status === 'passed'|| job.status === 'success'" class="el-icon-success"></span>
                     <span v-else-if="job.status === 'failed'||job.status === 'failure'||job.status === 'timeout'" class="el-icon-error"></span>
                     <span v-else-if="job.status === 'cancelled'||job.status === 'terminated'" class="el-icon-warning"></span>
-                    <span v-else-if="job.status === 'running'||job.status === 'elected'" class="el-icon-loading"></span>
+                    <span v-else-if="job.status === 'prepare'||job.status === 'running'||job.status === 'elected'" class="el-icon-loading"></span>
                     <span v-else class="el-icon-warning color-cancelled"></span>
                   </div>
                   <div class="job-content">
