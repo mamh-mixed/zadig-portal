@@ -679,6 +679,7 @@ exports.default = {
     recentFail: 'Recent Fail',
     averageExecutionTime: 'Average Execution Time',
     successRate: 'Success Rate',
+    recentTask: 'Recent Task',
     cancelFavoriteSuccess: 'Cancel Favorite Success',
     addFavoriteSuccess: 'Add Favorite Success',
     updateBy: 'Update By',

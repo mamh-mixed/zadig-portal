@@ -679,6 +679,7 @@ exports.default = {
     recentFail: '最近失败',
     averageExecutionTime: '平均执行时间',
     successRate: '成功率',
+    recentTask: '最近执行',
     cancelFavoriteSuccess: '取消收藏成功',
     addFavoriteSuccess: '添加收藏成功',
     updateBy: '修改人',
