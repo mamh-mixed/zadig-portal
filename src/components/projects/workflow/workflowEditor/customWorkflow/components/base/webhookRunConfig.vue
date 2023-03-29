@@ -684,6 +684,7 @@ export default {
       })
     },
     handleContainerChange (val, job) {
+      if (!val || val.length === 0) return
       val.forEach(item => {
         this.getRegistryList([item.service], job.spec.docker_registry_id).then(
           res => {

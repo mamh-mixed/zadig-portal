@@ -865,6 +865,7 @@ export default {
       this.$forceUpdate()
     },
     handleContainerChange (val, job) {
+      if (!val || val.length === 0) return
       val.forEach(item => {
         this.getRegistryList(
           [item.service || item.container_name],
