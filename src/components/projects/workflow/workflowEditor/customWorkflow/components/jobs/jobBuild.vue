@@ -327,6 +327,7 @@ export default {
       this.$set(item, 'key_vals', res.key_vals || [])
       this.$set(item, 'originRepos', res.repos || [])
       this.$set(item, 'repos', [])
+      this.$forceUpdate()
     },
     addRepo () {
       if (this.curItem.repos) {
