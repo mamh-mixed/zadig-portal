@@ -1,5 +1,5 @@
 <template>
-  <div class="env-detail-container" ref="envContainer">
+  <div class="env-detail-container">
     <PmHostList ref="pmHostList" :currentPmServiceData="currentPmServiceData" @success="refreshServiceList" />
     <el-dialog :title="$t('environments.common.runWorkflowToUpgradeService')" :visible.sync="showStartProductBuild" custom-class="run-workflow" width="70%">
       <RunWorkflow
@@ -299,7 +299,7 @@
           </el-table>
         </div>
       </div>
-      <div v-loading="serviceLoading" :element-loading-text="$t('environments.common.getServiceInfoLoading')" element-loading-spinner="el-icon-loading" class="service-container">
+      <div ref="envServiceContainer" v-loading="serviceLoading" :element-loading-text="$t('environments.common.getServiceInfoLoading')" element-loading-spinner="el-icon-loading" class="service-container service-container-detail">
         <div class="service-title">
           <el-input
             size="mini"
@@ -856,12 +856,12 @@ export default {
       this.pmServiceList = []
     },
     addListener () {
-      this.$refs.envContainer &&
-        this.$refs.envContainer.addEventListener('scroll', this.onScroll)
+      this.$refs.envServiceContainer &&
+        this.$refs.envServiceContainer.addEventListener('scroll', this.onScroll)
     },
     removeListener () {
-      this.$refs.envContainer &&
-        this.$refs.envContainer.removeEventListener('scroll', this.onScroll)
+      this.$refs.envServiceContainer &&
+        this.$refs.envServiceContainer.removeEventListener('scroll', this.onScroll)
     },
     checkProjectFeature () {
       const projectName = this.projectName

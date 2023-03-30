@@ -27,7 +27,7 @@
                     </el-dropdown-menu>
                   </el-dropdown>
                   <div class="view-container">
-                    <el-radio-group v-model="view" size="small">
+                    <el-radio-group v-model="view" size="small" @change='changeView'>
                       <el-radio-button label>{{$t(`global.all`)}}</el-radio-button>
                       <el-radio-button v-for="(item,index) in viewList" :key="index" :label="item">{{item}}</el-radio-button>
                     </el-radio-group>
@@ -333,30 +333,6 @@ export default {
           }
         )
       })
-    },
-    projectName (val) {
-      if (val) {
-        bus.$emit('set-topbar-title', {
-          title: '',
-          breadcrumb: [
-            { title: this.$t(`global.project`), url: '/v1/projects' },
-            {
-              title: this.projectName,
-              isProjectName: true,
-              url: `/v1/projects/detail/${this.projectName}/detail`
-            },
-            { title: this.$t(`global.workflow`), url: '' }
-          ]
-        })
-      }
-    },
-    $route (val) {
-      if (val && !this.projectName) {
-        this.getWorkflows()
-      }
-    },
-    view () {
-      this.getWorkflows(this.projectName)
     }
   },
   methods: {
@@ -564,6 +540,8 @@ export default {
                 message: this.$t(`workflow.addSuccess`),
                 type: 'success'
               })
+              this.changeView(params.name)
+              this.getWorkflows(this.projectName)
               this.getWorkflowViewList()
               this.$refs[formName].resetFields()
             })
@@ -574,7 +552,6 @@ export default {
                 message: this.$t(`workflow.updateSuccess`),
                 type: 'success'
               })
-              this.view = ''
               this.$refs[formName].resetFields()
               this.getWorkflows(this.projectName)
               this.getWorkflowViewList()
@@ -591,12 +568,20 @@ export default {
       this.showWorkflowViewDialog = false
     },
     getWorkflowViewList () {
-      getWorkflowViewListAPI(this.projectName).then(res => {
+      return getWorkflowViewListAPI(this.projectName).then(res => {
         this.viewList = res
+        if (this.view && !res.includes(this.view)) {
+          this.changeView()
+        }
       })
     },
-    getPresetViewWorkflow () {
-      getViewPresetAPI(this.projectName, this.view).then(res => {
+    changeView (cur = '') {
+      this.view = cur
+      this.$store.commit('SET_CURRENT_TAB', { projectName: this.projectName, tabName: cur })
+      this.getWorkflows(this.projectName)
+    },
+    getPresetViewWorkflow (view = this.view) {
+      getViewPresetAPI(this.projectName, view).then(res => {
         this.presetWorkflowInfo = res
       })
     },
@@ -607,9 +592,8 @@ export default {
         this.workflowViewForm.name = this.view
       } else {
         this.workflowViewForm.name = ''
-        this.view = ''
       }
-      this.getPresetViewWorkflow()
+      this.getPresetViewWorkflow(this.workflowViewForm.name)
     },
     removeWorkflowView () {
       this.$confirm(`确定要删除 ${this.view} 这个视图?`, '确认', {
@@ -622,21 +606,12 @@ export default {
             message: this.$t(`workflow.delScuuess`),
             type: 'success'
           })
-          this.view = ''
+          this.changeView()
           this.getWorkflowViewList()
         })
       })
-    }
-  },
-  created () {
-    this.$emit('injectComp', this)
-    // Detecting change from VirtualListItem component event.
-    this.$on('refreshWorkflow', projectName => {
-      this.getWorkflows(projectName)
-    })
-    this.keyword = this.$route.query.name ? this.$route.query.name : ''
-    if (this.projectName) {
-      this.getWorkflows(this.projectName)
+    },
+    initProjectInfo () {
       bus.$emit('set-topbar-title', {
         title: '',
         breadcrumb: [
@@ -649,9 +624,22 @@ export default {
           { title: this.$t(`global.workflow`), url: '' }
         ]
       })
+      this.view = this.$store.getters.curTab(this.projectName) || ''
     }
+  },
+  created () {
+    this.$emit('injectComp', this)
+    // Detecting change from VirtualListItem component event.
+    this.$on('refreshWorkflow', projectName => {
+      this.getWorkflows(projectName)
+    })
+    this.keyword = this.$route.query.name ? this.$route.query.name : ''
     this.getUserBinding(this.projectName)
-    this.getWorkflowViewList()
+
+    this.initProjectInfo()
+    this.getWorkflowViewList().then(() => {
+      this.getWorkflows(this.projectName)
+    })
   },
   components: {
     RunProductWorkflow,

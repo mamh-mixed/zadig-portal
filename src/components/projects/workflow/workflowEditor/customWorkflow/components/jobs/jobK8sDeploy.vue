@@ -25,7 +25,7 @@
         </el-select>
         <EnvTypeSelect v-model="job.spec.source" isRuntime isFixed style="display: inline-block;" />
       </el-form-item>
-      <el-form-item :label="$t(`workflow.serviceStatusCheck`)" class="status-check">
+      <el-form-item class="status-check">
         <span slot="label">
           {{$t(`workflow.containerStatusDetection`)}}
           <el-tooltip effect="dark" content="开启后，部署任务会轮询容器运行状态，待容器正常运行，任务状态才为成功。" placement="top">
