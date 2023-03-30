@@ -32,9 +32,6 @@ import customWorkflow from './modules/customWorkflow'
 // Preference
 import theme from './modules/theme'
 
-// workflowTabs
-import workflowTabs from './modules/workflowTabs'
-
 Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
@@ -51,8 +48,7 @@ export default new Vuex.Store({
     k8sService,
     externalLink,
     customWorkflow,
-    theme,
-    workflowTabs
+    theme
   },
   strict: debug
 })

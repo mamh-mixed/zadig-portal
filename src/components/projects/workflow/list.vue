@@ -577,7 +577,8 @@ export default {
     },
     changeView (cur = '') {
       this.view = cur
-      this.$store.commit('SET_CURRENT_TAB', { projectName: this.projectName, tabName: cur })
+      this.projectTabMap[this.projectName] = cur
+      store.set('workflowTabs', this.projectTabMap)
       this.getWorkflows(this.projectName)
     },
     getPresetViewWorkflow (view = this.view) {
@@ -624,10 +625,11 @@ export default {
           { title: this.$t(`global.workflow`), url: '' }
         ]
       })
-      this.view = this.$store.getters.curTab(this.projectName) || ''
+      this.view = this.projectTabMap[this.projectName] || ''
     }
   },
   created () {
+    this.projectTabMap = store.get('workflowTabs') || {}
     this.$emit('injectComp', this)
     // Detecting change from VirtualListItem component event.
     this.$on('refreshWorkflow', projectName => {
