@@ -99,24 +99,7 @@ export default {
       type: Array,
       required: true
     },
-
     recentTaskStatus: {
-      type: String,
-      required: true
-    },
-    recentSuccessID: {
-      type: String,
-      required: true
-    },
-    recentSuccessLink: {
-      type: String,
-      required: true
-    },
-    recentFailID: {
-      type: String,
-      required: true
-    },
-    recentFailLink: {
       type: String,
       required: true
     },

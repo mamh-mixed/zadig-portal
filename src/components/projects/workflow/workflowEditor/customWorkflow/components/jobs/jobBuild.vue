@@ -241,11 +241,6 @@ export default {
             val.build_name = val.module_builds[0].name
             this.handleBuildChange(val)
           }
-          if (val.repos) {
-            val.repos.forEach(repo => {
-              this.getBranch(repo)
-            })
-          }
         })
         return this.job.spec.service_and_builds
       }
@@ -369,6 +364,12 @@ export default {
       if (type === 'var') {
         this.isShowVarDialog = true
       } else if (type === 'branch') {
+        if (item.repos) {
+          // 点开弹框再请求分支
+          item.repos.forEach(repo => {
+            this.getBranch(repo)
+          })
+        }
         this.isShowBranchDialog = true
       } else {
         if (!item.share_storage_info) {
@@ -385,7 +386,7 @@ export default {
         )
         this.isShowPvDialog = true
       }
-      this.curItem = cloneDeep(item)
+      this.curItem = item
     },
     getGlobalEnv () {
       const params = cloneDeep(this.workflowInfo)

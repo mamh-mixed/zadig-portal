@@ -11,7 +11,7 @@
         <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?$t(`workflowTaskStatus.${jobInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
       </el-col>
       <el-col :span="2">
-        <span>{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
+        <span>{{$utils.timeFormat(jobInfo.cost_seconds)}}</span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">

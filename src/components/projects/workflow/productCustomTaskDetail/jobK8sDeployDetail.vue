@@ -15,7 +15,7 @@
         </div>
       </el-col>
       <el-col :span="2">
-        <span class="item-desc">{{$utils.timeFormat(jobInfo.end_time - jobInfo.start_time)}}</span>
+        <span class="item-desc">{{$utils.timeFormat(jobInfo.cost_seconds)}}</span>
       </el-col>
       <el-col v-if="jobInfo" :span="6">
         <span class="item-desc status">
