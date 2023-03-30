@@ -679,6 +679,7 @@ exports.default = {
     recentFail: '最近失败',
     averageExecutionTime: '平均执行时间',
     successRate: '成功率',
+    recentTask: '最近执行',
     cancelFavoriteSuccess: '取消收藏成功',
     addFavoriteSuccess: '添加收藏成功',
     updateBy: '修改人',
@@ -1087,7 +1088,8 @@ exports.default = {
         ingressHosts: '外网访问',
         serviceEndpoints: '内网访问',
         startEphemeralContainer: '启动调试容器'
-      }
+      },
+      serviceDeployStrategyTip: '该服务尚未通过 Zadig 部署，可执行「更新服务」操作使用 Zadig 上管理的服务配置重新部署'
     },
     config: {
       configuration: '配置',
@@ -1183,7 +1185,6 @@ exports.default = {
         inputValue: '请输入 value 值'
       },
       chartListComp: {
-        serviceDeployStrategyTip: '该服务尚未通过 Zadig 部署，可执行「更新服务」操作使用 Zadig 上管理的服务配置重新部署',
         serviceConfigChangedTip: '服务配置有变更',
         updateServiceDialogTitle: '更新服务 - {serviceName}',
         updateServiceConfigurationCheck: '同时更新服务配置',
@@ -1957,7 +1958,9 @@ exports.default = {
     // eslint-disable-next-line no-template-curly-in-string
     repoTag: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的分支信息',
     // eslint-disable-next-line no-template-curly-in-string
-    repoCommitID: '构建时使用代码 Commit 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index]变量使用，比如可以通过 eval COMMITID=\\${${REPO_0}_COMMIT_ID} 方式获取第一个代码库的 COMMIT 信息',
+    repoCommitID: '构建时使用代码 Commit 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval COMMITID=\\${${REPO_0}_COMMIT_ID} 方式获取第一个代码库的 COMMIT 信息',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoOrg: '构建时使用的代码组织/用户信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval org=\${${REPO_0}_ORG} 方式获取第一个代码库的分支信息',
     // eslint-disable-next-line no-template-curly-in-string
     otherTypeRepoWarning: '如使用 其他 代码源，$<REPO>_PR 和 $<REPO>_COMMIT_ID 变量不支持',
     linkedEnv: '被测命名空间',

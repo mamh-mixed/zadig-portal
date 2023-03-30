@@ -8,7 +8,7 @@
       <div class="header-end">
         <el-input v-model.trim="searchProject" :placeholder="$t(`project.searchProject`)" class="search-input" prefix-icon="el-icon-search" size="medium" />
         <el-button
-          v-if="$utils.roleCheck('admin')"
+          v-hasPermi="{type: 'system', action: 'create_project'}"
           @click="$router.push(`/v1/projects/create`)"
           style="width: 132px; margin-right: 10px;"
           plain
@@ -61,14 +61,14 @@
       <el-row :gutter="12">
         <el-col v-for="(project,index) in searchedProjectList" :key="index" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
           <el-card shadow="hover" class="project-card">
-            <div class="operations">
+            <div class="operations" v-hasPermi="{type: 'system', actions: ['edit_project','delete_project'],operator:'or',projectName: project.name}">
               <el-dropdown @command="handleCommand" trigger="click">
                 <span class="el-dropdown-link">
                   <i class="el-icon-more"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="{action:'edit',projectName:project.name}">{{$t(`project.editProject`)}}</el-dropdown-item>
-                  <el-dropdown-item :command="{action:'delete',projectName:project.name}">{{$t(`global.delete`)}}</el-dropdown-item>
+                  <el-dropdown-item v-hasPermi="{type: 'system', action: 'edit_project', projectName: project.name}" :command="{action:'edit',projectName:project.name}">{{$t(`project.editProject`)}}</el-dropdown-item>
+                  <el-dropdown-item v-hasPermi="{type: 'system', action: 'delete_project'}" :command="{action:'delete',projectName:project.name}">{{$t(`global.delete`)}}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -141,10 +141,12 @@
         </el-table-column>
         <el-table-column label>
           <template slot-scope="scope">
-            <router-link :to="`/v1/projects/detail/${scope.row.name}/detail`">
-              <el-button class="operation" type="text">{{$t(`project.projectDetail`)}}</el-button>
-            </router-link>
-            <el-button @click="deleteProject(scope.row.name)" class="operation" type="text">{{$t(`global.delete`)}}</el-button>
+            <div v-hasPermi="{type: 'system', actions: ['edit_project','delete_project'],operator:'or', projectName: scope.row.name}">
+              <router-link v-hasPermi="{type: 'system', action: 'edit_project', projectName: scope.row.name}" :to="`/v1/projects/detail/${scope.row.name}/detail`">
+                <el-button class="operation" type="text">{{$t(`project.projectDetail`)}}</el-button>
+              </router-link>
+              <el-button v-hasPermi="{type: 'system', action: 'delete_project'}" @click="deleteProject(scope.row.name)" class="operation" type="text">{{$t(`global.delete`)}}</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

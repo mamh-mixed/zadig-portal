@@ -679,6 +679,7 @@ exports.default = {
     recentFail: 'Recent Fail',
     averageExecutionTime: 'Average Execution Time',
     successRate: 'Success Rate',
+    recentTask: 'Recent Task',
     cancelFavoriteSuccess: 'Cancel Favorite Success',
     addFavoriteSuccess: 'Add Favorite Success',
     updateBy: 'Update By',
@@ -1087,7 +1088,8 @@ exports.default = {
         ingressHosts: 'Ingress Hosts',
         serviceEndpoints: 'Endpoints',
         startEphemeralContainer: 'Debug'
-      }
+      },
+      serviceDeployStrategyTip: 'The service has not been deployed via Zadig and can be redeployed using the service configuration managed on Zadig by performing the "Update Service" operation'
     },
     config: {
       configuration: 'Configuration',
@@ -1183,7 +1185,6 @@ exports.default = {
         inputValue: 'Please input value'
       },
       chartListComp: {
-        serviceDeployStrategyTip: 'The service has not been deployed via Zadig and can be redeployed using the service configuration managed on Zadig by performing the "Update Service" operation',
         serviceConfigChangedTip: 'Update service configuration at the same time',
         updateServiceDialogTitle: 'Update service - {serviceName}',
         updateServiceConfigurationCheck: 'Update service configuration at the same time',
@@ -1958,6 +1959,8 @@ exports.default = {
     repoTag: 'The tag info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval TAG=\${${REPO_0}_TAG} to get the tag information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
     repoCommitID: 'The commit info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval COMMIT=\${${REPO_0}_COMMIT} to get the commit information of the first repository',
+    // eslint-disable-next-line no-template-curly-in-string
+    repoOrg: 'The organization/user info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval org=\${${REPO_0}_ORG} to get the commit information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
     otherTypeRepoWarning: 'If you are using repository of other type, you cannot use $<REPO>_PR and $<REPO>_COMMIT_ID',
     linkedEnv: 'The namespace of the tested environment.',

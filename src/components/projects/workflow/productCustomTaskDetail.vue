@@ -76,11 +76,44 @@
                     <span v-else-if="job.status === 'prepare'||job.status === 'running'||job.status === 'elected'" class="el-icon-loading"></span>
                     <span v-else class="el-icon-warning color-cancelled"></span>
                   </div>
-                  <div class="job-content">
-                    <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
-                      <span class="name">{{$utils.tailCut(job.name,16)}}</span>
-                    </el-tooltip>
-                    <div class="second">{{$utils.timeFormat(job.cost_seconds)}}</div>
+                  <div v-if="job.job_info" class="job-content">
+                    <div class="job-header">
+                      <span class="name">{{$utils.tailCut(job.job_info.job_name,16)}}</span>
+                      <span class="second">{{$utils.timeFormat(job.cost_seconds)}}</span>
+                    </div>
+                    <div class="job-detail">
+                      <template v-if="job.type === 'zadig-build'">
+                        <span class="desc">{{`${job.job_info.service_name}(${job.job_info.service_module})`}}</span>
+                      </template>
+                      <template v-else-if="job.type === 'zadig-deploy'">
+                        <span class="desc">{{`${job.job_info.service_name}`}}</span>
+                      </template>
+                      <template v-else-if="job.type === 'custom-deploy'">
+                        <span class="desc">{{`${job.job_info.workload_name}`}}</span>
+                        <span class="desc">{{`${job.job_info.container_name}`}}</span>
+                      </template>
+                      <template v-else-if="job.type === 'k8s-gray-release' || job.type === 'k8s-blue-green-release' || job.type === 'k8s-canary-deploy' || job.type === 'k8s-canary-release'">
+                        <span class="desc">{{`${job.job_info.k8s_service_name}`}}</span>
+                      </template>
+                      <template v-else-if="job.type === 'k8s-blue-green-deploy' || job.type === 'k8s-gray-rollback' || job.type === 'istio-release' || job.type === 'istio-rollback'">
+                        <span class="desc">{{`${job.job_info.workload_name}`}}</span>
+                      </template>
+                      <template v-else-if="job.type === 'zadig-scanning'">
+                        <span class="desc">{{`${job.job_info.scanning_name}`}}</span>
+                      </template>
+                      <template v-else-if="job.type === 'zadig-test'">
+                        <span v-if="job.job_info.test_type === 'service_test'" class="desc">{{`${job.job_info.service_name}(${job.job_info.service_module})`}}</span>
+                        <span v-else-if="job.job_info.test_type === ''" class="desc">{{`${job.job_info.testing_name}`}}</span>
+                      </template>
+                    </div>
+                  </div>
+                  <div v-else class="job-content">
+                    <div class="job-header">
+                      <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="job.name">
+                        <span class="name">{{$utils.tailCut(job.name,18)}}</span>
+                      </el-tooltip>
+                      <span class="second">{{$utils.timeFormat(job.cost_seconds)}}</span>
+                    </div>
                   </div>
                 </span>
               </div>
@@ -571,12 +604,14 @@ export default {
         }
 
         .stage {
-          width: 180px;
+          width: 240px;
           margin: -6px 4px;
           padding: 8px 0 16px 0;
           border: 2px dotted @borderGray;
           border-radius: 4px;
           cursor: pointer;
+          transition-duration: 0.6s;
+          transition-property: box-shadow, border-color;
 
           &-name {
             margin-right: 16px;
@@ -616,27 +651,52 @@ export default {
             }
 
             &-content {
+              display: flex;
               flex: 1 1 auto;
-              margin-left: 8px;
+              flex-direction: column;
+              margin-left: 10px;
+              overflow: hidden;
               text-align: left;
 
-              .name {
-                display: inline-block;
-                flex: 1 1 auto;
+              .job-header {
+                display: flex;
+
+                .name {
+                  display: inline-flex;
+                  flex: 1 1 auto;
+                  overflow: hidden;
+                  color: #4a4a4a;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                }
+
+                .second {
+                  display: inline-flex;
+                  color: @fontGray;
+                  font-size: 12px;
+                }
+              }
+
+              .job-detail {
+                display: flex;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-              }
 
-              .second {
-                color: @fontGray;
-                font-size: 13px;
+                .desc {
+                  display: inline-flex;
+                  flex: 1 1 auto;
+                  overflow: hidden;
+                  color: #8d9199;
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                }
               }
             }
 
             &:hover {
-              border: 1px solid #06f;
-              box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
+              border: 1px solid @themeColor;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             }
           }
 

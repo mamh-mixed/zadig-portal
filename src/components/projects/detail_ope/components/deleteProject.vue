@@ -100,7 +100,7 @@ export default {
       buildConfigs: [],
       workflows: [],
       projectDeleteInfo: {
-        is_delete: true,
+        is_delete: false,
         project_name: '',
         deploy_type: ''
       }
@@ -136,7 +136,7 @@ export default {
       this.buildConfigs = []
       this.workflows = []
       this.projectDeleteInfo = {
-        is_delete: true,
+        is_delete: false,
         project_name: '',
         deploy_type: this.$store.getters.projectDeployType(projectName)
       }
