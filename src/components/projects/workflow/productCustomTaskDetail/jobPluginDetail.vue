@@ -11,7 +11,7 @@
         </div>
       </el-col>
       <el-col :span="2">
-        <span class="item-desc">{{pluginInfo.interval}}</span>
+        <span class="item-desc">{{$utils.timeFormat(pluginInfo.cost_seconds)}}</span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">

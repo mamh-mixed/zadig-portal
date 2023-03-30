@@ -9,7 +9,7 @@
         <a :class="buildOverallColor" href="#buildv4-log">{{commonInfo.status?$t(`workflowTaskStatus.${commonInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
       </el-col>
       <el-col :span="2">
-        <span>{{commonInfo.interval}}</span>
+        <span>{{$utils.timeFormat(commonInfo.cost_seconds)}}</span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">

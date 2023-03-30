@@ -197,6 +197,12 @@
                     style="width: 220px;"
                     @change="handleServiceDeployChange(job.pickedTargets)"
                   >
+                    <el-option disabled label="全选" value="ALL" :class="{selected: job.pickedTargets && job.pickedTargets.length === job.spec.targets.length}" style="color: #606266;">
+                      <span
+                        style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                        @click="job.pickedTargets = job.spec.targets"
+                      >全选</span>
+                    </el-option>
                     <el-option
                       v-for="(service,index) of job.spec.targets"
                       :key="index"
@@ -865,6 +871,7 @@ export default {
       this.$forceUpdate()
     },
     handleContainerChange (val, job) {
+      if (!val || val.length === 0) return
       val.forEach(item => {
         this.getRegistryList(
           [item.service || item.container_name],
