@@ -57,7 +57,9 @@
 
 .env-detail-container {
   position: relative;
+  display: flex;
   flex: 1;
+  flex-direction: column;
   overflow: auto;
   font-weight: 300;
   font-size: 14px;
@@ -123,6 +125,17 @@
     }
   }
 
+  .banner {
+    flex: 0 0 auto;
+  }
+
+  .info-container {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
   .banner,
   .info-container {
     padding: 0 20px;
@@ -140,9 +153,15 @@
   }
 
   .service-container {
+    flex: 0 0 auto;
     // min-height: 400px;
     margin-top: 20px;
     margin-bottom: 20px;
+
+    &.service-container-detail {
+      flex: 1 1 auto;
+      overflow: auto;
+    }
 
     .service-title {
       display: flex;
@@ -289,6 +308,7 @@
 
   .basic-info-content {
     position: relative;
+    flex: 0 0 auto;
     padding-bottom: 0;
 
     .change-log {
@@ -361,6 +381,7 @@
 
   .envs-container {
     display: flex;
+    flex: 0 0 auto;
     margin-bottom: 24px;
     background-color: #e5e5e5;
 

@@ -49,3 +49,6 @@ export const SET_IS_EDIT_JOB = 'SET_IS_EDIT_JOB'
 
 // Preference
 export const SET_PREFERENCE_SETTING = 'SET_PREFERENCE_SETTING'
+
+// workflowTabs
+export const SET_CURRENT_TAB = 'SET_CURRENT_TAB'
