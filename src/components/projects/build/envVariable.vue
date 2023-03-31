@@ -199,6 +199,10 @@ export default {
           desc: this.$t(`systemVariables.workspace`)
         },
         {
+          variable: '$PROJECT',
+          desc: this.$t(`systemVariables.project`)
+        },
+        {
           variable: '$TASK_ID',
           desc: this.$t(`systemVariables.workflowTaskID`)
         },
@@ -311,6 +315,10 @@ export default {
           desc: this.$t(`systemVariables.workspace`)
         },
         {
+          variable: '$PROJECT',
+          desc: this.$t(`systemVariables.project`)
+        },
+        {
           variable: '$LINKED_ENV',
           desc: this.$t(`systemVariables.linkedEnv`)
         },
@@ -333,6 +341,50 @@ export default {
         {
           variable: '$ZADIG',
           desc: this.$t(`systemVariables.zadig`)
+        },
+        {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$REPONAME_<index>',
+          desc: this.$t(`systemVariables.repoNameIndex`)
+        },
+        {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$REPO_<index>',
+          desc: this.$t(`systemVariables.repoIndex`)
+        },
+        {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$<REPO>_PR',
+          // eslint-disable-next-line no-template-curly-in-string
+          desc: this.$t(`systemVariables.repoPR`)
+        },
+        {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$<REPO>_BRANCH',
+          // eslint-disable-next-line no-template-curly-in-string
+          desc: this.$t(`systemVariables.repoBranch`)
+        },
+        {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$<REPO>_TAG',
+          // eslint-disable-next-line no-template-curly-in-string
+          desc: this.$t(`systemVariables.repoTag`)
+        },
+        {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$<REPO>_COMMIT_ID',
+          // eslint-disable-next-line no-template-curly-in-string
+          desc: this.$t(`systemVariables.repoCommitID`)
+        },
+        {
+          // eslint-disable-next-line no-template-curly-in-string
+          variable: '$<REPO>_ORG',
+          // eslint-disable-next-line no-template-curly-in-string
+          desc: this.$t(`systemVariables.repoOrg`)
+        },
+        {
+          variable: '',
+          desc: this.$t(`systemVariables.otherTypeRepoWarning`)
         }
       ]
     }

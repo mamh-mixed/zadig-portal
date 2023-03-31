@@ -1936,6 +1936,7 @@ exports.default = {
   systemVariables: {
     encrypted: '',
     workspace: '工作目录',
+    project: '项目标识',
     workflowTaskID: '工作流任务 ID',
     image: '输出镜像名称',
     updateImageNamingRulesPrompt: '更新镜像命名规则',

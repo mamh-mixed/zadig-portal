@@ -173,6 +173,10 @@ export default {
           desc: this.$t(`systemVariables.workspace`)
         },
         {
+          variable: '$PROJECT',
+          desc: this.$t(`systemVariables.project`)
+        },
+        {
           variable: '$TASK_ID',
           desc: this.$t(`systemVariables.workflowTaskID`)
         },
@@ -275,6 +279,10 @@ export default {
         {
           variable: '$WORKSPACE',
           desc: this.$t(`systemVariables.workspace`)
+        },
+        {
+          variable: '$PROJECT',
+          desc: this.$t(`systemVariables.project`)
         },
         {
           variable: '$LINKED_ENV',

@@ -1936,6 +1936,7 @@ exports.default = {
   systemVariables: {
     encrypted: '',
     workspace: 'Workspace of the build script',
+    project: 'Project Identifier',
     workflowTaskID: 'Workflow task ID',
     image: 'Image full name of the build task.',
     updateImageNamingRulesPrompt: 'Update image naming rules',
