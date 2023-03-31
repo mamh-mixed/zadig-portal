@@ -372,7 +372,7 @@ export default {
       const serviceName = this.service.service_name
       const result = await Promise.all([getServiceDeployableEnvsAPI(projectName, serviceName), serviceTemplateWithConfigAPI(serviceName, projectName)])
       const deployableEnvs = result[0].envs
-      const variableYaml = result[1].variable_yaml
+      const serviceVariableYaml = result[1].service_variable_yaml || '' // visible variable yaml
       deployableEnvs.forEach(env => {
         env.services = env.services.filter((item) => {
           return item.service_name === serviceName
@@ -380,9 +380,9 @@ export default {
         if (env.services.length === 0) {
           env.services = [{
             service_name: serviceName,
-            variable_yaml: variableYaml
+            variable_yaml: serviceVariableYaml
           }]
-          env.variableYaml = variableYaml
+          env.variableYaml = serviceVariableYaml
         } else {
           env.variableYaml = env.services[0].variable_yaml
         }

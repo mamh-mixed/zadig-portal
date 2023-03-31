@@ -1,3 +1,4 @@
+// import i18n from '@/lang/index.js'
 const validateJobName = (rule, value, callback) => {
   const reg = /^[a-z][a-z0-9-]{0,32}$/
   if (value === '') {
@@ -193,7 +194,8 @@ const buildEnvs = [
   },
   {
     variable: '$PROJECT',
-    desc: this.$t(`systemVariables.project`)
+    // desc: i18n.t(`systemVariables.project`) // can't reactive, study later
+    desc: '项目标识'
   },
   {
     variable: '$TASK_ID',
