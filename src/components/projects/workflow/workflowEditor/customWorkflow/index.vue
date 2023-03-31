@@ -1156,7 +1156,7 @@ export default {
         display: flex;
         box-sizing: border-box;
         max-height: 650px;
-        padding-top: 10px;
+        padding: 10px 0;
         overflow: auto;
 
         &-text {
