@@ -192,6 +192,10 @@ const buildEnvs = [
     desc: '工作目录'
   },
   {
+    variable: '$PROJECT',
+    desc: this.$t(`systemVariables.project`)
+  },
+  {
     variable: '$TASK_ID',
     desc: '工作流任务 ID'
   },
