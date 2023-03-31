@@ -591,7 +591,7 @@ export default {
       box-sizing: border-box;
       min-height: 300px;
       max-height: 650px;
-      padding-top: 10px;
+      padding: 10px 0;
       overflow: auto;
 
       .text {
