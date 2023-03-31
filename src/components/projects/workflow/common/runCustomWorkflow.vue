@@ -57,7 +57,7 @@
                   @change="handleServiceBuildChange($event,job)"
                 >
                   <el-option
-                    v-for="(service,index) of job.spec.service_and_builds"
+                    v-for="(service,index) of job.spec.service_options"
                     :key="index"
                     :label="`${service.service_module}(${service.service_name})`"
                     :value="service"
@@ -433,6 +433,12 @@ export default {
           }
           if (job.spec && job.spec.service_and_builds) {
             job.spec.service_and_builds.forEach(service => {
+              service.value = `${service.service_name}/${service.service_module}`
+            })
+            job.pickedTargets = job.spec.service_and_builds
+          }
+          if (job.spec && job.spec.service_options) {
+            job.spec.service_options.forEach(service => {
               this.getRepoInfo(service.repos)
               service.key_vals.forEach(item => {
                 if (
@@ -445,16 +451,8 @@ export default {
                 }
               })
               service.value = `${service.service_name}/${service.service_module}`
-              service.key_vals.forEach(key => {
-                // if (key.is_credential) {
-                //   key.value = this.$utils.aesDecrypt(key.value)
-                // }
-              })
             })
-            // 如果只有一个组件 默认选上
-            if (job.spec.service_and_builds.length === 1) {
-              job.pickedTargets = job.spec.service_and_builds
-            }
+            this.handleServiceBuildChange(job.pickedTargets, job, 'zadig-build')
           }
           if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
             job.pickedTargets = job.spec.service_and_images
@@ -678,8 +676,8 @@ export default {
         stage.jobs.forEach(job => {
           if (job.type === 'zadig-build') {
             if (
-              job.spec.service_and_builds &&
-              job.spec.service_and_builds.length > 0
+              job.spec.service_options &&
+              job.spec.service_options.length > 0
             ) {
               job.spec.service_and_builds = job.pickedTargets
               job.spec.service_and_builds.forEach(item => {
