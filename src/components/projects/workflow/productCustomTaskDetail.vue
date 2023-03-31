@@ -588,6 +588,11 @@ export default {
 
     .content {
       display: flex;
+      box-sizing: border-box;
+      min-height: 300px;
+      max-height: 650px;
+      padding: 10px 0;
+      overflow: auto;
 
       .text {
         line-height: 52px;
@@ -779,6 +784,17 @@ export default {
       border: 1px solid @themeColor;
       border-radius: 50%;
       content: '';
+    }
+  }
+}
+
+@media only screen and (max-width: 1441px) {
+  .product-custom-detail {
+    main {
+      .content {
+        max-height: 440px;
+        overflow: auto;
+      }
     }
   }
 }

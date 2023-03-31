@@ -1,5 +1,5 @@
 <template>
-  <div class="new-workflow-home">
+  <div class="custom-workflow-home">
     <div class="left">
       <header>
         <div class="name">
@@ -66,7 +66,7 @@
             <span class="icon el-icon-plus" @click="scale('enlarge')"></span>
           </el-tooltip>
         </div>
-        <main class="mg-t16" id="main">
+        <main class="mg-t16" id="main" style="max-height: 20%;">
           <section class="ui" id="ui">
             <span class="ui-text mg-r8">Start</span>
             <div class="line">
@@ -95,7 +95,7 @@
         </main>
 
         <MultipaneResizer class="multipane-resizer" v-if="isShowFooter&&activeName === 'ui'"></MultipaneResizer>
-        <footer :style="{minHeight:'70%'}" v-if="isShowFooter">
+        <footer :style="{minHeight:'70%', maxHeight:'90%'}" v-if="isShowFooter">
           <div class="header">
             <span>{{curJobType}}</span>
             <div>
@@ -1050,7 +1050,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.new-workflow-home {
+.custom-workflow-home {
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -1154,6 +1154,10 @@ export default {
 
       .ui {
         display: flex;
+        box-sizing: border-box;
+        max-height: 650px;
+        padding-top: 10px;
+        overflow: auto;
 
         &-text {
           line-height: 40px;
@@ -1353,6 +1357,16 @@ export default {
       color: @themeColor;
       font-weight: 500;
       cursor: pointer;
+    }
+  }
+}
+
+@media only screen and (max-width: 1441px) {
+  .custom-workflow-home {
+    main {
+      .ui {
+        max-height: 450px !important;
+      }
     }
   }
 }
