@@ -299,7 +299,7 @@
           </el-table>
         </div>
       </div>
-      <div ref="envServiceContainer" v-loading="serviceLoading" :element-loading-text="$t('environments.common.getServiceInfoLoading')" element-loading-spinner="el-icon-loading" class="service-container service-container-detail">
+      <div v-loading="serviceLoading" :element-loading-text="$t('environments.common.getServiceInfoLoading')" element-loading-spinner="el-icon-loading" class="service-container">
         <div class="service-title">
           <el-input
             size="mini"
@@ -318,6 +318,7 @@
           </span>
           <el-button icon="el-icon-refresh" type="text" @click="refreshServiceList">{{$t(`global.refresh`)}}</el-button>
         </div>
+        <div ref="envServiceContainer" class="service-container-detail">
         <div class="env-service-list-content">
           <ChartList
             ref="chartListRef"
@@ -471,6 +472,7 @@
           <i class="el-icon-loading"></i> 数据加载中 ~
         </p>
         <p v-if="scrollFinish && page > 2" class="scroll-finish-class">数据已加载完毕 ~</p>
+        </div>
       </div>
     </div>
     <UpdateHelmVarDialog :fetchAllData="fetchAllData" ref="updateHelmVarDialog" :projectName="projectName" :envName="envName" />
