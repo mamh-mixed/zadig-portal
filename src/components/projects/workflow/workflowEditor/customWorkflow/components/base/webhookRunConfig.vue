@@ -388,6 +388,9 @@ export default {
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
             ) {
+              job.spec.service_and_builds.forEach(service => {
+                service.value = `${service.service_name}/${service.service_module}`
+              })
               job.pickedTargets = job.spec.service_and_builds
               job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
