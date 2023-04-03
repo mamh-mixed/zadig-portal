@@ -47,7 +47,7 @@
           @change="handleEnvTypeChange($event,'select')"
         />
       </el-form-item>
-      <el-form-item :label="$t(`project.services`)" :required="job.spec.serviceType && job.spec.serviceType!=='runtime'">
+      <el-form-item :label="$t(`global.serviceModule`)" :required="job.spec.serviceType && job.spec.serviceType!=='runtime'">
         <el-form-item prop="spec.service_and_images" v-if="!job.spec.serviceType || job.spec.serviceType === 'runtime'" class="form-item">
           <el-select size="small" v-model="job.spec.service_and_images" multiple filterable clearable value-key="value" class="fix-width">
             <el-option

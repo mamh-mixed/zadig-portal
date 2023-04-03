@@ -149,9 +149,9 @@
       class="dialog"
     >
       <RunCustomWorkflow
-        v-if="workflowToRun.name"
-        :workflowName="workflowToRun.name"
-        :displayName="workflowToRun.display_name"
+        v-if="customWorkflowToRun.name"
+        :workflowName="customWorkflowToRun.name"
+        :displayName="customWorkflowToRun.display_name"
         :projectName="projectName"
         @success="hideAfterSuccess"
       />
@@ -223,6 +223,7 @@ export default {
       workflowListLoading: false,
       showFavorite: false,
       workflowToRun: {},
+      customWorkflowToRun: {},
       remain: 10,
       keyword: '',
       sortBy: 'name-asc',
@@ -449,11 +450,11 @@ export default {
         })
     },
     startCustomWorkflowBuild (workflow) {
-      this.workflowToRun = {}
+      this.customWorkflowToRun = {}
       getCustomWorkfloweTaskPresetAPI(workflow.name, this.projectName)
         .then(res => {
           this.isShowRunCustomWorkflowDialog = true
-          this.workflowToRun = res
+          this.customWorkflowToRun = res
         })
         .catch(() => {
           this.isShowRunCustomWorkflowDialog = false
