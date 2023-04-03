@@ -59,7 +59,7 @@
                   @change="handleServiceBuildChange($event,job)"
                 >
                   <el-option
-                    v-for="(service,index) of job.spec.service_and_builds"
+                    v-for="(service,index) of job.spec.service_options"
                     :key="index"
                     :label="`${service.service_module}(${service.service_name})`"
                     :value="service"
@@ -432,20 +432,20 @@ export default {
         stage.jobs.forEach(job => {
           if (job.spec && job.spec.service_and_builds) {
             this.cloneWorkflow.fromJobInfo = cloneDeep(job)
-            job.spec.service_and_builds.forEach(service => {
+          }
+          if (job.spec && job.spec.service_options) {
+            job.spec.service_options.forEach(service => {
               service.key_vals.forEach(item => {
-                if (item.value.includes('fixed') || item.value.includes('{{')) {
+                if (
+                  item.value.includes('<+fixed>') ||
+                  item.value.includes('{{')
+                ) {
                   item.isShow = false
                 } else {
                   item.isShow = true
                 }
               })
               service.value = `${service.service_name}/${service.service_module}`
-              service.key_vals.forEach(key => {
-                // if (key.is_credential) {
-                //   key.value = this.$utils.aesDecrypt(key.value)
-                // }
-              })
             })
           }
           if (job.type === 'zadig-deploy' && job.spec.source === 'runtime') {
