@@ -68,7 +68,7 @@ export default {
     bus.$emit('set-topbar-title', {
       title: this.$t(`sidebarMenu.dashboard`),
       breadcrumb: [
-        { title: this.$t(`sidebarMenu.dashboard`), url: '/v1/dashboadd' }
+        { title: this.$t(`sidebarMenu.dashboard`), url: '' }
       ]
     })
   },
