@@ -479,12 +479,14 @@ export default {
       this.getImages()
     },
     getImages () {
-      this.$refs.k8sServiceListRef.getImages(
-        this.containerNames,
-        this.projectConfig.registry_id || '',
-        this.projectConfig.source !== 'copy',
-        this.projectConfig.services
-      )
+      if (this.projectConfig.registry_id) {
+        this.$refs.k8sServiceListRef.getImages(
+          this.containerNames,
+          this.projectConfig.registry_id,
+          this.projectConfig.source !== 'copy',
+          this.projectConfig.services
+        )
+      }
     },
     changeCluster (clusterId) {
       productHostingNamespaceAPI(clusterId, 'create').then(res => {
