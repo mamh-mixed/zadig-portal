@@ -26,7 +26,7 @@
                     ></el-input>
                   </el-form-item>
                 </el-form>
-                <el-button type="submit" @click="login" v-loading="loading" class="btn-md btn-theme login-btn">{{$t(`login.signIn`)}}</el-button>
+                <el-button type="submit" @click="login" :loading="loading" class="btn-md btn-theme login-btn">{{$t(`login.signIn`)}}</el-button>
               </section>
               <div class="bottom">
                 <a @click="showForgotPassword = true">{{$t(`login.forgotPassword`)}}</a>
