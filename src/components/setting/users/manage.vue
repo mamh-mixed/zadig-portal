@@ -115,7 +115,7 @@
             <span v-else>{{$t('sysSetting.users.notLoggedIn')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('sysSetting.users.source')" width="160">
+        <el-table-column :label="$t('sysSetting.users.source')" width="140">
           <template slot-scope="scope">
             <span v-if="scope.row.identity_type" class="origin">
               <i class="iconfont type" :class="'icon'+scope.row.identity_type"></i>
