@@ -350,7 +350,8 @@ export default {
       },
       originServiceAndBuilds: [],
       isShowParams: true,
-      fromJobInfo: {}
+      fromJobInfo: {},
+      requestedServices: new Set()
     }
   },
   props: {
@@ -866,7 +867,10 @@ export default {
     handleServiceBuildChange (services, job) {
       this.fromJobInfo = cloneDeep(job)
       services.forEach(service => {
-        this.getRepoInfo(service.repos)
+        if (!this.requestedServices.has(service)) {
+          this.requestedServices.add(service)
+          this.getRepoInfo(service.repos)
+        }
       })
       this.$forceUpdate()
     },
