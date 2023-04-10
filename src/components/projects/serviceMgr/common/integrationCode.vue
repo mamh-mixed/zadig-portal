@@ -390,7 +390,7 @@ export default {
             ) {
               this.goToCodeHostAuth(codehostId, redirectUrl)
             }
-            this.handleCodeCancel()
+            this.cancel()
           })
         } else {
           return false
