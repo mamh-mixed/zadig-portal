@@ -197,7 +197,6 @@ export default {
         this.allCodeHosts = res.filter(element => {
           return element.type !== 'other'
         })
-        // this.allCodeHosts = res
       })
       this.codeInfo = {
         repo_owners: [],
@@ -225,7 +224,7 @@ export default {
         if (!repoName) return
         getBranchInfoByIdAPI(
           codehostId,
-          element.repo_namespace,
+          element.repo_namespace || element.repo_owner,
           repoName
         ).then(res => {
           this.$set(this.codeInfo, 'branches', res || [])
