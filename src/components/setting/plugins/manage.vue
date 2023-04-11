@@ -197,6 +197,7 @@ export default {
         this.allCodeHosts = res.filter(element => {
           return element.type !== 'other'
         })
+        // this.allCodeHosts = res
       })
       this.codeInfo = {
         repo_owners: [],
