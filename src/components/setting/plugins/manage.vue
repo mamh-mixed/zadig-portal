@@ -224,7 +224,7 @@ export default {
         if (!repoName) return
         getBranchInfoByIdAPI(
           codehostId,
-          element.repo_namespace || element.repo_owner,
+          element.repo_namespace,
           repoName
         ).then(res => {
           this.$set(this.codeInfo, 'branches', res || [])
