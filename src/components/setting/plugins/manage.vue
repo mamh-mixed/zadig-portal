@@ -194,10 +194,7 @@ export default {
       const repoName = element.source === 'other' ? 'other' : element.repo_name
       const key = this.$utils.rsaEncrypt()
       getCodeSourceMaskedAPI(key).then(res => {
-        this.allCodeHosts = res.filter(element => {
-          return element.type !== 'other'
-        })
-        // this.allCodeHosts = res
+        this.allCodeHosts = res
       })
       this.codeInfo = {
         repo_owners: [],
