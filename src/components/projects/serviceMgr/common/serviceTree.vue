@@ -35,7 +35,7 @@
       <div class="from-code-container">
         <el-form :model="source" :rules="sourceRules" label-position="left" ref="sourceForm" label-width="130px">
           <el-form-item
-            :label="$t('repository.info.repository')"
+            :label="$t('repository.info.provider')"
             prop="codehostId"
             :rules="{required: true, message: $t('repository.prompt.selectGitProvider'), trigger: 'change'}"
           >
