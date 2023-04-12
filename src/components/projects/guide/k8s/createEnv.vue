@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import EnvConfig from '../../env/env_detail/common/envConfig.vue'
+import EnvConfig from '../../env/envDetail/common/envConfig.vue'
 import K8sServiceList from '../../env/k8sPmEnv/k8sServiceList.vue'
 import VarYaml from '../../env/k8sPmEnv/varYaml.vue'
 import {

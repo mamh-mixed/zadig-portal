@@ -97,7 +97,7 @@
 
 <script>
 import FilterStatus from '@/components/projects/workflow/productTaskDetail/filterStatus.vue'
-import ChartValues from '@/components/projects/env/env_detail/common/updateHelmEnvChart.vue'
+import ChartValues from '@/components/projects/env/envDetail/common/updateHelmEnvChart.vue'
 import Codemirror from '@/components/projects/common/codemirror.vue'
 
 import {

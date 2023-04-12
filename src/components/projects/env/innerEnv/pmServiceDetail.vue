@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import PmXtermDebug from '../env_detail/common/pmXtermDebug.vue'
+import PmXtermDebug from '../envDetail/common/pmXtermDebug.vue'
 import { serviceTemplateAPI } from '@api'
 import bus from '@utils/eventBus'
 import { sortBy } from 'lodash'

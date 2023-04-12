@@ -64,7 +64,7 @@
 <script>
 import { getSingleProjectAPI, updateSingleProjectAPI, queryUserBindingsAPI } from '@api'
 import store from 'storejs'
-import CusDeliverable from '../../../detail_ope/components/cusDeliverable.vue'
+import CusDeliverable from '../../../detail/components/cusDeliverable.vue'
 const validateDeployTimeout = (rule, value, callback) => {
   const reg = /^[0-9]+.?[0-9]*/
   if (!reg.test(value)) {

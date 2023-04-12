@@ -167,8 +167,8 @@
   </div>
 </template>
 <script>
-import HelmEnvTemplate from '@/components/projects/env/env_detail/components/updateHelmEnvTemp.vue'
-import EnvConfig from '@/components/projects/env/env_detail/common/envConfig.vue'
+import HelmEnvTemplate from '@/components/projects/env/envDetail/components/updateHelmEnvTemp.vue'
+import EnvConfig from '@/components/projects/env/envDetail/common/envConfig.vue'
 import bus from '@utils/eventBus'
 import Step from '../common/step.vue'
 import { cloneDeep } from 'lodash'

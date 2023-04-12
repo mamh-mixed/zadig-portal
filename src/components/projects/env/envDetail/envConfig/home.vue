@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import CommonConfig from '@/components/projects/env/env_detail/envConfig/commonConfig'
+import CommonConfig from '@/components/projects/env/envDetail/envConfig/commonConfig'
 import ImportConfig from '@/components/projects/common/importConfig/index.vue'
 import VersionHistory from './versionHistory.vue'
 import bus from '@utils/eventBus'

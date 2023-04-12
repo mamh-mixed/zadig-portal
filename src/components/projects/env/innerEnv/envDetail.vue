@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import envDetail from '../env_detail/envDetailComp.vue'
+import envDetail from '../envDetail/envDetailComp.vue'
 import bus from '@utils/eventBus'
 export default {
   data () {

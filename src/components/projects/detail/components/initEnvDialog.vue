@@ -10,7 +10,7 @@
         :chartNames="chartNames"
         :currentEnvObj="currentEnvObj"
         :baseEnvObj="baseEnvObj"
-      ></HelmEnvTemplate>
+      />
     </div>
     <div slot="footer">
       <el-button size="small" type="primary" @click="getEnvInfo">{{$t(`global.confirm`)}}</el-button>
@@ -20,7 +20,7 @@
 
 <script>
 import K8sEnvTemplate from './k8sEnvTemplate.vue'
-import HelmEnvTemplate from '@/components/projects/env/env_detail/components/updateHelmEnvTemp.vue'
+import HelmEnvTemplate from '@/components/projects/env/envDetail/components/updateHelmEnvTemp.vue'
 import { cloneDeep } from 'lodash'
 
 export default {
