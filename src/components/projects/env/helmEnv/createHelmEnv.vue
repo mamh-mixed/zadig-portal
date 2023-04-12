@@ -152,8 +152,8 @@ import {
 } from '@api'
 import bus from '@utils/eventBus'
 import { cloneDeep, flattenDeep } from 'lodash'
-import HelmEnvTemplate from '../env_detail/components/updateHelmEnvTemp.vue'
-import EnvConfig from '../env_detail/common/envConfig.vue'
+import HelmEnvTemplate from '../envDetail/components/updateHelmEnvTemp.vue'
+import EnvConfig from '../envDetail/common/envConfig.vue'
 export default {
   data () {
     return {
