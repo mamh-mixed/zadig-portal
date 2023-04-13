@@ -194,27 +194,47 @@ export default {
       background: #fff;
       border-bottom: 1px solid #eaeaea;
 
+      .operation-view {
+        display: flex;
+        align-content: center;
+        align-items: center;
+        justify-content: flex-end;
+
+        span {
+          margin-right: 25px;
+          font-size: 20px;
+        }
+
+        .icon {
+          cursor: pointer;
+
+          &.delete {
+            color: #ff1949;
+          }
+
+          &.view-detail {
+            color: @themeColor;
+          }
+        }
+      }
+
       .status-view {
+        display: flex;
         flex-basis: 160px;
         flex-grow: 0;
         flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
 
         .status {
-          position: relative;
-          bottom: -10px;
-          width: 114px;
-          height: 31px;
-          margin-right: 8px;
+          display: flex;
           margin-left: 15px;
-          padding-right: 15px;
-          padding-left: 15px;
+          padding: 8px 40px;
           color: #fff;
-          font-weight: bold;
+          font-weight: 400;
           font-size: 13px;
-          line-height: 30px;
           text-align: center;
           border-radius: 50px;
-          transition: width 100ms ease;
 
           &.failed {
             background-color: #ff1949;
@@ -243,21 +263,21 @@ export default {
           width: 100%;
 
           span {
-            max-width: 45%;
+            max-width: 85%;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
 
             label {
-              padding-top: 10px;
-              padding-right: 20px;
-              color: #888;
-              font-size: 14px;
+              color: #a3a3a3;
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 18px;
             }
 
             .workflow-name {
               color: @themeColor;
-              font-size: 16px;
+              font-size: 14px;
               line-height: 16px;
             }
           }
@@ -268,42 +288,23 @@ export default {
           align-items: center;
           width: 100%;
 
-          .stage {
+          .stage-tag {
             margin-right: 10px;
           }
         }
 
         .basic-info {
-          position: relative;
+          display: flex;
           flex: 0 0 19%;
-          align-items: center;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
 
           .time,
           .author {
-            margin: 6px 0;
+            margin: 2px 0;
             color: #666;
             font-size: 14px;
-          }
-        }
-      }
-
-      .operation-view {
-        display: flex;
-        align-content: center;
-        align-items: center;
-        justify-content: flex-end;
-
-        .icon {
-          margin-right: 25px;
-          font-size: 20px;
-          cursor: pointer;
-
-          &.delete {
-            color: #ff1949;
-          }
-
-          &.view-detail {
-            color: @themeColor;
           }
         }
       }

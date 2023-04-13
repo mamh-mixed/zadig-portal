@@ -578,26 +578,22 @@ export default {
       }
 
       .status-view {
+        display: flex;
         flex-basis: 160px;
         flex-grow: 0;
         flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
 
         .status {
-          position: relative;
-          bottom: -10px;
-          width: 114px;
-          height: 31px;
-          margin-right: 8px;
+          display: flex;
           margin-left: 15px;
-          padding-right: 15px;
-          padding-left: 15px;
+          padding: 8px 40px;
           color: #fff;
           font-weight: 400;
           font-size: 13px;
-          line-height: 30px;
           text-align: center;
           border-radius: 50px;
-          transition: width 100ms ease;
 
           &.failed {
             background-color: #ff1949;
@@ -626,7 +622,7 @@ export default {
           width: 100%;
 
           span {
-            max-width: 45%;
+            max-width: 85%;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -634,13 +630,13 @@ export default {
             label {
               color: #a3a3a3;
               font-weight: 400;
-              font-size: 14px;
+              font-size: 12px;
               line-height: 18px;
             }
 
             .workflow-name {
               color: @themeColor;
-              font-size: 16px;
+              font-size: 14px;
               line-height: 16px;
             }
           }
@@ -657,13 +653,15 @@ export default {
         }
 
         .basic-info {
-          position: relative;
+          display: flex;
           flex: 0 0 19%;
-          align-items: center;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
 
           .time,
           .author {
-            margin: 6px 0;
+            margin: 2px 0;
             color: #666;
             font-size: 14px;
           }
@@ -675,7 +673,6 @@ export default {
   .stages {
     display: flex;
     flex-wrap: nowrap;
-    margin: 25px 0 0;
     padding-bottom: 35px;
     overflow-x: auto;
 
@@ -731,7 +728,6 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        min-height: 62px;
         margin-bottom: 20px;
         padding-right: 10px;
         padding-left: 10px;
@@ -779,12 +775,12 @@ export default {
       .step {
         display: block;
         margin-bottom: 20px;
-        padding: 15px 10px 15px 10px;
+        padding: 10px 10px;
         overflow: hidden;
         text-overflow: ellipsis;
         background-color: #fff;
         border-left: 5px solid #ccc;
-        -webkit-box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.03);
+        border-radius: 2px;
         box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.03);
 
         &.failed {
@@ -847,8 +843,6 @@ export default {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
 
           .icon {
             float: left;
