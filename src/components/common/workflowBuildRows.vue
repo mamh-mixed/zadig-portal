@@ -279,20 +279,6 @@ export default {
         this.jenkinsBuild = value.filter(item => item.jenkins_build_args)
       },
       immediate: true
-    },
-    zadigBuild: {
-      handler (value) {
-        value.forEach((item) => {
-          item.build.repos.forEach(build => {
-            // source:other  init options data
-            if (build.source === 'other') {
-              this.searchRepoInfo(build, '')
-            } else {
-              this.searchRepoInfo(build)
-            }
-          })
-        })
-      }
     }
   },
   methods: {

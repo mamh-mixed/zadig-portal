@@ -246,20 +246,6 @@ export default {
         // Todo: enhance this logic for pr
       }
     }
-  },
-  watch: {
-    info: {
-      handler (value) {
-        value.forEach(item => {
-          if (item.repos && item.repos.length > 0) {
-            item.repos.forEach(build => {
-              this.searchRepoInfo(build, '')
-            })
-          }
-        })
-      },
-      immediate: true
-    }
   }
 }
 </script>
