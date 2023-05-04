@@ -844,6 +844,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/home.vue'),
         meta: {
           requiresAuth: true,
+          requiresSuperAdmin: true,
           title: i18n.t('sidebarMenu.systemIntegration')
         }
       },
