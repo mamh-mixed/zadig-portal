@@ -468,8 +468,14 @@
         </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogClusterFormVisible = false">{{$t(`global.cancel`)}}</el-button>
-        <el-button :plain="true" size="small" type="success" @click="clusterOperation(isEdit ? 'update' : 'add')">{{$t(`global.save`)}}</el-button>
+        <el-button size="small" @click="dialogClusterFormVisible = false" :disabled="saveLoading">{{$t(`global.cancel`)}}</el-button>
+        <el-button
+          :plain="true"
+          size="small"
+          type="success"
+          @click="clusterOperation(isEdit ? 'update' : 'add')"
+          :loading="saveLoading"
+        >{{$t(`global.save`)}}</el-button>
       </div>
     </el-dialog>
     <!--Cluster-dialog-->
@@ -655,6 +661,7 @@ export default {
       dialogClusterFormVisible: false,
       dialogClusterAccessVisible: false,
       loading: false,
+      saveLoading: false,
       isShowShareStorage: false,
       rules: {
         name: [
@@ -919,8 +926,13 @@ export default {
         this.$refs.cluster.validate(valid => {
           if (valid) {
             const payload = cloneDeep(omit(this.cluster, 'cache'))
-            this.dialogClusterFormVisible = false
-            this.addCluster(payload)
+            this.saveLoading = true
+            this.addCluster(payload).then(() => {
+              this.dialogClusterFormVisible = false
+              this.saveLoading = false
+            }).catch(() => {
+              this.saveLoading = false
+            })
           } else {
             return false
           }
@@ -969,26 +981,44 @@ export default {
           if (valid) {
             const id = this.cluster.id
             const payload = cloneDeep(this.cluster)
-            this.dialogClusterFormVisible = false
-            this.updateCluster(id, payload)
+            this.saveLoading = true
+            this.updateCluster(id, payload).then(() => {
+              this.dialogClusterFormVisible = false
+              this.saveLoading = false
+            }).catch(() => {
+              this.saveLoading = false
+            })
           } else {
             return false
           }
         })
       } else if (operate === 'delete') {
         const id = currentCluster.id
-        this.$confirm(`确定要删除 ${currentCluster.name} ?`, '确认', {
+        this.$msgbox({
+          title: '确认',
+          message: `确定要删除 ${currentCluster.name} ?`,
+          showCancelButton: true,
           confirmButtonText: this.$t(`global.confirm`),
           cancelButtonText: this.$t(`global.cancel`),
-          type: 'warning'
-        }).then(({ value }) => {
-          deleteClusterAPI(id).then(res => {
-            this.getCluster()
-            this.$message({
-              message: '删除集群成功',
-              type: 'success'
-            })
-          })
+          type: 'warning',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              instance.confirmButtonLoading = true
+              instance.cancelButtonLoading = true
+              deleteClusterAPI(id).then(() => {
+                instance.confirmButtonLoading = false
+                instance.cancelButtonLoading = true
+                this.getCluster()
+                this.$message({
+                  message: '删除集群成功',
+                  type: 'success'
+                })
+                done()
+              })
+            } else {
+              done()
+            }
+          }
         })
       }
     },
@@ -1015,7 +1045,7 @@ export default {
       }
     },
     addCluster (payload) {
-      createClusterAPI(payload).then(res => {
+      return createClusterAPI(payload).then(res => {
         this.getCluster()
         this.accessCluster = res
         if (payload.type === 'agent') {
@@ -1046,7 +1076,7 @@ export default {
       })
     },
     updateCluster (id, payload) {
-      updateClusterAPI(id, payload).then(res => {
+      return updateClusterAPI(id, payload).then(res => {
         this.getCluster()
         this.$message({
           type: 'success',
