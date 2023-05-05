@@ -769,9 +769,9 @@ exports.default = {
     webhookType: 'Webhook 类型',
     notifyEvents: '通知事件',
     webhookAddr: 'Webhook 地址',
-    specifyMembersTip1: '@指定成员（输入指定通知接收人的手机号码，使用 ; 分割，为空则全员通知）',
-    specifyMembersTip2: '@指定成员（输入指定通知接收人的 user_id，使用 ; 分割）',
-    specifyMembersTip3: '@指定成员（输入指定通知接收人的用户 ID，使用 ; 分割）',
+    specifyMembersTip1: '@指定成员（输入指定成员的手机号码，使用 ; 分割，输入 “All” 代表通知全员）',
+    specifyMembersTip2: '@指定成员（输入指定成员的 user_id，使用 ; 分割）',
+    specifyMembersTip3: '@指定成员（输入指定成员的用户 ID，使用 ; 分割，输入 “All” 代表通知全员）',
     notifyType: {
       created: '任务开始',
       passed: '任务成功',

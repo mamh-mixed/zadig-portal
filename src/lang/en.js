@@ -769,9 +769,9 @@ exports.default = {
     webhookType: 'Webhook Type',
     notifyEvents: 'Notify Events',
     webhookAddr: 'Webhook Addr',
-    specifyMembersTip1: '@Designated members (enter the mobile phone number of the designated notification recipient, use ; to split, if it is empty, all members will be notified)',
-    specifyMembersTip2: '@Specify members (enter the user_id of the specified notification receiver and use; to split)',
-    specifyMembersTip3: '@Specify members (enter the user ID of the specified notification receiver, and use; split)',
+    specifyMembersTip1: '@Specify members (enter the mobile phone number of the specified member, use ; to split. Enter “All” to notify all staff)',
+    specifyMembersTip2: '@Specify members (enter the user_id of the specified member and use ; to split)',
+    specifyMembersTip3: '@Specify members (enter the user ID of the specified member, and use ; to split. Enter “All” to notify all staff)',
     notifyType: {
       created: 'Created',
       passed: 'Passed',
