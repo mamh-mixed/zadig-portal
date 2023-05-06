@@ -88,28 +88,37 @@ export default {
         ]
       }
     },
+    projectsInQuery () {
+      return this.$route.query.projectNames
+    },
     routerList () {
       return [
         {
           name: this.$t('dataStatistics.insight.buildInsight'),
           icon: 'iconfont icongongzuoliucheng',
-          url: `/v1/insight/build`
+          url: `/v1/insight/build?projectNames=${this.projectsInQuery}`
         },
         {
           name: this.$t('dataStatistics.insight.testInsight'),
           icon: 'iconfont iconvery-testing',
-          url: `/v1/insight/test`
+          url: `/v1/insight/test?projectNames=${this.projectsInQuery}`
         },
         {
           name: this.$t('dataStatistics.insight.deployInsight'),
           icon: 'iconfont iconvery-environ',
-          url: `/v1/insight/service`
+          url: `/v1/insight/service?projectNames=${this.projectsInQuery}`
         }
       ]
     }
   },
   methods: {
     changeProject () {
+      this.$router.push({
+        path: this.$route.path,
+        query: {
+          projectNames: this.selectedProjects.join(',')
+        }
+      })
       this.$emit('changeProject', this.selectedProjects)
     },
     changeDuration () {
