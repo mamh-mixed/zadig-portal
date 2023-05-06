@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="operation">
-      <el-select v-model="selectedProjects" @change="changeProject" size="small" collapse-tags multiple :placeholder="$t('dataStatistics.insight.selectProject')">
+      <el-select v-model="selectedProjects" @change="changeProject" size="small" collapse-tags multiple filterable :placeholder="$t('dataStatistics.insight.selectProject')">
         <el-option v-for="item in projects" :key="item.name" :label="item.alias" :value="item.name"></el-option>
       </el-select>
       <el-date-picker
