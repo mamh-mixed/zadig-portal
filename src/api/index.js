@@ -2151,6 +2151,10 @@ export function deleteCustomWorkflowTaskAPI (workflow_name, id, projectName) {
   return http.delete(`/api/aslan/workflow/v4/workflowtask/workflow/${workflow_name}/task/${id}?projectName=${projectName}`)
 }
 
+export function retryCustomWorkflowTaskAPI (workflowName, id, projectName) {
+  return http.post(`/api/aslan/workflow/v4/workflowtask/retry/workflow/${workflowName}/task/${id}?projectName=${projectName}`)
+}
+
 export function getJobHistoryLogsAPI (workflow_name, task_id, job_name, projectName) {
   return http.get(`/api/aslan/logs/log/v4/workflow/${workflow_name}/tasks/${task_id}/jobs/${job_name}?projectName=${projectName}`)
 }

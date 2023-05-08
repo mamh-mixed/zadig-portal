@@ -694,6 +694,7 @@ exports.default = {
     manualReview: '人工审核',
     workflowVars: '工作流变量',
     cancelSuccess: '取消成功',
+    retrySuccess: '重试成功',
     jobType: {
       build: '构建',
       deploy: '部署',
