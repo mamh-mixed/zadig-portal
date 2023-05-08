@@ -107,7 +107,7 @@ import {
   getCustomWorkflowDetailAPI
 } from '@api'
 import RunCustomWorkflow from '../workflow/common/runCustomWorkflow'
-import FilterStatus from './productTaskDetail/filterStatus.vue'
+import FilterStatus from './productWorkflowTaskDetail/filterStatus.vue'
 import TaskList from '@/components/projects/common/taskList.vue'
 import bus from '@utils/eventBus'
 import jsyaml from 'js-yaml'

@@ -89,7 +89,7 @@ const routes = [
           },
           {
             path: 'pipelines/multi/:workflow_name',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productDetail.vue'),
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productWorkflowDetail.vue'),
             meta: {
               requiresAuth: true,
               title: i18n.t('metaTitle.workflowDetail')
@@ -113,7 +113,7 @@ const routes = [
           },
           {
             path: 'pipelines/multi/:workflow_name/:task_id',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productTaskDetail.vue'),
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productWorkflowTaskDetail.vue'),
             meta: {
               requiresAuth: true,
               title: i18n.t('metaTitle.taskDetail')
@@ -121,7 +121,7 @@ const routes = [
           },
           {
             path: 'pipelines/custom/:workflow_name/:task_id',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomTaskDetail.vue'),
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/customWorkflowTaskDetail.vue'),
             meta: {
               requiresAuth: true,
               title: i18n.t('metaTitle.taskDetail')
@@ -145,7 +145,7 @@ const routes = [
           },
           {
             path: 'pipelines/custom/:workflow_name',
-            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/productCustomDetail.vue'),
+            component: () => import(/* webpackChunkName: "Project Workflow" */ '@/components/projects/workflow/customWorkflowDetail.vue'),
             meta: {
               requiresAuth: true,
               title: i18n.t('metaTitle.taskList')

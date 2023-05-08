@@ -694,6 +694,7 @@ exports.default = {
     manualReview: 'Manual Review',
     workflowVars: 'Workflow Variables',
     cancelSuccess: 'Cancel Success',
+    retrySuccess: 'Retry Success',
     jobType: {
       build: 'Build',
       deploy: 'Deploy',

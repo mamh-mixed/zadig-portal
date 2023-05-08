@@ -6,8 +6,8 @@
           <router-link :to="`/v1/projects/detail/${projectName}/pipelines/custom/${workflowName}?display_name=${displayName}`">
             <span class="mg-r8">{{ $utils.tailCut(displayName,20) }}</span>
           </router-link>
-        </el-tooltip>#
-        <span class="mg-r8">{{taskId}}</span>
+        </el-tooltip>
+        <span class="mg-r8">{{'#'+taskId}}</span>
         <span
           :class="$translate.calcTaskStatusColor(payload.status)"
         >{{ payload.status? $t(`workflowTaskStatus.${payload.status}`):$t(`workflowTaskStatus.notRunning`)}}</span>
@@ -25,8 +25,9 @@
           <i class="el-icon-user"></i>
           <span>{{payload.task_revoker}}</span>
         </div>
-        <div class="mg-l24" v-if="['waiting', 'running', 'waitforapprove'].includes(payload.status)">
-          <el-button size="small" @click="cancel">{{$t(`global.cancel`)}}</el-button>
+        <div class="mg-l24" >
+          <el-button v-if="['waiting', 'running', 'waitforapprove'].includes(payload.status)" size="mini" @click="cancel" plain>{{$t(`testing.taskDetails.basicInformation.cancel`)}}</el-button>
+          <el-button v-if="['failed', 'timeout', 'cancelled'].includes(payload.status)" size="mini" @click="retry" plain>{{$t(`testing.taskDetails.basicInformation.retry`)}}</el-button>
         </div>
       </div>
     </header>
@@ -235,18 +236,19 @@
 <script>
 import {
   getCustomWorkflowTaskDetailAPI,
-  deleteCustomWorkflowTaskAPI
+  deleteCustomWorkflowTaskAPI,
+  retryCustomWorkflowTaskAPI
 } from '@api'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
-import JobBuildDetail from './productCustomTaskDetail/jobBuildDetail.vue'
-import JobDeployDetail from './productCustomTaskDetail/jobDeployDetail.vue'
-import StageApproval from './productCustomTaskDetail/stageApproval.vue'
-import JobFreestyleDetail from './productCustomTaskDetail/jobFreestyleDetail.vue'
-import JobPluginDetail from './productCustomTaskDetail/jobPluginDetail.vue'
-import JobK8sDeployDetail from './productCustomTaskDetail/jobK8sDeployDetail.vue'
-import JobTestDetail from './productCustomTaskDetail/jobTestDetail.vue'
-import JobScanningDetail from './productCustomTaskDetail/jobScanningDetail.vue'
-import JobImageDistributeDetail from './productCustomTaskDetail/jobImageDistributeDetail.vue'
+import JobBuildDetail from './customWorkflowTaskDetail/jobBuildDetail.vue'
+import JobDeployDetail from './customWorkflowTaskDetail/jobDeployDetail.vue'
+import StageApproval from './customWorkflowTaskDetail/stageApproval.vue'
+import JobFreestyleDetail from './customWorkflowTaskDetail/jobFreestyleDetail.vue'
+import JobPluginDetail from './customWorkflowTaskDetail/jobPluginDetail.vue'
+import JobK8sDeployDetail from './customWorkflowTaskDetail/jobK8sDeployDetail.vue'
+import JobTestDetail from './customWorkflowTaskDetail/jobTestDetail.vue'
+import JobScanningDetail from './customWorkflowTaskDetail/jobScanningDetail.vue'
+import JobImageDistributeDetail from './customWorkflowTaskDetail/jobImageDistributeDetail.vue'
 import { jobType } from './workflowEditor/customWorkflow/config'
 import bus from '@utils/eventBus'
 
@@ -293,6 +295,9 @@ export default {
     },
     projectName () {
       return this.$route.params.project_name
+    },
+    status () {
+      return this.payload.status
     },
     buildOverallStatus () {
       return this.$utils.calcOverallBuildStatus(this.buildStage)
@@ -427,10 +432,10 @@ export default {
       this.curJobIndex = index
       this.curStageIndex = curStageIndex
     },
-    async refreshHistoryTaskDetail () {
+    async refreshHistoryTaskDetail (operation) {
       await this.getWorkflowTaskDetail(this.workflowName, this.taskId)
       const statusList = ['running', 'waiting', 'waitforapprove']
-      if (!this.timeTimeoutFinishFlag && statusList.includes(this.$route.query.status)) {
+      if ((!this.timeTimeoutFinishFlag && statusList.includes(this.$route.query.status)) || operation === 'retry') {
         this.timerId = setTimeout(this.refreshHistoryTaskDetail, 1000) // 保证内存中只有一个定时器
       }
     },
@@ -457,6 +462,16 @@ export default {
         this.projectName
       ).then(res => {
         this.$message.success(this.$t(`workflow.cancelSuccess`))
+      })
+    },
+    retry () {
+      retryCustomWorkflowTaskAPI(
+        this.workflowName,
+        this.taskId,
+        this.projectName
+      ).then(res => {
+        this.$message.success(this.$t(`workflow.retrySuccess`))
+        this.refreshHistoryTaskDetail('retry')
       })
     },
     closeFooter () {
