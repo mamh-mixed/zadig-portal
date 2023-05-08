@@ -19,7 +19,10 @@ const routes = [
           requiresAuth: true,
           title: i18n.t('sidebarMenu.dataInsight')
         },
-        redirect: '/v1/insight/build',
+        redirect: {
+          path: '/v1/insight/build',
+          query: { projectNames: '' }
+        },
         children: [
           {
             path: 'build',

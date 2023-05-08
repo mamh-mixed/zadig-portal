@@ -89,7 +89,7 @@ export default {
       }
     },
     projectsInQuery () {
-      return this.$route.query.projectNames
+      return this.$route.query.projectNames ? this.$route.query.projectNames : ''
     },
     routerList () {
       return [

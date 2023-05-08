@@ -27,8 +27,8 @@ export default {
     }
   },
   mounted () {
-    const projectNames = this.$route.query.projectNames.split(',')
-    if (projectNames) {
+    if (this.$route.query.projectNames !== '') {
+      const projectNames = this.$route.query.projectNames.split(',')
       this.selectedProjects = projectNames
       this.$refs.subTopbar.selectedProjects = projectNames
     }
