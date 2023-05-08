@@ -3,13 +3,13 @@
     <header class="mg-b8">
       <el-col :span="6">
         <span class="type">{{$t(`workflow.jobType.freestyle`)}}</span>
-        <span>{{commonInfo.name}}</span>
+        <span>{{jobInfo.name}}</span>
       </el-col>
       <el-col :span="2">
-        <a :class="buildOverallColor" href="#buildv4-log">{{commonInfo.status?$t(`workflowTaskStatus.${commonInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
+        <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?$t(`workflowTaskStatus.${jobInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
       </el-col>
       <el-col :span="2">
-        <span>{{$utils.timeFormat(commonInfo.cost_seconds)}}</span>
+        <span>{{$utils.timeFormat(jobInfo.cost_seconds)}}</span>
       </el-col>
       <el-col :span="1" class="close">
         <span @click="$emit('showFooter',false)">
@@ -20,11 +20,11 @@
     <main>
       <section>
         <div class="error-wrapper">
-          <el-alert v-if="commonInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
-            <span style="white-space: pre-wrap;">{{commonInfo.error}}</span>
+          <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
+            <span style="white-space: pre-wrap;">{{jobInfo.error}}</span>
           </el-alert>
         </div>
-        <el-row class="item" :gutter="0" v-for="(build,index) in commonInfo.spec.repos" :key="index">
+        <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.repos" :key="index">
           <el-col :span="4">
             <div class="item-title">{{$t(`global.repository`)}}({{build.source}})</div>
           </el-col>
@@ -40,7 +40,7 @@
         </el-row>
       </section>
       <section class="log-content mg-t8">
-        <XtermLog :id="commonInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="commonInfo.name" />
+        <XtermLog :id="jobInfo.name" @mouseleave.native="leaveLog" :logs="buildv4AnyLog" :from="jobInfo.name" />
       </section>
       <section class="block"></section>
     </main>
@@ -63,7 +63,7 @@ export default {
     }
   },
   props: {
-    commonInfo: {
+    jobInfo: {
       type: Object,
       default: () => ({})
     },
@@ -86,13 +86,13 @@ export default {
   },
   computed: {
     buildIsRunning () {
-      return this.commonInfo && this.commonInfo.status === 'running'
+      return this.jobInfo && this.jobInfo.status === 'running'
     },
     buildIsDone () {
-      return this.isSubTaskDone(this.commonInfo)
+      return this.isSubTaskDone(this.jobInfo)
     },
     buildOverallStatus () {
-      return this.$utils.calcOverallBuildStatus(this.commonInfo, {})
+      return this.$utils.calcOverallBuildStatus(this.jobInfo, {})
     },
     buildOverallStatusZh () {
       return this.$t(`workflowTaskStatus.${this.buildOverallStatus}`)
@@ -108,11 +108,11 @@ export default {
     },
     openBuildLog (buildType) {
       this.buildv4AnyLog = []
-      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.commonInfo.name}/999999?projectName=${this.projectName}`
+      const url = `/api/aslan/logs/sse/v4/workflow/${this.workflowName}/${this.taskId}/${this.jobInfo.name}/999999?projectName=${this.projectName}`
       if (typeof window.msgServer === 'undefined') {
         window.msgServer = {}
         window.msgServer[
-          `${this.commonInfo.spec.service_module}_${this.commonInfo.spec.service_name}`
+          `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
         ] = {}
       }
       this[`${buildType}IntervalHandle`] = setInterval(() => {
@@ -126,7 +126,7 @@ export default {
         .then(sse => {
           // Store SSE object at a higher scope
           window.msgServer[
-            `${this.commonInfo.spec.service_module}_${this.commonInfo.spec.service_name}`
+            `${this.jobInfo.spec.service_module}_${this.jobInfo.spec.service_name}`
           ] = sse
           sse.onError(e => {
             console.error('lost connection; giving up!', e)
@@ -150,7 +150,7 @@ export default {
       return getJobHistoryLogsAPI(
         this.workflowName,
         this.taskId,
-        this.commonInfo.name,
+        this.jobInfo.name,
         this.projectName
       ).then(response => {
         this.buildv4AnyLog = response.split('\n').map(element => {
@@ -174,7 +174,7 @@ export default {
     }
   },
   watch: {
-    commonInfo: {
+    jobInfo: {
       handler (val, oldVal) {
         if (val) {
           const hasLogStatus = [
