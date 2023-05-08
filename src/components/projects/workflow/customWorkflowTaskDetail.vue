@@ -186,7 +186,7 @@
         />
         <JobFreestyleDetail
           v-if="curJob.type === jobType.common"
-          :jobInfo="curJob"
+          :commonInfo="curJob"
           :workflowName="workflowName"
           :taskId="taskId"
           :projectName="projectName"
