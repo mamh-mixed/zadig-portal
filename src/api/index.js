@@ -1773,8 +1773,8 @@ export function updateBuildTemplateAPI (id, payload) {
   return http.put(`/api/aslan/template/build/${id}`, payload)
 }
 
-export function getBuildTemplateDetailAPI (id) {
-  return http.get(`/api/aslan/template/build/${id}`)
+export function getBuildTemplateDetailAPI (id, projectName = '') {
+  return http.get(`/api/aslan/template/build/${id}?projectName=${projectName}`)
 }
 
 export function deleteBuildTemplateAPI (id) {

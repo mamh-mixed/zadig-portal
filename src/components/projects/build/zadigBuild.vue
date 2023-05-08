@@ -231,7 +231,8 @@ export default {
   },
   methods: {
     changeTemplate (id, init = false) {
-      getBuildTemplateDetailAPI(id).then(res => {
+      const projectName = this.projectName
+      getBuildTemplateDetailAPI(id, projectName).then(res => {
         const currentTemplateEnvs = res.pre_build.envs || []
         this.currentTemplateEnvs = currentTemplateEnvs
         if (init) {
