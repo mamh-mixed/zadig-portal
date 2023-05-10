@@ -4,6 +4,7 @@
   </div>
 </template>
 <script>
+import i18n from '@/lang'
 import ECharts from 'vue-echarts'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/tooltip'
@@ -40,10 +41,10 @@ export default {
             <span>#${taskId}</span>
             ${statusFormated}
             <br>
-            <span style="display:inline-block;width:50px;">执行人: </span>
+            <span style="display:inline-block;width:50px;">${i18n.t('workflow.executor')}: </span>
             <span>${creator} | ${createTime}</span>
             <br>
-            <span style="display:inline-block;width:50px">持续时间: </span>
+            <span style="display:inline-block;width:50px">${i18n.t('workflow.duration')}: </span>
             <span>${durationFormated}</span>
             </div>
             `
