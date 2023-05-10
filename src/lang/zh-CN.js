@@ -357,7 +357,7 @@ exports.default = {
     clusters: '集群',
     noProjects: '暂无可展示的项目，请手动添加项目',
     projectName: '项目名称',
-    environmentCounts: '环境',
+    environmentCounts: '环境数量',
     environmentsList: '环境信息',
     workflowsList: '工作流信息',
     workflowStage: '步骤',
