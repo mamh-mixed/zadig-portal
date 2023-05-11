@@ -115,7 +115,8 @@ export default {
       envList: [],
       workflows: [],
       userBindings: [],
-      detailLoading: true
+      detailLoading: true,
+      projectAlias: ''
     }
   },
   methods: {
@@ -152,7 +153,7 @@ export default {
       this.$router.push('/v1/projects')
     },
     deleteProject () {
-      this.$refs.deleteProject.openDialog(this.projectName)
+      this.$refs.deleteProject.openDialog(this.projectName, this.projectAlias)
     },
     wordTranslation (word, category, subitem) {
       return wordTranslate(word, category, subitem)
@@ -162,6 +163,7 @@ export default {
       const projectInfo = await getProjectInfoAPI(projectName).catch(error =>
         console.log(error)
       )
+      this.projectAlias = projectInfo.project_name
       const userBindings = await queryUserBindingsAPI(
         userInfo.uid,
         projectName

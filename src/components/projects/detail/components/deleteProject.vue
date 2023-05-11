@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="$t('project.deleteProjectComp.inputProjectNameToDelete', { projectName: projectName})"
+    :title="$t('project.deleteProjectComp.inputProjectAliasToDelete', { projectAlias: projectAlias})"
     :visible.sync="deleteDialogVisible"
     width="40%"
   >
@@ -95,6 +95,7 @@ export default {
     return {
       deleteDialogVisible: false,
       projectName: '',
+      projectAlias: '',
       services: [],
       envNames: [],
       buildConfigs: [],
@@ -115,7 +116,7 @@ export default {
             validator: (rule, value, callback) => {
               if (!value) {
                 callback(new Error(this.$t('project.createProjectComp.inputProjectName')))
-              } else if (value !== this.projectName) {
+              } else if (value !== this.projectAlias) {
                 callback(new Error(this.$t('project.deleteProjectComp.projectNameDontMatch')))
               } else {
                 callback()
@@ -128,8 +129,9 @@ export default {
     }
   },
   methods: {
-    async openDialog (projectName) {
+    async openDialog (projectName, projectAlias) {
       this.projectName = projectName
+      this.projectAlias = projectAlias
       this.deleteDialogVisible = true
       this.services = []
       this.envNames = []
