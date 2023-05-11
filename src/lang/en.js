@@ -407,7 +407,7 @@ exports.default = {
       editProjectInfo: 'Edit Project'
     },
     deleteProjectComp: {
-      inputProjectNameToDelete: 'Please input project name {projectName} to confirm',
+      inputProjectAliasToDelete: 'Please input project name {projectAlias} to confirm',
       deleteExternalProjectTip: 'The following resources under this project will be unhosted,',
       deleteProjectTip: 'The following resources under this project will be deleted at the same time,',
       deleteProjectCaution: 'Please proceed with caution !!',

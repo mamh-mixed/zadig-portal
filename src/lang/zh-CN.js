@@ -407,7 +407,7 @@ exports.default = {
       editProjectInfo: '修改项目信息'
     },
     deleteProjectComp: {
-      inputProjectNameToDelete: '请输入项目名 {projectName} 确认删除',
+      inputProjectAliasToDelete: '请输入项目名称 {projectAlias} 确认删除',
       deleteExternalProjectTip: '该项目下的以下资源会被取消托管，',
       deleteProjectTip: '该项目下的以下资源会同时被删除，',
       deleteProjectCaution: '请谨慎操作！！',

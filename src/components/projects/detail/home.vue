@@ -68,7 +68,7 @@
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item v-hasPermi="{type: 'system', action: 'edit_project', projectName: project.name}" :command="{action:'edit',projectName:project.name}">{{$t(`project.editProject`)}}</el-dropdown-item>
-                  <el-dropdown-item v-hasPermi="{type: 'system', action: 'delete_project'}" :command="{action:'delete',projectName:project.name}">{{$t(`global.delete`)}}</el-dropdown-item>
+                  <el-dropdown-item v-hasPermi="{type: 'system', action: 'delete_project'}" :command="{action:'delete',projectName:project.name,projectAlias:project.alias}">{{$t(`global.delete`)}}</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -145,7 +145,7 @@
               <router-link v-hasPermi="{type: 'system', action: 'edit_project', projectName: scope.row.name}" :to="`/v1/projects/detail/${scope.row.name}/detail`">
                 <el-button class="operation" type="text">{{$t(`project.projectDetail`)}}</el-button>
               </router-link>
-              <el-button v-hasPermi="{type: 'system', action: 'delete_project'}" @click="deleteProject(scope.row.name)" class="operation" type="text">{{$t(`global.delete`)}}</el-button>
+              <el-button v-hasPermi="{type: 'system', action: 'delete_project'}" @click="deleteProject(scope.row.name,scope.row.alias)" class="operation" type="text">{{$t(`global.delete`)}}</el-button>
             </div>
           </template>
         </el-table-column>
@@ -184,7 +184,7 @@ export default {
     },
     handleCommand (command) {
       if (command.action === 'delete') {
-        this.deleteProject(command.projectName)
+        this.deleteProject(command.projectName, command.projectAlias)
       } else if (command.action === 'edit') {
         this.$router.push(`/v1/projects/edit/${command.projectName}`)
       }
@@ -192,8 +192,8 @@ export default {
     followUpFn () {
       this.$store.dispatch('getProjectList')
     },
-    deleteProject (projectName) {
-      this.$refs.deleteProject.openDialog(projectName)
+    deleteProject (projectName, projectAlias) {
+      this.$refs.deleteProject.openDialog(projectName, projectAlias)
     },
     redirectByDevice () {
       const userInfo = store.get('userInfo')
