@@ -88,8 +88,7 @@
             </div>
             <template v-if="service.service_name  &&  services.length >0">
                 <MultipaneResizer/>
-                <div class="service-editor-container"
-                     :style="{ minWidth: '0px'}">
+                <div class="service-editor-container" :style="{ minWidth: '0px',width: '550px' }">
                   <ServiceEditor ref="serviceEditor"
                                     :serviceInTree="service"
                                     :showNext.sync="showNext"
