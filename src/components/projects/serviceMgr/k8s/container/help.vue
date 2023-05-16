@@ -55,7 +55,7 @@
         </el-col>
         <el-col :span="8">
           <li class="service-aside-help__step-list-item">
-            <a href="https://docs.koderover.com/zadig/project/service/k8s/#无状态服务"
+            <a href="https://docs.koderover.com/zadig/project/service/k8s/#有状态服务"
                target="_blank"
                class="service-aside-help__step-list-item-link">
               <i class="icon el-icon-link"></i>
