@@ -365,7 +365,7 @@ export default {
     },
     validate () {
       if (this.form.approval.enabled && this.form.approval.native_approval.needed_approvers > this.form.approval.native_approval.approve_users.length) {
-        this.$message.error('审批人应少于等于需要审批人数')
+        this.$message.error('需要审批人数请勿超过审批人的数量')
         return false
       }
       return this.$refs.ruleForm.validate()
