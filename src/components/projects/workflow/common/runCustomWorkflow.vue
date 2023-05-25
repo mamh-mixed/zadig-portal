@@ -114,8 +114,8 @@
                     filterable
                     clearable
                     reserve-keyword
-                    value-key="service_name"
                     size="medium"
+                    :loading="item.loading"
                     style="width: 220px;"
                     placeholder="请选择镜像"
                   >
@@ -856,9 +856,12 @@ export default {
     },
     handleServiceDeployChange (val) {
       val.forEach(item => {
+        this.$set(item, 'loading', true)
         this.getRegistryList([item.image_name], this.registry_id).then(
           res => {
             this.$set(item, 'images', res)
+            this.$set(item, 'loading', false)
+            this.$forceUpdate()
           }
         )
       })
