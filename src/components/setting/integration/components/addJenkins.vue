@@ -37,7 +37,6 @@
           v-model="addForm.password"
           v-if="dialogVisible"
           :suffix-icon="showCheckIcon"
-          show-password
           type="password"
           placeholder="Jenkins API Token"
           class="input"

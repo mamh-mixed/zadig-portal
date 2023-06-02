@@ -46,7 +46,6 @@
             <el-input
               v-model="params.jira_token"
               placeholder="用户密码/Access Token"
-              show-password
               :suffix-icon="showCheckIcon"
               type="password"
               auto-complete="off"

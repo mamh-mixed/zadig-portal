@@ -69,7 +69,6 @@
         <el-form-item label="SK"
                       prop="sk">
           <el-input size="small"
-                    show-password
                     v-if="dialogStorageCreateFormVisible"
                     type="password"
                     v-model="storage.sk"
@@ -179,8 +178,7 @@
                       prop="sk">
           <el-input size="small"
                     v-model="swapStorage.sk"
-                    type="passsword"
-                    show-password
+                    type="password"
                     v-if="dialogStorageEditFormVisible"
                     placeholder="请输入 Secret Key"></el-input>
         </el-form-item>

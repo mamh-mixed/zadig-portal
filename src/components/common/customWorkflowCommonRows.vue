@@ -113,7 +113,7 @@
             class="password"
             v-model="scope.row.value"
             size="small"
-            :type="scope.row.is_credential ? 'passsword' : ''"
+            :type="scope.row.is_credential ? 'password' : ''"
             :show-password="scope.row.is_credential ? true : false"
             style="width: 220px;"
           ></el-input>
