@@ -69,7 +69,7 @@
             <el-input
               class="password"
               v-model="scope.row.value"
-              :type="scope.row.is_credential ? 'passsword' : ''"
+              :type="scope.row.is_credential ? 'password' : ''"
               :show-password="scope.row.is_credential ? true : false"
               v-if="scope.row.command !== 'other'&&scope.row.type === 'string'"
               size="small"

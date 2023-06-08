@@ -31,7 +31,6 @@
           v-model="addForm.token"
           v-if="dialogVisible"
           :suffix-icon="showCheckIcon"
-          show-password
           type="password"
           placeholder="Sonar Token"
           class="input"

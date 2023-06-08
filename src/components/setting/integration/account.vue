@@ -49,7 +49,6 @@
               v-model="userAccountGitHub.config.clientSecret"
               placeholder="输入 OAuth App Client Secret"
               autofocus
-              show-password
               type="password"
               clearable
               v-if="dialogUserAccountFormVisible"
@@ -91,7 +90,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="管理员密码" prop="bindPW">
-            <el-input v-model="userAccountAD.config.bindPW"   show-password v-if="dialogUserAccountFormVisible && userAccount.name ==='Microsoft Active Directory'"
+            <el-input v-model="userAccountAD.config.bindPW" v-if="dialogUserAccountFormVisible && userAccount.name ==='Microsoft Active Directory'"
                       type="password" placeholder="管理员密码" autofocus clearable auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item prop="startTLS" label="使用 SSL">
@@ -169,7 +168,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="管理员密码" prop="bindPW">
-            <el-input v-model="userAccountLDAP.config.bindPW"  show-password v-if="dialogUserAccountFormVisible && userAccount.name ==='OpenLDAP'"
+            <el-input v-model="userAccountLDAP.config.bindPW" v-if="dialogUserAccountFormVisible && userAccount.name ==='OpenLDAP'"
                       type="password" placeholder="管理员密码" autofocus clearable auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item prop="startTLS" label="使用 SSL">
@@ -249,7 +248,6 @@
             <el-input
               v-if="dialogUserAccountFormVisible"
               v-model="userAccountOAuth.config.clientSecret"
-              show-password
               type="password"
               placeholder="输入 OAuth Client Secret"
               autofocus

@@ -80,7 +80,7 @@
           :rules="{ required: true, message: `请输入 ${providerMap[registry.reg_provider].secret_key}`, trigger: ['blur'] }"
           prop="secret_key"
         >
-          <el-input size="small" clearable type="passsword" show-password v-if="dialogRegistryFormVisible" v-model="registry.secret_key"></el-input>
+          <el-input size="small" clearable type="password" v-if="dialogRegistryFormVisible" v-model="registry.secret_key"></el-input>
         </el-form-item>
         <el-button type="text" @click="registry.advanced_setting.modified = !registry.advanced_setting.modified">
           {{$t(`project.createProjectComp.advancedConfigurations`)}}

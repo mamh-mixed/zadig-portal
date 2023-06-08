@@ -24,7 +24,7 @@
           <el-input size="small" :placeholder="$t(`sysSetting.helmRepo.inputUsername`)" v-model="helm.username"></el-input>
         </el-form-item>
         <el-form-item :label="$t(`sysSetting.helmRepo.password`)" prop="password">
-          <el-input size="small" type="passsword" v-if="dialogHelmCreateFormVisible" show-password  :placeholder="$t(`sysSetting.helmRepo.inputPassword`)" v-model="helm.password"></el-input>
+          <el-input size="small" type="password" v-if="dialogHelmCreateFormVisible" :placeholder="$t(`sysSetting.helmRepo.inputPassword`)" v-model="helm.password"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -53,8 +53,7 @@
           <el-input size="small" :placeholder="$t(`sysSetting.helmRepo.inputUsername`)" v-model="swapHelm.username"></el-input>
         </el-form-item>
         <el-form-item :label="$t(`sysSetting.helmRepo.password`)" prop="password">
-          <el-input size="small"  type="passsword"
-                    show-password :placeholder="$t(`sysSetting.helmRepo.inputPassword`)" v-model="swapHelm.password"></el-input>
+          <el-input size="small"  type="password" :placeholder="$t(`sysSetting.helmRepo.inputPassword`)" v-model="swapHelm.password"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
