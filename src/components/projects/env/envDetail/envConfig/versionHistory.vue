@@ -155,7 +155,7 @@ export default {
           return {
             ...re,
             services,
-            version: index === 0 ? this.$t('environments.config.currentVersion') : this.$t('environments.config.versionIndex', { index: index })
+            version: index === 0 ? this.$t('environments.config.currentVersion') : this.$t('environments.config.versionIndex', { index: res.length - index })
           }
         })
       }
