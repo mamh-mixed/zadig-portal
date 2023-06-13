@@ -898,6 +898,9 @@ export default {
           )
           payload.main_repo = Object.assign(payload.main_repo, payload.repo)
           delete payload.repo
+          if (payload.workflow_arg && payload.workflow_arg.fromJobInfo) {
+            delete payload.workflow_arg.fromJobInfo
+          }
           const workflowName = this.workflowName
           const projectName = this.projectName
           this.handleSavePayload(payload.workflow_arg.stages)
