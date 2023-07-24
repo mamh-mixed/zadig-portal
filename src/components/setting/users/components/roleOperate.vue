@@ -172,7 +172,7 @@ export default {
       if (res) {
         res.forEach(group => {
           group.rules = group.rules.filter((item) => {
-            return item.action !== 'release_get'
+            return item.action !== 'release_get' && item.action !== 'edit_dashboard_config'
           })
           group.rules.forEach((item, index) => {
             item.uniqueAction = `${group.resource}/${item.action}`

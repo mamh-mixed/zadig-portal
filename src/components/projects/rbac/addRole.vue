@@ -163,7 +163,7 @@ export default {
       const res = await queryPolicyDefinitionsAPI(projectName, 'project', projectType).catch(error => console.log(error))
       if (res) {
         const filterRes = res.filter((item) => {
-          return item.resource !== 'Delivery'
+          return item.resource !== 'Delivery' && item.resource !== 'ProductionService' && item.resource_key !== 'ProductionEnvironment'
         })
         filterRes.forEach(group => {
           group.rules.forEach(item => {
