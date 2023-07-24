@@ -1613,7 +1613,8 @@ exports.default = {
       parameters: '参数配置',
       preScanScript: '前置脚本',
       qualityGate: '质量门禁检查',
-      scanningScript: '扫描脚本'
+      scanningScript: '扫描脚本',
+      innerVar: '内置变量'
     },
     prompt: {
       timeMismatch: '本地系统时间和服务端可能存在不一致，请同步。',
@@ -1972,7 +1973,9 @@ exports.default = {
     testTaskLink: '测试任务的 URL',
     // eslint-disable-next-line no-template-curly-in-string
     testServices: '通过工作流任务更新的服务组，服务名以 “,” 分隔，形如 service1,service2,service3。推荐使用 array=(${SERVICES//,/ } 方式转化成数组',
-    zadig: '值恒等于 true，表示在 ZADIG 系统上执行脚本'
+    zadig: '值恒等于 true，表示在 ZADIG 系统上执行脚本',
+    preWorkspace: '工作目录，可用于前置脚本中',
+    branch: '第一个代码库的分支信息，可用于参数配置中'
   },
   timeFormate: {
     seconds: '秒',

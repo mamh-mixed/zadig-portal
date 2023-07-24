@@ -1613,7 +1613,8 @@ exports.default = {
       parameters: 'Sonar Parameter',
       preScanScript: 'Pre-scan Script',
       qualityGate: 'Quality Gate',
-      scanningScript: 'Scanning Script'
+      scanningScript: 'Scanning Script',
+      innerVar: 'Built-in Variables'
     },
     prompt: {
       timeMismatch: 'Local time and server time mismatch, please sync time with the server.',
@@ -1972,7 +1973,9 @@ exports.default = {
     testTaskLink: 'The link to the build task',
     // eslint-disable-next-line no-template-curly-in-string
     testServices: 'A list or services to be updated by the workflow, seprated by comma. It is recommended to use array=(${SERVICES//,/ } to convert the value into an array',
-    zadig: 'A Variable to indicate that this is a zadig environment. Its value will always be true'
+    zadig: 'A Variable to indicate that this is a zadig environment. Its value will always be true',
+    preWorkspace: 'Working directory, which can be used in pre-scripts',
+    branch: 'The branch information of the first code base can be used in parameter configuration'
   },
   timeFormate: {
     seconds: 's',
