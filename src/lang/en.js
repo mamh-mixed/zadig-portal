@@ -885,7 +885,8 @@ exports.default = {
     changedIssue: 'Changed Issue',
     targetStatus: 'Target Status',
     keyword: 'Keyword',
-    outline: 'Outline'
+    outline: 'Outline',
+    columnField: 'Column Field'
   },
   webhookType: {
     dingding: 'DingDing',
@@ -1597,7 +1598,8 @@ exports.default = {
       title: 'Advanced Settings',
       hooksAndNotification: {
         title: 'Hooks and Notifications',
-        webhookTitle: 'Webhooks'
+        webhookTitle: 'Webhooks',
+        notificationTitle: 'Notifications'
       }
     },
     details: {

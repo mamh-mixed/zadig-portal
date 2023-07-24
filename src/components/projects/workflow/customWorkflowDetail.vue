@@ -61,13 +61,50 @@
         <span>
           <i class="iconfont iconhistory title-icon"></i>{{$t('workflow.historyTask')}}
         </span>
-        <!-- <FilterStatus
-          ref="filterStatusRef"
-          :filteredItems="filteredItems"
-          :defaultFilterList="defaultFilterList"
-          :getFilterList="getFilterList"
-          @updateFilter="updateFilter"
-        />-->
+        <div style="flex: 1 1 auto;">
+          <el-tooltip  effect="dark" placement="top">
+            <div slot="content">
+              {{$t(`global.enterprisefeaturesReferforDetails`)}}
+              <el-link
+                style="font-size: 13px; vertical-align: baseline;"
+                type="primary"
+                href="https://docs.koderover.com/zadig/project/common-workflow/"
+                :underline="false"
+                target="_blank"
+              >{{$t(`global.document`)}}</el-link>
+            </div>
+            <el-button
+              type="primary"
+              size="mini"
+              plain
+              class="is-disabled"
+              style=" margin-left: 10px; padding: 3px;"
+            >
+              <i class="iconfont iconfilter"></i>
+            </el-button>
+          </el-tooltip>
+        </div>
+        <el-tooltip  effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              href="https://docs.koderover.com/zadig/project/common-workflow/"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <el-button
+            type="primary"
+            size="small"
+            plain
+            class="is-disabled"
+            style=" margin-left: 10px; padding: 5px;"
+          >
+            {{$t('workflow.columnField')}}
+          </el-button>
+        </el-tooltip>
       </div>
       <TaskList
         :taskList="workflowTasks"

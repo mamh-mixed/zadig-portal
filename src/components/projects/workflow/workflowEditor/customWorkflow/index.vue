@@ -272,7 +272,7 @@
         <Notify :config="payload" :isEdit="isEdit" ref="notify" />
       </div>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? $t(`workflow.addStage`): $t(`workflow.editStage`)" :visible.sync="isShowStageOperateDialog" width="30%">
+    <el-dialog :title="stageOperateType === 'add' ? $t(`workflow.addStage`): $t(`workflow.editStage`)" :visible.sync="isShowStageOperateDialog" width="50%">
       <StageOperate
         ref="stageOperate"
         :stageInfo="stage"

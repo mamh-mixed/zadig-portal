@@ -885,7 +885,8 @@ exports.default = {
     changedIssue: '变更的问题',
     targetStatus: '目标状态',
     keyword: '关键字',
-    outline: '概要'
+    outline: '概要',
+    columnField: '列字段'
   },
   webhookType: {
     dingding: '钉钉',
@@ -1597,7 +1598,8 @@ exports.default = {
       title: '高级配置',
       hooksAndNotification: {
         title: '触发器与通知',
-        webhookTitle: '代码变更触发'
+        webhookTitle: '代码变更触发',
+        notificationTitle: '通知配置'
       }
     },
     details: {
