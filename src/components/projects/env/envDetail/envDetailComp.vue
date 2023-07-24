@@ -318,7 +318,7 @@
           </span>
           <el-button icon="el-icon-refresh" type="text" @click="refreshServiceList">{{$t(`global.refresh`)}}</el-button>
         </div>
-        <div ref="envServiceContainer" class="service-container-detail">
+        <div class="service-container-detail">
         <div class="env-service-list-content">
           <ChartList
             ref="chartListRef"
@@ -330,19 +330,21 @@
             :isProd="isProd"
             :serviceStatus="serviceStatus"
           />
-          <ServiceList
-            class="right"
-            :containerServiceList="containerServiceList"
-            :setRoute="setRoute"
-            :serviceStatus="serviceStatus"
-            :envSource="envSource"
-            :updateService="updateService"
-            :isPmService="isPmService"
-            :upgradeServiceByWorkflow="upgradeServiceByWorkflow"
-            :restartService="restartService"
-            :setServiceConfigRoute="setServiceConfigRoute"
-            :isProd="isProd"
-          />
+          <div ref="envServiceContainer" class="right">
+            <ServiceList
+              class="right"
+              :containerServiceList="containerServiceList"
+              :setRoute="setRoute"
+              :serviceStatus="serviceStatus"
+              :envSource="envSource"
+              :updateService="updateService"
+              :isPmService="isPmService"
+              :upgradeServiceByWorkflow="upgradeServiceByWorkflow"
+              :restartService="restartService"
+              :setServiceConfigRoute="setServiceConfigRoute"
+              :isProd="isProd"
+            />
+          </div>
         </div>
         <el-table v-if="pmServiceList.length > 0" class="pm-service-container" :data="pmServiceList">
           <el-table-column :label="$t(`global.serviceName`)" width="250px">
