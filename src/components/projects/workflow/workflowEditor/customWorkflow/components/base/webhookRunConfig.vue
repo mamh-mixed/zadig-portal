@@ -120,6 +120,18 @@
                   @change="handleServiceDeployChange"
                 >
                   <el-option
+                    disabled
+                    :label="$t(`global.selectAll`)"
+                    value="ALL"
+                    :class="{selected: job.pickedTargets && job.pickedTargets.length === job.spec.service_and_images.length}"
+                    style="color: #606266;"
+                  >
+                    <span
+                      style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                      @click="job.pickedTargets=job.spec.service_and_images;handleServiceDeployChange(job.pickedTargets)"
+                    >{{$t(`global.selectAll`)}}</span>
+                  </el-option>
+                  <el-option
                     v-for="(service,index) of job.spec.service_and_images"
                     :key="index"
                     :label="service.service_name"
