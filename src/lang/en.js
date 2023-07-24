@@ -93,7 +93,8 @@ exports.default = {
     templates: 'Templates',
     updateTime: 'Update Time',
     lastModified: 'Last Modified',
-    autoCancel: 'Auto Cancel'
+    autoCancel: 'Auto Cancel',
+    selectAll: 'Select All'
   },
   metaTitle: {
     projectDetail: 'Project Detail',
