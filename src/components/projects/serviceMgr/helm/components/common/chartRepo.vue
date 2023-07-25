@@ -22,6 +22,7 @@
                 placeholder="请选择 Chart"
                 :disabled="isUpdate"
                 size="small"
+                filterable
               >
                 <el-option v-for="(item,key) in chartWithVersion" :key="key" :label="key" :value="key"></el-option>
               </el-select>

@@ -33,21 +33,39 @@
         <el-form-item :label="$t(`workflow.approvalWay`)" prop="approval.type">
           <el-radio-group v-model="form.approval.type">
             <el-radio label="native">Zadig</el-radio>
-            <el-radio label="lark" :disabled="true">飞书</el-radio>
+            <el-radio label="lark" disabled>
+              {{$t(`webhookType.feishu`)}}
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 14px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/zadig/project/common-workflow/#人工审批`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <i class="el-icon-warning operation error"></i>
+              </el-tooltip>
+            </el-radio>
+            <el-radio label="dingtalk" disabled>
+              {{$t(`webhookType.dingding`)}}
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                  <el-link
+                    style="font-size: 14px; vertical-align: baseline;"
+                    type="primary"
+                    :href="`https://docs.koderover.com/zadig/project/common-workflow/#人工审批`"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <i class="el-icon-warning operation error"></i>
+              </el-tooltip>
+            </el-radio>
           </el-radio-group>
-          <el-tooltip effect="dark" placement="top">
-            <div slot="content">
-              企业版功能，详情参考
-              <el-link
-                style="font-size: 14px; vertical-align: baseline;"
-                type="primary"
-                :href="`https://docs.koderover.com/zadig/project/common-workflow/#人工审批`"
-                :underline="false"
-                target="_blank"
-              >文档</el-link>
-            </div>
-            <i class="el-icon-warning operation error"></i>
-          </el-tooltip>
         </el-form-item>
         <el-form-item :label="$t(`workflow.approvalApplication`)" v-if="form.approval.type==='lark'">
           <el-select

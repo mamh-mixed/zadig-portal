@@ -59,6 +59,18 @@
                   @change="handleServiceBuildChange($event,job)"
                 >
                   <el-option
+                    disabled
+                    :label="$t(`global.selectAll`)"
+                    value="ALL"
+                    :class="{selected: job.pickedTargets && job.pickedTargets.length === job.spec.service_and_builds.length}"
+                    style="color: #606266;"
+                  >
+                    <span
+                      style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                      @click="job.pickedTargets=job.spec.service_and_builds;handleServiceBuildChange(job.pickedTargets, job)"
+                    >{{$t(`global.selectAll`)}}</span>
+                  </el-option>
+                  <el-option
                     v-for="(service,index) of job.spec.service_and_builds"
                     :key="index"
                     :label="`${service.service_module}(${service.service_name})`"
@@ -107,6 +119,18 @@
                   style="width: 220px;"
                   @change="handleServiceDeployChange"
                 >
+                  <el-option
+                    disabled
+                    :label="$t(`global.selectAll`)"
+                    value="ALL"
+                    :class="{selected: job.pickedTargets && job.pickedTargets.length === job.spec.service_and_images.length}"
+                    style="color: #606266;"
+                  >
+                    <span
+                      style=" display: inline-block; width: 100%; font-weight: normal; cursor: pointer;"
+                      @click="job.pickedTargets=job.spec.service_and_images;handleServiceDeployChange(job.pickedTargets)"
+                    >{{$t(`global.selectAll`)}}</span>
+                  </el-option>
                   <el-option
                     v-for="(service,index) of job.spec.service_and_images"
                     :key="index"
@@ -368,6 +392,10 @@ export default {
     webhookSelectedRepo: {
       type: Object,
       default: () => ({})
+    },
+    timerEditMode: {
+      type: Boolean,
+      required: false
     }
   },
   components: {
@@ -389,7 +417,11 @@ export default {
               job.spec.service_and_builds &&
               job.spec.service_and_builds.length > 0
             ) {
-              job.pickedTargets = job.spec.service_and_builds
+              if (!this.timerEditMode && job.type === 'zadig-build') {
+                this.$set(job, 'pickedTargets', [])
+              } else {
+                this.$set(job, 'pickedTargets', job.spec.service_and_builds)
+              }
               job.pickedTargets.forEach(build => {
                 this.getRepoInfo(build.repos)
                 build.repos.forEach(repo => {
@@ -831,6 +863,10 @@ export default {
     .el-collapse-item__header {
       padding: 0 8px;
       background: @globalBackgroundColor;
+    }
+
+    .el-collapse-item__wrap {
+      padding: 8px 0;
     }
 
     .el-collapse-item:last-child {

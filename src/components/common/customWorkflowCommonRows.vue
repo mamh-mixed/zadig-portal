@@ -8,7 +8,7 @@
             <el-col :span="8">
               <div class="repo-name-container">
                 <el-tooltip class="item" effect="dark" :content="build.repo_name" placement="top">
-                  <span :class="{'repo-name': true}">{{$utils.tailCut(build.repo_name,20) }}</span>
+                  <div :class="{'repo-name': true}">{{ build.repo_name }}</div>
                 </el-tooltip>
               </div>
             </el-col>

@@ -29,10 +29,13 @@
           <div class="name-container">
             <div class="workflow-name">
               <router-link :to="workflowLink">
-                <el-tooltip v-if="description" effect="dark" :content="description" placement="top">
+                <el-tooltip effect="dark" placement="top" popper-class="pipeline-name">
+                  <div slot="content">
+                    <div>{{ $t(`global.name`) }}: {{ displayName }}</div>
+                    <div v-if="description">{{ $t(`global.desc`) }}: {{ description }}</div>
+                  </div>
                   <span class="name-span">{{ displayName }}</span>
                 </el-tooltip>
-                <span v-else class="name-span">{{ displayName }}</span>
               </router-link>
             </div>
           </div>
@@ -379,6 +382,22 @@ export default {
       justify-content: space-around;
       font-size: 23px;
       cursor: auto;
+    }
+  }
+}
+
+.el-tooltip__popper.is-dark.pipeline-name {
+  padding: 8px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 21px;
+  background-color: #323232b3;
+
+  &[x-placement^='top'] .popper__arrow {
+    border-top-color: #323232b3;
+
+    &::after {
+      border-top-color: transparent;
     }
   }
 }

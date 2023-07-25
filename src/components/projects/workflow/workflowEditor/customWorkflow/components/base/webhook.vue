@@ -327,6 +327,7 @@
           :projectName="projectName"
           :cloneWorkflow="currentWebhook.workflow_arg"
           :webhookSelectedRepo="currentWebhook.repo"
+          :timerEditMode="webhookEditMode"
         />
       </div>
       <div slot="footer">
@@ -408,7 +409,7 @@
       </div>
       <div style="margin: 10px 0;">
         <span style="display: inline-block; margin-bottom: 10px;">{{$t(`workflow.workflowExecutionVariables`)}}</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" />
+        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentTimer.workflow_v4_args" :timerEditMode="timerEditMode"/>
       </div>
       <div slot="footer">
         <el-button @click="timerDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>
@@ -432,7 +433,7 @@
       </el-form>
       <div style="margin: 10px 0;">
         <span style="display: inline-block; margin-bottom: 10px;">{{$t(`workflow.workflowExecutionVariables`)}}</span>
-        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentCommon.workflow_arg" />
+        <WebhookRunConfig :workflowName="workflowName" :projectName="projectName" :cloneWorkflow="currentCommon.workflow_arg" :timerEditMode="commonEditMode"/>
       </div>
       <div slot="footer">
         <el-button @click="commonDialogVisible = false" size="small">{{$t(`global.cancel`)}}</el-button>

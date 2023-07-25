@@ -75,6 +75,25 @@
         />
       </div>
 
+      <section class="inner-variable">
+        <div class="primary-title not-first-child">
+          <span>{{$t(`global.var`)}}</span>
+        </div>
+        <div @click="showEnvVar = !showEnvVar" class="item-title inner-title">
+          {{ $t(`scanning.details.innerVar`) }}
+          <i
+            style="margin-left: 10px;"
+            :class="[showEnvVar ? 'el-icon-arrow-up' : 'el-icon-arrow-down']"
+          ></i>
+        </div>
+        <div v-show="showEnvVar" class="inner-variable-content">
+          <div v-for="variable in scanVars" :key="variable.variable" class="var-content">
+            <span class="var-variable">{{ variable.variable }}</span>
+            <span class="var-desc">{{ variable.desc }}</span>
+          </div>
+        </div>
+      </section>
+
       <section v-if="scannerConfig.scanner_type === 'sonarQube'">
         <div class="primary-title not-first-child">
           <span>{{$t(`scanning.details.preScanScript`)}}</span>
@@ -219,7 +238,8 @@ export default {
         },
         outputs: [],
         advanced_setting_modified: false
-      }
+      },
+      showEnvVar: false
     }
   },
   computed: {
@@ -267,6 +287,18 @@ export default {
           trigger: ['blur', 'change']
         }
       }
+    },
+    scanVars () {
+      return [
+        {
+          variable: '$WORKSPACE',
+          desc: this.$t(`systemVariables.preWorkspace`)
+        },
+        {
+          variable: '$BRANCH',
+          desc: this.$t(`systemVariables.branch`)
+        }
+      ]
     }
   },
   methods: {
@@ -460,6 +492,31 @@ export default {
 
   .title {
     color: #c0c4cc;
+  }
+
+  .inner-variable {
+    .item-title.inner-title {
+      margin-top: 6px;
+      color: @themeColor;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .inner-variable-content {
+      margin-top: 8px;
+      color: @primaryColor;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 22px;
+
+      .var-content {
+        display: flex;
+
+        .var-variable {
+          flex: 0 0 200px;
+        }
+      }
+    }
   }
 
   .create-footer {
