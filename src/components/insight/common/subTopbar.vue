@@ -125,8 +125,8 @@ export default {
       this.$emit('changeDuration', this.selectedDuration)
     },
     getProjects () {
-      getProjectsAPI().then(res => {
-        this.projects = res
+      getProjectsAPI(1, 9999).then(res => {
+        this.projects = res.projects
       })
     }
   },

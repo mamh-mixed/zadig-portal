@@ -11,7 +11,7 @@
                 placement="bottom"
                 width="280"
                 trigger="hover"
-                v-if="item.isProjectName"
+                v-if="item.isProjectName || (item.list && item.list.length)"
                 popper-class="project-list-popover sub-project-list-popover"
               >
                 <div v-if="item.isProjectName &&showProjectSwitcher" class="project-list-container">
@@ -31,6 +31,18 @@
                       </div>
                       <div class="name">{{item.alias}}</div>
                     </div>
+                  </div>
+                </div>
+                <div v-else-if="item.list && item.list.length" class="option-list-container">
+                  <div
+                    v-for="(proItem, index) in item.list"
+                    :key="index"
+                    class="product-option"
+                    :class="{'active': proItem.title === item.title }"
+                    @click="toggleSubUrl(item, proItem)"
+                  >
+                    <span class="left">{{ proItem.name||proItem.title }}</span>
+                    <i class="el-icon-close" v-if="proItem.deleteOpe" @click.stop="proItem.deleteOpe(proItem.title, proItem.name)"></i>
                   </div>
                 </div>
                 <i slot="reference" class="el-icon-caret-bottom list-popover-icon"></i>
@@ -111,6 +123,7 @@ import Notification from './common/notification.vue'
 import mixin from '@/mixin/topbarMixin'
 import bus from '@utils/eventBus'
 import { mapState, mapGetters } from 'vuex'
+const pinyin = require('pinyin')
 export default {
   data () {
     return {
@@ -130,16 +143,28 @@ export default {
       role: state => state.login.role,
       userInfo: state => state.login.userinfo
     }),
+    projectListWithPinyin () {
+      return this.projectList.map(item => {
+        item.pinyin = pinyin(item.alias, {
+          style: pinyin.STYLE_NORMAL
+        }).join('')
+        return item
+      })
+    },
     filteredProjectList () {
-      return this.projectList.filter(item => {
+      return this.projectListWithPinyin.filter(item => {
         return (
           item.name.indexOf(this.searchProject) > -1 ||
-          item.alias.indexOf(this.searchProject) > -1
+          item.alias.indexOf(this.searchProject) > -1 ||
+          item.pinyin.indexOf(this.searchProject) > -1
         )
       })
     },
     showProjectSwitcher () {
-      return this.$route.path.includes('/v1/projects/detail/') || this.$route.path.includes('/v1/projects/create/')
+      return (
+        this.$route.path.includes('/v1/projects/detail/') ||
+        this.$route.path.includes('/v1/projects/create/')
+      )
     },
     userName () {
       // 系统用户
@@ -178,8 +203,12 @@ export default {
   },
   methods: {
     async logOut () {
-      await this.$store.dispatch('LOGINOUT')
-      this.$router.push('/signin')
+      const result = await this.$store.dispatch('LOGOUT')
+      if (result.enable_redirect && result.redirect_url) {
+        window.location.href = result.redirect_url
+      } else {
+        this.$router.push('/signin')
+      }
     },
     changeProject (projectName) {
       this.$router.push(`/v1/projects/detail/${projectName}/detail`)
@@ -188,6 +217,12 @@ export default {
       if (command === 'logOut') {
         this.logOut()
       }
+    },
+    toggleSubUrl (item, proItem) {
+      item.title = proItem.title
+      item.name = proItem.name || ''
+      item.url = proItem.url ? '/v1' + proItem.url : ''
+      this.$router.push(`/v1${proItem.url}`)
     }
   },
   created () {
