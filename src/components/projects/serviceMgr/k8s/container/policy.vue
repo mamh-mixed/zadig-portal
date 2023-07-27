@@ -116,7 +116,7 @@ export default {
         { key: '{{.REPO_TAG}}', label: '代码 TAG' },
         { key: '{{.REPO_COMMIT_ID}}', label: '代码 Commit ID' },
         { key: '{{.PROJECT}}', label: '项目名称' },
-        { key: '{{.SERVICE}}', label: '服务名称' },
+        { key: '{{.SERVICE}}', label: '服务组件名称' },
         { key: '{{.IMAGE_NAME}}', label: '镜像名称' },
         { key: '{{.ENV_NAME}}', label: '环境名称' }
       ]
