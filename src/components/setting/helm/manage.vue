@@ -221,7 +221,7 @@ export default {
         this.getHelmRepo()
         this.$message({
           type: 'success',
-          message: this.$t('sysSetting.helmRepo.updateRepoSucces')
+          message: this.$t('sysSetting.helmRepo.updateRepoSuccess')
         })
       })
     },
