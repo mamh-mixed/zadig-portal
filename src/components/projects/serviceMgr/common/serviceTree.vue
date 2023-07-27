@@ -176,8 +176,7 @@
       :importServiceFromNamespaceSuccess="importServiceFromNamespaceSuccess"
     />
     <div class="menu-container">
-      <el-row>
-        <el-col :span="10">
+      <div class="function-container">
           <div class="source-dropdown">
             <el-radio-group v-model="mode" size="mini">
               <el-tooltip effect="dark" :content="$t('services.common.servicesManagement')" placement="top">
@@ -192,9 +191,7 @@
               </el-tooltip>
             </el-radio-group>
           </div>
-        </el-col>
-        <el-col :span="14" class="text-right">
-          <div style="line-height: 32px;">
+          <div class="operation">
             <el-tooltip effect="dark" :content="$t('services.k8s.inputByManual')" placement="top">
               <el-button
                 v-if="deployType==='k8s'"
@@ -230,9 +227,8 @@
                 <el-dropdown-item @click.native="createService('namespace')">{{$t('services.k8s.importFromK8sNamespace')}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-          </div>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
     </div>
     <div class="tree-container">
       <keep-alive>
@@ -1225,7 +1221,4 @@ export default {
 <style lang="less" >
 @import '~@assets/css/component/service-tree.less';
 
-.text-right {
-  text-align: right;
-}
 </style>
