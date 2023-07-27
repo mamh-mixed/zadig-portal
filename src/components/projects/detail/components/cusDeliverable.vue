@@ -4,7 +4,7 @@
      <div class="title">镜像名称规则</div>
      <div class="item" v-for="key of Object.keys(customerImage)" :key="'image'+key">
          <div class="label">{{customerImage[key].label}}</div>
-         <el-input class="input1" oninput="value=value.replace(/[^\a-\z\A-\Z0-9\\_\.\-\$\{}]/g,'')" v-model="customerImage[key].service" size="small" :placeholder="`{{.IMAGE_NAME}}`" clearable  ></el-input> &nbsp;:&nbsp;
+         <el-input class="input1" oninput="value=value.replace(/[^\a-\z\A-\Z0-9\\_\.\-\$\{}]/g,'')" v-model="customerImage[key].service" size="small" :placeholder="`{{.SERVICE}}`" clearable></el-input> &nbsp;:&nbsp;
          <el-input class="input2" oninput="value=value.replace(/[^\a-\z\A-\Z0-9\\_\.\-\$\{}]/g,'')" v-model="customerImage[key].value" size="small" :placeholder="customerImage[key].placeholder" clearable></el-input>
          <span class="reset" @click="resetFiled('customerImage',key)">{{$t('global.reset')}}</span>
      </div>
@@ -22,7 +22,7 @@
 <script>
 /* eslint-disable no-template-curly-in-string */
 import { queryJenkins } from '@api'
-const defaultImage = '{{.IMAGE_NAME}}'
+const defaultImage = '{{.SERVICE}}'
 const defaultValue = '{{.SERVICE}}'
 const placeholder = ['{{.TIMESTAMP}}-{{.TASK_ID}}-{{.REPO_PR}}', '{{.TIMESTAMP}}-{{.TASK_ID}}-{{.REPO_BRANCH}}', '{{.TIMESTAMP}}-{{.TASK_ID}}-{{.REPO_BRANCH}}-{{.REPO_PR}}', '{{.TIMESTAMP}}-{{.REPO_TAG}}', '{{.TIMESTAMP}}']
 
