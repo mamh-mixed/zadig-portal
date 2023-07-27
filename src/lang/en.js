@@ -357,6 +357,7 @@ exports.default = {
     artifacts: 'Artifacts',
     clusters: 'Clusters',
     noProjects: 'There is no item to show, please add',
+    allProjectsHaveBeenLoaded: 'All projects have been loaded',
     projectName: 'Name',
     environmentCounts: 'Environments',
     environmentsList: 'Environments',

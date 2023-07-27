@@ -364,8 +364,8 @@ export default {
       this.intervalTimerList.push(this.envTimer)
     },
     getProjectList () {
-      getProjectsAPI().then(res => {
-        this.projectList = res
+      getProjectsAPI(1, 9999).then(res => {
+        this.projectList = res.projects
       })
     },
     getEnvList () {

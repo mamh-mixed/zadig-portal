@@ -321,8 +321,8 @@ export function getTheEnvChangeLogAPI (payload) {
 }
 
 // Project
-export function getProjectsAPI () {
-  return http.get('/api/v1/picket/projects?verbosity=detailed')// verbosity=detailed<brief,minimal>,IgnoreNoVersions,IgnoreNoEnvs
+export function getProjectsAPI (pageNum = 1, pageSize = 20, filter = '') {
+  return http.get(`/api/v1/picket/projects?verbosity=detailed&page_num=${pageNum}&page_size=${pageSize}&filter=${filter}`)// verbosity=detailed<brief,minimal>,IgnoreNoVersions,IgnoreNoEnvs
 }
 
 export function getEnvironmentsAPI (projectName) {

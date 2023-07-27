@@ -2,11 +2,11 @@
   <div class="project-home-container">
     <div class="project-header">
       <div class="header-start">
-        <i class="el-icon-menu display-btn" @click="currentTab = 'grid'" :class="{'active':currentTab==='grid'}"></i>
-        <i class="el-icon-s-fold display-btn" @click="currentTab = 'list'" :class="{'active':currentTab==='list'}"></i>
+        <i class="el-icon-menu display-btn" @click="changeTab('grid')" :class="{'active':currentTab==='grid'}"></i>
+        <i class="el-icon-s-fold display-btn" @click="changeTab('list')" :class="{'active':currentTab==='list'}"></i>
       </div>
       <div class="header-end">
-        <el-input v-model.trim="searchProject" :placeholder="$t(`project.searchProject`)" class="search-input" prefix-icon="el-icon-search" size="medium" />
+        <el-input v-model.trim="projectKeyword" :placeholder="$t(`project.searchProject`)" class="search-input" prefix-icon="el-icon-search" size="medium" @input="searchProject" />
         <el-button
           v-hasPermi="{type: 'system', action: 'create_project'}"
           @click="$router.push(`/v1/projects/create`)"
@@ -53,13 +53,10 @@
     </div>
     <div
       v-if="currentTab==='grid'"
-      v-loading="loading"
-      :element-loading-text="$t(`global.loading`)"
-      element-loading-spinner="iconfont iconfont-loading iconxiangmuloading"
       class="projects-grid"
     >
-      <el-row :gutter="12">
-        <el-col v-for="(project,index) in searchedProjectList" :key="index" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
+      <el-row :gutter="12" class="infinite-wrapper">
+        <el-col v-for="(project,index) in projectList" :key="index" :xs="12" :sm="8" :md="6" :lg="6" :xl="4">
           <el-card shadow="hover" class="project-card">
             <div class="operations" v-hasPermi="{type: 'system', actions: ['edit_project','delete_project'],operator:'or',projectName: project.name}">
               <el-dropdown @command="handleCommand" trigger="click">
@@ -100,20 +97,22 @@
             </div>
           </el-card>
         </el-col>
+        <infinite-loading v-if="projectKeyword === ''" @infinite="infiniteHandler" spinner="waveDots" :identifier="infiniteId" force-use-infinite-wrapper=".infinite-wrapper">
+          <div slot="no-more">
+           <span style="color: #ccc; font-size: 13px;">{{$t(`project.allProjectsHaveBeenLoaded`)}}</span>
+          </div>
+        </infinite-loading>
       </el-row>
-      <div v-if="projectList.length === 0" class="empty-list">
+      <div v-if="!loading && projectList.length === 0" class="empty-list">
         <img src="@assets/icons/illustration/project.svg" alt />
         <p>{{$t(`project.noProjects`)}}</p>
       </div>
     </div>
     <div
       v-if="currentTab==='list'"
-      v-loading="loading"
-      :element-loading-text="$t(`global.loading`)"
-      element-loading-spinner="iconfont iconfont-loading iconxiangmuloading"
       class="projects-list"
     >
-      <el-table v-if="projectList.length > 0" :data="searchedProjectList" stripe style="width: 100%;">
+      <el-table v-if="projectList.length > 0" :data="projectList" stripe style="width: 100%;">
         <el-table-column :label="$t(`project.projectName`)">
           <template slot-scope="scope">
             <router-link :to="`/v1/projects/detail/${scope.row.name}/detail`" class="project-name">
@@ -150,6 +149,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <div v-if="projectList.length > 0" class="project-pagination">
+        <el-pagination background
+                       @current-change="handleCurrentPageChange"
+                       :current-page="pageNum"
+                       :page-sizes="[10, 20,30, 40]"
+                       :page-size="pageSize"
+                       layout="total,prev, pager, next, jumper"
+                       :total="totalProjects">
+      </el-pagination>
+      </div>
       <div v-if="projectList.length === 0 && !loading" class="empty-list">
         <img src="@assets/icons/illustration/project.svg" alt />
         <p>{{$t(`project.noProjects`)}}</p>
@@ -159,26 +168,48 @@
   </div>
 </template>
 <script>
+import InfiniteLoading from 'vue-infinite-loading'
 import DeleteProject from './components/deleteProject.vue'
 import bus from '@utils/eventBus'
-import { mapGetters } from 'vuex'
 import { isMobile } from 'mobile-device-detect'
 import store from 'storejs'
+import { getProjectsAPI } from '@api'
+import { debounce } from 'lodash'
 export default {
   data () {
     return {
-      loading: false,
+      loading: true,
       currentTab: 'grid',
+      infiniteId: +new Date(),
       projectIconMap: {
         k8s: 'iconk8s',
         helm: 'iconhelmrepo',
         external: 'iconvery-trustee',
         cloud_host: 'iconwuliji'
       },
-      searchProject: ''
+      projectKeyword: '',
+      totalProjects: null,
+      pageSize: 16,
+      pageNum: 1,
+      projectList: []
     }
   },
   methods: {
+    changeTab (tab) {
+      // this.projectList = []
+      this.currentTab = tab
+      if (tab === 'list') {
+        this.projectList = []
+        this.pageSize = 16
+        this.pageNum = 1
+        this.getProjectList(this.pageNum, this.pageSize, this.projectKeyword)
+      } else if (tab === 'grid') {
+        this.infiniteId += 1
+        this.projectList = []
+        this.pageSize = 16
+        this.pageNum = 1
+      }
+    },
     toProject (project) {
       this.$router.push(`/v1/projects/detail/${project.name}/detail`)
     },
@@ -190,7 +221,11 @@ export default {
       }
     },
     followUpFn () {
-      this.$store.dispatch('getProjectList')
+      if (this.currentTab === 'grid') {
+        this.resetInfiniteLoading()
+      } else if (this.currentTab === 'list') {
+        this.getProjectList(this.pageNum, this.pageSize, this.projectKeyword)
+      }
     },
     deleteProject (projectName, projectAlias) {
       this.$refs.deleteProject.openDialog(projectName, projectAlias)
@@ -202,22 +237,66 @@ export default {
           this.$router.push('/mobile/projects')
         }
       }
-    }
-  },
-  computed: {
-    ...mapGetters(['projectList']),
-    searchedProjectList () {
-      const searchProject = this.searchProject
-      return this.projectList.filter(pro => pro.alias.indexOf(searchProject) !== -1)
+    },
+    searchProject: debounce(function (val) {
+      if (this.currentTab === 'grid') {
+        if (val !== '') {
+          this.projectList = []
+          const pageNum = 1
+          const pageSize = 9999
+          this.getProjectList(pageNum, pageSize, val)
+        } else {
+          this.resetInfiniteLoading()
+        }
+      } else if (this.currentTab === 'list') {
+        this.projectList = []
+        const pageNum = this.pageNum
+        const pageSize = this.pageSize
+        this.getProjectList(pageNum, pageSize, val)
+      }
+    }, 200),
+    async getProjectList (pageNum, pageSize, projectKeyword) {
+      const res = await getProjectsAPI(pageNum, pageSize, projectKeyword)
+      if (res) {
+        this.totalProjects = res.total
+        this.projectList = res.projects
+      }
+    },
+    handleCurrentPageChange (val) {
+      this.pageNum = val
+      this.getProjectList(this.pageNum, this.pageSize, this.projectKeyword)
+    },
+    resetInfiniteLoading () {
+      this.pageNum = 1
+      this.projectList = []
+      this.infiniteId += 1
+    },
+    infiniteHandler ($state) {
+      if (this.currentTab === 'grid' && this.projectKeyword === '') {
+        const pageSize = this.pageSize
+        const pageNum = this.pageNum
+        const projectKeyword = this.projectKeyword
+        getProjectsAPI(pageNum, pageSize, projectKeyword).then((res) => {
+          this.loading = false
+          this.totalProjects = res.total
+          if (this.projectList.length !== res.total) {
+            this.pageNum = this.pageNum + 1
+            this.projectList = this.projectList.concat(res.projects)
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
+      }
     }
   },
   mounted () {
-    this.$store.dispatch('getProjectList')
     bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.projects`), url: '' }] })
     // Compatible with non-system login
     this.redirectByDevice()
   },
   components: {
+    InfiniteLoading,
     DeleteProject
   }
 }
@@ -411,7 +490,7 @@ export default {
 
           .icon {
             margin-left: 18px;
-            color: @projectItemIconColor;
+            color: @themeColor;
             font-size: 18px;
             line-height: 35px;
             cursor: pointer;

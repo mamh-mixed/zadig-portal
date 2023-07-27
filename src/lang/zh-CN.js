@@ -357,6 +357,7 @@ exports.default = {
     artifacts: '交付物',
     clusters: '集群',
     noProjects: '暂无可展示的项目，请手动添加项目',
+    allProjectsHaveBeenLoaded: '项目已全部加载完毕',
     projectName: '项目名称',
     environmentCounts: '环境数量',
     environmentsList: '环境信息',
