@@ -94,7 +94,9 @@ exports.default = {
     updateTime: '更新时间',
     lastModified: '最后修改',
     autoCancel: '自动取消',
-    selectAll: '全选'
+    selectAll: '全选',
+    yamlFile: 'YAML 文件',
+    passwordStrengthTip: '密码需要包含大写字母，小写字母以及数字，长度至少为 8 位'
   },
   metaTitle: {
     projectDetail: '项目详情',
@@ -132,9 +134,11 @@ exports.default = {
   login: {
     username: '用户名',
     password: '密码',
+    captcha: '验证码',
     mail: '邮箱',
     inputUsername: '请输入用户名',
     inputPass: '请输入密码',
+    inputCaptcha: '请输入验证码',
     inputMail: '请输入邮箱',
     inputMailCheck: '请检查邮箱格式',
     inputUserInfo: '请输入新用户信息',

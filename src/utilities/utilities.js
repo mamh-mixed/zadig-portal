@@ -745,6 +745,23 @@ const utils = {
     const decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes.slice(16)) // 截取后16位
     // base64
     return decryptedText
+  },
+  validatePassword () {
+    const validator = (rule, value, callback) => {
+      const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/
+      if (value === '') {
+        callback(new Error(i18n.t('sysSetting.users.inputPassword')))
+      } else if (!reg.test(value)) {
+        callback(
+          new Error(
+            i18n.t('global.passwordStrengthTip')
+          )
+        )
+      } else {
+        callback()
+      }
+    }
+    return validator
   }
 }
 
