@@ -2,7 +2,7 @@
   <component :is="currentComponent"></component>
 </template>
 <script>
-import { getSingleProjectAPI } from '@/api'
+import { getSingleProjectAPI } from '@api'
 import bus from '@utils/eventBus'
 
 export default {

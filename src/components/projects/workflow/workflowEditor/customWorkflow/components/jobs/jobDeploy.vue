@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { listProductAPI, getWorkflowGlobalVarsAPI } from '@/api'
+import { listProductAPI, getWorkflowGlobalVarsAPI } from '@api'
 import EnvTypeSelect from '../envTypeSelect.vue'
 import { validateJobName } from '../../config'
 import jsyaml from 'js-yaml'

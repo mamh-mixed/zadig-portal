@@ -32,7 +32,7 @@
 <script>
 import Etable from '@/components/common/etable'
 import AddJenkins from './components/addJenkins'
-import { queryJenkins, deleteJenkins } from '@/api'
+import { queryJenkins, deleteJenkins } from '@api'
 import _ from 'lodash'
 export default {
   name: 'jenkins',

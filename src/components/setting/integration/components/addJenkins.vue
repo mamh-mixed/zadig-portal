@@ -50,7 +50,7 @@
   </el-dialog>
 </template>
 <script>
-import { addJenkins, jenkinsConnection, editJenkins } from '@/api'
+import { addJenkins, jenkinsConnection, editJenkins } from '@api'
 export default {
   name: 'addJenkins',
   props: {

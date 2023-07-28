@@ -86,9 +86,9 @@
 </template>
 
 <script>
-import EnvConfig from '../../env/envDetail/common/envConfig.vue'
-import K8sServiceList from '../../env/k8sPmEnv/k8sServiceList.vue'
-import VarYaml from '../../env/k8sPmEnv/varYaml.vue'
+import EnvConfig from '@/components/projects/env/common/envConfig.vue'
+import K8sServiceList from '@/components/projects/env/k8s/creation/k8sServiceList.vue'
+import VarYaml from '@/components/projects/env/k8s/common/varYaml.vue'
 import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,

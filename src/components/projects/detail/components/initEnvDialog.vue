@@ -20,7 +20,7 @@
 
 <script>
 import K8sEnvTemplate from './k8sEnvTemplate.vue'
-import HelmEnvTemplate from '@/components/projects/env/envDetail/components/updateHelmEnvTemp.vue'
+import HelmEnvTemplate from '@/components/projects/env/helm/common/updateHelmEnvTemp.vue'
 import { cloneDeep } from 'lodash'
 
 export default {

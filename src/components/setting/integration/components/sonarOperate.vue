@@ -44,7 +44,7 @@
   </el-dialog>
 </template>
 <script>
-import { addSonarAPI, checkSonarConnectionAPI, editSonarAPI } from '@/api'
+import { addSonarAPI, checkSonarConnectionAPI, editSonarAPI } from '@api'
 export default {
   name: 'addSonar',
   props: {

@@ -25,7 +25,7 @@
   </el-dialog>
 </template>
 <script>
-import ChartValues from '@/components/projects/env/envDetail/common/updateHelmEnvChart.vue'
+import ChartValues from '@/components/projects/env/helm/common/updateHelmEnvChart.vue'
 import { updateHelmEnvAPI, getServiceDeployableEnvsAPI } from '@api'
 
 export default {
