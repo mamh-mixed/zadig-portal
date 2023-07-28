@@ -5,7 +5,7 @@ import Element from 'element-ui'
 import errorMap from '@/utilities/errorMap'
 import Store from '../store'
 import Router from '../router'
-const returnFullResponseAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifacts', '/api/aslan/environment/kube/workloads']
+const returnFullResponseAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifacts', '/api/aslan/environment/kube/workloads', '/api/v1/login']
 const returnFullResponseRegexAPIs = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloads/, /api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/groups/, /api\/aslan\/environment\/production\/environments\/[a-z-A-Z-0-9]+\/groups/]
 const ignoreErrReqPrefix = '/api/aslan/services/validateUpdate/'
 const ignoreErrReqAPIs = ['/api/aslan/system/jenkins/user/connection', '/api/aslan/system/sonar/validate', '/api/aslan/system/project_management/validate']
@@ -1513,6 +1513,10 @@ export function userLoginAPI (payload) {
   return http.post(`/api/v1/login`, payload)
 }
 
+export function userLogoutAPI () {
+  return http.get(`/api/v1/logout`)
+}
+
 export function userSignUpAPI (payload) {
   return http.post(`/api/v1/signup`, payload)
 }
@@ -1528,6 +1532,11 @@ export function checkRegistrationAPI () {
 export function getPublicKeyAPI () {
   return http.get(`/api/aslan/system/rsaKey/publicKey`)
 }
+
+export function getCaptchaAPI () {
+  return http.get(`/api/v1/captcha`)
+}
+
 // Profile
 export function getCurrentUserInfoAPI (uid) {
   return http.get(`/api/v1/users/${uid}/personal`)
@@ -1553,7 +1562,7 @@ export function updateServiceImageAPI (payload, type, projectName, envName, envT
   return http.post(`/api/aslan/environment/image/${type}/${envName}?projectName=${projectName}&envType=${envType}`, payload)
 }
 
-// preference setting
+// Preference Setting
 export function getPreferenceSettingAPI (uid) {
   return http.get(`/api/v1/users/${uid}/setting`)
 }

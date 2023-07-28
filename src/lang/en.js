@@ -94,7 +94,8 @@ exports.default = {
     updateTime: 'Update Time',
     lastModified: 'Last Modified',
     autoCancel: 'Auto Cancel',
-    selectAll: 'Select All'
+    selectAll: 'Select All',
+    passwordStrengthTip: 'The password should contain upper case letters, lower case letters and numbers and be at least 8 digits long'
   },
   metaTitle: {
     projectDetail: 'Project Detail',
@@ -132,9 +133,11 @@ exports.default = {
   login: {
     username: 'Username',
     password: 'Password',
+    captcha: 'Captcha',
     mail: 'mail',
     inputUsername: 'Please input username',
     inputPass: 'Please input password',
+    inputCaptcha: 'Input captcha',
     inputMail: 'Please input mail',
     inputMailCheck: 'Please check the email format',
     inputUserInfo: 'Please input user info',
