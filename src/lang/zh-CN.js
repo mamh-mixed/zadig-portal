@@ -96,7 +96,9 @@ exports.default = {
     autoCancel: '自动取消',
     selectAll: '全选',
     yamlFile: 'YAML 文件',
-    passwordStrengthTip: '密码需要包含大写字母，小写字母以及数字，长度至少为 8 位'
+    passwordStrengthTip: '密码需要包含大写字母，小写字母以及数字，长度至少为 8 位',
+    info: '信息',
+    reason: '原因'
   },
   metaTitle: {
     projectDetail: '项目详情',

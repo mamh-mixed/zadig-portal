@@ -95,7 +95,9 @@ exports.default = {
     lastModified: 'Last Modified',
     autoCancel: 'Auto Cancel',
     selectAll: 'Select All',
-    passwordStrengthTip: 'The password should contain upper case letters, lower case letters and numbers and be at least 8 digits long'
+    passwordStrengthTip: 'The password should contain upper case letters, lower case letters and numbers and be at least 8 digits long',
+    info: 'Information',
+    reason: 'Reason'
   },
   metaTitle: {
     projectDetail: 'Project Detail',
