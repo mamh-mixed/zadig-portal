@@ -39,7 +39,7 @@
   </el-dialog>
 </template>
 <script>
-import { queryPolicyDefinitionsAPI, addRoleAPI, queryRoleDetailAPI, queryPublicRoleDetailAPI, updateRoleAPI, updatePublicRoleAPI, addPublicRoleAPI } from '@/api'
+import { queryPolicyDefinitionsAPI, addRoleAPI, queryRoleDetailAPI, queryPublicRoleDetailAPI, updateRoleAPI, updatePublicRoleAPI, addPublicRoleAPI } from '@api'
 import _ from 'lodash'
 
 const initFormData = {

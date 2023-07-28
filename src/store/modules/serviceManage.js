@@ -1,5 +1,5 @@
 import * as Mutation from '../mutations'
-import * as Api from '@/api'
+import * as Api from '@api'
 import router from '@/router'
 export default {
   state: {

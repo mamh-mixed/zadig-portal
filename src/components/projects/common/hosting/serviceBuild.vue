@@ -25,7 +25,7 @@
   </div>
 </template>
 <script>
-import { queryServiceWorkloads, serviceTemplateWithConfigAPI } from '@/api'
+import { queryServiceWorkloads, serviceTemplateWithConfigAPI } from '@api'
 import ServiceModule from './serviceModules'
 import CommonBuild from '@/components/projects/build/commonBuild.vue'
 

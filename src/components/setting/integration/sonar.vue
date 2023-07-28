@@ -33,7 +33,7 @@
 <script>
 import Etable from '@/components/common/etable'
 import SonarOperate from './components/sonarOperate'
-import { querySonarAPI, deleteSonarAPI } from '@/api'
+import { querySonarAPI, deleteSonarAPI } from '@api'
 import { cloneDeep } from 'lodash'
 export default {
   name: 'Sonar',

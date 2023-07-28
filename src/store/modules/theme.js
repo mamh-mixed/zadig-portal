@@ -1,5 +1,5 @@
 import * as types from '../mutations'
-import { getPreferenceSettingAPI, savePreferenceSettingAPI } from '@/api'
+import { getPreferenceSettingAPI, savePreferenceSettingAPI } from '@api'
 
 const state = {
   theme: 'light', // light/dark
