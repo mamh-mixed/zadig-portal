@@ -1,6 +1,6 @@
 <template>
   <div class="job-build">
-    <el-form ref="ruleForm" :model="job" class="mg-t24 mg-b24" label-position="left" label-width="130px" size="small">
+    <el-form ref="ruleForm" :model="job" label-position="left" label-width="130px" size="small">
       <el-form-item :label="$t(`workflow.jobName`)" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
@@ -45,6 +45,7 @@
         </el-form>
       </div>
     </el-form>
+    <slot></slot>
     <el-dialog
       :title="`${curItem.service_name}/${curItem.service_module} 变量配置`"
       :visible.sync="isShowVarDialog"
@@ -449,7 +450,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .job-build {
+  box-sizing: border-box;
   width: 80%;
+  padding: 24px 0;
   color: #606266;
   font-size: 14px;
 
