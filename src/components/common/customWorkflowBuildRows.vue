@@ -3,7 +3,7 @@
     <el-table :data="info" v-if="info.length > 0" empty-text="无">
       <el-table-column type="expand" width="50px" v-if="type!=='zadig-scanning'">
         <template slot-scope="props">
-          <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 70%; margin: 0 auto;" size="mini">
+          <el-table :data="props.row.key_vals.filter(item=>item.isShow)" style="width: 90%; margin: 0 auto;" size="mini">
             <el-table-column :label="$t(`global.key`)">
               <template slot-scope="scope">{{scope.row.key}}</template>
             </el-table-column>
@@ -17,7 +17,7 @@
                   v-else
                   v-model="scope.row.value"
                   size="small"
-                  :type="scope.row.is_credential ? 'password' : ''"
+                  :type="scope.row.is_credential ? 'passsword' : ''"
                   :show-password="scope.row.is_credential ? true : false"
                   :style="{ width: elSelectWidth}"
                 ></el-input>
@@ -26,14 +26,20 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="name" :label="$t(`global.testName`)" width="100px" v-if="type=='zadig-test'"></el-table-column>
-      <el-table-column prop="name" :label="$t(`workflow.scanName`)" width="100px" v-if="type=='zadig-scanning'"></el-table-column>
       <el-table-column
         prop="service_module"
-        :label="$t(`project.services`)"
+        :label="$t(`global.serviceModule`)"
         width="200px"
-        v-if="type!=='zadig-test'&&type!=='zadig-scanning'"
-      ></el-table-column>
+        v-if="type!=='zadig-scanning'"
+      >
+        <template slot-scope="scope">
+          <el-tooltip  effect="dark" :content="scope.row.service_name" placement="top">
+            <span style="cursor: pointer;">{{`${scope.row.service_module}`}}</span>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name" :label="$t(`global.testName`)" width="100px" v-if="type=='zadig-test'"></el-table-column>
+      <el-table-column prop="name" :label="$t(`workflow.scanName`)" width="100px" v-if="type=='zadig-scanning'"></el-table-column>
       <el-table-column :label="$t(`global.repository`)">
         <template slot-scope="scope">
           <el-row v-for="build of (scope.row.repos || []).filter(repo => !repo.hidden)" class="build-row" :key="build.code_host_id">
@@ -73,7 +79,7 @@
                   </el-option-group>
                 </el-select>
               </el-col>
-              <el-col :span="5" :offset="1" v-if="build.source!=='other'">
+              <el-col :span="7" style="margin-left: 10px;" v-if="build.source!=='other'">
                 <el-select
                   v-if="!$utils.isEmpty(build.branchPRsMap)"
                   v-model="build.prs"
@@ -82,7 +88,6 @@
                   :placeholder="$t(`repository.prompt.choosePR`)"
                   filterable
                   clearable
-                  :style="{ width: elSelectWidth}"
                   :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                 >
                   <el-tooltip
@@ -108,7 +113,6 @@
                     v-model="build.prs"
                     class="short-input"
                     size="small"
-                    :style="{ width: elSelectWidth}"
                     :placeholder="$t(`repository.prompt.inputPR`)"
                     :disabled="build.branchOrTag && build.branchOrTag.type === 'tag'"
                   ></el-input>
@@ -174,10 +178,12 @@ export default {
       const payload = { infos: reposQuery }
       // b = branch, p = pr, t = tag
       const res = await getAllBranchInfoAPI(payload)
-      const branches = build.branchAndTagList.find(
-        item => item.label === 'Branches'
-      )
-      const tags = build.branchAndTagList.find(item => item.label === 'Tags')
+      const branches = build.branchAndTagList
+        ? build.branchAndTagList.find(item => item.label === 'Branches')
+        : {}
+      const tags = build.branchAndTagList
+        ? build.branchAndTagList.find(item => item.label === 'Tags')
+        : {}
       if (build.source === 'other' && res.length === 0) {
         this.$set(res, 0, {
           branches:

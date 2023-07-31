@@ -21,7 +21,7 @@
               @change="changeEnvType(build_env_index)"
             >
               <el-option :label="$t(`global.string`)" value="string"></el-option>
-              <el-option :label="$t(`global.enumerate`)" value="choice"></el-option>
+              <el-option :label="$t(`global.enumeration`)" value="choice"></el-option>
             </el-select>
             <i
               v-show="preEnvs.envs[build_env_index].type === 'choice'"
@@ -88,7 +88,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-dialog :visible.sync="dialogVisible" :title="$t(`global.enumerate`)" width="600px" :close-on-click-modal="false" :show-close="false" append-to-body>
+    <el-dialog :visible.sync="dialogVisible" :title="$t(`global.enumeration`)" width="600px" :close-on-click-modal="false" :show-close="false" append-to-body>
       <el-form ref="form" :model="currentVars" label-position="left" label-width="90px">
         <el-form-item :label="$t(`build.variableKey`)">
           <el-input v-model="currentVars.key" size="small"></el-input>
