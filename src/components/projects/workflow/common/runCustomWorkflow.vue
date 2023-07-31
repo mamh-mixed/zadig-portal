@@ -339,6 +339,32 @@
                       </el-table>
                     </div>
                   </div>
+                  <div v-if="job.type==='jira'">
+                    <el-form-item :label="$t(`workflow.changedIssue`)" v-if="job.spec.source==='runtime'">
+                      <el-select
+                        v-model="job.pickedTargets"
+                        filterable
+                        multiple
+                        @change="handleIssueChange"
+                        placeholder="请选择"
+                        remote
+                        :loading="loading"
+                        :remote-method="(query)=>{searchIssues(query,job)}"
+                        value-key="key"
+                        style="width: 220px;"
+                      >
+                        <el-option
+                          v-for="item in projectIssues"
+                          :key="item.key"
+                          :label="`${item.key} ${$utils.tailCut(item.name,100)}`"
+                          :value="item"
+                        >
+                        <el-tag effect="plain" type="info" size="mini">{{item.key}}</el-tag>
+                        <span>{{$utils.tailCut(item.name,100)}}</span>
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </div>
                 </el-collapse-item>
             </template>
           </div>
@@ -389,6 +415,8 @@ import {
   getCustomWorkfloweTaskPresetAPI,
   getRegistryWhenBuildAPI,
   getAssociatedBuildsAPI,
+  searchIssueAPI,
+  searchJqlIssueAPI,
   getFilterEnvServicesAPI,
   getTestEnvServiceListAPI
 } from '@api'
@@ -803,6 +831,39 @@ export default {
         }
       )
     },
+    searchIssues (keyword = '', job) {
+      this.loading = true
+      const { project_id, query_type, issue_type, jql } = job.spec
+      if (!project_id) return
+      if (query_type === 'advanced') {
+        searchJqlIssueAPI(project_id, jql, keyword).then(res => {
+          this.projectIssues = res.map(item => {
+            return {
+              key: item.key,
+              name: item.fields.summary
+            }
+          })
+          this.loading = false
+        }, () => {
+          this.loading = false
+        })
+      } else {
+        searchIssueAPI(project_id, issue_type, keyword).then(res => {
+          this.projectIssues = res.map(item => {
+            return {
+              key: item.key,
+              name: item.fields.summary
+            }
+          })
+          this.loading = false
+        }, () => {
+          this.loading = false
+        })
+      }
+    },
+    handleIssueChange (val) {
+      this.$forceUpdate()
+    },
     getEnvList () {
       const projectName = this.projectName
       listProductAPI(projectName).then(res => {
@@ -1171,12 +1232,10 @@ export default {
           }
         )
       })
-      this.updateWorkflowTrigger()
       this.$forceUpdate()
     },
     handleServiceBuildChange (services, job, type) {
       this.disImageFromBuildJobInfo = cloneDeep(job)
-      this.updateWorkflowTrigger()
       const jobs = []
       let res = []
       this.payload.stages.forEach(stage => {
@@ -1287,7 +1346,6 @@ export default {
       } else {
         this.handleRuntimeServiceChange(job, services)
       }
-      this.updateWorkflowTrigger()
       this.getRegistryId(job.spec.env, job.spec.production)
       this.getServiceList(job)
     },
@@ -1386,39 +1444,6 @@ export default {
             })
             .flat()
         }
-      })
-    },
-    updateWorkflowTrigger () {
-      const allJobs = []
-      this.payload.stages.forEach((stage) => {
-        stage.jobs.forEach((job) => {
-          allJobs.push(job)
-        })
-      })
-      this.payload.stages.forEach((stage) => {
-        stage.jobs.forEach((triggerJob) => {
-          if (triggerJob.type === 'workflow-trigger') {
-            if (triggerJob.spec.trigger_type === 'common') {
-              if (triggerJob.spec.source === 'fromjob') {
-                const targetJob = allJobs.find((item) => {
-                  return item.name === triggerJob.spec.source_job_name
-                })
-                const targetJobServiceModules = targetJob.pickedTargets.map((item) => {
-                  return {
-                    service_name: item.service_name,
-                    service_module: item.service_module
-                  }
-                })
-                triggerJob.pickedTargets = triggerJob.spec.service_trigger_workflow.filter((item) => {
-                  return targetJobServiceModules.some((targetJobServiceModule) => {
-                    return targetJobServiceModule.service_name === item.service_name &&
-                        targetJobServiceModule.service_module === item.service_module
-                  })
-                })
-              }
-            }
-          }
-        })
       })
     }
   }
