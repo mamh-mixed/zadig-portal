@@ -96,11 +96,11 @@
                     clearable
                     size="small"
                     placeholder="组织名/用户名"
-                    :loading="codeInfo[targetIndex][repoIndex].loading.owner"
+                    :loading="codeInfo.length > 0 ? codeInfo[targetIndex][repoIndex].loading.owner : true"
                     filterable
                   >
                     <el-option
-                      v-for="(repo_owner,index) in codeInfo[targetIndex][repoIndex] ? codeInfo[targetIndex][repoIndex]['repo_owners'] : []"
+                      v-for="(repo_owner,index) in (codeInfo.length > 0 && codeInfo[targetIndex][repoIndex]) ? codeInfo[targetIndex][repoIndex]['repo_owners'] : []"
                       :key="index"
                       :label="repo_owner.path"
                       :value="repo_owner.path"
@@ -129,11 +129,11 @@
                     clearable
                     size="small"
                     placeholder="请选择代码库"
-                    :loading="codeInfo[targetIndex][repoIndex].loading.repo"
+                    :loading="codeInfo.length > 0 ? codeInfo[targetIndex][repoIndex].loading.repo : true"
                     filterable
                   >
                     <el-option
-                      v-for="(repo,index) in codeInfo[targetIndex][repoIndex] ? codeInfo[targetIndex][repoIndex]['repos'] : []"
+                      v-for="(repo,index) in (codeInfo.length > 0 && codeInfo[targetIndex][repoIndex]) ? codeInfo[targetIndex][repoIndex]['repos'] : []"
                       :key="index"
                       :label="repo.name"
                       :value="repo.name"
@@ -159,11 +159,11 @@
                     :remote-method="(query)=>{searchBranch(targetIndex,repoIndex,query,repo)}"
                     @clear="searchBranch(targetIndex,repoIndex,'',repo)"
                     allow-create
-                    :loading="codeInfo[targetIndex][repoIndex].loading.branch"
+                    :loading="codeInfo.length > 0 ? codeInfo[targetIndex][repoIndex].loading.branch : true"
                     clearable
                   >
                     <el-option
-                      v-for="(branch,branch_index) in codeInfo[targetIndex][repoIndex] ? codeInfo[targetIndex][repoIndex]['branches'] : []"
+                      v-for="(branch,branch_index) in (codeInfo.length > 0 && codeInfo[targetIndex][repoIndex]) ? codeInfo[targetIndex][repoIndex]['branches'] : []"
                       :key="branch_index"
                       :label="branch.name"
                       :value="branch.name"
@@ -327,10 +327,7 @@ export default {
   data () {
     return {
       allCodeHosts: [],
-      codeInfo: [
-        [{ repo_owners: '', loading: '', branch: '' }],
-        [{ repo_owners: '', loading: '', branch: '' }]
-      ],
+      codeInfo: [],
       showAdvancedSetting: {},
       validateName: 'repoSelect',
       parseErr: '',
@@ -485,7 +482,7 @@ export default {
             repo_owners: [],
             repos: [],
             branches: [],
-            loading: this.$utils.cloneObj(this.loading)
+            loading: cloneDeep(this.loading)
           })
           if (this.allCodeHosts && this.allCodeHosts.length === 1) {
             const codeHostId = this.allCodeHosts[0].id
@@ -522,7 +519,7 @@ export default {
         repo_owners: [],
         repos: [],
         branches: [],
-        loading: this.$utils.cloneObj(this.loading)
+        loading: cloneDeep(this.loading)
       })
       // if (this.allCodeHosts && this.allCodeHosts.length === 1) {
       //   const codeHostId = this.allCodeHosts[0].id
@@ -703,7 +700,7 @@ export default {
             repo_owners: [],
             repos: [],
             branches: [],
-            loading: this.$utils.cloneObj(this.loading)
+            loading: cloneDeep(this.loading)
           })
           if (codehostId) {
             if (this.codeInfoRepoOwnerCache[codehostId] && this.codeInfoRepoOwnerCache[codehostId].repoOwners.length > 0) {
