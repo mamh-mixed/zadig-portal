@@ -7,7 +7,10 @@
       </el-col>
       <el-col :span="2">
         <div class="item-desc">
-          <a :class="buildOverallColor" href="#buildv4-log">{{jobInfo.status?$t(`workflowTaskStatus.${jobInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
+          <a
+            :class="buildOverallColor"
+            href="#buildv4-log"
+          >{{jobInfo.status?$t(`workflowTaskStatus.${jobInfo.status}`):$t(`workflowTaskStatus.notRunning`)}}</a>
         </div>
       </el-col>
       <el-col :span="2">
@@ -16,13 +19,16 @@
       <el-col v-if="jobInfo" :span="6">
         <span class="item-desc status">
           <span v-if="jobInfo.spec.skip_check_run_status">
-            <i class="el-icon-warning"></i>{{$t(`workflow.notOpenServiceStatusCheck`)}}
+            <i class="el-icon-warning"></i>
+            {{$t(`workflow.notOpenServiceStatusCheck`)}}
           </span>
           <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='passed'">
-            <i class="el-icon-warning"></i>{{$t(`workflow.serviceStatusCheckPassed`)}}
+            <i class="el-icon-warning"></i>
+            {{$t(`workflow.serviceStatusCheckPassed`)}}
           </span>
           <span v-else-if="!jobInfo.spec.skip_check_run_status && jobInfo.status ==='failed'">
-            <i class="el-icon-warning"></i>{{$t(`workflow.serviceStatusCheckFailed`)}}
+            <i class="el-icon-warning"></i>
+            {{$t(`workflow.serviceStatusCheckFailed`)}}
           </span>
         </span>
       </el-col>
@@ -36,27 +42,41 @@
       <div class="error-wrapper">
         <el-alert v-if="jobInfo.error" :title="$t(`global.errorMsg`)" type="error" :close-text="$t(`global.ok`)">
           <span style="white-space: pre-wrap;">{{jobInfo.error}}</span>
-        </el-alert>      </div>
+        </el-alert>
+      </div>
+      <el-row class="item">
+        <el-col :span="4">
+          <div class="item-title">{{$t(`workflow.deploymentEnv`)}}</div>
+        </el-col>
+        <el-col :span="8">
+          <div class="item-desc">
+            <router-link class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`">{{jobInfo.spec.env}}</router-link>
+          </div>
+        </el-col>
+      </el-row>
       <el-row class="item" :gutter="0" v-for="(build,index) in jobInfo.spec.service_and_images" :key="index">
         <el-col :span="4">
           <div class="item-title">{{$t(`global.serviceName`)}}</div>
         </el-col>
         <el-col :span="8">
-          <span class="item-desc">{{build.service_name}}({{build.service_module}})</span>
+          <div class="item-desc">
+            <template v-if="deployType !=='helm'">
+              <router-link v-if="jobInfo.spec.production" class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail/${build.service_name}/production?envName=${jobInfo.spec.env}&projectName=${projectName}`">{{build.service_name}}({{build.service_module}})</router-link>
+              <router-link v-else class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail/${build.service_name}?envName=${jobInfo.spec.env}&projectName=${projectName}&envSource=${deployType}`">{{build.service_name}}({{build.service_module}})</router-link>
+            </template>
+            <template v-else-if="deployType ==='helm'">
+              <router-link v-if="jobInfo.spec.production" class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}&production=true`">{{build.service_name}}({{build.service_module}})</router-link>
+              <router-link v-else class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`">{{build.service_name}}({{build.service_module}})</router-link>
+            </template>
+          </div>
         </el-col>
         <el-col :span="4">
           <div class="item-title">
             {{$t(`workflow.imageName`)}}
             <el-tooltip effect="dark" placement="top">
               <div slot="content">
-                构建镜像标签生成规则 ：
-                <br />选择 Tag 进行构建 ： 构建时间戳 -
-                Tag
-                <br />只选择分支进行构建：构建时间戳
-                - 任务 ID - 分支名称
-                <br />选择分支和 PR 进行构建：构建时间戳 - 任务 ID - 分支名称 - PR ID
-                <br />只选择 PR
-                进行构建：构建时间戳 - 任务 ID - PR ID
+                <div>{{$t(`workflow.imageRule.title`)}}</div>
+                <div v-for="(item, index) in $t(`workflow.imageRule.list`)" :key="index">{{item}}</div>
               </div>
               <span>
                 <i class="el-icon-question"></i>
@@ -70,17 +90,49 @@
           </el-tooltip>
         </el-col>
       </el-row>
-      <el-row class="item">
-        <el-col :span="4">
-          <div class="item-title">{{$t(`workflow.deploymentEnv`)}}</div>
+      <el-row class="item" v-if="deployType!=='helm' && deployType!=='external' && jobInfo.spec.variable_kvs.length > 0">
+        <div class="item-title mg-t16 mg-b8">{{$t(`global.serviceVar`)}}</div>
+        <el-col :span="20">
+          <el-table :data="jobInfo.spec.variable_kvs" class="table" size="mini">
+            <el-table-column :label="$t(`global.key`)">
+              <template slot-scope="scope">{{scope.row.key}}</template>
+            </el-table-column>
+            <el-table-column :label="$t(`global.desc`)">
+              <template slot-scope="scope">
+                <span>{{scope.row.desc}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t(`global.value`)">
+              <template slot-scope="scope">
+                <el-input v-if="scope.row.type === 'string' || scope.row.type === 'yaml'" size="mini" v-model="scope.row.value" disabled></el-input>
+                <el-select v-else-if="scope.row.type === 'enum'" v-model="scope.row.value" class="full-width" size="mini" disabled>
+                </el-select>
+                <el-switch v-else-if="scope.row.type === 'bool'" v-model="scope.row.value" disabled :active-value="scope.row.value===true?true:'true'" :inactive-value="scope.row.value===false?false:'false'"></el-switch>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-col>
-        <el-col :span="8">
-          <div class="item-desc">
-            <router-link
-              class="env-link"
-              :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`"
-            >{{jobInfo.spec.env}}</router-link>
-          </div>
+      </el-row>
+      <el-row class="item" v-if="deployType!=='external'">
+        <div v-if="deployType === 'helm'" class="item-title mg-t16 mg-b8">{{$t(`global.serviceVar`)}}</div>
+        <div v-else class="item-title mg-t16 mg-b8">{{$t(`global.serviceConfiguration`)}}</div>
+        <el-col :span="20">
+          <codemirror
+            v-if="deployType==='helm'"
+            class="codemirror"
+            ref="yamlEditor"
+            v-model="jobInfo.spec.user_supplied_value"
+            style="min-height: 200px; margin-bottom: 30px; border: 1px solid #ddd;"
+            :options="editorReadOnlyOptions"
+          />
+          <codemirror
+            v-else
+            class="codemirror"
+            ref="yamlEditor"
+            v-model="jobInfo.spec.yaml_content"
+            style="min-height: 200px; margin-bottom: 30px; border: 1px solid #ddd;"
+            :options="editorReadOnlyOptions"
+          />
         </el-col>
       </el-row>
     </main>
@@ -88,16 +140,32 @@
 </template>
 
 <script>
+import { codemirror } from 'vue-codemirror'
 export default {
   data () {
-    return {}
+    return {
+      editorReadOnlyOptions: {
+        mode: 'yaml',
+        theme: 'neo',
+        lineNumbers: true,
+        lineWrapping: true,
+        indentUnit: 2,
+        tabSize: 2,
+        indentWithTabs: false,
+        autofocus: true,
+        readOnly: true,
+        extraKeys: {
+          'Ctrl-Space': 'autocomplete'
+        }
+      }
+    }
   },
+  components: { codemirror },
   props: {
     jobInfo: {
       type: Object,
       default: () => ({})
     },
-
     projectName: {
       type: String,
       default: ''
@@ -107,6 +175,10 @@ export default {
       default: 1
     },
     workflowName: {
+      type: String,
+      default: ''
+    },
+    deployType: {
       type: String,
       default: ''
     }
@@ -177,7 +249,13 @@ export default {
   }
 
   main {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 400px;
+    max-height: 70%;
     padding: 0 24px;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .item {
       margin-top: 8px;
@@ -193,6 +271,10 @@ export default {
 
     .env-link {
       color: @themeColor;
+    }
+
+    .full-width {
+      width: 100%;
     }
   }
 }
