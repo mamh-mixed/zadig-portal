@@ -16,7 +16,7 @@
           </el-table-column>
           <el-table-column :label="$t(`global.type`)">
             <template slot-scope="scope">
-              <span>{{scope.row.type === 'string' ? $t(`global.string`):scope.row.type==='text'?$t(`global.multilineText`):$t(`global.enumerate`)}}</span>
+              <span>{{scope.row.type === 'string' ? $t(`global.string`):scope.row.type==='text'?$t(`global.multilineText`):$t(`global.enumeration`)}}</span>
               <i v-show="scope.row.type  === 'choice'" class="el-icon-edit edit-icon" @click="updateParams(scope.row)"></i>
             </template>
           </el-table-column>

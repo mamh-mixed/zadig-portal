@@ -2271,24 +2271,31 @@ export function getTestJunitReportAPI (workflowName, taskID, jobName, projectNam
 export function getTestFileListAPI (workflowName, taskID, jobName, projectName) {
   return http.get(`/api/aslan/testing/workspace/workflowv4/${workflowName}/taskId/${taskID}/job/${jobName}?projectName=${projectName}`)
 }
+
 export function getResourcesListAPI (clusterID, namespace) {
   return http.get(`/api/aslan/environment/kube/resources/cluster/${clusterID}/namespace/${namespace}`)
 }
+
 export function getPatchEnvAPI (payload) {
   return http.post(`/api/aslan/workflow/v4/patch`, payload)
 }
+
 export function getDeploymentListAPI (clusterID, namespace) {
   return http.get(`/api/aslan/environment/kube/deployment/cluster/${clusterID}/namespace/${namespace}`)
 }
+
 export function getNewWorkloadListAPI (clusterID, namespace) {
   return http.get(`/api/aslan/environment/kube/workload/cluster/${clusterID}/namespace/${namespace}`)
 }
+
 export function getCanaryServiceListAPI (clusterID, namespace) {
   return http.get(`/api/aslan/environment/kube/canary_service/cluster/${clusterID}/namespace/${namespace}`)
 }
+
 export function getWorkflowGlobalVarsAPI (currentJobName, payload) {
   return http.post(`/api/aslan/workflow/v4/output/${currentJobName}`, payload)
 }
+
 export function getClusterStatusAPI (type, projectName, name, id) {
   return http.get(`/api/aslan/workflow/v4/sharestorage?type=${type}&project=${projectName}&name=${name}&id=${id}`)
 }
@@ -2299,6 +2306,22 @@ export function getDeploymentsAPI (clusterId, namespace) {
 
 export function getIstioVirtualServicesAPI (clusterId, namespace) {
   return http.get(`/api/aslan/cluster/${clusterId}/${namespace}/istio/virtualservices`)
+}
+
+export function previewChangedYaml (envName, serviceName, projectName, payload) {
+  return http.post(`/api/aslan/environment/environments/${envName}/services/${serviceName}/preview?projectName=${projectName}`, payload)
+}
+
+export function previewChangedHelmYaml (projectName, payload) {
+  return http.post(`/api/aslan/workflow/v4/yamlComparison?projectName=${projectName}`, payload)
+}
+
+export function getFilterEnvServicesAPI (projectName, payload) {
+  return http.post(`/api/aslan/workflow/v4/filterEnv?projectName=${projectName}`, payload)
+}
+
+export function getTestEnvServiceListAPI (envName, projectName) {
+  return http.get(`/api/aslan/environment/environments/${envName}/services?projectName=${projectName}`)
 }
 
 // dashboard
