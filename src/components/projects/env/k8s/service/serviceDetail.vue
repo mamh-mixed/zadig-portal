@@ -92,7 +92,7 @@
 
     </div>
 
-    <div class="info-card" v-if="envSource ==='' || envSource === 'spock'">
+    <div class="info-card" v-if="envSource ==='' || envSource === 'spock' || envSource === 'k8s'">
       <div class="info-header">
         <span>{{$t('environments.common.serviceDetail.basicOperation')}}</span>
       </div>
@@ -133,7 +133,7 @@
             </el-button>
           </el-tooltip>
           <router-link v-if="checkPermissionSyncMixin({projectName: projectName, action: 'get_service'})"
-                       :to="`/v1/projects/detail/${originProjectName}/services?service_name=${serviceName}&rightbar=var`">
+                       :to="`/v1/projects/detail/${projectName}/services?service_name=${serviceName}&rightbar=var`">
             <el-button icon="iconfont iconlink1 icon-bold"
                        type="primary"
                        size="small"
@@ -428,11 +428,9 @@
       <XtermDebug :id="execModal.podName +'-debug'"
                    :projectName="projectName"
                    :envName="envName"
-                   :namespace="namespace"
                    :serviceName="serviceName"
                    :containerName="execModal.containerName"
                    :podName="execModal.podName"
-                   :clusterId="clusterId"
                    :visible="execModal.visible"
                    ref="debug"/>
       <div class="download-content">
@@ -623,9 +621,6 @@ export default {
     projectName () {
       return (this.$route.params.project_name ? this.$route.params.project_name : this.$route.query.projectName)
     },
-    originProjectName () {
-      return (this.$route.query.originProjectName ? this.$route.query.originProjectName : this.projectName)
-    },
     clusterId () {
       return this.$route.query.clusterId
     },
@@ -641,14 +636,11 @@ export default {
     envSource () {
       return this.$route.query.envSource || ''
     },
-    isProd () {
-      return this.$route.query.isProd === 'true'
-    },
     notSupportYaml () {
       return '没有找到数据'
     },
     namespace () {
-      return this.$route.query.namespace
+      return this.currentService.namespace
     }
   },
 
@@ -699,7 +691,7 @@ export default {
       const serviceName = this.serviceName
       const workLoadType = this.workLoadType
       const envName = this.envName ? this.envName : ''
-      const envType = this.isProd ? 'prod' : ''
+      const envType = ''
       getServiceInfo(projectName, serviceName, envName, envType, workLoadType).then((res) => {
         if (res.scales) {
           if (res.scales.length > 0 && res.scales[0].pods.length > 0) {
@@ -754,7 +746,7 @@ export default {
       this.$set(item, 'edit', false)
     },
     saveImage (item, scaleName, typeUppercase) {
-      const envType = this.isProd ? 'prod' : ''
+      const envType = ''
       const envName = this.envName
       const projectName = this.projectName
       const type = typeUppercase.toLowerCase()
@@ -790,7 +782,7 @@ export default {
         const projectName = this.projectName
         const serviceName = this.serviceName
         const envName = this.envName ? this.envName : ''
-        const envType = this.isProd ? 'prod' : ''
+        const envType = ''
         restartServiceAPI(projectName, serviceName, envName, scaleName, type, envType).then((res) => {
           this.fetchServiceData()
           this.$message({
@@ -809,7 +801,7 @@ export default {
       const projectName = this.projectName
       const serviceName = this.serviceName
       const envName = this.envName ? this.envName : ''
-      const envType = this.isProd ? 'prod' : ''
+      const envType = ''
       scaleServiceAPI(projectName, serviceName, envName, scaleName, scaleNumber, type, envType).then((res) => {
         this.fetchServiceData()
         this.$message({
@@ -839,7 +831,7 @@ export default {
         const projectName = `${this.projectName}${ownerQuery}`
         const podName = pod.name
         const envName = this.envName
-        const envType = this.isProd ? 'prod' : ''
+        const envType = ''
         restartPodAPI(podName, projectName, envName, envType).then((res) => {
           this.fetchServiceData()
           this.$message({
@@ -868,7 +860,7 @@ export default {
       const projectName = this.projectName
       const serviceName = this.serviceName
       const envName = this.envName ? this.envName : ''
-      const envType = this.isProd ? 'prod' : ''
+      const envType = ''
       this.exportModal.visible = true
       this.exportModal.textObjects = []
       this.exportModal.loading = true
@@ -920,7 +912,7 @@ export default {
       const projectName = this.projectName
       const podName = pod.name
       const envName = this.envName ? this.envName : ''
-      const envType = this.isProd ? 'prod' : ''
+      const envType = ''
       this.eventsModal.visible = true
       podEventAPI(projectName, podName, envName, envType).then((res) => {
         this.eventsModal.data = res.map(row => {
@@ -933,7 +925,7 @@ export default {
     showScaleEvents (scaleName, type) {
       const projectName = this.projectName
       const envName = this.envName ? this.envName : ''
-      const envType = this.isProd ? 'prod' : ''
+      const envType = ''
       this.eventsModal.visible = true
       this.eventsModal.name = scaleName
       scaleEventAPI(projectName, scaleName, envName, type, envType).then((res) => {
@@ -954,7 +946,9 @@ export default {
       this.ephemeralContainersDialog.podName = podName
     },
     checkEphemeralContainers () {
-      checkEphemeralContainersAPI(this.clusterId).then(res => {
+      const projectName = this.projectName
+      const envName = this.envName
+      checkEphemeralContainersAPI(projectName, envName).then(res => {
         this.ephemeralContainersEnabled = res
       })
     },

@@ -122,9 +122,6 @@ export default {
     projectName () {
       return this.$route.params.project_name
     },
-    originProjectName () {
-      return this.$route.query.originProjectName
-    },
     serviceName () {
       return this.$route.params.service_name
     },
