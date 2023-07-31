@@ -1500,8 +1500,8 @@ export function disableShareEnvAPI (envName, projectName) {
   return http.delete(`/api/aslan/environment/environments/${envName}/share/enable?projectName=${projectName}`)
 }
 
-export function checkEphemeralContainersAPI (clusterId) {
-  return http.get(`/api/aslan/cluster/${clusterId}/check/ephemeralcontainers`)
+export function checkEphemeralContainersAPI (projectName, envName) {
+  return http.get(`/api/aslan/cluster/check/ephemeralcontainers?projectName=${projectName}&envName=${envName}`)
 }
 
 export function startEphemeralContainersDebugAPI ({ projectName, envName, podName, image }) {

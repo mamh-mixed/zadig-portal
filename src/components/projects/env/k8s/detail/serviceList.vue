@@ -176,7 +176,6 @@ export default {
     serviceStatus: Object,
     envSource: String,
     isPmService: Boolean,
-    isProd: Boolean,
     upgradeServiceByWorkflow: Function,
     restartService: Function,
     setServiceConfigRoute: Function,

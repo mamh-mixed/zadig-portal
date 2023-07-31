@@ -133,24 +133,11 @@ export default {
     projectName () {
       return (this.$route.params.project_name ? this.$route.params.project_name : this.$route.query.projectName)
     },
-    // 共享服务需要该参数
-    originProjectName () {
-      return (this.$route.query.originProjectName ? this.$route.query.originProjectName : this.projectName)
-    },
-    clusterId () {
-      return this.$route.query.clusterId
-    },
     serviceName () {
       return this.$route.params.service_name
     },
     envName () {
       return this.$route.query.envName
-    },
-    isProd () {
-      return this.$route.query.isProd === 'true'
-    },
-    namespace () {
-      return this.$route.query.namespace
     }
   },
 

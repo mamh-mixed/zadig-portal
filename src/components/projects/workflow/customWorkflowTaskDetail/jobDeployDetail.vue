@@ -61,12 +61,10 @@
         <el-col :span="8">
           <div class="item-desc">
             <template v-if="deployType !=='helm'">
-              <router-link v-if="jobInfo.spec.production" class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail/${build.service_name}/production?envName=${jobInfo.spec.env}&projectName=${projectName}`">{{build.service_name}}({{build.service_module}})</router-link>
-              <router-link v-else class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail/${build.service_name}?envName=${jobInfo.spec.env}&projectName=${projectName}&envSource=${deployType}`">{{build.service_name}}({{build.service_module}})</router-link>
+              <router-link class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail/${build.service_name}?envName=${jobInfo.spec.env}&projectName=${projectName}&envSource=${deployType}`">{{build.service_name}}({{build.service_module}})</router-link>
             </template>
             <template v-else-if="deployType ==='helm'">
-              <router-link v-if="jobInfo.spec.production" class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}&production=true`">{{build.service_name}}({{build.service_module}})</router-link>
-              <router-link v-else class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`">{{build.service_name}}({{build.service_module}})</router-link>
+              <router-link class="env-link" :to="`/v1/projects/detail/${projectName}/envs/detail?envName=${jobInfo.spec.env}`">{{build.service_name}}({{build.service_module}})</router-link>
             </template>
           </div>
         </el-col>

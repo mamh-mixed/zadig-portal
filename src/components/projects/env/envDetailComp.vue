@@ -342,7 +342,6 @@
               :upgradeServiceByWorkflow="upgradeServiceByWorkflow"
               :restartService="restartService"
               :setServiceConfigRoute="setServiceConfigRoute"
-              :isProd="isProd"
             />
           </div>
         </div>
@@ -669,9 +668,6 @@ export default {
           envSourceList.includes(this.envSource)) ||
         status === 'Unknown'
       )
-    },
-    isProd () {
-      return this.productInfo.is_prod
     },
     nsIsExisted () {
       const env = this.envNameList.find(env => env.name === this.envName)
@@ -1172,7 +1168,7 @@ export default {
       }).then(() => {
         const projectName = envInfo.product_name
         const envName = envInfo.env_name
-        const envType = this.isProd ? 'prod' : ''
+        const envType = ''
         const payload = { vars: envInfo.vars }
         const force = false
         updatePmEnvAPI(projectName, envName, payload, envType, force)
@@ -1207,7 +1203,7 @@ export default {
       ).then(() => {
         const projectName = envInfo.product_name
         const envName = envInfo.env_name
-        const envType = this.isProd ? 'prod' : ''
+        const envType = ''
         const payload = { vars: envInfo.vars }
         const force = true
         updatePmEnvAPI(projectName, envName, payload, envType, force).then(
@@ -1249,7 +1245,7 @@ export default {
         this.cantDelete(false)
         return
       }
-      const envType = this.isProd ? 'prod' : ''
+      const envType = ''
       this.$prompt(
         '请输入环境名称以确认',
         `确定要取消托管 ${project_name} 项目的 ${env_name} 环境?`,
@@ -1326,7 +1322,7 @@ export default {
         is_delete: false,
         project_name: project_name,
         env_name: '',
-        envType: this.isProd ? 'prod' : ''
+        envType: ''
       }
     },
     identifyDeleteEnv () {
@@ -1343,7 +1339,7 @@ export default {
             is_delete: false,
             project_name: envDeleteInfo.project_name,
             env_name: '',
-            envType: this.isProd ? 'prod' : ''
+            envType: ''
           }
           this.$notify({
             title: `环境正在删除中，请稍后查看环境状态`,
@@ -1378,7 +1374,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          const envType = this.isProd ? 'prod' : ''
+          const envType = ''
           restartServiceOriginAPI(
             projectName,
             serviceName,
@@ -1427,16 +1423,16 @@ export default {
     },
     setRoute (scope) {
       if (typeof this.envName === 'undefined') {
-        return `${this.envBasePath}/${scope.row.service_name}?projectName=${this.projectName}&namespace=${this.envText}&originProjectName=${scope.row.product_name}&isProd=${this.isProd}&clusterId=${this.clusterId}&envSource=${this.envSource}&workLoadType=${scope.row.workLoadType}`
+        return `${this.envBasePath}/${scope.row.service_name}?projectName=${this.projectName}&envSource=${this.envSource}&workLoadType=${scope.row.workLoadType}`
       } else {
-        return `${this.envBasePath}/${scope.row.service_name}?envName=${this.envName}&projectName=${this.projectName}&namespace=${this.envText}&originProjectName=${scope.row.product_name}&isProd=${this.isProd}&clusterId=${this.clusterId}&envSource=${this.envSource}&workLoadType=${scope.row.workLoadType}`
+        return `${this.envBasePath}/${scope.row.service_name}?envName=${this.envName}&projectName=${this.projectName}&envSource=${this.envSource}&workLoadType=${scope.row.workLoadType}`
       }
     },
     setPmRoute (scope) {
       if (typeof this.envName === 'undefined') {
-        return `${this.envBasePath}/${scope.row.service_name}/pm?projectName=${this.projectName}&namespace=${this.envText}&originProjectName=${scope.row.product_name}&isProd=${this.isProd}&clusterId=${this.clusterId}&envSource=${this.envSource}`
+        return `${this.envBasePath}/${scope.row.service_name}/pm?projectName=${this.projectName}&envSource=${this.envSource}`
       } else {
-        return `${this.envBasePath}/${scope.row.service_name}/pm?envName=${this.envName}&projectName=${this.projectName}&namespace=${this.envText}&originProjectName=${scope.row.product_name}&isProd=${this.isProd}&clusterId=${this.clusterId}&envSource=${this.envSource}`
+        return `${this.envBasePath}/${scope.row.service_name}/pm?envName=${this.envName}&projectName=${this.projectName}&envSource=${this.envSource}`
       }
     },
     setServiceConfigRoute (scope) {
@@ -1444,9 +1440,9 @@ export default {
         return `/v1/projects/detail/${scope.row.product_name}/services?envName=${this.envName}&serviceName=${scope.row.service_name}`
       }
       if (typeof this.envName === 'undefined') {
-        return `${this.envBasePath}/${scope.row.service_name}/config?projectName=${this.projectName}&namespace=${this.envText}&originProjectName=${scope.row.product_name}&isProd=${this.isProd}&clusterId=${this.clusterId}&envSource=${this.envSource}`
+        return `${this.envBasePath}/${scope.row.service_name}/config?projectName=${this.projectName}&envSource=${this.envSource}`
       } else {
-        return `${this.envBasePath}/${scope.row.service_name}/config?envName=${this.envName}&projectName=${this.projectName}&namespace=${this.envText}&originProjectName=${scope.row.product_name}&isProd=${this.isProd}&clusterId=${this.clusterId}&envSource=${this.envSource}`
+        return `${this.envBasePath}/${scope.row.service_name}/config?envName=${this.envName}&projectName=${this.projectName}&envSource=${this.envSource}`
       }
     },
     setPmServiceConfigRoute (scope) {
