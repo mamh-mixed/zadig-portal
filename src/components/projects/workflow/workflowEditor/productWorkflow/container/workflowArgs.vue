@@ -326,24 +326,18 @@ export default {
         this.$message.error('请选择环境')
         return false
       }
-
-      const emptyValue = []
-
-      this.allRepos.forEach(item => {
-        if (item.hidden || !item.repo_name) {
-          return
-        }
-
-        if (!item.branchOrTag) {
-          emptyValue.push(item.repo_name)
+      const invalidRepo = this.allRepos.filter(repo => {
+        if (!repo.branchOrTag && !repo.pr) {
+          return true
+        } else {
+          return false
         }
       })
-
-      if (emptyValue.length === 0) {
+      if (invalidRepo.length === 0) {
         return true
       } else {
         this.$message({
-          message: emptyValue.join(',') + ' 代码尚未选择构建信息',
+          message: invalidRepo.map((item) => { return item.repo_name }).join(',') + ' 代码库尚未选择构建信息',
           type: 'error'
         })
         return false
