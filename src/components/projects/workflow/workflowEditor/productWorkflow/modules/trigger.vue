@@ -11,6 +11,19 @@
       center
     >
     <div class="trigger-mode">
+      <el-tooltip effect="dark" placement="top">
+        <div slot="content">
+          {{$t(`global.enterprisefeaturesReferforDetails`)}}
+          <el-link
+            style="font-size: 13px; vertical-align: baseline;"
+            type="primary"
+            :href="`https://docs.koderover.com/zadig/ZadigX%20v1.6.0/project/workflow-trigger/#git-触发器`"
+            :underline="false"
+            target="_blank"
+          >{{$t(`global.document`)}}</el-link>
+        </div>
+        <el-button type="text">手动创建 Webhook</el-button>
+      </el-tooltip>
       <el-button type="text" @click="switchMode">{{ webhookSwap.is_yaml ? 'GUI 方式' : 'YAML 方式' }}</el-button>
       <a
         href="https://docs.koderover.com/zadig/project/workflow/#yaml-方式"
