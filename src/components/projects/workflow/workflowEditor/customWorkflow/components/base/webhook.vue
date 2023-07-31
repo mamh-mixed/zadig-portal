@@ -182,9 +182,25 @@
       :visible.sync="webhookDialogVisible"
       :title="webhookEditMode?$t(`workflow.editTrigger`):$t(`workflow.addTrigger`)"
       width="800px"
+      custom-class="add-webhook-dialog"
       :close-on-click-modal="false"
       append-to-body
     >
+      <div class="webhook-mode">
+        <el-tooltip effect="dark" placement="top">
+          <div slot="content">
+            {{$t(`global.enterprisefeaturesReferforDetails`)}}
+            <el-link
+              style="font-size: 13px; vertical-align: baseline;"
+              type="primary"
+              :href="`https://docs.koderover.com/zadig/ZadigX%20v1.6.0/project/workflow-trigger/#git-触发器`"
+              :underline="false"
+              target="_blank"
+            >{{$t(`global.document`)}}</el-link>
+          </div>
+          <el-button type="text">手动创建 Webhook</el-button>
+        </el-tooltip>
+      </div>
       <el-form
         ref="webhookForm"
         :model="currentWebhook"
@@ -1284,6 +1300,17 @@ export default {
 
   & > div {
     margin-right: 10px;
+  }
+}
+
+.add-webhook-dialog {
+  .el-dialog__body {
+    padding: 0 25px 25px 30px;
+
+    .webhook-mode {
+      display: block;
+      text-align: right;
+    }
   }
 }
 
