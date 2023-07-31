@@ -2355,9 +2355,6 @@ export function getIssueTypesAndStatusAPI (projectName) {
   return http.get(`/api/aslan/system/project_management/jira/type?project=${projectName}`)
 }
 
-export function searchIssueAPI (project, type, status) {
-  return http.get(`/api/aslan/system/project_management/jira/issue?project=${project}&type=${type}&status=${status}`)
-}
 export function getWebhookJiraAPI (workflowName) {
   return http.get(`/api/aslan/workflow/v4/jirahook/${workflowName}`)
 }
@@ -2374,6 +2371,14 @@ export function addWebhookJiraAPI (workflowName, payload) {
 }
 export function getWebhookJiraPresetAPI (workflowName, hookName) {
   return http.get(`/api/aslan/workflow/v4/jirahook/preset?workflowName=${workflowName}&hookName=${hookName}`)
+}
+
+export function searchIssueAPI (project, type, keyword, ne = false) {
+  return http.get(`/api/aslan/system/project_management/jira/issue?project=${project}&type=${type}&summary=${keyword}&ne=${ne}`)
+}
+
+export function searchJqlIssueAPI (project, jql = '', keyword = '') {
+  return http.get(`/api/aslan/system/project_management/jira/issue/jql?project=${project}&jql=${jql}&summary=${keyword}`)
 }
 
 export function getWebhookCommonAPI (workflowName) {
