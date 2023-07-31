@@ -2,7 +2,6 @@ import * as types from '../mutations'
 import { getPreferenceSettingAPI, savePreferenceSettingAPI } from '@api'
 
 const state = {
-  theme: 'light', // light/dark
   xtermTheme: {
     foreground: '#ffffff', // 字体
     background: '#000000' // 背景色
@@ -12,7 +11,6 @@ const state = {
 const mutations = {
   [types.SET_PREFERENCE_SETTING] (state, payload) {
     state.xtermTheme = payload.xtermTheme
-    state.theme = payload.theme
   }
 }
 
@@ -24,8 +22,7 @@ const actions = {
         xtermTheme: {
           foreground: res.log_font_color || '#ffffff',
           background: res.log_bg_color || '#000000'
-        },
-        theme: res.theme || 'light'
+        }
       }
       commit(types.SET_PREFERENCE_SETTING, data)
       return data
@@ -34,7 +31,6 @@ const actions = {
   savePreferenceSetting ({ commit, rootState }, data) {
     const uid = rootState.login.userinfo.uid
     const payload = {
-      theme: data.theme,
       log_bg_color: data.xtermTheme.background,
       log_font_color: data.xtermTheme.foreground
     }
