@@ -329,16 +329,28 @@ export function getEnvironmentsAPI (projectName) {
   return http.get(`/api/aslan/environment/environments?projectName=${projectName}`)
 }
 
+export function getProjectVariablesAPI (projectName) {
+  return http.get(`/api/aslan/project/products/${projectName}/globalVariables`)
+}
+
+export function getProjectVariableCandidatesAPI (projectName) {
+  return http.get(`/api/aslan/project/products/${projectName}/globalVariableCandidates`)
+}
+
+export function updateProjectVariablesAPI (projectName, payload) {
+  return http.put(`/api/aslan/project/products/${projectName}/globalVariables`, payload)
+}
+
 // Service
 export function templatesAPI () {
   return http.get('/api/aslan/project/templates/info')
 }
 
-export function getServiceTemplatesAPI (projectName = '', envName = '') {
+export function getProjectServicesAPI (projectName = '', envName = '') {
   return http.get(`/api/aslan/service/services?projectName=${projectName}&envName=${envName}`)
 }
 
-export function serviceTemplateWithConfigAPI (name, projectName) {
+export function projectServiceWithConfigAPI (name, projectName) {
   return http.get(`/api/aslan/service/services/${name}?projectName=${projectName}`)
 }
 
@@ -350,11 +362,11 @@ export function parseK8sYamlVariableAPI (payload) {
   return http.post(`/api/aslan/template/yaml/extractVariable`, payload)
 }
 
-export function flatVariableToKvAPI (payload) {
-  return http.post(`/api/aslan/template/yaml/flatkvs`, payload)
+export function convertVariableToKvAPI (payload) {
+  return http.post(`/api/aslan/service/services/variable/convert`, payload)
 }
 
-export function serviceTemplateAPI (name, type, projectName) {
+export function getServiceDetailAPI (name, type, projectName) {
   return http.get(`/api/aslan/service/services/${name}/${type}?projectName=${projectName}`)
 }
 
@@ -362,7 +374,7 @@ export function serviceTemplateAfterRenderAPI (projectName, serviceName, envName
   return http.get(`/api/aslan/environment/diff/products/${projectName}/service/${serviceName}?projectName=${projectName}&envName=${envName}`)
 }
 
-export function saveServiceTemplateAPI (isEdit = false, payload) {
+export function saveServiceAPI (isEdit = false, payload) {
   return http.post(`/api/aslan/service/services?projectName=${payload.product_name}&force=${isEdit}`, payload)
 }
 
@@ -370,7 +382,7 @@ export function updateServicePermissionAPI (projectName, data) {
   return http.put(`/api/aslan/service/services?projectName=${projectName}`, data)
 }
 
-export function deleteServiceTemplateAPI (name, type, projectName, visibility) {
+export function deleteProjectServiceAPI (name, type, projectName, visibility) {
   return http.delete(`/api/aslan/service/services/${name}/${type}?projectName=${projectName}&visibility=${visibility}`)
 }
 

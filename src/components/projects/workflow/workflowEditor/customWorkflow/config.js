@@ -1,4 +1,3 @@
-// import i18n from '@/lang/index.js'
 const validateJobName = (rule, value, callback) => {
   const reg = /^[a-z][a-z0-9-]{0,32}$/
   if (value === '') {
@@ -78,7 +77,7 @@ const jobTypeGroup = [
         name: 'zadig-deploy',
         type: 'zadig-deploy',
         is_offical: true,
-        description: '可更新容器形态的服务镜像'
+        description: '可更新容器形态的服务镜像、服务变量和服务配置'
       },
       {
         label: 'customDeploy',
@@ -105,7 +104,7 @@ const jobTypeGroup = [
         name: 'zadig-scanning',
         type: 'zadig-scanning',
         is_offical: true,
-        description: '可直接引用「项目」-「代码扫描」模块中的配置。'
+        description: '可直接引用「项目」-「代码扫描」模块中的配置'
       }
 
     ]
@@ -194,7 +193,6 @@ const buildEnvs = [
   },
   {
     variable: '$PROJECT',
-    // desc: i18n.t(`systemVariables.project`) // can't reactive, study later
     desc: '项目标识'
   },
   {
@@ -319,6 +317,77 @@ const runTypes = [
     label: '强制执行',
     value: 'force_run'
   }]
+// 定义必填字段
+const requireFields = {
+  'zadig-build': [
+    {
+      type: 'String',
+      field: 'docker_registry_id'
+    },
+    {
+      type: 'Array',
+      field: 'service_and_builds'
+    }],
+  'zadig-deploy': [
+    {
+      type: 'String',
+      field: 'env'
+    }],
+  'custom-deploy': [
+    {
+      type: 'String',
+      field: 'docker_registry_id'
+    },
+    {
+      type: 'String',
+      field: 'cluster_id'
+    },
+    {
+      type: 'String',
+      field: 'cluster_id'
+    },
+    {
+      type: 'String',
+      field: 'namespace'
+    }
+  ],
+  'zadig-scanning': [
+    {
+      type: 'Array',
+      field: 'scannings'
+    }
+  ],
+  'zadig-distribute-image': [
+    {
+      type: 'String',
+      field: 'target_registry_id'
+    }
+  ]
+}
+const envTypes = [
+  {
+    label: '测试环境',
+    value: false
+  },
+  {
+    label: '生产环境',
+    value: true
+  }]
+
+const deployContentList = [
+  {
+    label: 'serviceImage',
+    value: 'image'
+  },
+  {
+    label: 'serviceVar',
+    value: 'vars'
+  },
+  {
+    label: 'serviceConfiguration',
+    value: 'config'
+  }
+]
 export {
   validateJobName,
   validateWorkflowName,
@@ -334,5 +403,8 @@ export {
   globalConstEnvs,
   notifyType,
   notifyPlatform,
-  runTypes
+  runTypes,
+  requireFields,
+  envTypes,
+  deployContentList
 }

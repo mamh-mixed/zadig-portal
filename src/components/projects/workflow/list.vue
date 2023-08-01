@@ -143,7 +143,6 @@
     </el-dialog>
     <el-dialog
       :visible.sync="isShowRunCustomWorkflowDialog"
-      :title="$t(`workflow.runWorkflow`)"
       custom-class="run-custom-workflow"
       width="70%"
       class="dialog"

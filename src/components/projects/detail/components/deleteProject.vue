@@ -80,7 +80,7 @@
 
 <script>
 import {
-  getServiceTemplatesAPI,
+  getProjectServicesAPI,
   getProductWorkflowsInProjectAPI,
   getBuildConfigsAPI,
   getEnvironmentsAPI,
@@ -150,7 +150,7 @@ export default {
     async initDeleteProject () {
       const projectName = this.projectName
       const result = await Promise.all([
-        getServiceTemplatesAPI(projectName),
+        getProjectServicesAPI(projectName),
         getProductWorkflowsInProjectAPI(projectName),
         getBuildConfigsAPI(projectName),
         getEnvironmentsAPI(projectName)

@@ -156,7 +156,7 @@ import { cloneDeep } from 'lodash'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
 import UpdateHelmEnv from './components/common/updateHelmEnv'
 import CommonBuild from '@/components/projects/build/commonBuild.vue'
-import { deleteServiceTemplateAPI } from '@api'
+import { deleteProjectServiceAPI } from '@api'
 import { mapState, mapGetters } from 'vuex'
 
 const actionList = {
@@ -328,7 +328,7 @@ export default {
         this.$store.commit('CHART_NAMES', [
           { serviceName: currentData.service_name, type: 'delete' }
         ])
-        deleteServiceTemplateAPI(
+        deleteProjectServiceAPI(
           currentData.service_name,
           'helm',
           this.projectName,

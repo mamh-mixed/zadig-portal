@@ -166,6 +166,7 @@
       :currentUpdatedServiceName="currentUpdatedServiceName"
       :currentUpdatedServiceTemplateId="currentUpdatedServiceTemplateId"
       :currentUpdatedServiceVariableYaml="currentUpdatedServiceVariableYaml"
+      :currentUpdatedServiceVariableKvs="currentUpdatedServiceVariableKvs"
       :currentUpdatedServiceAutoSync="currentUpdatedServiceAutoSync"
       :dialogImportFromYamlVisible.sync="openImportYamlDialog"
       @importYamlSuccess="importYamlSuccess"
@@ -227,7 +228,7 @@
                 <el-dropdown-item @click.native="createService('namespace')">{{$t('services.k8s.importFromK8sNamespace')}}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-        </div>
+          </div>
       </div>
     </div>
     <div class="tree-container">
@@ -364,7 +365,7 @@ import GitFileTree from '@/components/common/gitFileTree.vue'
 import ImportFromTemplate from './importFromTemplate.vue'
 import ImportFromNamespace from './importFromNamespace.vue'
 import {
-  deleteServiceTemplateAPI,
+  deleteProjectServiceAPI,
   getSingleProjectAPI,
   getCodeSourceMaskedAPI,
   getRepoOwnerByIdAPI,
@@ -392,10 +393,6 @@ export default {
       required: true,
       default: null
     },
-    basePath: {
-      type: String,
-      required: true
-    },
     yamlChange: {
       type: Boolean,
       required: true
@@ -413,6 +410,7 @@ export default {
       currentUpdatedServiceTemplateId: '',
       currentUpdatedServiceAutoSync: false,
       currentUpdatedServiceVariableYaml: '',
+      currentUpdatedServiceVariableKvs: [],
       serviceGroup: [],
       allCodeHosts: [],
       openImportYamlDialog: false,
@@ -445,6 +443,7 @@ export default {
       previousNodeKey: ''
     }
   },
+
   methods: {
     isShared (data) {
       return (
@@ -901,6 +900,7 @@ export default {
         this.currentUpdatedServiceTemplateId = data.create_from.template_id
         this.currentUpdatedServiceAutoSync = data.auto_sync
         this.currentUpdatedServiceVariableYaml = data.estimated_merged_variable
+        this.currentUpdatedServiceVariableKvs = data.estimated_merged_variable_kvs
         this.openImportYamlDialog = true
       } else {
         this.dialogImportFromRepoVisible = true
@@ -952,7 +952,7 @@ export default {
           cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }).then(() => {
-          deleteServiceTemplateAPI(
+          deleteProjectServiceAPI(
             data.service_name,
             data.type,
             this.projectName,
@@ -1220,5 +1220,4 @@ export default {
 
 <style lang="less" >
 @import '~@assets/css/component/service-tree.less';
-
 </style>
