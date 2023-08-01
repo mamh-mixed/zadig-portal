@@ -47,6 +47,7 @@ exports.default = {
     all: 'All',
     key: 'Key',
     value: 'Value',
+    descInfo: 'Description',
     fileDirectory: 'File Directory',
     testName: 'Test Name',
     repository: 'Repository',
@@ -1068,6 +1069,10 @@ exports.default = {
       serviceCountsUnit: '',
       imageInfo: 'Image',
       selectEnv: 'Select Environment',
+      useGlobalVariables: 'Use Global Variables',
+      associatedServices: 'Associated Services',
+      sureRelatedServices: 'Service {services} will be updated, please confirm.',
+      noRelatedServices: 'Unrelated services need to be updated, please confirm.',
       serviceDetail: {
         restartService: 'Restart',
         serviceStatus: 'Status',

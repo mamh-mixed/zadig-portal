@@ -233,7 +233,7 @@
 </template>
 <script>
 import {
-  serviceTemplateWithConfigAPI,
+  projectServiceWithConfigAPI,
   getSingleProjectAPI,
   getRegistryWhenBuildAPI,
   getCodeProviderAPI,
@@ -325,7 +325,7 @@ export default {
         this.service.type === 'k8s' &&
         this.service.status === 'added'
       ) {
-        serviceTemplateWithConfigAPI(
+        projectServiceWithConfigAPI(
           this.service.service_name,
           this.projectNameOfService
         ).then(res => {

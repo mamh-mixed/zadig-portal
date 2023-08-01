@@ -61,6 +61,14 @@ export default {
   },
   methods: {
     createEnvAndWorkflow () {
+      this.collaborationData.product.forEach(prod => {
+        prod.services.forEach(svc => {
+          svc.variable_kvs = svc.latest_variable_kvs.map(kv => {
+            delete kv.ownData
+            return kv
+          })
+        })
+      })
       const payload = {
         products: this.collaborationData.product.filter(
           product => product.collaboration_type === 'new'

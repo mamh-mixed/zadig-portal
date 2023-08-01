@@ -29,9 +29,7 @@
             <template slot-scope="{ row }">
               <div v-if="row.canEditYaml">
                 <div class="primary-title">变量配置</div>
-                <Resize @sizeChange="$refs[`codemirror-${row.service_name}`].refresh()" :height="'200px'">
-                  <CodeMirror :ref="`codemirror-${row.service_name}`" v-model="row.variable_yaml" />
-                </Resize>
+                <ServiceVar :varList="row.variable_kvs" :globalVariables="globalVariables" showSelectGlobalVar />
               </div >
               <div v-else style="font-size: 12px; text-align: center;">无变量配置</div>
             </template>
@@ -47,14 +45,14 @@
 </template>
 
 <script>
-import Resize from '@/components/common/resize.vue'
-import CodeMirror from '@/components/projects/common/codemirror.vue'
+import ServiceVar from '@/components/projects/common/serviceVar.vue'
 import {
   autoUpgradeEnvAPI,
   deleteEnvServicesAPI,
+  getEnvGlobalVariablesAPI,
   getServiceDefaultVariableAPI
 } from '@api'
-import { cloneDeep, flatten, difference } from 'lodash'
+import { cloneDeep, flatten, difference, keyBy } from 'lodash'
 
 export default {
   props: {
@@ -71,10 +69,11 @@ export default {
       updateServices: {
         // env_names: [], // use this parameter when adding or updating services
         service_names: [] // not use
-        // services: [{service_name: '', variable_yaml: '', deploy_strategy: ''}] // use
+        // services: [{service_name: '', variable_kvs: [], deploy_strategy: ''}] // use
       },
       loading: false,
-      expandKeys: []
+      expandKeys: [],
+      globalVariables: []
     }
   },
   computed: {
@@ -155,7 +154,7 @@ export default {
             services: this.currentResourceCheck.map(resource => {
               return {
                 service_name: resource.service_name,
-                variable_yaml: resource.variable_yaml,
+                variable_kvs: resource.variable_kvs,
                 deploy_strategy: isAdd ? resource.deploy_strategy : 'deploy'
               }
             }),
@@ -228,33 +227,56 @@ export default {
         serviceVariables[svc] = {
           service_name: svc,
           deploy_strategy: '',
-          variable_yaml: '',
+          variable_kvs: [],
           canEditYaml: false
         }
       })
       this.serviceVariables = serviceVariables
-      const res = await getServiceDefaultVariableAPI(
-        this.projectName,
-        this.productInfo.env_name,
-        this.currentServices
-      ).catch(err => console.log(err))
-      if (res) {
-        res.forEach(svc => {
-          const varYaml = svc.latest_variable_yaml || svc.variable_yaml
-          serviceVariables[svc.service_name] = {
-            service_name: svc.service_name,
-            deploy_strategy: '',
-            variable_yaml: varYaml,
-            canEditYaml: !!varYaml
-          }
-        })
-        this.serviceVariables = serviceVariables
-      }
+      const [defaultVar, yamlMap] = await Promise.all([
+        getEnvGlobalVariablesAPI(this.projectName, this.productInfo.env_name),
+        getServiceDefaultVariableAPI(
+          this.projectName,
+          this.productInfo.env_name,
+          this.currentServices
+        )
+      ])
+      this.globalVariables = defaultVar.global_variables || []
+      const globalVarObj = keyBy(defaultVar.global_variables, 'key')
+      yamlMap.forEach(svc => {
+        const variableKvs = svc.latest_variable_kvs || svc.variable_kvs
+        serviceVariables[svc.service_name] = {
+          service_name: svc.service_name,
+          deploy_strategy: '',
+          variable_kvs:
+            type === 'add'
+              ? variableKvs.map(item => {
+                const globalKv = globalVarObj[item.key]
+                let addObj = {}
+                if (globalKv && globalKv.type !== item.type) {
+                  addObj = {
+                    type: globalKv.type,
+                    ownData: {
+                      type: item.type,
+                      value: item.value
+                    }
+                  }
+                }
+                return {
+                  ...item,
+                  value: globalKv ? globalKv.value : item.value,
+                  use_global_variable: !!globalKv,
+                  ...addObj
+                }
+              })
+              : variableKvs,
+          canEditYaml: !!variableKvs.length > 0
+        }
+      })
+      this.serviceVariables = serviceVariables
     }
   },
   components: {
-    Resize,
-    CodeMirror
+    ServiceVar
   }
 }
 </script>

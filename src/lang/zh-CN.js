@@ -47,6 +47,7 @@ exports.default = {
     all: '所有',
     key: '键',
     value: '值',
+    descInfo: '描述信息',
     fileDirectory: '文件目录',
     testName: '测试名称',
     repository: '代码库',
@@ -1069,6 +1070,10 @@ exports.default = {
       serviceCountsUnit: '个',
       imageInfo: '镜像',
       selectEnv: '选择环境',
+      useGlobalVariables: '使用全局变量',
+      associatedServices: '关联服务',
+      sureRelatedServices: '服务 {services} 会更新，请确认。',
+      noRelatedServices: '无关联的服务需要更新，请确认。',
       serviceDetail: {
         restartService: '重启服务',
         serviceStatus: '状态',

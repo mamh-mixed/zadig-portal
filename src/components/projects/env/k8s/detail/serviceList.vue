@@ -140,15 +140,17 @@
       <div>
         <div style="margin-bottom: 14px;">
           <el-checkbox
-            v-if="serviceStatus[usedServiceInfo.service_name] && serviceStatus[usedServiceInfo.service_name]['tpl_updatable']"
             v-model="usedServiceInfo.update_service_tmpl"
-            @change="usedServiceInfo.used_variable_yaml = $event ? usedServiceInfo.latest_variable_yaml : usedServiceInfo.variable_yaml"
-          >同时更新服务配置</el-checkbox>
+            @change="usedServiceInfo.used_variable_kvs = $event ? usedServiceInfo.latest_variable_kvs : usedServiceInfo.variable_kvs"
+          >更新服务配置</el-checkbox>
         </div>
         <div class="primary-title">变量配置</div>
-        <Resize v-show="usedServiceInfo.canEditYaml" @sizeChange="$refs.codemirror.refresh()" :height="'300px'">
-          <CodeMirror ref="codemirror" v-model="usedServiceInfo.used_variable_yaml" />
-        </Resize>
+        <ServiceVar
+          v-show="usedServiceInfo.canEditYaml"
+          :varList="usedServiceInfo.used_variable_kvs"
+          :globalVariables="globalVariables"
+          showSelectGlobalVar
+        />
         <div v-show="!usedServiceInfo.canEditYaml" style="color: #aaa;">
           无服务变量
         </div>
@@ -162,9 +164,12 @@
 </template>
 
 <script>
-import Resize from '@/components/common/resize.vue'
-import CodeMirror from '@/components/projects/common/codemirror.vue'
-import { serviceTemplateAfterRenderAPI, getServiceDefaultVariableAPI } from '@api'
+import ServiceVar from '@/components/projects/common/serviceVar.vue'
+import {
+  serviceTemplateAfterRenderAPI,
+  getServiceDefaultVariableAPI,
+  getEnvGlobalVariablesAPI
+} from '@api'
 import { cloneDeep } from 'lodash'
 
 const jsdiff = require('diff')
@@ -186,9 +191,9 @@ export default {
     this.updateServiceInfo = {
       dialogVisible: false,
       service_name: '',
-      used_variable_yaml: '',
-      latest_variable_yaml: '',
-      variable_yaml: '',
+      used_variable_kvs: [],
+      latest_variable_kvs: [],
+      variable_kvs: [],
       canEditYaml: false,
       update_service_tmpl: false
     }
@@ -202,6 +207,7 @@ export default {
         Unstable: 'warning',
         Unstart: 'info'
       },
+      globalVariables: [],
       usedServiceInfo: cloneDeep(this.updateServiceInfo)
     }
   },
@@ -246,28 +252,31 @@ export default {
       const { product_name, env_name, service_name } = service
       this.usedServiceInfo.dialogVisible = true
       this.usedServiceInfo.service_name = service_name
+
+      getEnvGlobalVariablesAPI(product_name, env_name).then(res => {
+        this.globalVariables = res.global_variables || []
+      })
+
       // notice: If the interaction is complicated, it will be unified here in the future
       getServiceDefaultVariableAPI(product_name, env_name, [service_name]).then(res => {
         res.forEach(svc => {
           if (svc.service_name === service_name) {
-            const updated = this.serviceStatus[service_name] && this.serviceStatus[service_name].tpl_updatable
+            this.usedServiceInfo.variable_kvs = svc.variable_kvs
+            this.usedServiceInfo.latest_variable_kvs = svc.latest_variable_kvs
+            this.usedServiceInfo.canEditYaml = svc.variable_kvs.length > 0 || svc.latest_variable_kvs.length > 0
 
-            this.usedServiceInfo.variable_yaml = svc.variable_yaml
-            this.usedServiceInfo.latest_variable_yaml = svc.latest_variable_yaml
-            this.usedServiceInfo.canEditYaml = !!(svc.variable_yaml || svc.latest_variable_yaml)
-
-            this.usedServiceInfo.used_variable_yaml = updated ? svc.latest_variable_yaml : svc.variable_yaml
-            this.usedServiceInfo.update_service_tmpl = !!updated
+            this.usedServiceInfo.used_variable_kvs = svc.latest_variable_kvs
+            this.usedServiceInfo.update_service_tmpl = true
           }
         })
       })
     },
     sureUpdateService () {
-      const { service_name, used_variable_yaml, update_service_tmpl } = this.usedServiceInfo
+      const { service_name, used_variable_kvs, update_service_tmpl } = this.usedServiceInfo
       const payload = {
         service_name,
         type: 'k8s',
-        variable_yaml: used_variable_yaml,
+        variable_kvs: used_variable_kvs,
         update_service_tmpl
       }
       this.updateService({ service_name, type: 'k8s' }, payload)
@@ -275,8 +284,7 @@ export default {
     }
   },
   components: {
-    Resize,
-    CodeMirror
+    ServiceVar
   }
 }
 </script>

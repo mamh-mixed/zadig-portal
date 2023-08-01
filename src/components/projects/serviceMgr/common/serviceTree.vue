@@ -392,10 +392,6 @@ export default {
       required: true,
       default: null
     },
-    basePath: {
-      type: String,
-      required: true
-    },
     yamlChange: {
       type: Boolean,
       required: true
