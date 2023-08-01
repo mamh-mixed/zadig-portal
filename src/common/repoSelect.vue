@@ -12,6 +12,7 @@
     >新增</el-button>
     <div v-if="showDivider" class="divider item"></div>
     <div v-for="(repo,repo_index) in config.repos" :key="repo_index">
+      <div v-if="!repo.source_from || repo.source_from === 'runtime'">
       <el-row class="repo-select">
         <el-col :span="showAdvanced || showTrigger ?4:5">
           <el-form-item
@@ -130,6 +131,9 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <!-- For Global Variable Or Other Task Output -->
+        <slot name="inputOpe" :repo="repo" :repo_index="repo_index"></slot>
+        <!-- END -->
         <el-col v-if="showAdvanced" :span="3">
           <el-form-item :label="repo_index === 0 ? '高级':''">
             <div class="app-operation">
@@ -169,7 +173,7 @@
             <el-switch v-model="config.repos[repo_index].enableTrigger"></el-switch>
           </el-form-item>
         </el-col>
-        <el-col v-if="!showJustOne" :span="showAdvanced || showTrigger ?5:4 ">
+        <el-col v-if="!showJustOne" :span="4">
           <el-form-item :label="repo_index === 0 ? '操作':''">
             <div class="app-operation">
               <el-button
@@ -226,11 +230,18 @@
           </el-form-item>
         </el-col>
       </el-row>
+      </div>
+      <div v-else>
+        <!-- For Global Variable Or Other Task Output -->
+        <slot name="other" :repo="repo" :repo_index="repo_index"></slot>
+        <!-- END -->
+      </div>
     </div>
   </el-form>
 </template>
 
 <script type="text/javascript">
+import { CancelToken } from 'axios'
 import {
   getCodeSourceMaskedAPI,
   getRepoOwnerByIdAPI,
@@ -249,7 +260,8 @@ export default {
         owner: false,
         repo: false,
         branch: false
-      }
+      },
+      cancelInitRepoOwnerRequest: null
     }
   },
   props: {
@@ -304,6 +316,9 @@ export default {
     }
   },
   methods: {
+    toCancelInitRepoOwnerRequest () {
+      this.cancelInitRepoOwnerRequest()
+    },
     setLoadingState (index, loading, isLoading) {
       if (this.codeInfo[index]) {
         this.codeInfo[index].loading[loading] = isLoading
@@ -400,6 +415,7 @@ export default {
       this.config.repos.splice(index, 1)
     },
     searchNamespace (index, query) {
+      this.toCancelInitRepoOwnerRequest()
       const id = this.config.repos[index].codehost_id
       const codehostType = this.allCodeHosts.find(item => {
         return item.id === id
@@ -535,7 +551,9 @@ export default {
           loading: this.$utils.cloneObj(this.loading)
         })
         if (codehostId) {
-          getRepoOwnerByIdAPI(codehostId).then(res => {
+          getRepoOwnerByIdAPI(codehostId, '', {
+            cancelToken: new CancelToken(c => (this.cancelInitRepoOwnerRequest = c))
+          }).then(res => {
             this.$set(
               this.codeInfo[index],
               'repo_owners',
@@ -564,6 +582,8 @@ export default {
                 orderBy(res, ['name'])
               )
             })
+          }).catch(err => {
+            console.log(err)
           })
           if (!repoName) return
           getBranchInfoByIdAPI(codehostId, element.repo_namespace, repoName).then(
