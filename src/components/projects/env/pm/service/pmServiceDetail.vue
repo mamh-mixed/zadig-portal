@@ -98,7 +98,7 @@
 
 <script>
 import PmXtermDebug from './pmXtermDebug.vue'
-import { serviceTemplateAPI } from '@api'
+import { getServiceDetailAPI } from '@api'
 import bus from '@utils/eventBus'
 import { sortBy } from 'lodash'
 import { fullScreen } from '@/utilities/fullScreen'
@@ -146,7 +146,7 @@ export default {
       this.getEnvLoading = true
       const projectName = this.projectName
       const serviceName = this.serviceName
-      serviceTemplateAPI(serviceName, 'pm', projectName).then((res) => {
+      getServiceDetailAPI(serviceName, 'pm', projectName).then((res) => {
         this.currentService = res
         this.getEnvLoading = false
         if (res.env_statuses) {

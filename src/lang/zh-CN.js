@@ -561,7 +561,8 @@ exports.default = {
       successfullyCreated: '创建模板 {fileName} 成功',
       applyToServicesTooltip: '确认后，所有开启「自动同步」的服务配置会应用最新的模板。',
       confirmToApply: '确定应用到服务？',
-      applyToServicesSuccessfully: '已成功应用到服务'
+      applyToServicesSuccessfully: '已成功应用到服务',
+      yamlChangedTooltip: 'YAML 文件发生变更, 是否保存当前配置?'
     },
     helmChart: {
       chooseSource: '请选择导入源',
@@ -997,7 +998,24 @@ exports.default = {
       buildInVariablesTooltip: '在服务配置中使用 $Namespace$，$Product$，$Service$，$EnvName$ 方式引用',
       customVariables: '自定义变量',
       customVariablesTooltip: '自定义变量通过 {{.key}} 引用',
-      currentValue: '当前值'
+      currentValue: '当前值',
+      globalVariablesManagement: '配置全局变量',
+      globalVariablesList: '全局变量列表',
+      addKv: '添加变量',
+      editKv: '修改变量',
+      addGlobalKv: '添加全局变量',
+      editGlobalKv: '修改全局变量',
+      inputKey: '请输入键名',
+      selectKey: '选择键名',
+      inputValue: '请输入默认值',
+      selectType: '请选择类型',
+      optionalValues: '可选值',
+      inputOptionalValues: '请输入可选值',
+      optionalValuesPlaceholder: '多个可选值请用英文 "," 分隔',
+      selectDefaultValue: '请选择默认值',
+      yamlChangedTooltip: 'YAML 文件发生变更, 是否保存当前配置?',
+      variablesHasBeenSuccessfullySaved: '变量保存成功',
+      globalVariablesHasBeenSuccessfullySaved: '全局变量保存成功'
     },
     pm: {},
     helm: {

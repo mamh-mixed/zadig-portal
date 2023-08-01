@@ -393,9 +393,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@secondaryColor: #888888;
-@primaryColor: #000;
-
 .item-title {
   display: inline-block;
   width: 117px;

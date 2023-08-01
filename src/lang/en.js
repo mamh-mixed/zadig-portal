@@ -561,7 +561,8 @@ exports.default = {
       successfullyCreated: 'Template "{fileName}" created',
       applyToServicesTooltip: 'All services with "Auto Sync" enabled will apply the latest template.',
       confirmToApply: 'Confirm to apply',
-      applyToServicesSuccessfully: 'Template applied to service.'
+      applyToServicesSuccessfully: 'Template applied to service.',
+      yamlChangedTooltip: 'The yaml file has been changed, whether to save the current configuration?'
     },
     helmChart: {
       chooseSource: 'Choose the source to load',
@@ -997,7 +998,24 @@ exports.default = {
       buildInVariablesTooltip: 'Referenced by $Namespace$, $Product$, $Service$, $EnvName$ in the service yaml',
       customVariables: 'Custom Variables',
       customVariablesTooltip: 'Custom variables are referenced by {{.key}}',
-      currentValue: 'Current Value'
+      currentValue: 'Current Value',
+      globalVariablesManagement: 'Global Variables Management',
+      globalVariablesList: 'Global Variables List',
+      addKv: 'Add key-value',
+      editKv: 'Edit key-value',
+      addGlobalKv: 'Add global key-value',
+      editGlobalKv: 'Edit global key-value',
+      inputKey: 'Input key',
+      selectKey: 'Select key',
+      inputValue: 'Input value',
+      selectType: 'Select type',
+      optionalValues: 'Optional Value',
+      inputOptionalValues: 'Input optional values',
+      optionalValuesPlaceholder: 'Input optional values, separated by commas',
+      selectDefaultValue: 'Select default value',
+      yamlChangedTooltip: 'The yaml file has been changed, whether to save the current configuration?',
+      variablesHasBeenSuccessfullySaved: 'Variables have been successfully saved',
+      globalVariablesHasBeenSuccessfullySaved: 'Global variables have been successfully saved'
     },
     pm: {},
     helm: {
