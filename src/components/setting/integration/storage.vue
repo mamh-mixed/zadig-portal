@@ -471,8 +471,8 @@ export default {
       })
     }
   },
-  created () {
-    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.objectStorage`), url: '' }] })
+  mounted () {
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.storageTab`), url: '' }] })
     this.getStorage()
   }
 }
