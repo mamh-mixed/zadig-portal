@@ -14,7 +14,7 @@
 </template>
 <script>
 import ServiceBuild from '@/components/projects/common/hosting/serviceBuild'
-import Policy from './k8s/container/policy.vue'
+import Policy from './k8s/common/policy.vue'
 
 import { listProductAPI } from '@api'
 export default {
