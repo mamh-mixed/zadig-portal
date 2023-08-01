@@ -110,7 +110,6 @@ export default {
   props: {
     envSource: String,
     fetchAllData: Function,
-    isProd: Boolean,
     searchServicesByChart: Function,
     serviceStatus: Object
   },

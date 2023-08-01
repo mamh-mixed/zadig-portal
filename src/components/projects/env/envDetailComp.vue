@@ -327,7 +327,6 @@
             :envSource="envSource"
             :fetchAllData="fetchAllData"
             :searchServicesByChart="searchServicesByChart"
-            :isProd="isProd"
             :serviceStatus="serviceStatus"
           />
           <div ref="envServiceContainer" class="right">
@@ -986,10 +985,13 @@ export default {
       try {
         let serviceGroup = []
         if (this.page === 1 && flag !== 'search') {
-          await this.getProductEnvInfo(projectName, envName)
+          this.getProductEnvInfo(projectName, envName)
           if (this.envSource === 'helm') {
             this.filterChartName = '*'
-            this.$refs.chartListRef.getChartNames(envName)
+            this.$nextTick(() => {
+              this.$refs.chartListRef &&
+              this.$refs.chartListRef.getChartNames(envName)
+            })
           }
         }
         this.scrollGetFlag = false
@@ -1058,19 +1060,20 @@ export default {
         })
       }
     },
-    async getProductEnvInfo (projectName, envName) {
+    getProductEnvInfo (projectName, envName) {
       this.envLoading = true
       this.serviceLoading = true
-      const envInfo = await getEnvInfoAPI(projectName, envName)
-      if (envInfo) {
-        if (!envInfo.registry_id) {
-          envInfo.registry_id = ''
+      getEnvInfoAPI(projectName, envName).then((envInfo) => {
+        if (envInfo) {
+          if (!envInfo.registry_id) {
+            envInfo.registry_id = ''
+          }
+          envInfo.editRegistryID = envInfo.registry_id
+          this.productInfo = envInfo
+          this.envLoading = false
+          this.recycleDay = envInfo.recycle_day ? envInfo.recycle_day : undefined
         }
-        envInfo.editRegistryID = envInfo.registry_id
-        this.productInfo = envInfo
-        this.envLoading = false
-        this.recycleDay = envInfo.recycle_day ? envInfo.recycle_day : undefined
-      }
+      })
     },
     async getEnvNameList () {
       const projectName = this.projectName
