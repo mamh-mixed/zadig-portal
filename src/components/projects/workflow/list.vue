@@ -547,14 +547,15 @@ export default {
             })
           } else {
             params.id = this.presetWorkflowInfo.id
+            this.view = this.workflowViewForm.name
             editWorkflowViewAPI(params, this.projectName).then(res => {
               this.$message({
                 message: this.$t(`workflow.updateSuccess`),
                 type: 'success'
               })
-              this.$refs[formName].resetFields()
               this.getWorkflows(this.projectName)
               this.getWorkflowViewList()
+              this.$refs[formName].resetFields()
             })
           }
           this.showWorkflowViewDialog = false
