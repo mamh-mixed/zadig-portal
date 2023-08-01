@@ -10,7 +10,7 @@ import sse from './common/eventSourcePolyfill'
 import VueClipboard from 'vue-clipboard2'
 import utils from '@utils/utilities'
 import translate from '@utils/wordTranslate'
-
+import { getReleaseVersionAPI, analyticsRequestAPI } from '@api'
 import i18n from '@/lang'
 
 // Mixin
@@ -22,7 +22,7 @@ import '@utils/traversal'
 import directive from '@/directive'
 
 import App from './App.vue'
-import { analyticsRequestAPI } from '@api'
+
 import encrypt from './utilities/encrypt'
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill'
 
@@ -107,12 +107,29 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
+const checkReleaseVersion = () => {
+  if (process.env && process.env.NODE_ENV === 'production') {
+    const versionInfo = process.env
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') return
+      getReleaseVersionAPI().then((res) => {
+        if (versionInfo.COMMIT_ID !== res.COMMIT_ID) {
+          location.reload()
+        }
+      })
+    })
+  }
+}
+
 function mountApp () {
   new Vue({
     router,
     store,
     i18n,
     components: { App },
+    mounted () {
+      checkReleaseVersion()
+    },
     render: (h) => h(App)
   }).$mount('#app')
 }

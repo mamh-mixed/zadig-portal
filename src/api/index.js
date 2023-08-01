@@ -219,6 +219,11 @@ function makeEventSource (basePath, config) {
   return ret
 }
 
+// Release Version
+export function getReleaseVersionAPI () {
+  return http.get(`/static/version.json?v=${Date.now()}`)
+}
+
 // Analytics
 export function analyticsRequestAPI (payload) {
   return http.post(analyticsReq, payload)
