@@ -4,7 +4,7 @@
       <el-form-item :label="$t(`workflow.jobName`)" prop="name" :rules="{required: true,validator:validateJobName, trigger: ['blur', 'change']}">
         <el-input v-model="job.name" size="small" style="width: 220px;"></el-input>
       </el-form-item>
-      <el-form-item class="status-check" :label="$t(`status.imageRepo`)" prop="spec.docker_registry_id" :rules="{required: true, message: '镜像仓库不能为空', trigger: ['blur','change']}">
+      <el-form-item :label="$t(`status.imageRepo`)" prop="spec.docker_registry_id" :rules="{required: true, message: '镜像仓库不能为空', trigger: ['blur','change']}">
         <el-select v-model="job.spec.docker_registry_id" filterable placeholder="请选择" size="small" style="width: 220px;">
           <el-option v-for="item in dockerList" :key="item.id" :label="`${item.reg_addr}/${item.namespace}`" :value="item.id"></el-option>
         </el-select>
@@ -33,7 +33,7 @@
           </el-tooltip>
         </span>
         <el-form-item prop="spec.skip_check_run_status" class="form-item" :rules="{required: false}">
-          <el-switch v-model="job.spec.skip_check_run_status" :active-value="false" :inactive-value="true" active-color="#0066ff"></el-switch>
+          <el-switch v-model="job.spec.skip_check_run_status" :active-value="false" :inactive-value="true"></el-switch>
         </el-form-item>
       </el-form-item>
       <el-form-item :label="$t(`global.timeout`)">
@@ -102,7 +102,8 @@ export default {
       })
     },
     getClusterList () {
-      return getClusterListAPI().then(res => {
+      const projectName = this.projectName
+      return getClusterListAPI(projectName).then(res => {
         this.clusters = res.filter(element => element.status === 'normal')
         this.getNamespaceList()
       })
@@ -121,24 +122,11 @@ export default {
           this.job.spec.cluster_id,
           this.job.spec.namespace
         ).then(res => {
-          this.workloadList = res.map(item => {
-            const obj = {
-              target: item,
-              image: ''
-            }
-            return obj
-          })
+          this.workloadList = res
         })
       }
     },
     getData () {
-      this.job.spec.targets = this.job.spec.targets.map(item => {
-        const obj = {
-          target: item.target || item,
-          image: ''
-        }
-        return obj
-      })
       return this.job
     },
     validate () {
