@@ -1,5 +1,5 @@
 <template>
-  <div class="integration-sonar-container">
+  <div class="integration-scanner-container">
     <el-alert
       type="info"
       :closable="false"
@@ -13,7 +13,7 @@
                  target="_blank">{{$t(`global.helpDoc`)}}</el-link> 。
       </template>
     </el-alert>
-    <div class="btn">
+    <div class="sync-container">
       <el-button
         v-if="tableData.length === 0"
         size="small"
@@ -31,6 +31,7 @@
   </div>
 </template>
 <script>
+import bus from '@utils/eventBus'
 import Etable from '@/components/common/etable'
 import SonarOperate from './components/sonarOperate'
 import { querySonarAPI, deleteSonarAPI } from '@api'
@@ -95,14 +96,20 @@ export default {
       }
     }
   },
-  activated () {
+  mounted () {
     this.getSonar()
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.scannerTab`), url: '' }] })
   }
 }
 </script>
 <style lang="less" scoped>
-.integration-sonar-container {
-  .btn {
+.integration-scanner-container {
+  position: relative;
+  flex: 1;
+  padding: 15px 30px;
+  overflow: auto;
+
+  .sync-container {
     padding: 15px 0;
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="integration-jenkins-container">
+  <div class="integration-ci-container">
     <el-alert
       type="info"
       :closable="false"
@@ -30,10 +30,11 @@
   </div>
 </template>
 <script>
+import bus from '@utils/eventBus'
 import Etable from '@/components/common/etable'
 import AddJenkins from './components/addJenkins'
 import { queryJenkins, deleteJenkins } from '@api'
-import _ from 'lodash'
+import { cloneDeep } from 'lodash'
 export default {
   name: 'jenkins',
   components: {
@@ -95,7 +96,7 @@ export default {
       this.$refs.jenkinsref.openDialog()
     },
     handleJenkinsaEdit (data) {
-      this.$refs.jenkinsref.openDialog(_.cloneDeep(data))
+      this.$refs.jenkinsref.openDialog(cloneDeep(data))
     },
     async getJenkins () {
       const key = this.$utils.rsaEncrypt()
@@ -105,15 +106,18 @@ export default {
       }
     }
   },
-  activated () {
+  mounted () {
     this.getJenkins()
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.ciTab`), url: '' }] })
   }
+
 }
 </script>
 <style lang="less" scoped>
-.integration-jenkins-container {
+.integration-ci-container {
   position: relative;
   flex: 1;
+  padding: 15px 30px;
   overflow: auto;
   font-size: 13px;
 

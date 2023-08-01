@@ -16,6 +16,26 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.iconjenkins:before {
+  content: "\f1d9";
+}
+
+.iconapproval:before {
+  content: "\e6ce";
+}
+
+.iconai:before {
+  content: "\ec5f";
+}
+
+.iconopenai:before {
+  content: "\e6cc";
+}
+
+.iconliebiao:before {
+  content: "\e6cb";
+}
+
 .iconpersonalview:before {
   content: "\e6c9";
 }

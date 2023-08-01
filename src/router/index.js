@@ -798,57 +798,106 @@ const routes = [
         }
       },
       {
-        path: 'registry',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/registry/manage.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: i18n.t('sidebarMenu.dockerRegistry')
-        }
-      },
-      {
-        path: 'storage',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/storage/manage.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: i18n.t('sidebarMenu.objectStorage')
-        }
-      },
-      {
-        path: 'helm',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/helm/manage.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: i18n.t('sidebarMenu.helmRepo')
-        }
-      },
-      {
-        path: 'cluster',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/cluster/manage.vue'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: i18n.t('sidebarMenu.clusters')
-        }
-      },
-      {
-        path: 'host',
-        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/host'),
-        meta: {
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-          title: i18n.t('sidebarMenu.hosts')
-        }
-      },
-      {
         path: 'integration',
         component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/home.vue'),
         meta: {
           requiresAuth: true,
           requiresSuperAdmin: true,
           title: i18n.t('sidebarMenu.systemIntegration')
+        }
+      },
+      {
+        path: 'integration/account',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/account.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.accountTab')
+        }
+      }, {
+        path: 'integration/project',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/project.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.projectTab')
+        }
+      }, {
+        path: 'integration/git',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/git.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.gitProviderTab')
+        }
+      }, {
+        path: 'integration/ci',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/ci.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.ciTab')
+        }
+      }, {
+        path: 'integration/scanner',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/scanner.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.scannerTab')
+        }
+      },
+      {
+        path: 'integration/registry',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/registry.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.registryTab')
+        }
+      },
+      {
+        path: 'integration/storage',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/storage.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.storageTab')
+        }
+      },
+      {
+        path: 'integration/helmChartRepo',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/helmChartRepo.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.helmChartRepoTab')
+        }
+      },
+      {
+        path: 'integration/cluster',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/cluster.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.clusterTab')
+        }
+      },
+      {
+        path: 'integration/host',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/host.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.hostTab')
+        }
+      }, {
+        path: 'integration/external',
+        component: () => import(/* webpackChunkName: "Setting" */ '@/components/setting/integration/external.vue'),
+        meta: {
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+          title: i18n.t('sysSetting.integration.externalSystemTab')
         }
       },
       {
