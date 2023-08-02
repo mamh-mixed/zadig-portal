@@ -288,6 +288,14 @@
               placeholder="请输入 Scopes">
             </el-select>
           </el-form-item>
+          <el-form-item label="开启登出回调" prop="enable_logout">
+            <el-checkbox v-model="userAccountOAuth.enable_logout"></el-checkbox>
+          </el-form-item>
+          <el-form-item v-if="userAccountOAuth.enable_logout" label="登出回调地址" prop="logout_redirect_url">
+            <el-input v-model="userAccountOAuth.logout_redirect_url"
+              placeholder="请输入回调地址">
+            </el-input>
+          </el-form-item>
         </el-form>
       </template>
       <template v-if="userAccount.name ==='custom'">
@@ -529,6 +537,8 @@ export default {
         type: 'oauth',
         id: 'oauth',
         name: 'OAuth',
+        enable_logout: false,
+        logout_redirect_url: '',
         config: {
           authorizationURL: '',
           claimMapping: {
