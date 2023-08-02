@@ -79,9 +79,23 @@
     </el-form>
     <EnvConfig class="common-parcel-block" ref="envConfigRef" :envName="currentEnv" />
 
-    <VarYaml class="common-parcel-block box-card-service" ref="varYamlRef" v-model="projectConfig.default_values" />
+    <VarYaml
+      class="common-parcel-block box-card-service"
+      ref="varYamlRef"
+      :globalVariables="projectConfig.global_variables"
+      :selectedServices="projectConfig.selectedService"
+      :serviceToKeys="projectConfig.serviceToKeys"
+      @updateGlobalValue="updateGlobalValue"
+    />
 
     <K8sServiceList ref="k8sServiceListRef" :selectedContainerMap="selectedContainerMap" :registryId="projectConfig.registry_id" />
+    <K8sServiceList
+      ref="k8sServiceListRef"
+      :selectedContainerMap="selectedContainerMap"
+      :registryId="projectConfig.registry_id"
+      :serviceToKeys="projectConfig.serviceToKeys"
+      :globalVariables="projectConfig.global_variables"
+    />
   </div>
 </template>
 
@@ -92,6 +106,7 @@ import VarYaml from '@/components/projects/env/k8s/common/varYaml.vue'
 import {
   productHostingNamespaceAPI,
   initProjectEnvAPI,
+  getGlobalVariablesAPI,
   getClusterListAPI,
   getRegistryWhenBuildAPI,
   getServiceDefaultVariableAPI
@@ -104,13 +119,14 @@ const projectConfig = {
   env_name: '',
   source: 'system',
   namespace: '',
-  default_values: '',
+  global_variables: [],
   revision: null,
   isPublic: true,
   roleIds: [],
   registry_id: '',
   services: [],
-  selectedService: [] // will be deleted when created
+  selectedService: [], // will be deleted when created
+  serviceToKeys: {} // will be deleted
 }
 export default {
   props: {
@@ -255,13 +271,25 @@ export default {
       // init all project information
       const projectName = this.projectName
       const template = await initProjectEnvAPI(projectName)
-      const yamlMap = await this.getServiceDefaultVariable('', flattenDeep(template.services).map(svc => svc.service_name))
+      const [globalVars, yamlMap] = await Promise.all([
+        getGlobalVariablesAPI(projectName),
+        this.getServiceDefaultVariable(
+          '',
+          flattenDeep(template.services).map(svc => svc.service_name)
+        )
+      ])
+      const globalVarObj = {}
+      globalVars.forEach(vars => {
+        globalVarObj[vars.key] = vars
+      })
+      // const yamlMap = await this.getServiceDefaultVariable('', flattenDeep(template.services).map(svc => svc.service_name))
       this.projectConfigInit.product_name = projectName
       this.projectConfigInit.revision = template.revision
       this.projectConfigInit.source = 'system'
 
       const servicesMap = {}
       const containerNames = []
+      const serviceToKeys = {}
       for (const group of template.services) {
         group.sort((a, b) => {
           if (a.service_name !== b.service_name) {
@@ -277,8 +305,8 @@ export default {
             servicesMap[ser.service_name] = ser
             ser.picked = true
             ser.deploy_strategy = 'deploy'
-            ser.variable_yaml = yamlMap[ser.service_name] ? yamlMap[ser.service_name].variable_yaml : ''
-            ser.canEditYaml = !!ser.variable_yaml
+            ser.variable_kvs = yamlMap[ser.service_name] ? yamlMap[ser.service_name].latest_variable_kvs : ''
+            ser.canEditYaml = !!ser.variable_kvs.length
             const containers = ser.containers
             if (containers) {
               for (const con of containers) {
@@ -286,6 +314,29 @@ export default {
                 containerNames.push(con.image_name)
               }
             }
+            serviceToKeys[ser.service_name] = new Set()
+            ser.variable_kvs.forEach(kv => {
+              if (Object.keys(globalVarObj).includes(kv.key)) {
+                const varObj = globalVarObj[kv.key]
+
+                if (varObj.type !== kv.type) {
+                  kv.ownData = {
+                    type: kv.type,
+                    value: kv.value
+                  }
+                  kv.type = varObj.type
+                }
+                kv.use_global_variable = true
+                kv.value = varObj.value
+
+                if (!varObj.related_services) {
+                  varObj.related_services = []
+                }
+                varObj.related_services.push(ser.service_name)
+
+                serviceToKeys[ser.service_name].add(kv.key)
+              }
+            })
           }
         }
       }
@@ -294,6 +345,9 @@ export default {
       this.serviceNames = Object.keys(servicesMap)
       this.containerNames = uniq(containerNames)
       this.projectConfigInit.selectedService = Object.keys(servicesMap)
+      this.projectConfigInit.serviceToKeys = serviceToKeys
+      this.projectConfigInit.global_variables = globalVars.filter(vars => vars.related_services)
+      this.$refs.varYamlRef && (this.$refs.varYamlRef.showYaml = this.projectConfigInit.global_variables.length > 0)
     },
     async getImages (
       registry_id = this.projectConfig.registry_id,
@@ -350,14 +404,29 @@ export default {
           curPayload.services = selectedServices
           curPayload.source = 'spock'
           curPayload.env_configs = envConfigs[envInfo.initName] || []
+          curPayload.global_variables = curPayload.global_variables.filter(vars => vars.related_services.length > 0)
           delete curPayload.selectedService
           delete curPayload.servicesMap
+          delete curPayload.serviceToKeys
           payload.push(curPayload)
         })
 
         return payload
       }).catch(() => {
         console.log('not-valid')
+      })
+    },
+    updateGlobalValue (object) {
+      Object.values(this.selectedContainerMap).forEach(service => {
+        const cur = object[service.service_name]
+        if (cur) {
+          const keys = Object.keys(cur)
+          service.variable_kvs.forEach(variable => {
+            if (keys.includes(variable.key)) {
+              variable.value = cur[variable.key]
+            }
+          })
+        }
       })
     }
   },

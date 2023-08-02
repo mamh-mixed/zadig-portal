@@ -9,22 +9,22 @@
       ></i>
     </div>
     <div class="content" v-show="showYaml">
-      <Resize class="desc mirror" @sizeChange="$refs.codemirror.refresh()">
-        <CodeMirror ref="codemirror" v-model="curYaml" />
-      </Resize>
+      <ServiceVar :varList="showGlobalVariables" showRelatedServices />
     </div>
   </div>
 </template>
 
 <script>
-import Resize from '@/components/common/resize.vue'
-import CodeMirror from '@/components/projects/common/codemirror.vue'
+import ServiceVar from '@/components/projects/common/serviceVar.vue'
+import { intersection, debounce, difference } from 'lodash'
 export default {
   props: {
-    value: {
-      default: '',
-      type: String
-    }
+    globalVariables: {
+      default: () => [],
+      type: Array
+    },
+    selectedServices: Array,
+    serviceToKeys: Object
   },
   data () {
     return {
@@ -32,18 +32,59 @@ export default {
     }
   },
   computed: {
-    curYaml: {
-      get () {
-        return this.value
-      },
-      set (val) {
-        this.$emit('input', val)
+    showGlobalVariables () {
+      this.globalVariables.forEach(item => {
+        item.related_services = intersection(
+          item.related_services,
+          this.selectedServices
+        )
+      })
+      return this.globalVariables.filter(item => item.related_services.length)
+    }
+  },
+  watch: {
+    selectedServices (val, oval) {
+      if (oval) {
+        const addSvc = difference(val, oval)
+        if (addSvc.length) {
+          const cur = {}
+          addSvc.forEach(svc => {
+            [...this.serviceToKeys[svc]].forEach(key => {
+              if (!cur[key]) {
+                cur[key] = []
+              }
+              cur[key].push(svc)
+            })
+          })
+          this.globalVariables.forEach(item => {
+            if (Object.keys(cur).includes(item.key)) {
+              item.related_services = [...new Set(item.related_services.concat(cur[item.key]))]
+            }
+          })
+        }
       }
+    },
+    showGlobalVariables: {
+      handler: debounce(function (val, oVal) {
+        if (!oVal || !oVal.length) {
+          return
+        }
+        const updateVars = {}
+        val.forEach(item => {
+          item.related_services.forEach(ser => {
+            if (!updateVars[ser]) {
+              updateVars[ser] = {}
+            }
+            updateVars[ser][item.key] = item.value
+          })
+        })
+        this.$emit('updateGlobalValue', updateVars)
+      }, 200),
+      deep: true
     }
   },
   components: {
-    Resize,
-    CodeMirror
+    ServiceVar
   }
 }
 </script>

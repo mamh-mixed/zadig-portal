@@ -281,7 +281,7 @@ export default {
           env_name: item.env_name,
           services: item.serviceNames.map(svc => ({
             service_name: svc.service_name,
-            deploy_strategy: svc.deploy_strategy,
+            deploy_strategy: '',
             variable_kvs: svc.variable_kvs
           }))
         }
@@ -419,9 +419,7 @@ export default {
                   use_global_variable: !!globalKv,
                   ...addObj
                 }
-              }),
-              deploy_strategy: 'deploy',
-              canEditYaml: serviceVariableKvs.length > 0
+              })
             }
           ]
         } else {
@@ -431,9 +429,7 @@ export default {
           env.serviceNames = [
             {
               service_name: serviceName,
-              variable_kvs: service.variable_kvs,
-              deploy_strategy: 'deploy',
-              canEditYaml: service.variable_kvs.length > 0
+              variable_kvs: service.variable_kvs
             }
           ]
         }

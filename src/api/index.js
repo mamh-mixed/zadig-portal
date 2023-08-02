@@ -281,6 +281,14 @@ export function listProductAPI (projectName = '', envType = '') {
   }
 }
 
+export function getGlobalVariablesAPI (projectName) {
+  return http.get(`/api/aslan/project/products/${projectName}/globalVariables?projectName=${projectName}`)
+}
+
+export function getEnvGlobalVariablesAPI (projectName, envName, ifPassFilter = true) {
+  return http.get(`/api/aslan/environment/rendersets/globalVariables?projectName=${projectName}&envName=${envName}&ifPassFilter=${ifPassFilter}`)
+}
+
 export function createFavoriteEnvAPI (name, projectName, type = 'environment') {
   return http.post(`/api/aslan/system/favorite/${type}/${name}?projectName=${projectName}`)
 }
@@ -1427,12 +1435,8 @@ export function updatePmEnvAPI (projectName, envName, payload, envType = '', for
   return http.put(`/api/aslan/environment/environments/${envName}?projectName=${projectName}&envType=${envType}&force=${force}`, payload)
 }
 
-export function updateK8sEnvAPI (projectName, envName, payload, force = '') {
-  return http.put(`/api/aslan/environment/environments/${envName}/k8s/default-values?projectName=${projectName}&force=${force}`, payload)
-}
-
-export function getAffectedServicesAPI (projectName, envName, payload) {
-  return http.post(`/api/aslan/environment/environments/${envName}/affectedservices?projectName=${projectName}`, payload)
+export function updateK8sEnvAPI (projectName, envName, payload) {
+  return http.put(`/api/aslan/environment/environments/${envName}/k8s/globalVariables?projectName=${projectName}`, payload)
 }
 
 export function getServiceDeployableEnvsAPI (projectName, serviceName) {
