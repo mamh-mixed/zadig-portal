@@ -135,7 +135,7 @@
                 :workflowInfo="payload"
                 :curStageIndex="curStageIndex"
                 :curJobIndex="curJobIndex"
-              />
+              >
               <el-select size="small" v-model="service" multiple filterable clearable>
                 <el-option
                   disabled
@@ -163,6 +163,7 @@
                 :disabled="Object.keys(service).length === 0"
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
               >+ {{$t(`global.add`)}}</el-button>
+              </JobBuild>
             </div>
             <JobPlugin
               v-if="job.type === jobType.plugin"
