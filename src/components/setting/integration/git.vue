@@ -497,6 +497,7 @@
   </div>
 </template>
 <script>
+import bus from '@utils/eventBus'
 import {
   getCodeProviderAPI,
   deleteCodeSourceAPI,
@@ -887,9 +888,10 @@ export default {
       this.$refs.codeForm.clearValidate()
     }
   },
-  activated () {
+  mounted () {
     this.getProxyConfig()
     this.getCodeConfig()
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.gitProviderTab`), url: '' }] })
   }
 }
 </script>
@@ -898,6 +900,7 @@ export default {
 .integration-code-container {
   position: relative;
   flex: 1;
+  padding: 15px 30px;
   overflow: auto;
   font-size: 13px;
 

@@ -1,10 +1,9 @@
 <template>
-  <envDetail :envBasePath="envBasePath">
-  </envDetail>
+  <EnvDetail :envBasePath="envBasePath" />
 </template>
 
 <script>
-import envDetail from './envDetailComp.vue'
+import EnvDetail from './envDetailComp.vue'
 import bus from '@utils/eventBus'
 export default {
   data () {
@@ -35,7 +34,7 @@ export default {
     })
   },
   components: {
-    envDetail
+    EnvDetail
   }
 }
 </script>

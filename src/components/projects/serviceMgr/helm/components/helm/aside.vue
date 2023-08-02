@@ -118,7 +118,7 @@
 import qs from 'qs'
 import bus from '@utils/eventBus'
 import { mapState } from 'vuex'
-import Policy from '../../../k8s/container/policy.vue'
+import Policy from '../../../k8s/common/policy.vue'
 import Help from './help.vue'
 import MatchRule from './matchRule.vue'
 import { cloneDeep } from 'lodash'

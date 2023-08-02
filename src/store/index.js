@@ -30,7 +30,7 @@ import externalLink from './modules/externalLink'
 import customWorkflow from './modules/customWorkflow'
 
 // Preference
-import theme from './modules/theme'
+import preference from './modules/preference'
 
 Vue.use(Vuex)
 
@@ -48,7 +48,7 @@ export default new Vuex.Store({
     k8sService,
     externalLink,
     customWorkflow,
-    theme
+    preference
   },
   strict: debug
 })

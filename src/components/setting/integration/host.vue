@@ -7,8 +7,8 @@
 import bus from '@utils/eventBus'
 export default {
   name: 'SystemHost',
-  created () {
-    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.hosts`), url: '' }] })
+  mounted () {
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.hostTab`), url: '' }] })
   }
 }
 

@@ -42,7 +42,7 @@
   </div>
 </template>
 <script>
-import { deleteServiceTemplateAPI, getProjectServicesAPI } from '@api'
+import { deleteProjectServiceAPI, getProjectServicesAPI } from '@api'
 import UpdateEnv from '../../serviceMgr/pm/updateEnv'
 import { mapGetters } from 'vuex'
 
@@ -133,7 +133,7 @@ export default {
         cancelButtonText: this.$t(`global.cancel`),
         type: 'warning'
       }).then(() => {
-        deleteServiceTemplateAPI(
+        deleteProjectServiceAPI(
           obj.service_name,
           obj.type,
           this.projectName,

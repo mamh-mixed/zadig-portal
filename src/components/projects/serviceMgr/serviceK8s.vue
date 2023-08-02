@@ -73,7 +73,7 @@
           </div>
           <template v-if="service.service_name  &&  services.length >0">
             <MultipaneResizer />
-            <div class="service-editor-container" :style="{ minWidth: '300px', width: middleWidth }">
+            <div class="service-editor-container" :style="{ minWidth: '0px',width: '550px' }">
               <ServiceEditor
                 ref="serviceEditor"
                 :serviceInTree="service"
@@ -241,6 +241,7 @@ export default {
         this.getServices()
         this.$refs.serviceTree.getServiceGroup()
       }
+      this.$refs.serviceAside.getServiceTemplateWithConfig()
     },
     updateYaml (switchNode) {
       this.$refs.serviceEditor.updateService().then(() => {
@@ -391,6 +392,10 @@ export default {
         env.services = env.services.filter(item => {
           return item.service_name === serviceName
         })
+        env.hasDeployed =
+          env.services.filter(item => {
+            return item.service_name === serviceName
+          }).length > 0
         if (env.services.length === 0) {
           const envGlobalVars = keyBy(env.global_variable_kvs, 'key')
           env.serviceNames = [

@@ -343,20 +343,23 @@ export default {
       const envInfo = await getEnvInfoAPI(projectName, envName)
       const envRevision = await envRevisionsAPI(projectName, envName)
 
-      const availableServices = flattenDeep(envInfo.services)
+      const envServices = envInfo.services.map(groupItem => {
+        return groupItem.map(item => { return item.service_name })
+      })
+      const flatServices = flattenDeep(envServices)
       const [defaultVar, yamlMap] = await Promise.all([
         getEnvGlobalVariablesAPI(projectName, envName),
-        this.getServiceDefaultVariable(envName, availableServices)
+        this.getServiceDefaultVariable(envName, flatServices)
       ])
       const serviceImages = envRevision[0].services.filter(item => {
-        return availableServices.indexOf(item.service_name) >= 0
+        return flatServices.indexOf(item.service_name) >= 0
       })
       for (
         let groupIndex = 0;
-        groupIndex < envInfo.services.length;
+        groupIndex < envServices.length;
         groupIndex++
       ) {
-        const group = envInfo.services[groupIndex]
+        const group = envServices[groupIndex]
         for (
           let serviceIndex = 0;
           serviceIndex < group.length;
@@ -373,7 +376,7 @@ export default {
           group[serviceIndex] = current
         }
       }
-      for (const group of envInfo.services) {
+      for (const group of envServices) {
         group.sort((a, b) => {
           if (a.service_name !== b.service_name) {
             return a.service_name.charCodeAt(0) - b.service_name.charCodeAt(0)
@@ -388,7 +391,7 @@ export default {
       const containerMap = {}
       const containerNames = []
       const serviceToKeys = {}
-      for (const group of envInfo.services) {
+      for (const group of envServices) {
         for (const ser of group) {
           if (ser.type === 'k8s') {
             containerMap[ser.service_name] = ser
@@ -417,7 +420,7 @@ export default {
       this.projectConfig.global_variables = defaultVar.global_variables
       this.$refs.varYamlRef.showYaml = !!this.projectConfig.global_variables.length
       this.containerMap = containerMap
-      this.projectConfig.services = envInfo.services
+      this.projectConfig.services = envServices
       this.containerNames = uniq(containerNames)
       this.getImages()
       this.$set(
@@ -428,6 +431,7 @@ export default {
       this.projectConfig.serviceToKeys = serviceToKeys
       this.projectConfig.cluster_id = envInfo.cluster_id
       this.projectConfig.registry_id = envInfo.registry_id
+      this.getCluster()
     },
     async getTemplateAndImg () {
       const projectName = this.projectName

@@ -131,7 +131,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="$t(`workflow.runProductWorkflow`)" :visible.sync="showStartProductBuild" custom-class="run-workflow" width="60%">
+    <el-dialog :title="$t(`workflow.runProductWorkflow`)" :visible.sync="showStartProductBuild" custom-class="run-product-workflow" width="60%">
       <RunProductWorkflow
         v-if="workflowToRun.name"
         :workflowName="workflowToRun.name"
@@ -143,8 +143,7 @@
     </el-dialog>
     <el-dialog
       :visible.sync="isShowRunCustomWorkflowDialog"
-      :title="$t(`workflow.runWorkflow`)"
-      custom-class="run-workflow"
+      custom-class="run-custom-workflow"
       width="70%"
       class="dialog"
     >
@@ -548,14 +547,15 @@ export default {
             })
           } else {
             params.id = this.presetWorkflowInfo.id
+            this.view = this.workflowViewForm.name
             editWorkflowViewAPI(params, this.projectName).then(res => {
               this.$message({
                 message: this.$t(`workflow.updateSuccess`),
                 type: 'success'
               })
-              this.$refs[formName].resetFields()
               this.getWorkflows(this.projectName)
               this.getWorkflowViewList()
+              this.$refs[formName].resetFields()
             })
           }
           this.showWorkflowViewDialog = false
@@ -849,9 +849,21 @@ export default {
     }
   }
 
-  .run-workflow {
+  .run-product-workflow {
     .el-dialog__body {
       padding: 8px 10px;
+      color: #606266;
+      font-size: 14px;
+    }
+  }
+
+  .run-custom-workflow {
+    .el-dialog__header {
+      padding: 0;
+    }
+
+    .el-dialog__body {
+      padding: 10px 20px;
       color: #606266;
       font-size: 14px;
     }

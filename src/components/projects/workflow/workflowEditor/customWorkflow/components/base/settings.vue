@@ -5,11 +5,11 @@
       <el-form-item>
         <span class="mg-r16">
           <span class="text">{{$t(`workflow.concurrentExecution`)}}</span>
-          <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率" placement="top">
+          <el-tooltip effect="dark" content="当同时更新多个不同服务时，产生的多个任务将会并发执行，以提升工作流运行效率，企业版支持设置并发数量" placement="top">
             <i class="pointer el-icon-question"></i>
           </el-tooltip>
         </span>
-        <el-switch v-model="workflowInfo.multi_run"></el-switch>
+        <el-switch :active-value="-1" :inactive-value="1" v-model="workflowInfo.concurrency_limit"></el-switch>
       </el-form-item>
       <div class="mg-b16 mg-t24 title">
         <span>{{$t(`workflow.shareDirectory`)}}</span>

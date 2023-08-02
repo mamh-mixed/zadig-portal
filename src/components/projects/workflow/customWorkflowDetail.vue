@@ -124,7 +124,7 @@
       />
     </el-card>
 
-    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runWorkflow`)" custom-class="run-workflow" width="70%" class="dialog" :before-close="close">
+    <el-dialog :visible.sync="taskDialogVisible" custom-class="run-custom-workflow" width="70%" class="dialog" :before-close="close">
       <RunCustomWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
@@ -469,9 +469,13 @@ export default {
     color: unset;
   }
 
-  .run-workflow {
+  .run-custom-workflow {
+    .el-dialog__header {
+      padding: 0;
+    }
+
     .el-dialog__body {
-      padding: 8px 10px;
+      padding: 10px 20px;
       color: #606266;
       font-size: 14px;
     }
