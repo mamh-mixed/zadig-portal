@@ -270,7 +270,7 @@
                           <i class="icon el-icon-edit"></i>
                         </el-button>
                       </el-tooltip>
-                      <el-button v-if="checkPermissionSyncMixin({projectName: projectName, operator: 'or', actions: ['create_service','edit_service']})" type="text" size="medium" @click="deleteCurrentVariable(scope.row)">
+                      <el-button v-if="checkPermissionSyncMixin({projectName: projectName, operator: 'or', actions: ['create_service','edit_service']})" type="text" size="medium" @click="deleteCurrentVariable(scope.$index)">
                         <i class="icon el-icon-remove-outline delete"></i>
                       </el-button>
                       <el-tooltip v-else effect="light" :content="$t('permission.lackPermission')" placement="top">
