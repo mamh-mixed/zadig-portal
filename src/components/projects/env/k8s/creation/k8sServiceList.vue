@@ -57,12 +57,12 @@
           </div>
           <div v-if="service.canEditYaml" class="var-config">
             <div class="primary-title var-title">变量配置</div>
-            <Resize @sizeChange="$refs[`codemirror-${serviceName}`][0].refresh()" :height="'200px'">
-              <CodeMirror
-                :ref="`codemirror-${serviceName}`"
-                v-model="service.variable_yaml"
-              />
-            </Resize>
+            <ServiceVar
+              :varList="service.variable_kvs"
+              :globalVariables="globalVariables"
+              @updateRelatedServices="updateRelatedServices($event, service.service_name)"
+              showSelectGlobalVar
+            />
           </div>
         </div>
       </el-form>
@@ -71,8 +71,7 @@
 </template>
 
 <script>
-import Resize from '@/components/common/resize.vue'
-import CodeMirror from '@/components/projects/common/codemirror.vue'
+import ServiceVar from '@/components/projects/common/serviceVar.vue'
 import virtualListItem from '@/components/projects/common/imageItem.vue'
 import virtualScrollList from 'vue-virtual-scroll-list'
 import { imagesAPI } from '@api'
@@ -85,7 +84,9 @@ export default {
     registryId: {
       required: true,
       type: String
-    }
+    },
+    globalVariables: Array,
+    serviceToKeys: Object
   },
   data () {
     this.services = []
@@ -165,12 +166,26 @@ export default {
           }
         }
       }
+    },
+    updateRelatedServices ({ key, operate }, serviceName) {
+      // Add or delete a service associated with the current key
+      const cur = this.globalVariables.find(vars => vars.key === key)
+      if (cur) {
+        if (operate === 'add') {
+          cur.related_services.push(serviceName)
+          this.serviceToKeys[serviceName].add(key)
+        } else if (operate === 'delete') {
+          cur.related_services = cur.related_services.filter(
+            item => item !== serviceName
+          )
+          this.serviceToKeys[serviceName].delete(key)
+        }
+      }
     }
   },
   components: {
     virtualScrollList,
-    Resize,
-    CodeMirror
+    ServiceVar
   }
 }
 </script>

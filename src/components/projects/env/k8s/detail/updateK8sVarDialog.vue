@@ -1,34 +1,44 @@
 <template>
   <el-dialog title="更新全局变量" :visible.sync="updateK8sEnvVarDialogVisible" width="60%" class="update-env-variable">
-    <div>
-      <Resize @sizeChange="$refs.codemirror.refresh()" :height="'350px'">
-        <CodeMirror ref="codemirror" v-model="defaultVariable" />
-      </Resize>
+    <div class="update-global-variable">
+      <ServiceVar :varList="globalVariables" showRelatedServices showOperation />
+      <div class="operation">
+        <el-select v-model="addGlobalVars" size="small" :placeholder="$t(`global.pleaseSelect`)" multiple value-key="key">
+          <el-option v-for="(item, index) in leftGlobalVars" :key="index" :label="item.key" :value="item"></el-option>
+        </el-select>
+        <el-button type="primary" plain size="small" @click="addVars">{{$t(`global.add`)}}</el-button>
+      </div>
     </div>
     <span slot="footer" class="dialog-footer">
-      <el-button size="small" type="primary" :loading="updateK8sEnvVarLoading" @click="updateK8sEnv">更新</el-button>
+      <el-button size="small" type="primary" :loading="updateK8sEnvVarLoading" @click="updateK8sEnv" :disabled="!isUpdated">更新</el-button>
       <el-button size="small" @click="updateK8sEnvVarDialogVisible = false">{{$t(`global.cancel`)}}</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
-import Resize from '@/components/common/resize.vue'
-import CodeMirror from '@/components/projects/common/codemirror.vue'
+import ServiceVar from '@/components/projects/common/serviceVar.vue'
 import {
-  getEnvDefaultVariableAPI,
-  updateK8sEnvAPI,
-  getAffectedServicesAPI
+  getGlobalVariablesAPI,
+  getEnvGlobalVariablesAPI,
+  updateK8sEnvAPI
 } from '@api'
+import { cloneDeep, debounce } from 'lodash'
 export default {
   name: 'updateK8sVar',
   props: {
     fetchAllData: Function
   },
   data () {
+    this.globalVariablesBackup = []
+
     return {
       updateK8sEnvVarDialogVisible: false,
       updateK8sEnvVarLoading: false,
-      defaultVariable: ''
+      projectGlobalVars: [],
+      globalVariables: [],
+      addGlobalVars: [],
+      revision: 0,
+      isUpdated: false
     }
   },
   computed: {
@@ -37,87 +47,60 @@ export default {
     },
     envName () {
       return this.$route.query.envName
+    },
+    globalVariableKeys () {
+      return this.globalVariables.map(item => item.key)
+    },
+    leftGlobalVars () {
+      return this.projectGlobalVars.filter(
+        item => !this.globalVariableKeys.includes(item.key)
+      )
     }
   },
   methods: {
     openDialog () {
       this.updateK8sEnvVarDialogVisible = true
     },
+    addVars () {
+      this.globalVariables = this.globalVariables.concat(this.addGlobalVars)
+      this.addGlobalVars = []
+    },
     async updateK8sEnv () {
-      this.updateK8sEnvVarLoading = true
-      const res = await getAffectedServicesAPI(this.projectName, this.envName, {
-        variable_yaml: this.defaultVariable
-      }).catch(err => console.log(err))
-      this.updateK8sEnvVarLoading = false
-      if (res) {
-        this.$confirm(
-          `修改的变量关联的服务 ${res.services.join('、')} 会更新，请确认。`,
-          '确认',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        ).then(() => {
-          this.updateK8sEnvVar()
-        })
-      }
-    },
-    updateK8sEnvVar () {
-      this.updateK8sEnvVarLoading = true
-      updateK8sEnvAPI(
-        this.projectName,
-        this.envName,
-        {
-          variable_yaml: this.defaultVariable
-        },
-        false
-      )
-        .then(() => {
-          this.updateK8sEnvVarLoading = false
-          this.updateK8sEnvVarDialogVisible = false
-          this.fetchAllData()
-          this.$message({
-            message: '更新全局变量成功，请等待服务升级',
-            type: 'success'
-          })
-        })
-        .catch(error => {
-          const description = error.response.data.description
-          const res = description.match(
-            'the following services are modified since last update'
-          )
-          if (res) {
-            this.updateEnv(description)
-          }
-        })
-    },
-    updateEnv (res) {
-      const message = JSON.parse(res.match(/{.+}/g)[0])
+      const changedSvc = new Set()
+      this.globalVariablesBackup.forEach(item => {
+        const cur = this.globalVariables.find(vars => vars.key === item.key)
+        if (cur && cur.value !== item.value) {
+          cur.related_services.forEach(svc => changedSvc.add(svc))
+        }
+      })
       this.$confirm(
-        `您的更新操作将覆盖环境中${message.name}服务变更，确认继续?`,
-        '提示',
+        changedSvc.size > 0
+          ? this.$t(`environments.common.sureRelatedServices`, {
+            services: [...changedSvc].join('、')
+          })
+          : this.$t(`environments.common.noRelatedServices`),
+        this.$t(`global.confirmation`),
         {
           confirmButtonText: this.$t(`global.confirm`),
           cancelButtonText: this.$t(`global.cancel`),
           type: 'warning'
         }
       ).then(() => {
-        updateK8sEnvAPI(
-          this.projectName,
-          this.envName,
-          {
-            variable_yaml: this.defaultVariable
-          },
-          true
-        ).then(() => {
-          this.fetchAllData()
-          this.updateK8sEnvVarLoading = false
-          this.updateK8sEnvVarDialogVisible = false
-          this.$message({
-            message: '更新环境成功，请等待服务升级',
-            type: 'success'
-          })
+        this.updateK8sEnvVar()
+      })
+    },
+    updateK8sEnvVar () {
+      this.updateK8sEnvVarLoading = true
+      updateK8sEnvAPI(this.projectName, this.envName, {
+        current_revision: this.revision,
+        global_variables: this.globalVariables
+      }).then(() => {
+        this.updateK8sEnvVarLoading = false
+        this.updateK8sEnvVarDialogVisible = false
+        this.fetchAllData()
+        this.$message({
+          message: '更新全局变量成功，请等待服务升级',
+          type: 'success'
         })
       })
     }
@@ -125,17 +108,55 @@ export default {
   watch: {
     updateK8sEnvVarDialogVisible (value) {
       if (value) {
-        getEnvDefaultVariableAPI(this.projectName, this.envName).then(res => {
-          this.defaultVariable = res.default_variable
+        getGlobalVariablesAPI(this.projectName).then(res => {
+          this.projectGlobalVars = res.map(item => ({
+            ...item,
+            related_services: []
+          }))
+        })
+        getEnvGlobalVariablesAPI(this.projectName, this.envName).then(res => {
+          this.globalVariablesBackup = cloneDeep(res.global_variables)
+          this.globalVariables = res.global_variables
+          this.revision = res.revision
         })
       } else {
-        this.defaultVariable = ''
+        this.projectGlobalVars = []
+        this.globalVariables = []
+        this.globalVariablesBackup = []
+        this.addGlobalVars = []
       }
+    },
+    globalVariables: {
+      handler: debounce(function (val) {
+        if (val.length !== this.globalVariablesBackup.length) {
+          this.isUpdated = true
+        } else {
+          this.isUpdated = val.some(
+            (item, index) =>
+              item.key !== this.globalVariablesBackup[index].key ||
+              item.value !== this.globalVariablesBackup[index].value
+          )
+        }
+      }, 200),
+      deep: true
     }
   },
   components: {
-    Resize,
-    CodeMirror
+    ServiceVar
   }
 }
 </script>
+
+<style lang="less" scoped>
+.update-global-variable {
+  margin: 10px 20px;
+
+  .operation {
+    margin-top: 16px;
+
+    /deep/.el-button {
+      margin-left: 10px;
+    }
+  }
+}
+</style>

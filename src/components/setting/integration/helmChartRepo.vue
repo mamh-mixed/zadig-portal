@@ -238,7 +238,7 @@ export default {
     }
   },
   mounted () {
-    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.helmRepo`), url: '' }] })
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.helmChartRepoTab`), url: '' }] })
     this.getHelmRepo()
   }
 }

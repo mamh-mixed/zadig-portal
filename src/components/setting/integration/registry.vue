@@ -503,8 +503,8 @@ export default {
       })
     }
   },
-  created () {
-    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.dockerRegistry`), url: '' }] })
+  mounted () {
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.registryTab`), url: '' }] })
     this.getRegistry()
   }
 }

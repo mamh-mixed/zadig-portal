@@ -84,27 +84,58 @@
                     </div>
                     <div class="job-detail">
                       <template v-if="job.type === 'zadig-build'">
-                        <span class="desc">{{`${job.job_info.service_name}(${job.job_info.service_module})`}}</span>
+                        <span v-if="`${job.job_info.service_name}(${job.job_info.service_module})`.length < 22" class="desc">{{`${job.job_info.service_name}(${job.job_info.service_module})`}}</span>
+                        <el-tooltip v-else effect="dark" :content="`${job.job_info.service_name}(${job.job_info.service_module})`" placement="right">
+                          <span class="desc">{{$utils.tailCut(`${job.job_info.service_name}(${job.job_info.service_module})`,25)}}</span>
+                        </el-tooltip>
                       </template>
-                      <template v-else-if="job.type === 'zadig-deploy'">
-                        <span class="desc">{{`${job.job_info.service_name}`}}</span>
+                      <template v-else-if="job.type === 'zadig-deploy' || job.type === 'mse-gray-release'">
+                        <span v-if="`${job.job_info.service_name}`.length < 22" class="desc">{{`${job.job_info.service_name}`}}</span>
+                        <el-tooltip v-else effect="dark" :content="`${job.job_info.service_name}`" placement="right">
+                          <span class="desc">{{$utils.tailCut(`${job.job_info.service_name}`,25)}}</span>
+                        </el-tooltip>
                       </template>
                       <template v-else-if="job.type === 'custom-deploy'">
                         <span class="desc">{{`${job.job_info.workload_name}`}}</span>
                         <span class="desc">{{`${job.job_info.container_name}`}}</span>
                       </template>
-                      <template v-else-if="job.type === 'k8s-gray-release' || job.type === 'k8s-blue-green-release' || job.type === 'k8s-canary-deploy' || job.type === 'k8s-canary-release'">
-                        <span class="desc">{{`${job.job_info.k8s_service_name}`}}</span>
+                      <template v-else-if="job.type === 'k8s-blue-green-deploy' || job.type === 'k8s-blue-green-release' || job.type === 'k8s-canary-deploy' || job.type === 'k8s-canary-release'">
+                        <span v-if="`${job.job_info.k8s_service_name}`.length < 22" class="desc">{{`${job.job_info.k8s_service_name}`}}</span>
+                        <el-tooltip v-else effect="dark" :content="`${job.job_info.k8s_service_name}`" placement="right">
+                          <span class="desc">{{$utils.tailCut(`${job.job_info.k8s_service_name}`,25)}}</span>
+                        </el-tooltip>
                       </template>
-                      <template v-else-if="job.type === 'k8s-blue-green-deploy' || job.type === 'k8s-gray-rollback' || job.type === 'istio-release' || job.type === 'istio-rollback'">
-                        <span class="desc">{{`${job.job_info.workload_name}`}}</span>
+                      <template v-else-if="job.type === 'k8s-gray-release' || job.type === 'k8s-gray-rollback' || job.type === 'istio-release' || job.type === 'istio-rollback'">
+                        <span v-if="`${job.job_info.workload_name}`.length < 22" class="desc">{{`${job.job_info.workload_name}`}}</span>
+                        <el-tooltip v-else effect="dark" :content="`${job.job_info.workload_name}`" placement="right">
+                          <span class="desc">{{$utils.tailCut(`${job.job_info.workload_name}`,25)}}</span>
+                        </el-tooltip>
                       </template>
                       <template v-else-if="job.type === 'zadig-scanning'">
-                        <span class="desc">{{`${job.job_info.scanning_name}`}}</span>
+                        <span v-if="`${job.job_info.scanning_name}`.length < 22" class="desc">{{`${job.job_info.scanning_name}`}}</span>
+                        <el-tooltip v-else effect="dark" :content="`${job.job_info.scanning_name}`" placement="right">
+                          <span class="desc">{{$utils.tailCut(`${job.job_info.scanning_name}`,25)}}</span>
+                        </el-tooltip>
                       </template>
                       <template v-else-if="job.type === 'zadig-test'">
-                        <span v-if="job.job_info.test_type === 'service_test'" class="desc">{{`${job.job_info.service_name}(${job.job_info.service_module})`}}</span>
-                        <span v-else-if="job.job_info.test_type === ''" class="desc">{{`${job.job_info.testing_name}`}}</span>
+                        <template v-if="job.job_info.test_type === 'service_test'">
+                          <span v-if="`${job.job_info.service_name}(${job.job_info.service_module})`.length < 22" class="desc">{{`${job.job_info.service_name}(${job.job_info.service_module})`}}</span>
+                          <el-tooltip v-else effect="dark" :content="`${job.job_info.service_name}(${job.job_info.service_module})`" placement="right">
+                            <span class="desc">{{$utils.tailCut(`${job.job_info.service_name}(${job.job_info.service_module})`,25)}}</span>
+                          </el-tooltip>
+                        </template>
+                        <template v-else-if="job.job_info.test_type === ''">
+                          <span v-if="`${job.job_info.testing_name}`.length < 22" class="desc">{{`${job.job_info.testing_name}`}}</span>
+                          <el-tooltip v-else effect="dark" :content="`${job.job_info.testing_name}`" placement="right">
+                            <span class="desc">{{$utils.tailCut(`${job.job_info.testing_name}`,25)}}</span>
+                          </el-tooltip>
+                        </template>
+                      </template>
+                      <template v-else-if="job.type === 'zadig-helm-chart-deploy'">
+                        <span v-if="`${job.job_info.release_name}`.length < 22" class="desc">{{`${job.job_info.release_name}`}}</span>
+                        <el-tooltip v-else effect="dark" :content="`${job.job_info.release_name}`" placement="right">
+                          <span class="desc">{{$utils.tailCut(`${job.job_info.release_name}`,25)}}</span>
+                        </el-tooltip>
                       </template>
                     </div>
                   </div>
@@ -615,6 +646,7 @@ export default {
 
       .stages {
         display: flex;
+        height: 100%;
         font-size: 16px;
         text-align: center;
 
@@ -624,14 +656,13 @@ export default {
         }
 
         .stage {
+          box-sizing: border-box;
           width: 240px;
           margin: -6px 4px;
           padding: 8px 0 16px 0;
           border: 2px dotted @borderGray;
           border-radius: 4px;
           cursor: pointer;
-          transition-duration: 0.6s;
-          transition-property: box-shadow, border-color;
 
           &-name {
             margin-right: 16px;
@@ -664,6 +695,8 @@ export default {
             border: 1px solid @borderGray;
             border-radius: 4px;
             cursor: pointer;
+            transition-duration: 0.6s;
+            transition-property: box-shadow, border-color;
 
             &-status {
               flex: 0 0 12px;
@@ -718,11 +751,27 @@ export default {
               border: 1px solid @themeColor;
               box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
             }
+
+            &-debug {
+              position: absolute;
+              top: 50%;
+              left: 100%;
+              display: inline-block;
+              width: 10px;
+              height: 10px;
+              background: #eee;
+              border-radius: 50%;
+              transform: translate(-50%, -50%);
+
+              &.debugging {
+                background: #f00;
+              }
+            }
           }
 
           .active {
-            border: 1px solid #06f;
-            box-shadow: 1px 1px 2px 1px rgb(150, 185, 238);
+            border: 1px solid @themeColor;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           }
         }
       }

@@ -108,6 +108,7 @@
   </div>
 </template>
 <script>
+import bus from '@utils/eventBus'
 import {
   getProjectManageAPI,
   updateProjectManageAPI,
@@ -300,8 +301,9 @@ export default {
       })
     }
   },
-  activated () {
+  mounted () {
     this.getProjectManage()
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.projectTab`), url: '' }] })
   }
 }
 </script>
@@ -310,6 +312,7 @@ export default {
 .integration-project-container {
   position: relative;
   flex: 1;
+  padding: 15px 30px;
   overflow: auto;
   font-size: 13px;
 

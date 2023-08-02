@@ -370,6 +370,7 @@ export default {
         project: '',
         description: '',
         multi_run: false,
+        concurrency_limit: 1,
         notify_ctls: [],
         stages: [],
         params: [],

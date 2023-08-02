@@ -389,6 +389,7 @@
   </div>
 </template>
 <script>
+import bus from '@utils/eventBus'
 import {
   getConnectorsAPI,
   deleteConnectorAPI,
@@ -1232,6 +1233,7 @@ export default {
   },
   mounted () {
     this.getAccountConfig()
+    bus.$emit('set-topbar-title', { title: '', breadcrumb: [{ title: this.$t(`sidebarMenu.systemIntegration`), url: '/v1/system/integration' }, { title: this.$t(`sysSetting.integration.accountTab`), url: '' }] })
   }
 }
 </script>
@@ -1240,8 +1242,14 @@ export default {
 .integration-account-container {
   position: relative;
   flex: 1;
+  padding: 15px 30px;
   overflow: auto;
   font-size: 13px;
+
+  .sync-container {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
 
   .tips {
     display: block;

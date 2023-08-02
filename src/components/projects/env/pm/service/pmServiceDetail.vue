@@ -98,7 +98,7 @@
 
 <script>
 import PmXtermDebug from './pmXtermDebug.vue'
-import { serviceTemplateAPI } from '@api'
+import { getServiceDetailAPI } from '@api'
 import bus from '@utils/eventBus'
 import { sortBy } from 'lodash'
 import { fullScreen } from '@/utilities/fullScreen'
@@ -133,24 +133,11 @@ export default {
     projectName () {
       return (this.$route.params.project_name ? this.$route.params.project_name : this.$route.query.projectName)
     },
-    // 共享服务需要该参数
-    originProjectName () {
-      return (this.$route.query.originProjectName ? this.$route.query.originProjectName : this.projectName)
-    },
-    clusterId () {
-      return this.$route.query.clusterId
-    },
     serviceName () {
       return this.$route.params.service_name
     },
     envName () {
       return this.$route.query.envName
-    },
-    isProd () {
-      return this.$route.query.isProd === 'true'
-    },
-    namespace () {
-      return this.$route.query.namespace
     }
   },
 
@@ -159,7 +146,7 @@ export default {
       this.getEnvLoading = true
       const projectName = this.projectName
       const serviceName = this.serviceName
-      serviceTemplateAPI(serviceName, 'pm', projectName).then((res) => {
+      getServiceDetailAPI(serviceName, 'pm', projectName).then((res) => {
         this.currentService = res
         this.getEnvLoading = false
         if (res.env_statuses) {

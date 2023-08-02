@@ -37,7 +37,7 @@ export default {
           fontSize: '12',
           fontFamily: 'Monaco,Consolas,monospace',
           scrollback: 9999999,
-          theme: this.$store.state.theme.xtermTheme
+          theme: this.$store.state.preference.xtermTheme
         })
         const fitAddon = new FitAddon()
         this.term.loadAddon(fitAddon)
