@@ -216,7 +216,7 @@ export default {
     async openDialog (type) {
       this.dialogVisible = true
       this.opeType = type
-      const productServices = flatten(this.productInfo.services)
+      const productServices = flatten(this.productInfo.services).map((item) => item.service_name)
       this.currentServices =
         type === 'add'
           ? difference(this.allServiceNames, productServices)
