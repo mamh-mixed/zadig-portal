@@ -25,12 +25,24 @@ export default {
   methods: {
     async getEnvNameList () {
       const projectName = this.projectName
-      const envNameList = await listProductAPI(projectName)
+      const requests = []
+      const hasTestEnvListPermission = await this.checkingPermissionMixin({ projectName: projectName, action: 'get_environment' })
+      if (hasTestEnvListPermission) {
+        requests.push(listProductAPI(projectName))
+      }
+      const res = await Promise.all(requests)
+      let envNameList = []
+      if (res[0]) {
+        envNameList = res[0]
+      }
+
       this.loading = false
       if (envNameList.length) {
         this.jumpPath = `/v1/projects/detail/${this.projectName}/envs/detail?envName=${envNameList[0].name}`
       } else {
-        this.jumpPath = `/v1/projects/detail/${this.projectName}/envs/create`
+        if (hasTestEnvListPermission) {
+          this.jumpPath = `/v1/projects/detail/${this.projectName}/envs/create`
+        }
       }
       if (this.$route.params.service_name || this.$route.query.envName || this.$route.params.env_name) {
         return

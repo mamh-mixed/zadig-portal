@@ -1240,6 +1240,7 @@ exports.default = {
         updateServiceConfigurationCheck: 'Update service configuration at the same time',
         updateValuesDialogTitle: 'Values - {serviceName}',
         chartName: 'Chart Name',
+        releaseName: 'Release Name',
         chartDeployStatus: 'Deploy Status',
         deployStatusSuccess: 'Success',
         deployStatusFailed: 'Failed',

@@ -6,7 +6,7 @@ import errorMap from '@/utilities/errorMap'
 import Store from '../store'
 import Router from '../router'
 const returnFullResponseAPIs = ['/api/aslan/system/operation', '/api/aslan/delivery/artifacts', '/api/aslan/environment/kube/workloads', '/api/v1/login']
-const returnFullResponseRegexAPIs = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloads/, /api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/groups/, /api\/aslan\/environment\/production\/environments\/[a-z-A-Z-0-9]+\/groups/]
+const returnFullResponseRegexAPIs = [/api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/workloads/, /api\/aslan\/environment\/environments\/[a-z-A-Z-0-9]+\/groups/]
 const ignoreErrReqPrefix = '/api/aslan/services/validateUpdate/'
 const ignoreErrReqAPIs = ['/api/aslan/system/jenkins/user/connection', '/api/aslan/system/sonar/validate', '/api/aslan/system/project_management/validate']
 const ignoreErrResponse = 'the following services are modified since last update:'
@@ -305,7 +305,7 @@ export function envRevisionsAPI (projectName, envName) {
   return http.get(`/api/aslan/environment/revision/products?projectName=${projectName}&envName=${envName}`)
 }
 
-export function productServicesAPI (projectName, envName, envSource, searchName = '', perPage = 20, page = 1) {
+export function getEnvServicesAPI (projectName, envName, envSource, searchName = '', perPage = 20, page = 1) {
   if (envSource === 'helm') {
     // searchName: serviceName=xxx|yyy,name=zzz
     return http.get(`/api/aslan/environment/environments/${envName}/workloads?projectName=${projectName}&filter=${searchName}&perPage=${perPage}&page=${page}`)
@@ -314,10 +314,6 @@ export function productServicesAPI (projectName, envName, envSource, searchName 
   } else {
     return http.get(`/api/aslan/environment/environments/${envName}/groups?projectName=${projectName}&serviceName=${searchName}&perPage=${perPage}&page=${page}`)
   }
-}
-
-export function getEnvServicesAPI (projectName, envName) {
-  return http.get(`/api/aslan/environment/environments/${envName}/groups?projectName=${projectName}`)
 }
 
 export function getEnvInfoAPI (projectName, envName) {

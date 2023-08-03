@@ -1240,6 +1240,7 @@ exports.default = {
         updateServiceConfigurationCheck: '同时更新服务配置',
         updateValuesDialogTitle: 'Values 文件 - {serviceName}',
         chartName: 'Chart 名称',
+        releaseName: 'Release 名称',
         chartDeployStatus: '部署状态',
         deployStatusSuccess: '部署成功',
         deployStatusFailed: '部署失败',
