@@ -88,7 +88,6 @@
       @updateGlobalValue="updateGlobalValue"
     />
 
-    <K8sServiceList ref="k8sServiceListRef" :selectedContainerMap="selectedContainerMap" :registryId="projectConfig.registry_id" />
     <K8sServiceList
       ref="k8sServiceListRef"
       :selectedContainerMap="selectedContainerMap"
