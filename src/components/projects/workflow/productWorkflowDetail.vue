@@ -72,7 +72,7 @@
         showJobDetail />
     </el-card>
 
-    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runProductWorkflow`)" custom-class="run-workflow" width="70%" class="dialog">
+    <el-dialog :visible.sync="taskDialogVisible" :title="$t(`workflow.runProductWorkflow`)" custom-class="run-product-workflow" width="70%" class="dialog">
       <RunProductWorkflow
         v-if="taskDialogVisible"
         :workflowName="workflowName"
@@ -91,7 +91,7 @@ import {
   workflowTaskListAPI,
   getWorkflowFilterListAPI
 } from '@api'
-import RunWorkflow from './common/runWorkflow.vue'
+import RunProductWorkflow from './common/runWorkflow.vue'
 import FilterStatus from './productWorkflowTaskDetail/filterStatus.vue'
 import TaskList from '@/components/projects/common/taskList.vue'
 import bus from '@utils/eventBus'
@@ -315,7 +315,7 @@ export default {
     })
   },
   components: {
-    RunWorkflow,
+    RunProductWorkflow,
     FilterStatus,
     TaskList
   }
