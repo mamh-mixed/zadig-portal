@@ -4,6 +4,11 @@
       <div class="stage-name">{{ $utils.tailCut(stageInfo.name,15) }}</div>
     </el-tooltip>
     <div v-for="(item,index) in stageInfo.jobs" :key="index" @click="setCurIndex(index,item)" class="job" :class="{'active':item.active}">
+      <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="$t(`workflow.jobNotReady`)">
+        <div>
+          <span class="error el-icon-warning" v-if="item.error"></span>
+        </div>
+      </el-tooltip>
       <el-tooltip placement="top-start" effect="dark" width="200" trigger="hover" :content="item.name">
         <span>{{item.name}}</span>
       </el-tooltip>
@@ -90,9 +95,13 @@ export default {
           run_policy: '',
           spec: {
             env: '',
+            production: false,
+            deploy_contents: ['image'],
+            check_run_status: false,
             source: '',
             job_name: '',
-            service_and_images: []
+            service_and_images: [],
+            services: []
           }
         },
         'custom-deploy': {
@@ -183,7 +192,10 @@ export default {
           type: 'zadig-test',
           run_policy: '',
           spec: {
-            test_modules: []
+            test_type: '',
+            test_modules: [],
+            target_services: [],
+            service_and_tests: []
           }
         },
         'zadig-scanning': {
@@ -206,7 +218,9 @@ export default {
             target_registry_id: '',
             targets: [],
             timeout: 10,
-            cluster_id: ''
+            cluster_id: '',
+            enable_target_image_tag_rule: false,
+            target_image_tag_rule: ''
           }
         }
       },
@@ -395,6 +409,13 @@ export default {
       .del {
         display: block;
       }
+    }
+
+    .error {
+      position: absolute;
+      top: 8px;
+      left: -7px;
+      color: red;
     }
   }
 

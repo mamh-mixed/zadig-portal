@@ -911,7 +911,9 @@ exports.default = {
     targetStatus: '目标状态',
     keyword: '关键字',
     outline: '概要',
-    columnField: '列字段'
+    columnField: '列字段',
+    deployContent: '部署内容',
+    serviceVarConfig: '服务变量配置'
   },
   webhookType: {
     dingding: '钉钉',

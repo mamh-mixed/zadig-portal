@@ -368,10 +368,6 @@ const envTypes = [
   {
     label: '测试环境',
     value: false
-  },
-  {
-    label: '生产环境',
-    value: true
   }]
 
 const deployContentList = [
