@@ -218,7 +218,7 @@ import {
   getMyEnvAPI,
   getProjectsAPI,
   getEnvironmentsAPI,
-  productServicesAPI,
+  getEnvServicesAPI,
   getMyWorkflowsAPI
 } from '@api'
 export default {
@@ -378,7 +378,7 @@ export default {
         return
       }
       const type = this.deployType(this.curInfo.config.project_name) || this.curInfo.config.env_type
-      productServicesAPI(
+      getEnvServicesAPI(
         this.curInfo.config.project_name,
         this.curInfo.config.env_name,
         type

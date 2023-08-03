@@ -9,28 +9,33 @@
           :defaultFilterList="defaultFilterList"
           :getFilterList="getFilterList"
           @updateFilter="updateFilter"
-          :showFilterRes="false"
         />
       </div>
-      <div v-for="(chart, index) in filteredChartNames" :key="index" class="chart-content" :class="[chart.selected ? 'selected' : '']">
+      <div v-for="(chart, index) in filteredReleases" :key="index" class="chart-content" :class="[chart.selected ? 'selected' : '']">
         <span class="chart-left">
           <i v-if="chart.status === 'pending'" class="el-icon-refresh common-icon transition"></i>
         </span>
         <span
           class="chart-middle"
-          @click="refreshChartSelected(chart.serviceName);refreshServices([chart.serviceName])"
-          :style="{ color: chart.status === 'failed' ? '#f56c6c' : 'inherit'}"
+          @click="refreshChartSelected(chart.releaseName);refreshServices([chart.releaseName])"
         >
           <el-tooltip effect="dark" placement="top">
-            <span>{{ chart.serviceName }}</span>
             <div slot="content">
-              <div>{{ chart.serviceName }}</div>
+              <div>{{ chart.chart }}</div>
               <div v-if="chart.status === 'failed'" style="margin-top: 5px;">ERROR: {{ chart.error || 'N/A' }}</div>
+            </div>
+            <div>
+              <div class="release-name" :style="{ color: chart.status === 'failed' ? '#f56c6c' : 'inherit'}">
+                <span>{{chart.releaseName}}</span>
+              </div>
+              <div class="chart-name">
+                <span>{{ chart.chart }}</span>
+              </div>
             </div>
           </el-tooltip>
         </span>
         <span class="chart-right">
-          <template v-if="serviceStatus[chart.serviceName] && serviceStatus[chart.serviceName].raw.deploy_strategy === 'import'">
+          <template v-if="chart.deployStrategy === 'import'">
             <el-tooltip  effect="dark" :content="$t('environments.common.serviceDeployStrategyTip')" placement="top">
               <i class="el-icon-warning-outline common-icon"></i>
             </el-tooltip>
@@ -56,7 +61,7 @@
       <i :class="[leftShow ? 'el-icon-arrow-left' : 'el-icon-arrow-right']"></i>
     </div>
     <el-dialog
-      :title="$t('environments.helm.chartListComp.updateServiceDialogTitle',{serviceName:currentChart.serviceName})"
+      :title="$t('environments.helm.chartListComp.updateServiceDialogTitle',{serviceName:`${currentChart.releaseName}(${currentChart.chart})`})"
       :visible.sync="updateDialogVisible"
       width="60%"
       :before-close="dialogBeforeClose"
@@ -68,7 +73,8 @@
         :envNames="[envName]"
         :chartNames="currentChart.chartNames"
         :showServicesTab="false"
-        :envScene="`updateRenderSet`"
+        :envScene="currentChart.updateServiceTmpl  ? 'updateEnv' : 'updateRenderSet'"
+        opeType="update"
       />
       <div v-if="currentChart.showSync" style="margin: 12px 20px;">
         <el-checkbox v-model="currentChart.updateServiceTmpl">{{$t('environments.helm.chartListComp.updateServiceConfigurationCheck')}}</el-checkbox>
@@ -105,13 +111,13 @@ import {
   updateHelmServiceVarAPI,
   getRunningValuesYamlAPI
 } from '@api'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, uniqBy } from 'lodash'
 export default {
   props: {
     envSource: String,
     fetchAllData: Function,
-    searchServicesByChart: Function,
-    serviceStatus: Object
+    isProd: Boolean,
+    searchServicesByChart: Function
   },
   data () {
     this.cmOption = {
@@ -121,9 +127,11 @@ export default {
     return {
       leftShow: true,
       chartNames: [],
-      filteredChartNames: [],
+      filteredReleases: [],
       currentChart: {
         serviceName: '',
+        releaseName: '',
+        chart: '',
         chartNames: [],
         showSync: false,
         updateServiceTmpl: true,
@@ -143,8 +151,11 @@ export default {
     filteredItems () {
       return [
         {
-          value: 'serviceName',
+          value: 'chartName',
           text: this.$t('environments.helm.chartListComp.chartName')
+        }, {
+          value: 'releaseName',
+          text: this.$t('environments.helm.chartListComp.releaseName')
         },
         {
           value: 'status',
@@ -164,15 +175,32 @@ export default {
     }
   },
   methods: {
-    getFilterList () {
+    getFilterList ({ type }) {
       return getHelmReleaseListAPI(this.projectName, this.envName)
         .then(res => {
-          return res.map(re => {
-            return {
-              text: re.serviceName,
-              value: re.serviceName
+          return uniqBy(res.map(re => {
+            if (type === 'chartName') {
+              return {
+                text: re.chart,
+                value: re.chart
+              }
+            } else if (type === 'releaseName') {
+              return {
+                text: re.releaseName,
+                value: re.releaseName
+              }
+            } else if (type === 'status') {
+              return {
+                text: re.status,
+                value: re.status
+              }
+            } else {
+              return {
+                text: re.serviceName,
+                value: re.serviceName
+              }
             }
-          })
+          }), 'value')
         })
         .catch(err => {
           console.log(err)
@@ -187,10 +215,11 @@ export default {
         this.chartNames = res.map(re => {
           return {
             ...re,
-            selected: false
+            selected: false,
+            chartName: re.chart
           }
         })
-        this.filteredChartNames = this.chartNames
+        this.filteredReleases = this.chartNames
       })
     },
 
@@ -198,7 +227,7 @@ export default {
       const nameList = list.map(li => li.value || li)
       const chartNames = this.chartNames
 
-      this.filteredChartNames = type
+      this.filteredReleases = type
         ? chartNames.filter(chart => {
           return nameList.includes(chart[type])
         })
@@ -206,14 +235,14 @@ export default {
 
       this.refreshChartSelected()
       this.refreshServices(
-        this.filteredChartNames.length !== this.chartNames.length
-          ? this.filteredChartNames.map(chart => chart.serviceName)
+        this.filteredReleases.length !== this.chartNames.length
+          ? this.filteredReleases.map(chart => chart.releaseName)
           : ['*']
       )
     },
     refreshChartSelected (serviceName = '') {
-      this.filteredChartNames.forEach(chart => {
-        if (chart.serviceName === serviceName) {
+      this.filteredReleases.forEach(chart => {
+        if (chart.releaseName === serviceName) {
           chart.selected = true
         } else {
           chart.selected = false
@@ -232,9 +261,14 @@ export default {
         this.currentChart = {
           ...this.currentChart,
           serviceName: chart.serviceName,
+          releaseName: chart.releaseName,
+          chart: chart.chart,
           chartNames: [
             {
               serviceName: chart.serviceName,
+              chartName: chart.chart,
+              isHelmChartDeploy: chart.isHelmChartDeploy,
+              releaseName: chart.releaseName,
               type: 'update'
             }
           ],
@@ -251,6 +285,8 @@ export default {
           this.currentChart = {
             ...this.currentChart,
             serviceName: chart.serviceName,
+            releaseName: chart.releaseName,
+            chart: chart.chart,
             valuesYaml: res.valuesYaml
           }
         })
@@ -261,6 +297,8 @@ export default {
       this.valuesDialogVisible = false
       this.currentChart = {
         serviceName: '',
+        releaseName: '',
+        chart: '',
         chartNames: [],
         showSync: false,
         updateServiceTmpl: true,
@@ -333,6 +371,7 @@ export default {
       border: 0 solid white;
       border-top-width: 3px;
       border-bottom-width: 3px;
+      border-radius: 6px;
 
       &.selected {
         background: #06f3;
@@ -366,6 +405,17 @@ export default {
         white-space: nowrap;
         text-overflow: ellipsis;
         cursor: pointer;
+
+        .release-name {
+          display: flex;
+          color: #000;
+          font-weight: 400;
+        }
+
+        .chart-name {
+          display: flex;
+          color: #ccc;
+        }
       }
 
       .chart-right {
@@ -375,7 +425,7 @@ export default {
 
         .common-icon {
           margin-right: 4px;
-          font-size: 16px;
+          font-size: 18px;
 
           &.pointer {
             cursor: pointer;
