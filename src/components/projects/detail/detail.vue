@@ -22,7 +22,7 @@
           </el-table-column>
           <el-table-column :label="$t('project.clusterInfo')" prop="clusterName">
             <template slot-scope="{ row }">
-              <span>{{ row.clusterName.startsWith('local-') ? $t('project.localCluster') : row.clusterName }}</span>
+              <span>{{ row.cluster_id === '0123456789abcdef12345678'? $t('project.localCluster') : row.clusterName }}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t(`global.status`)">
@@ -138,16 +138,20 @@ export default {
         this.workflows = res.workflow_list
       }
     },
-    getEnvList () {
+    async getEnvList () {
       const projectName = this.projectName
-      listProductAPI(projectName).then(res => {
-        this.envList = res.map(element => {
+      let testEnvList = []
+      const hasTestEnvListPermission = await this.checkingPermissionMixin({ projectName: projectName, action: 'get_environment' })
+      if (hasTestEnvListPermission) {
+        testEnvList = await listProductAPI(projectName)
+        testEnvList.map(element => {
           getEnvInfoAPI(projectName, element.name).then(res => {
             element.status = res.status
           })
           return element
         })
-      })
+      }
+      this.envList = testEnvList
     },
     followUpFn () {
       this.$router.push('/v1/projects')
