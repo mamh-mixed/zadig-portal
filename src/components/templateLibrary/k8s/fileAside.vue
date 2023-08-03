@@ -185,14 +185,28 @@
                   <el-table-column label="">
                     <template slot-scope="scope">
                       <div class="variable-list-operation">
-                        <i class="icon el-icon-edit edit" @click="editCurrentVariable(scope.row)"></i>
-                        <i class="icon el-icon-remove-outline delete" @click="deleteCurrentVariable(scope.$index)"></i>
+                        <el-button v-if="checkPermissionSyncMixin({type:'system', action:fileStatus === 'added'?'edit_template':'create_template'})" type="text" size="medium" @click="editCurrentVariable(scope.row)">
+                          <i class="icon el-icon-edit edit"></i>
+                        </el-button>
+                        <el-tooltip v-else effect="light" :content="$t('permission.lackPermission')" placement="top">
+                          <el-button class="permission-disabled"  type="text" size="medium">
+                            <i class="icon el-icon-edit"></i>
+                          </el-button>
+                        </el-tooltip>
+                        <el-button v-if="checkPermissionSyncMixin({type:'system', action:fileStatus === 'added'?'edit_template':'create_template'})" type="text" size="medium" @click="deleteCurrentVariable(scope.$index)">
+                          <i class="icon el-icon-remove-outline delete"></i>
+                        </el-button>
+                        <el-tooltip v-else effect="light" :content="$t('permission.lackPermission')" placement="top">
+                          <el-button class="permission-disabled"  type="text" size="medium">
+                            <i class="icon el-icon-remove-outline"></i>
+                          </el-button>
+                        </el-tooltip>
                       </div>
                     </template>
                   </el-table-column>
                 </el-table>
                 <div class="variable-list-operation">
-                  <el-button type="text" size="medium" @click="addVariable">
+                  <el-button v-hasPermi="{type:'system', action:fileStatus === 'added'?'edit_template':'create_template', isBtn:true}" type="text" size="medium" @click="addVariable">
                     <i class="icon el-icon-circle-plus-outline"></i>
                   </el-button>
                 </div>
@@ -202,6 +216,7 @@
               </div>
               <div class="operation" v-else>
                 <el-button
+                  v-hasPermi="{type:'system', action:fileStatus === 'added'?'edit_template':'create_template',isBtn:true}"
                   type="primary"
                   size="small"
                   @click="validateVariables"
@@ -210,6 +225,7 @@
                 >{{$t(`global.validate`)}}</el-button>
                 <el-button
                   v-if="variableSwitcher === 'yamlEditor'"
+                  v-hasPermi="{type:'system', action: fileStatus === 'added'?'edit_template':'create_template',isBtn:true}"
                   type="primary"
                   size="small"
                   @click="saveKubernetesTemplateVariable"
@@ -488,6 +504,9 @@ export default {
   computed: {
     notSaved () {
       return this.fileContent.status === 'named'
+    },
+    fileStatus () {
+      return this.fileContent.status
     },
     cmOptions () {
       return {
