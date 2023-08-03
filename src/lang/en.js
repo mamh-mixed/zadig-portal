@@ -911,7 +911,9 @@ exports.default = {
     targetStatus: 'Target Status',
     keyword: 'Keyword',
     outline: 'Outline',
-    columnField: 'Column Field'
+    columnField: 'Column Field',
+    deployContent: 'Deploy Content',
+    serviceVarConfig: 'Service And Var Config'
   },
   webhookType: {
     dingding: 'DingDing',

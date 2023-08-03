@@ -77,7 +77,7 @@
                 <div @click="showStageOperateDialog('edit',item)" class="edit">
                   <i class="el-icon-s-tools"></i>
                 </div>
-                <Stage :stageInfo="payload.stages[index]" :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" :curStageIndex="curStageIndex" />
+                <Stage :stageInfo="payload.stages[index]"  :curJobIndex.sync="curJobIndex" :scale="scal" :workflowInfo="payload" :curStageIndex="curStageIndex" />
                 <div @click="delStage(index,item)" class="del">
                   <i class="el-icon-close"></i>
                 </div>
@@ -135,7 +135,7 @@
                 :workflowInfo="payload"
                 :curStageIndex="curStageIndex"
                 :curJobIndex="curJobIndex"
-              />
+              >
               <el-select size="small" v-model="service" multiple filterable clearable>
                 <el-option
                   disabled
@@ -163,6 +163,7 @@
                 :disabled="Object.keys(service).length === 0"
                 @click="addServiceAndBuild(job.spec.service_and_builds)"
               >+ {{$t(`global.add`)}}</el-button>
+              </JobBuild>
             </div>
             <JobPlugin
               v-if="job.type === jobType.plugin"
@@ -197,6 +198,8 @@
               :ref="jobType.k8sDeploy"
               :originServiceAndBuilds="originServiceAndBuilds"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobTest
               :projectName="projectName"
@@ -213,6 +216,8 @@
               :job="job"
               :ref="jobType.scanning"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
             <JobImageDistribute
               :projectName="projectName"
@@ -220,6 +225,8 @@
               :job="job"
               :ref="jobType.distribute"
               :workflowInfo="payload"
+              :curStageIndex="curStageIndex"
+              :curJobIndex="curJobIndex"
             />
           </div>
         </footer>
@@ -272,7 +279,7 @@
         <Notify :config="payload" :isEdit="isEdit" ref="notify" />
       </div>
     </el-drawer>
-    <el-dialog :title="stageOperateType === 'add' ? $t(`workflow.addStage`): $t(`workflow.editStage`)" :visible.sync="isShowStageOperateDialog" width="50%">
+    <el-dialog :title="stageOperateType === 'add' ? $t(`workflow.addStage`): $t(`workflow.editStage`)" :visible.sync="isShowStageOperateDialog" width="700px">
       <StageOperate
         ref="stageOperate"
         :stageInfo="stage"
@@ -297,7 +304,8 @@ import {
   jobType,
   jobTypeList,
   validateWorkflowName,
-  runTypes
+  runTypes,
+  requireFields
 } from './config'
 import {
   getAssociatedBuildsAPI,
@@ -333,6 +341,7 @@ export default {
     return {
       validateWorkflowName,
       runTypes,
+      requireFields,
       tabList,
       configList,
       activeName: 'ui',
@@ -387,8 +396,10 @@ export default {
       yamlError: '',
       isShowDrawer: false,
       scal: '1',
-      insertSatgeIndex: 0,
-      notComputedPayload: {}
+      insertStageIndex: 0,
+      notComputedPayload: {},
+      isShowModelDialog: false,
+      modelFormInfo: { name: '' }
     }
   },
   components: {
@@ -458,6 +469,11 @@ export default {
       })
       return res ? res.drawerHideButton : false
     },
+    policyName () {
+      const curRunPolicy = this.job ? this.job.run_policy : ''
+      const res = this.runTypes.find(item => item.value === curRunPolicy)
+      return res ? res.label : ''
+    },
     ...mapState({
       isEditJob: state => state.customWorkflow.isEditJob,
       isShowFooter: state => state.customWorkflow.isShowFooter,
@@ -472,7 +488,6 @@ export default {
       this.payload.project = this.projectName
       this.getServiceAndBuildList()
       this.setTitle()
-      // edit
       if (this.isEdit) {
         this.getWorkflowDetail(this.$route.params.workflow_name)
       }
@@ -569,6 +584,12 @@ export default {
           }
         }
         stage.jobs.forEach(job => {
+          if (job.error) {
+            this.$message.error(this.$t(`workflow.jobNotReady`))
+            throw Error()
+          } else {
+            delete job.error
+          }
           delete job.active
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
@@ -584,11 +605,10 @@ export default {
             }
           }
           if (job.type === 'zadig-deploy') {
-            if (job.spec.envType === 'fixed') {
+            if (job.spec.envTypes === 'fixed') {
               job.spec.env = '<+fixed>' + job.spec.env
             }
-            job.spec.source =
-              job.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
+            job.spec.source = job.spec.serviceType === 'other' ? 'fromjob' : 'runtime'
           }
           if (job.type === 'freestyle') {
             if (
@@ -621,12 +641,21 @@ export default {
                 }
               })
             }
+            if (job.spec.service_and_tests && job.spec.service_and_tests.length > 0) {
+              job.spec.service_and_tests.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.command === 'fixed') {
+                    item.value = '<+fixed>' + item.value
+                  }
+                })
+              })
+            }
+            job.spec.source = job.spec.source === 'other' ? 'fromjob' : 'runtime'
           }
           if (job.type === 'zadig-distribute-image') {
-            if (job.spec.source === 'other') {
-              job.spec.source = 'fromjob'
-            }
+            job.spec.source = job.spec.source === 'other' ? 'fromjob' : 'runtime'
           }
+          delete job.error
         })
       })
       // display_name 中间支持空格 结尾不支持
@@ -638,7 +667,7 @@ export default {
       if (this.modelId) {
         addCustomWorkflowAPI(yamlParams, this.projectName)
           .then(res => {
-            this.$message.success('模板保存成功')
+            this.$message.success('保存成功')
             this.getWorkflowDetail(this.payload.name)
             if (params && params === 'fromWebhook') {
               this.$router.push(
@@ -714,20 +743,29 @@ export default {
         this.payload.params.forEach(item => {
           if (item.value && item.value.includes('<+fixed>')) {
             item.command = 'fixed'
-            item.value = item.value.replaceAll('<+fixed>', '')
+            if (item.value.replaceAll) {
+              item.value = item.value.replaceAll('<+fixed>', '')
+            } else {
+              item.value = item.value.replace(/\<\+fixed\>/g, '')
+            }
           }
         })
       }
       this.payload.stages.forEach(stage => {
         stage.jobs.forEach(job => {
           job.active = false
+          job.error = false
           if (job.type === 'zadig-build') {
             if (job.spec && job.spec.service_and_builds) {
               job.spec.service_and_builds.forEach(service => {
                 service.key_vals.forEach(item => {
                   if (item.value.includes('<+fixed>')) {
                     item.command = 'fixed'
-                    item.value = item.value.replaceAll('<+fixed>', '')
+                    if (item.value.replaceAll) {
+                      item.value = item.value.replaceAll('<+fixed>', '')
+                    } else {
+                      item.value = item.value.replace(/\<\+fixed\>/g, '')
+                    }
                   }
                   if (item.value.includes('{{')) {
                     item.command = 'other'
@@ -738,18 +776,20 @@ export default {
           }
           if (job.type === 'zadig-deploy') {
             if (job.spec.env.includes('fixed')) {
-              job.spec.envType = 'fixed'
-              job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
+              job.spec.envTypes = 'fixed'
+              if (job.spec.env.replaceAll) {
+                job.spec.env = job.spec.env.replaceAll('<+fixed>', '')
+              } else {
+                job.spec.env = job.spec.env.replace(/\<\+fixed\>/g, '')
+              }
             }
             if (job.spec.env.includes('{{')) {
               job.spec.envType = 'other'
             }
-            if (job.spec.service_and_images.length > 0) {
-              job.spec.serviceType = 'runtime'
+            if (job.spec.env.includes('{{')) {
+              job.spec.envType = 'other'
             }
-            if (job.spec.source === 'fromjob') {
-              job.spec.serviceType = 'other'
-            }
+            job.spec.serviceType = job.spec.source === 'fromjob' ? 'other' : 'runtime'
             // Mapping for value-key
             if (
               job.spec &&
@@ -765,7 +805,11 @@ export default {
             job.spec.properties.envs.forEach(item => {
               if (item.value.includes('<+fixed>')) {
                 item.command = 'fixed'
-                item.value = item.value.replaceAll('<+fixed>', '')
+                if (item.value.replaceAll) {
+                  item.value = item.value.replaceAll('<+fixed>', '')
+                } else {
+                  item.value = item.value.replace(/\<\+fixed\>/g, '')
+                }
               }
               if (item.value.includes('{{')) {
                 item.command = 'other'
@@ -776,7 +820,11 @@ export default {
             job.spec.plugin.inputs.forEach(item => {
               if (item.value && item.value.includes('<+fixed>')) {
                 item.command = 'fixed'
-                item.value = item.value.replaceAll('<+fixed>', '')
+                if (item.value.replaceAll) {
+                  item.value = item.value.replaceAll('<+fixed>', '')
+                } else {
+                  item.value = item.value.replace(/\<\+fixed\>/g, '')
+                }
               }
               if (item.value && item.value.includes('{{')) {
                 item.command = 'other'
@@ -784,18 +832,50 @@ export default {
             })
           }
           if (job.type === 'zadig-test') {
-            if (job.spec && job.spec.test_modules) {
+            if (job.spec.test_modules && job.spec.test_modules.length > 0) {
               job.spec.test_modules.forEach(service => {
                 service.key_vals.forEach(item => {
                   if (item.value.includes('<+fixed>')) {
                     item.command = 'fixed'
-                    item.value = item.value.replaceAll('<+fixed>', '')
+                    if (item.value.replaceAll) {
+                      item.value = item.value.replaceAll('<+fixed>', '')
+                    } else {
+                      item.value = item.value.replace(/\<\+fixed\>/g, '')
+                    }
                   }
                   if (item.value.includes('{{')) {
                     item.command = 'other'
                   }
                 })
               })
+            }
+            if (job.spec.target_services && job.spec.target_services.length > 0) {
+              job.spec.target_services.forEach(service => {
+                service.value = `${service.service_name}/${service.service_module}`
+              })
+            }
+            if (
+              job.spec.service_and_tests &&
+              job.spec.service_and_tests.length > 0
+            ) {
+              job.spec.service_and_tests.forEach(service => {
+                service.key_vals.forEach(item => {
+                  if (item.value.includes('<+fixed>')) {
+                    item.command = 'fixed'
+                    if (item.value.replaceAll) {
+                      item.value = item.value.replaceAll('<+fixed>', '')
+                    } else {
+                      item.value = item.value.replace(/\<\+fixed\>/g, '')
+                    }
+                  }
+                  if (item.value.includes('{{')) {
+                    item.command = 'other'
+                  }
+                })
+              })
+            }
+            if (job.spec.source === 'fromjob') {
+              job.spec.source = 'other'
             }
           }
           if (job.type === 'zadig-distribute-image') {
@@ -810,15 +890,14 @@ export default {
       })
       this.originalWorkflow = cloneDeep(this.payload)
       this.$store.dispatch('setWorkflowInfo', cloneDeep(this.payload))
+      this.checkRequire()
     },
     showStageOperateDialog (type, row) {
-      this.insertSatgeIndex = this.payload.stages.length
+      this.insertStageIndex = this.payload.stages.length
       this.$store.dispatch('setCurOperateType', 'stageAdd')
       if (
-        type === 'add' &&
-        !this.isEdit &&
         this.payload.stages.length !== 0 &&
-        this.stage.jobs.length === 0
+        this.payload.stages.find(stage => stage.jobs.length === 0)
       ) {
         this.$message.error(this.$t(`workflow.atLeastOneJob`))
         return
@@ -829,7 +908,7 @@ export default {
         this.isShowStageOperateDialog = true
       }
       this.stageOperateType = type
-      if (row) {
+      if (row) { // when edit
         if (!row.approval) {
           row.approval = {
             enabled: false,
@@ -844,14 +923,14 @@ export default {
     },
     addStage (index) {
       this.showStageOperateDialog('add')
-      this.insertSatgeIndex = index + 1
+      this.insertStageIndex = index + 1
     },
     operateStage () {
       this.$refs.stageOperate.validate().then(valid => {
         if (valid) {
           if (this.stageOperateType === 'add') {
             this.stage = this.$refs.stageOperate.getData()
-            this.payload.stages.splice(this.insertSatgeIndex, 0, this.stage)
+            this.payload.stages.splice(this.insertStageIndex, 0, this.stage)
             this.curStageIndex = this.payload.stages.length - 1
             this.curJobIndex = -1
             this.$store.dispatch('setIsShowFooter', false)
@@ -899,7 +978,6 @@ export default {
           }
         })
       })
-      // 记录当前job长度 取消保存的时候 长度减1
       this.workflowCurJobLength = this.payload.stages[
         this.curStageIndex
       ].jobs.length
@@ -915,6 +993,7 @@ export default {
             this.curJobIndex,
             curJob
           )
+          this.checkRequire()
           this.$store.dispatch('setIsShowFooter', false)
         }
       })
@@ -989,12 +1068,40 @@ export default {
         this.workflowCurJobLength !==
         this.payload.stages[this.curStageIndex].jobs.length
       ) {
-        // 如果job长度有变化 则删除当前job
         this.payload.stages[this.curStageIndex].jobs.pop()
         this.curJobIndex = this.curJobIndex - 1
       }
       this.job = this.payload.stages[this.curStageIndex].jobs[this.curJobIndex]
       this.$store.dispatch('setIsShowFooter', false)
+    },
+    checkRequire () {
+      // 用模版(字段不是必填的)创建的工作流(字段必填)字段必填检查
+      this.payload.stages.forEach(stage => {
+        stage.jobs.forEach(job => {
+          const res = []
+          if (!requireFields[job.type] || requireFields[job.type].length === 0) return
+          requireFields[job.type].forEach(item => {
+            if (item.type === 'String') {
+              if (!job.spec[item.field]) {
+                res.push(true)
+              } else {
+                res.push(false)
+              }
+            } else {
+              if (job.spec[item.field] && job.spec[item.field].length === 0) {
+                res.push(true)
+              } else {
+                res.push(false)
+              }
+            }
+            if (res.includes(true)) {
+              this.$set(job, 'error', true)
+            } else {
+              this.$set(job, 'error', false)
+            }
+          })
+        })
+      })
     }
   },
   watch: {
@@ -1189,8 +1296,8 @@ export default {
 
             .edit {
               position: absolute;
-              top: 6px;
-              right: 20%;
+              top: 8px;
+              right: 8%;
               color: #666;
               font-size: 16px;
               cursor: pointer;
@@ -1235,7 +1342,7 @@ export default {
       height: 100%;
       font-size: 14px;
       background: #fff;
-      box-shadow: 1px 1px 14px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 -5px 8px rgba(0, 0, 0, 0.06);
 
       .header {
         display: flex;
@@ -1247,8 +1354,9 @@ export default {
         border-top: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
 
-        .pointer {
-          color: #ddd;
+        .name {
+          color: @themeColor;
+          cursor: pointer;
         }
       }
 
