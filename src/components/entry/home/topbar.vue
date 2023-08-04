@@ -203,7 +203,9 @@ export default {
   },
   methods: {
     async logOut () {
-      const result = await this.$store.dispatch('LOGOUT')
+      const result = await this.$store.dispatch('LOGOUT').catch(err => {
+        console.log(err)
+      })
       if (result.enable_redirect && result.redirect_url) {
         window.location.href = result.redirect_url
       } else {
