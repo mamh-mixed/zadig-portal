@@ -26,7 +26,7 @@
             {{$t(`build.stepFileUpload`)}}
             <el-button type="text" @click="removeObject" icon="el-icon-delete"></el-button>
           </span>
-          <el-form-item :label="$t(`sidebarMenu.objectStorage`)" prop="object_storage_id">
+          <el-form-item :label="$t(`sysSetting.integration.storageTab`)" prop="object_storage_id">
             <el-select
               size="small"
               v-model="testPostConfig.object_storage_upload.object_storage_id"
