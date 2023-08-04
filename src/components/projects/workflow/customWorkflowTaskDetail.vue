@@ -206,7 +206,7 @@
           @showFooter="showFooter"
           :isShowConsoleFooter.sync="isShowConsoleFooter"
         />
-        <JobDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :jobInfo="curJob" :projectName="projectName" />
+        <JobDeployDetail @showFooter="showFooter" v-if="curJob.type=== jobType.deploy" :deployType="deployType" :jobInfo="curJob" :projectName="projectName" />
         <StageApproval
           v-if="curJob.type === jobType.approval"
           :approvalInfo="curStage"
@@ -342,6 +342,12 @@ export default {
       } else {
         return {}
       }
+    },
+    deployType () {
+      const project = this.$store.getters.projectList.find(
+        project => project.name === this.projectName
+      )
+      return project ? project.deployType : ''
     }
   },
   methods: {
