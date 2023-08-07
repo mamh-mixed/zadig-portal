@@ -536,10 +536,6 @@ export default {
         .second {
           color: #4c4c4c;
           font-size: 13px;
-
-          &.gray {
-            color: @disabledColor;
-          }
         }
       }
 

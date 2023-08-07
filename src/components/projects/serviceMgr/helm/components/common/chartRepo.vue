@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { getHelmRepoAPI, getHelmRepoChartAPI, createTemplateServiceAPI, updateTemplateServiceAPI } from '@api'
+import { getHelmRepoAPI, getHelmRepoChartAPI, createHelmTemplateServiceAPI, updateHelmTemplateServiceAPI } from '@api'
 export default {
   name: 'ChartRepo',
   data () {
@@ -127,7 +127,7 @@ export default {
       const payload = this.chartForm
       const validateResult = await this.$refs.chartRepoForm.validate().catch((err) => { return err })
       if (validateResult) {
-        const reqApi = this.isUpdate ? updateTemplateServiceAPI : createTemplateServiceAPI
+        const reqApi = this.isUpdate ? updateHelmTemplateServiceAPI : createHelmTemplateServiceAPI
         const res = await reqApi(projectName, payload).catch(
           err => {
             this.importLoading = false
@@ -143,7 +143,7 @@ export default {
           } else {
             this.$message.error(res.failedServices[0].error)
           }
-          this.$store.dispatch('queryService', {
+          this.$store.dispatch('getHelmServices', {
             projectName: this.$route.params.project_name,
             showServiceName: payload.createFrom.chartName
           })

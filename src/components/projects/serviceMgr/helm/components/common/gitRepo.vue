@@ -57,6 +57,10 @@
         >
           <el-option v-for="(repo, index) in codeInfo['repoOwners']" :key="index" :label="repo.path" :value="repo.path">
             <span>{{repo.path}}</span>
+            <template v-if="codehostSource === 'gitee-enterprise'">
+              <span v-if="repo.kind==='enterprise'">({{$t('repository.info.enterprise')}})</span>
+              <span v-else-if="repo.kind==='org'">({{$t('repository.info.org')}})</span>
+            </template>
           </el-option>
         </el-select>
       </el-form-item>
@@ -169,7 +173,7 @@
     </el-form>
 
     <el-dialog
-      v-if="codehostSource === 'gerrit' || codehostSource === 'gitee'"
+      v-if="codehostSource === 'gerrit' || codehostSource === 'gitee' || codehostSource === 'gitee-enterprise'"
       :append-to-body="true"
       :visible.sync="workSpaceModalVisible"
       width="60%"
@@ -215,8 +219,8 @@ import {
   getRepoOwnerByIdAPI,
   getBranchInfoByIdAPI,
   getRepoFilesAPI,
-  createTemplateServiceAPI,
-  updateTemplateServiceAPI
+  createHelmTemplateServiceAPI,
+  updateHelmTemplateServiceAPI
 } from '@api'
 import GitFileTree from './gitFileTree'
 import GerritFileTree from '@/components/common/gitFileTree.vue'
@@ -237,6 +241,10 @@ export default {
           justSelectOneFile: false
         }
       }
+    },
+    production: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -373,9 +381,9 @@ export default {
       })
     },
     closeFileTree ({ successServices, failedServices }) {
-      this.$store.commit('SERVICE_DIALOG_VISIBLE', false)
+      this.$store.commit(this.production ? 'PRODUCTION_SERVICE_DIALOG_VISIBLE' : 'SERVICE_DIALOG_VISIBLE', false)
       if (successServices.length) {
-        this.$store.dispatch('queryService', {
+        this.$store.dispatch(this.production ? 'getProductionHelmServices' : 'getHelmServices', {
           projectName: this.$route.params.project_name,
           showServiceName: successServices[0]
         })
@@ -389,7 +397,7 @@ export default {
         }
       })
 
-      this.$store.commit('CHART_NAMES', services)
+      this.$store.commit(this.production ? 'PRODUCTION_CHART_NAMES' : 'CHART_NAMES', services)
 
       this.$emit('triggleAction')
     },
@@ -420,7 +428,8 @@ export default {
       const projectName = this.$route.params.project_name
       if (
         this.codehostSource === 'gerrit' ||
-        this.codehostSource === 'gitee'
+        this.codehostSource === 'gitee' ||
+        this.codehostSource === 'gitee-enterprise'
       ) {
         const params = {
           codehostId: this.source.codehostId,
@@ -447,7 +456,8 @@ export default {
         payload = {
           source:
             source === 'gerrit' ||
-            source === 'gitee'
+            source === 'gitee' ||
+            source === 'gitee-enterprise'
               ? source
               : 'repo',
           createFrom: {
@@ -461,8 +471,8 @@ export default {
         }
       }
       const reqApi = this.isUpdate
-        ? updateTemplateServiceAPI
-        : createTemplateServiceAPI
+        ? updateHelmTemplateServiceAPI
+        : createHelmTemplateServiceAPI
       const res = await reqApi(projectName, payload).catch(error =>
         console.log(error)
       )

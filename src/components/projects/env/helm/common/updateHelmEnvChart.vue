@@ -29,7 +29,6 @@
             v-show="usedChartNameInfo.yamlSource !== 'default'"
             showDelete
             showAutoSync
-            :fromGlobal="false"
             ref="importValuesRef"
             :resize="{direction: 'vertical'}"
             :importRepoInfo="usedChartNameInfo"
@@ -65,9 +64,10 @@ import Codemirror from '@/components/projects/common/codemirror.vue'
 import {
   getChartValuesYamlAPI,
   getAllChartValuesYamlAPI,
-  getCalculatedValuesYamlAPI
+  getCalculatedValuesYamlAPI,
+  checkHelmSvcResourceAPI
 } from '@api'
-import { cloneDeep, pick, differenceBy, get } from 'lodash'
+import { cloneDeep, pick, differenceBy, get, debounce } from 'lodash'
 
 const chartInfoTemp = {
   envName: '', // ?: String
@@ -131,7 +131,10 @@ export default {
       type: Boolean,
       default: true
     },
-    envInfos: Object // basic information of envNames, for check resource
+    envInfos: Object, // basic information of envNames, for check resource
+    opeType: {
+      type: String
+    }
   },
   data () {
     this.cmOption = {
@@ -199,9 +202,49 @@ export default {
         (this.showEnvTabs && this.selectedEnv === 'DEFAULT') ||
         (!this.selectedChart && !this.serviceNames.length)
       )
+    },
+    showCheckResource () {
+      return (
+        this.hasPlutus &&
+        (this.checkResource ||
+          (this.envInfos &&
+            this.envInfos[this.selectedEnv] &&
+            !this.envInfos[this.selectedEnv].hasDeployed))
+      )
     }
   },
   methods: {
+    switchDeployStrategy (type) {
+      // Note: when switching to import, reset data
+      if (type === 'import') {
+        // store data for deployment
+        this.usedChartNameInfo.initInfo.init_deployData = {
+          overrideYaml: this.usedChartNameInfo.overrideYaml,
+          yamlSource: this.usedChartNameInfo.yamlSource,
+          overrideValues: this.usedChartNameInfo.overrideValues,
+          gitRepoConfig: this.usedChartNameInfo.gitRepoConfig
+        }
+        this.usedChartNameInfo.overrideYaml = this.usedChartNameInfo.initInfo.init_overrideYaml || ''
+        this.usedChartNameInfo.yamlSource = this.usedChartNameInfo.overrideYaml ? 'customEdit' : 'default'
+        // Preview Collapse, clear key-value pairs
+        this.closeReview()
+        this.usedChartNameInfo.overrideValues = []
+        // clear repo info
+        this.usedChartNameInfo.gitRepoConfig = null
+      } else if (type === 'deploy') {
+        // Note: when switching to deploy, use the modified data, or use initial data if the first time
+        if (!this.usedChartNameInfo.initInfo.init_deployData) {
+          this.usedChartNameInfo.overrideYaml = this.usedChartNameInfo.initInfo.init_overrideYaml || ''
+          this.usedChartNameInfo.yamlSource = this.usedChartNameInfo.overrideYaml ? 'customEdit' : 'default'
+        } else {
+          const deployData = this.usedChartNameInfo.initInfo.init_deployData
+          this.usedChartNameInfo.overrideYaml = deployData.overrideYaml
+          this.usedChartNameInfo.yamlSource = deployData.yamlSource
+          this.usedChartNameInfo.overrideValues = deployData.overrideValues
+          this.usedChartNameInfo.gitRepoConfig = deployData.gitRepoConfig
+        }
+      }
+    },
     closeReview () {
       this.showReview = false
     },
@@ -221,7 +264,7 @@ export default {
       if (!kvFlag) {
         payload.overrideValues = this.usedChartNameInfo.overrideValues
       }
-      const res = await getCalculatedValuesYamlAPI(
+      const res = await (this.isProduction ? getProductionCalculatedValuesYamlAPI : getCalculatedValuesYamlAPI)(
         {
           projectName: this.projectName,
           serviceName: this.selectedChart,
@@ -364,7 +407,9 @@ export default {
       if (this.$refs.importValuesRef) {
         valid.push(this.$refs.importValuesRef.validate())
       }
-      if (this.$refs.keyValueRef) valid.push(this.$refs.keyValueRef.validate())
+      if (this.$refs.keyValueRef) {
+        valid.push(this.$refs.keyValueRef.validate())
+      }
       return Promise.all(valid)
     },
     async getChartValuesYaml ({ envName }) {
@@ -372,13 +417,11 @@ export default {
       const fn =
         this.envScene === 'updateRenderSet'
           ? getChartValuesYamlAPI // get current env info
-          : getAllChartValuesYamlAPI // get current project info
-
-      const serviceNames = this.chartNames
-        ? this.chartNames.map(chart => chart.serviceName)
+          : getAllChartValuesYamlAPI// get current project info
+      const payload = this.chartNames
+        ? this.chartNames.map(chart => { return { service_or_release_name: chart.serviceName, is_helm_chart_deploy: chart.isHelmChartDeploy } })
         : [] // get all service info in current env
-
-      const res = await fn(this.projectName, envName, serviceNames).catch(
+      const res = await fn(this.projectName, envName, payload).catch(
         err => {
           this.disabledEnv.push(envName)
           console.log(err)
@@ -507,6 +550,9 @@ export default {
             chartNames,
             this.selectedEnv || this.handledEnv
           )
+          if (newV.length > 0) {
+            this.getChartValuesYaml({ envName: this.selectedEnv || this.handledEnv })
+          }
         }
       },
       immediate: true
@@ -635,6 +681,19 @@ export default {
       position: relative;
       z-index: 0;
 
+      .release-check {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: space-between;
+        margin: 10px 0;
+
+        .tooltip {
+          color: @warning;
+          font-size: 14px;
+        }
+      }
+
       .v-content {
         position: relative;
         padding-bottom: 10px;
@@ -679,7 +738,7 @@ export default {
       right: 0;
       bottom: 0;
       left: 0;
-      z-index: 1;
+      z-index: 2;
       background-color: rgba(255, 255, 255, 0.5);
       cursor: not-allowed;
     }

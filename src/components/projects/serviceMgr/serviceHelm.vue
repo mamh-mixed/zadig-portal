@@ -2,7 +2,7 @@
   <div class="code-content">
     <Multipane class="custom-resizer" layout="vertical">
       <div class="left">
-        <div class="title">
+        <div class="function-container">
           <el-row style="width: 100%;">
             <el-col :span="10">
               <div class="source-dropdown">
@@ -146,15 +146,15 @@
   </div>
 </template>
 <script>
-import Folder from './components/editor/folder'
-import Order from './components/editor/order'
-import PageNav from './components/editor/pageNav'
-import CodeMirror from './components/editor/codeMirror'
-import Repo from './components/common/repo'
-import ServiceAside from './components/helm/aside'
+import Folder from './helm/components/editor/folder.vue'
+import Order from './helm/components/editor/order.vue'
+import PageNav from './helm/components/editor/pageNav.vue'
+import CodeMirror from './helm/components/editor/codeMirror.vue'
+import Repo from './helm/components/common/repo.vue'
+import ServiceAside from './helm/components/common/aside.vue'
 import { cloneDeep } from 'lodash'
 import { Multipane, MultipaneResizer } from 'vue-multipane'
-import UpdateHelmEnv from './components/common/updateHelmEnv'
+import UpdateHelmEnv from './helm/components/common/updateHelmEnv.vue'
 import CommonBuild from '@/components/projects/build/commonBuild.vue'
 import { deleteProjectServiceAPI } from '@api'
 import { mapState, mapGetters } from 'vuex'
@@ -337,7 +337,7 @@ export default {
           .then(res => {
             if (res) {
               this.update('delete', currentData.service_name)
-              this.$store.dispatch('queryService', {
+              this.$store.dispatch('getHelmServices', {
                 projectName: this.projectName
               })
             }
@@ -460,7 +460,7 @@ export default {
     update (type, serviceName) {
       if (type === 'delete') {
         this.chartInfo = {
-          chartNames: this.$store.state.serviceManage.chartNames.filter(
+          chartNames: this.$store.state.serviceHelm.chartNames.filter(
             chart => chart.serviceName === serviceName
           ),
           actionServiceName: serviceName,
@@ -536,12 +536,12 @@ export default {
       return envNameList
     },
     ...mapState({
-      service: state => state.serviceManage.serviceList,
-      showServiceName: state => state.serviceManage.showServiceName,
-      serviceSource: state => state.serviceManage.serviceSource,
-      dialogVisible: state => state.serviceManage.serviceDialogVisible,
-      currentService: state => state.serviceManage.currentService,
-      chartNames: state => state.serviceManage.chartNames
+      service: state => state.serviceHelm.serviceList,
+      showServiceName: state => state.serviceHelm.showServiceName,
+      serviceSource: state => state.serviceHelm.serviceSource,
+      dialogVisible: state => state.serviceHelm.serviceDialogVisible,
+      currentService: state => state.serviceHelm.currentService,
+      chartNames: state => state.serviceHelm.chartNames
     }),
     filteredNodeData () {
       return this.nodeData.filter(node => {
@@ -550,7 +550,7 @@ export default {
     },
     updateEnv () {
       const serviceName = this.$route.query.service_name
-      return this.$store.state.serviceManage.chartNames.filter(
+      return this.$store.state.serviceHelm.chartNames.filter(
         chart => chart.type !== 'delete' && chart.serviceName === serviceName
       )
     },
@@ -563,7 +563,7 @@ export default {
     }
   },
   mounted () {
-    this.$store.dispatch('queryService', { projectName: this.projectName })
+    this.$store.dispatch('getHelmServices', { projectName: this.projectName })
   },
   beforeDestroy () {
     this.$store.commit('RESET_CHART_NAMES')
@@ -608,6 +608,12 @@ export default {
     border-right: 1px solid #ebedef;
 
     .title {
+      margin: 6px 0 0 10px;
+      color: #909399;
+      font-size: 14px;
+    }
+
+    .function-container {
       display: flex;
       flex: 0 0 auto;
       align-items: center;

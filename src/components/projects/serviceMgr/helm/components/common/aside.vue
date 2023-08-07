@@ -7,10 +7,10 @@
           <div class="tabs__item" :class="{'selected': selected === 'var'}" @click="changeRoute('var')">
             <span class="step-name">{{$t('services.helm.imagesSection')}}</span>
           </div>
-          <div class="tabs__item" :class="{'selected': selected === 'policy'}" @click="changeRoute('policy')">
+          <div v-if="!production" class="tabs__item" :class="{'selected': selected === 'policy'}" @click="changeRoute('policy')">
             <span class="step-name">{{$t('services.common.policySection')}}</span>
           </div>
-          <div class="tabs__item" :class="{'selected': selected === 'help'}" @click="changeRoute('help')">
+          <div v-if="!production" class="tabs__item" :class="{'selected': selected === 'help'}" @click="changeRoute('help')">
             <span class="step-name">{{$t('services.common.helpSection')}}</span>
           </div>
         </div>
@@ -37,7 +37,7 @@
               <el-table-column prop="name" :label="$t('services.common.serviceModule')"></el-table-column>
               <el-table-column prop="image_name" :label="$t('services.common.serviceImageName')"></el-table-column>
               <el-table-column prop="image" :label="$t('services.common.serviceImageLabel')"></el-table-column>
-              <el-table-column :label="$t('services.common.buildInfoAndOperation')">
+              <el-table-column v-if="!production" :label="$t('services.common.buildInfoAndOperation')">
                 <template slot-scope="scope">
                   <div v-for="(buildName, index) in scope.row.build_names" :key="index">
                     <span class="build-name" @click="editBuild(scope.row.name, buildName)">{{ buildName }}</span>
@@ -111,23 +111,26 @@
         </div>
       </div>
     </div>
-    <MatchRule :value.sync="updateMatchRuleFlag" />
+    <MatchRule :value.sync="updateMatchRuleFlag" :production="production"/>
   </div>
 </template>
 <script>
 import qs from 'qs'
 import bus from '@utils/eventBus'
-import { mapState } from 'vuex'
 import Policy from '../../../k8s/common/policy.vue'
 import Help from './help.vue'
 import MatchRule from './matchRule.vue'
 import { cloneDeep } from 'lodash'
 import store from 'storejs'
-import { renamingHelmReleaseAPI, queryUserBindingsAPI } from '@api'
+import { renamingHelmReleaseAPI, renamingProductionHelmReleaseAPI, queryUserBindingsAPI } from '@api'
 export default {
   props: {
     changeExpandFileList: Function,
     isGuide: {
+      default: false,
+      type: Boolean
+    },
+    production: {
       default: false,
       type: Boolean
     }
@@ -178,12 +181,17 @@ export default {
     handleInputChange (value) {
       const service = cloneDeep(this.currentService)
       service.release_naming = value
-      this.$store.commit('CURRENT_SERVICE', service)
+      if (this.production) {
+        this.$store.commit('PRODUCTION_CURRENT_SERVICE', service)
+      } else {
+        this.$store.commit('CURRENT_SERVICE', service)
+      }
     },
     renamingHelmRelease () {
       const projectName = this.projectName
+      const serviceName = this.serviceName
       const payload = {
-        service_name: this.serviceName,
+        service_name: serviceName,
         naming: this.currentService.release_naming
       }
       this.$confirm(
@@ -196,12 +204,21 @@ export default {
         }
       )
         .then(() => {
-          renamingHelmReleaseAPI(projectName, payload).then(res => {
-            this.$message({
-              message: this.isGuide ? 'Helm Release 名称修改成功' : '服务正在重启，稍后请前往环境中确认',
-              type: 'success'
+          if (this.production) {
+            renamingProductionHelmReleaseAPI(projectName, serviceName, payload).then(res => {
+              this.$message({
+                message: this.isGuide ? 'Helm Release 名称修改成功' : '服务正在重启，稍后请前往环境中确认',
+                type: 'success'
+              })
             })
-          })
+          } else {
+            renamingHelmReleaseAPI(projectName, payload).then(res => {
+              this.$message({
+                message: this.isGuide ? 'Helm Release 名称修改成功' : '服务正在重启，稍后请前往环境中确认',
+                type: 'success'
+              })
+            })
+          }
         })
         .catch(() => {
           this.$message({
@@ -236,10 +253,20 @@ export default {
     projectName () {
       return this.$route.params.project_name
     },
-    ...mapState({
-      serviceModules: state => state.serviceManage.serviceModules,
-      currentService: state => state.serviceManage.currentService
-    }),
+    serviceModules () {
+      if (this.production) {
+        return this.$store.state.serviceHelmProduction.serviceModules
+      } else {
+        return this.$store.state.serviceHelm.serviceModules
+      }
+    },
+    currentService () {
+      if (this.production) {
+        return this.$store.state.serviceHelmProduction.currentService
+      } else {
+        return this.$store.state.serviceHelm.currentService
+      }
+    },
     serviceName () {
       return this.$route.query.service_name
     },
@@ -269,7 +296,7 @@ export default {
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .helm-aside-container {
   position: relative;
   display: flex;
