@@ -916,7 +916,8 @@ exports.default = {
     columnField: '列字段',
     deployContent: '部署内容',
     serviceVarConfig: '服务变量配置',
-    fromJobDiffTitle: '执行时，values 中的镜像信息将被前置 {name} 任务生成的镜像信息替换'
+    fromJobDiffTitle: '执行时，values 中的镜像信息将被前置 {name} 任务生成的镜像信息替换',
+    jobNotReady: '任务未配置完成'
   },
   webhookType: {
     dingding: '钉钉',
