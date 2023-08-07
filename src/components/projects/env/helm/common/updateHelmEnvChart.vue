@@ -64,10 +64,9 @@ import Codemirror from '@/components/projects/common/codemirror.vue'
 import {
   getChartValuesYamlAPI,
   getAllChartValuesYamlAPI,
-  getCalculatedValuesYamlAPI,
-  checkHelmSvcResourceAPI
+  getCalculatedValuesYamlAPI
 } from '@api'
-import { cloneDeep, pick, differenceBy, get, debounce } from 'lodash'
+import { cloneDeep, pick, differenceBy, get } from 'lodash'
 
 const chartInfoTemp = {
   envName: '', // ?: String
