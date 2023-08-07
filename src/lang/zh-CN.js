@@ -251,6 +251,8 @@ exports.default = {
     environments: '环境',
     templates: '模板库',
     services: '服务',
+    testServices: '测试服务',
+    productionServices: '生产服务',
     builds: '构建',
     tests: '测试',
     scannings: '代码扫描',

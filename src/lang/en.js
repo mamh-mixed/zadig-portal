@@ -251,6 +251,8 @@ exports.default = {
     environments: 'Environments',
     templates: 'Templates',
     services: 'Services',
+    testServices: 'Test Services',
+    productionServices: 'Production Services',
     builds: 'Builds',
     tests: 'Tests',
     scannings: 'Code Scanning',
