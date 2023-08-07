@@ -25,7 +25,7 @@ export default {
             return
           }
           if (this.projectInfo.product_feature.deploy_type === 'helm') {
-            this.currentComponent = () => import('./helm/code')
+            this.currentComponent = () => import('./serviceHelm')
           } else {
             this.currentComponent = () => import('./serviceK8s')
           }

@@ -75,20 +75,11 @@
             <section class="aside-section">
               <el-table :data="referenceList" stripe style="width: 100%;">
                 <el-table-column prop="project_name" :label="$t('templates.k8sYaml.projectName')"></el-table-column>
-                <el-table-column :label="$t('templates.k8sYaml.serviceType')">
-                  <template slot-scope="{ row }">
-                    <span>
-                      {{ row.production
-                      ? $t('subTopbarMenu.productionServices')
-                      : $t('subTopbarMenu.testServices') }}
-                    </span>
-                  </template>
-                </el-table-column>
                 <el-table-column prop="value" :label="$t(`global.serviceName`)">
                   <template slot-scope="scope">
                     <router-link
                       v-if="scope.row.service_name"
-                      :to="`/v1/projects/detail/${scope.row.project_name}/services${scope.row.production ? '/production' : ''}?service_name=${scope.row.service_name}&rightbar=var`"
+                      :to="`/v1/projects/detail/${scope.row.project_name}/services?service_name=${scope.row.service_name}&rightbar=var`"
                     >{{scope.row.service_name}}</router-link>
                     <span v-else>{{$t('templates.k8sYaml.noneVariable')}}</span>
                   </template>

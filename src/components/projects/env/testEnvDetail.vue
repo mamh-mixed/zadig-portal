@@ -20,7 +20,7 @@
           注意：使用基准环境
           <span class="bold">{{`${productInfo.share_env_base_env} `}}</span>的访问地址，并在请求的 Header 中加上
           <span class="bold">{{`x-env=${productInfo.env_name} `}}</span>即可将流量转发到当前环境中。
-          <a href="https://docs.koderover.com/zadig/ZadigX v1.6.0/env/self-test-env/" target="_blank" rel="noopener noreferrer">如何操作？</a>
+          <a href="https://docs.koderover.com/zadig/env/self-test-env/" target="_blank" rel="noopener noreferrer">如何操作？</a>
         </span>
       </el-alert>
       <el-alert

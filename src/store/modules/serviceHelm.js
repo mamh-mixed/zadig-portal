@@ -67,9 +67,9 @@ export default {
     }
   },
   actions: {
-    async queryService ({ dispatch, commit }, payload) {
+    async getHelmServices ({ dispatch, commit }, payload) {
       const service = []
-      const res = await Api.getHelmChartService(payload.projectName).catch(error => console.log(error))
+      const res = await Api.getHelmChartServiceAPI(payload.projectName).catch(error => console.log(error))
       if (res) {
         commit(Mutation.QUERY_ORDER_SERVICE, res.services || [])
         res.serviceInfos = res.service_infos ? res.service_infos : []
@@ -129,12 +129,12 @@ export default {
       const serviceName = payload.commitCache.slice(-1)[0].service_name
       const res = await Api.updateHelmChartAPI(serviceName, payload.projectName, params).catch(error => console.log(error))
       if (res) {
-        dispatch('queryService', { projectName: payload.projectName })
+        dispatch('getHelmServices', { projectName: payload.projectName })
         return Promise.resolve(res)
       }
     },
     async queryFilePath ({ dispatch }, { payload, source }) {
-      const res = await Api.getHelmChartServiceFilePath(payload).catch(error => console.log(error))
+      const res = await Api.getHelmChartServiceFilePathAPI(payload).catch(error => console.log(error))
       if (res) {
         res.map((child, index) => {
           child.id = payload.serviceName + '-' + child.name + '-' + index
@@ -152,13 +152,13 @@ export default {
       }
     },
     async queryFileContent ({ dispatch }, payload) {
-      const res = await Api.getHelmChartServiceFileContent(payload).catch(error => console.log(error))
+      const res = await Api.getHelmChartServiceFileContentAPI(payload).catch(error => console.log(error))
       if (res) {
         return Promise.resolve(res)
       }
     },
     queryServiceModule ({ commit }, payload) {
-      return Api.getHelmChartServiceModule(payload.projectName, payload.serviceName).then(ret => {
+      return Api.getHelmChartServiceModuleAPI(payload.projectName, payload.serviceName).then(ret => {
         commit(Mutation.QUERY_SERVICE_MODULE, ret.service_modules)
         commit(Mutation.CURRENT_SERVICE, ret.service)
       })

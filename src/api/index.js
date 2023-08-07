@@ -427,7 +427,7 @@ export function helmChartWithConfigAPI (serviceName, projectName) {
   return http.get(`/api/aslan/service/helm/${projectName}/${serviceName}?projectName=${projectName}`)
 }
 
-export function getHelmChartService (projectName) {
+export function getHelmChartServiceAPI (projectName) {
   return http.get(`/api/aslan/service/helm/${projectName}?projectName=${projectName}`)
 }
 
@@ -435,15 +435,15 @@ export function updateServicesOrchestrationAPI (projectName, payload) {
   return http.patch(`/api/aslan/project/products/${projectName}?projectName=${projectName}`, payload)
 }
 
-export function getHelmChartServiceFilePath ({ projectName, serviceName, path, revision = '', deliveryVersion = false }) {
+export function getHelmChartServiceFilePathAPI ({ projectName, serviceName, path, revision = '', deliveryVersion = false }) {
   return http.get(`/api/aslan/service/helm/${projectName}/${serviceName}/filePath?projectName=${projectName}&dir=${path}&revision=${revision}&deliveryVersion=${deliveryVersion}`)
 }
 
-export function getHelmChartServiceFileContent ({ projectName, serviceName, path, fileName, revision = '', deliveryVersion = false }) {
+export function getHelmChartServiceFileContentAPI ({ projectName, serviceName, path, fileName, revision = '', deliveryVersion = false }) {
   return http.get(`/api/aslan/service/helm/${projectName}/${serviceName}/fileContent?filePath=${path}&fileName=${fileName}&revision=${revision}&deliveryVersion=${deliveryVersion}&projectName=${projectName}`)
 }
 
-export function getHelmChartServiceModule (projectName, serviceName) {
+export function getHelmChartServiceModuleAPI (projectName, serviceName) {
   return http.get(`/api/aslan/service/helm/${projectName}/${serviceName}/serviceModule?projectName=${projectName}`)
 }
 
@@ -1684,15 +1684,15 @@ export function deleteChartTemplateAPI (name) {
   return http.delete(`/api/aslan/template/charts/${name}`)
 }
 
-export function createTemplateServiceAPI (projectName, payload) {
+export function createHelmTemplateServiceAPI (projectName, payload) {
   return http.post(`/api/aslan/service/helm/services?projectName=${projectName}`, payload)
 }
 
-export function updateTemplateServiceAPI (projectName, payload) {
+export function updateHelmTemplateServiceAPI (projectName, payload) {
   return http.put(`/api/aslan/service/helm/services?projectName=${projectName}`, payload)
 }
 
-export function createTemplateMultiServiceAPI (projectName, payload) {
+export function createHelmTemplateMultiServiceAPI (projectName, payload) {
   return http.post(`/api/aslan/service/helm/services/bulk?projectName=${projectName}`, payload)
 }
 
@@ -1816,8 +1816,8 @@ export function getChartValuesYamlAPI (projectName, envName, serviceName = []) {
   return http.get(`/api/aslan/environment/rendersets/renderchart?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}`)
 }
 
-export function getAllChartValuesYamlAPI (projectName, envName, serviceName = []) {
-  return http.get(`/api/aslan/environment/environments/${envName}/estimated-renderchart?projectName=${projectName}&serviceName=${serviceName.join(',')}`)
+export function getAllChartValuesYamlAPI (projectName, envName, payload) {
+  return http.post(`/api/aslan/environment/environments/${envName}/estimated-renderchart?projectName=${projectName}`, { get_svc_render_args: payload })
 }
 
 export function getEnvDefaultVariableAPI (projectName, envName, ifPassFilter = true) {

@@ -11,6 +11,7 @@
     <div class="manage-services-container">
       <el-form ref="serviceFormRef" class="primary-form" :model="updateServices" label-width="100px" label-position="left">
         <el-form-item
+          v-if="opeType === 'add'|| opeType === 'update'"
           :label="$t(`workflow.selectService`)"
           props="service_names"
           :rules="{ required: true, type: 'array', message: '请选择服务名称', trigger: ['blur', 'change']}"
@@ -29,6 +30,29 @@
           </el-select>
           <el-button type="primary" size="mini" plain @click="updateServices.service_names = currentServices">全选</el-button>
         </el-form-item>
+        <el-form-item
+          v-else-if="opeType === 'delete'"
+          :label="$t(`workflow.selectService`)"
+          props="service_names"
+          :rules="{ required: true, type: 'array', message: '请选择服务名称', trigger: ['blur', 'change']}"
+        >
+          <el-select
+            v-model="updateServices.service_names"
+            placeholder="请选择服务"
+            size="small"
+            value-key="serviceName"
+            filterable
+            multiple
+            clearable
+            collapse-tags
+          >
+            <el-option v-for="(service, index) in currentServices" :key="index" :label="service.serviceName" :value="service">
+              <span>{{ service.releaseName }}</span>
+              <span style="color: #a0a0a0;">{{ `(${service.serviceName})` }}</span>
+            </el-option>
+          </el-select>
+          <el-button type="primary" size="mini" plain @click="updateServices.service_names = currentServices">全选</el-button>
+        </el-form-item>
       </el-form>
       <template v-if="opeType !== 'delete'">
         <div class="var-title">变量配置</div>
@@ -38,6 +62,7 @@
           :envNames="[productInfo.env_name]"
           :handledEnv="productInfo.env_name"
           :envScene="`updateEnv`"
+          :opeType = "opeType"
         />
       </template>
     </div>
@@ -61,12 +86,11 @@ import {
   deleteEnvServicesAPI,
   getSingleProjectAPI
 } from '@api'
-import { flatten, difference } from 'lodash'
+import { flatten, differenceBy } from 'lodash'
 export default {
   props: {
     fetchAllData: Function,
-    productInfo: Object,
-    productStatus: Object
+    productInfo: Object
   },
   data () {
     return {
@@ -138,6 +162,7 @@ export default {
         })
       } else if (this.opeType === 'add' || this.opeType === 'update') {
         const res = await this.$refs.chartValuesRef.validate().catch(err => {
+          this.loading = false
           console.log(err)
         })
         if (!res) {
@@ -178,33 +203,56 @@ export default {
       const baseEnvName = this.baseEnvName
       const envType = this.envType
       let allServices = []
-      const res = await getSingleProjectAPI(projectName, envType, isBaseEnv, baseEnvName)
+      const res = await getSingleProjectAPI(
+        projectName,
+        envType,
+        isBaseEnv,
+        baseEnvName
+      )
       if (res) {
-        allServices = flatten(res.services)
+        allServices = flatten(res.services).map(service => {
+          return {
+            service_name: service
+          }
+        })
       }
       this.dialogVisible = true
       this.opeType = type
-      const productServices = flatten(this.productInfo.services)
+      const envServices = flatten(this.productInfo.services)
 
       let services = []
       switch (this.opeType) {
         case 'add':
-          services = difference(allServices, productServices)
+          services = differenceBy(allServices, envServices, 'service_name')
+          this.currentServices = services.map(service => {
+            return {
+              serviceName: service.service_name,
+              type: 'common'
+            }
+          })
           break
         case 'update':
-          services = productServices
+          services = envServices
+          this.currentServices = services.map(service => {
+            return {
+              serviceName: service.service_name,
+              type: 'common'
+            }
+          })
           break
         case 'delete':
-          services = productServices
+          services = envServices
+          this.currentServices = services.map(service => {
+            return {
+              serviceName: service.service_name,
+              releaseName: service.release_name,
+              chartName: service.chart,
+              chartVersion: '',
+              type: 'common'
+            }
+          })
           break
       }
-      this.currentServices = services.map(service => {
-        return {
-          serviceName: service,
-          chartVersion: '',
-          type: 'common'
-        }
-      })
     }
   },
   components: {

@@ -136,14 +136,9 @@ const utils = {
   * @return {string}           状态 css class name
   */
   _getStatusColor (status) {
-    if (status && status !== '') {
-      if (status === 'Running') {
-        return 'status-running'
-      } else if (status === 'Succeeded') {
-        return 'status-running'
-      } else {
-        return 'service-not-running'
-      }
+    const success = ['Running', 'Succeeded', 'SUSPEND: False', 'NoSuspend']
+    if (success.includes(status)) {
+      return 'status-running'
     } else {
       return 'service-not-running'
     }

@@ -117,7 +117,6 @@
 <script>
 import qs from 'qs'
 import bus from '@utils/eventBus'
-import { mapState } from 'vuex'
 import Policy from '../../../k8s/common/policy.vue'
 import Help from './help.vue'
 import MatchRule from './matchRule.vue'
@@ -182,8 +181,9 @@ export default {
     },
     renamingHelmRelease () {
       const projectName = this.projectName
+      const serviceName = this.serviceName
       const payload = {
-        service_name: this.serviceName,
+        service_name: serviceName,
         naming: this.currentService.release_naming
       }
       this.$confirm(
@@ -236,10 +236,12 @@ export default {
     projectName () {
       return this.$route.params.project_name
     },
-    ...mapState({
-      serviceModules: state => state.serviceManage.serviceModules,
-      currentService: state => state.serviceManage.currentService
-    }),
+    serviceModules () {
+      return this.$store.state.serviceHelm.serviceModules
+    },
+    currentService () {
+      return this.$store.state.serviceHelm.currentService
+    },
     serviceName () {
       return this.$route.query.service_name
     },
@@ -269,7 +271,7 @@ export default {
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .helm-aside-container {
   position: relative;
   display: flex;

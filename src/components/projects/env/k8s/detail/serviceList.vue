@@ -204,7 +204,12 @@ export default {
         Succeeded: 'success',
         Error: 'danger',
         Unstable: 'warning',
-        Unstart: 'info'
+        Unstart: 'info',
+        'SUSPEND: False': 'success', // for helm cronjob services
+        'SUSPEND: True': 'info',
+        NoSuspend: 'success', // for k8s cronjob services
+        PartSuspend: 'warning',
+        AllSuspend: 'info'
       },
       globalVariables: [],
       usedServiceInfo: cloneDeep(this.updateServiceInfo)
