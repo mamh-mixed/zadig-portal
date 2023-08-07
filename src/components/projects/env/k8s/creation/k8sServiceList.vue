@@ -29,6 +29,25 @@
         <div class="service-item" v-for="(service, serviceName) in selectedContainerMap" :key="serviceName">
           <div class="primary-title service-title">
             <div class="service-name">{{ serviceName }}</div>
+            <template>
+              <div class="service-resource">
+                <span class="middle">
+                  <el-tooltip effect="dark" placement="top">
+                    <div slot="content">
+                      <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                      <el-link
+                        style="font-size: 13px; vertical-align: baseline;"
+                        type="primary"
+                        href="https://docs.koderover.com/zadig/project/k8s-yaml/#资源检测"
+                        :underline="false"
+                        target="_blank"
+                      >{{$t(`global.document`)}}</el-link>
+                    </div>
+                    <span class="gray">{{$t('environments.k8s.serviceListComp.resourceDetection')}} <i class="el-icon-info gray"></i></span>
+                  </el-tooltip>
+                </span>
+              </div>
+            </template>
           </div>
           <div class="service-content">
             <template v-if="service.type==='k8s' && service.containers">

@@ -25,6 +25,23 @@
         <div class="header">服务列表</div>
         <el-table :data="currentResourceCheck" style="width: 100%;" row-key="service_name" :expand-row-keys="expandKeys">
           <el-table-column prop="service_name" :label="$t(`global.serviceName`)"></el-table-column>
+          <el-table-column>
+            <span slot="header">
+              <el-tooltip effect="dark" placement="top">
+                <div slot="content">
+                  <span>{{ $t('global.enterprisefeaturesReferforDetails') }}</span>
+                  <el-link
+                    style="font-size: 13px; vertical-align: baseline;"
+                    type="primary"
+                    href="https://docs.koderover.com/zadig/project/k8s-yaml/#资源检测"
+                    :underline="false"
+                    target="_blank"
+                  >{{$t(`global.document`)}}</el-link>
+                </div>
+                <span style="color: #909399;">{{$t('environments.k8s.serviceListComp.resourceDetection')}} <i class="el-icon-info"></i></span>
+              </el-tooltip>
+            </span>
+          </el-table-column>
           <el-table-column type="expand" width="100px" label="变量配置">
             <template slot-scope="{ row }">
               <div v-if="row.canEditYaml">
