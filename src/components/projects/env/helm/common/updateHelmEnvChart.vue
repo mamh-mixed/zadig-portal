@@ -511,7 +511,12 @@ export default {
             this.selectedEnv || this.handledEnv
           )
           if (newV.length > 0) {
-            this.getChartValuesYaml({ envName: this.selectedEnv || this.handledEnv })
+            this.envNames.forEach(env => {
+              if (env === 'DEFAULT' || !env) {
+                return
+              }
+              this.getChartValuesYaml({ envName: env })
+            })
           }
         }
       },
