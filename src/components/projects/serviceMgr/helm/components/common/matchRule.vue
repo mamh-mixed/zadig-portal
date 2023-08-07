@@ -126,8 +126,7 @@ export default {
     }
   },
   props: {
-    value: Boolean,
-    production: Boolean
+    value: Boolean
   },
   computed: {
     projectName () {
@@ -223,7 +222,7 @@ export default {
           this.updateMatchRule = false
           this.addLoading = false
           this.serviceName &&
-            this.$store.dispatch(this.production ? 'queryProductionServiceModule' : 'queryServiceModule', {
+            this.$store.dispatch('queryServiceModule', {
               projectName: this.projectName,
               serviceName: this.serviceName
             })

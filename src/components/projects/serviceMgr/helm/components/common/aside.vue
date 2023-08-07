@@ -7,10 +7,10 @@
           <div class="tabs__item" :class="{'selected': selected === 'var'}" @click="changeRoute('var')">
             <span class="step-name">{{$t('services.helm.imagesSection')}}</span>
           </div>
-          <div v-if="!production" class="tabs__item" :class="{'selected': selected === 'policy'}" @click="changeRoute('policy')">
+          <div class="tabs__item" :class="{'selected': selected === 'policy'}" @click="changeRoute('policy')">
             <span class="step-name">{{$t('services.common.policySection')}}</span>
           </div>
-          <div v-if="!production" class="tabs__item" :class="{'selected': selected === 'help'}" @click="changeRoute('help')">
+          <div class="tabs__item" :class="{'selected': selected === 'help'}" @click="changeRoute('help')">
             <span class="step-name">{{$t('services.common.helpSection')}}</span>
           </div>
         </div>
@@ -37,7 +37,7 @@
               <el-table-column prop="name" :label="$t('services.common.serviceModule')"></el-table-column>
               <el-table-column prop="image_name" :label="$t('services.common.serviceImageName')"></el-table-column>
               <el-table-column prop="image" :label="$t('services.common.serviceImageLabel')"></el-table-column>
-              <el-table-column v-if="!production" :label="$t('services.common.buildInfoAndOperation')">
+              <el-table-column :label="$t('services.common.buildInfoAndOperation')">
                 <template slot-scope="scope">
                   <div v-for="(buildName, index) in scope.row.build_names" :key="index">
                     <span class="build-name" @click="editBuild(scope.row.name, buildName)">{{ buildName }}</span>
@@ -111,7 +111,7 @@
         </div>
       </div>
     </div>
-    <MatchRule :value.sync="updateMatchRuleFlag" :production="production"/>
+    <MatchRule :value.sync="updateMatchRuleFlag" />
   </div>
 </template>
 <script>
@@ -122,15 +122,11 @@ import Help from './help.vue'
 import MatchRule from './matchRule.vue'
 import { cloneDeep } from 'lodash'
 import store from 'storejs'
-import { renamingHelmReleaseAPI, renamingProductionHelmReleaseAPI, queryUserBindingsAPI } from '@api'
+import { renamingHelmReleaseAPI, queryUserBindingsAPI } from '@api'
 export default {
   props: {
     changeExpandFileList: Function,
     isGuide: {
-      default: false,
-      type: Boolean
-    },
-    production: {
       default: false,
       type: Boolean
     }
@@ -181,11 +177,7 @@ export default {
     handleInputChange (value) {
       const service = cloneDeep(this.currentService)
       service.release_naming = value
-      if (this.production) {
-        this.$store.commit('PRODUCTION_CURRENT_SERVICE', service)
-      } else {
-        this.$store.commit('CURRENT_SERVICE', service)
-      }
+      this.$store.commit('CURRENT_SERVICE', service)
     },
     renamingHelmRelease () {
       const projectName = this.projectName
@@ -204,21 +196,12 @@ export default {
         }
       )
         .then(() => {
-          if (this.production) {
-            renamingProductionHelmReleaseAPI(projectName, serviceName, payload).then(res => {
-              this.$message({
-                message: this.isGuide ? 'Helm Release 名称修改成功' : '服务正在重启，稍后请前往环境中确认',
-                type: 'success'
-              })
+          renamingHelmReleaseAPI(projectName, payload).then(res => {
+            this.$message({
+              message: this.isGuide ? 'Helm Release 名称修改成功' : '服务正在重启，稍后请前往环境中确认',
+              type: 'success'
             })
-          } else {
-            renamingHelmReleaseAPI(projectName, payload).then(res => {
-              this.$message({
-                message: this.isGuide ? 'Helm Release 名称修改成功' : '服务正在重启，稍后请前往环境中确认',
-                type: 'success'
-              })
-            })
-          }
+          })
         })
         .catch(() => {
           this.$message({
@@ -254,18 +237,10 @@ export default {
       return this.$route.params.project_name
     },
     serviceModules () {
-      if (this.production) {
-        return this.$store.state.serviceHelmProduction.serviceModules
-      } else {
-        return this.$store.state.serviceHelm.serviceModules
-      }
+      return this.$store.state.serviceHelm.serviceModules
     },
     currentService () {
-      if (this.production) {
-        return this.$store.state.serviceHelmProduction.currentService
-      } else {
-        return this.$store.state.serviceHelm.currentService
-      }
+      return this.$store.state.serviceHelm.currentService
     },
     serviceName () {
       return this.$route.query.service_name

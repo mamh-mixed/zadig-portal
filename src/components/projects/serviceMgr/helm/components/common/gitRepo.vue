@@ -241,10 +241,6 @@ export default {
           justSelectOneFile: false
         }
       }
-    },
-    production: {
-      type: Boolean,
-      default: false
     }
   },
   components: {
@@ -381,9 +377,9 @@ export default {
       })
     },
     closeFileTree ({ successServices, failedServices }) {
-      this.$store.commit(this.production ? 'PRODUCTION_SERVICE_DIALOG_VISIBLE' : 'SERVICE_DIALOG_VISIBLE', false)
+      this.$store.commit('SERVICE_DIALOG_VISIBLE', false)
       if (successServices.length) {
-        this.$store.dispatch(this.production ? 'getProductionHelmServices' : 'getHelmServices', {
+        this.$store.dispatch('getHelmServices', {
           projectName: this.$route.params.project_name,
           showServiceName: successServices[0]
         })
@@ -397,7 +393,7 @@ export default {
         }
       })
 
-      this.$store.commit(this.production ? 'PRODUCTION_CHART_NAMES' : 'CHART_NAMES', services)
+      this.$store.commit('CHART_NAMES', services)
 
       this.$emit('triggleAction')
     },

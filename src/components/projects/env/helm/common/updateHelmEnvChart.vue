@@ -202,49 +202,9 @@ export default {
         (this.showEnvTabs && this.selectedEnv === 'DEFAULT') ||
         (!this.selectedChart && !this.serviceNames.length)
       )
-    },
-    showCheckResource () {
-      return (
-        this.hasPlutus &&
-        (this.checkResource ||
-          (this.envInfos &&
-            this.envInfos[this.selectedEnv] &&
-            !this.envInfos[this.selectedEnv].hasDeployed))
-      )
     }
   },
   methods: {
-    switchDeployStrategy (type) {
-      // Note: when switching to import, reset data
-      if (type === 'import') {
-        // store data for deployment
-        this.usedChartNameInfo.initInfo.init_deployData = {
-          overrideYaml: this.usedChartNameInfo.overrideYaml,
-          yamlSource: this.usedChartNameInfo.yamlSource,
-          overrideValues: this.usedChartNameInfo.overrideValues,
-          gitRepoConfig: this.usedChartNameInfo.gitRepoConfig
-        }
-        this.usedChartNameInfo.overrideYaml = this.usedChartNameInfo.initInfo.init_overrideYaml || ''
-        this.usedChartNameInfo.yamlSource = this.usedChartNameInfo.overrideYaml ? 'customEdit' : 'default'
-        // Preview Collapse, clear key-value pairs
-        this.closeReview()
-        this.usedChartNameInfo.overrideValues = []
-        // clear repo info
-        this.usedChartNameInfo.gitRepoConfig = null
-      } else if (type === 'deploy') {
-        // Note: when switching to deploy, use the modified data, or use initial data if the first time
-        if (!this.usedChartNameInfo.initInfo.init_deployData) {
-          this.usedChartNameInfo.overrideYaml = this.usedChartNameInfo.initInfo.init_overrideYaml || ''
-          this.usedChartNameInfo.yamlSource = this.usedChartNameInfo.overrideYaml ? 'customEdit' : 'default'
-        } else {
-          const deployData = this.usedChartNameInfo.initInfo.init_deployData
-          this.usedChartNameInfo.overrideYaml = deployData.overrideYaml
-          this.usedChartNameInfo.yamlSource = deployData.yamlSource
-          this.usedChartNameInfo.overrideValues = deployData.overrideValues
-          this.usedChartNameInfo.gitRepoConfig = deployData.gitRepoConfig
-        }
-      }
-    },
     closeReview () {
       this.showReview = false
     },
@@ -264,7 +224,7 @@ export default {
       if (!kvFlag) {
         payload.overrideValues = this.usedChartNameInfo.overrideValues
       }
-      const res = await (this.isProduction ? getProductionCalculatedValuesYamlAPI : getCalculatedValuesYamlAPI)(
+      const res = await getCalculatedValuesYamlAPI(
         {
           projectName: this.projectName,
           serviceName: this.selectedChart,
