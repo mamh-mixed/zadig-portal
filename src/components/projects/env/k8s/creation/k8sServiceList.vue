@@ -43,7 +43,7 @@
                         target="_blank"
                       >{{$t(`global.document`)}}</el-link>
                     </div>
-                    <span>{{$t('environments.k8s.serviceListComp.resourceDetection')}} <i class="el-icon-info gray"></i></span>
+                    <span class="gray">{{$t('environments.k8s.serviceListComp.resourceDetection')}} <i class="el-icon-info gray"></i></span>
                   </el-tooltip>
                 </span>
               </div>

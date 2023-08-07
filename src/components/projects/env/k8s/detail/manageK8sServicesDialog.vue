@@ -38,7 +38,7 @@
                     target="_blank"
                   >{{$t(`global.document`)}}</el-link>
                 </div>
-                <span>{{$t('environments.k8s.serviceListComp.resourceDetection')}} <i class="el-icon-info gray"></i></span>
+                <span style="color: #909399;">{{$t('environments.k8s.serviceListComp.resourceDetection')}} <i class="el-icon-info"></i></span>
               </el-tooltip>
             </span>
           </el-table-column>
