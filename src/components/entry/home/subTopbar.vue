@@ -323,6 +323,7 @@ export default {
             }
           }
         }
+
         .nav-item {
           display: inline-flex;
           align-items: center;
