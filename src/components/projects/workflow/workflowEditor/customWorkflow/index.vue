@@ -1038,7 +1038,12 @@ export default {
           this.$set(
             this.payload,
             'share_storages',
-            this.$refs.settings.getData()
+            this.$refs.settings.getData().share_storages
+          )
+          this.$set(
+            this.payload,
+            'concurrency_limit',
+            this.$refs.settings.getData().concurrency_limit
           )
           this.isShowDrawer = false
         })
@@ -1105,6 +1110,14 @@ export default {
     }
   },
   watch: {
+    payload: {
+      handler (val) {
+        if (this.activeName === 'yaml') {
+          this.yaml = jsyaml.dump(val)
+        }
+      },
+      deep: true
+    },
     activeName (newVal, oldVal) {
       if (newVal === 'yaml') {
         this.yaml = jsyaml.dump(this.payload)
