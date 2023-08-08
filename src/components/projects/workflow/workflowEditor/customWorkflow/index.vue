@@ -897,7 +897,8 @@ export default {
       this.$store.dispatch('setCurOperateType', 'stageAdd')
       if (
         this.payload.stages.length !== 0 &&
-        this.payload.stages.find(stage => stage.jobs.length === 0)
+        this.payload.stages.find(stage => stage.jobs.length === 0) &&
+        type === 'add'
       ) {
         this.$message.error(this.$t(`workflow.atLeastOneJob`))
         return
