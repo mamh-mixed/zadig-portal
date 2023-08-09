@@ -1045,6 +1045,9 @@ export default {
               job.spec.service_and_images = serviceAndImages
               if (!job.spec.deploy_contents.includes('image')) {
                 job.spec.service_and_images = job.pickedTargets
+                job.spec.service_and_images.forEach(item => {
+                  delete item.images
+                })
               }
               delete job.pickedTargets
             } else {
