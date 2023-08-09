@@ -317,7 +317,9 @@ export default {
   },
   methods: {
     toCancelInitRepoOwnerRequest () {
-      this.cancelInitRepoOwnerRequest()
+      if (this.cancelInitRepoOwnerRequest !== null) {
+        this.cancelInitRepoOwnerRequest('取消请求')
+      }
     },
     setLoadingState (index, loading, isLoading) {
       if (this.codeInfo[index]) {
