@@ -4,8 +4,6 @@
       <el-col :span="4">{{$t(`global.serviceName`)}}</el-col>
       <el-col :span="4" v-if="job.spec.deploy_contents.includes('image')">{{$t(`global.serviceModule`)}}</el-col>
       <el-col :span="6" v-if="job.spec.deploy_contents.includes('image')">{{$t(`global.imageVersion`)}}</el-col>
-      <el-col :span="4" v-if="job.spec.deploy_contents.includes('vars')">{{$t(`global.serviceVar`)}}</el-col>
-      <el-col :span="4" v-if="job.spec.deploy_contents.includes('config')">{{$t(`global.serviceConfiguration`)}}</el-col>
       <el-col :span="1"></el-col>
     </el-row>
     <div v-if="job.spec.source && job.spec.source==='runtime'">
@@ -25,22 +23,6 @@
               </el-select>
             </div>
           </div>
-        </el-col>
-        <el-col :span="4" v-if="job.spec.deploy_contents.includes('vars')" class="col">
-          <span class="icon el-icon-arrow-up" v-show="item.isExpand" @click="expand(item,false)">{{$t(`global.collapse`)}}</span>
-          <span class="icon el-icon-arrow-right" v-show="!item.isExpand" @click="expand(item,true)">{{$t(`global.expand`)}}</span>
-        </el-col>
-        <el-col :span="4" class="list-change" v-if="job.spec.deploy_contents.includes('config')">
-          <div v-if="item.updatable">
-            <div class="has">
-              <span class="el-icon-warning-outline"></span>
-              {{$t(`global.hasChange`)}}
-            </div>
-            <el-checkbox v-model="item.update_config">
-              <span style="font-size: 13px;">使用最新变更</span>
-            </el-checkbox>
-          </div>
-          <div v-else class="no">{{$t(`global.noChange`)}}</div>
         </el-col>
         <el-col :span="1" class="col" v-if="deployType!=='external'">
           <span class="icon" @click="preview(item, 'runtime', job)">{{$t(`global.preview`)}}</span>
@@ -113,10 +95,6 @@
                 <span style="color: #909399; font-size: 12px;">来自前置构建任务</span>
               </div>
             </div>
-          </el-col>
-          <el-col :span="4" v-if="job.spec.deploy_contents.includes('vars')" class="col">
-            <span class="icon el-icon-arrow-up" v-show="item.isExpand" @click="expand(item,false)">{{$t(`global.collapse`)}}</span>
-            <span class="icon el-icon-arrow-right" v-show="!item.isExpand" @click="expand(item,true)">{{$t(`global.expand`)}}</span>
           </el-col>
           <el-col :span="4" class="list-change" v-if="job.spec.deploy_contents.includes('config')">
             <div v-if="item.updatable">
