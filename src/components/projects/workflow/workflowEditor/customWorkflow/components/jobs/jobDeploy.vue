@@ -69,20 +69,6 @@
           @change="handleEnvTypeChange($event,'select1')"
         />
       </el-form-item>
-      <el-form-item
-        :label="$t(`workflow.deployContent`)"
-        prop="spec.deploy_contents"
-        :rules="{required: true, message: '请至少选择一个部署内容', trigger: ['blur', 'change']}"
-      >
-        <el-checkbox-group v-model="job.spec.deploy_contents">
-          <el-checkbox
-            v-for="item in deployContentList"
-            :label="item.value"
-            :key="item.value"
-            :disabled="deployType==='external'"
-          >{{$t(`global.${item.label}`) }}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
       <el-form-item v-if="isShowVarConfig && deployType!=='helm'">
         <span slot="label">
           {{$t(`workflow.serviceVarConfig`)}}
