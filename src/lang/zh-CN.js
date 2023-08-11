@@ -1115,6 +1115,10 @@ exports.default = {
       associatedServices: '关联服务',
       sureRelatedServices: '服务 {services} 会更新，请确认。',
       noRelatedServices: '无关联的服务需要更新，请确认。',
+      restart: '重启',
+      sureRestartService: '确定重启服务吗？',
+      restartServiceSuccess: '重启服务成功',
+      restartServiceCancel: '已取消重启',
       serviceDetail: {
         restartService: '重启服务',
         serviceStatus: '状态',
