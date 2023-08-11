@@ -155,38 +155,58 @@
           <span class="text mg-l8">End</span>
         </div>
         <div v-if="activeName==='env'" class="env">
-          <el-table :data="envList" v-if="envList.length>0" class="table">
+          <el-table :data="envList" v-if="envList.length>0" class="env-table">
             <el-table-column type="expand">
               <template slot-scope="props">
-                <div v-if="props.row.name==='工作流变量'">
-                  <div v-for="(env,index) in props.row.envs" :key="index" class="table-env">
-                    <span class="item">{{env.name}}</span>
-                    <span class="item">{{env.value}}</span>
-                  </div>
+                <div v-if="props.row.name==='工作流变量'" class="env-row">
+                  <el-row v-for="(env,index) in props.row.envs" :key="index" class="env-item">
+                    <el-col :span="12">
+                      <span class="key">{{env.name}}</span>
+                    </el-col>
+                    <el-col :span="12">
+                       <span class="value">{{env.value}}</span>
+                    </el-col>
+                  </el-row>
                 </div>
-                <div v-if="props.row.type==='zadig-build'">
-                  <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
-                    <span class="item">{{env.key}}</span>
-                    <span class="item">{{env.value}}</span>
-                  </div>
+                <div v-if="props.row.type==='zadig-build'" class="env-row">
+                  <el-row v-for="(env,index) in props.row.spec.envs" :key="index" class="env-item">
+                    <el-col :span="12">
+                      <span class="key">{{env.key}}</span>
+                    </el-col>
+                    <el-col :span="12">
+                       <span class="value">{{env.value}}</span>
+                    </el-col>
+                  </el-row>
                 </div>
-                <div v-if="props.row.type==='zadig-deploy'">
-                  <div v-for="(env,index) in props.row.spec.key_vals" :key="index" class="table-env">
-                    <span class="item">{{env.key}}</span>
-                    <span class="item">{{env.value}}</span>
-                  </div>
+                <div v-if="props.row.type==='zadig-deploy'" class="env-row">
+                  <el-row v-for="(env,index) in props.row.spec.key_vals" :key="index" class="env-item">
+                    <el-col :span="12">
+                      <span class="key">{{env.key}}</span>
+                    </el-col>
+                    <el-col :span="12">
+                       <span class="value">{{env.value}}</span>
+                    </el-col>
+                  </el-row>
                 </div>
-                <div v-if="props.row.type === 'freestyle'">
-                  <div v-for="(env,index) in props.row.spec.envs" :key="index" class="table-env">
-                    <span class="item" v-if="env">{{env.key}}</span>
-                    <span class="item" v-if="env">{{env.value}}</span>
-                  </div>
+                <div v-if="props.row.type === 'freestyle'" class="env-row">
+                  <el-row v-for="(env,index) in props.row.spec.envs" :key="index" class="env-item">
+                    <el-col :span="12">
+                      <span class="key">{{env.key}}</span>
+                    </el-col>
+                    <el-col :span="12">
+                       <span class="value">{{env.value}}</span>
+                    </el-col>
+                  </el-row>
                 </div>
-                <div v-if="props.row.type === 'plugin'">
-                  <div v-for="(env,index) in props.row.spec.inputs" :key="index" class="table-env">
-                    <span class="item" v-if="env">{{env.name}}</span>
-                    <span class="item" v-if="env">{{env.value}}</span>
-                  </div>
+                <div v-if="props.row.type === 'plugin'" class="env-row">
+                  <el-row v-for="(env,index) in props.row.spec.inputs" :key="index" class="env-item">
+                    <el-col :span="12">
+                      <span class="key">{{env.name}}</span>
+                    </el-col>
+                    <el-col :span="12">
+                       <span class="value">{{env.value}}</span>
+                    </el-col>
+                  </el-row>
                 </div>
               </template>
             </el-table-column>
@@ -784,20 +804,23 @@ export default {
     }
 
     .env {
-      width: 50%;
+      width: 100%;
       min-height: 400px;
       max-height: 80%;
       overflow-y: auto;
 
-      .table {
-        &-env {
-          height: 30px;
-          padding: 0 60px;
-          line-height: 30px;
+      .env-table {
+        .env-row {
+          padding-left: 60px;
 
-          .item {
-            display: inline-block;
-            width: 40%;
+          .env-item {
+            padding-top: 5px;
+            padding-bottom: 5px;
+
+            .key,
+            .value {
+              word-wrap: break-word;
+            }
           }
         }
       }
