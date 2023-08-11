@@ -1115,6 +1115,10 @@ exports.default = {
       associatedServices: 'Associated Services',
       sureRelatedServices: 'Service {services} will be updated, please confirm.',
       noRelatedServices: 'Unrelated services need to be updated, please confirm.',
+      restart: 'Restart',
+      sureRestartService: 'Are you sure to restart the service?',
+      restartServiceSuccess: 'Restart the service successfully',
+      restartServiceCancel: 'Service restart canceled',
       serviceDetail: {
         restartService: 'Restart',
         serviceStatus: 'Status',
