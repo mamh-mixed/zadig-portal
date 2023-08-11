@@ -1812,8 +1812,8 @@ export function getBuildTemplateReferenceAPI (id) {
 }
 
 // Helm env and service
-export function getChartValuesYamlAPI (projectName, envName, serviceName = []) {
-  return http.get(`/api/aslan/environment/rendersets/renderchart?projectName=${projectName}&envName=${envName}&serviceName=${serviceName.join(',')}`)
+export function getChartValuesYamlAPI (projectName, envName, payload) {
+  return http.post(`/api/aslan/environment/rendersets/renderchart?projectName=${projectName}&envName=${envName}`, { get_svc_render_args: payload })
 }
 
 export function getAllChartValuesYamlAPI (projectName, envName, payload) {
