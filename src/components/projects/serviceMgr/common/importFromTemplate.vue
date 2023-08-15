@@ -10,8 +10,8 @@
       :visible="dialogImportFromYamlVisible"
       @update:visible="$emit('update:dialogImportFromYamlVisible', $event)"
     >
-      <el-form :model="importYaml" @submit.native.prevent label-position="left" ref="importYamlForm">
-        <el-form-item :label="$t(`global.serviceName`)" prop="serviceName" :rules="{ required: true, message: '服务名称不能为空', trigger: ['change','blur'] }">
+      <el-form :model="importYaml" @submit.native.prevent label-position="left" ref="importYamlForm" :rules="serviceRules">
+        <el-form-item :label="$t(`global.serviceName`)" prop="serviceName">
           <el-input
             style="width: calc(100% - 90px);"
             v-model.trim="importYaml.serviceName"
@@ -21,7 +21,7 @@
             clearable
           ></el-input>
         </el-form-item>
-        <el-form-item label="选择模板" prop="id" :rules="{ required: true, message: '请选择模板', trigger: ['change','blur'] }">
+        <el-form-item label="选择模板" prop="id">
           <el-select style="width: calc(100% - 90px);" size="small" v-model="importYaml.id" placeholder="请选择模板" @change="getKubernetesTemplate">
             <el-option disabled value="NEWMODULE">
               <router-link to="/v1/template/k8s-yamls" class="module-link">
@@ -184,6 +184,31 @@ export default {
       required: false
     }
   },
+  computed: {
+    serviceRules () {
+      const validateServiceName = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t('services.common.inputServiceName')))
+        } else {
+          if (!/^[a-z0-9-]+$/.test(value)) {
+            callback(new Error(this.$t('services.k8s.checkServiceName')))
+          } else {
+            callback()
+          }
+        }
+      }
+      const rules = {
+        serviceName: [{
+          type: 'string',
+          required: true,
+          validator: validateServiceName,
+          trigger: ['blur', 'change']
+        }],
+        id: [{ required: true, message: '请选择模板', trigger: ['change', 'blur'] }]
+      }
+      return rules
+    }
+  },
   methods: {
     onVariablesCodeChange (code) {
       this.importYaml.variable_yaml = code
@@ -270,7 +295,7 @@ export default {
         auto_sync: autoSync
       }
       const valid = await this.$refs.importYamlForm.validate().catch(err => {
-        return err
+        console.log(err)
       })
       if (valid) {
         const convertResult = await this.convertVariable('toYaml', payload.service_variable_kvs, payload.variable_yaml)

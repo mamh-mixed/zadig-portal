@@ -94,8 +94,24 @@ export default {
       return this.$route.params.project_name
     },
     rules () {
+      const validateServiceName = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error(this.$t('services.common.inputServiceName')))
+        } else {
+          if (!/^[a-z0-9-]+$/.test(value)) {
+            callback(new Error(this.$t('services.k8s.checkServiceName')))
+          } else {
+            callback()
+          }
+        }
+      }
       return {
-        serviceName: [{ required: true, message: this.$t('services.common.inputServiceName'), trigger: 'blur' }],
+        serviceName: [{
+          type: 'string',
+          required: true,
+          validator: validateServiceName,
+          trigger: ['blur', 'change']
+        }],
         moduleName: [{ required: true, message: '请选择模板', trigger: ['blur', 'change'] }]
       }
     }
