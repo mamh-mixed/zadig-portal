@@ -197,6 +197,25 @@ exports.default = {
     signUp: 'Sign up',
     signUpSuccess: 'Registration is successful, please login'
   },
+  installation: {
+    signup: 'Admin Signup',
+    company: 'Company Name',
+    inputCompany: 'Please enter company name',
+    username: 'Username',
+    inputUsername: 'Please enter username',
+    password: 'Password',
+    inputPassword: 'Please enter password',
+    email: 'Email',
+    inputEmail: 'Please enter email',
+    inputEmailCheck: 'Please check email format',
+    phone: 'Phone Number',
+    inputPhone: 'Please enter phone number',
+    checkPhone: 'Please check phone number format',
+    reason: 'Reason for using Zadig',
+    inputReasonPlaceholder: 'Please enter reason for using Zadig, have a chance to get the latest Zadig peripherals',
+    address: 'Address',
+    inputAddressPlaceholder: 'Please enter address'
+  },
   sidebarMenu: {
     productDelivery: 'Product Delivery',
     status: 'Status',
