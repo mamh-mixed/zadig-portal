@@ -92,15 +92,6 @@ export default {
           this.loading = false
         }
       })
-    },
-    async getCaptcha () {
-      this.captcha = null
-      const res = await getCaptchaAPI()
-      if (res) {
-        this.captcha = res
-        this.signUpForm.captcha_answer = ''
-        this.signUpForm.captcha_id = res.id
-      }
     }
   },
   computed: {
