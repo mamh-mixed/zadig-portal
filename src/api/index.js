@@ -1525,6 +1525,16 @@ export function startEphemeralContainersDebugAPI ({ projectName, envName, podNam
   return http.post(`/api/aslan/environment/kube/${envName}/pods/${podName}/debugcontainer?projectName=${projectName}&debugImage=${image}`)
 }
 
+// Initialization
+
+export function checkInstallationStatusAPI () {
+  return http.get(`/api/aslan/system/initialization/status`)
+}
+
+export function userInitializationAPI (payload) {
+  return http.post(`/api/aslan/system/initialization/user`, payload)
+}
+
 // Login
 export function userLoginAPI (payload) {
   return http.post(`/api/v1/login`, payload)

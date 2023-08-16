@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { checkInstallationStatusAPI } from '@api'
 import moment from 'moment'
 import { isMobile } from 'mobile-device-detect'
 import store from 'storejs'
@@ -24,6 +25,12 @@ export default {
         if (!window.location.pathname.includes('/mobile')) {
           this.$router.push('/mobile/projects')
         }
+      }
+    },
+    async checkInstallationStatus () {
+      const res = await checkInstallationStatusAPI()
+      if (res && !res.initialized) {
+        this.$router.push('/v1/installation')
       }
     }
   },
@@ -60,6 +67,7 @@ export default {
       }
     }
     this.redirectByDevice()
+    this.checkInstallationStatus()
   }
 }
 </script>

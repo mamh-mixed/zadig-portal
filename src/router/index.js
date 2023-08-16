@@ -1081,6 +1081,13 @@ const routes = [
     }
   },
   {
+    path: '/v1/installation',
+    component: () => import('@/components/entry/installation.vue'),
+    meta: {
+      title: i18n.t('installation.signup')
+    }
+  },
+  {
     path: '/404',
     component: () => import('@/components/entry/404.vue'),
     meta: {
