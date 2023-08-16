@@ -118,6 +118,8 @@ export default {
           } else {
             callback()
           }
+        } else {
+          callback()
         }
       }
       return {
@@ -160,7 +162,6 @@ export default {
         ],
         phone: [
           {
-            type: 'tel',
             required: false,
             message: this.$t(`installation.checkPhone`),
             trigger: ['blur'],
