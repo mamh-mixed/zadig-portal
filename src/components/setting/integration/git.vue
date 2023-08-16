@@ -206,7 +206,7 @@
             prop="address"
             :rules="{ required:true,validator: (codeEdit.auth_type === 'SSH' ? validateSSH : validateGitURL), trigger: ['change', 'blur'] }"
           >
-            <el-input v-model="codeEdit.address" :placeholder="codeEdit.auth_type === 'SSH' ? 'git@example.com' : 'http(s)://example.com'"></el-input>
+            <el-input v-model="codeEdit.address" :placeholder="codeEdit.auth_type === 'SSH' ? '(ssh://)git@example.com' : 'http(s)://example.com'"></el-input>
           </el-form-item>
           <el-form-item v-if="codeEdit.auth_type === 'SSH'" label="SSH Key" prop="ssh_key">
             <el-input v-model="codeEdit.ssh_key" placeholder="SSH Key" type="textarea" auto-complete="off"></el-input>
@@ -415,7 +415,7 @@
             prop="address"
             :rules="{ required:true,validator: (codeAdd.auth_type === 'SSH' ? validateSSH : validateGitURL), trigger: ['change', 'blur'] }"
           >
-            <el-input v-model="codeAdd.address" :placeholder="codeAdd.auth_type === 'SSH' ? 'git@example.com' : 'http(s)://example.com'"></el-input>
+            <el-input v-model="codeAdd.address" :placeholder="codeAdd.auth_type === 'SSH' ? '(ssh://)git@example.com' : 'http(s)://example.com'"></el-input>
           </el-form-item>
           <el-form-item v-if="codeAdd.auth_type === 'SSH'" label="SSH Key" prop="ssh_key">
             <el-input v-model="codeAdd.ssh_key" placeholder="SSH Key" type="textarea" auto-complete="off"></el-input>
