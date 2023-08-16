@@ -197,6 +197,25 @@ exports.default = {
     signUp: '注册',
     signUpSuccess: '用户注册成功，请登录'
   },
+  installation: {
+    signup: '管理员注册',
+    company: '企业名称',
+    inputCompany: '请输入企业名称',
+    username: '用户名',
+    inputUsername: '请输入用户名',
+    password: '密码',
+    inputPassword: '请输入密码',
+    email: '邮箱',
+    inputEmail: '请输入邮箱',
+    inputEmailCheck: '请检查邮箱格式',
+    phone: '手机号',
+    inputPhone: '请输入手机号',
+    checkPhone: '请检查手机号格式',
+    reason: '使用 Zadig 原因',
+    inputReasonPlaceholder: '请输入使用 Zadig 原因，有机会获取 Zadig 最新周边',
+    address: '收件地址',
+    inputAddressPlaceholder: '请输入收件地址'
+  },
   sidebarMenu: {
     productDelivery: '产品交付',
     status: '运行状态',
