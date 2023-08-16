@@ -172,6 +172,13 @@ export default {
     showSlogan () {
       return this.slogan.common
     }
+  },
+  watch: {
+    '$i18n.locale': function () {
+      this.$nextTick(() => {
+        this.$refs.signUpForm.clearValidate()
+      })
+    }
   }
 }
 </script>
