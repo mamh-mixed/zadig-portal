@@ -28,7 +28,7 @@
                 <el-input v-model="signUpForm.address" :placeholder="$t(`installation.inputAddressPlaceholder`)"></el-input>
               </el-form-item>
             </el-form>
-            <el-button :loading="loading" @click="signUp" class="btn-md btn-theme btn-block login-btn">{{$t(`signUp.signUp`)}}</el-button>
+            <el-button type="submit" :loading="loading" @click="signUp" class="btn-md btn-theme btn-block login-btn">{{$t(`signUp.signUp`)}}</el-button>
           </div>
         </el-col>
         <el-col class="bg-img none-992" :xs="0" :sm="0" :md="11" :lg="11">
