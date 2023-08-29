@@ -23,45 +23,47 @@
               <span class="name">{{$t('subTopbarMenu.environments')}}</span>
             </li>
           </router-link>
-
-          <el-dropdown v-if="deployType==='k8s' || deployType==='helm'"  v-hasPermi="{projectName: projectName, action: 'get_service'}" placement="bottom" trigger="hover">
-            <li class="nav-item" :class="{'active':$route.path === `/v1/projects/detail/${projectName}/services` || $route.path === `/v1/projects/detail/${projectName}/services/production`}"
-              @click="$router.push(`/v1/projects/detail/${projectName}/services`)">
-              <i class="icon iconfont iconvery-service"></i>
-              <span class="name">{{$t('subTopbarMenu.services')}}</span>
-            </li>
-            <el-dropdown-menu slot="dropdown" class="project-config">
-              <el-dropdown-item v-hasPermi="{projectName: projectName, action: 'get_service', isBtn: true}" @click.native="$router.push(`/v1/projects/detail/${projectName}/services`)">
-                {{$t('subTopbarMenu.testServices')}}
-              </el-dropdown-item>
-              <el-tooltip effect="dark" placement="top">
-                <div slot="content">
-                  {{$t(`global.enterprisefeaturesReferforDetails`)}}
-                  <el-link
-                    style="font-size: 13px; vertical-align: baseline;"
-                    type="primary"
-                    :href="`https://docs.koderover.com/project/service/${deployType}/prod/`"
-                    :underline="false"
-                    target="_blank"
-                  >{{$t(`global.document`)}}</el-link>
-                </div>
-                <el-dropdown-item style="color: #a0a0a0;">
-                  {{$t('subTopbarMenu.productionServices')}}
+          <div v-if="deployType==='k8s' || deployType==='helm'">
+            <el-dropdown v-hasPermi="{projectName: projectName, action: 'get_service'}" placement="bottom" trigger="hover">
+              <li class="nav-item" :class="{'active':$route.path === `/v1/projects/detail/${projectName}/services` || $route.path === `/v1/projects/detail/${projectName}/services/production`}"
+                @click="$router.push(`/v1/projects/detail/${projectName}/services`)">
+                <i class="icon iconfont iconvery-service"></i>
+                <span class="name">{{$t('subTopbarMenu.services')}}</span>
+              </li>
+              <el-dropdown-menu slot="dropdown" class="project-config">
+                <el-dropdown-item v-hasPermi="{projectName: projectName, action: 'get_service', isBtn: true}" @click.native="$router.push(`/v1/projects/detail/${projectName}/services`)">
+                  {{$t('subTopbarMenu.testServices')}}
                 </el-dropdown-item>
-              </el-tooltip>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <router-link
-            v-else
-            v-hasPermi="{projectName: projectName, action: 'get_service'}"
-            active-class="active"
-            :to="`/v1/projects/detail/${projectName}/services`"
-          >
-            <li class="nav-item">
-              <i class="icon iconfont iconvery-service"></i>
-              <span class="name">{{$t('subTopbarMenu.services')}}</span>
-            </li>
-          </router-link>
+                <el-tooltip effect="dark" placement="top">
+                  <div slot="content">
+                    {{$t(`global.enterprisefeaturesReferforDetails`)}}
+                    <el-link
+                      style="font-size: 13px; vertical-align: baseline;"
+                      type="primary"
+                      :href="`https://docs.koderover.com/project/service/${deployType}/prod/`"
+                      :underline="false"
+                      target="_blank"
+                    >{{$t(`global.document`)}}</el-link>
+                  </div>
+                  <el-dropdown-item style="color: #a0a0a0;">
+                    {{$t('subTopbarMenu.productionServices')}}
+                  </el-dropdown-item>
+                </el-tooltip>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+          <div v-else>
+            <router-link
+              v-hasPermi="{projectName: projectName, action: 'get_service'}"
+              active-class="active"
+              :to="`/v1/projects/detail/${projectName}/services`"
+            >
+              <li class="nav-item">
+                <i class="icon iconfont iconvery-service"></i>
+                <span class="name">{{$t('subTopbarMenu.services')}}</span>
+              </li>
+            </router-link>
+          </div>
           <router-link
             v-hasPermi="{projectName: projectName, action: 'get_build'}"
             active-class="active"
