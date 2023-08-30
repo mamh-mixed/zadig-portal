@@ -8,6 +8,7 @@
       size="small"
       @keydown.enter.native="$emit('submitEvent')"
       @submit.native.prevent
+      label-position="left"
     >
       <el-form-item :label="$t(`workflow.stageName`)" prop="name">
         <el-input v-model="form.name" size="small"></el-input>
@@ -189,7 +190,7 @@ export default {
   name: 'StageOperate',
   data () {
     return {
-      formLabelWidth: '145px',
+      formLabelWidth: '120px',
       rules: {
         name: [
           {
@@ -453,6 +454,10 @@ export default {
 }
 </script>
 <style lang="less">
+.stage-operate {
+  padding: 0 20px;
+}
+
 .approval-dialog {
   .avatar {
     width: 20px;
