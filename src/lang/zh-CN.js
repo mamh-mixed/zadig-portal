@@ -2052,11 +2052,11 @@ exports.default = {
     // eslint-disable-next-line no-template-curly-in-string
     repoBranch: '构建时使用的代码分支信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval BRANCH=\\${${REPO_0}_BRANCH} 方式获取第一个代码库的分支信息',
     // eslint-disable-next-line no-template-curly-in-string
-    repoTag: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的分支信息',
+    repoTag: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的 Tag 信息',
     // eslint-disable-next-line no-template-curly-in-string
     repoCommitID: '构建时使用代码 Commit 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval COMMITID=\\${${REPO_0}_COMMIT_ID} 方式获取第一个代码库的 COMMIT 信息',
     // eslint-disable-next-line no-template-curly-in-string
-    repoOrg: '构建时使用的代码组织/用户信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval org=\${${REPO_0}_ORG} 方式获取第一个代码库的分支信息',
+    repoOrg: '构建时使用的代码组织/用户信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval org=\${${REPO_0}_ORG} 方式获取第一个代码库的组织/用户信息',
     // eslint-disable-next-line no-template-curly-in-string
     otherTypeRepoWarning: '如使用 其他 代码源，$<REPO>_PR 和 $<REPO>_COMMIT_ID 变量不支持',
     linkedEnv: '被测命名空间',
