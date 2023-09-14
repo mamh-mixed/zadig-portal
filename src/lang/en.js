@@ -2056,7 +2056,7 @@ exports.default = {
     // eslint-disable-next-line no-template-curly-in-string
     repoCommitID: 'The commit info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval COMMIT=\${${REPO_0}_COMMIT} to get the commit information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
-    repoOrg: 'The organization/user info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval org=\${${REPO_0}_ORG} to get the commit information of the first repository',
+    repoOrg: 'The organization/user info of a <REPO>. This can be used alone or with $REPO_<index>, for example: eval org=\${${REPO_0}_ORG} to get the organization/user information of the first repository',
     // eslint-disable-next-line no-template-curly-in-string
     otherTypeRepoWarning: 'If you are using repository of other type, you cannot use $<REPO>_PR and $<REPO>_COMMIT_ID',
     linkedEnv: 'The namespace of the tested environment.',

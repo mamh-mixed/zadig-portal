@@ -233,7 +233,7 @@ const buildEnvs = [
   {
     variable: '$<REPO>_TAG',
     // eslint-disable-next-line
-    desc: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的分支信息'
+    desc: '构建时使用代码 Tag 信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval TAG=\\${${REPO_0}_TAG} 方式获取第一个代码库的 Tag 信息'
   },
   {
     variable: '$<REPO>_COMMIT_ID',
@@ -243,7 +243,7 @@ const buildEnvs = [
   {
     variable: '$<REPO>_ORG',
     // eslint-disable-next-line
-    desc: '构建时使用的代码组织/用户信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval org=\${${REPO_0}_ORG} 方式获取第一个代码库的分支信息'
+    desc: '构建时使用的代码组织/用户信息，其中 <REPO> 是具体的代码仓库名称，使用时可以填写仓库名称或者结合 $REPO_index 变量使用，比如可以通过 eval org=\${${REPO_0}_ORG} 方式获取第一个代码库的组织/用户信息'
   },
   {
     variable: '',
